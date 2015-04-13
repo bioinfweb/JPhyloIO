@@ -47,6 +47,9 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	public static final char NAME_START_CHAR = '>';
 	
 	
+	private boolean lineConsumed = true;
+	
+	
 	/**
 	 * Creates a new instance of this class.
 	 * 
@@ -108,8 +111,6 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 			return new ConcretePhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else {
-			boolean lineConsumed = true;
-			
 			switch (getPreviousEvent().getEventType()) {
 				case DOCUMENT_START:
 					return new ConcretePhyloIOEvent(EventType.ALIGNMENT_START);
