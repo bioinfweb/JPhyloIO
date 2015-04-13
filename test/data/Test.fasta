@@ -1,7 +1,8 @@
 >Seq 1
 ATCGT
 >Seq 2
-CGTAAACG
+CGT>AA>CG
 ACGT
+>Empty sequence
 >Seq 3
 GCCAT

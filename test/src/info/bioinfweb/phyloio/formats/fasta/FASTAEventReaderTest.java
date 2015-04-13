@@ -42,7 +42,7 @@ public class FASTAEventReaderTest {
 	@Test
 	public void testReadingFasta() {
 		try {
-			FASTAEventReader reader = new FASTAEventReader(new File("data/Simple.fasta"));
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Test.fasta"));
 			try {
 				reader.setMaxTokensToRead(6);
 				
@@ -61,11 +61,16 @@ public class FASTAEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals("Seq 2", reader.next().asSequenceStartEvent().getName());
 				assertTrue(reader.hasNextEvent());
-				assertTokensEvent("CGTAAA", reader.next().asTokensEvent());
+				assertTokensEvent("CGT>AA", reader.next().asTokensEvent());
 				assertTrue(reader.hasNextEvent());
-				assertTokensEvent("CG", reader.next().asTokensEvent());
+				assertTokensEvent(">CG", reader.next().asTokensEvent());
 				assertTrue(reader.hasNextEvent());
 				assertTokensEvent("ACGT", reader.next().asTokensEvent());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.SEQUENCE_END, reader.next().getEventType());
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals("Empty sequence", reader.next().asSequenceStartEvent().getName());
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.SEQUENCE_END, reader.next().getEventType());
 				

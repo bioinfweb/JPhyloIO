@@ -21,6 +21,6 @@ main/src/info/bioinfweb/phyloio/package-info.java -text svneol=unset#text/plain
 test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
-test/data/Simple.fasta -text
+test/data/Test.fasta -text
 test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/phyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
