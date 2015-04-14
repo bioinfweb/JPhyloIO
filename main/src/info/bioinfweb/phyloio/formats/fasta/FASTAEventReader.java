@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import info.bioinfweb.commons.io.PeekReader;
@@ -33,8 +34,7 @@ import info.bioinfweb.phyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
 import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
-import info.bioinfweb.phyloio.events.SequenceStartEvent;
-import info.bioinfweb.phyloio.events.TokensEvent;
+import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 
 
 
@@ -47,6 +47,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	public static final char NAME_START_CHAR = '>';
 	
 	
+	private String currentSequenceName = null;
 	private boolean lineConsumed = true;
 	
 	
@@ -93,10 +94,11 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	private PhyloIOEvent readSequenceStart(String exceptionMessage) throws IOException {
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {
-				return new SequenceStartEvent(getReader().readLine().getLine().toString());
+				currentSequenceName = getReader().readLine().getLine().toString();
+				return null;
 			}
 			else {
-				throw new IOException("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
+				throw new IOException(exceptionMessage);
 			}
 		}
 		catch (EOFException e) {
@@ -111,33 +113,43 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 			return new ConcretePhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else {
+			PhyloIOEvent alignmentEndEvent;
+			
 			switch (getPreviousEvent().getEventType()) {
 				case DOCUMENT_START:
 					return new ConcretePhyloIOEvent(EventType.ALIGNMENT_START);
 					
 				case ALIGNMENT_START:
-					return readSequenceStart("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
-					
-				case SEQUENCE_START:
-					lineConsumed = true;  // fall through
-				case SEQUENCE_TOKENS:
+					alignmentEndEvent = readSequenceStart("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
+					if (alignmentEndEvent != null) {
+						return alignmentEndEvent;
+					}
+					lineConsumed = true;  
+					// fall through
+				case SEQUENCE_CHARACTERS:
+					// Check if new name needs to be read:
 					int c = getReader().peek();
 					if ((c == -1) || (lineConsumed && (c == (int)NAME_START_CHAR))) {
-						return new ConcretePhyloIOEvent(EventType.SEQUENCE_END);
-					}
-					else {
-						PeekReader.ReadLineResult lineResult = getReader().readLine(getMaxTokensToRead());
-						List<String> tokenList = new ArrayList<String>(lineResult.getLine().length());
-						for (int i = 0; i < lineResult.getLine().length(); i++) {
-							tokenList.add(Character.toString(lineResult.getLine().charAt(i)));
+						alignmentEndEvent = readSequenceStart("Inconsistent stream. (The cause might code outside this class reading from the same stream.)");
+						if (alignmentEndEvent != null) {
+							return alignmentEndEvent;
 						}
-						lineConsumed = lineResult.isLineCompletelyRead();
-						
-						return new TokensEvent(tokenList);
+						else {
+							c = getReader().peek();
+							if ((c == -1) || (c == (int)NAME_START_CHAR)) {  // No characters found before the next name. => empty sequence
+								return new SequenceCharactersEvent(currentSequenceName, Collections.<String>emptyList());
+							}
+						}
 					}
-					
-				case SEQUENCE_END:
-					return readSequenceStart("Inconsistent stream. (The cause might code outside this class reading from the same stream.)");  // Should have been guaranteed in the last call of this method.
+
+					// Read new tokens:
+					PeekReader.ReadLineResult lineResult = getReader().readLine(getMaxTokensToRead());
+					List<String> tokenList = new ArrayList<String>(lineResult.getLine().length());
+					for (int i = 0; i < lineResult.getLine().length(); i++) {
+						tokenList.add(Character.toString(lineResult.getLine().charAt(i)));
+					}
+					lineConsumed = lineResult.isLineCompletelyRead();					
+					return new SequenceCharactersEvent(currentSequenceName, tokenList);
 					
 				case ALIGNMENT_END:
 					return new ConcretePhyloIOEvent(EventType.DOCUMENT_END);

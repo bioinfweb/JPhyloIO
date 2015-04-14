@@ -58,13 +58,7 @@ public class ConcretePhyloIOEvent implements PhyloIOEvent {
 
 
 	@Override
-	public SequenceStartEvent asSequenceStartEvent() throws ClassCastException {
-		return (SequenceStartEvent)this;
-	}
-
-
-	@Override
-	public TokensEvent asTokensEvent() throws ClassCastException {
-		return (TokensEvent)this;
+	public SequenceCharactersEvent asCharactersEvent() throws ClassCastException {
+		return (SequenceCharactersEvent)this;
 	}
 }

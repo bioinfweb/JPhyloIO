@@ -54,18 +54,10 @@ public interface PhyloIOEvent {
 	public MetaInformationEvent asMetaInformationEvent() throws ClassCastException;
 	
 	/**
-	 * Casts this event to a sequence start event.
+	 * Casts this event to a characters event.
 	 * 
 	 * @return a reference to this event as a tokens event
-	 * @throws ClassCastException if this event is not an instance of {@link SequenceStartEvent}
+	 * @throws ClassCastException if this event is not an instance of {@link SequenceCharactersEvent}
 	 */
-	public SequenceStartEvent asSequenceStartEvent() throws ClassCastException;
-	
-	/**
-	 * Casts this event to a tokens event.
-	 * 
-	 * @return a reference to this event as a tokens event
-	 * @throws ClassCastException if this event is not an instance of {@link TokensEvent}
-	 */
-	public TokensEvent asTokensEvent() throws ClassCastException;
+	public SequenceCharactersEvent asCharactersEvent() throws ClassCastException;
 }

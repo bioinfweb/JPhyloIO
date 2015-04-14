@@ -35,9 +35,7 @@ public enum EventType {
 	
 	ALIGNMENT_START,
 	ALIGNMENT_END,
-	SEQUENCE_START,
-	SEQUENCE_END,
-	SEQUENCE_TOKENS;
+	SEQUENCE_CHARACTERS;
 	
 	//TODO Add tree types here
 }
