@@ -20,9 +20,10 @@ package info.bioinfweb.phyloio.formats.fasta;
 
 
 import info.bioinfweb.phyloio.events.EventType;
-import info.bioinfweb.phyloio.events.TokensEvent;
+import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.* ;
 
@@ -31,10 +32,13 @@ import static org.junit.Assert.* ;
 
 
 public class FASTAEventReaderTest {
-	private void assertTokensEvent(String expectedSequence, TokensEvent event) {
-		assertEquals(expectedSequence.length(), event.getTokens().size());
+	private void assertCharactersEvent(String expectedName, String expectedSequence, FASTAEventReader reader) throws Exception {
+		assertTrue(reader.hasNextEvent());
+		SequenceCharactersEvent event = reader.next().asCharactersEvent();
+		assertEquals(expectedName, event.getSequenceName());
+		assertEquals(expectedSequence.length(), event.getCharacterValues().size());
 		for (int i = 0; i < expectedSequence.length(); i++) {
-			assertEquals(expectedSequence.substring(i, i + 1), event.getTokens().get(i));
+			assertEquals(expectedSequence.substring(i, i + 1), event.getCharacterValues().get(i));
 		}
 	}
 	
@@ -51,35 +55,18 @@ public class FASTAEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals("Seq 1", reader.next().asSequenceStartEvent().getName());
-				assertTrue(reader.hasNextEvent());
-				assertTokensEvent("ATCGT", reader.next().asTokensEvent());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.SEQUENCE_END, reader.next().getEventType());
+				assertCharactersEvent("Seq 1", "ATCGT", reader);
+				
+				assertCharactersEvent("Seq 2", "CGT>AA", reader);
+				assertCharactersEvent("Seq 2", ">CG", reader);
+				assertCharactersEvent("Seq 2", "ACGT", reader);
 				
 				assertTrue(reader.hasNextEvent());
-				assertEquals("Seq 2", reader.next().asSequenceStartEvent().getName());
-				assertTrue(reader.hasNextEvent());
-				assertTokensEvent("CGT>AA", reader.next().asTokensEvent());
-				assertTrue(reader.hasNextEvent());
-				assertTokensEvent(">CG", reader.next().asTokensEvent());
-				assertTrue(reader.hasNextEvent());
-				assertTokensEvent("ACGT", reader.next().asTokensEvent());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.SEQUENCE_END, reader.next().getEventType());
+				SequenceCharactersEvent event = reader.next().asCharactersEvent();
+				assertEquals("Empty sequence", event.getSequenceName());
+				assertEquals(0, event.getCharacterValues().size());
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals("Empty sequence", reader.next().asSequenceStartEvent().getName());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.SEQUENCE_END, reader.next().getEventType());
-				
-				assertTrue(reader.hasNextEvent());
-				assertEquals("Seq 3", reader.next().asSequenceStartEvent().getName());
-				assertTrue(reader.hasNextEvent());
-				assertTokensEvent("GCCAT", reader.next().asTokensEvent());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.SEQUENCE_END, reader.next().getEventType());
+				assertCharactersEvent("Seq 3", "GCCAT", reader);
 				
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
