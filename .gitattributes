@@ -23,6 +23,7 @@ main/src/info/bioinfweb/phyloio/package-info.java -text svneol=unset#text/plain
 test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 test/data/Phylip/Interleaved.phy -text
 test/data/Phylip/Interleaved3Blocks.phy -text
 test/data/Phylip/InvalidCharacterCount.phy -text
