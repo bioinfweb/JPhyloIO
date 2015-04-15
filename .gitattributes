@@ -29,6 +29,7 @@ test/data/Phylip/InvalidCharacterCount.phy -text
 test/data/Phylip/InvalidSequenceCount.phy -text
 test/data/Phylip/MissingCharacterCount.phy -text
 test/data/Phylip/NonInterleaved.phy -text
+test/data/Phylip/RelaxedInterleaved3Blocks.phy -text
 test/data/Phylip/TooManyCounts.phy -text
 test/data/Test.fasta -text
 test/lib/junit-4.9b1.jar -text

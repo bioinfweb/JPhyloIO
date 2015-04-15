@@ -35,7 +35,7 @@ public class PhylipReaderTest {
 	@Test
 	public void testReadingNonInterleavedExactLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true, false);
 			try {
 				reader.setMaxTokensToRead(10);
 				
@@ -71,7 +71,7 @@ public class PhylipReaderTest {
 	@Test
 	public void testReadingNonInterleavedLongerLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true, false);
 			try {
 				reader.setMaxTokensToRead(20);
 				
@@ -107,7 +107,7 @@ public class PhylipReaderTest {
 	@Test
 	public void testReadingNonInterleavedShorterLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true, false);
 			try {
 				reader.setMaxTokensToRead(6);
 				
@@ -147,7 +147,7 @@ public class PhylipReaderTest {
 	
 	private void testInvalidCount(String fileName, String errorMessage) {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/" + fileName), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/" + fileName), true, false);
 			try {
 				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());  // To allow peek() the first two events are generated here already.
 				fail("No excpetion");
@@ -177,7 +177,7 @@ public class PhylipReaderTest {
 	@Test
 	public void testReadingInterleavedExactLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true, false);
 			try {
 				reader.setMaxTokensToRead(10);
 				
@@ -219,7 +219,7 @@ public class PhylipReaderTest {
 	@Test
 	public void testReadingInterleavedLongerLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true, false);
 			try {
 				reader.setMaxTokensToRead(20);
 				
@@ -261,7 +261,7 @@ public class PhylipReaderTest {
 	@Test
 	public void testReadingInterleavedShorterLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true, false);
 			try {
 				reader.setMaxTokensToRead(6);
 				
@@ -313,7 +313,7 @@ public class PhylipReaderTest {
 	@Test
 	public void testReadingInterleavedHalfLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true, false);
 			try {
 				reader.setMaxTokensToRead(5);
 				
@@ -365,7 +365,7 @@ public class PhylipReaderTest {
 	@Test
 	public void testReadingInterleaved3Blocks() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved3Blocks.phy"), true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved3Blocks.phy"), true, false);
 			try {
 				reader.setMaxTokensToRead(20);
 				
@@ -391,6 +391,54 @@ public class PhylipReaderTest {
 				assertCharactersEvent("Seq 3", "ATTTG", reader);
 				assertCharactersEvent("Seq 4ATCGA", "ATTAG", reader);
 				assertCharactersEvent("Seq 5", "TTT-G", reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingRelaxedInterleaved3Blocks() {
+		try {
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/RelaxedInterleaved3Blocks.phy"), true, true);
+			try {
+				reader.setMaxTokensToRead(20);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertCharactersEvent("Sequence_name_1", "ATG-T--CCG", reader);
+				assertCharactersEvent("Sequence_name_2", "ATG-TT-CCG", reader);
+				assertCharactersEvent("Sequence_name_3", "ATG-T--CGG", reader);
+				assertCharactersEvent("Sequence_name_4", "ATG-TTTCCG", reader);
+				assertCharactersEvent("Sequence_name_5", "ATG-TT-CCC", reader);
+				
+				assertCharactersEvent("Sequence_name_1", "CCGT-GT--A", reader);
+				assertCharactersEvent("Sequence_name_2", "CCGT-GTT-A", reader);
+				assertCharactersEvent("Sequence_name_3", "CCGT-CT--A", reader);
+				assertCharactersEvent("Sequence_name_4", "CCGT-GTTTA", reader);
+				assertCharactersEvent("Sequence_name_5", "CGGT-CTT-A", reader);
+				
+				assertCharactersEvent("Sequence_name_1", "ATA-G", reader);
+				assertCharactersEvent("Sequence_name_2", "ATT-G", reader);
+				assertCharactersEvent("Sequence_name_3", "ATTTG", reader);
+				assertCharactersEvent("Sequence_name_4", "ATTAG", reader);
+				assertCharactersEvent("Sequence_name_5", "TTT-G", reader);
 				
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
