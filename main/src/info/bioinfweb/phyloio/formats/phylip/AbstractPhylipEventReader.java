@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.phyloio.AbstractBufferedReaderBasedEventReader;
@@ -40,6 +41,7 @@ import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	public static final int DEFAULT_NAME_LENGTH = 10;
 	public static final String PREMATURE_NAME_END_CHARACTER = "\t";
+	public static final Pattern RELAXED_PHYLIP_NAME_PATTERN = Pattern.compile(".+\\s+");
 	
 	
 	private boolean relaxedPhylip = false;
@@ -133,7 +135,7 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 	protected String readSequenceName() throws IOException {
 		String result;
 		if (isRelaxedPhylip()) {  // Allow longer names terminated by one or more white spaces
-			result = getReader().readRegExp(".+\\s+", true).getSequence().toString().trim();
+			result = getReader().readRegExp(RELAXED_PHYLIP_NAME_PATTERN, true).getSequence().toString().trim();
 		}
 		else {  // Allow names with exactly 10 characters or shorter and terminated with a tab
 			result = getReader().readUntil(DEFAULT_NAME_LENGTH, PREMATURE_NAME_END_CHARACTER).getSequence().toString().trim();
