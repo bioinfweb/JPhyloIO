@@ -27,12 +27,9 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.phyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
 import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
-import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 
 
 
@@ -46,17 +43,8 @@ import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
-	public static final int DEFAULT_NAME_LENGTH = 10;
-	public static final String NAME_END_CHARACTER = "\t";
-	
-	
+public class PhylipEventReader extends AbstractPhylipEventReader {
 	private boolean allowInterleavedParsing = true;
-	private boolean relaxedPhylip = false;
-	private int sequenceCount = -1;
-	private int characterCount = -1;
-	private String currentSequenceName = null;
-	private boolean lineConsumed = true;
 	private List<String> sequenceNames = new ArrayList<String>();
 	private int currentSequenceIndex = 0;
 	
@@ -67,15 +55,15 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * @param reader the reader providing the Phylip data to be read 
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
-	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.)
+	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
+	 *        If this switch is set to {@code true} non-interleaved files can also still be parsed.)
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
 	 */
 	public PhylipEventReader(BufferedReader reader, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
-		super(reader);
+		super(reader, relaxedPhylip);
 		this.allowInterleavedParsing = allowInterleavedParsing;
-		this.relaxedPhylip = relaxedPhylip;
 	}
 
 	
@@ -85,15 +73,15 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * @param file the Phylip file to be read 
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
-	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.)
+	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
+	 *        If this switch is set to {@code true} non-interleaved files can also still be parsed.)
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
 	 */
 	public PhylipEventReader(File file, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
-		super(file);
+		super(file, relaxedPhylip);
 		this.allowInterleavedParsing = allowInterleavedParsing;
-		this.relaxedPhylip = relaxedPhylip;
 	}
 
 	
@@ -103,15 +91,15 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * @param stream the stream providing the Phylip data to be read 
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
-	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.)
+	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
+	 *        If this switch is set to {@code true} non-interleaved files can also still be parsed.)
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
 	 */
 	public PhylipEventReader(InputStream stream, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
-		super(stream);
+		super(stream, relaxedPhylip);
 		this.allowInterleavedParsing = allowInterleavedParsing;
-		this.relaxedPhylip = relaxedPhylip;
 	}
 
 	
@@ -121,64 +109,23 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * @param reader the reader providing the Phylip data to be read 
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
-	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.)
+	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
+	 *        If this switch is set to {@code true} non-interleaved files can also still be parsed.)
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
 	 */
 	public PhylipEventReader(Reader reader, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
-		super(reader);
+		super(reader, relaxedPhylip);
 		this.allowInterleavedParsing = allowInterleavedParsing;
-		this.relaxedPhylip = relaxedPhylip;
-	}
-	
-	
-	private void readMatrixDimensions() throws IOException {
-		PeekReader.ReadResult firstLine = getReader().readLine();
-		if (!firstLine.isCompletelyRead()) {
-			throw new IOException("First line of Phylip file is too long. It does not seem to be a valid Phylip file.");
-		}
-		else {
-			String[] parts = firstLine.getSequence().toString().trim().split("\\s+");
-			if (parts.length == 2) {
-				try {
-					sequenceCount = Integer.parseInt(parts[0]);
-				}
-				catch (NumberFormatException e) {
-					throw new IOException("Invalid integer constant \"" + parts[0] + "\" found for the sequence count in line 1.");
-				}
-
-				try {
-					characterCount = Integer.parseInt(parts[1]);
-				}
-				catch (NumberFormatException e) {
-					throw new IOException("Invalid integer constant \"" + parts[1] + "\" found for the character count in line 1.");
-				}
-			}
-			else {
-				throw new IOException("The first line of a Phylip file needs to contain exactly two integer values spcifying the "
-						+ "sequence and character count. " + parts.length + " value(s) was/were found instead.");
-			}
-		}
 	}
 	
 	
 	private void increaseSequenceIndex() {
 		currentSequenceIndex++;
-		if (currentSequenceIndex >= sequenceCount) {
-			currentSequenceIndex -= sequenceCount;
+		if (currentSequenceIndex >= getSequenceCount()) {
+			currentSequenceIndex -= getSequenceCount();
 		}
-	}
-	
-	
-	private List<String> createTokenList(CharSequence sequence) {
-		List<String> result = new ArrayList<String>(sequence.length());
-		for (int i = 0; i < sequence.length(); i++) {
-			if (!Character.isWhitespace(sequence.charAt(i))) {  // Phylip allows white spaces in between sequences
-				result.add(Character.toString(sequence.charAt(i)));
-			}
-		}
-		return result;
 	}
 	
 	
@@ -188,15 +135,13 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 			return new ConcretePhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else {
-			PhyloIOEvent alignmentEndEvent;
-			
 			switch (getPreviousEvent().getEventType()) {
 				case DOCUMENT_START:
 					readMatrixDimensions();
-					return createAlignmentStartEvent(sequenceCount, characterCount);
+					return createAlignmentStartEvent(getSequenceCount(), getCharacterCount());
 					
 				case ALIGNMENT_START:
-					if (sequenceCount == 0) {  // Empty alignment:
+					if (getSequenceCount() == 0) {  // Empty alignment:
 						return new ConcretePhyloIOEvent(EventType.ALIGNMENT_END);
 					}
 				case SEQUENCE_CHARACTERS:
@@ -205,13 +150,8 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 							getReader().consumeNewLine();  // Note: Parsing this way does not allow to have empty lines for some sequences in interleaved format, if they ended earlier than others. (Sequences with different lengths are anyway not allowed by the format definition. E.g. unaligned could still be read from non-interleaved files.
 						}
 						
-						if (!allowInterleavedParsing || sequenceNames.size() < sequenceCount) {  // Read Name from first (interleaved) block:
-							if (relaxedPhylip) {
-								currentSequenceName = getReader().readRegExp(".+\\s+", true).getSequence().toString().trim();
-							}
-							else {
-								currentSequenceName = getReader().readUntil(DEFAULT_NAME_LENGTH, NAME_END_CHARACTER).getSequence().toString().trim();
-							}
+						if (!allowInterleavedParsing || sequenceNames.size() < getSequenceCount()) {  // Read name from first (interleaved) block:
+							currentSequenceName = readSequenceName();
 							sequenceNames.add(currentSequenceName);
 						}
 						else {
@@ -229,17 +169,7 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 							return new ConcretePhyloIOEvent(EventType.ALIGNMENT_END);
 						}
 					}
-					
-					// Read characters:
-					PeekReader.ReadResult readResult = getReader().readLine(getMaxTokensToRead());
-					lineConsumed = readResult.isCompletelyRead();
-					List<String> characters = createTokenList(readResult.getSequence());
-					if (characters.isEmpty()) {  // The rest of the line was consisting only of spaces
-						return readNextEvent();  // Continue parsing to create the next event
-					}
-					else {
-						return new SequenceCharactersEvent(currentSequenceName, characters);
-					}
+					return readCharacters();
 					
 				case ALIGNMENT_END:
 					return new ConcretePhyloIOEvent(EventType.DOCUMENT_END);
