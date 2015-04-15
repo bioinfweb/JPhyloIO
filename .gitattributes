@@ -33,10 +33,13 @@ test/data/Phylip/InvalidSequenceCount.phy -text
 test/data/Phylip/MissingCharacterCount.phy -text
 test/data/Phylip/NonInterleaved.phy -text
 test/data/Phylip/RelaxedInterleaved3Blocks.phy -text
+test/data/Phylip/RelaxedSequential.phy -text
+test/data/Phylip/Sequential.phy -text
 test/data/Phylip/TooManyCounts.phy -text
 test/data/Test.fasta -text
 test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/phyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/formats/phylip/PhylipReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/phyloio/formats/phylip/SequentialPhylipReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/test/SplitTest.java -text svneol=unset#text/plain

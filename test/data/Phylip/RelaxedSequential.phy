@@ -1,0 +1,11 @@
+	5	20
+Sequence_name_1 ATG-T --CCG
+CCGT- GT--A
+Sequence_name_2	ATG-T T-CCG
+CCGT- GTT-A
+Sequence_name_3   ATG-T --CGG
+CCGT- CT--A
+Sequence_name_4 ATG-T TTCCG
+CCGT- GTTTA
+Sequence_name_5 ATG-T T-CCC
+CGGT- CTT-A
