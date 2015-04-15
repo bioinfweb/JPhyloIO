@@ -41,6 +41,8 @@ import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
  * <p>
  * The format is expected to be valid under the definition available here: 
  * <a href="http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles">http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles</a>.
+ * The extended Phylip format is supported according to this definition:
+ * <a href="http://www.phylo.org/index.php/help/relaxed_phylip">http://www.phylo.org/index.php/help/relaxed_phylip</a>.
  * 
  * @author Ben St&ouml;ver
  */
@@ -50,6 +52,7 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	
 	
 	private boolean allowInterleavedParsing = true;
+	private boolean relaxedPhylip = false;
 	private int sequenceCount = -1;
 	private int characterCount = -1;
 	private String currentSequenceName = null;
@@ -65,10 +68,14 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.)
+	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
+	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
+	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
 	 */
-	public PhylipEventReader(BufferedReader reader, boolean allowInterleavedParsing) throws IOException {
+	public PhylipEventReader(BufferedReader reader, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
 		super(reader);
 		this.allowInterleavedParsing = allowInterleavedParsing;
+		this.relaxedPhylip = relaxedPhylip;
 	}
 
 	
@@ -79,10 +86,14 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.)
+	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
+	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
+	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
 	 */
-	public PhylipEventReader(File file, boolean allowInterleavedParsing) throws IOException {
+	public PhylipEventReader(File file, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
 		super(file);
 		this.allowInterleavedParsing = allowInterleavedParsing;
+		this.relaxedPhylip = relaxedPhylip;
 	}
 
 	
@@ -93,10 +104,14 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.)
+	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
+	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
+	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
 	 */
-	public PhylipEventReader(InputStream stream, boolean allowInterleavedParsing) throws IOException {
+	public PhylipEventReader(InputStream stream, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
 		super(stream);
 		this.allowInterleavedParsing = allowInterleavedParsing;
+		this.relaxedPhylip = relaxedPhylip;
 	}
 
 	
@@ -107,10 +122,14 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.)
+	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
+	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
+	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
 	 */
-	public PhylipEventReader(Reader reader, boolean allowInterleavedParsing) throws IOException {
+	public PhylipEventReader(Reader reader, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
 		super(reader);
 		this.allowInterleavedParsing = allowInterleavedParsing;
+		this.relaxedPhylip = relaxedPhylip;
 	}
 	
 	
@@ -187,7 +206,12 @@ public class PhylipEventReader extends AbstractBufferedReaderBasedEventReader {
 						}
 						
 						if (!allowInterleavedParsing || sequenceNames.size() < sequenceCount) {  // Read Name from first (interleaved) block:
-							currentSequenceName = getReader().readUntil(DEFAULT_NAME_LENGTH, NAME_END_CHARACTER).getSequence().toString().trim();
+							if (relaxedPhylip) {
+								currentSequenceName = getReader().readRegExp(".+\\s+", true).getSequence().toString().trim();
+							}
+							else {
+								currentSequenceName = getReader().readUntil(DEFAULT_NAME_LENGTH, NAME_END_CHARACTER).getSequence().toString().trim();
+							}
 							sequenceNames.add(currentSequenceName);
 						}
 						else {
