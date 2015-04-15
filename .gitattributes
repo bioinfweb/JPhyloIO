@@ -7,6 +7,7 @@ main/src/info/bioinfweb/phyloio/AbstractBufferedReaderBasedEventReader.java -tex
 main/src/info/bioinfweb/phyloio/AbstractEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/PhyloIOEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/PhyloIOWriter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/phyloio/ReadWriteConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/events/ConcretePhyloIOEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/events/EventType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/events/MetaInformationEvent.java -text svneol=unset#text/plain
@@ -16,6 +17,8 @@ main/src/info/bioinfweb/phyloio/events/package-info.java -text svneol=unset#text
 main/src/info/bioinfweb/phyloio/formats/fasta/FASTAEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/formats/fasta/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/formats/nexus/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/phyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/phyloio/formats/phylip/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/package-info.java -text svneol=unset#text/plain
 test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain

@@ -21,6 +21,8 @@ package info.bioinfweb.phyloio;
 
 import java.util.NoSuchElementException;
 
+import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
+import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
 
 
@@ -30,10 +32,7 @@ import info.bioinfweb.phyloio.events.PhyloIOEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractEventReader implements PhyloIOEventReader {
-	public static final int DEFAULT_MAX_CHARS_TO_READ = 2048;
-	
-	
+public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWriteConstants {
 	private PhyloIOEvent next = null;
 	private PhyloIOEvent previous = null;
 	private boolean beforeFirstAccess = true;
@@ -85,6 +84,14 @@ public abstract class AbstractEventReader implements PhyloIOEventReader {
 		return beforeFirstAccess;
 	}
 
+	
+	protected PhyloIOEvent createAlignmentStartEvent(int sequenceCount, int characterCount) {
+		PhyloIOEvent event = new ConcretePhyloIOEvent(EventType.ALIGNMENT_START);
+		event.getMetaInformationMap().put(META_KEY_SEQUENCE_COUNT, sequenceCount);
+		event.getMetaInformationMap().put(META_KEY_CHARACTER_COUNT, characterCount);
+		return event;
+	}
+	
 
 	@Override
 	public boolean hasNextEvent() throws Exception {
