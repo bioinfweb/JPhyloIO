@@ -23,26 +23,16 @@ import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.* ;
 
+
 import static org.junit.Assert.* ;
+import static info.bioinfweb.phyloio.test.JPhyloIOTestTools.assertCharactersEvent;
 
 
 
 public class FASTAEventReaderTest {
-	private void assertCharactersEvent(String expectedName, String expectedSequence, FASTAEventReader reader) throws Exception {
-		assertTrue(reader.hasNextEvent());
-		SequenceCharactersEvent event = reader.next().asCharactersEvent();
-		assertEquals(expectedName, event.getSequenceName());
-		assertEquals(expectedSequence.length(), event.getCharacterValues().size());
-		for (int i = 0; i < expectedSequence.length(); i++) {
-			assertEquals(expectedSequence.substring(i, i + 1), event.getCharacterValues().get(i));
-		}
-	}
-	
-	
 	@Test
 	public void testReadingFasta() {
 		try {
