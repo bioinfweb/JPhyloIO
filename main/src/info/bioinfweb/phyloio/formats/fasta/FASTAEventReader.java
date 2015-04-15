@@ -94,7 +94,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	private PhyloIOEvent readSequenceStart(String exceptionMessage) throws IOException {
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {
-				currentSequenceName = getReader().readLine().getLine().toString();
+				currentSequenceName = getReader().readLine().getSequence().toString();
 				return null;
 			}
 			else {
@@ -144,11 +144,11 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 
 					// Read new tokens:
 					PeekReader.ReadResult lineResult = getReader().readLine(getMaxTokensToRead());
-					List<String> tokenList = new ArrayList<String>(lineResult.getLine().length());
-					for (int i = 0; i < lineResult.getLine().length(); i++) {
-						tokenList.add(Character.toString(lineResult.getLine().charAt(i)));
+					List<String> tokenList = new ArrayList<String>(lineResult.getSequence().length());
+					for (int i = 0; i < lineResult.getSequence().length(); i++) {
+						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
 					}
-					lineConsumed = lineResult.isLineCompletelyRead();					
+					lineConsumed = lineResult.isCompletelyRead();					
 					return new SequenceCharactersEvent(currentSequenceName, tokenList);
 					
 				case ALIGNMENT_END:
