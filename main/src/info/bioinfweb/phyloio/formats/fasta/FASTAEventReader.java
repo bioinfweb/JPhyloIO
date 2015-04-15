@@ -143,7 +143,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					}
 
 					// Read new tokens:
-					PeekReader.ReadLineResult lineResult = getReader().readLine(getMaxTokensToRead());
+					PeekReader.ReadResult lineResult = getReader().readLine(getMaxTokensToRead());
 					List<String> tokenList = new ArrayList<String>(lineResult.getLine().length());
 					for (int i = 0; i < lineResult.getLine().length(); i++) {
 						tokenList.add(Character.toString(lineResult.getLine().charAt(i)));
