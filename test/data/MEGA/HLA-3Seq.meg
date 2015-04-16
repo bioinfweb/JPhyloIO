@@ -1,0 +1,41 @@
+#mega
+!Title Nucleotide sequences of three human class I HLA-A alleles;
+!Description Extracellular domains 1, 2, and 3 are marked. Antigen recognition sites
+(ARS) are shown by plus sign;
+!Format
+    DataType=Nucleotide   DataFormat=Interleaved
+    NTaxa=3 NSites=822
+    Identical=. Missing=? Indel=-
+    CodeTable=Standard;
+
+
+!Domain=Alpha_1 [in command statement] Property=Coding;
+#A-2301  GGC TCC CAC TCC ATG AGG TAT TTC TCC
+#A-2501  GGC TCC CAC TCC ATG AGG TAT TTC TAC
+#A-3301  GGC TCC CAC TCC ATG AGG TAT TTC ACC
+!Label   ___ ___ ___ ___ +++ ___ +++ ___ +++;
+
+#A-2301  GTG GAC GAC ACG CAG TTC GTG CGG TTC
+#A-2501  GTG GAC GAC ACG CAG TTC GTG CGG TTC
+#A-3301  GTG GAC GAC ACG CAG TTC GTG CGG TTC
+
+#A-2301 [comment 1 in characters] GAG GGG CCG GAG TAT TGG GAC GAG GAG
+#A-2501  GAG GGG CCG GAG TAT TGG GAC CGG AAC
+#A-3301  GAG GGG CCG GAG TAT TGG GAC CGG AAC
+!Label   ___ ___ +++ +++ +++ ___ +++ +++ +++;
+
+!Domain=Alpha_2 Property=Coding;
+#A-2301  GGT TCT CAC ACC CTC CAG ATG ATG TTT
+#A-2501  GGT TCT CAC ACC ATC [comment 1 in characters] CAG AGG ATG TAT
+#A-3301  GGT TCT CAC ACC ATC CAG ATG ATG TAT
+!Label   ___ ___ ___ ___ +++ ___ +++ ___ +++;
+
+#A-2301  CTG GAG AAC GGG AAG
+#A-2501  CTG GAG AAC GGG AAG
+#A-3301  CTG GAG AAC GGG AAG
+
+!Domain=Alpha_3 Property=Coding;
+#A-2301  GAC CCC CCC AAG ACA CAT
+#A-2501  GAC GCC CCC AAG ACG CAT
+#A-3301  GAC CCC CCC AGG ACG CAT
+

@@ -30,6 +30,7 @@ test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+test/data/MEGA/HLA-3Seq.meg -text
 test/data/Phylip/Interleaved.phy -text
 test/data/Phylip/Interleaved3Blocks.phy -text
 test/data/Phylip/InvalidCharacterCount.phy -text
@@ -43,7 +44,9 @@ test/data/Phylip/TooManyCounts.phy -text
 test/data/Test.fasta -text
 test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/phyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/phyloio/formats/mega/MEGAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/formats/phylip/SequentialPhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/test/SplitTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/phyloio/test/WhiteSpaceTest.java -text svneol=unset#text/plain

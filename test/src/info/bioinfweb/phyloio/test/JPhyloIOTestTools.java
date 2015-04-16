@@ -20,6 +20,7 @@ package info.bioinfweb.phyloio.test;
 
 
 import info.bioinfweb.phyloio.PhyloIOEventReader;
+import info.bioinfweb.phyloio.events.CharacterSetEvent;
 import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
 import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
@@ -41,4 +42,26 @@ public class JPhyloIOTestTools {
 			assertEquals(expectedSequence.substring(i, i + 1), charEvent.getCharacterValues().get(i));
 		}
 	}
+	
+	
+  public static void assertCommentEvent(String expectedContent, PhyloIOEventReader reader) throws Exception {
+		assertTrue(reader.hasNextEvent());
+		PhyloIOEvent event = reader.next();
+		assertEquals(EventType.COMMENT, event.getEventType());
+		assertEquals(expectedContent, event.asCommentEvent().getContent());
+  }  
+	
+	
+  public static void assertCharacterSetEvent(String expectedName, long expectedStart, long expectedEnd, 
+  		PhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		PhyloIOEvent event = reader.next();
+		assertEquals(EventType.CHARACTER_SET, event.getEventType());
+		
+		CharacterSetEvent charSetEvent = event.asCharacterSetEvent();
+		assertEquals(expectedName, charSetEvent.getName());
+		assertEquals(expectedStart, charSetEvent.getStart());
+		assertEquals(expectedEnd, charSetEvent.getEnd());
+  }  
 }
