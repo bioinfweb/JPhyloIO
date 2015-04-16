@@ -19,8 +19,11 @@
 package info.bioinfweb.phyloio;
 
 
+import java.io.IOException;
+import java.util.EnumSet;
 import java.util.NoSuchElementException;
 
+import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
 
 
@@ -46,6 +49,17 @@ public interface PhyloIOEventReader {
 	 * @throws Exception Implementing classes might throw additional exceptions
 	 */
 	public PhyloIOEvent next() throws Exception;
+	
+	/**
+	 * Reads elements from the underlying stream until one of the specified is found or the end of the document is reached.
+	 * All elements of other types are consumed and ignored.
+	 * 
+	 * @param types a set of valid types to be returned
+	 * @return the next element of the specified type or {@code null} if end of the file was reached before an according
+	 *         element was found
+	 * @throws Exception Implementing classes might throw additional exceptions
+	 */
+	public PhyloIOEvent nextOfType(EnumSet<EventType> types) throws Exception;
 
 	/**
 	 * Returns the event from the underlying document that will be returned in the next call of {@link #next()}

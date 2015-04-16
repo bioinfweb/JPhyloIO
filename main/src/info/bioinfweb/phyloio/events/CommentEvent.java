@@ -19,25 +19,36 @@
 package info.bioinfweb.phyloio.events;
 
 
-import info.bioinfweb.phyloio.PhyloIOEventReader;
-
-
 
 /**
- * Enumerates the types of events that can be triggered by {@link PhyloIOEventReader}.
+ * Event that indicates that a comment has been parsed at the current position or within the data the last
+ * non-comment event has been parsed from.
+ * <p>
+ * Nested comments as they are possible e.g. in the MEGA format do not produce separate events.   
  * 
  * @author Ben St&ouml;ver
  */
-public enum EventType {
-	DOCUMENT_START,
-	DOCUMENT_END,
-	META_INFORMATION,
-	COMMENT,
+public class CommentEvent extends ConcretePhyloIOEvent {
+	private String content;
+
 	
-	ALIGNMENT_START,
-	ALIGNMENT_END,
-	SEQUENCE_CHARACTERS,
-	CHARACTER_SET;
-	
-	//TODO Add tree types here
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param content the content of the represented comment
+	 */
+	public CommentEvent(String content) {
+		super(EventType.COMMENT);
+		this.content = content;
+	}
+
+
+	/**
+	 * Returns the content of the comment.
+	 * 
+	 * @return the content of the comment
+	 */
+	public String getContent() {
+		return content;
+	}
 }

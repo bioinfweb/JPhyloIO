@@ -19,8 +19,10 @@
 package info.bioinfweb.phyloio;
 
 
+import java.util.EnumSet;
 import java.util.NoSuchElementException;
 
+import info.bioinfweb.phyloio.events.CommentEvent;
 import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
 import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
@@ -35,6 +37,7 @@ import info.bioinfweb.phyloio.events.PhyloIOEvent;
 public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWriteConstants {
 	private PhyloIOEvent next = null;
 	private PhyloIOEvent previous = null;
+	private PhyloIOEvent lastNonComment = null;
 	private boolean beforeFirstAccess = true;
 	private boolean dataSourceClosed = false;
 	private int maxTokensToRead;
@@ -62,16 +65,26 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 
 
 	/**
-	 * Returns the event that has been returned by the previous call of {@link #readNextEvent()}
-	 * and is meant for internal use in {@link #readNextEvent()}.
+	 * Returns the event that has been returned by the previous call of {@link #readNextEvent()}.
 	 * 
-	 * @return the previous event or {@code null} if the was no previous call of {@link #readNextEvent()}
+	 * @return the previous event or {@code null} if there was no previous call of {@link #readNextEvent()}
 	 */
-	protected PhyloIOEvent getPreviousEvent() {
+	public PhyloIOEvent getPreviousEvent() {
 		return previous;
 	}
 	
 	
+	/**
+	 * Returns the last event that has been returned by previous calls of {@link #readNextEvent()}
+	 * that was not a comment event.
+	 * 
+	 * @return the last non-comment event or {@code null} if no non-comment event was returned until now
+	 */
+	public PhyloIOEvent getLastNonCommentEvent() {
+		return lastNonComment;
+	}
+
+
 	/**
 	 * Indicates whether there have been any previous calls of {@link #readNextEvent()} since the last call
 	 * of {@link #reset()}.
@@ -108,12 +121,30 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 		}
 		else {
 			previous = next;  // previous needs to be set before readNextEvent() is called, because it could be accessed in there.
+			if (!(previous instanceof CommentEvent)) {  // Also works for possible future subelements of CommentEvent
+				lastNonComment = previous;
+			}
 			next = readNextEvent();
 			return previous;
 		}
 	}
-	
-	
+
+
+	@Override
+	public PhyloIOEvent nextOfType(EnumSet<EventType> types) throws Exception {
+		try {
+			PhyloIOEvent result = next();
+			while (!types.contains(result.getEventType())) {
+				result = next();
+			}
+			return result;
+		}
+		catch (NoSuchElementException e) {
+			return null;
+		}
+	}
+
+
 	@Override
 	public PhyloIOEvent peek() throws Exception {
 		// ensureFirstEvent() is called in hasNextEvent()
@@ -153,6 +184,7 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 	public void reset() throws Exception {
 		next = null;
 		previous = null;
+		lastNonComment = null;
 		beforeFirstAccess = true;
 	}
 }
