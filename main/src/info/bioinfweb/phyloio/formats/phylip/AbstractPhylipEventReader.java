@@ -48,7 +48,6 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 	private int sequenceCount = -1;
 	private int characterCount = -1;
 	protected String currentSequenceName = null;
-	protected boolean lineConsumed = true;
 
 
 	public AbstractPhylipEventReader(PeekReader reader,	boolean relaxedPhylip) {
@@ -91,17 +90,6 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 	}
 
 
-	protected List<String> createTokenList(CharSequence sequence) {
-		List<String> result = new ArrayList<String>(sequence.length());
-		for (int i = 0; i < sequence.length(); i++) {
-			if (!Character.isWhitespace(sequence.charAt(i))) {  // Phylip allows white spaces in between sequences
-				result.add(Character.toString(sequence.charAt(i)));
-			}
-		}
-		return result;
-	}
-	
-	
 	protected void readMatrixDimensions() throws IOException {
 		PeekReader.ReadResult firstLine = getReader().readLine();
 		if (!firstLine.isCompletelyRead()) {
@@ -141,18 +129,5 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 			result = getReader().readUntil(DEFAULT_NAME_LENGTH, PREMATURE_NAME_END_CHARACTER).getSequence().toString().trim();
 		}
 		return result;
-	}
-	
-	
-	protected PhyloIOEvent readCharacters() throws Exception {
-		PeekReader.ReadResult readResult = getReader().readLine(getMaxTokensToRead());
-		lineConsumed = readResult.isCompletelyRead();
-		List<String> characters = createTokenList(readResult.getSequence());
-		if (characters.isEmpty()) {  // The rest of the line was consisting only of spaces
-			return readNextEvent();  // Continue parsing to create the next event
-		}
-		else {
-			return new SequenceCharactersEvent(currentSequenceName, characters);
-		}
 	}
 }

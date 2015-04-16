@@ -169,7 +169,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 							return new ConcretePhyloIOEvent(EventType.ALIGNMENT_END);
 						}
 					}
-					return readCharacters();
+					return readCharacters(currentSequenceName);
 					
 				case ALIGNMENT_END:
 					return new ConcretePhyloIOEvent(EventType.DOCUMENT_END);

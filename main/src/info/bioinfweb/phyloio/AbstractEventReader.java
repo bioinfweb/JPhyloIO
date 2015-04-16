@@ -20,12 +20,15 @@ package info.bioinfweb.phyloio;
 
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 
+import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.phyloio.events.CommentEvent;
 import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
 import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
+import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 
 
 

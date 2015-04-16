@@ -48,7 +48,6 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	
 	
 	private String currentSequenceName = null;
-	private boolean lineConsumed = true;
 	
 	
 	/**

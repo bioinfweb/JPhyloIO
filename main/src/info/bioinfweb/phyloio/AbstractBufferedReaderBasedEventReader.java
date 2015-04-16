@@ -20,6 +20,8 @@ package info.bioinfweb.phyloio;
 
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.phyloio.events.PhyloIOEvent;
+import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -39,6 +43,7 @@ import java.io.Reader;
  */
 public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEventReader {
 	private PeekReader reader;
+	protected boolean lineConsumed = true;
 	
 	
 	/**
@@ -86,6 +91,30 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 
 
+	protected List<String> createTokenList(CharSequence sequence) {
+		List<String> result = new ArrayList<String>(sequence.length());
+		for (int i = 0; i < sequence.length(); i++) {
+			if (!Character.isWhitespace(sequence.charAt(i))) {  // E.g. Phylip and MEGA allow white spaces in between sequences
+				result.add(Character.toString(sequence.charAt(i)));
+			}
+		}
+		return result;
+	}
+	
+	
+	protected PhyloIOEvent readCharacters(String currentSequenceName) throws Exception {
+		PeekReader.ReadResult readResult = getReader().readLine(getMaxTokensToRead());
+		lineConsumed = readResult.isCompletelyRead();
+		List<String> characters = createTokenList(readResult.getSequence());
+		if (characters.isEmpty()) {  // The rest of the line was consisting only of spaces
+			return readNextEvent();  // Continue parsing to create the next event
+		}
+		else {
+			return new SequenceCharactersEvent(currentSequenceName, characters);
+		}
+	}
+
+	
 	/**
 	 * Returns the reader providing the document contents.
 	 * 

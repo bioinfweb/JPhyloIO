@@ -121,7 +121,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 					}
 					
 					// Read characters:
-					PhyloIOEvent event = readCharacters();
+					PhyloIOEvent event = readCharacters(currentSequenceName);
 					if (EventType.SEQUENCE_CHARACTERS.equals(event.getEventType())) {
 						charactersRead += ((SequenceCharactersEvent)event).getCharacterValues().size();
 					}

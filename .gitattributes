@@ -18,6 +18,8 @@ main/src/info/bioinfweb/phyloio/events/SequenceCharactersEvent.java -text svneol
 main/src/info/bioinfweb/phyloio/events/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/formats/fasta/FASTAEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/formats/fasta/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/phyloio/formats/mega/MEGAEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/phyloio/formats/mega/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/formats/nexus/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/formats/phylip/AbstractPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/phyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain
