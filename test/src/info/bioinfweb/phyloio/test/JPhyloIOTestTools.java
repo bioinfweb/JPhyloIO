@@ -34,7 +34,7 @@ public class JPhyloIOTestTools {
 		assertTrue(reader.hasNextEvent());
 		PhyloIOEvent event = reader.next();
 		assertEquals(EventType.SEQUENCE_CHARACTERS, event.getEventType());
-		SequenceCharactersEvent charEvent = event.asCharactersEvent();
+		SequenceCharactersEvent charEvent = event.asSequenceCharactersEvent();
 		assertEquals(expectedName, charEvent.getSequenceName());
 		assertEquals(expectedSequence.length(), charEvent.getCharacterValues().size());
 		for (int i = 0; i < expectedSequence.length(); i++) {

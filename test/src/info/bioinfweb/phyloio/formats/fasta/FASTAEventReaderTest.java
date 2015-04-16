@@ -52,7 +52,7 @@ public class FASTAEventReaderTest {
 				assertCharactersEvent("Seq 2", "ACGT", reader);
 				
 				assertTrue(reader.hasNextEvent());
-				SequenceCharactersEvent event = reader.next().asCharactersEvent();
+				SequenceCharactersEvent event = reader.next().asSequenceCharactersEvent();
 				assertEquals("Empty sequence", event.getSequenceName());
 				assertEquals(0, event.getCharacterValues().size());
 				
