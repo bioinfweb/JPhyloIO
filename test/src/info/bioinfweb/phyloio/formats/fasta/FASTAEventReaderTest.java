@@ -23,9 +23,9 @@ import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 
 import java.io.File;
+import java.util.EnumSet;
 
 import org.junit.* ;
-
 
 import static org.junit.Assert.* ;
 import static info.bioinfweb.phyloio.test.JPhyloIOTestTools.assertCharactersEvent;
@@ -74,4 +74,32 @@ public class FASTAEventReaderTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
+	
+	
+	@Test
+	public void testnextOfType() {
+		try {
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Test.fasta"));
+			try {
+				reader.setMaxTokensToRead(20);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertEquals(EventType.ALIGNMENT_END, reader.nextOfType(EnumSet.of(EventType.ALIGNMENT_END)).getEventType());
+				assertNull(reader.nextOfType(EnumSet.of(EventType.ALIGNMENT_END)));
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}	
 }
