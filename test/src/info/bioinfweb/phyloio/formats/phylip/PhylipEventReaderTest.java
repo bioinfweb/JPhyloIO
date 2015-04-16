@@ -31,7 +31,7 @@ import static org.junit.Assert.* ;
 
 
 
-public class PhylipReaderTest {
+public class PhylipEventReaderTest {
 	@Test
 	public void testReadingNonInterleavedExactLength() {
 		try {

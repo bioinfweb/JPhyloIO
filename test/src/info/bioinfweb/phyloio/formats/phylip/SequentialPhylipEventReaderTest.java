@@ -30,7 +30,7 @@ import static org.junit.Assert.* ;
 
 
 
-public class SequentialPhylipReaderTest {
+public class SequentialPhylipEventReaderTest {
 	@Test
 	public void testReadingLongerLength() {
 		try {

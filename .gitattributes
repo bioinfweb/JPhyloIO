@@ -41,7 +41,7 @@ test/data/Phylip/TooManyCounts.phy -text
 test/data/Test.fasta -text
 test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/phyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/phyloio/formats/phylip/PhylipReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/phyloio/formats/phylip/SequentialPhylipReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/phyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/phyloio/formats/phylip/SequentialPhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/phyloio/test/SplitTest.java -text svneol=unset#text/plain
