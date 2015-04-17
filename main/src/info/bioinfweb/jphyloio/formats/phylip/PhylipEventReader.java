@@ -42,6 +42,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
  * <a href="http://www.phylo.org/index.php/help/relaxed_phylip">http://www.phylo.org/index.php/help/relaxed_phylip</a>.
  * 
  * @author Ben St&ouml;ver
+ * @see SequentialPhylipEventReader
  */
 public class PhylipEventReader extends AbstractPhylipEventReader {
 	private boolean allowInterleavedParsing = true;

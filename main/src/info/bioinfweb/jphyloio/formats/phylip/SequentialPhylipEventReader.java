@@ -32,6 +32,19 @@ import java.io.Reader;
 
 
 
+/**
+ * Event based reader for sequential Phylip alignment files.
+ * <p>
+ * For parsing non-sequential Phylip files use {@link PhylipEventReader} instaead.
+ * <p>
+ * The format is expected to be valid under the definition available here: 
+ * <a href="http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles">http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles</a>.
+ * The extended Phylip format is supported according to this definition:
+ * <a href="http://www.phylo.org/index.php/help/relaxed_phylip">http://www.phylo.org/index.php/help/relaxed_phylip</a>.
+ * 
+ * @author Ben St&ouml;ver
+ * @see PhylipEventReader
+ */
 public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 	private int charactersRead = Integer.MAX_VALUE;
 	
