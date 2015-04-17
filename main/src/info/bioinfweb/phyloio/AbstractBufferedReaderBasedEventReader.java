@@ -20,8 +20,11 @@ package info.bioinfweb.phyloio;
 
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.phyloio.events.CommentEvent;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
 import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.phyloio.formats.mega.MEGAEventReader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +34,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.regex.Pattern;
 
 
 
@@ -44,6 +50,7 @@ import java.util.List;
 public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEventReader {
 	private PeekReader reader;
 	protected boolean lineConsumed = true;
+	protected Queue<PhyloIOEvent> upcommingEvents = new LinkedList<PhyloIOEvent>();
 	
 	
 	/**
@@ -102,16 +109,75 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 	
 	
-	protected PhyloIOEvent readCharacters(String currentSequenceName) throws Exception {
-		PeekReader.ReadResult readResult = getReader().readLine(getMaxTokensToRead());
-		lineConsumed = readResult.isCompletelyRead();
-		List<String> characters = createTokenList(readResult.getSequence());
+	/**
+	 * Reads a single comment from the reader. Only the first one of subsequent comments (e.g. 
+	 * {@code [comment 1][comment 2]}) would be parsed. 
+	 * <p>
+	 * This method assumes that the comment start symbol has already been consumed. 
+	 * 
+	 * @throws IOException
+	 */
+	protected void readComment(char commentStart, char commentEnd) throws IOException {
+		StringBuilder content = new StringBuilder();
+		int nestedComments = 0;
+		int c = getReader().read();
+		while ((c != -1) && !((nestedComments == 0) && ((char)c == commentEnd))) {
+			if ((char)c == commentStart) {
+				nestedComments++;
+			}
+			else if ((char)c == commentEnd) {
+				nestedComments--;
+			}
+			content.append((char)c);
+			c = getReader().read();
+		}
+		
+		upcommingEvents.add(new CommentEvent(content.toString()));
+	}
+	
+	
+	private PhyloIOEvent eventFromCharacters(String currentSequenceName, CharSequence content) throws Exception {
+		List<String> characters = createTokenList(content);
 		if (characters.isEmpty()) {  // The rest of the line was consisting only of spaces
 			return readNextEvent();  // Continue parsing to create the next event
 		}
 		else {
 			return new SequenceCharactersEvent(currentSequenceName, characters);
 		}
+	}
+	
+	
+	protected PhyloIOEvent readCharacters(String currentSequenceName) throws Exception {
+		PeekReader.ReadResult readResult = getReader().readLine(getMaxTokensToRead());
+		lineConsumed = readResult.isCompletelyRead();
+		return eventFromCharacters(currentSequenceName, readResult.getSequence());
+	}
+	
+	
+	protected PhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws Exception {
+		final Pattern pattern = Pattern.compile(".+(\\n|\\r|\\" + commentStart + ")");
+		StringBuffer content = new StringBuffer(getMaxTokensToRead());
+		char lastChar = commentStart;
+		while (lastChar == commentStart) {
+			PeekReader.ReadResult readResult = getReader().readRegExp(getMaxTokensToRead() - content.length(), pattern, false);  // In greedy mode the start of a nested comment could be consumed.
+			lastChar = readResult.getSequence().charAt(readResult.getSequence().length() - 1); 
+			if (lastChar == commentStart) {
+				readComment(commentStart, commentEnd);
+			}
+			else if (StringUtils.isNewLineChar(lastChar)) {
+			  // Consume rest of line break:
+				int nextChar = getReader().peek();
+				if ((nextChar != -1) && (lastChar == '\r') && ((char)nextChar == '\n')) {
+					getReader().skip(1);
+				}
+				lineConsumed = true;
+			}
+			else {  // Maximum length was reached.
+				lineConsumed = false;
+			}
+			content.append(readResult.getSequence().subSequence(0, readResult.getSequence().length() - 1));
+		}
+		return eventFromCharacters(currentSequenceName, content);
 	}
 
 	

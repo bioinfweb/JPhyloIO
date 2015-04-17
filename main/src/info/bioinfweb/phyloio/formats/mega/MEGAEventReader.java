@@ -70,7 +70,6 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	private String firstSequenceName = null;
 	private long charactersRead = 0;
 	private long currentLabelPos = 0;
-	private Queue<PhyloIOEvent> upcommingEvents = new LinkedList<PhyloIOEvent>();
 	private String currentGeneOrDomainName = null;
 	private long currentGeneOrDomainStart = -1;
 	private int nestedNextCalls = 0;
@@ -116,42 +115,16 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	}
 	
 	
-	/**
-	 * Reads a single comment from the reader. Only the first one of subsequent comments (e.g. 
-	 * {@code [comment 1][comment 2]}) would be parsed. 
-	 * 
-	 * @throws IOException
-	 */
-	private void readComment() throws IOException {
-		if (getReader().peekChar() == COMMENT_START) {  // Skip start symbol
-			getReader().read();
-		}
-		
-		StringBuilder content = new StringBuilder();
-		int nestedComments = 0;
-		int c = getReader().read();
-		while ((c != -1) && !((nestedComments == 0) && ((char)c == COMMENT_END))) {
-			if ((char)c == COMMENT_START) {
-				nestedComments++;
-			}
-			else if ((char)c == COMMENT_END) {
-				nestedComments--;
-			}
-			content.append((char)c);
-			c = getReader().read();
-		}
-		
-		upcommingEvents.add(new CommentEvent(content.toString()));
-	}
-	
-	
 	private void consumeWhiteSpaceAndComments() throws IOException {
 		int c = getReader().peek();
 		while ((c != -1) && (Character.isWhitespace(c) || ((char)c == COMMENT_START))) {
 			if (((char)c == COMMENT_START)) {
-				readComment();
+				getReader().skip(1);  // Consume comment start.
+				readComment(COMMENT_START, COMMENT_END);
 			}
-			getReader().read();
+			else {
+				getReader().skip(1);  // Consume white space.
+			}
 			c = getReader().peek();
 		}
 	}
@@ -185,7 +158,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 		while (c != COMMAND_END) {
 			if (!Character.isWhitespace(c)) {
 				if (c == COMMENT_START) {
-					readComment();
+					readComment(COMMENT_START, COMMENT_END);
 				}
 				else {
 			    //     start of new character set                                      || end of current set
@@ -196,8 +169,8 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 						start = pos;
 						currentName = c;  // Either DEFAULT_LABEL_CHAR if a set ended or a new name if a new set started will be set here.
 					}
+					pos++;
 				}
-				pos++;
 			}
 			c = getReader().readChar();
 		}
@@ -225,7 +198,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 				do {
 					currentPart = getReader().readRegExp(READ_COMMAND_PATTERN, false).getSequence();
 					if (currentPart.charAt(currentPart.length() - 1) == COMMENT_START) {
-						readComment();
+						readComment(COMMENT_START, COMMENT_END);
 					}
 					contentBuffer.append(currentPart.subSequence(0, currentPart.length() - 1));
 				} while (currentPart.charAt(currentPart.length() - 1) != COMMAND_END);
@@ -300,7 +273,8 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 				case META_INFORMATION:
 				case COMMENT:
 					// Read commands:
-					event = readCommand();  // Calls consumeWhiteSpaceAndComments().
+					event = readCommand();
+					consumeWhiteSpaceAndComments();
 					if (event != null) {
 						return event;
 					}
@@ -326,9 +300,10 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 					
 					// Parse characters (either after sequence name or continue previous read):
 					nestedNextCalls++;
-					event = readCharacters(currentSequenceName);
+					event = readCharacters(currentSequenceName, COMMENT_START, COMMENT_END);
 					nestedNextCalls--;
-					if (nestedNextCalls == 0) {  // readCharacters() makes recursive calls of readNextEvent(). -> Make sure not to count the same characters several times. 
+					if (nestedNextCalls == 0) {  // readCharacters() makes recursive calls of readNextEvent(). -> Make sure not to count the same characters several times.
+						consumeWhiteSpaceAndComments();
 						countCharacters(event);
 					}
 					return event;
