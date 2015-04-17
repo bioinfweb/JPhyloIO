@@ -8,6 +8,8 @@
     Identical=. Missing=? Indel=-
     CodeTable=Standard;
 
+[Nested [comment]][[Nested] comment]
+
 
 !Domain=Alpha_1 [in command statement] Property=Coding;
 #A-2301  GGC TCC CAC TCC ATG AGG TAT TTC TCC
@@ -22,17 +24,19 @@
 #A-2301 [comment 1 in characters] GAG GGG CCG GAG TAT TGG GAC GAG GAG
 #A-2501  GAG GGG CCG GAG TAT TGG GAC CGG AAC
 #A-3301  GAG GGG CCG GAG TAT TGG GAC CGG AAC
-!Label   ___ ___ +++ +++ +++ ___ +++ +++ +++;
+!Label   ___ ___ +++ +++  +++ ___ +++ +++ +++;
 
 !Domain=Alpha_2 Property=Coding;
 #A-2301  GGT TCT CAC ACC CTC CAG ATG ATG TTT
-#A-2501  GGT TCT CAC ACC ATC [comment 1 in characters] CAG AGG ATG TAT
+#A-2501  GGT TCT CAC ACC ATC [comment 2 in characters] CAG AGG ATG TAT
 #A-3301  GGT TCT CAC ACC ATC CAG ATG ATG TAT
-!Label   ___ ___ ___ ___ +++ ___ +++ ___ +++;
+!Label   ___ ___ ___ ___ +++ [comment in label] ___ +++ ___ +++;
 
 #A-2301  CTG GAG AAC GGG AAG
 #A-2501  CTG GAG AAC GGG AAG
 #A-3301  CTG GAG AAC GGG AAG
+
+[Nested [comment]][[Nested] comment]
 
 !Domain=Alpha_3 Property=Coding;
 #A-2301  GAC CCC CCC AAG ACA CAT

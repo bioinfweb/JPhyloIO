@@ -66,8 +66,11 @@ public class MEGAEventReaderTest {
 				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_TITLE);
 				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_DESCRIPTION);
 				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_FORMAT);
-				assertCommentEvent("in command statement", reader);
 				
+				assertCommentEvent("Nested [comment]", reader);
+				assertCommentEvent("[Nested] comment", reader);
+				
+				assertCommentEvent("in command statement", reader);
 				assertCharactersEvent("A-2301", "GGCTCCCACTCCATGAGGTATTTCTCC", reader);
 				assertCharactersEvent("A-2501", "GGCTCCCACTCCATGAGGTATTTCTAC", reader);
 				assertCharactersEvent("A-3301", "GGCTCCCACTCCATGAGGTATTTCACC", reader);
@@ -94,6 +97,7 @@ public class MEGAEventReaderTest {
 				assertCommentEvent("comment 2 in characters", reader);
 				assertCharactersEvent("A-3301", "GGTTCTCACACCATCCAGATGATGTAT", reader);
 
+				assertCommentEvent("comment in label", reader);
 				assertCharacterSetEvent("+", 93, 96, reader);
 				assertCharacterSetEvent("+", 99, 102, reader);
 				assertCharacterSetEvent("+", 105, 108, reader);
@@ -101,6 +105,9 @@ public class MEGAEventReaderTest {
 				assertCharactersEvent("A-2301", "CTGGAGAACGGGAAG", reader);
 				assertCharactersEvent("A-2501", "CTGGAGAACGGGAAG", reader);
 				assertCharactersEvent("A-3301", "CTGGAGAACGGGAAG", reader);
+
+				assertCommentEvent("Nested [comment]", reader);
+				assertCommentEvent("[Nested] comment", reader);
 
 				assertCharacterSetEvent("Domain=Alpha_2 Property=Coding", 81, 123, reader);
 				
