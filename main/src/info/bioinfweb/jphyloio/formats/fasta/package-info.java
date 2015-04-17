@@ -3,4 +3,4 @@
  * 
  * @author Ben St&ouml;ver
  */
-package info.bioinfweb.phyloio.formats.fasta;
+package info.bioinfweb.jphyloio.formats.fasta;

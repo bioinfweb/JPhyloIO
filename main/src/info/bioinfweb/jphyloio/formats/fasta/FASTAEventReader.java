@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.formats.fasta;
+package info.bioinfweb.jphyloio.formats.fasta;
 
 
 import java.io.BufferedReader;
@@ -30,11 +30,11 @@ import java.util.Collections;
 import java.util.List;
 
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.phyloio.AbstractBufferedReaderBasedEventReader;
-import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
-import info.bioinfweb.phyloio.events.EventType;
-import info.bioinfweb.phyloio.events.PhyloIOEvent;
-import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 
 
@@ -90,7 +90,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	}
 	
 	
-	private PhyloIOEvent readSequenceStart(String exceptionMessage) throws IOException {
+	private JPhyloIOEvent readSequenceStart(String exceptionMessage) throws IOException {
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
@@ -101,22 +101,22 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 			}
 		}
 		catch (EOFException e) {
-			return new ConcretePhyloIOEvent(EventType.ALIGNMENT_END);
+			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
 		}
 	}
 	
 	
 	@Override
-	protected PhyloIOEvent readNextEvent() throws IOException {
+	protected JPhyloIOEvent readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
-			return new ConcretePhyloIOEvent(EventType.DOCUMENT_START);
+			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else {
-			PhyloIOEvent alignmentEndEvent;
+			JPhyloIOEvent alignmentEndEvent;
 			
 			switch (getPreviousEvent().getEventType()) {
 				case DOCUMENT_START:
-					return new ConcretePhyloIOEvent(EventType.ALIGNMENT_START);
+					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
 					
 				case ALIGNMENT_START:
 					alignmentEndEvent = readSequenceStart("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
@@ -151,7 +151,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					return new SequenceCharactersEvent(currentSequenceName, tokenList);
 					
 				case ALIGNMENT_END:
-					return new ConcretePhyloIOEvent(EventType.DOCUMENT_END);
+					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 
 				case DOCUMENT_END:
 					return null;  // Calling method will throw a NoSuchElementException.

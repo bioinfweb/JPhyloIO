@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.formats.mega;
+package info.bioinfweb.jphyloio.formats.mega;
 
 
 import java.io.BufferedReader;
@@ -27,13 +27,13 @@ import java.io.Reader;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
-import info.bioinfweb.phyloio.AbstractBufferedReaderBasedEventReader;
-import info.bioinfweb.phyloio.events.CharacterSetEvent;
-import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
-import info.bioinfweb.phyloio.events.EventType;
-import info.bioinfweb.phyloio.events.MetaInformationEvent;
-import info.bioinfweb.phyloio.events.PhyloIOEvent;
-import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.events.CharacterSetEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 
 
@@ -178,7 +178,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	}
 	
 	
-	private PhyloIOEvent readCommand() throws Exception {
+	private JPhyloIOEvent readCommand() throws Exception {
 		int c = getReader().peek();
 		if ((c != -1) && ((char)c == COMMAND_START)) {
 			getReader().read();  // Consume command start
@@ -237,7 +237,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	}
 	
 	
-	private void countCharacters(PhyloIOEvent event) {
+	private void countCharacters(JPhyloIOEvent event) {
 		if (event.getEventType().equals(EventType.SEQUENCE_CHARACTERS)) {
 			SequenceCharactersEvent charactersEvent = event.asSequenceCharactersEvent();
 			if (charactersEvent.getSequenceName().equals(firstSequenceName)) {
@@ -248,21 +248,21 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	
 	
 	@Override
-	protected PhyloIOEvent readNextEvent() throws Exception {
+	protected JPhyloIOEvent readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {
 			checkStart();
 			consumeWhiteSpaceAndComments();
-			return new ConcretePhyloIOEvent(EventType.DOCUMENT_START);
+			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else if (!upcommingEvents.isEmpty()) {
 			return upcommingEvents.poll();
 		}
 		else {
-			PhyloIOEvent event;
+			JPhyloIOEvent event;
 			
 			switch (getLastNonCommentEvent().getEventType()) {
 				case DOCUMENT_START:
-					return new ConcretePhyloIOEvent(EventType.ALIGNMENT_START);
+					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
 					
 				case ALIGNMENT_START:
 				case SEQUENCE_CHARACTERS:
@@ -287,7 +287,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 							return event;
 						}
 						else {
-							return new ConcretePhyloIOEvent(EventType.ALIGNMENT_END);
+							return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
 						}
 					}
 					else if (c == SEUQUENCE_START) {
@@ -306,7 +306,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 					return event;
 										
 				case ALIGNMENT_END:
-					return new ConcretePhyloIOEvent(EventType.DOCUMENT_END);
+					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 
 				case DOCUMENT_END:
 					return null;  // Calling method will throw a NoSuchElementException.

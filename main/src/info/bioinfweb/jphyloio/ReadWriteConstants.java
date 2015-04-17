@@ -16,28 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.events;
-
-
-import info.bioinfweb.phyloio.PhyloIOEventReader;
+package info.bioinfweb.jphyloio;
 
 
 
 /**
- * Enumerates the types of events that can be triggered by {@link PhyloIOEventReader}.
+ * Provides general constants for reading and writing phylogenetic file formats.
  * 
  * @author Ben St&ouml;ver
  */
-public enum EventType {
-	DOCUMENT_START,
-	DOCUMENT_END,
-	META_INFORMATION,
-	COMMENT,
+public interface ReadWriteConstants {
+	public static final int DEFAULT_MAX_CHARS_TO_READ = 2048;
 	
-	ALIGNMENT_START,
-	ALIGNMENT_END,
-	SEQUENCE_CHARACTERS,
-	CHARACTER_SET;
-	
-	//TODO Add tree types here
+	public static final String META_KEY_SEQUENCE_COUNT = "info.bioinfweb.jphyloio.sequenceCount";
+	public static final String META_KEY_CHARACTER_COUNT = "info.bioinfweb.jphyloio.characterCount";
 }

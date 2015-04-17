@@ -3,4 +3,4 @@
  * 
  * @author Ben St&ouml;ver
  */
-package info.bioinfweb.phyloio.events;
+package info.bioinfweb.jphyloio.events;

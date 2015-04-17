@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.events;
+package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.commons.collections.ParameterMap;
@@ -24,16 +24,16 @@ import info.bioinfweb.commons.collections.ParameterMap;
 
 
 /**
- * Implements basic functionality for {@link PhyloIOEvent}s.
+ * Implements basic functionality for {@link JPhyloIOEvent}s.
  * 
  * @author Ben St&ouml;ver
  */
-public class ConcretePhyloIOEvent implements PhyloIOEvent {
+public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	private EventType eventType;
 	private ParameterMap metaInformationMap = new ParameterMap();
 	
 	
-	public ConcretePhyloIOEvent(EventType eventType) {
+	public ConcreteJPhyloIOEvent(EventType eventType) {
 		super();
 		this.eventType = eventType;
 	}

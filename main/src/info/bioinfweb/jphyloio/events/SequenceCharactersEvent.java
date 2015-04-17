@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.events;
+package info.bioinfweb.jphyloio.events;
 
 
 import java.util.Collections;
@@ -34,7 +34,7 @@ import java.util.List;
  * 
  * @author Ben St&ouml;ver
  */
-public class SequenceCharactersEvent extends ConcretePhyloIOEvent {
+public class SequenceCharactersEvent extends ConcreteJPhyloIOEvent {
 	private String sequenceName;
 	private List<String> characterValues;
 	

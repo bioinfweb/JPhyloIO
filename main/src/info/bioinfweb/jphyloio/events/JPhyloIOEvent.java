@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.events;
+package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.commons.collections.ParameterMap;
-import info.bioinfweb.phyloio.PhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 
 
 
 /**
- * This interface is implemented by all events triggered by implementations of {@link PhyloIOEventReader}.
+ * This interface is implemented by all events triggered by implementations of {@link JPhyloIOEventReader}.
  * 
  * @author Ben St&ouml;ver
  */
-public interface PhyloIOEvent {
+public interface JPhyloIOEvent {
 	/**
 	 * Returns the type of this event.
 	 * 

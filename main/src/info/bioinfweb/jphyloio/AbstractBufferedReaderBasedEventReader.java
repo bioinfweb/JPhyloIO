@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio;
+package info.bioinfweb.jphyloio;
 
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
-import info.bioinfweb.phyloio.events.CommentEvent;
-import info.bioinfweb.phyloio.events.PhyloIOEvent;
-import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEventReader {
 	private PeekReader reader;
 	protected boolean lineConsumed = true;
-	protected Queue<PhyloIOEvent> upcommingEvents = new LinkedList<PhyloIOEvent>();
+	protected Queue<JPhyloIOEvent> upcommingEvents = new LinkedList<JPhyloIOEvent>();
 	
 	
 	/**
@@ -135,7 +135,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 	
 	
-	private PhyloIOEvent eventFromCharacters(String currentSequenceName, CharSequence content) throws Exception {
+	private JPhyloIOEvent eventFromCharacters(String currentSequenceName, CharSequence content) throws Exception {
 		List<String> characters = createTokenList(content);
 		if (characters.isEmpty()) {  // The rest of the line was consisting only of spaces
 			return readNextEvent();  // Continue parsing to create the next event
@@ -146,14 +146,14 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 	
 	
-	protected PhyloIOEvent readCharacters(String currentSequenceName) throws Exception {
+	protected JPhyloIOEvent readCharacters(String currentSequenceName) throws Exception {
 		PeekReader.ReadResult readResult = getReader().readLine(getMaxTokensToRead());
 		lineConsumed = readResult.isCompletelyRead();
 		return eventFromCharacters(currentSequenceName, readResult.getSequence());
 	}
 	
 	
-	protected PhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws Exception {
+	protected JPhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws Exception {
 		final Pattern pattern = Pattern.compile(".+(\\n|\\r|\\" + commentStart + ")");
 		StringBuffer content = new StringBuffer(getMaxTokensToRead());
 		char lastChar = commentStart;

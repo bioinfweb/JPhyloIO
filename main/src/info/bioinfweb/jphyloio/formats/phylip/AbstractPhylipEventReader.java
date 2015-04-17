@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.formats.phylip;
+package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import java.io.File;
@@ -26,7 +26,7 @@ import java.io.Reader;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.phyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 
 
 

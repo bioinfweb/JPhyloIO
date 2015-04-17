@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.formats.phylip;
+package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import java.io.BufferedReader;
@@ -27,9 +27,9 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
-import info.bioinfweb.phyloio.events.EventType;
-import info.bioinfweb.phyloio.events.PhyloIOEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
@@ -130,9 +130,9 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	
 	
 	@Override
-	protected PhyloIOEvent readNextEvent() throws Exception {
+	protected JPhyloIOEvent readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {
-			return new ConcretePhyloIOEvent(EventType.DOCUMENT_START);
+			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else {
 			switch (getPreviousEvent().getEventType()) {
@@ -142,7 +142,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 					
 				case ALIGNMENT_START:
 					if (getSequenceCount() == 0) {  // Empty alignment:
-						return new ConcretePhyloIOEvent(EventType.ALIGNMENT_END);
+						return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
 					}
 				case SEQUENCE_CHARACTERS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
@@ -166,13 +166,13 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 						
 						if (getReader().peek() == -1) {  // End of file was reached
 							// if (currentSequenceIndex < sequenceCount) {}  //TODO Should an exception be thrown here, if the specified number of sequences has not been found yet? => Probably not, because parsing files with a wrong number of specified sequences would still make sense, unless this is not a accidental stream break.
-							return new ConcretePhyloIOEvent(EventType.ALIGNMENT_END);
+							return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
 						}
 					}
 					return readCharacters(currentSequenceName);
 					
 				case ALIGNMENT_END:
-					return new ConcretePhyloIOEvent(EventType.DOCUMENT_END);
+					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 
 				case DOCUMENT_END:
 					return null;  // Calling method will throw a NoSuchElementException.

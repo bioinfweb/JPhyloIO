@@ -3,4 +3,4 @@
  * 
  * @author Ben St&ouml;ver
  */
-package info.bioinfweb.phyloio.formats.nexus;
+package info.bioinfweb.jphyloio.formats.nexus;

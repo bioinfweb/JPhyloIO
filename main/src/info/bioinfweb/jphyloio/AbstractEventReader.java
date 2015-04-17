@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio;
+package info.bioinfweb.jphyloio;
 
 
 import java.util.EnumSet;
 import java.util.NoSuchElementException;
 
-import info.bioinfweb.phyloio.events.CommentEvent;
-import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
-import info.bioinfweb.phyloio.events.EventType;
-import info.bioinfweb.phyloio.events.PhyloIOEvent;
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
@@ -34,10 +34,10 @@ import info.bioinfweb.phyloio.events.PhyloIOEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWriteConstants {
-	private PhyloIOEvent next = null;
-	private PhyloIOEvent previous = null;
-	private PhyloIOEvent lastNonComment = null;
+public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWriteConstants {
+	private JPhyloIOEvent next = null;
+	private JPhyloIOEvent previous = null;
+	private JPhyloIOEvent lastNonComment = null;
 	private boolean beforeFirstAccess = true;
 	private boolean dataSourceClosed = false;
 	private int maxTokensToRead;
@@ -69,7 +69,7 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 	 * 
 	 * @return the previous event or {@code null} if there was no previous call of {@link #readNextEvent()}
 	 */
-	public PhyloIOEvent getPreviousEvent() {
+	public JPhyloIOEvent getPreviousEvent() {
 		return previous;
 	}
 	
@@ -80,7 +80,7 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 	 * 
 	 * @return the last non-comment event or {@code null} if no non-comment event was returned until now
 	 */
-	public PhyloIOEvent getLastNonCommentEvent() {
+	public JPhyloIOEvent getLastNonCommentEvent() {
 		return lastNonComment;
 	}
 
@@ -98,8 +98,8 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 	}
 
 	
-	protected PhyloIOEvent createAlignmentStartEvent(int sequenceCount, int characterCount) {
-		PhyloIOEvent event = new ConcretePhyloIOEvent(EventType.ALIGNMENT_START);
+	protected JPhyloIOEvent createAlignmentStartEvent(int sequenceCount, int characterCount) {
+		JPhyloIOEvent event = new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
 		event.getMetaInformationMap().put(META_KEY_SEQUENCE_COUNT, sequenceCount);
 		event.getMetaInformationMap().put(META_KEY_CHARACTER_COUNT, characterCount);
 		return event;
@@ -114,7 +114,7 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 
 	
 	@Override
-	public PhyloIOEvent next() throws Exception {
+	public JPhyloIOEvent next() throws Exception {
 		// ensureFirstEvent() is called in hasNextEvent()
 		if (!hasNextEvent()) {  //
 			throw new NoSuchElementException("The end of the document was already reached.");
@@ -131,9 +131,9 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 
 
 	@Override
-	public PhyloIOEvent nextOfType(EnumSet<EventType> types) throws Exception {
+	public JPhyloIOEvent nextOfType(EnumSet<EventType> types) throws Exception {
 		try {
-			PhyloIOEvent result = next();
+			JPhyloIOEvent result = next();
 			while (!types.contains(result.getEventType())) {
 				result = next();
 			}
@@ -146,7 +146,7 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 
 
 	@Override
-	public PhyloIOEvent peek() throws Exception {
+	public JPhyloIOEvent peek() throws Exception {
 		// ensureFirstEvent() is called in hasNextEvent()
 		if (!hasNextEvent()) {  //
 			throw new NoSuchElementException("The end of the document was already reached.");
@@ -171,7 +171,7 @@ public abstract class AbstractEventReader implements PhyloIOEventReader, ReadWri
 	 * 
 	 * @return the next event or {@code null} if the end of the document has been reached
 	 */
-	protected abstract PhyloIOEvent readNextEvent() throws Exception;
+	protected abstract JPhyloIOEvent readNextEvent() throws Exception;
 
 
 	@Override

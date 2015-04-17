@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio;
+package info.bioinfweb.jphyloio;
 
 
 import java.util.EnumSet;
 import java.util.NoSuchElementException;
 
-import info.bioinfweb.phyloio.events.EventType;
-import info.bioinfweb.phyloio.events.PhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
@@ -32,7 +32,7 @@ import info.bioinfweb.phyloio.events.PhyloIOEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public interface PhyloIOEventReader {
+public interface JPhyloIOEventReader {
 	/**
 	 * Checks if another event could be parsed from the underlying document.
 	 * 
@@ -47,7 +47,7 @@ public interface PhyloIOEventReader {
 	 * @throws NoSuchElementException if the end of the document has been reached with the previous call of this method
 	 * @throws Exception Implementing classes might throw additional exceptions
 	 */
-	public PhyloIOEvent next() throws Exception;
+	public JPhyloIOEvent next() throws Exception;
 	
 	/**
 	 * Reads elements from the underlying stream until one of the specified is found or the end of the document is reached.
@@ -58,7 +58,7 @@ public interface PhyloIOEventReader {
 	 *         element was found
 	 * @throws Exception Implementing classes might throw additional exceptions
 	 */
-	public PhyloIOEvent nextOfType(EnumSet<EventType> types) throws Exception;
+	public JPhyloIOEvent nextOfType(EnumSet<EventType> types) throws Exception;
 
 	/**
 	 * Returns the event from the underlying document that will be returned in the next call of {@link #next()}
@@ -68,7 +68,7 @@ public interface PhyloIOEventReader {
 	 * @throws NoSuchElementException if the end of the document has been reached with the previous call of this method
 	 * @throws Exception Implementing classes might throw additional exceptions
 	 */
-	public PhyloIOEvent peek() throws Exception;
+	public JPhyloIOEvent peek() throws Exception;
 	
 	/**
 	 * Closes the underlying document source (usually a stream).

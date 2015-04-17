@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.events;
+package info.bioinfweb.jphyloio.events;
 
 
 
@@ -25,7 +25,7 @@ package info.bioinfweb.phyloio.events;
  * 
  * @author Ben St&ouml;ver
  */
-public class MetaInformationEvent extends ConcretePhyloIOEvent {
+public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	private String name;
 	private String value;
 	
