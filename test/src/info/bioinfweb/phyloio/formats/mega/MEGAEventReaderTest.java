@@ -20,12 +20,11 @@ package info.bioinfweb.phyloio.formats.mega;
 
 
 import java.io.File;
-import java.io.IOException;
 
 import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
 import info.bioinfweb.phyloio.formats.mega.MEGAEventReader;
-import info.bioinfweb.phyloio.formats.phylip.PhylipEventReader;
+
 
 import org.junit.* ;
 
