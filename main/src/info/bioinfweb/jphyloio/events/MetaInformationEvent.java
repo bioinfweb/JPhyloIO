@@ -1,7 +1,7 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
  * Copyright (C) 2015  Ben Stöver
- * <http://bioinfweb.info/PhyloIO>
+ * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
