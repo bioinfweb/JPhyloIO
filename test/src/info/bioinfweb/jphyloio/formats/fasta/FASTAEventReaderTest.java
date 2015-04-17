@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.formats.fasta;
+package info.bioinfweb.jphyloio.formats.fasta;
 
 
-import info.bioinfweb.phyloio.events.EventType;
-import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 import java.io.File;
 import java.util.EnumSet;
@@ -28,7 +28,7 @@ import java.util.EnumSet;
 import org.junit.* ;
 
 import static org.junit.Assert.* ;
-import static info.bioinfweb.phyloio.test.JPhyloIOTestTools.assertCharactersEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
 
 
 

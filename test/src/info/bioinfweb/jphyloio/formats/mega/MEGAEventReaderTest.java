@@ -16,19 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.formats.mega;
+package info.bioinfweb.jphyloio.formats.mega;
 
 
 import java.io.File;
 
-import info.bioinfweb.phyloio.events.EventType;
-import info.bioinfweb.phyloio.events.PhyloIOEvent;
-import info.bioinfweb.phyloio.formats.mega.MEGAEventReader;
+import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;
+
 
 
 import org.junit.* ;
 
-import static info.bioinfweb.phyloio.test.JPhyloIOTestTools.*;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.* ;
 
 
@@ -46,7 +47,7 @@ public class MEGAEventReaderTest {
   private void assertMetaInformation(MEGAEventReader reader, String name) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		
-		PhyloIOEvent event = reader.next();
+		JPhyloIOEvent event = reader.next();
 		assertEquals(EventType.META_INFORMATION, event.getEventType());
 		assertEquals(name, event.asMetaInformationEvent().getName().toUpperCase());
   }

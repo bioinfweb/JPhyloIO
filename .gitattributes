@@ -43,10 +43,10 @@ test/data/Phylip/Sequential.phy -text
 test/data/Phylip/TooManyCounts.phy -text
 test/data/Test.fasta -text
 test/lib/junit-4.9b1.jar -text
-test/src/info/bioinfweb/phyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/phyloio/formats/mega/MEGAEventReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/phyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/phyloio/formats/phylip/SequentialPhylipEventReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/phyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/phyloio/test/SplitTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/phyloio/test/WhiteSpaceTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/SplitTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/WhiteSpaceTest.java -text svneol=unset#text/plain

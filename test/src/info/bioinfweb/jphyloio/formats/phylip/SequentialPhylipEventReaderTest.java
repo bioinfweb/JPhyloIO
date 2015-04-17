@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.phyloio.formats.phylip;
+package info.bioinfweb.jphyloio.formats.phylip;
 
 
-import info.bioinfweb.phyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventType;
 
 import java.io.File;
 
 import org.junit.* ;
 
-import static info.bioinfweb.phyloio.test.JPhyloIOTestTools.assertCharactersEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
 import static org.junit.Assert.* ;
 
 
