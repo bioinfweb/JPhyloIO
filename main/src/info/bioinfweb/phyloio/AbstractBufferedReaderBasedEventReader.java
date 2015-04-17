@@ -24,7 +24,6 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.phyloio.events.CommentEvent;
 import info.bioinfweb.phyloio.events.PhyloIOEvent;
 import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
-import info.bioinfweb.phyloio.formats.mega.MEGAEventReader;
 
 import java.io.BufferedReader;
 import java.io.File;

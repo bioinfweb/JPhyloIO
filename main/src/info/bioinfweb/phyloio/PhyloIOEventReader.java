@@ -19,7 +19,6 @@
 package info.bioinfweb.phyloio;
 
 
-import java.io.IOException;
 import java.util.EnumSet;
 import java.util.NoSuchElementException;
 

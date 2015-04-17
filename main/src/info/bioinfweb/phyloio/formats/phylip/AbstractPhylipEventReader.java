@@ -18,18 +18,15 @@
  */
 package info.bioinfweb.phyloio.formats.phylip;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.phyloio.AbstractBufferedReaderBasedEventReader;
-import info.bioinfweb.phyloio.events.PhyloIOEvent;
-import info.bioinfweb.phyloio.events.SequenceCharactersEvent;
 
 
 

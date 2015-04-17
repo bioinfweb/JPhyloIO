@@ -24,14 +24,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.phyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.phyloio.events.CharacterSetEvent;
-import info.bioinfweb.phyloio.events.CommentEvent;
 import info.bioinfweb.phyloio.events.ConcretePhyloIOEvent;
 import info.bioinfweb.phyloio.events.EventType;
 import info.bioinfweb.phyloio.events.MetaInformationEvent;
