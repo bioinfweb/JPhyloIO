@@ -1,5 +1,5 @@
 /*
- * PhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
+ * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
  * Copyright (C) 2015  Ben Stöver
  * <http://bioinfweb.info/PhyloIO>
  * 
