@@ -109,7 +109,8 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
 				
-				assertCharacterSetEvent("set1", 2, 4, reader);
+				assertCharacterSetEvent("set1", 2, 4, reader);  // The exception happens here already, because the parser is always one element ahead.
+				reader.next();
 			}
 			finally {
 				reader.close();
