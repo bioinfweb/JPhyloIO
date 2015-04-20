@@ -126,7 +126,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 						}
 						break;
 					default:
-						throw new IOException("Invalid CharSet vector symbol '" + c + "'");  //TODO Replace by ParseException with line and column information.
+						throw new IOException("Invalid CharSet vector symbol '" + c + "' found.");  //TODO Replace by ParseException with line and column information.
 				}
 			}
 			c = getNexusDocument().getDataReader().readChar();
