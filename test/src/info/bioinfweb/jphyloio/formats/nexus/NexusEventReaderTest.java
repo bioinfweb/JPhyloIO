@@ -114,16 +114,15 @@ public class NexusEventReaderTest {
 			finally {
 				reader.close();
 			}
+			fail("Expected exception not fired.");
 		}
 		catch (Exception e) {
 			if (e instanceof IOException) {
 				assertEquals("Invalid CharSet vector symbol '2' found.", e.getMessage());
-				return;
 			}
 			else {
 				fail(e.getLocalizedMessage());
 			}
 		}
-		fail("Expected exception not fired.");
 	}
 }
