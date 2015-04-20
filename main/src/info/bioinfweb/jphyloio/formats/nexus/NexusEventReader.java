@@ -179,30 +179,29 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		else {
 			if (isBeforeFirstAccess()) {
 				checkStart();
-				consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
+				consumeWhiteSpaceAndComments();
 				return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 			}
 			else if (!upcommingEvents.isEmpty()) {
 				return upcommingEvents.poll();
 			}
 			else {
+				JPhyloIOEvent event = null;
 				if (currentCommandReader == null) {
-					return readNextCommand();
+					event = readNextCommand();
 				}
 				else {
-					JPhyloIOEvent event = currentCommandReader.readNextEvent();
-					if (event != null) {
-						return event;
-					}
-					else {
+					event = currentCommandReader.readNextEvent();
+					if (event == null) {
 						event = readNextCommand();
 						if (event == null) {
 							documentEndReached = true;
 							event = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 						}
-						return event;
 					}
 				}
+				consumeWhiteSpaceAndComments();  // Consume comments after the parsed region before the next event is parsed to maintain correct event order.
+				return event;
 			}
 		}
 	}
