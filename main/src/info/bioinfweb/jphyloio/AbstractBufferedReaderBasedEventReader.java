@@ -108,6 +108,21 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 	
 	
+	protected void consumeWhiteSpaceAndComments(char commentStart, char commentEnd) throws IOException {
+		int c = getReader().peek();
+		while ((c != -1) && (Character.isWhitespace(c) || ((char)c == commentStart))) {
+			if (((char)c == commentStart)) {
+				getReader().skip(1);  // Consume comment start.
+				readComment(commentStart, commentEnd);
+			}
+			else {
+				getReader().skip(1);  // Consume white space.
+			}
+			c = getReader().peek();
+		}
+	}
+	
+	
 	/**
 	 * Reads a single comment from the reader. Only the first one of subsequent comments (e.g. 
 	 * {@code [comment 1][comment 2]}) would be parsed. 

@@ -20,6 +20,14 @@ main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReader.java -text svneo
 main/src/info/bioinfweb/jphyloio/formats/fasta/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/NexusCommandReaderFactory.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/NexusConstants.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/NexusStreamDataProvider.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/AbstractNexusCommandEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/DefaultCommandReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/NexusCommandEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/sets/CharSetReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/AbstractPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain

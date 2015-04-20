@@ -112,21 +112,6 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	}
 	
 	
-	private void consumeWhiteSpaceAndComments() throws IOException {
-		int c = getReader().peek();
-		while ((c != -1) && (Character.isWhitespace(c) || ((char)c == COMMENT_START))) {
-			if (((char)c == COMMENT_START)) {
-				getReader().skip(1);  // Consume comment start.
-				readComment(COMMENT_START, COMMENT_END);
-			}
-			else {
-				getReader().skip(1);  // Consume white space.
-			}
-			c = getReader().peek();
-		}
-	}
-	
-	
 	private void checkStart() throws IOException {
 		if (!FIRST_LINE.equals(getReader().readString(FIRST_LINE.length()).toUpperCase())) { 
 			throw new IOException("All MEGA files must start with \"" + FIRST_LINE + "\".");
@@ -184,7 +169,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 			getReader().read();  // Consume command start
 			
 			// Read command:
-			consumeWhiteSpaceAndComments();
+			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 			if (getReader().peekString(COMMAND_NAME_LABEL.length()).toUpperCase().equals(COMMAND_NAME_LABEL)) {  // Process label events directly from the reader because they might contain many characters.
 				createCharacterSetEventsFromLabel();  // Add event to the queue.
 				return readNextEvent();  // If character set events have been added to the queue, the first one will be returned here.
@@ -251,7 +236,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	protected JPhyloIOEvent readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {
 			checkStart();
-			consumeWhiteSpaceAndComments();
+			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else if (!upcommingEvents.isEmpty()) {
@@ -271,7 +256,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 				case COMMENT:
 					// Read commands:
 					event = readCommand();
-					consumeWhiteSpaceAndComments();
+					consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 					if (event != null) {
 						return event;
 					}
@@ -292,7 +277,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 					}
 					else if (c == SEUQUENCE_START) {
 						readSequenceName();
-						consumeWhiteSpaceAndComments();
+						consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 					}
 					
 					// Parse characters (either after sequence name or continue previous read):
@@ -300,7 +285,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 					event = readCharacters(currentSequenceName, COMMENT_START, COMMENT_END);
 					nestedNextCalls--;
 					if (nestedNextCalls == 0) {  // readCharacters() makes recursive calls of readNextEvent(). -> Make sure not to count the same characters several times.
-						consumeWhiteSpaceAndComments();
+						consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 						countCharacters(event);
 					}
 					return event;
