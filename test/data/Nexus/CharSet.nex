@@ -1,0 +1,15 @@
+#NEXUS
+
+BEGIN Sets [comment 1];
+	CharSet set01 = 3 - 5 9 12-016;
+	CharSet set02=4-9;
+	CharSet [comment 2]set03=[comment 3]4-6 12 ;
+	CharSet set04= 4-6 [comment 4]12 ;
+	CharSet set05 Vector = 0001011[comment 5]101011;   
+	CharSet set06 Vector= 1011101011[comment 6];   
+	CharSet set07 Vector = 0000;
+	CharSet set08 Vector = 1;
+	CharSet set09 = 1;    
+	CharSet set10 = ;
+	CharSet set11 Standard=12-17;CharSet set12=3;   
+END;
