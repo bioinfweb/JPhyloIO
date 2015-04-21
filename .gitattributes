@@ -27,7 +27,10 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/NexusStreamDataProvider.java -tex
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/AbstractNexusCommandEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/DefaultCommandReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/NexusCommandEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/FormatReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/sets/CharSetReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/sets/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/AbstractPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain

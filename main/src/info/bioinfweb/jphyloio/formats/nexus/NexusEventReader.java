@@ -94,6 +94,11 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 
 
+	public NexusStreamDataProvider getStreamDataProvider() {
+		return streamDataProvider;
+	}
+
+
 	/**
 	 * Calls {@link #consumeWhiteSpaceAndComments(char, char)} with according parameters and
 	 * ensures visibility for {@link NexusStreamDataProvider}.

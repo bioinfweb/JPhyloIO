@@ -58,10 +58,10 @@ public class DefaultCommandReader extends AbstractNexusCommandEventReader implem
 		StringBuilder result = new StringBuilder();
 		CharSequence sequence;
 		do {
-			sequence = getNexusDocument().getDataReader().readUntil(TERMINATION_SEQUENCES).getSequence();
+			sequence = getStreamDataProvider().getDataReader().readUntil(TERMINATION_SEQUENCES).getSequence();
 			result.append(StringUtils.cutEnd(sequence, 1));
 			if (StringUtils.endsWith(sequence, COMMENT_START)) {
-				getNexusDocument().readComment();
+				getStreamDataProvider().readComment();
 			}
 		} while (!StringUtils.endsWith(sequence, COMMAND_END));
 		return new MetaInformationEvent(getCommandName(), result.toString());  //TODO Use other event type (e.g. special Nexus command version or an UnparsedDataEvent)?

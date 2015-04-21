@@ -25,7 +25,6 @@ import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.regex.Pattern;
 
 
 
@@ -38,7 +37,7 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	private String commandName;
 	private Collection<String> validBlocks;
 	private boolean allDataProcessed = false;
-	private NexusStreamDataProvider nexusDocument;
+	private NexusStreamDataProvider streamDataProvider;
 
 	
 	/**
@@ -56,7 +55,7 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 			list.add(validBlocks[i].toUpperCase());
 		}
 		this.validBlocks = Collections.unmodifiableCollection(list);
-		this.nexusDocument = nexusDocument;
+		this.streamDataProvider = nexusDocument;
 	}
 
 
@@ -88,8 +87,8 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	}
 
 
-	protected NexusStreamDataProvider getNexusDocument() {
-		return nexusDocument;
+	protected NexusStreamDataProvider getStreamDataProvider() {
+		return streamDataProvider;
 	}
 
 

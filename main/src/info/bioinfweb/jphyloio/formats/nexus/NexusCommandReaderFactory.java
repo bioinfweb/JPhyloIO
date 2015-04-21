@@ -20,10 +20,9 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets.CharSetReader;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -37,6 +36,7 @@ public class NexusCommandReaderFactory {
 
 	
 	public void addJPhyloIOReaders() {
+		addReaderClass(FormatReader.class);
 		addReaderClass(CharSetReader.class);
 		// add new classes here
 	}

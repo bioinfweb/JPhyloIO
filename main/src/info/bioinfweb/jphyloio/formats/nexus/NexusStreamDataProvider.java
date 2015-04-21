@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
@@ -37,7 +38,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventRea
 public class NexusStreamDataProvider {
 	private NexusEventReader nexusReader;
 	private PeekReader dataReader;
-	private Map<String, Object> sharedInformationMap = new TreeMap<String, Object>();
+	private ParameterMap sharedInformationMap = new ParameterMap();
 	
 	
 	public NexusStreamDataProvider(NexusEventReader nexusReader, PeekReader dataReader) {
@@ -78,7 +79,7 @@ public class NexusStreamDataProvider {
 	 * 
 	 * @return a map providing access to shared data objects
 	 */
-	public Map<String, Object> getSharedInformationMap() {
+	public ParameterMap getSharedInformationMap() {
 		return sharedInformationMap;
 	}
 }

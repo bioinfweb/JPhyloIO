@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets;
 
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
@@ -44,7 +43,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	
 	
 	public CharSetReader(NexusStreamDataProvider nexusDocument) {
-		super("CharSet", new String[]{"SETS"}, nexusDocument);
+		super("CharSet", new String[]{BLOCK_NAME_SETS}, nexusDocument);
 	}
 
 	
@@ -54,10 +53,10 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	
 	
 	private JPhyloIOEvent readNameAndFormat() throws IOException {
-		PeekReader reader = getNexusDocument().getDataReader();
+		PeekReader reader = getStreamDataProvider().getDataReader();
 		
 		// Read name:
-		getNexusDocument().consumeWhiteSpaceAndComments();
+		getStreamDataProvider().consumeWhiteSpaceAndComments();
 		name = reader.readRegExp(UNTIL_WHITESPACE_COMMENT_COMMAND_EQUAL_PATTERN, false).getSequence().toString();
 		if (name.length() == 0) {  // Can only happen if end of file was reached. (Otherwise at least ';' or '[' must be in name.)
 			throw new IOException("Unexpected end of file");  //TODO Replace by ParseException with line and column information.
@@ -66,7 +65,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		name = StringUtils.cutEnd(name, 1);
 		
 		if (end == COMMENT_START) {
-			getNexusDocument().readComment();
+			getStreamDataProvider().readComment();
 		}
 		else if (end == COMMAND_END) {  // character set definition incomplete
 			setAllDataProcessed(true);
@@ -77,9 +76,9 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 				throw new IOException("Empty CharSet command. At least a set name must be specified.");  //TODO Replace by ParseException with line and column information.
 			}
 		}
-		else if (end != CHAR_SET_NAME_SEPARATOR) {
+		else if (end != KEY_VALUE_SEPARATOR) {
 			// Determine format:
-			getNexusDocument().consumeWhiteSpaceAndComments();
+			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			isVectorFormat = false;
 			if (checkFormatName(reader, FORMAT_NAME_STANDARD)) {
 				reader.skip(FORMAT_NAME_STANDARD.length());
@@ -90,13 +89,13 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			}
 			
 			// Consume '=':
-			getNexusDocument().consumeWhiteSpaceAndComments();
+			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			char c = reader.readChar();
 			if (c == COMMAND_END) {
 				setAllDataProcessed(true);
 				return new CharacterSetEvent(name, 0, 0);  // Empty character sets are not valid in Nexus but are anyway supported here.
 			}
-			else if (c != CHAR_SET_NAME_SEPARATOR) {
+			else if (c != KEY_VALUE_SEPARATOR) {
 				throw new IOException("Unexpected token '" + c + "' found in CharSet command.");  //TODO Replace by parse exception.
 			}
 		}		
@@ -105,13 +104,13 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	
 	
 	private JPhyloIOEvent readVectorFormat(boolean isFirstCall) throws IOException {
-		char c = getNexusDocument().getDataReader().readChar();
+		char c = getStreamDataProvider().getDataReader().readChar();
 		long currentStartColumn = -1;
 		while (c != COMMAND_END) {
 			if (!Character.isWhitespace(c)) {
 				switch (c) {
 					case COMMENT_START:
-						getNexusDocument().readComment();
+						getStreamDataProvider().readComment();
 						break;
 					case CHAR_SET_CONTAINED:
 						if (currentStartColumn == -1) {
@@ -129,7 +128,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 						throw new IOException("Invalid CharSet vector symbol '" + c + "' found.");  //TODO Replace by ParseException with line and column information.
 				}
 			}
-			c = getNexusDocument().getDataReader().readChar();
+			c = getStreamDataProvider().getDataReader().readChar();
 		}
 		
 		setAllDataProcessed(true);
@@ -146,7 +145,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	
 	
 	private int parseInteger() throws IOException {  //TODO Move method to PeekReader
-		String number = getNexusDocument().getDataReader().readRegExp(INTEGER_PATTERN, true).getSequence().toString();
+		String number = getStreamDataProvider().getDataReader().readRegExp(INTEGER_PATTERN, true).getSequence().toString();
 		if (number.length() > 0) {
 			return Integer.parseInt(number);
 		}
@@ -157,18 +156,18 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	
 	
 	private JPhyloIOEvent readStandardFormat(boolean isFirstCall) throws IOException {
-		PeekReader reader = getNexusDocument().getDataReader();
+		PeekReader reader = getStreamDataProvider().getDataReader();
 		
 		int start = parseInteger();
 		if (start == -1) {  // Command end, comment or white space was already checked before calling this method. 
 			throw new IOException("Unexpected token '" + reader.peekChar() + "' found in CharSet command.");  //TODO Replace by parse exception.
 		}
 		else {
-			getNexusDocument().consumeWhiteSpaceAndComments();
+			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			int end = start;  // Definitions like "1-2 4 6-7" are allowed. 
 			if (reader.peekChar() == CHAR_SET_TO) {
 				reader.skip(1);  // Consume '-'
-				getNexusDocument().consumeWhiteSpaceAndComments();
+				getStreamDataProvider().consumeWhiteSpaceAndComments();
 				end = parseInteger();
 				if (end == -1) {
 					throw new IOException("Unexpected end of file in character set definition."); 	//TODO Replace by ParseException
@@ -193,7 +192,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	
 	@Override
 	protected JPhyloIOEvent doReadNextEvent() throws Exception {
-		PeekReader reader = getNexusDocument().getDataReader();
+		PeekReader reader = getStreamDataProvider().getDataReader();
 		
 		// Read set name:
 		boolean isFirstCall = (name == null);  // Save for later use
@@ -205,7 +204,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		}
 
 		// Read position information:
-		getNexusDocument().consumeWhiteSpaceAndComments();
+		getStreamDataProvider().consumeWhiteSpaceAndComments();
 		int nextChar = reader.peek();
 		if (nextChar == -1) {
 			throw new IOException("Unexpected end of file");  // At least ';' end "END Sets" would be still to come.  //TODO Replace by ParseException with line and column information.
