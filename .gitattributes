@@ -44,6 +44,9 @@ test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 test/data/MEGA/HLA-3Seq.meg -text
 test/data/Nexus/CharSet.nex -text
 test/data/Nexus/CharSetInvalidVectorSymbol.nex -text
+test/data/Nexus/Format.nex -text
+test/data/Nexus/FormatContinuous.nex -text
+test/data/Nexus/FormatTokens.nex -text
 test/data/Phylip/Interleaved.phy -text
 test/data/Phylip/Interleaved3Blocks.phy -text
 test/data/Phylip/InvalidCharacterCount.phy -text

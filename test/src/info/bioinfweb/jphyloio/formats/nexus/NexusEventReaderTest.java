@@ -19,8 +19,10 @@
 package info.bioinfweb.jphyloio.formats.nexus;
 
 
-import info.bioinfweb.jphyloio.events.CharacterSetEvent;
+import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.commons.testing.TestTools;
 import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -124,6 +126,115 @@ public class NexusEventReaderTest {
 			else {
 				fail(e.getLocalizedMessage());
 			}
+		}
+	}
+	
+	
+	@Test
+	public void testReadingFormatCommand() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Format.nex"), factory);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "NOLABELS", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "INTERLEAVE", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TRANSPOSE", "", reader);
+				
+				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
+				assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
+				assertFalse(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));  // May be false or not contained in the map.
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingFormatCommandTokens() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatTokens.nex"), factory);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "NOLABELS", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "INTERLEAVE", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TRANSPOSE", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TOKENS", "", reader);
+				
+				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
+				assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingFormatCommandContinuous() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuous.nex"), factory);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "Continuous", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "NOLABELS", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "INTERLEAVE", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TRANSPOSE", "", reader);
+				
+				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
+				assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
 		}
 	}
 }

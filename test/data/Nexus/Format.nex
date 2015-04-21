@@ -1,0 +1,5 @@
+#NEXUS
+
+BEGIN Characters;
+  Format DataType = DNA Missing=? Gap= - NoLabels Interleave Transpose;
+END;

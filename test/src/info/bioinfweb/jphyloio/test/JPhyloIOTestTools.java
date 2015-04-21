@@ -23,9 +23,11 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 
+import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 import static org.junit.Assert.*;
 
 
@@ -52,6 +54,19 @@ public class JPhyloIOTestTools {
   }  
 	
 	
+  public static void assertMetaInformationEvent(String expectedKey, String expectedValue, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEquals(EventType.META_INFORMATION, event.getEventType());
+		
+		MetaInformationEvent metaInformationEvent = event.asMetaInformationEvent();
+		assertEquals(expectedKey, metaInformationEvent.getKey());
+		assertEquals(expectedValue, metaInformationEvent.getValue());
+  }  
+	
+	
   public static void assertCharacterSetEvent(String expectedName, long expectedStart, long expectedEnd, 
   		JPhyloIOEventReader reader) throws Exception {
   	
@@ -63,5 +78,5 @@ public class JPhyloIOTestTools {
 		assertEquals(expectedName, charSetEvent.getName());
 		assertEquals(expectedStart, charSetEvent.getStart());
 		assertEquals(expectedEnd, charSetEvent.getEnd());
-  }  
+  }
 }

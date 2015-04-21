@@ -49,7 +49,7 @@ public class MEGAEventReaderTest {
 		
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventType.META_INFORMATION, event.getEventType());
-		assertEquals(name, event.asMetaInformationEvent().getName().toUpperCase());
+		assertEquals(name, event.asMetaInformationEvent().getKey().toUpperCase());
   }
   
   
