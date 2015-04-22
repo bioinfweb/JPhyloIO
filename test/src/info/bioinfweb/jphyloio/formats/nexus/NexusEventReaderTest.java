@@ -266,9 +266,13 @@ public class NexusEventReaderTest {
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
 
+				assertCommentEvent("comment 1", reader);
 				assertCharactersEvent("A", "CGGTCAT", reader);
+				assertCommentEvent("comment 2", reader);
 				assertCharactersEvent("B", "CG-TCTT", reader);
-				assertCharactersEvent("C", "CG-TC-T", reader);
+				assertCharactersEvent("C", "CG-T", reader);
+				assertCommentEvent("comment 3", reader);
+				assertCharactersEvent("C", "C-T", reader);
 				
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
