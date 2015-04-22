@@ -20,8 +20,8 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import info.bioinfweb.commons.collections.ParameterMap;
-import info.bioinfweb.commons.testing.TestTools;
 import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 
 import java.io.File;
@@ -137,6 +137,8 @@ public class NexusEventReaderTest {
 			try {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
@@ -151,6 +153,8 @@ public class NexusEventReaderTest {
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
 				assertFalse(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));  // May be false or not contained in the map.
 				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
 				assertFalse(reader.hasNextEvent());
@@ -173,6 +177,8 @@ public class NexusEventReaderTest {
 			try {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
@@ -188,6 +194,8 @@ public class NexusEventReaderTest {
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));
 				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
 				assertFalse(reader.hasNextEvent());
@@ -210,6 +218,8 @@ public class NexusEventReaderTest {
 			try {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "Continuous", reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
@@ -224,6 +234,44 @@ public class NexusEventReaderTest {
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));
 				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingMatrix() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), factory);
+			reader.setMetaEventsForUnknownCommands(false);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+
+				assertCharactersEvent("A", "CGGTCAT", reader);
+				assertCharactersEvent("B", "CG-TCTT", reader);
+				assertCharactersEvent("C", "CG-TC-T", reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
 				assertFalse(reader.hasNextEvent());

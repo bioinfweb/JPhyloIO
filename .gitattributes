@@ -48,6 +48,7 @@ test/data/Nexus/CharSetInvalidVectorSymbol.nex -text
 test/data/Nexus/Format.nex -text
 test/data/Nexus/FormatContinuous.nex -text
 test/data/Nexus/FormatTokens.nex -text
+test/data/Nexus/Matrix.nex -text
 test/data/Phylip/Interleaved.phy -text
 test/data/Phylip/Interleaved3Blocks.phy -text
 test/data/Phylip/InvalidCharacterCount.phy -text
