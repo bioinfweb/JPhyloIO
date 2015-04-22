@@ -493,4 +493,36 @@ public class NexusEventReaderTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
+	
+	
+	@Test
+	public void testReadingSplitComments() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/SplitComments.nex"), factory);
+			reader.setMaxCommentLength(13);
+			reader.setMetaEventsForUnknownCommands(false);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				
+				assertCommentEvent("comment", true, reader);
+				assertCommentEvent("short comment", true, reader);
+				assertCommentEvent("long comment ", false, reader);
+				assertCommentEvent("!", true, reader);
+				assertCommentEvent("long comment ", false, reader);
+				assertCommentEvent("0123456789", true, reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }

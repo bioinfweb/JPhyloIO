@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.test;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -59,10 +60,19 @@ public class JPhyloIOTestTools {
 	
 	
   public static void assertCommentEvent(String expectedContent, JPhyloIOEventReader reader) throws Exception {
+  	assertCommentEvent(expectedContent, true, reader);  	
+  }
+  
+  
+  public static void assertCommentEvent(String expectedContent, boolean expectedContinuedInNextEvent, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventType.COMMENT, event.getEventType());
-		assertEquals(expectedContent, event.asCommentEvent().getContent());
+		CommentEvent commentEvent = event.asCommentEvent();
+		assertEquals(expectedContent, commentEvent.getContent());
+		assertEquals(expectedContinuedInNextEvent, commentEvent.isContinuedInNextEvent());
   }  
 	
 	
