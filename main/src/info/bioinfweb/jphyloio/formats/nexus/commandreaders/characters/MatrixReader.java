@@ -134,8 +134,9 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					List<String> tokens = new ArrayList<String>();
 					c = reader.peekChar();
 					SequenceCharactersEvent result = null;
+					boolean tokenListComplete = false;
 					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getNexusReader().getMaxTokensToRead()) && 
-							(currentSequenceLabel != null)) {
+							!tokenListComplete) {
 						
 						if (StringUtils.isNewLineChar(c)) {
 							reader.consumeNewLine();  //TODO Can sequences in non-interleaved matrices span over multiple lines? (Could be checked by the number of characters, but not in an UNALIGNED block.)
@@ -143,10 +144,17 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 								result = new SequenceCharactersEvent(currentSequenceLabel, tokens);
 							}
 							currentSequenceLabel = null;  // Read new label next time.
+							tokenListComplete = true;
 						}
 						else if (c == COMMENT_START) {
 							reader.skip(1);  // Consume '['.
 							getStreamDataProvider().readComment();
+							if (!tokens.isEmpty()) {
+								tokenListComplete = true;  // Make sure not to include tokens after the comment in the current event.
+							}
+							else {  // Comment before the first token of a sequence.
+								return getStreamDataProvider().pollUpcommingEvent();  // Return comment that was just parsed.
+							}
 						}
 						else if (Character.isWhitespace(c)) {  // consumeWhitespaceAndComments() cannot be used here, because line breaks are relevant.
 							reader.skip(1);  // Consume white space.

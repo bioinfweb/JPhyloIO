@@ -214,12 +214,15 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			return endParsing(isFirstCall);
 		}
 		else {
+			JPhyloIOEvent result;
 			if (isVectorFormat) {
-				return readVectorFormat(isFirstCall);
+				result = readVectorFormat(isFirstCall);
 			}
 			else {
-				return readStandardFormat(isFirstCall);
+				result = readStandardFormat(isFirstCall);
 			}
+			getStreamDataProvider().consumeWhiteSpaceAndComments();  // Consume upcomming comments to have the fired before the next character set event.
+			return result;
 		}
 	}
 }

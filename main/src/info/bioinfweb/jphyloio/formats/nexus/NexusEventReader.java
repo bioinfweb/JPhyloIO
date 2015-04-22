@@ -122,6 +122,11 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
+	protected JPhyloIOEvent pollUpcommingEvent() {
+		return upcommingEvents.poll();
+	}
+	
+	
 	private void checkStart() throws IOException {
 		if (!FIRST_LINE.equals(getReader().readString(FIRST_LINE.length()).toUpperCase())) { 
 			throw new IOException("All Nexus files must start with \"" + FIRST_LINE + "\".");
@@ -249,7 +254,6 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 					documentEndReached = true;
 					event = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 				}
-				consumeWhiteSpaceAndComments();  // Consume comments after the parsed region before the next event is parsed to maintain correct event order.
 				return event;
 			}
 		}
