@@ -127,6 +127,10 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					// Read name:
 					if (currentSequenceLabel == null) {
 						getStreamDataProvider().consumeWhiteSpaceAndComments();
+						JPhyloIOEvent waitingEvent = getStreamDataProvider().pollUpcommingEvent();
+						if (waitingEvent != null) {
+							return waitingEvent;  // Immediately return comment in front of sequence name.
+						}
 						currentSequenceLabel = readName();
 					}
 					
