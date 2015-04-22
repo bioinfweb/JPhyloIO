@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -47,6 +48,9 @@ import java.util.regex.Pattern;
  * @author Ben St&ouml;ver
  */
 public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEventReader {
+	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
+	
+	private int maxCommentLength = DEFAULT_MAX_COMMENT_LENGTH;
 	private PeekReader reader;
 	protected boolean lineConsumed = true;
 	protected Queue<JPhyloIOEvent> upcommingEvents = new LinkedList<JPhyloIOEvent>();
@@ -97,6 +101,29 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 
 
+	/**
+	 * Returns the maximum length a comment may have, before it is split into separate events.
+	 * <p>
+	 * The default value is {@link #DEFAULT_MAX_COMMENT_LENGTH}.
+	 * 
+	 * @return the maximum allowed number of characters for a single comment
+	 */
+	public int getMaxCommentLength() {
+		return maxCommentLength;
+	}
+
+
+	/**
+	 * Allows the specify the maximum length a comment may have, before it is split into separate events.
+	 * 
+	 * @param maxCommentLength the maximum allowed number of characters for a single comment that shall be 
+	 *        used from now on
+	 */
+	public void setMaxCommentLength(int maxCommentLength) {
+		this.maxCommentLength = maxCommentLength;
+	}
+
+
 	protected List<String> createTokenList(CharSequence sequence) {
 		List<String> result = new ArrayList<String>(sequence.length());
 		for (int i = 0; i < sequence.length(); i++) {
@@ -134,19 +161,33 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	protected void readComment(char commentStart, char commentEnd) throws IOException {
 		StringBuilder content = new StringBuilder();
 		int nestedComments = 0;
-		int c = getReader().read();
-		while ((c != -1) && !((nestedComments == 0) && ((char)c == commentEnd))) {
-			if ((char)c == commentStart) {
-				nestedComments++;
+		try {
+			char c = getReader().readChar();
+			int length = 0;
+			while (!((nestedComments == 0) && (c == commentEnd))) {
+				if (c == commentStart) {
+					nestedComments++;
+				}
+				else if (c == commentEnd) {
+					nestedComments--;
+				}
+				content.append(c);
+				length++;
+				if (length >= getMaxCommentLength()) {
+					c = reader.peekChar();
+					upcommingEvents.add(new CommentEvent(content.toString(), (c == -1) || (c == commentEnd)));
+					content.delete(0, content.length());
+					length = 0;
+				}
+				c = getReader().readChar();
 			}
-			else if ((char)c == commentEnd) {
-				nestedComments--;
+			if (content.length() > 0) {
+				upcommingEvents.add(new CommentEvent(content.toString(), true));
 			}
-			content.append((char)c);
-			c = getReader().read();
 		}
-		
-		upcommingEvents.add(new CommentEvent(content.toString()));
+		catch (EOFException e) {
+			throw new IOException("Unexpected end of file inside a comment.");  //TODO Replace by ParseException
+		}
 	}
 	
 	
