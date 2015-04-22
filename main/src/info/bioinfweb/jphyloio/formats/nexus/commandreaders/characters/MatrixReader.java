@@ -54,7 +54,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 		reader.skip(1);  // Consume "start".
 		char c = reader.peekChar();
 		StringBuilder result = new StringBuilder();
-		while (c != MATRIX_POLYMORPHIC_TOKEN_END) {
+		while (c != end) {
 			if (c == COMMENT_START) {
 				reader.skip(1);  // Consume '['.
 				getStreamDataProvider().readComment();
@@ -66,17 +66,17 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 			c = reader.peekChar();
 		}
 		reader.skip(1);  // Consume "end".
-		return result.toString();
+		return start + result.toString() + end;
 	}
 	
 	
 	private String readToken(boolean longTokens) throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
-		if (!longTokens) {
+		char c = reader.peekChar();
+		if (!longTokens && (c != MATRIX_POLYMORPHIC_TOKEN_START) && (c != MATRIX_UNCERTAINS_TOKEN_START)) {
 			return Character.toString(reader.readChar());
 		}
 		else {
-			char c = reader.peekChar();
 			if (c == MATRIX_POLYMORPHIC_TOKEN_START) {
 				return readDelimitedToken(MATRIX_POLYMORPHIC_TOKEN_START, MATRIX_POLYMORPHIC_TOKEN_END);
 			}
