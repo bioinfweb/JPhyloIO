@@ -1,0 +1,9 @@
+#NEXUS
+
+BEGIN Characters;
+  Dimensions NTax=3 NChar=7;
+  Format DataType = DNA Missing=? Gap= -;
+  Matrix A [comment 1](CG)GGTCAT
+         B[comment 2] CG-TC{TA}T
+         C CG-T[comment 3]C-T;
+END;

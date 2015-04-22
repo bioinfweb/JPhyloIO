@@ -330,4 +330,125 @@ public class NexusEventReaderTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
+	
+	
+	@Test
+	public void testReadingMatrixLongContinuous() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixContinuous.nex"), factory);
+			reader.setMetaEventsForUnknownCommands(false);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "continuous", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+
+				assertCommentEvent("comment 1", reader);
+				assertCharactersEvent("A", new String[]{"18", "20", "2"}, reader);
+				assertCommentEvent("comment 2", reader);
+				assertCharactersEvent("B", new String[]{"4.1", "-3.9", "2E10"}, reader);
+				assertCharactersEvent("C", new String[]{"19"}, reader);
+				assertCommentEvent("comment 3", reader);
+				assertCharactersEvent("C", new String[]{"20.5", "-"}, reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingMatrixDNAAlternatives() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixDNAAlternatives.nex"), factory);
+			reader.setMetaEventsForUnknownCommands(false);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+
+				assertCommentEvent("comment 1", reader);
+				assertCharactersEvent("A", new String[]{"(CG)", "G", "G", "T", "C", "A", "T"}, reader);
+				assertCommentEvent("comment 2", reader);
+				assertCharactersEvent("B", new String[]{"C", "G", "-", "T", "C", "{TA}", "T"}, reader);
+				assertCharactersEvent("C", new String[]{"C", "G", "-", "T"}, reader);
+				assertCommentEvent("comment 3", reader);
+				assertCharactersEvent("C", new String[]{"C", "-", "T"}, reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingMatrixLongTokensAlternatives() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokensAlternatives.nex"), factory);
+			reader.setMetaEventsForUnknownCommands(false);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TOKENS", "", reader);
+
+				assertCommentEvent("comment 1", reader);
+				assertCharactersEvent("A", new String[]{"Eins", "(Zwei Drei)", "Eins"}, reader);
+				assertCommentEvent("comment 2", reader);
+				assertCharactersEvent("B", new String[]{"Zwei", "Zwei", "Eins"}, reader);
+				assertCharactersEvent("C", new String[]{"Drei"}, reader);
+				assertCommentEvent("comment 3", reader);
+				assertCharactersEvent("C", new String[]{"{Zwei Eins}", "-"}, reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }

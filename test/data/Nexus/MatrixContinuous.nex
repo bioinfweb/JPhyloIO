@@ -1,0 +1,9 @@
+#NEXUS
+
+BEGIN Characters;
+  Dimensions NTax=3 NChar=7;
+  Format DataType = continuous Missing=? Gap= -;
+  Matrix A [comment 1]18 20 2
+         B[comment 2] 4.1 -3.9 2E10
+         C 19[comment 3]20.5 -;
+END;

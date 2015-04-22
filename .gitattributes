@@ -49,7 +49,10 @@ test/data/Nexus/Format.nex -text
 test/data/Nexus/FormatContinuous.nex -text
 test/data/Nexus/FormatTokens.nex -text
 test/data/Nexus/Matrix.nex -text
+test/data/Nexus/MatrixContinuous.nex -text
+test/data/Nexus/MatrixDNAAlternatives.nex -text
 test/data/Nexus/MatrixLongTokens.nex -text
+test/data/Nexus/MatrixLongTokensAlternatives.nex -text
 test/data/Phylip/Interleaved.phy -text
 test/data/Phylip/Interleaved3Blocks.phy -text
 test/data/Phylip/InvalidCharacterCount.phy -text
