@@ -26,6 +26,7 @@ public interface NexusConstants {
 	public static final String FIRST_LINE = "#NEXUS";
 	public static final String BEGIN_COMMAND = "BEGIN";
 	public static final String END_COMMAND = "END";
+	public static final String ALTERNATIVE_END_COMMAND = "ENDBLOCK";
 	public static final char COMMAND_END = ';';
 	public static final char COMMENT_START = '[';
 	public static final char COMMENT_END = ']';
@@ -49,13 +50,18 @@ public interface NexusConstants {
 	public static final String FORMAT_SUBCOMMAND_TRANSPOSE = "TRANSPOSE";
 	public static final String FORMAT_SUBCOMMAND_NO_LABELS = "NOLABELS";
 	public static final String FORMAT_VALUE_CONTINUOUS_DATA_TYPE = "CONTINUOUS";
+
+	public static final char MATRIX_POLYMORPHIC_TOKEN_START = '(';
+	public static final char MATRIX_POLYMORPHIC_TOKEN_END = ')';
+	public static final char MATRIX_UNCERTAINS_TOKEN_START = '{';
+	public static final char MATRIX_UNCERTAINS_TOKEN_END = '}';
 	
 	public static final char CHAR_SET_NOT_CONTAINED = '0';
 	public static final char CHAR_SET_CONTAINED = '1';
 	
 	public static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]+");  //TODO Move to more general class (e.g. in PeekReader or somewhere else in commons).
 	public static final Pattern UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN = Pattern.compile(
-			".+(\\s|\\" + COMMENT_START + "|\\" + COMMAND_END + ")");
+			".*(\\s|\\" + COMMENT_START + "|\\" + COMMAND_END + ")");
 	public static final Pattern UNTIL_WHITESPACE_COMMENT_COMMAND_EQUAL_PATTERN = Pattern.compile(
-			".+(\\s|\\" + COMMENT_START + "|\\" + COMMAND_END + "|\\=)");
+			".*(\\s|\\" + COMMENT_START + "|\\" + COMMAND_END + "|\\=)");
 }

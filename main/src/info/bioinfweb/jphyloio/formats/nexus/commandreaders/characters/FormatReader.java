@@ -115,8 +115,11 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 				processSubcommand(key, value);
 				return new MetaInformationEvent(KEY_PREFIX + key, value);  //TODO For some subcommands (e.g. character names) special events would be useful.
 			}
-			setAllDataProcessed(true);
-			return null;
+			else {
+				reader.skip(1); // Consume ';'.
+				setAllDataProcessed(true);
+				return null;
+			}
 		}
 		catch (EOFException e) {
 			throw new IOException("Unexpected and of file in " + getCommandName() + " command.");  //TODO Replace by ParseException

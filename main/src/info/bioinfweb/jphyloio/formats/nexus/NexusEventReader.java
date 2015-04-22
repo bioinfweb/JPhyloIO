@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -128,6 +129,30 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
+	private JPhyloIOEvent createBlockStartEvent() {
+		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
+				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
+			
+			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
+		}
+		else {
+			return null;
+		}
+	}
+	
+	
+	private JPhyloIOEvent createBlockEndEvent() {
+		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
+				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
+			
+			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+		}
+		else {
+			return null;
+		}
+	}
+	
+	
 	private JPhyloIOEvent readNextCommand() throws Exception {
 		JPhyloIOEvent result = null;
 		while ((result == null) && (getReader().peek() != -1)) {  // Read commands until an event is produced.  
@@ -143,25 +168,44 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			if (BEGIN_COMMAND.equals(commandName)) {
 				if (currentBlockName == null) {
 					consumeWhiteSpaceAndComments();
-					currentBlockName = StringUtils.cutEnd(
-							getReader().readRegExp(UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence(), 1).toString();
-					//TODO Fire event for block start?
+					currentBlockName = getReader().readRegExp(UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence().toString().toUpperCase();
+					end = StringUtils.lastChar(currentBlockName);
+					currentBlockName = StringUtils.cutEnd(currentBlockName, 1);
+					result = createBlockStartEvent();
+					if (end != COMMAND_END) {
+						consumeWhiteSpaceAndComments();
+						if (getReader().peekChar() == COMMAND_END) {
+							getReader().skip(1);  // Consume ';'.
+						}
+						else {
+							throw new IOException("Invalid character '" + getReader().peekChar() + "' in " + BEGIN_COMMAND + " command.");
+						}
+					}
 				}
 				else {
 					throw new IOException("Nested blocks are not allowed in Nexus.");  //TODO Throw other exception
 				}
 			}
-			else if (END_COMMAND.equals(commandName)) {
-				currentBlockName = null;  //TODO Fire event for block end?
+			else if (END_COMMAND.equals(commandName) || ALTERNATIVE_END_COMMAND.equals(commandName)) {
+				result = createBlockEndEvent();  // Must be called before currentBlockName is set to null.
+				currentBlockName = null;
 			}
 			else if (end == COMMAND_END) {
 				//TODO Fire according event. (else case should be used here, but reader would have to be moved backwards to make ';' available again.)
-				return new MetaInformationEvent(commandName, "");  //TODO Fire different event?
+				result = new MetaInformationEvent(commandName, "");  //TODO Fire different event?
 			}
 			else {
 				currentCommandReader = factory.createReader(currentBlockName, commandName, streamDataProvider);
-				if ((currentCommandReader == null) && isMetaEventsForUnknownCommands()) {
-					currentCommandReader = new DefaultCommandReader(commandName, streamDataProvider);
+				if (currentCommandReader == null) {
+					if (isMetaEventsForUnknownCommands()) {  // Create meta event from command content.
+						currentCommandReader = new DefaultCommandReader(commandName, streamDataProvider);
+					}
+					else if (end != COMMAND_END) {  // Consume content of command without loading large commands into a CharacterSequence as a whole.
+						ReadResult readResult;
+						do {
+							readResult = getReader().readUntil(getMaxTokensToRead(), Character.toString(COMMAND_END));
+						} while (!readResult.isCompletelyRead());
+					}
 				}
 				if (currentCommandReader != null) {
 					result = currentCommandReader.readNextEvent();
@@ -199,11 +243,11 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 					event = currentCommandReader.readNextEvent();
 					if (event == null) {
 						event = readNextCommand();
-						if (event == null) {
-							documentEndReached = true;
-							event = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
-						}
 					}
+				}
+				if (event == null) {
+					documentEndReached = true;
+					event = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 				}
 				consumeWhiteSpaceAndComments();  // Consume comments after the parsed region before the next event is parsed to maintain correct event order.
 				return event;
