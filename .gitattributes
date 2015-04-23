@@ -45,6 +45,7 @@ test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 test/data/Fasta/MatchToken.fasta -text
 test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
+test/data/MEGA/MatchToken.meg -text
 test/data/Nexus/CharSet.nex -text
 test/data/Nexus/CharSetInvalidVectorSymbol.nex -text
 test/data/Nexus/Format.nex -text

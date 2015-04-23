@@ -1,0 +1,15 @@
+#mega
+!Title Nucleotide sequences of three human class I HLA-A alleles;
+!Format
+    DataType=Nucleotide   DataFormat=Interleaved
+    NTaxa=3 NSites=18
+    Identical=i Missing=? Indel=-
+    CodeTable=Standard;
+
+#A TAT TTC TCC
+#B iii iii iAi
+#C iii iii Aii
+
+#A CGC TAG TTA
+#B iii iii iAi
+#C iii iii Aii

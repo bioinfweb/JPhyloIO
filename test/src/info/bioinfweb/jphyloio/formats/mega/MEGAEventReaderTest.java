@@ -65,7 +65,14 @@ public class MEGAEventReaderTest {
 				
 				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_TITLE);
 				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_DESCRIPTION);
-				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_FORMAT);
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE");
 				
 				assertCommentEvent("Nested [comment]", reader);
 				assertCommentEvent("[Nested] comment", reader);
@@ -116,6 +123,52 @@ public class MEGAEventReaderTest {
 				assertCharactersEvent("A-3301", "GACCCCCCCAGGACGCAT", reader);
 
 				assertCharacterSetEvent("Domain=Alpha_3 Property=Coding", 123, 141, reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+  }
+  
+  
+  @Test
+  public void testReadingMEGAMatchCharacter() {
+		try {
+			MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/MatchToken.meg"), true);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_TITLE);
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL");
+				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE");
+				
+				assertCharactersEvent("A", "TATTTCTCC", reader);
+				assertCharactersEvent("B", "TATTTCTAC", reader);
+				assertCharactersEvent("C", "TATTTCACC", reader);
+				
+				assertCharactersEvent("A", "CGCTAGTTA", reader);
+				assertCharactersEvent("B", "CGCTAGTAA", reader);
+				assertCharactersEvent("C", "CGCTAGATA", reader);
 				
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
