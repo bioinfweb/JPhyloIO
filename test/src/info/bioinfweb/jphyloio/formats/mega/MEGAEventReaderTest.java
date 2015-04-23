@@ -56,7 +56,7 @@ public class MEGAEventReaderTest {
   @Test
   public void testReadingMEGA() {
 		try {
-			MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/HLA-3Seq.meg"));
+			MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/HLA-3Seq.meg"), false);
 			try {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());

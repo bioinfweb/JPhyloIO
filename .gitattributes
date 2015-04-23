@@ -42,6 +42,8 @@ test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+test/data/Fasta/MatchToken.fasta -text
+test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
 test/data/Nexus/CharSet.nex -text
 test/data/Nexus/CharSetInvalidVectorSymbol.nex -text
@@ -65,7 +67,6 @@ test/data/Phylip/RelaxedInterleaved3Blocks.phy -text
 test/data/Phylip/RelaxedSequential.phy -text
 test/data/Phylip/Sequential.phy -text
 test/data/Phylip/TooManyCounts.phy -text
-test/data/Test.fasta -text
 test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReaderTest.java -text svneol=unset#text/plain

@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.test;
 
 public class WhiteSpaceTest {
 	public static void main(String[] args) {
+		System.out.println(Integer.MAX_VALUE);
 		System.out.println(Character.isWhitespace('\n'));
 		System.out.println(Character.isWhitespace('\r'));
 	}

@@ -34,7 +34,7 @@ public class SequentialPhylipEventReaderTest {
 	@Test
 	public void testReadingLongerLength() {
 		try {
-			SequentialPhylipEventReader reader = new SequentialPhylipEventReader(new File("data/Phylip/Sequential.phy"), false);
+			SequentialPhylipEventReader reader = new SequentialPhylipEventReader(new File("data/Phylip/Sequential.phy"), false, false);
 			try {
 				reader.setMaxTokensToRead(20);
 				
@@ -79,7 +79,7 @@ public class SequentialPhylipEventReaderTest {
 	@Test
 	public void testReadingRelaxedLongerLength() {
 		try {
-			SequentialPhylipEventReader reader = new SequentialPhylipEventReader(new File("data/Phylip/RelaxedSequential.phy"), true);
+			SequentialPhylipEventReader reader = new SequentialPhylipEventReader(new File("data/Phylip/RelaxedSequential.phy"), false, true);
 			try {
 				reader.setMaxTokensToRead(20);
 				

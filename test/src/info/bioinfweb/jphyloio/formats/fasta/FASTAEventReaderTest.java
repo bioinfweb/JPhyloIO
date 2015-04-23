@@ -36,7 +36,7 @@ public class FASTAEventReaderTest {
 	@Test
 	public void testReadingFasta() {
 		try {
-			FASTAEventReader reader = new FASTAEventReader(new File("data/Test.fasta"));
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Test.fasta"), false);
 			try {
 				reader.setMaxTokensToRead(6);
 				
@@ -79,7 +79,7 @@ public class FASTAEventReaderTest {
 	@Test
 	public void testnextOfType() {
 		try {
-			FASTAEventReader reader = new FASTAEventReader(new File("data/Test.fasta"));
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Test.fasta"), false);
 			try {
 				reader.setMaxTokensToRead(20);
 				
@@ -101,5 +101,37 @@ public class FASTAEventReaderTest {
 			e.printStackTrace();
 			fail(e.getLocalizedMessage());
 		}
-	}	
+	}
+	
+	
+	@Test
+	public void testReadingFastaMatchToken() {
+		try {
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/MatchToken.fasta"), true);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertCharactersEvent("Seq 1", "ATCG-AG", reader);
+				assertCharactersEvent("Seq 2", "ATGG-AG", reader);
+				assertCharactersEvent("Seq 3", "AACGTAG", reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }

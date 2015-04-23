@@ -35,7 +35,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingNonInterleavedExactLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), false, true, false);
 			try {
 				reader.setMaxTokensToRead(10);
 				
@@ -71,7 +71,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingNonInterleavedLongerLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), false, true, false);
 			try {
 				reader.setMaxTokensToRead(20);
 				
@@ -107,7 +107,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingNonInterleavedShorterLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), false, true, false);
 			try {
 				reader.setMaxTokensToRead(6);
 				
@@ -147,7 +147,7 @@ public class PhylipEventReaderTest {
 	
 	private void testInvalidCount(String fileName, String errorMessage) {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/" + fileName), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/" + fileName), false, true, false);
 			try {
 				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());  // To allow peek() the first two events are generated here already.
 				fail("No excpetion");
@@ -177,7 +177,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleavedExactLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
 			try {
 				reader.setMaxTokensToRead(10);
 				
@@ -219,7 +219,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleavedLongerLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
 			try {
 				reader.setMaxTokensToRead(20);
 				
@@ -261,7 +261,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleavedShorterLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
 			try {
 				reader.setMaxTokensToRead(6);
 				
@@ -313,7 +313,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleavedHalfLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
 			try {
 				reader.setMaxTokensToRead(5);
 				
@@ -365,7 +365,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleaved3Blocks() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved3Blocks.phy"), true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved3Blocks.phy"), false, true, false);
 			try {
 				reader.setMaxTokensToRead(20);
 				
@@ -413,7 +413,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingRelaxedInterleaved3Blocks() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/RelaxedInterleaved3Blocks.phy"), true, true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/RelaxedInterleaved3Blocks.phy"), false, true, true);
 			try {
 				reader.setMaxTokensToRead(20);
 				
