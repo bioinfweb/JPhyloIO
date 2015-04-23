@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio;
 import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -34,7 +35,8 @@ import java.util.List;
  */
 public class SequenceCharacterEventManager {
 	private JPhyloIOEventReader owner;
-	private List<String> firstSequence = new ArrayList<String>();
+	private List<String> firstSequence;
+	private List<String> unmodifiableFirstSequence;
 	private long currentPosition = -1;
 	private long currentBlockStartPosition = 0;
 	private long currentBlockLength = 0;
@@ -55,6 +57,8 @@ public class SequenceCharacterEventManager {
 		}
 		else {
 			this.owner = owner;
+			firstSequence = new ArrayList<String>();
+			unmodifiableFirstSequence = Collections.unmodifiableList(firstSequence);
 		}
 	}
 
@@ -69,6 +73,31 @@ public class SequenceCharacterEventManager {
 	}
 	
 	
+	public long getCurrentBlockStartPosition() {
+		return currentBlockStartPosition;
+	}
+
+
+	public long getCurrentBlockLength() {
+		return currentBlockLength;
+	}
+
+
+	public String getFirstSequenceName() {
+		return firstSequenceName;
+	}
+
+
+	public String getCurrentSequenceName() {
+		return currentSequenceName;
+	}
+	
+	
+	public List<String> getFirstSequence() {
+		return unmodifiableFirstSequence;
+	}
+
+
 	private String replaceMatchToken(String token) {
 		if (token.equals(getOwner().getMatchToken())) {
 			if (currentPosition > Integer.MAX_VALUE) {
