@@ -67,6 +67,9 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 		else if (FORMAT_SUBCOMMAND_TRANSPOSE.equals(key)) {
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TRANSPOSE, true);
 		}
+		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
+			getStreamDataProvider().getNexusReader().setMatchToken(value);
+		}
 	}
 	
 	

@@ -49,6 +49,7 @@ public interface NexusConstants {
 	public static final String FORMAT_SUBCOMMAND_INTERLEAVE = "INTERLEAVE";
 	public static final String FORMAT_SUBCOMMAND_TRANSPOSE = "TRANSPOSE";
 	public static final String FORMAT_SUBCOMMAND_NO_LABELS = "NOLABELS";
+	public static final String FORMAT_SUBCOMMAND_MATCH_CHAR = "MATCHCHAR";
 	public static final String FORMAT_VALUE_CONTINUOUS_DATA_TYPE = "CONTINUOUS";
 
 	public static final char MATRIX_POLYMORPHIC_TOKEN_START = '(';
