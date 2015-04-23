@@ -25,9 +25,9 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import static org.junit.Assert.*;
 
 
@@ -37,11 +37,11 @@ public class JPhyloIOTestTools {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventType.SEQUENCE_CHARACTERS, event.getEventType());
-		SequenceCharactersEvent charEvent = event.asSequenceCharactersEvent();
-		assertEquals(expectedName, charEvent.getSequenceName());
-		assertEquals(expectedSequence.length(), charEvent.getCharacterValues().size());
+		SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
+		assertEquals(expectedName, tokensEvent.getSequenceName());
+		assertEquals(expectedSequence.length(), tokensEvent.getCharacterValues().size());
 		for (int i = 0; i < expectedSequence.length(); i++) {
-			assertEquals(expectedSequence.substring(i, i + 1), charEvent.getCharacterValues().get(i));
+			assertEquals(expectedSequence.substring(i, i + 1), tokensEvent.getCharacterValues().get(i));
 		}
 	}
 	
@@ -50,11 +50,11 @@ public class JPhyloIOTestTools {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventType.SEQUENCE_CHARACTERS, event.getEventType());
-		SequenceCharactersEvent charEvent = event.asSequenceCharactersEvent();
-		assertEquals(expectedName, charEvent.getSequenceName());
-		assertEquals(expectedSequence.length, charEvent.getCharacterValues().size());
+		SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
+		assertEquals(expectedName, tokensEvent.getSequenceName());
+		assertEquals(expectedSequence.length, tokensEvent.getCharacterValues().size());
 		for (int i = 0; i < expectedSequence.length; i++) {
-			assertEquals(expectedSequence[i], charEvent.getCharacterValues().get(i));
+			assertEquals(expectedSequence[i], tokensEvent.getCharacterValues().get(i));
 		}
 	}
 	

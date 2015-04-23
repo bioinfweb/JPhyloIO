@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formats.fasta;
 
 
 import info.bioinfweb.jphyloio.events.EventType;
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 import java.io.File;
 import java.util.EnumSet;
@@ -52,7 +52,7 @@ public class FASTAEventReaderTest {
 				assertCharactersEvent("Seq 2", "ACGT", reader);
 				
 				assertTrue(reader.hasNextEvent());
-				SequenceCharactersEvent event = reader.next().asSequenceCharactersEvent();
+				SequenceTokensEvent event = reader.next().asSequenceTokensEvent();
 				assertEquals("Empty sequence", event.getSequenceName());
 				assertEquals(0, event.getCharacterValues().size());
 				
