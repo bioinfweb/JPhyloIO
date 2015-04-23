@@ -156,7 +156,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 						else {
 							c = getReader().peek();
 							if ((c == -1) || (c == (int)NAME_START_CHAR)) {  // No characters found before the next name. => empty sequence
-								return getSequenceCharacterEventManager().createEvent(currentSequenceName, Collections.<String>emptyList());
+								return getSequenceTokensEventManager().createEvent(currentSequenceName, Collections.<String>emptyList());
 							}
 						}
 					}
@@ -168,7 +168,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
 					}
 					lineConsumed = lineResult.isCompletelyRead();					
-					return getSequenceCharacterEventManager().createEvent(currentSequenceName, tokenList);
+					return getSequenceTokensEventManager().createEvent(currentSequenceName, tokenList);
 					
 				case ALIGNMENT_END:
 					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);

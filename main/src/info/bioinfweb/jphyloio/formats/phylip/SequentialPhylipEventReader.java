@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.phylip;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -156,7 +156,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 					// Read characters:
 					JPhyloIOEvent event = readCharacters(currentSequenceName);
 					if (EventType.SEQUENCE_CHARACTERS.equals(event.getEventType())) {
-						charactersRead += ((SequenceCharactersEvent)event).getCharacterValues().size();
+						charactersRead += ((SequenceTokensEvent)event).getCharacterValues().size();
 					}
 					return event;
 					

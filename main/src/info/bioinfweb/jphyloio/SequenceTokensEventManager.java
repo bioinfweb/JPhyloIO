@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio;
 
 
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +33,7 @@ import java.util.List;
  * 
  * @author Ben St&ouml;ver
  */
-public class SequenceCharacterEventManager {
+public class SequenceTokensEventManager {
 	private JPhyloIOEventReader owner;
 	private List<String> firstSequence;
 	private List<String> unmodifiableFirstSequence;
@@ -50,7 +50,7 @@ public class SequenceCharacterEventManager {
 	 * @param owner the PhyloIO event reader using the returned instance 
 	 * @throws NullPointerException if {@code owner} is set to {@code null}
 	 */
-	public SequenceCharacterEventManager(JPhyloIOEventReader owner) {
+	public SequenceTokensEventManager(JPhyloIOEventReader owner) {
 		super();
 		if (owner == null) {
 			throw new NullPointerException("Owner cannot be null.");
@@ -131,7 +131,7 @@ public class SequenceCharacterEventManager {
 	 * @return the event object
 	 * @throws NullPointerException if either the sequence name or the token list is {@code null}
 	 */
-	public SequenceCharactersEvent createEvent(String sequenceName, List<String> tokens) {
+	public SequenceTokensEvent createEvent(String sequenceName, List<String> tokens) {
 		if ((sequenceName == null) || (tokens == null)) {
 			throw new NullPointerException("Sequence names must not be null.");
 		}
@@ -157,7 +157,7 @@ public class SequenceCharacterEventManager {
 					}
 				}
 			}
-			return new SequenceCharactersEvent(sequenceName, tokens);
+			return new SequenceTokensEvent(sequenceName, tokens);
 		}
 	}
 }

@@ -214,7 +214,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 			return readNextEvent();  // Continue parsing to create the next event
 		}
 		else {
-			return getSequenceCharacterEventManager().createEvent(currentSequenceName, characters);
+			return getSequenceTokensEventManager().createEvent(currentSequenceName, characters);
 		}
 	}
 	

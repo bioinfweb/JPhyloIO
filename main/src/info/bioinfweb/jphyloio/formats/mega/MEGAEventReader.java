@@ -35,7 +35,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 
 
@@ -286,7 +286,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	
 	private void countCharacters(JPhyloIOEvent event) {
 		if (event.getEventType().equals(EventType.SEQUENCE_CHARACTERS)) {
-			SequenceCharactersEvent charactersEvent = event.asSequenceCharactersEvent();
+			SequenceTokensEvent charactersEvent = event.asSequenceTokensEvent();
 			if (charactersEvent.getSequenceName().equals(firstSequenceName)) {
 				charactersRead += charactersEvent.getCharacterValues().size();
 			}

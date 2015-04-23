@@ -64,8 +64,8 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
-	public SequenceCharactersEvent asSequenceCharactersEvent() throws ClassCastException {
-		return (SequenceCharactersEvent)this;
+	public SequenceTokensEvent asSequenceTokensEvent() throws ClassCastException {
+		return (SequenceTokensEvent)this;
 	}
 
 

@@ -34,6 +34,22 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
  */
 public interface JPhyloIOEventReader {
 	/**
+	 * Returns the maximum number of sequence tokens that shall be bundled into a single event.
+	 * Sequences might still be distributed among events containing a smaller number of tokens.
+	 * 
+	 * @return the maximum number of tokens
+	 */
+	public int getMaxTokensToRead();
+	
+	/**
+	 * Specify the the maximum number of sequence tokens that shall be bundled into a single event.
+	 * Sequences might still be distributed among events containing a smaller number of tokens.
+	 * 
+	 * @param maxTokensToRead the maximum number of tokens
+	 */
+	public void setMaxTokensToRead(int maxTokensToRead);
+	
+	/**
 	 * Returns the maximum length a comment may have, before it is split into separate events.
 	 * <p>
 	 * The default value is {@link #DEFAULT_MAX_COMMENT_LENGTH}.
@@ -118,6 +134,23 @@ public interface JPhyloIOEventReader {
 	 * @throws Exception Implementing classes might throw additional exceptions
 	 */
 	public JPhyloIOEvent peek() throws Exception;
+	
+	/**
+	 * Returns the event that was returned with the last call of {@link #next()}.
+	 * 
+	 * @return the last event or {@code null} if no event was returned yet
+	 * @see #getLastNonCommentEvent()
+	 */
+	public JPhyloIOEvent getPreviousEvent();	
+	
+	/**
+	 * Returns the last event that has been returned by previous calls of {@link #readNextEvent()}
+	 * that was not a comment event.
+	 * 
+	 * @return the last non-comment event or {@code null} if no non-comment event was returned until now
+	 * @see #getPreviousEvent()
+	 */
+	public JPhyloIOEvent getLastNonCommentEvent();
 	
 	/**
 	 * Closes the underlying document source (usually a stream).

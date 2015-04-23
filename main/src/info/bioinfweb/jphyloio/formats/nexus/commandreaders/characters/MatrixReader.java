@@ -28,7 +28,7 @@ import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
@@ -137,7 +137,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					// Read tokens:
 					List<String> tokens = new ArrayList<String>();
 					c = reader.peekChar();
-					SequenceCharactersEvent result = null;
+					SequenceTokensEvent result = null;
 					boolean tokenListComplete = false;
 					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getNexusReader().getMaxTokensToRead()) && 
 							!tokenListComplete) {
@@ -145,7 +145,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						if (StringUtils.isNewLineChar(c)) {
 							reader.consumeNewLine();  //TODO Can sequences in non-interleaved matrices span over multiple lines? (Could be checked by the number of characters, but not in an UNALIGNED block.)
 							if (!tokens.isEmpty()) {  //TODO What about events for empty sequences?
-								result = getStreamDataProvider().getSequenceCharacterEventManager().createEvent(currentSequenceLabel, tokens);
+								result = getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens);
 							}
 							currentSequenceLabel = null;  // Read new label next time.
 							tokenListComplete = true;
@@ -174,7 +174,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					
 					// Return event:
 					if (!tokens.isEmpty() && (currentSequenceLabel != null)) {  // Max number of tokens was reached.
-						result = getStreamDataProvider().getSequenceCharacterEventManager().createEvent(currentSequenceLabel, tokens);
+						result = getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens);
 					}
 					if (c == COMMAND_END) {
 						setAllDataProcessed(true);

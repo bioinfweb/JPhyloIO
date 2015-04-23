@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 
 
@@ -44,7 +44,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	private int maxTokensToRead;
 	private boolean translateMatchToken;
 	private String matchToken = ".";
-	private SequenceCharacterEventManager sequenceCharacterEventManager = new SequenceCharacterEventManager(this);
+	private SequenceTokensEventManager sequenceTokensEventManager = new SequenceTokensEventManager(this);
 
 	
 	public AbstractEventReader(boolean translateMatchToken) {
@@ -59,11 +59,13 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	}
 
 
+	@Override
 	public int getMaxTokensToRead() {
 		return maxTokensToRead;
 	}
 
 
+	@Override
 	public void setMaxTokensToRead(int maxTokensToRead) {
 		this.maxTokensToRead = maxTokensToRead;
 	}
@@ -75,6 +77,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	 * 
 	 * @return {@code true} if a match token will be replaced, {@code false} otherwise
 	 */
+	@Override
 	public boolean isTranslateMatchToken() {
 		return translateMatchToken;
 	}
@@ -88,6 +91,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	 * 
 	 * @return the match token ('.' by default)
 	 */
+	@Override
 	public String getMatchToken() {
 		return matchToken;
 	}
@@ -105,19 +109,20 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	 * 
 	 * @param matchToken the new match token to be used from now on
 	 */
+	@Override
 	public void setMatchToken(String matchToken) {
 		this.matchToken = matchToken;
 	}
 
 
 	/**
-	 * Returns the manager object used by this instance to create {@link SequenceCharactersEvent}s. Such events should
+	 * Returns the manager object used by this instance to create {@link SequenceTokensEvent}s. Such events should
 	 * always be created using the returned object by inherited classes and never directly. 
 	 * 
 	 * @return the character event manager used by this instance (never {@code null})
 	 */
-	protected SequenceCharacterEventManager getSequenceCharacterEventManager() {
-		return sequenceCharacterEventManager;
+	protected SequenceTokensEventManager getSequenceTokensEventManager() {
+		return sequenceTokensEventManager;
 	}
 
 

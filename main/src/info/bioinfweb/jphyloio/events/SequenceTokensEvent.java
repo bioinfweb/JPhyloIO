@@ -34,12 +34,12 @@ import java.util.List;
  * 
  * @author Ben St&ouml;ver
  */
-public class SequenceCharactersEvent extends ConcreteJPhyloIOEvent {
+public class SequenceTokensEvent extends ConcreteJPhyloIOEvent {
 	private String sequenceName;
 	private List<String> characterValues;
 	
 	
-	public SequenceCharactersEvent(String sequenceName, List<String> tokens) {
+	public SequenceTokensEvent(String sequenceName, List<String> tokens) {
 		super(EventType.SEQUENCE_CHARACTERS);
 		
 		this.sequenceName = sequenceName;
