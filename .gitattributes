@@ -62,6 +62,7 @@ test/data/Nexus/MatrixLongTokensAlternatives.nex -text
 test/data/Nexus/SplitComments.nex -text
 test/data/Phylip/Interleaved.phy -text
 test/data/Phylip/Interleaved3Blocks.phy -text
+test/data/Phylip/InterleavedMatchCharacter.phy -text
 test/data/Phylip/InvalidCharacterCount.phy -text
 test/data/Phylip/InvalidSequenceCount.phy -text
 test/data/Phylip/MissingCharacterCount.phy -text

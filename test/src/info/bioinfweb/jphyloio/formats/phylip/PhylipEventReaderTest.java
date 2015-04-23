@@ -456,4 +456,40 @@ public class PhylipEventReaderTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
+	
+	
+	@Test
+	public void testReadingInterleavedMatchCharacter() {
+		try {
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/InterleavedMatchCharacter.phy"), true, true, false);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
+				assertCharactersEvent("Seq 2", "ATG-TT-CCG", reader);
+				assertCharactersEvent("Seq 3", "ATG-T--CGG", reader);
+				
+				assertCharactersEvent("Seq 1", "CCGT-GT--A", reader);
+				assertCharactersEvent("Seq 2", "CCGT-GTT-A", reader);
+				assertCharactersEvent("Seq 3", "CCGT-CT--A", reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }
