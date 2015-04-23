@@ -145,7 +145,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						if (StringUtils.isNewLineChar(c)) {
 							reader.consumeNewLine();  //TODO Can sequences in non-interleaved matrices span over multiple lines? (Could be checked by the number of characters, but not in an UNALIGNED block.)
 							if (!tokens.isEmpty()) {  //TODO What about events for empty sequences?
-								result = new SequenceCharactersEvent(currentSequenceLabel, tokens);
+								result = getStreamDataProvider().getSequenceCharacterEventManager().createEvent(currentSequenceLabel, tokens);
 							}
 							currentSequenceLabel = null;  // Read new label next time.
 							tokenListComplete = true;
@@ -174,7 +174,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					
 					// Return event:
 					if (!tokens.isEmpty() && (currentSequenceLabel != null)) {  // Max number of tokens was reached.
-						result = new SequenceCharactersEvent(currentSequenceLabel, tokens);
+						result = getStreamDataProvider().getSequenceCharacterEventManager().createEvent(currentSequenceLabel, tokens);
 					}
 					if (c == COMMAND_END) {
 						setAllDataProcessed(true);

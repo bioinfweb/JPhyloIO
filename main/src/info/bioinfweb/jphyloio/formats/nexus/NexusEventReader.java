@@ -28,6 +28,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.SequenceCharacterEventManager;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -169,6 +170,11 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		return streamDataProvider;
 	}
 
+	
+	protected SequenceCharacterEventManager getSequenceCharacterEventManager() {  // Enable package visibility
+		return super.getSequenceCharacterEventManager();
+	}
+	
 
 	/**
 	 * Calls {@link #consumeWhiteSpaceAndComments(char, char)} with according parameters and
