@@ -192,6 +192,11 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
+	protected MetaInformationEvent readKeyValueMetaInformation(String keyPrefix) throws IOException {
+		return readKeyValueMetaInformation(keyPrefix, COMMAND_END, COMMENT_START, COMMENT_END, KEY_VALUE_SEPARATOR, VALUE_DELIMITER);
+	}
+	
+	
 	/**
 	 * Returns the next queued event and removes it from the internal queue. This method should only
 	 * be used by implementations of {@link NexusCommandEventReader}. Application developers should

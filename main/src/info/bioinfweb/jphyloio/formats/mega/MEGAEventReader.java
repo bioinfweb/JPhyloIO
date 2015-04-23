@@ -20,12 +20,14 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
+import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
@@ -61,6 +63,9 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	public static final Pattern READ_COMMAND_PATTERN = 
 			Pattern.compile(".+(\\" + COMMENT_START + "|\\" + COMMAND_END + ")", Pattern.DOTALL);
 	public static final Pattern SEQUENCE_NAME_PATTERN = Pattern.compile(".+\\s+");
+
+	public static final String FORMAT_KEY_PREFIX = "info.bioinfweb.jphyloio.formats.mega.format.";
+	public static final String FORMAT_SUBCOMMAND_IDENTICAL = "IDENTICAL";
 	
 	
 	private String currentSequenceName = null;
@@ -135,13 +140,51 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	}
 	
 	
-	private MetaInformationEvent createMetaEventFromCommand(String content) {
+	private void processFormatSubcommand(String key, String value) {
+		if (key.substring(FORMAT_KEY_PREFIX.length()).toUpperCase().equals(FORMAT_SUBCOMMAND_IDENTICAL)) {
+			setMatchToken(value);
+		}
+	}
+	
+	
+	private MetaInformationEvent readFormatCommand() throws IOException {
+		try {
+			getReader().skip(COMMAND_NAME_FORMAT.length());  // Consume command name.
+			consumeWhiteSpaceAndComments(COMMAND_START, COMMENT_END);
+			
+			MetaInformationEvent result = null;
+			while (getReader().peekChar() != COMMAND_END) {
+				MetaInformationEvent event = readKeyValueMetaInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=', '"');
+				processFormatSubcommand(event.getKey(), event.getValue());
+				if (result == null) {
+					result = event;
+				}
+				else {
+					upcommingEvents.add(event);
+				}
+			}
+			
+			getReader().skip(1); // Consume ';'.
+			if (result == null) {  // No content found.
+				return new MetaInformationEvent(COMMAND_NAME_FORMAT, "");
+			}
+			else {
+				return result;
+			}
+		}
+		catch (EOFException e) {
+			throw new IOException("Unexpected end of file in " + COMMAND_NAME_FORMAT + " command.");  //TODO Replace by ParseException
+		}
+	}
+	
+	
+	private MetaInformationEvent createMetaEventFromCommand(String content) throws IOException {
 		int afterNameIndex = StringUtils.indexOfWhiteSpace(content);
 		if (afterNameIndex < 1) {
 			return new MetaInformationEvent("", content);
 		}
 		else {
-			return new MetaInformationEvent(content.substring(0, afterNameIndex), content.substring(afterNameIndex).trim());
+			return new MetaInformationEvent(content.substring(0, afterNameIndex).toLowerCase(), content.substring(afterNameIndex).trim());
 		}
 	}
 	
@@ -189,6 +232,9 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 			if (getReader().peekString(COMMAND_NAME_LABEL.length()).toUpperCase().equals(COMMAND_NAME_LABEL)) {  // Process label events directly from the reader because they might contain many characters.
 				createCharacterSetEventsFromLabel();  // Add event to the queue.
 				return readNextEvent();  // If character set events have been added to the queue, the first one will be returned here.
+			}
+			if (getReader().peekString(COMMAND_NAME_FORMAT.length()).toUpperCase().equals(COMMAND_NAME_FORMAT)) {
+				return readFormatCommand();
 			}
 			else {
 				StringBuilder contentBuffer = new StringBuilder();

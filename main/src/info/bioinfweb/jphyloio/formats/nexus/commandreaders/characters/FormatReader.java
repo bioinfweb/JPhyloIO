@@ -50,26 +50,9 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	}
 	
 	
-	private String readToken() throws IOException {
-		PeekReader reader = getStreamDataProvider().getDataReader();
-		StringBuilder result = new StringBuilder();
-		char c = reader.peekChar();
-		while (!Character.isWhitespace(c) && (c != COMMAND_END) && (c != KEY_VALUE_SEPARATOR)) {
-			if ((char)c == COMMENT_START) {
-				reader.skip(1);  // Consume comment start.
-				getStreamDataProvider().readComment();
-			}
-			else {
-				result.append(c);
-				reader.skip(1);
-			}
-			c = reader.peekChar();
-		}
-		return result.toString();
-	}
-	
-	
 	private void processSubcommand(String key, final String value) {
+		key = key.substring(KEY_PREFIX.length());  // Remove key prefix for comparison
+		
 		if (FORMAT_SUBCOMMAND_TOKENS.equals(key) || 
 				(FORMAT_SUBCOMMAND_DATA_TYPE.equals(key) && FORMAT_VALUE_CONTINUOUS_DATA_TYPE.equals(value.toUpperCase()))) {
 			
@@ -93,27 +76,9 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 		try {
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			if (reader.peekChar() != COMMAND_END) {
-				// Read key:
-				String key = readToken().toUpperCase();
-				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				
-				// Read value:
-				String value = "";
-				if (reader.peekChar() == KEY_VALUE_SEPARATOR) {
-					reader.skip(1);  // Consume '='.
-					getStreamDataProvider().consumeWhiteSpaceAndComments();
-					
-					if (reader.peekChar() == VALUE_DELIMITER) {
-						reader.skip(1);  // Consume '"'.
-						value = reader.readUntil(Character.toString(VALUE_DELIMITER)).getSequence().toString();
-					}
-					else {
-						value = readToken();
-					}
-					getStreamDataProvider().consumeWhiteSpaceAndComments();
-				}
-				processSubcommand(key, value);
-				return new MetaInformationEvent(KEY_PREFIX + key, value);  //TODO For some subcommands (e.g. character names) special events would be useful.
+				MetaInformationEvent event = getStreamDataProvider().readKeyValueMetaInformation(KEY_PREFIX);
+				processSubcommand(event.getKey(), event.getValue());
+				return event;  //TODO For some subcommands (e.g. character names) special events would be useful.
 			}
 			else {
 				reader.skip(1); // Consume ';'.
@@ -122,7 +87,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			}
 		}
 		catch (EOFException e) {
-			throw new IOException("Unexpected and of file in " + getCommandName() + " command.");  //TODO Replace by ParseException
+			throw new IOException("Unexpected end of file in " + getCommandName() + " command.");  //TODO Replace by ParseException
 		}
 	}
 }

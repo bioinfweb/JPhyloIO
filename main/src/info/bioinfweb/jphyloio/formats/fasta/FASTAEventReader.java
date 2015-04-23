@@ -34,7 +34,6 @@ import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 
 
@@ -48,7 +47,6 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	
 	
 	private String currentSequenceName = null;
-	private String firstSequenceName = null;
 	
 	
 	/**
@@ -115,7 +113,6 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
-				currentPosition = 0;
 				return null;
 			}
 			else {
@@ -145,7 +142,6 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					if (alignmentEndEvent != null) {
 						return alignmentEndEvent;
 					}
-					firstSequenceName = currentSequenceName;
 					lineConsumed = true;  
 					// fall through
 				case SEQUENCE_CHARACTERS:
@@ -160,7 +156,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 						else {
 							c = getReader().peek();
 							if ((c == -1) || (c == (int)NAME_START_CHAR)) {  // No characters found before the next name. => empty sequence
-								return new SequenceCharactersEvent(currentSequenceName, Collections.<String>emptyList());
+								return createSequenceCharactersEvent(currentSequenceName, Collections.<String>emptyList());
 							}
 						}
 					}
@@ -169,20 +165,10 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					PeekReader.ReadResult lineResult = getReader().readLine(getMaxTokensToRead());
 					List<String> tokenList = new ArrayList<String>(lineResult.getSequence().length());
 					for (int i = 0; i < lineResult.getSequence().length(); i++) {
-						String token = Character.toString(lineResult.getSequence().charAt(i));
-						if (isTranslateMatchToken()) {
-							if (firstSequenceName.equals(currentSequenceName)) {
-								firstSequence.add(token);
-							}
-							else {
-								token = replaceMatchToken(token);
-							}
-						}
-						tokenList.add(token);
-						currentPosition++;
+						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
 					}
 					lineConsumed = lineResult.isCompletelyRead();					
-					return new SequenceCharactersEvent(currentSequenceName, tokenList);
+					return createSequenceCharactersEvent(currentSequenceName, tokenList);
 					
 				case ALIGNMENT_END:
 					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);

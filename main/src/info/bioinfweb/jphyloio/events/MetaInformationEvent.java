@@ -33,13 +33,13 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param name the name or key of the meta information 
+	 * @param key the name or key of the meta information 
 	 * @param value the value of the meta information
 	 */
-	public MetaInformationEvent(String name, String value) {
+	public MetaInformationEvent(String key, String value) {
 		super(EventType.META_INFORMATION);
 		
-		this.key = name;
+		this.key = key;
 		if (value == null) {
 			throw new NullPointerException("The parameter \"value\" cannot be null.");
 		}

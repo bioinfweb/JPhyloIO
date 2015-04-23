@@ -26,6 +26,7 @@ import java.util.TreeMap;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
 
@@ -61,6 +62,11 @@ public class NexusStreamDataProvider {
 	
 	public void readComment() throws IOException {
 		nexusReader.readComment();
+	}
+	
+	
+	public MetaInformationEvent readKeyValueMetaInformation(String keyPrefix) throws IOException {
+		return nexusReader.readKeyValueMetaInformation(keyPrefix);
 	}
 	
 	

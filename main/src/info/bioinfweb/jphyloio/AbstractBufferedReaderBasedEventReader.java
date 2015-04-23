@@ -23,7 +23,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -214,7 +214,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 			return readNextEvent();  // Continue parsing to create the next event
 		}
 		else {
-			return new SequenceCharactersEvent(currentSequenceName, characters);
+			return createSequenceCharactersEvent(currentSequenceName, characters);
 		}
 	}
 	
@@ -252,6 +252,53 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 		return eventFromCharacters(currentSequenceName, content);
 	}
 
+	
+	protected String readToken(char commandEnd, char commentStart, char commentEnd, char keyValueSeparator) throws IOException {
+		PeekReader reader = getReader();
+		StringBuilder result = new StringBuilder();
+		char c = reader.peekChar();
+		while (!Character.isWhitespace(c) && (c != commandEnd) && (c != keyValueSeparator)) {
+			if ((char)c == commentStart) {
+				reader.skip(1);  // Consume comment start.
+				readComment(commentStart, commentEnd);
+			}
+			else {
+				result.append(c);
+				reader.skip(1);
+			}
+			c = reader.peekChar();
+		}
+		return result.toString();
+	}
+	
+	
+	protected MetaInformationEvent readKeyValueMetaInformation(String keyPrefix, char commandEnd, char commentStart, 
+			char commentEnd, char keyValueSeparator, char valueDelimiter) throws IOException {
+		
+		PeekReader reader = getReader();
+		
+		// Read key:
+		String key = readToken(commandEnd, commentStart, commentEnd, keyValueSeparator).toLowerCase();
+		consumeWhiteSpaceAndComments(commentStart, commentEnd);
+		
+		// Read value:
+		String value = "";
+		if (reader.peekChar() == keyValueSeparator) {
+			reader.skip(1);  // Consume '='.
+			consumeWhiteSpaceAndComments(commentStart, commentEnd);
+			
+			if (reader.peekChar() == valueDelimiter) {
+				reader.skip(1);  // Consume '"'.
+				value = reader.readUntil(Character.toString(valueDelimiter)).getSequence().toString();
+			}
+			else {
+				value = readToken(commandEnd, commentStart, commentEnd, keyValueSeparator);
+			}
+			consumeWhiteSpaceAndComments(commentStart, commentEnd);
+		}
+		return new MetaInformationEvent(keyPrefix + key, value);
+	}
+	
 	
 	/**
 	 * Returns the reader providing the document contents.
