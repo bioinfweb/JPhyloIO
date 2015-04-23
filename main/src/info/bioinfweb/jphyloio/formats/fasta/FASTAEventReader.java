@@ -48,15 +48,21 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	
 	
 	private String currentSequenceName = null;
+	private String firstSequenceName = null;
 	
 	
 	/**
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the FASTA data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public FASTAEventReader(BufferedReader reader) throws IOException {
-		super(reader);
+	public FASTAEventReader(BufferedReader reader, boolean translateMatchToken) throws IOException {
+		super(reader, translateMatchToken);
 	}
 
 	
@@ -64,9 +70,14 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param file the FASTA file to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public FASTAEventReader(File file) throws IOException {
-		super(file);
+	public FASTAEventReader(File file, boolean translateMatchToken) throws IOException {
+		super(file, translateMatchToken);
 	}
 
 	
@@ -74,9 +85,14 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param stream the stream providing the FASTA data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public FASTAEventReader(InputStream stream) throws IOException {
-		super(stream);
+	public FASTAEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
+		super(stream, translateMatchToken);
 	}
 
 	
@@ -84,9 +100,14 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the FASTA data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public FASTAEventReader(Reader reader) throws IOException {
-		super(reader);
+	public FASTAEventReader(Reader reader, boolean translateMatchToken) throws IOException {
+		super(reader, translateMatchToken);
 	}
 	
 	
@@ -94,6 +115,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
+				currentPosition = 0;
 				return null;
 			}
 			else {
@@ -123,13 +145,15 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					if (alignmentEndEvent != null) {
 						return alignmentEndEvent;
 					}
+					firstSequenceName = currentSequenceName;
 					lineConsumed = true;  
 					// fall through
 				case SEQUENCE_CHARACTERS:
 					// Check if new name needs to be read:
 					int c = getReader().peek();
 					if ((c == -1) || (lineConsumed && (c == (int)NAME_START_CHAR))) {
-						alignmentEndEvent = readSequenceStart("Inconsistent stream. (The cause might code outside this class reading from the same stream.)");
+						alignmentEndEvent = readSequenceStart(
+								"Inconsistent stream. (The cause might be code outside this class reading from the same stream.)");
 						if (alignmentEndEvent != null) {
 							return alignmentEndEvent;
 						}
@@ -145,7 +169,17 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					PeekReader.ReadResult lineResult = getReader().readLine(getMaxTokensToRead());
 					List<String> tokenList = new ArrayList<String>(lineResult.getSequence().length());
 					for (int i = 0; i < lineResult.getSequence().length(); i++) {
-						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
+						String token = Character.toString(lineResult.getSequence().charAt(i));
+						if (isTranslateMatchToken()) {
+							if (firstSequenceName.equals(currentSequenceName)) {
+								firstSequence.add(token);
+							}
+							else {
+								token = replaceMatchToken(token);
+							}
+						}
+						tokenList.add(token);
+						currentPosition++;
 					}
 					lineConsumed = lineResult.isCompletelyRead();					
 					return new SequenceCharactersEvent(currentSequenceName, tokenList);

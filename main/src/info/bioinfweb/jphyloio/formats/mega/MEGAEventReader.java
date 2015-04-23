@@ -76,9 +76,13 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the MEGA data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 */
-	public MEGAEventReader(BufferedReader reader) throws IOException {
-		super(reader);
+	public MEGAEventReader(BufferedReader reader, boolean translateMatchToken) throws IOException {
+		super(reader, translateMatchToken);
 	}
 
 	
@@ -86,9 +90,13 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param file the MEGA file to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 */
-	public MEGAEventReader(File file) throws IOException {
-		super(file);
+	public MEGAEventReader(File file, boolean translateMatchToken) throws IOException {
+		super(file, translateMatchToken);
 	}
 
 	
@@ -96,9 +104,13 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param stream the stream providing the MEGA data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 */
-	public MEGAEventReader(InputStream stream) throws IOException {
-		super(stream);
+	public MEGAEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
+		super(stream, translateMatchToken);
 	}
 
 	
@@ -106,9 +118,13 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the MEGA data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 */
-	public MEGAEventReader(Reader reader) throws IOException {
-		super(reader);
+	public MEGAEventReader(Reader reader, boolean translateMatchToken) throws IOException {
+		super(reader, translateMatchToken);
 	}
 	
 	

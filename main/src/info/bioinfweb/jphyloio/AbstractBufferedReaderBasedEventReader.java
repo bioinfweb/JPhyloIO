@@ -60,9 +60,13 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the document data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 */
-	public AbstractBufferedReaderBasedEventReader(PeekReader reader) {
-		super();
+	public AbstractBufferedReaderBasedEventReader(PeekReader reader, boolean translateMatchToken) {
+		super(translateMatchToken);
 		this.reader = reader;
 	}
 	
@@ -71,9 +75,13 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the document data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 */
-	public AbstractBufferedReaderBasedEventReader(Reader reader) throws IOException {
-		super();
+	public AbstractBufferedReaderBasedEventReader(Reader reader, boolean translateMatchToken) throws IOException {
+		super(translateMatchToken);
 		if (!(reader instanceof BufferedReader)) {
 			reader = new BufferedReader(reader);
 		}
@@ -85,9 +93,13 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 * Creates a new instance of this class.
 	 * 
 	 * @param stream the stream providing the document data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 */
-	public AbstractBufferedReaderBasedEventReader(InputStream stream) throws IOException {
-		this(new InputStreamReader(stream));
+	public AbstractBufferedReaderBasedEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
+		this(new InputStreamReader(stream), translateMatchToken);
 	}
 	
 	
@@ -95,9 +107,13 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 * Creates a new instance of this class.
 	 * 
 	 * @param file the document file to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 */
-	public AbstractBufferedReaderBasedEventReader(File file) throws IOException{
-		this(new FileReader(file));
+	public AbstractBufferedReaderBasedEventReader(File file, boolean translateMatchToken) throws IOException{
+		this(new FileReader(file), translateMatchToken);
 	}
 
 
@@ -127,8 +143,9 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	protected List<String> createTokenList(CharSequence sequence) {
 		List<String> result = new ArrayList<String>(sequence.length());
 		for (int i = 0; i < sequence.length(); i++) {
-			if (!Character.isWhitespace(sequence.charAt(i))) {  // E.g. Phylip and MEGA allow white spaces in between sequences
-				result.add(Character.toString(sequence.charAt(i)));
+			char c = sequence.charAt(i);
+			if (!Character.isWhitespace(c)) {  // E.g. Phylip and MEGA allow white spaces in between sequences
+				result.add(Character.toString(c));
 			}
 		}
 		return result;
@@ -210,12 +227,12 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	
 	
 	protected JPhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws Exception {
-		final Pattern pattern = Pattern.compile(".+(\\n|\\r|\\" + commentStart + ")");
+		final Pattern pattern = Pattern.compile(".*(\\n|\\r|\\" + commentStart + ")");
 		StringBuffer content = new StringBuffer(getMaxTokensToRead());
 		char lastChar = commentStart;
 		while (lastChar == commentStart) {
 			PeekReader.ReadResult readResult = getReader().readRegExp(getMaxTokensToRead() - content.length(), pattern, false);  // In greedy mode the start of a nested comment could be consumed.
-			lastChar = readResult.getSequence().charAt(readResult.getSequence().length() - 1); 
+			lastChar = StringUtils.lastChar(readResult.getSequence()); 
 			if (lastChar == commentStart) {
 				readComment(commentStart, commentEnd);
 			}
@@ -230,7 +247,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 			else {  // Maximum length was reached.
 				lineConsumed = false;
 			}
-			content.append(readResult.getSequence().subSequence(0, readResult.getSequence().length() - 1));
+			content.append(StringUtils.cutEnd(readResult.getSequence(), 1));
 		}
 		return eventFromCharacters(currentSequenceName, content);
 	}

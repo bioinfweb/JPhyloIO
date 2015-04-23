@@ -47,27 +47,26 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 	protected String currentSequenceName = null;
 
 
-	public AbstractPhylipEventReader(PeekReader reader,	boolean relaxedPhylip) {
-		super(reader);
+	public AbstractPhylipEventReader(PeekReader reader,	boolean translateMatchToken, boolean relaxedPhylip) {
+		super(reader, translateMatchToken);
 		this.relaxedPhylip = relaxedPhylip;
 	}
 
 
-	public AbstractPhylipEventReader(Reader reader,	boolean relaxedPhylip) throws IOException {
-		super(reader);
+	public AbstractPhylipEventReader(Reader reader,	boolean translateMatchToken, boolean relaxedPhylip) throws IOException {
+		super(reader, translateMatchToken);
 		this.relaxedPhylip = relaxedPhylip;
 	}
 
 
-	public AbstractPhylipEventReader(InputStream stream, boolean relaxedPhylip) throws IOException {
-		super(stream);
+	public AbstractPhylipEventReader(InputStream stream, boolean translateMatchToken, boolean relaxedPhylip) throws IOException {
+		super(stream, translateMatchToken);
 		this.relaxedPhylip = relaxedPhylip;
 	}
 
 
-	public AbstractPhylipEventReader(File file, boolean relaxedPhylip)
-			throws IOException {
-		super(file);
+	public AbstractPhylipEventReader(File file, boolean translateMatchToken, boolean relaxedPhylip) 	throws IOException {
+		super(file, translateMatchToken);
 		this.relaxedPhylip = relaxedPhylip;
 	}
 

@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 
 
 
@@ -56,45 +57,114 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
-	public NexusEventReader(File file, NexusCommandReaderFactory factory) throws IOException {
-		super(file);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param file the Nexus file to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @param factory the factory to create instances of Nexus command readers that shall be used for parsing the document
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NexusEventReader(File file, boolean translateMatchToken, NexusCommandReaderFactory factory) throws IOException {
+		super(file, translateMatchToken);
 		this.factory = factory;
 		initStreamDataProvider();
 		
 	}
 	
 
-	public NexusEventReader(InputStream stream, NexusCommandReaderFactory factory) throws IOException {
-		super(stream);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param reader the stream providing the Nexus data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @param translateMatchToken
+	 * @param factory the factory to create instances of Nexus command readers that shall be used for parsing the document
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NexusEventReader(InputStream stream, boolean translateMatchToken, NexusCommandReaderFactory factory) throws IOException {
+		super(stream, translateMatchToken);
 		this.factory = factory;
 		initStreamDataProvider();
 	}
 	
 
-	public NexusEventReader(PeekReader reader, NexusCommandReaderFactory factory) {
-		super(reader);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param reader the reader providing the Nexus data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @param factory the factory to create instances of Nexus command readers that shall be used for parsing the document
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NexusEventReader(PeekReader reader, boolean translateMatchToken, NexusCommandReaderFactory factory) {
+		super(reader, translateMatchToken);
 		this.factory = factory;
 		initStreamDataProvider();
 	}
 
 	
-	public NexusEventReader(Reader reader, NexusCommandReaderFactory factory) throws IOException {
-		super(reader);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param reader the reader providing the FASTA data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @param factory the factory to create instances of Nexus command readers that shall be used for parsing the document
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NexusEventReader(Reader reader, boolean translateMatchToken, NexusCommandReaderFactory factory) throws IOException {
+		super(reader, translateMatchToken);
 		this.factory = factory;
 		initStreamDataProvider();
 	}
 
 	
+	/**
+	 * Specifies whether {@link MetaInformationEvent}s will be fired for all Nexus commands with no according reader
+	 * stored in the factory. The key will be the name of the command and the value will be its contents.
+	 * <p>
+	 * Note that e.g. {@link FormatReader} will fired additional Nexus specific meta events, even if this property
+	 * is set to {@code false}.  
+	 * 
+	 * @return {@code true} if meta events will be fired, {@code false} otherwise
+	 */
 	public boolean isMetaEventsForUnknownCommands() {
 		return metaEventsForUnknownCommands;
 	}
 
 
+	/**
+	 * Use this method to switch firing meta events for unknown Nexus commands on and off.
+	 * 
+	 * @param metaEventsForUnknownCommands Specify {@code true} here, to receive meta events from now on or 
+	 *        {@code false} to let the reader ignore unknown Nexus commands.
+	 */
 	public void setMetaEventsForUnknownCommands(boolean metaEventsForUnknownCommands) {
 		this.metaEventsForUnknownCommands = metaEventsForUnknownCommands;
 	}
 
 
+	/**
+	 * Returns the stream and data provider used by this reader to share information between the different
+	 * underlying implementations if {@link NexusCommandEventReader}.
+	 * <p>
+	 * The returned object should only be used by the underlying command readers. Do not read data from the provided
+	 * streams directly to avoid unexpected behavior. 
+	 * 
+	 * @return the shared stream and data provider
+	 */
 	public NexusStreamDataProvider getStreamDataProvider() {
 		return streamDataProvider;
 	}
@@ -122,6 +192,13 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
+	/**
+	 * Returns the next queued event and removes it from the internal queue. This method should only
+	 * be used by implementations of {@link NexusCommandEventReader}. Application developers should
+	 * never call this method directly, but always use {@link #next()} instead.
+	 * 
+	 * @return the next event in the queue or {@code null} if no event is currently queued
+	 */
 	protected JPhyloIOEvent pollUpcommingEvent() {
 		return upcommingEvents.poll();
 	}

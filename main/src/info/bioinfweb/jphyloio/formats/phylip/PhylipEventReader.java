@@ -53,7 +53,11 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param reader the reader providing the Phylip data to be read 
+	 * @param reader the reader providing the Phylip data to be read
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
@@ -61,9 +65,12 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public PhylipEventReader(BufferedReader reader, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
-		super(reader, relaxedPhylip);
+	public PhylipEventReader(BufferedReader reader, boolean translateMatchToken, boolean allowInterleavedParsing, 
+			boolean relaxedPhylip) throws IOException {
+		
+		super(reader, translateMatchToken, relaxedPhylip);
 		this.allowInterleavedParsing = allowInterleavedParsing;
 	}
 
@@ -72,6 +79,10 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param file the Phylip file to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
@@ -79,9 +90,12 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public PhylipEventReader(File file, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
-		super(file, relaxedPhylip);
+	public PhylipEventReader(File file, boolean translateMatchToken, boolean allowInterleavedParsing, boolean relaxedPhylip) 
+			throws IOException {
+		
+		super(file, translateMatchToken, relaxedPhylip);
 		this.allowInterleavedParsing = allowInterleavedParsing;
 	}
 
@@ -90,6 +104,10 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param stream the stream providing the Phylip data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
@@ -97,9 +115,12 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public PhylipEventReader(InputStream stream, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
-		super(stream, relaxedPhylip);
+	public PhylipEventReader(InputStream stream, boolean translateMatchToken, boolean allowInterleavedParsing, 
+			boolean relaxedPhylip) throws IOException {
+		
+		super(stream, translateMatchToken, relaxedPhylip);
 		this.allowInterleavedParsing = allowInterleavedParsing;
 	}
 
@@ -108,6 +129,10 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the Phylip data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
@@ -115,9 +140,12 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public PhylipEventReader(Reader reader, boolean allowInterleavedParsing, boolean relaxedPhylip) throws IOException {
-		super(reader, relaxedPhylip);
+	public PhylipEventReader(Reader reader, boolean translateMatchToken, boolean allowInterleavedParsing, 
+			boolean relaxedPhylip) throws IOException {
+		
+		super(reader, translateMatchToken, relaxedPhylip);
 		this.allowInterleavedParsing = allowInterleavedParsing;
 	}
 	

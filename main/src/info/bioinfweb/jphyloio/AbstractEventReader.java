@@ -19,13 +19,16 @@
 package info.bioinfweb.jphyloio;
 
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SequenceCharactersEvent;
 
 
 
@@ -41,16 +44,22 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	private boolean beforeFirstAccess = true;
 	private boolean dataSourceClosed = false;
 	private int maxTokensToRead;
+	private boolean translateMatchToken;
+	private String matchToken = ".";
+	protected List<String> firstSequence = new ArrayList<String>();
+	protected long currentPosition = -1;
+	
 
 	
-	public AbstractEventReader() {
-		this(DEFAULT_MAX_CHARS_TO_READ);
+	public AbstractEventReader(boolean translateMatchToken) {
+		this(translateMatchToken, DEFAULT_MAX_CHARS_TO_READ);
 	}
 
 
-	public AbstractEventReader(int maxTokensToRead) {
+	public AbstractEventReader(boolean translateMatchToken, int maxTokensToRead) {
 		super();
 		this.maxTokensToRead = maxTokensToRead;
+		this.translateMatchToken = translateMatchToken;
 	}
 
 
@@ -61,6 +70,47 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 
 	public void setMaxTokensToRead(int maxTokensToRead) {
 		this.maxTokensToRead = maxTokensToRead;
+	}
+
+
+	/**
+	 * Returns whether the match character or token (usually '.') shall automatically be replaced by the 
+	 * according token from the first sequence.
+	 * 
+	 * @return {@code true} if a match token will be replaced, {@code false} otherwise
+	 */
+	public boolean isTranslateMatchToken() {
+		return translateMatchToken;
+	}
+
+
+	/**
+	 * Returns the match token to be used for parsing.
+	 * <p>
+	 * The match token (usually '.') is a token that can be used in all sequences after the first to indicate that
+	 * its position is identical with the same position in the first sequence. 
+	 * 
+	 * @return the match token ('.' by default)
+	 */
+	public String getMatchToken() {
+		return matchToken;
+	}
+
+
+	/**
+	 * Allows to specify the match token to be used for parsing. This property should usually not be changed during the
+	 * parsing of an alignment.
+	 * <p>
+	 * The match token (usually '.') is a token that can be used in all sequences after the first to indicate that
+	 * its position is identical with the same position in the first sequence.
+	 * <p>
+	 * Note that this property is only relevant, if {@link #isTranslateMatchToken()} was set to {@code true} in the
+	 * constructor. 
+	 * 
+	 * @param matchToken the new match token to be used from now on
+	 */
+	public void setMatchToken(String matchToken) {
+		this.matchToken = matchToken;
 	}
 
 
@@ -103,6 +153,31 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 		event.getMetaInformationMap().put(META_KEY_SEQUENCE_COUNT, sequenceCount);
 		event.getMetaInformationMap().put(META_KEY_CHARACTER_COUNT, characterCount);
 		return event;
+	}
+	
+	
+	protected String replaceMatchToken(String token) {
+		if (token.equals(getMatchToken())) {
+			if (currentPosition > Integer.MAX_VALUE) {
+				throw new IndexOutOfBoundsException("Sequences with more than " + Integer.MAX_VALUE + 
+						" characters are not supported if replacing match tokens is switched on."); 
+			}
+			else if (currentPosition >= firstSequence.size()) {
+				throw new IndexOutOfBoundsException("The match token in column " + currentPosition + 
+						" cannot be replaced because the first sequence only has " + firstSequence.size() + " characters."); 
+			}
+			else {
+				return firstSequence.get((int)currentPosition);
+			}
+		}
+		else {
+			return token;
+		}
+	}
+	
+	
+	protected SequenceCharactersEvent createSequenceCharactersEvent(String sequenceName, List<String> tokens) {
+		return new SequenceCharactersEvent(sequenceName, tokens);
 	}
 	
 
