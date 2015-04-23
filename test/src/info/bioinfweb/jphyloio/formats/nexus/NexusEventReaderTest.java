@@ -140,12 +140,12 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "NOLABELS", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "INTERLEAVE", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TRANSPOSE", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
 				
 				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
@@ -180,13 +180,13 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "NOLABELS", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "INTERLEAVE", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TRANSPOSE", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TOKENS", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
 				
 				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
@@ -221,12 +221,12 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "Continuous", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "NOLABELS", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "INTERLEAVE", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TRANSPOSE", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "Continuous", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
 				
 				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
@@ -262,9 +262,9 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
 
 				assertCommentEvent("comment 1", reader);
 				assertCharactersEvent("A", "CGGTCAT", reader);
@@ -302,10 +302,10 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TOKENS", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
 
 				assertCommentEvent("comment 1", reader);
 				assertCharactersEvent("A", new String[]{"Eins", "Zwei", "Eins"}, reader);
@@ -343,9 +343,9 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "continuous", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "continuous", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
 
 				assertCommentEvent("comment 1", reader);
 				assertCharactersEvent("A", new String[]{"18", "20", "2"}, reader);
@@ -383,9 +383,9 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
 				
 				assertCommentEvent("comment 1", reader);
 				assertCharactersEvent("A", new String[]{"(CG)", "G", "G", "T", "C", "A", "T"}, reader);
@@ -423,10 +423,10 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "TOKENS", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
 
 				assertCommentEvent("comment 1", reader);
 				assertCharactersEvent("A", new String[]{"Eins", "(Zwei Drei)", "Eins"}, reader);
@@ -464,9 +464,9 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "DATATYPE", "DNA", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "MISSING", "?", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "GAP", "-", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "datatype", "DNA", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "missing", "?", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "gap", "-", reader);
 
 				assertCommentEvent(" 0....5. ", reader);
 				assertCharactersEvent("A", "CGGTCAT", reader);
