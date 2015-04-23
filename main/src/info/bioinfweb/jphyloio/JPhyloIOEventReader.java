@@ -34,6 +34,55 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
  */
 public interface JPhyloIOEventReader {
 	/**
+	 * Returns the maximum length a comment may have, before it is split into separate events.
+	 * <p>
+	 * The default value is {@link #DEFAULT_MAX_COMMENT_LENGTH}.
+	 * 
+	 * @return the maximum allowed number of characters for a single comment
+	 */
+	public int getMaxCommentLength();
+
+	/**
+	 * Allows the specify the maximum length a comment may have, before it is split into separate events.
+	 * 
+	 * @param maxCommentLength the maximum allowed number of characters for a single comment that shall be 
+	 *        used from now on
+	 */
+	public void setMaxCommentLength(int maxCommentLength);
+	
+	/**
+	 * Returns whether the match character or token (usually '.') shall automatically be replaced by the 
+	 * according token from the first sequence.
+	 * 
+	 * @return {@code true} if a match token will be replaced, {@code false} otherwise
+	 */
+	public boolean isTranslateMatchToken();
+
+	/**
+	 * Returns the match token to be used for parsing.
+	 * <p>
+	 * The match token (usually '.') is a token that can be used in all sequences after the first to indicate that
+	 * its position is identical with the same position in the first sequence. 
+	 * 
+	 * @return the match token ('.' by default)
+	 */
+	public String getMatchToken();
+
+	/**
+	 * Allows to specify the match token to be used for parsing. This property should usually not be changed during the
+	 * parsing of an alignment.
+	 * <p>
+	 * The match token (usually '.') is a token that can be used in all sequences after the first to indicate that
+	 * its position is identical with the same position in the first sequence.
+	 * <p>
+	 * Note that this property is only relevant, if {@link #isTranslateMatchToken()} was set to {@code true} in the
+	 * constructor. 
+	 * 
+	 * @param matchToken the new match token to be used from now on
+	 */
+	public void setMatchToken(String matchToken);
+	
+	/**
 	 * Checks if another event could be parsed from the underlying document.
 	 * 
 	 * @return {@code true} if another event is waiting, {@code false} if the end of the underlying document was reached

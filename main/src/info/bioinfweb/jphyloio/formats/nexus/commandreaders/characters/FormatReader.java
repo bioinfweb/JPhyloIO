@@ -51,7 +51,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	
 	
 	private void processSubcommand(String key, final String value) {
-		key = key.substring(KEY_PREFIX.length());  // Remove key prefix for comparison
+		key = key.substring(KEY_PREFIX.length()).toUpperCase();  // Remove key prefix for comparison
 		
 		if (FORMAT_SUBCOMMAND_TOKENS.equals(key) || 
 				(FORMAT_SUBCOMMAND_DATA_TYPE.equals(key) && FORMAT_VALUE_CONTINUOUS_DATA_TYPE.equals(value.toUpperCase()))) {

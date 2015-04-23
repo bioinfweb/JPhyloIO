@@ -19,9 +19,7 @@
 package info.bioinfweb.jphyloio;
 
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -46,14 +44,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	private int maxTokensToRead;
 	private boolean translateMatchToken;
 	private String matchToken = ".";
-	private List<String> firstSequence = new ArrayList<String>();
-	private long currentPosition = -1;
-	/** Start position for sequences in current interleaved block */
-	private long currentBlockStartPosition = 0;
-	private long currentBlockLength = 0;
-	private String firstSequenceName = null;
-	private String currentSequenceName = null;
-	
+	private SequenceCharacterEventManager sequenceCharacterEventManager = new SequenceCharacterEventManager(this);
 
 	
 	public AbstractEventReader(boolean translateMatchToken) {
@@ -120,6 +111,17 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 
 
 	/**
+	 * Returns the manager object used by this instance to create {@link SequenceCharactersEvent}s. Such events should
+	 * always be created using the returned object by inherited classes and never directly. 
+	 * 
+	 * @return the character event manager used by this instance (never {@code null})
+	 */
+	protected SequenceCharacterEventManager getSequenceCharacterEventManager() {
+		return sequenceCharacterEventManager;
+	}
+
+
+	/**
 	 * Returns the event that has been returned by the previous call of {@link #readNextEvent()}.
 	 * 
 	 * @return the previous event or {@code null} if there was no previous call of {@link #readNextEvent()}
@@ -161,70 +163,6 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	}
 	
 	
-	protected String replaceMatchToken(String token) {
-		if (token.equals(getMatchToken())) {
-			if (currentPosition > Integer.MAX_VALUE) {
-				throw new IndexOutOfBoundsException("Sequences with more than " + Integer.MAX_VALUE + 
-						" characters are not supported if replacing match tokens is switched on."); 
-			}
-			else if (currentPosition >= firstSequence.size()) {
-				throw new IndexOutOfBoundsException("The match token in column " + currentPosition + 
-						" cannot be replaced because the first sequence only has " + firstSequence.size() + " characters."); 
-			}
-			else {
-				return firstSequence.get((int)currentPosition);
-			}
-		}
-		else {
-			return token;
-		}
-	}
-	
-	
-	/**
-	 * Creates a sequence character event object from the provided data and manages the replacement of match tokens
-	 * by tokens of the first sequence.
-	 * <p>
-	 * This method stores the tokens of the first sequence and the current sequence position. Therefore implementing 
-	 * readers supporting match token replacement must always use this method to create sequence character event 
-	 * objects and never do this directly, otherwise the replacement by this method will not work.
-	 * 
-	 * @param sequenceName the name of the sequence to append the tokens
-	 * @param tokens the newly read tokens
-	 * @return the event object
-	 * @throws NullPointerException if either the sequence name or the token list is {@code null}
-	 */
-	protected SequenceCharactersEvent createSequenceCharactersEvent(String sequenceName, List<String> tokens) {
-		if ((sequenceName == null) || (tokens == null)) {
-			throw new NullPointerException("Sequence names must not be null.");
-		}
-		else {
-			if (isTranslateMatchToken()) {
-				if (!sequenceName.equals(currentSequenceName)) {
-					currentSequenceName = sequenceName;
-					currentPosition = currentBlockStartPosition;
-				}
-				if (firstSequenceName == null) {
-					firstSequenceName = sequenceName;
-				}
-				
-				if (firstSequenceName.equals(sequenceName)) {
-					firstSequence.addAll(tokens);
-					currentBlockStartPosition += currentBlockLength;  // Add length of previous block that is now finished.
-					currentBlockLength = tokens.size();  // Save length of current block to add it to the start after it was processed.
-				}
-				else {
-					for (int i = 0; i < tokens.size(); i++) {
-						tokens.set(i, replaceMatchToken(tokens.get(i)));
-						currentPosition++;
-					}
-				}
-			}
-			return new SequenceCharactersEvent(sequenceName, tokens);
-		}
-	}
-	
-
 	@Override
 	public boolean hasNextEvent() throws Exception {
 		ensureFirstEvent();
