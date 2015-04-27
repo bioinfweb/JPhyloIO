@@ -137,6 +137,21 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	}
 	
 	
+	private JPhyloIOEvent consumeTokenIndex() throws IOException {
+		try {
+			char c = getReader().peekChar();
+			while (Character.isWhitespace(c) || Character.isDigit(c)) {
+				getReader().skip(1);
+				c = getReader().peekChar();
+			}
+			return null;
+		}
+		catch (EOFException e) {
+			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+		}
+	}
+	
+	
 	@Override
 	protected JPhyloIOEvent readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
@@ -185,6 +200,12 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					}
 
 					// Read new tokens:
+					if (lineConsumed) {
+						alignmentEndEvent = consumeTokenIndex();
+						if (alignmentEndEvent != null) {  // The last line of the file contained only white spaces or token indices.
+							return alignmentEndEvent;
+						}
+					}
 					PeekReader.ReadResult lineResult = getReader().readLine(getMaxTokensToRead());
 					List<String> tokenList = new ArrayList<String>(lineResult.getSequence().length());
 					for (int i = 0; i < lineResult.getSequence().length(); i++) {
