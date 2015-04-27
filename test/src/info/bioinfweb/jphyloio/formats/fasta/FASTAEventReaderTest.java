@@ -28,7 +28,7 @@ import java.util.EnumSet;
 import org.junit.* ;
 
 import static org.junit.Assert.* ;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 
 
 
@@ -117,6 +117,53 @@ public class FASTAEventReaderTest {
 				assertCharactersEvent("Seq 1", "ATCG-AG", reader);
 				assertCharactersEvent("Seq 2", "ATGG-AG", reader);
 				assertCharactersEvent("Seq 3", "AACGTAG", reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+
+	
+	@Test
+	public void testReadingFastaWithComments() {
+		try {
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Comment.fasta"), false);
+			try {
+				reader.setMaxCommentLength(16);;
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertCommentEvent("comment 1", false, reader);
+				assertCharactersEvent("Seq 1", "ATCGT", reader);
+				
+				assertCharactersEvent("Seq 2", "CGT>AA>CG", reader);
+				assertCharactersEvent("Seq 2", "ACGT", reader);
+				
+				assertCommentEvent(" comment 2 ", false, reader);
+				assertTrue(reader.hasNextEvent());
+				SequenceTokensEvent event = reader.next().asSequenceTokensEvent();
+				assertEquals("Empty sequence", event.getSequenceName());
+				assertEquals(0, event.getCharacterValues().size());
+				
+				assertCommentEvent("longer comment 0", true, reader);
+				assertCommentEvent("123456789", false, reader);
+				assertCommentEvent(" another comment", false, reader);
+				assertCharactersEvent("Seq 3", "GCCAT", reader);
 				
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());

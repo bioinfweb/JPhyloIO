@@ -1,0 +1,12 @@
+>Seq 1
+;comment 1
+ATCGT
+>Seq 2
+CGT>AA>CG
+ACGT
+>Empty sequence
+; comment 2 
+>Seq 3
+;longer comment 0123456789
+; another comment
+GCCAT
