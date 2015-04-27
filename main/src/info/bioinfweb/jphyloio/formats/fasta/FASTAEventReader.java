@@ -30,10 +30,13 @@ import java.util.Collections;
 import java.util.List;
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 
 
@@ -44,6 +47,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
  */
 public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 	public static final char NAME_START_CHAR = '>';
+	public static final char COMMENT_START_CHAR = ';';
 	
 	
 	private String currentSequenceName = null;
@@ -113,6 +117,14 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
+				while (getReader().peekChar() == COMMENT_START_CHAR) {
+					getReader().read();  // Consume ';'.
+					ReadResult readResult;
+					do {
+						readResult = getReader().readLine(getMaxCommentLength());
+						upcommingEvents.add(new CommentEvent(readResult.getSequence().toString(), !readResult.isCompletelyRead()));
+					} while (!readResult.isCompletelyRead());
+				}
 				return null;
 			}
 			else {
@@ -130,6 +142,9 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 		if (isBeforeFirstAccess()) {
 			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
+		else if (!upcommingEvents.isEmpty()) {
+			return upcommingEvents.poll();
+		}
 		else {
 			JPhyloIOEvent alignmentEndEvent;
 			
@@ -142,9 +157,13 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					if (alignmentEndEvent != null) {
 						return alignmentEndEvent;
 					}
+					else if (!upcommingEvents.isEmpty()) {
+						return upcommingEvents.poll();  // Return possible waiting comment event from readSequenceStart(). 
+					}
 					lineConsumed = true;  
 					// fall through
 				case SEQUENCE_CHARACTERS:
+				case COMMENT:
 					// Check if new name needs to be read:
 					int c = getReader().peek();
 					if ((c == -1) || (lineConsumed && (c == (int)NAME_START_CHAR))) {
@@ -156,7 +175,11 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 						else {
 							c = getReader().peek();
 							if ((c == -1) || (c == (int)NAME_START_CHAR)) {  // No characters found before the next name. => empty sequence
-								return getSequenceTokensEventManager().createEvent(currentSequenceName, Collections.<String>emptyList());
+								upcommingEvents.add(getSequenceTokensEventManager().createEvent(
+										currentSequenceName, Collections.<String>emptyList())); 
+							}
+							if (!upcommingEvents.isEmpty()) {
+								return upcommingEvents.poll();  // Return token event from above or waiting comment event from readSequenceStart(). 
 							}
 						}
 					}
