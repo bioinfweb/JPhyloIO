@@ -1,0 +1,12 @@
+>Seq 1
+ 0 ATCGT
+ 5 TCGTA
+10 TCCTG
+15 TA
+>Seq 2
+ 0 CGT>AA>CG
+ 9 ACGT
+>Empty sequence
+>Seq 3
+ 0 GCCAT
+ 5 
