@@ -648,4 +648,39 @@ public class NexusEventReaderTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
+	
+	
+	@Test
+	public void testReadingMrBayesDataTypeExtension() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatMrBayesDataType.nex"), false, factory);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", 1, 1452, reader);
+				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", 1452, 1549, reader);
+				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DISCRETE, "Standard", reader);
+				
+				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
+				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }
