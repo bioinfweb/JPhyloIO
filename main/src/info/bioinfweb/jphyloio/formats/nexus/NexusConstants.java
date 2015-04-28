@@ -66,6 +66,8 @@ public interface NexusConstants {
 	public static final String FORMAT_VALUE_RNA_DATA_TYPE = "RNA";
 	public static final String FORMAT_VALUE_PROTEIN_DATA_TYPE = "PROTEIN";
 	public static final String FORMAT_VALUE_CONTINUOUS_DATA_TYPE = "CONTINUOUS";
+	/** This is not part of the official Nexus definition, but is a MrBayes extension. */
+	public static final String FORMAT_VALUE_MIXED_DATA_TYPE = "MIXED";
 
 	public static final char MATRIX_POLYMORPHIC_TOKEN_START = '(';
 	public static final char MATRIX_POLYMORPHIC_TOKEN_END = ')';

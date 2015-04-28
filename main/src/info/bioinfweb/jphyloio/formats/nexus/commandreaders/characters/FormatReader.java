@@ -21,8 +21,14 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
@@ -46,8 +52,13 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	public static final String INFO_KEY_LABELS = "info.bioinfweb.jphyloio.nexus.labels";
 	public static final String INFO_KEY_TRANSPOSE = "info.bioinfweb.jphyloio.nexus.transpose";
 	
+	public static final Pattern MIXED_DATA_TYPE_VALUE_PATTERN = Pattern.compile(FORMAT_VALUE_MIXED_DATA_TYPE + "\\((.+)\\)", 
+			Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
+	public static final Pattern MIXED_DATA_TYPE_SINGLE_SET_PATTERN = Pattern.compile("(.+)\\:([0-9]+)\\-([0-9]+)");
+	public static final String DATA_TYPE_CHARACTER_SET_NAME_PREFIX = "DataTypeCharSet";
 	
-	private boolean continiousData = false;
+	
+	private boolean continuousData = false;
 	
 	
 	public FormatReader(NexusStreamDataProvider nexusDocument) {
@@ -72,12 +83,35 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			return TokenSetDefinitionEvent.SetType.AMINO_ACID;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_CONTINUOUS_DATA_TYPE)) {
-			continiousData = true;
+			continuousData = true;
 			return TokenSetDefinitionEvent.SetType.CONTINUOUS;
 		}
 		else {
 			return TokenSetDefinitionEvent.SetType.UNKNOWN;
 		}
+	}
+	
+	
+	private void parseMixedDataType(String content) {
+		String[] parts = content.split("\\,");
+		List<JPhyloIOEvent> events = new ArrayList<JPhyloIOEvent>(parts.length * 2);
+		for (int i = 0; i < parts.length; i++) {
+			Matcher matcher = MIXED_DATA_TYPE_SINGLE_SET_PATTERN.matcher(parts[i]);
+			if (matcher.matches()) {
+				try {
+					events.add(new CharacterSetEvent(DATA_TYPE_CHARACTER_SET_NAME_PREFIX + (i + 1), 
+							Long.parseLong(matcher.group(2)),	Long.parseLong(matcher.group(3)) + 1));
+				}
+				catch (NumberFormatException e) {
+					return;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
+				}
+				events.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), matcher.group(1)));
+			}
+			else {
+				return;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
+			}
+		}
+		getStreamDataProvider().getUpcomingEvents().addAll(events);  // Events are added to the queue when its sure that there was no parsing error.
 	}
 	
 	
@@ -92,7 +126,17 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TOKENS_FORMAT, true);
 		}
 		if (FORMAT_SUBCOMMAND_DATA_TYPE.equals(key)) {
-			result = new TokenSetDefinitionEvent(getTokenSetType(value), event.getValue());
+			Matcher matcher = MIXED_DATA_TYPE_VALUE_PATTERN.matcher(event.getValue());  // Does case insensitive matching.
+			if (matcher.matches()) {  // Parse MrBayes extension
+				parseMixedDataType(matcher.group(1));
+						//event.getValue().substring(FORMAT_VALUE_MIXED_DATA_TYPE.length() + 1, event.getValue().length() - 1));
+				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event for datatype will be returned.
+					result = getStreamDataProvider().getUpcomingEvents().poll();
+				}
+			}
+			else {
+				result = new TokenSetDefinitionEvent(getTokenSetType(value), event.getValue());
+			}
 		}
 		else if (FORMAT_SUBCOMMAND_INTERLEAVE.equals(key)) {
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_INTERLEAVE, true);
@@ -114,7 +158,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			result = new SingleTokenDefinitionEvent(event.getValue(), SingleTokenDefinitionEvent.Meaning.MISSING);
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
-			if (continiousData) {
+			if (continuousData) {
 				throw new IOException("The subcommand " + FORMAT_SUBCOMMAND_SYMBOLS + " of " + getCommandName() + " is not allowed if " +
 						FORMAT_SUBCOMMAND_DATA_TYPE + "=" + FORMAT_VALUE_CONTINUOUS_DATA_TYPE + " was specified.");  //TODO Replace by ParseException
 			}
