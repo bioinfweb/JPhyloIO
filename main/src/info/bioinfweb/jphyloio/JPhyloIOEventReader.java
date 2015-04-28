@@ -159,13 +159,4 @@ public interface JPhyloIOEventReader {
 	 *         be closed properly
 	 */
 	public void close() throws Exception;
-	
-	/**
-	 * Closes the underlying document source (usually a stream). The next call of {@link #next()} will start at the 
-	 * beginning of the document again.
-	 * 
-	 * @throws Exception Implementing classes might throw different types of exceptions if the underlying source cannot 
-	 *         reseted
-	 */
-	public void reset() throws Exception;
 }

@@ -240,13 +240,4 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	public void close() throws Exception {
 		dataSourceClosed = true;
 	}
-
-
-	@Override
-	public void reset() throws Exception {
-		next = null;
-		previous = null;
-		lastNonComment = null;
-		beforeFirstAccess = true;
-	}
 }

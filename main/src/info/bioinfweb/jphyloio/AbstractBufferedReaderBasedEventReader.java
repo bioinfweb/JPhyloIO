@@ -315,11 +315,4 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 		super.close();
 		reader.close();
 	}
-
-
-	@Override
-	public void reset() throws Exception {
-		super.reset();
-		reader.reset();
-	}
 }
