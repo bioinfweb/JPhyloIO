@@ -1,0 +1,5 @@
+#NEXUS
+
+BEGIN Characters;
+  Format DataType = Continuous Missing=? Symbols=ABC;
+END;

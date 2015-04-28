@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.events.EventType;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
@@ -609,6 +608,36 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
 				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingFormatSymbols() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuousSymbols.nex"), false, factory);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.CONTINUOUS, "Continuous", reader);
+				try {
+					assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);  // Parsing is one event ahead
+					fail("Exception not thrown");
+				}
+				catch (IOException e) {
+					assertEquals(e.getMessage(), "The subcommand SYMBOLS of FORMAT is not allowed if DATATYPE=CONTINUOUS was specified."); 
+				}
 			}
 			finally {
 				reader.close();
