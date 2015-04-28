@@ -42,6 +42,24 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 /**
  * Event based reader for FASTA alignment files.
+ * <p>
+ * This reader supports comments in lines following the name definition line. Additionally indices preceding 
+ * lines containing sequence data are allowed but are ignored by this reader.
+ * <p>
+ * <b>Example:</b>
+ * <pre>
+ *   >Sequence 1
+ *   ;Some comment
+ *   ;Another comment
+ *    0 ACGT
+ *    5 TAGC
+ *   10 TTAGT
+ *   >Sequence 2  
+ *   ACGT-ACC-TAGT
+ * </pre>
+ * <p>
+ * This reader does not process the sequence names according to any conventions. The full string following '>' 
+ * will be returned in a each {@link SequenceTokensEvent} and can be parsed later on by the application.
  * 
  * @author Ben St&ouml;ver
  */
