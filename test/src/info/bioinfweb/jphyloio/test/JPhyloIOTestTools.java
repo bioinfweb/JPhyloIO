@@ -28,6 +28,8 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 
 
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
+import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import static org.junit.Assert.*;
 
 
@@ -86,6 +88,32 @@ public class JPhyloIOTestTools {
 		MetaInformationEvent metaInformationEvent = event.asMetaInformationEvent();
 		assertEquals(expectedKey, metaInformationEvent.getKey());
 		assertEquals(expectedValue, metaInformationEvent.getValue());
+  }  
+	
+	
+  public static void assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType expectedType, String expectedParsedName, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEquals(EventType.TOKEN_SET_DEFINITION, event.getEventType());
+		
+		TokenSetDefinitionEvent tokenSetEvent = event.asTokenSetDefinitionEvent();
+		assertEquals(expectedType, tokenSetEvent.getSetType());
+		assertEquals(expectedParsedName, tokenSetEvent.getParsedName());
+  }  
+	
+	
+  public static void assertSingleTokenDefinitionEvent(String expectedTokenName, 
+  		SingleTokenDefinitionEvent.Meaning expectedMeaning,	JPhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEquals(EventType.SINGLE_TOKEN_DEFINITION, event.getEventType());
+		
+		SingleTokenDefinitionEvent tokenSetEvent = event.asSingleTokenDefinitionEvent();
+		assertEquals(expectedTokenName, tokenSetEvent.getTokenName());
+		assertEquals(expectedMeaning, tokenSetEvent.getMeaning());
   }  
 	
 	
