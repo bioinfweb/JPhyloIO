@@ -126,7 +126,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 								Character.toString(c), SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE));
 					}
 				} 
-				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {
+				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event will be returned, indicating an empty symbols subcommand.
 					result = getStreamDataProvider().getUpcomingEvents().poll();
 				}
 			}
