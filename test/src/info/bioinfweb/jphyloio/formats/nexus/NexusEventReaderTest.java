@@ -570,4 +570,53 @@ public class NexusEventReaderTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
+	
+	
+	@Test
+	public void testReadingSymbols() {
+		try {
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Symbols.nex"), false, factory);
+			try {
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				
+				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DISCRETE, "Standard", reader);
+				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
+				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
+				assertSingleTokenDefinitionEvent(".", SingleTokenDefinitionEvent.Meaning.MATCH, reader);
+				assertSingleTokenDefinitionEvent("A", SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE, reader);
+				assertSingleTokenDefinitionEvent("B", SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE, reader);
+				assertSingleTokenDefinitionEvent("C", SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE, reader);
+				assertSingleTokenDefinitionEvent("D", SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE, reader);
+				assertSingleTokenDefinitionEvent("E", SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE, reader);
+				assertSingleTokenDefinitionEvent("F", SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE, reader);
+				assertSingleTokenDefinitionEvent("G", SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE, reader);
+
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
+				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
+				
+				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
+				assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
+				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
+				assertFalse(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));  // May be false or not contained in the map.
+				
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
+				assertTrue(reader.hasNextEvent());
+				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }

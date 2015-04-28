@@ -1,0 +1,5 @@
+#NEXUS
+
+BEGIN Characters;
+  Format DataType = Standard Missing=? Gap= - MatchChar=. Symbols="AB C D EFG" NoLabels Interleave Transpose;
+END;
