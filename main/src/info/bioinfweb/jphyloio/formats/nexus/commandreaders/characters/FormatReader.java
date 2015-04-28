@@ -21,8 +21,6 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -49,6 +47,9 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	public static final String INFO_KEY_TRANSPOSE = "info.bioinfweb.jphyloio.nexus.transpose";
 	
 	
+	private boolean continiousData = false;
+	
+	
 	public FormatReader(NexusStreamDataProvider nexusDocument) {
 		super("Format", new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument);
 	}
@@ -71,6 +72,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			return TokenSetDefinitionEvent.SetType.AMINO_ACID;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_CONTINUOUS_DATA_TYPE)) {
+			continiousData = true;
 			return TokenSetDefinitionEvent.SetType.CONTINUOUS;
 		}
 		else {
@@ -79,7 +81,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	}
 	
 	
-	private JPhyloIOEvent processSubcommand(MetaInformationEvent event) {
+	private JPhyloIOEvent processSubcommand(MetaInformationEvent event) throws IOException {
 		String key = event.getKey().substring(KEY_PREFIX.length()).toUpperCase();  // Remove key prefix for comparison
 		String value = event.getValue().toUpperCase();
 		JPhyloIOEvent result = event;
@@ -112,18 +114,23 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			result = new SingleTokenDefinitionEvent(event.getValue(), SingleTokenDefinitionEvent.Meaning.MISSING);
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
-			for (int i = 0; i < event.getValue().length(); i++) {
-				char c = event.getValue().charAt(i);
-				if (!Character.isWhitespace(c)) {
-					getStreamDataProvider().getUpcomingEvents().add(new SingleTokenDefinitionEvent(
-							Character.toString(c), SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE));
+			if (continiousData) {
+				throw new IOException("The subcommand " + FORMAT_SUBCOMMAND_SYMBOLS + " of " + getCommandName() + " is not allowed if " +
+						FORMAT_SUBCOMMAND_DATA_TYPE + "=" + FORMAT_VALUE_CONTINUOUS_DATA_TYPE + " was specified.");  //TODO Replace by ParseException
+			}
+			else {
+				for (int i = 0; i < event.getValue().length(); i++) {
+					char c = event.getValue().charAt(i);
+					if (!Character.isWhitespace(c)) {
+						getStreamDataProvider().getUpcomingEvents().add(new SingleTokenDefinitionEvent(
+								Character.toString(c), SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE));
+					}
+				} 
+				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {
+					result = getStreamDataProvider().getUpcomingEvents().poll();
 				}
-			} 
-			if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {
-				result = getStreamDataProvider().getUpcomingEvents().poll();
 			}
 		}
-		
 		return result;
 	}
 	
