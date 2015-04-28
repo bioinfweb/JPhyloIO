@@ -73,4 +73,16 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	public CharacterSetEvent asCharacterSetEvent() throws ClassCastException {
 		return (CharacterSetEvent)this;
 	}
+
+
+	@Override
+	public TokenSetDefinitionEvent asTokenSetDefinitionEvent() throws ClassCastException {
+		return (TokenSetDefinitionEvent)this;
+	}
+
+
+	@Override
+	public SingleTokenDefinitionEvent asSingleTokenDefinitionEvent() throws ClassCastException {
+		return (SingleTokenDefinitionEvent)this;
+	}
 }

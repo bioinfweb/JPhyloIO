@@ -18,10 +18,16 @@
  */
 package info.bioinfweb.jphyloio.formats.nexus;
 
+
 import java.util.regex.Pattern;
 
 
 
+/**
+ * Defines constants necessary to read and write Nexus files.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public interface NexusConstants {
 	public static final String FIRST_LINE = "#NEXUS";
 	public static final String BEGIN_COMMAND = "BEGIN";
@@ -50,6 +56,15 @@ public interface NexusConstants {
 	public static final String FORMAT_SUBCOMMAND_TRANSPOSE = "TRANSPOSE";
 	public static final String FORMAT_SUBCOMMAND_NO_LABELS = "NOLABELS";
 	public static final String FORMAT_SUBCOMMAND_MATCH_CHAR = "MATCHCHAR";
+	public static final String FORMAT_SUBCOMMAND_MISSING_CHAR = "MISSING";
+	public static final String FORMAT_SUBCOMMAND_GAP_CHAR = "GAP";
+	public static final String FORMAT_SUBCOMMAND_SYMBOLS = "SYMBOLS";
+	
+	public static final String FORMAT_VALUE_STANDARD_DATA_TYPE = "STANDARD";
+	public static final String FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE = "NUCLEOTIDE";
+	public static final String FORMAT_VALUE_DNA_DATA_TYPE = "DNA";
+	public static final String FORMAT_VALUE_RNA_DATA_TYPE = "RNA";
+	public static final String FORMAT_VALUE_PROTEIN_DATA_TYPE = "PROTEIN";
 	public static final String FORMAT_VALUE_CONTINUOUS_DATA_TYPE = "CONTINUOUS";
 
 	public static final char MATRIX_POLYMORPHIC_TOKEN_START = '(';

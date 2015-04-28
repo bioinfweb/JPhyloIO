@@ -76,4 +76,20 @@ public interface JPhyloIOEvent {
 	 * @throws ClassCastException if this event is not an instance of {@link CharacterSetEvent}
 	 */
 	public CharacterSetEvent asCharacterSetEvent() throws ClassCastException;	
+	
+	/**
+	 * Casts this event to a character state set definition event.
+	 * 
+	 * @return a reference to this event as a token set definition event
+	 * @throws ClassCastException if this event is not an instance of {@link TokenSetDefinitionEvent}
+	 */
+	public TokenSetDefinitionEvent asTokenSetDefinitionEvent() throws ClassCastException;	
+	
+	/**
+	 * Casts this event to a single character state symbol definition event.
+	 * 
+	 * @return a reference to this event as a token definition event
+	 * @throws ClassCastException if this event is not an instance of {@link SingleTokenDefinitionEvent}
+	 */
+	public SingleTokenDefinitionEvent asSingleTokenDefinitionEvent() throws ClassCastException;	
 }

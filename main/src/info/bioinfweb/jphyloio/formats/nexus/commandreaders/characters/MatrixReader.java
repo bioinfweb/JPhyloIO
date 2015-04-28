@@ -127,7 +127,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					// Read name:
 					if (currentSequenceLabel == null) {
 						getStreamDataProvider().consumeWhiteSpaceAndComments();
-						JPhyloIOEvent waitingEvent = getStreamDataProvider().pollUpcommingEvent();
+						JPhyloIOEvent waitingEvent = getStreamDataProvider().getUpcomingEvents().poll();
 						if (waitingEvent != null) {
 							return waitingEvent;  // Immediately return comment in front of sequence name.
 						}
@@ -157,7 +157,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 								tokenListComplete = true;  // Make sure not to include tokens after the comment in the current event.
 							}
 							else {  // Comment before the first token of a sequence.
-								return getStreamDataProvider().pollUpcommingEvent();  // Return comment that was just parsed.
+								return getStreamDataProvider().getUpcomingEvents().poll();  // Return comment that was just parsed.
 							}
 						}
 						else if (Character.isWhitespace(c)) {  // consumeWhitespaceAndComments() cannot be used here, because line breaks are relevant.

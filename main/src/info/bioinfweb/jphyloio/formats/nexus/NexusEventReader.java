@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Queue;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
@@ -204,14 +205,12 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	
 	
 	/**
-	 * Returns the next queued event and removes it from the internal queue. This method should only
-	 * be used by implementations of {@link NexusCommandEventReader}. Application developers should
-	 * never call this method directly, but always use {@link #next()} instead.
+	 * Returns the queue of upcoming events to be used by implementations of {@link NexusCommandEventReader}.
 	 * 
-	 * @return the next event in the queue or {@code null} if no event is currently queued
+	 * @return the queue of upcoming events
 	 */
-	protected JPhyloIOEvent pollUpcommingEvent() {
-		return upcommingEvents.poll();
+	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
+		return upcomingEvents;
 	}
 	
 	
@@ -305,8 +304,8 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				}
 			}
 			
-			if ((result == null) && !upcommingEvents.isEmpty()) {
-				return upcommingEvents.poll();
+			if ((result == null) && !upcomingEvents.isEmpty()) {
+				return upcomingEvents.poll();
 			}
 		}
 		return result;
@@ -324,8 +323,8 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				consumeWhiteSpaceAndComments();
 				return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 			}
-			else if (!upcommingEvents.isEmpty()) {
-				return upcommingEvents.poll();
+			else if (!upcomingEvents.isEmpty()) {
+				return upcomingEvents.poll();
 			}
 			else {
 				JPhyloIOEvent event = null;

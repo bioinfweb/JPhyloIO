@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Queue;
 import java.util.TreeMap;
 
 import info.bioinfweb.commons.collections.ParameterMap;
@@ -71,8 +72,8 @@ public class NexusStreamDataProvider {
 	}
 	
 	
-	public JPhyloIOEvent pollUpcommingEvent() {
-		return nexusReader.pollUpcommingEvent();
+	public Queue<JPhyloIOEvent> getUpcomingEvents() {
+		return nexusReader.getUpcomingEvents();
 	}
 	
 	

@@ -53,7 +53,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	private int maxCommentLength = DEFAULT_MAX_COMMENT_LENGTH;
 	private PeekReader reader;
 	protected boolean lineConsumed = true;
-	protected Queue<JPhyloIOEvent> upcommingEvents = new LinkedList<JPhyloIOEvent>();
+	protected Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
 	
 	
 	/**
@@ -192,14 +192,14 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 				length++;
 				if (length >= getMaxCommentLength()) {
 					c = reader.peekChar();
-					upcommingEvents.add(new CommentEvent(content.toString(), (c == -1) || (c == commentEnd)));
+					upcomingEvents.add(new CommentEvent(content.toString(), (c == -1) || (c == commentEnd)));
 					content.delete(0, content.length());
 					length = 0;
 				}
 				c = getReader().readChar();
 			}
 			if (content.length() > 0) {
-				upcommingEvents.add(new CommentEvent(content.toString(), true));
+				upcomingEvents.add(new CommentEvent(content.toString(), true));
 			}
 		}
 		catch (EOFException e) {

@@ -21,10 +21,14 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
+import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
@@ -50,13 +54,43 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	}
 	
 	
-	private void processSubcommand(String key, final String value) {
-		key = key.substring(KEY_PREFIX.length()).toUpperCase();  // Remove key prefix for comparison
+	private TokenSetDefinitionEvent.SetType getTokenSetType(String parsedName) {
+		if (parsedName.equals(FORMAT_VALUE_STANDARD_DATA_TYPE)) {
+			return TokenSetDefinitionEvent.SetType.DISCRETE;
+		}
+		else if (parsedName.equals(FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE)) {
+			return TokenSetDefinitionEvent.SetType.NUCLEOTIDE;
+		}
+		else if (parsedName.equals(FORMAT_VALUE_DNA_DATA_TYPE)) {
+			return TokenSetDefinitionEvent.SetType.DNA;
+		}
+		else if (parsedName.equals(FORMAT_VALUE_RNA_DATA_TYPE)) {
+			return TokenSetDefinitionEvent.SetType.RNA;
+		}
+		else if (parsedName.equals(FORMAT_VALUE_PROTEIN_DATA_TYPE)) {
+			return TokenSetDefinitionEvent.SetType.AMINO_ACID;
+		}
+		else if (parsedName.equals(FORMAT_VALUE_CONTINUOUS_DATA_TYPE)) {
+			return TokenSetDefinitionEvent.SetType.CONTINUOUS;
+		}
+		else {
+			return TokenSetDefinitionEvent.SetType.UNKNOWN;
+		}
+	}
+	
+	
+	private JPhyloIOEvent processSubcommand(MetaInformationEvent event) {
+		String key = event.getKey().substring(KEY_PREFIX.length()).toUpperCase();  // Remove key prefix for comparison
+		String value = event.getValue().toUpperCase();
+		JPhyloIOEvent result = event;
 		
 		if (FORMAT_SUBCOMMAND_TOKENS.equals(key) || 
-				(FORMAT_SUBCOMMAND_DATA_TYPE.equals(key) && FORMAT_VALUE_CONTINUOUS_DATA_TYPE.equals(value.toUpperCase()))) {
+				(FORMAT_SUBCOMMAND_DATA_TYPE.equals(key) && FORMAT_VALUE_CONTINUOUS_DATA_TYPE.equals(value))) {
 			
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TOKENS_FORMAT, true);
+		}
+		if (FORMAT_SUBCOMMAND_DATA_TYPE.equals(key)) {
+			result = new TokenSetDefinitionEvent(getTokenSetType(value), event.getValue());
 		}
 		else if (FORMAT_SUBCOMMAND_INTERLEAVE.equals(key)) {
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_INTERLEAVE, true);
@@ -68,8 +102,29 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TRANSPOSE, true);
 		}
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
-			getStreamDataProvider().getNexusReader().setMatchToken(value);
+			getStreamDataProvider().getNexusReader().setMatchToken(event.getValue());
+			result = new SingleTokenDefinitionEvent(event.getValue(), SingleTokenDefinitionEvent.Meaning.MATCH);
 		}
+		else if (FORMAT_SUBCOMMAND_GAP_CHAR.equals(key)) {
+			result = new SingleTokenDefinitionEvent(event.getValue(), SingleTokenDefinitionEvent.Meaning.GAP);
+		}
+		else if (FORMAT_SUBCOMMAND_MISSING_CHAR.equals(key)) {
+			result = new SingleTokenDefinitionEvent(event.getValue(), SingleTokenDefinitionEvent.Meaning.MISSING);
+		}
+		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
+			for (int i = 0; i < event.getValue().length(); i++) {
+				char c = event.getValue().charAt(i);
+				if (!Character.isWhitespace(c)) {
+					getStreamDataProvider().getUpcomingEvents().add(new SingleTokenDefinitionEvent(
+							Character.toString(c), SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE));
+				}
+			} 
+			if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {
+				result = getStreamDataProvider().getUpcomingEvents().poll();
+			}
+		}
+		
+		return result;
 	}
 	
 	
@@ -80,8 +135,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			if (reader.peekChar() != COMMAND_END) {
 				MetaInformationEvent event = getStreamDataProvider().readKeyValueMetaInformation(KEY_PREFIX);
-				processSubcommand(event.getKey(), event.getValue());
-				return event;  //TODO For some subcommands (e.g. character names) special events would be useful.
+				return processSubcommand(event);
 			}
 			else {
 				reader.skip(1); // Consume ';'.

@@ -122,7 +122,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					ReadResult readResult;
 					do {
 						readResult = getReader().readLine(getMaxCommentLength());
-						upcommingEvents.add(new CommentEvent(readResult.getSequence().toString(), !readResult.isCompletelyRead()));
+						upcomingEvents.add(new CommentEvent(readResult.getSequence().toString(), !readResult.isCompletelyRead()));
 					} while (!readResult.isCompletelyRead());
 				}
 				return null;
@@ -157,8 +157,8 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 		if (isBeforeFirstAccess()) {
 			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
-		else if (!upcommingEvents.isEmpty()) {
-			return upcommingEvents.poll();
+		else if (!upcomingEvents.isEmpty()) {
+			return upcomingEvents.poll();
 		}
 		else {
 			JPhyloIOEvent alignmentEndEvent;
@@ -172,8 +172,8 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 					if (alignmentEndEvent != null) {
 						return alignmentEndEvent;
 					}
-					else if (!upcommingEvents.isEmpty()) {
-						return upcommingEvents.poll();  // Return possible waiting comment event from readSequenceStart(). 
+					else if (!upcomingEvents.isEmpty()) {
+						return upcomingEvents.poll();  // Return possible waiting comment event from readSequenceStart(). 
 					}
 					lineConsumed = true;  
 					// fall through
@@ -190,11 +190,11 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
 						else {
 							c = getReader().peek();
 							if ((c == -1) || (c == (int)NAME_START_CHAR)) {  // No characters found before the next name. => empty sequence
-								upcommingEvents.add(getSequenceTokensEventManager().createEvent(
+								upcomingEvents.add(getSequenceTokensEventManager().createEvent(
 										currentSequenceName, Collections.<String>emptyList())); 
 							}
-							if (!upcommingEvents.isEmpty()) {
-								return upcommingEvents.poll();  // Return token event from above or waiting comment event from readSequenceStart(). 
+							if (!upcomingEvents.isEmpty()) {
+								return upcomingEvents.poll();  // Return token event from above or waiting comment event from readSequenceStart(). 
 							}
 						}
 					}

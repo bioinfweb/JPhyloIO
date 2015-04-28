@@ -160,7 +160,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 					result = event;
 				}
 				else {
-					upcommingEvents.add(event);
+					upcomingEvents.add(event);
 				}
 			}
 			
@@ -205,7 +205,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 			    //     start of new character set                                      || end of current set
 					if (((currentName == DEFAULT_LABEL_CHAR) && (c != DEFAULT_LABEL_CHAR)) || (c != currentName)) {
 						if ((c != currentName) && (currentName != DEFAULT_LABEL_CHAR)) {  // end current set
-							upcommingEvents.add(new CharacterSetEvent("" + currentName, start, pos));
+							upcomingEvents.add(new CharacterSetEvent("" + currentName, start, pos));
 						}
 						start = pos;
 						currentName = c;  // Either DEFAULT_LABEL_CHAR if a set ended or a new name if a new set started will be set here.
@@ -216,7 +216,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 			c = getReader().readChar();
 		}
 		if (currentName != DEFAULT_LABEL_CHAR) {
-			upcommingEvents.add(new CharacterSetEvent("" + currentName, start, pos));
+			upcomingEvents.add(new CharacterSetEvent("" + currentName, start, pos));
 		}
 		currentLabelPos = pos;
 	}
@@ -301,8 +301,8 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
-		else if (!upcommingEvents.isEmpty()) {
-			return upcommingEvents.poll();
+		else if (!upcomingEvents.isEmpty()) {
+			return upcomingEvents.poll();
 		}
 		else {
 			JPhyloIOEvent event;
@@ -322,8 +322,8 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
 					if (event != null) {
 						return event;
 					}
-					else if (!upcommingEvents.isEmpty()) {
-						return upcommingEvents.poll();  // Return comment that was possibly read in the last call of readCommand().
+					else if (!upcomingEvents.isEmpty()) {
+						return upcomingEvents.poll();  // Return comment that was possibly read in the last call of readCommand().
 					}
 					
 					int c = getReader().peek();
