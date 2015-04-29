@@ -84,22 +84,9 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 				return readDelimitedToken(MATRIX_UNCERTAINS_TOKEN_START, MATRIX_UNCERTAINS_TOKEN_END);
 			}
 			else {
-				return readName();
+				return getStreamDataProvider().readNexusWord();  // Also parses ' delimited tokens although they are formally not allowed in Nexus. 
 			}
 		}
-	}
-	
-	
-	private String readName() throws IOException {
-		PeekReader reader = getStreamDataProvider().getDataReader();
-		char c = reader.peekChar();
-		StringBuilder result = new StringBuilder();
-		while (!Character.isWhitespace(c) && (c != COMMAND_END) && (c != COMMENT_START)) {
-			result.append(c);
-			reader.skip(1);  // Consume c.
-			c = reader.peekChar();
-		}
-		return result.toString();
 	}
 	
 	
@@ -131,7 +118,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						if (waitingEvent != null) {
 							return waitingEvent;  // Immediately return comment in front of sequence name.
 						}
-						currentSequenceLabel = readName();
+						currentSequenceLabel = getStreamDataProvider().readNexusWord();
 					}
 					
 					// Read tokens:
