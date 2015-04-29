@@ -20,9 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Queue;
-import java.util.TreeMap;
 
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
@@ -59,6 +57,11 @@ public class NexusStreamDataProvider {
 
 	public void consumeWhiteSpaceAndComments() throws IOException {
 		nexusReader.consumeWhiteSpaceAndComments();
+	}
+	
+	
+	public String readNexusWord() throws IOException {
+		return nexusReader.readNexusWord();
 	}
 	
 	

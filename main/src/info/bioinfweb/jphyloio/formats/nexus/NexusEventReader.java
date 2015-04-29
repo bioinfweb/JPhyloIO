@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexus;
 
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -185,6 +186,40 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	 */
 	protected void consumeWhiteSpaceAndComments() throws IOException {
 		consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
+	}
+	
+	
+	protected String readNexusWord() throws IOException {
+		try {
+			StringBuilder result = new StringBuilder();
+			char c = getReader().peekChar();
+			if (c == WORD_DELIMITER) {
+				getReader().skip(1);  // Consume '.
+				c = getReader().peekChar();
+				while (true) {
+					if (c == WORD_DELIMITER) {
+						getReader().skip(1);  // Consume ' (either the first of two inside a word or the terminal delimiter).
+						if (getReader().peekChar() != WORD_DELIMITER) {  // Otherwise go on parsing and add one ' to the result.
+							break;
+						}
+					}
+					result.append(c);
+					getReader().skip(1);  // Consume last character.
+					c = getReader().peekChar();
+				}
+			}
+			else {
+				while (!Character.isWhitespace(c) && (c != COMMENT_START) && (c != COMMAND_END) && (c != KEY_VALUE_SEPARATOR)) {
+					result.append(c);
+					getReader().skip(1);
+					c = getReader().peekChar();
+				}
+			}
+			return result.toString();
+		}
+		catch (EOFException e) {
+			throw new IOException("Unexpected end of file inside a Nexus name.");  //TODO Replace by ParseException
+		}
 	}
 	
 	

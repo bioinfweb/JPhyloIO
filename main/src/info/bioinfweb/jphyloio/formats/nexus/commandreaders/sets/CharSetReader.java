@@ -42,8 +42,13 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	private long currentColumn = 0;
 	
 	
-	public CharSetReader(NexusStreamDataProvider nexusDocument) {
-		super("CharSet", new String[]{BLOCK_NAME_SETS}, nexusDocument);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param streamDataProvider the provider of shared Nexus data and streams
+	 */
+	public CharSetReader(NexusStreamDataProvider streamDataProvider) {
+		super("CharSet", new String[]{BLOCK_NAME_SETS}, streamDataProvider);
 	}
 
 	
@@ -57,12 +62,11 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		
 		// Read name:
 		getStreamDataProvider().consumeWhiteSpaceAndComments();
-		name = reader.readRegExp(UNTIL_WHITESPACE_COMMENT_COMMAND_EQUAL_PATTERN, false).getSequence().toString();
+		name = getStreamDataProvider().readNexusWord();
 		if (name.length() == 0) {  // Can only happen if end of file was reached. (Otherwise at least ';' or '[' must be in name.)
 			throw new IOException("Unexpected end of file");  //TODO Replace by ParseException with line and column information.
 		}
-		char end = StringUtils.lastChar(name);
-		name = StringUtils.cutEnd(name, 1);
+		char end = reader.readChar();  //StringUtils.lastChar(name);
 		
 		if (end == COMMENT_START) {
 			getStreamDataProvider().readComment();
