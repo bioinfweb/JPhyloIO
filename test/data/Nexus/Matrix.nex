@@ -5,5 +5,6 @@ BEGIN Characters;
   Format DataType = DNA Missing=? Gap= -;
   Matrix A [comment 1]CGGTCAT
          B[comment 2] CG-TCTT
-         C CG-T[comment 3]C-T;
+         C CG-T[comment 3]C-T
+         'D E' CGTCATG;
 END;

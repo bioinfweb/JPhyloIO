@@ -279,6 +279,7 @@ public class NexusEventReaderTest {
 				assertCharactersEvent("C", "CG-T", reader);
 				assertCommentEvent("comment 3", reader);
 				assertCharactersEvent("C", "C-T", reader);
+				assertCharactersEvent("D E", "CGTCATG", reader);
 				
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
