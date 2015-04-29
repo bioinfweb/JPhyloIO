@@ -14,6 +14,6 @@ BEGIN Sets [comment 1];
 	CharSet set11 Standard=12-17;CharSet set12=3;
 	CharSet set.13 = 1;   
 	CharSet 'set.14' = 1;   
-	CharSet 'set''15' = 1;   
+	CharSet 'set''15'=1;   
 	CharSet 'set 16;' = 1;   
 END;
