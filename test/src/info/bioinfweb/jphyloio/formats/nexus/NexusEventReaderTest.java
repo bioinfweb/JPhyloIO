@@ -89,6 +89,11 @@ public class NexusEventReaderTest {
 				assertCharacterSetEvent("set11", 12, 18, reader);
 				assertCharacterSetEvent("set12", 3, 4, reader);
 
+				assertCharacterSetEvent("set.13", 1, 2, reader);
+				assertCharacterSetEvent("set.14", 1, 2, reader);
+				assertCharacterSetEvent("set'15", 1, 2, reader);
+				assertCharacterSetEvent("set 16;", 1, 2, reader);
+
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
 				assertFalse(reader.hasNextEvent());
