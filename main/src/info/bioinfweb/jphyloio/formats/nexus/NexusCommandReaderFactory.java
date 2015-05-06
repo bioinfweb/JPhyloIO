@@ -52,7 +52,7 @@ public class NexusCommandReaderFactory {
 		}
 		catch (Exception e) {
 			throw new IllegalArgumentException("Unable to create instance with single " + NexusStreamDataProvider.class.getName() + 
-					" argument.", e);
+					" argument. The specified reader class does not seem to offer the appropriate constructor.", e);
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class NexusCommandReaderFactory {
 				return createReaderInstance(readerClass, streamDataProvider);
 			}
 			catch (IllegalArgumentException e) {
-				throw new InternalError(e.getCause());
+				throw new InternalError("The according reader class does not offer an contructor appropriate contructor.");
 			}
 		}
 	}
