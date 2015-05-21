@@ -30,7 +30,7 @@ import java.util.Set;
 
 
 /**
- * Tool class that consumed all events provided by an implementation of {@link JPhyloIOEventReader} and forwards them
+ * Tool class that consumes all events provided by an implementation of {@link JPhyloIOEventReader} and forwards them
  * to one or more {@link JPhyloIOEventListener}s.
  * 
  * @author Ben St&ouml;ver
