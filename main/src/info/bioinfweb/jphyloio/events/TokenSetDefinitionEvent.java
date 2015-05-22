@@ -94,7 +94,7 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 		CONTINUOUS,
 		
 		/** 
-		 * Indicates the a token set definition not enumerated by this class was found in the parsed file or it is not know
+		 * Indicates that a token set definition not enumerated by this class was found in the parsed file or it is not know
 		 * whether the set is discrete or continuous. The only information about its meaning would than be given by 
 		 * {@link TokenSetDefinition#getParsedName()}.
 		 */

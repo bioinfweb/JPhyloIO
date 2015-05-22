@@ -23,7 +23,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -98,14 +97,14 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 		for (int i = 0; i < parts.length; i++) {
 			Matcher matcher = MIXED_DATA_TYPE_SINGLE_SET_PATTERN.matcher(parts[i]);
 			if (matcher.matches()) {
+				String charSetName = DATA_TYPE_CHARACTER_SET_NAME_PREFIX + (i + 1);
 				try {
-					events.add(new CharacterSetEvent(DATA_TYPE_CHARACTER_SET_NAME_PREFIX + (i + 1), 
-							Long.parseLong(matcher.group(2)),	Long.parseLong(matcher.group(3)) + 1));
+					events.add(new CharacterSetEvent(charSetName, Long.parseLong(matcher.group(2)),	Long.parseLong(matcher.group(3)) + 1));
 				}
 				catch (NumberFormatException e) {
 					return;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
 				}
-				events.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), matcher.group(1)));
+				events.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), matcher.group(1), charSetName));
 			}
 			else {
 				return;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
