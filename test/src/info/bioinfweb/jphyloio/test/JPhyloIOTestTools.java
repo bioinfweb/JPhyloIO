@@ -94,6 +94,13 @@ public class JPhyloIOTestTools {
   public static void assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType expectedType, String expectedParsedName, 
   		JPhyloIOEventReader reader) throws Exception {
   	
+  	assertTokenSetDefinitionEvent(expectedType, expectedParsedName, null, reader);
+  }
+  
+  
+  public static void assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType expectedType, String expectedParsedName, 
+  		String expectedCharSetName, JPhyloIOEventReader reader) throws Exception {
+  	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventType.TOKEN_SET_DEFINITION, event.getEventType());
@@ -101,6 +108,7 @@ public class JPhyloIOTestTools {
 		TokenSetDefinitionEvent tokenSetEvent = event.asTokenSetDefinitionEvent();
 		assertEquals(expectedType, tokenSetEvent.getSetType());
 		assertEquals(expectedParsedName, tokenSetEvent.getParsedName());
+		assertEquals(expectedCharSetName, tokenSetEvent.getCharacterSetName());
   }  
 	
 	

@@ -667,9 +667,9 @@ public class NexusEventReaderTest {
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
 				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", 1, 1452, reader);
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
 				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", 1452, 1549, reader);
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DISCRETE, "Standard", reader);
+				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DISCRETE, "Standard", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
 				
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
