@@ -128,7 +128,6 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			Matcher matcher = MIXED_DATA_TYPE_VALUE_PATTERN.matcher(event.getValue());  // Does case insensitive matching.
 			if (matcher.matches()) {  // Parse MrBayes extension
 				parseMixedDataType(matcher.group(1));
-						//event.getValue().substring(FORMAT_VALUE_MIXED_DATA_TYPE.length() + 1, event.getValue().length() - 1));
 				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event for datatype will be returned.
 					result = getStreamDataProvider().getUpcomingEvents().poll();
 				}
