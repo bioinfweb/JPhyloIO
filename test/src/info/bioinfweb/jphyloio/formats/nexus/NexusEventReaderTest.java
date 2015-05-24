@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
-import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.TokenSetType;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 
 import java.io.File;
@@ -146,7 +146,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
@@ -186,7 +186,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
@@ -227,7 +227,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.CONTINUOUS, "Continuous", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.CONTINUOUS, "Continuous", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
@@ -268,7 +268,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 
@@ -309,7 +309,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
@@ -350,7 +350,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.CONTINUOUS, "continuous", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.CONTINUOUS, "continuous", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 
@@ -390,7 +390,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				
@@ -430,7 +430,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
@@ -471,7 +471,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 
@@ -513,7 +513,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertSingleTokenDefinitionEvent("i", SingleTokenDefinitionEvent.Meaning.MATCH, reader);
@@ -587,7 +587,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DISCRETE, "Standard", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DISCRETE, "Standard", reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertSingleTokenDefinitionEvent(".", SingleTokenDefinitionEvent.Meaning.MATCH, reader);
@@ -636,7 +636,7 @@ public class NexusEventReaderTest {
 				assertTrue(reader.hasNextEvent());
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.CONTINUOUS, "Continuous", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.CONTINUOUS, "Continuous", reader);
 				try {
 					assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);  // Parsing is one event ahead
 					fail("Exception not thrown");
@@ -667,9 +667,9 @@ public class NexusEventReaderTest {
 				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
 				
 				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", 1, 1452, reader);
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DNA, "DNA", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DNA, "DNA", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
 				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", 1452, 1549, reader);
-				assertTokenSetDefinitionEvent(TokenSetDefinitionEvent.SetType.DISCRETE, "Standard", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
+				assertTokenSetDefinitionEvent(TokenSetType.DISCRETE, "Standard", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
 				
 				assertSingleTokenDefinitionEvent("-", SingleTokenDefinitionEvent.Meaning.GAP, reader);
 				assertSingleTokenDefinitionEvent("?", SingleTokenDefinitionEvent.Meaning.MISSING, reader);
