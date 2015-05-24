@@ -30,6 +30,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.TokenSetType;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
@@ -65,28 +66,28 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	}
 	
 	
-	private TokenSetDefinitionEvent.SetType getTokenSetType(String parsedName) {
+	private TokenSetType getTokenSetType(String parsedName) {
 		if (parsedName.equals(FORMAT_VALUE_STANDARD_DATA_TYPE)) {
-			return TokenSetDefinitionEvent.SetType.DISCRETE;
+			return TokenSetType.DISCRETE;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE)) {
-			return TokenSetDefinitionEvent.SetType.NUCLEOTIDE;
+			return TokenSetType.NUCLEOTIDE;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_DNA_DATA_TYPE)) {
-			return TokenSetDefinitionEvent.SetType.DNA;
+			return TokenSetType.DNA;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_RNA_DATA_TYPE)) {
-			return TokenSetDefinitionEvent.SetType.RNA;
+			return TokenSetType.RNA;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_PROTEIN_DATA_TYPE)) {
-			return TokenSetDefinitionEvent.SetType.AMINO_ACID;
+			return TokenSetType.AMINO_ACID;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_CONTINUOUS_DATA_TYPE)) {
 			continuousData = true;
-			return TokenSetDefinitionEvent.SetType.CONTINUOUS;
+			return TokenSetType.CONTINUOUS;
 		}
 		else {
-			return TokenSetDefinitionEvent.SetType.UNKNOWN;
+			return TokenSetType.UNKNOWN;
 		}
 	}
 	

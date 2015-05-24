@@ -59,7 +59,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	
 	private String tokenName;
 	private Meaning meaning;
-	private TokenSetDefinitionEvent.SetType tokenSetType;
+	private TokenSetType tokenSetType;
 	private String tokenSetName;
 
 	
@@ -75,7 +75,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	}
 	
 	
-	public SingleTokenDefinitionEvent(String tokenName, Meaning meaning, TokenSetDefinitionEvent.SetType tokenSetType,
+	public SingleTokenDefinitionEvent(String tokenName, Meaning meaning, TokenSetType tokenSetType,
 			String tokenSetName) {
 		
 		super(EventType.SINGLE_TOKEN_DEFINITION);
@@ -124,11 +124,11 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	/**
 	 * Returns the type of the character state set this token belongs to.
 	 * 
-	 * @return the token set type or {@code null} if set was specified in the parsed file for this token
+	 * @return the token set type or {@code null} if no set was specified in the parsed file for this token
 	 *         (This usually means that this token is valid for all token sets or there is only one token
 	 *         set in the file.)
 	 */
-	public TokenSetDefinitionEvent.SetType getTokenSetType() {
+	public TokenSetType getTokenSetType() {
 		return tokenSetType;
 	}
 
