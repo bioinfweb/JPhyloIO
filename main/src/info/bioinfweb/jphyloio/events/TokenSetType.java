@@ -18,6 +18,8 @@
  */
 package info.bioinfweb.jphyloio.events;
 
+
+
 /**
  * Enumerates defined token set definitions (e.g. for DNA or protein sequences).
  * 
@@ -75,4 +77,25 @@ public enum TokenSetType {
 	 * {@link TokenSetDefinition#getParsedName()}.
 	 */
 	UNKNOWN;
+	
+	
+	/**
+	 * Tests whether this token set type describes a set of nucleotide tokens.
+	 * 
+	 * @return {@code true} if this instance is either {@link #NUCLEOTIDE}, {@link #DNA} or {@link #RNA}, {@code false}
+	 *         otherwise
+	 */
+	public boolean isNucleotide() {
+		return this.equals(NUCLEOTIDE) || this.equals(DNA) || this.equals(RNA);
+	}
+	
+	
+	/**
+	 * Tests whether this token set type describes a set of discrete tokens.
+	 * 
+	 * @return {@code false} if this instance is either {@link #CONTINUOUS} or {@link #UNKNOWN}, {@code false} otherwise
+	 */
+	public boolean isDiscrete() {
+		return !this.equals(CONTINUOUS) && !this.equals(UNKNOWN);
+	}
 }
