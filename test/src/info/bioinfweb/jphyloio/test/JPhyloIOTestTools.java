@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.test;
 
 
 import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.ChracterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -116,7 +117,7 @@ public class JPhyloIOTestTools {
 	
 	
   public static void assertSingleTokenDefinitionEvent(String expectedTokenName, 
-  		SingleTokenDefinitionEvent.Meaning expectedMeaning,	JPhyloIOEventReader reader) throws Exception {
+  		ChracterStateMeaning expectedMeaning,	JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
