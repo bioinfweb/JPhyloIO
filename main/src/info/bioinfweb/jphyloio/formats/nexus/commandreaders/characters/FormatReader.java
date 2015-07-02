@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.ChracterStateMeaning;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -148,13 +149,13 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 		}
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
 			getStreamDataProvider().getNexusReader().setMatchToken(event.getValue());
-			result = new SingleTokenDefinitionEvent(event.getValue(), SingleTokenDefinitionEvent.Meaning.MATCH);
+			result = new SingleTokenDefinitionEvent(event.getValue(), ChracterStateMeaning.MATCH);
 		}
 		else if (FORMAT_SUBCOMMAND_GAP_CHAR.equals(key)) {
-			result = new SingleTokenDefinitionEvent(event.getValue(), SingleTokenDefinitionEvent.Meaning.GAP);
+			result = new SingleTokenDefinitionEvent(event.getValue(), ChracterStateMeaning.GAP);
 		}
 		else if (FORMAT_SUBCOMMAND_MISSING_CHAR.equals(key)) {
-			result = new SingleTokenDefinitionEvent(event.getValue(), SingleTokenDefinitionEvent.Meaning.MISSING);
+			result = new SingleTokenDefinitionEvent(event.getValue(), ChracterStateMeaning.MISSING);
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
 			if (continuousData) {
@@ -166,7 +167,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 					char c = event.getValue().charAt(i);
 					if (!Character.isWhitespace(c)) {
 						getStreamDataProvider().getUpcomingEvents().add(new SingleTokenDefinitionEvent(
-								Character.toString(c), SingleTokenDefinitionEvent.Meaning.CHARACTER_STATE));
+								Character.toString(c), ChracterStateMeaning.CHARACTER_STATE));
 					}
 				} 
 				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event will be returned, indicating an empty symbols subcommand.

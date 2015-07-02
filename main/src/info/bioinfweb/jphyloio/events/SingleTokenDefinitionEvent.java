@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.ChracterStateMeaning;
 
 
 
@@ -34,34 +35,8 @@ import info.bioinfweb.commons.bio.CharacterStateType;
  * @author Ben St&ouml;ver
  */
 public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
-	/**
-	 * Enumerates defined meanings of single token definitions.
-	 * 
-	 * @author Ben St&ouml;ver
-	 */
-	public static enum Meaning {
-		/** Indicates that the string representation of a token is the gap character or token (e.g. '-'). */
-		GAP,
-		
-		/** Indicates that the string representation of a token is the missing data character or token (e.g. '?'). */
-		MISSING,
-		
-		/** Indicates that the string representation of a token is the match character or token (e.g. '.'). */
-		MATCH,
-
-		/** 
-		 * Indicates that a token is a representation of a character state (e.g. a nucleotide, an amino acid, 
-		 * an ambiguity code, ...). 
-		 */
-		CHARACTER_STATE,
-		
-		/** Indicates that a token has some other meaning which is not enumerated by this class. */
-		OTHER;
-	}
-	
-	
 	private String tokenName;
-	private Meaning meaning;
+	private ChracterStateMeaning meaning;
 	private CharacterStateType tokenSetType;
 	private String tokenSetName;
 
@@ -73,12 +48,12 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * @param meaning the meaning of the new token
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
-	public SingleTokenDefinitionEvent(String tokenName, Meaning meaning) {
+	public SingleTokenDefinitionEvent(String tokenName, ChracterStateMeaning meaning) {
 		this(tokenName, meaning, null, null);
 	}
 	
 	
-	public SingleTokenDefinitionEvent(String tokenName, Meaning meaning, CharacterStateType tokenSetType,
+	public SingleTokenDefinitionEvent(String tokenName, ChracterStateMeaning meaning, CharacterStateType tokenSetType,
 			String tokenSetName) {
 		
 		super(EventType.SINGLE_TOKEN_DEFINITION);
@@ -119,7 +94,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @return the meaning
 	 */
-	public Meaning getMeaning() {
+	public ChracterStateMeaning getMeaning() {
 		return meaning;
 	}
 
