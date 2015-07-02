@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.test;
 
 
+import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -30,7 +31,8 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
-import info.bioinfweb.jphyloio.events.TokenSetType;
+
+
 import static org.junit.Assert.*;
 
 
@@ -92,14 +94,14 @@ public class JPhyloIOTestTools {
   }  
 	
 	
-  public static void assertTokenSetDefinitionEvent(TokenSetType expectedType, String expectedParsedName, 
+  public static void assertTokenSetDefinitionEvent(CharacterStateType expectedType, String expectedParsedName, 
   		JPhyloIOEventReader reader) throws Exception {
   	
   	assertTokenSetDefinitionEvent(expectedType, expectedParsedName, null, reader);
   }
   
   
-  public static void assertTokenSetDefinitionEvent(TokenSetType expectedType, String expectedParsedName, 
+  public static void assertTokenSetDefinitionEvent(CharacterStateType expectedType, String expectedParsedName, 
   		String expectedCharSetName, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
