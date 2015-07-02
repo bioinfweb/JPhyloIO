@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import info.bioinfweb.commons.bio.CharacterStateType;
+
+
 
 /**
  * Event that indicates that a (predefined) definition of a character state set was found in the parsed file.
@@ -42,7 +45,7 @@ package info.bioinfweb.jphyloio.events;
  * @author Ben St&ouml;ver
  */
 public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
-	private TokenSetType setType;
+	private CharacterStateType setType;
 	private String parsedName;
 	private String characterSetName = null;
 	
@@ -57,7 +60,7 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * @param parsedName the format specific name of the new token set
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
-	public TokenSetDefinitionEvent(TokenSetType type, String parsedName) {
+	public TokenSetDefinitionEvent(CharacterStateType type, String parsedName) {
 		this (type, parsedName, null);
 	}
 	
@@ -76,7 +79,7 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 *        previously fired instance if {@link CharacterSetEvent}.)
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
-	public TokenSetDefinitionEvent(TokenSetType type, String parsedName, String characterSetName) {
+	public TokenSetDefinitionEvent(CharacterStateType type, String parsedName, String characterSetName) {
 		super(EventType.TOKEN_SET_DEFINITION);
 
 		if (type == null) {
@@ -100,7 +103,7 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @return the meaning of the token set as defined by {@link TokenSetType}
 	 */
-	public TokenSetType getSetType() {
+	public CharacterStateType getSetType() {
 		return setType;
 	}
 	

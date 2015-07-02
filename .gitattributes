@@ -20,7 +20,6 @@ main/src/info/bioinfweb/jphyloio/events/MetaInformationEvent.java -text svneol=u
 main/src/info/bioinfweb/jphyloio/events/SequenceTokensEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/SingleTokenDefinitionEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/TokenSetDefinitionEvent.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/events/TokenSetType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/package-info.java -text svneol=unset#text/plain

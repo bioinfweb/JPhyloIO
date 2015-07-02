@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import info.bioinfweb.commons.bio.CharacterStateType;
+
+
 
 /**
  * Event that indicates the definition of a single new valid token that could be contained in a sequence 
@@ -59,7 +62,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	
 	private String tokenName;
 	private Meaning meaning;
-	private TokenSetType tokenSetType;
+	private CharacterStateType tokenSetType;
 	private String tokenSetName;
 
 	
@@ -75,7 +78,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	}
 	
 	
-	public SingleTokenDefinitionEvent(String tokenName, Meaning meaning, TokenSetType tokenSetType,
+	public SingleTokenDefinitionEvent(String tokenName, Meaning meaning, CharacterStateType tokenSetType,
 			String tokenSetName) {
 		
 		super(EventType.SINGLE_TOKEN_DEFINITION);
@@ -128,7 +131,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 *         (This usually means that this token is valid for all token sets or there is only one token
 	 *         set in the file.)
 	 */
-	public TokenSetType getTokenSetType() {
+	public CharacterStateType getTokenSetType() {
 		return tokenSetType;
 	}
 
