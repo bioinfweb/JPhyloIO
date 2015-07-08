@@ -72,6 +72,7 @@ public class FASTAEventWriterTest {
 			assertEquals(">B", reader.readLine());
 			assertEquals(";Some other comment", reader.readLine());
 			assertEquals("CCTGT", reader.readLine());
+			assertEquals(-1, reader.read());
 		}
 		finally {
 			reader.close();
