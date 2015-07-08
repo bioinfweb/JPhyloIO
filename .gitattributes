@@ -3,12 +3,16 @@ main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+main/lib/commons-collections-3.2.1.jar -text
+main/lib/commons-lang3-3.1.jar -text
 main/src/info/bioinfweb/jphyloio/AbstractBufferedReaderBasedEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/AbstractEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/AbstractEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/EventForwarder.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/EventWriteResult.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventReader.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/JPhyloIOWriter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/JPhyloIOEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/ReadWriteConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/SequenceTokensEventManager.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/CharacterSetEvent.java -text svneol=unset#text/plain
@@ -21,7 +25,9 @@ main/src/info/bioinfweb/jphyloio/events/SequenceTokensEvent.java -text svneol=un
 main/src/info/bioinfweb/jphyloio/events/SingleTokenDefinitionEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/TokenSetDefinitionEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/package-info.java -text svneol=unset#text/plain

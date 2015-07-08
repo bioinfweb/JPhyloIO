@@ -63,11 +63,7 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader {
-	public static final char NAME_START_CHAR = '>';
-	public static final char COMMENT_START_CHAR = ';';
-	
-	
+public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader implements FASTAConstants {
 	private String currentSequenceName = null;
 	
 	

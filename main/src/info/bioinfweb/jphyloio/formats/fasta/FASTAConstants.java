@@ -16,10 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio;
+package info.bioinfweb.jphyloio.formats.fasta;
 
 
 
-public interface JPhyloIOWriter {
-	
+/**
+ * Contains format specific constants used by {@link FASTAEventReader} and {@link FASTAEventWriter}.
+ * 
+ * @author Ben St&ouml;ver
+ */
+public interface FASTAConstants {
+	public static final char NAME_START_CHAR = '>';
+	public static final char COMMENT_START_CHAR = ';';
 }
