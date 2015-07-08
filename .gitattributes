@@ -56,6 +56,7 @@ test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 test/data/Fasta/Comment.fasta -text
 test/data/Fasta/Indices.fasta -text
 test/data/Fasta/MatchToken.fasta -text
+test/data/Fasta/OutputTest.fasta -text
 test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
 test/data/MEGA/MatchToken.meg -text
@@ -88,6 +89,7 @@ test/data/Phylip/Sequential.phy -text
 test/data/Phylip/TooManyCounts.phy -text
 test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain

@@ -27,6 +27,7 @@ import java.util.EnumSet;
 
 import org.junit.* ;
 
+
 import static org.junit.Assert.* ;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 

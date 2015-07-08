@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="/JPhyloIO/bin" sourcepath="/JPhyloIO/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.bio/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.core/bin" sourcepath="/info.bioinfweb.commons.core/src"/>
+	<classpathentry kind="lib" path="/JPhyloIO/lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
