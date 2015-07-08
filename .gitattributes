@@ -55,7 +55,9 @@ test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 test/data/Fasta/Comment.fasta -text
 test/data/Fasta/Indices.fasta -text
 test/data/Fasta/MatchToken.fasta -text
-test/data/Fasta/OutputTest.fasta -text
+test/data/Fasta/OutputTestException.fasta -text
+test/data/Fasta/OutputTestLongTokens.fasta -text
+test/data/Fasta/OutputTestShortTokens.fasta -text
 test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
 test/data/MEGA/MatchToken.meg -text
