@@ -47,6 +47,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 	private boolean alignmentEndReached = false;
 	private String currentSequenceName = null;
 	private int charsPerLineWritten = 0;
+	private boolean commentContinuationExpected = false;
 	
 	
 	/**
@@ -101,6 +102,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 			currentSequenceName = event.getSequenceName();
 			getUnderlyingWriter().write(NAME_START_CHAR + currentSequenceName + SystemUtils.LINE_SEPARATOR);
 		}
+		
 		for (String token : event.getCharacterValues()) {
 			if (allowsLongTokens()) {
 				token += " "; 
@@ -113,17 +115,25 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				writeNewLine();
 			}
 			getUnderlyingWriter().write(token);
+			charsPerLineWritten += token.length();
 		}
 	}
 	
 	
 	private void writeCommentEvent(CommentEvent event) throws IOException {
-		if (charsPerLineWritten > 0) {
-			writeNewLine();
+		if (!commentContinuationExpected) {
+			if (charsPerLineWritten > 0) {
+				writeNewLine();
+			}
+			getUnderlyingWriter().write(COMMENT_START_CHAR);
 		}
-		getUnderlyingWriter().write(COMMENT_START_CHAR);
+		
 		getUnderlyingWriter().write(event.getContent());  // Single write calls are used, to avoid string copying if content is very large.
-		getUnderlyingWriter().write(SystemUtils.LINE_SEPARATOR);
+		
+		commentContinuationExpected = event.isContinuedInNextEvent();
+		if (!commentContinuationExpected) {
+			getUnderlyingWriter().write(SystemUtils.LINE_SEPARATOR);
+		}
 	}
 	
 	
@@ -145,6 +155,11 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 	@Override
 	public EventWriteResult writeEvent(JPhyloIOEvent event) throws IOException, IllegalStateException, IllegalArgumentException {
 		if (event.getEventType().equals(EventType.DOCUMENT_END) || !alignmentEndReached) {
+			if (commentContinuationExpected && !event.getEventType().equals(EventType.COMMENT)) {
+				commentContinuationExpected = false;
+				writeNewLine();  // Terminate unfinished comment.
+			}
+			
 			switch (event.getEventType()) {
 				case SEQUENCE_CHARACTERS:
 					writeTokenEvent(event.asSequenceTokensEvent());
