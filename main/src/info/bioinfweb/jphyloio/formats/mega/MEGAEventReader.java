@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
-import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
@@ -44,28 +43,12 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader {
-	public static final String FIRST_LINE = "#MEGA";
-	public static final char COMMAND_END = ';';
-	public static final char COMMAND_START = '!';
-	public static final char SEUQUENCE_START = '#';
-	public static final char COMMENT_START = '[';
-	public static final char COMMENT_END = ']';
-	public static final char DEFAULT_LABEL_CHAR = '_';
-
-	public static final String COMMAND_NAME_TITLE = "TITLE";
-	public static final String COMMAND_NAME_DESCRIPTION = "DESCRIPTION"; 
-	public static final String COMMAND_NAME_FORMAT = "FORMAT";
-	public static final String COMMAND_NAME_LABEL = "LABEL";
-	public static final String COMMAND_NAME_GENE = "GENE";
-	public static final String COMMAND_NAME_DOMAIN = "DOMAIN";
-
-	public static final Pattern READ_COMMAND_PATTERN = 
+public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader implements MEGAConstants {
+	private static final Pattern READ_COMMAND_PATTERN = 
 			Pattern.compile(".+(\\" + COMMENT_START + "|\\" + COMMAND_END + ")", Pattern.DOTALL);
-	public static final Pattern SEQUENCE_NAME_PATTERN = Pattern.compile(".+\\s+");
+	private static final Pattern SEQUENCE_NAME_PATTERN = Pattern.compile(".+\\s+");
 
 	public static final String FORMAT_KEY_PREFIX = "info.bioinfweb.jphyloio.formats.mega.format.";
-	public static final String FORMAT_SUBCOMMAND_IDENTICAL = "IDENTICAL";
 	
 	
 	private String currentSequenceName = null;
