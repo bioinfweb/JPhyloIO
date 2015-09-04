@@ -75,7 +75,6 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		super(file, translateMatchToken);
 		this.factory = factory;
 		initStreamDataProvider();
-		
 	}
 	
 
@@ -295,7 +294,8 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			if (BEGIN_COMMAND.equals(commandName)) {
 				if (currentBlockName == null) {
 					consumeWhiteSpaceAndComments();
-					currentBlockName = getReader().readRegExp(UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence().toString().toUpperCase();
+					currentBlockName = getReader().readRegExp(
+							UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence().toString().toUpperCase();
 					end = StringUtils.lastChar(currentBlockName);
 					currentBlockName = StringUtils.cutEnd(currentBlockName, 1);
 					result = createBlockStartEvent();

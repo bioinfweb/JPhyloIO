@@ -42,6 +42,9 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	
 	/**
 	 * Creates a new instance of this class.
+	 * <p>
+	 * Note that non-abstract inherited classes need to specify a constructor matching the requirements defined by 
+	 * {@link NexusCommandEventReader}.
 	 * 
 	 * @param validBlocks an array with the names of the Nexus blocks the command parsed by the implementing
 	 *        class may be contained in

@@ -29,6 +29,21 @@ import java.util.TreeMap;
 
 
 
+/**
+ * A factory class that creates instance of {@link NexusCommandEventReader}. Each Nexus command can have a specific
+ * reader, which can be created by an instance of this class. The readers that can be created by a factory instance
+ * depend on the registered reader classes (see below). 
+ * <p>
+ * An instance of this class needs to be passed to the constructor of {@link NexusEventReader}. The readers added to
+ * this factory determine the Nexus commands that will be supported by that reader instance. 
+ * <p>
+ * Any class of command reader can be added to this factory to be associated with a certain Nexus command in a certain 
+ * Nexus block. The method {@link #addJPhyloIOReaders()} can be used to add all command readers that are defined in 
+ * JPhyloIO to an instance. If additional custom readers are defined on application level, these can be added using 
+ * {@link #addReaderClass(Class)}.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class NexusCommandReaderFactory {
 	public static final char BLOCK_COMMAND_CONNECTOR = '.';
 	
@@ -36,6 +51,9 @@ public class NexusCommandReaderFactory {
 			new TreeMap<String, Class<? extends NexusCommandEventReader>>();
 
 	
+	/**
+	 * Adds all Nexus command readers available in JPhyloIO to this instance.
+	 */
 	public void addJPhyloIOReaders() {
 		addReaderClass(FormatReader.class);
 		addReaderClass(MatrixReader.class);
@@ -57,6 +75,13 @@ public class NexusCommandReaderFactory {
 	}
 	
 	
+	/**
+	 * Adds a new type of reader to this factory instance.
+	 * 
+	 * @param readerClass the class of the Nexus command reader type to be added
+	 * @throws IllegalArgumentException if the specified class does not offer an constructor as described in 
+	 *         {@link NexusCommandEventReader}
+	 */
 	public void addReaderClass(Class<? extends NexusCommandEventReader> readerClass) throws IllegalArgumentException {
 		NexusCommandEventReader reader = createReaderInstance(readerClass, null);
 		for (String blockName : reader.getValidBlocks()) {
@@ -66,12 +91,13 @@ public class NexusCommandReaderFactory {
 	
 	
 	/**
-	 * Creates a new reader instance that is able to parse the specified command in the specified block,
+	 * Creates a new reader instance that is able to parse the specified command in the specified block, if
+	 * an according class was registered in this factory instance.
 	 * 
 	 * @param blockName the name of the block the command to parse is contained in
 	 * @param commandName the name of the command to be parsed
 	 * @param streamDataProvider the stream and data provider to be used by the returned reader
-	 * @return the reader or {@code null} if no according reader was found
+	 * @return the reader or {@code null} if no according reader was found in this factory
 	 */
 	public NexusCommandEventReader createReader(String blockName, String commandName, NexusStreamDataProvider streamDataProvider) {
 		Class<? extends NexusCommandEventReader> readerClass = readers.get(blockName.toUpperCase() + BLOCK_COMMAND_CONNECTOR + 

@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 
 import java.util.Collection;
 
@@ -29,14 +30,16 @@ import java.util.Collection;
  * Interface to be implement by all classes and parse a single Nexus command and convert its contents
  * into JPhyloIO events.
  * <p>
- * Implementing instances should take information about the reader and the Nexus document as constructor
- * parameters. A new instance should be created for parsing each command. The reader should be positioned
- * at the first character behind the terminal semicolon after the implementing instance parsed all data
- * and {@link #isAllDataProcessed()} should return {@code true} then.
+ * Implementing classes must offer a constructor with a single argument of the type {@link NexusStreamDataProvider}
+ * to take information about the reader and the Nexus document.
+ * <p>
+ * A new instance should be created for parsing each command. The reader should be positioned at the first character 
+ * behind the terminal semicolon after the implementing instance parsed all data and {@link #isAllDataProcessed()} 
+ * should return {@code true} then.
  * 
  * @author Ben St&ouml;ver
  */
-public interface NexusCommandEventReader {  //TODO Define a constructor signature in the doc that must be offered by all implementations 
+public interface NexusCommandEventReader { 
 	/**
 	 * Returns the name of the Nexus command that can be parsed by this instance.
 	 * 
