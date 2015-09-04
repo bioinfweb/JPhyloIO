@@ -175,7 +175,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 					break;
 				case DOCUMENT_START:
 				case ALIGNMENT_START:
-					break;  // Return written. (This class would allow omitting DOCUMENT_START and ALIGNMENT_START.)
+					break;  // Return EventWriteResult.WRITTEN. (This class would allow omitting DOCUMENT_START and ALIGNMENT_START.)
 				default:
 					return EventWriteResult.NOT_WRITTEN;  // Unsupported event.
 			}
