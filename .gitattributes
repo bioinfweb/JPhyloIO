@@ -48,6 +48,12 @@ main/src/info/bioinfweb/jphyloio/formats/phylip/AbstractPhylipEventReader.java -
 main/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/model/CharacterData.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/model/ElementCollection.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/model/PhyloDocument.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/model/implementations/AbstractElementCollection.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/model/implementations/EmptyCharacterData.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/model/implementations/EmptyElementCollection.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/package-info.java -text svneol=unset#text/plain
 test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
