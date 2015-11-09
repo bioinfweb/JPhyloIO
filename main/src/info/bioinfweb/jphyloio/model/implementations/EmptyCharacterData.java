@@ -18,6 +18,7 @@
  */
 package info.bioinfweb.jphyloio.model.implementations;
 
+
 import info.bioinfweb.jphyloio.model.CharacterData;
 import info.bioinfweb.jphyloio.model.ElementCollection;
 

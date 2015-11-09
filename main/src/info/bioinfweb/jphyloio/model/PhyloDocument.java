@@ -18,9 +18,15 @@
  */
 package info.bioinfweb.jphyloio.model;
 
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+
 
 
 
 public interface PhyloDocument {
 	public ElementCollection<CharacterData> getCharacterDataCollection();
+
+	public long getMetaCommentEventCount();
+
+	public JPhyloIOEvent getMetaCommentEvent(long metaDataIndex);
 }
