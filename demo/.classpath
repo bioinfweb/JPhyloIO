@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/JPhyloIO/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.commons.bio/bin" sourcepath="/info.bioinfweb.commons.bio/src"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.commons.core/bin" sourcepath="/info.bioinfweb.commons.core/src"/>
+	<classpathentry kind="lib" path="/JPhyloIO/bin" sourcepath="/JPhyloIO/src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

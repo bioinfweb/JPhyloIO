@@ -1,4 +1,9 @@
 * text=auto !eol
+demo/.classpath -text svneol=unset#text/plain
+demo/.project -text svneol=unset#text/plain
+demo/data/MatrixInterleaved.nex -text
+demo/data/test.fasta -text
+demo/src/info/bioinfweb/jphyloio/demo/ReaderDemo.java -text svneol=unset#text/plain
 main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
