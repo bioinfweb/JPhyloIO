@@ -24,16 +24,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 
 import info.bioinfweb.jphyloio.JPhyloIOModelWriter;
 
 
 
 public abstract class AbstractModelWriter implements JPhyloIOModelWriter {
-	private Writer writer;
-	
-
 	@Override
 	public void writeDocument(PhyloDocument document, File file, ModelWriterParameterMap parameters) throws Exception {		
 		writeDocument(document, new BufferedWriter(new FileWriter(file)), parameters);	
@@ -43,10 +39,5 @@ public abstract class AbstractModelWriter implements JPhyloIOModelWriter {
 	@Override
 	public void writeDocument(PhyloDocument document, OutputStream stream, ModelWriterParameterMap parameters) throws Exception {		
 		writeDocument(document, new BufferedWriter(new OutputStreamWriter(stream)), parameters);		
-	}
-
-
-	protected Writer getUnderlyingWriter() {
-		return writer;
 	}
 }

@@ -39,7 +39,6 @@ public class FastaModelWriter extends AbstractModelWriter implements JPhyloIOMod
 	
 	
 	private int lineLength = DEFAULT_LINE_LENGTH;
-	private String currentSequenceName = null;
 	private int charsPerLineWritten = 0;
 	
 
@@ -48,21 +47,22 @@ public class FastaModelWriter extends AbstractModelWriter implements JPhyloIOMod
 	}
 
 
-	private void writeNewLine() throws IOException {
-		getUnderlyingWriter().write(SystemUtils.LINE_SEPARATOR);
+	private void writeNewLine(Writer writer) throws IOException {
+		writer.write(SystemUtils.LINE_SEPARATOR);
 		charsPerLineWritten = 0;
 	}
 	
 	
-	public void writeSequenceName(String sequenceName) throws IOException {
+	public void writeSequenceName(String sequenceName, Writer writer) throws IOException {
 		if (charsPerLineWritten > 0) {
-			writeNewLine();
+			writeNewLine(writer);
 		}
-		getUnderlyingWriter().write(NAME_START_CHAR + currentSequenceName + SystemUtils.LINE_SEPARATOR);
+		System.out.println(sequenceName);
+		writer.write(NAME_START_CHAR + sequenceName + SystemUtils.LINE_SEPARATOR);
 	}
 	
 	
-	private void writeTokens(ElementCollection<String> tokens, ModelWriterParameterMap parameters) throws IOException, IllegalArgumentException {
+	private void writeTokens(ElementCollection<String> tokens, ModelWriterParameterMap parameters, Writer writer) throws IOException, IllegalArgumentException {
 		Iterator<String> tokenIterator = tokens.iterator();
 		while (tokenIterator.hasNext()) {
 			String token = tokenIterator.next();
@@ -74,24 +74,25 @@ public class FastaModelWriter extends AbstractModelWriter implements JPhyloIOMod
 						+ "than one character, although this reader is set to not allow longer tokens.");
 			}
 			if (charsPerLineWritten + token.length() > lineLength) {
-				writeNewLine();
+				writeNewLine(writer);
 			}
-			getUnderlyingWriter().write(token);
+			System.out.println(token);
+			writer.write(token);
 			charsPerLineWritten += token.length();
 		}
 	}
 	
 	
-	private void writeComments(JPhyloIOEvent event) throws IOException, IllegalArgumentException {
+	private void writeComments(JPhyloIOEvent event, Writer writer) throws IOException, IllegalArgumentException {
 		if (charsPerLineWritten > 0) {
-			writeNewLine();
+			writeNewLine(writer);
 		}
 		switch (event.getEventType()) {
 			case META_INFORMATION:
 				break;
 			case COMMENT:
-				getUnderlyingWriter().write(COMMENT_START_CHAR);				
-				getUnderlyingWriter().write(event.asCommentEvent().getContent());				
+				writer.write(COMMENT_START_CHAR);				
+				writer.write(event.asCommentEvent().getContent());				
 				break;
 			default:
 				throw new IllegalArgumentException();  // Unsupported event.
@@ -105,18 +106,17 @@ public class FastaModelWriter extends AbstractModelWriter implements JPhyloIOMod
 			CharacterData sequences = document.getCharacterDataCollection().iterator().next();
 			ElementCollection<String> sequenceNames = sequences.getSequenceNames();
 			Iterator<String> sequenceNameIterator = sequenceNames.iterator();
-			int i = 0;
 			while (sequenceNameIterator.hasNext()) {
-				writeSequenceName(sequenceNameIterator.next());
+				String sequenceName = sequenceNameIterator.next();
+				writeSequenceName(sequenceName, writer);
 				long commentCount = sequenceNames.getMetaCommentEventCount(0);
 				if (commentCount > 0) {
 					Iterator<JPhyloIOEvent> metaCommentEventIterator = sequenceNames.metaCommentEventsIterator(0);
 					while (metaCommentEventIterator.hasNext()) {
-						writeComments(metaCommentEventIterator.next());
+						writeComments(metaCommentEventIterator.next(), writer);
 					}
 				}
-				writeTokens(sequences.getTokens(i), parameters);
-				i++;
+				writeTokens(sequences.getTokens(sequenceName), parameters, writer);
 			}
 		}
 	}

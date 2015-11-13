@@ -32,5 +32,5 @@ package info.bioinfweb.jphyloio.model;
 public interface CharacterData {
 	public ElementCollection<String> getSequenceNames();
 	
-	public ElementCollection<String> getTokens(long sequenceIndex);
+	public ElementCollection<String> getTokens(String sequenceName);
 }

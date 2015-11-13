@@ -35,7 +35,7 @@ public class EmptyCharacterData implements CharacterData {
 
 
 	@Override
-	public ElementCollection<String> getTokens(long sequenceIndex) {
-		throw new IndexOutOfBoundsException("There are no sequences in this collection.");
+	public ElementCollection<String> getTokens(String sequenceName) {
+		throw new IllegalArgumentException("There are no sequences in this collection.");
 	}
 }

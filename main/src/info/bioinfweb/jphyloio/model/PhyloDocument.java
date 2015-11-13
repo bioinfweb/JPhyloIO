@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.model;
 
 
+import java.util.Iterator;
+
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
@@ -28,5 +30,5 @@ public interface PhyloDocument {
 
 	public long getMetaCommentEventCount();
 
-	public JPhyloIOEvent getMetaCommentEvent(long metaDataIndex);
+	public Iterator<JPhyloIOEvent> getMetaCommentEventIterator();
 }
