@@ -8,11 +8,11 @@ import java.util.Map;
 
 
 
-public class ModelImplementation {
+public class DemoModel {
 	private Map<String, List<String>> alignmentData;
 
 	
-	public ModelImplementation() {
+	public DemoModel() {
 		super();
 		this.alignmentData = new HashMap<String, List<String>>();
 	}
