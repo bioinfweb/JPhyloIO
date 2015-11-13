@@ -2,10 +2,14 @@
 demo/.classpath -text svneol=unset#text/plain
 demo/.project -text svneol=unset#text/plain
 demo/data/MatrixInterleaved.nex -text
+demo/data/output_test.fasta -text
 demo/data/test.fasta -text
+demo/src/info/bioinfweb/jphyloio/demo/CollectionToElementCollectionAdapter.java -text svneol=unset#text/plain
 demo/src/info/bioinfweb/jphyloio/demo/DemoModel.java -text svneol=unset#text/plain
+demo/src/info/bioinfweb/jphyloio/demo/DemoPhyloDocument.java -text svneol=unset#text/plain
 demo/src/info/bioinfweb/jphyloio/demo/DemoReader.java -text svneol=unset#text/plain
 demo/src/info/bioinfweb/jphyloio/demo/DemoWriter.java -text svneol=unset#text/plain
+demo/src/info/bioinfweb/jphyloio/demo/ModelCharacterData.java -text svneol=unset#text/plain
 demo/src/info/bioinfweb/jphyloio/demo/ReadWriteDemo.java -text svneol=unset#text/plain
 main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain

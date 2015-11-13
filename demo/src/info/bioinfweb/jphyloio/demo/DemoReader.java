@@ -10,7 +10,7 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 
 
-public class DemoReader {	
+public class DemoReader {
 	public static void readFasta(DemoModel collection, JPhyloIOEventReader reader) throws Exception {
 		reader.setMaxTokensToRead(10);
 		if (reader.hasNextEvent() && reader.next().getEventType().equals(EventType.DOCUMENT_START)) {
