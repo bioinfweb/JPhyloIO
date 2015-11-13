@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.model.implementations;
 
 
+import java.util.Iterator;
+
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.model.ElementCollection;
 
@@ -39,7 +41,7 @@ public abstract class AbstractElementCollection<E> implements ElementCollection<
 
 	
 	@Override
-	public JPhyloIOEvent getMetaCommentEvent(long elementIndex, long metaDataIndex) {
+	public Iterator<JPhyloIOEvent> metaCommentEventsIterator(long elementIndex) {
 		throw new IndexOutOfBoundsException(
 				"There are not meta or comment events present for the element with the index " + elementIndex + ".");
 	}

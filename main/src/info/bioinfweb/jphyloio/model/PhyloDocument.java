@@ -18,8 +18,8 @@
  */
 package info.bioinfweb.jphyloio.model;
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 

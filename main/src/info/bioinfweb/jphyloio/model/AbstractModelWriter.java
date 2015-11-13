@@ -16,34 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.model.implementations;
+package info.bioinfweb.jphyloio.model;
 
 
-import java.util.Iterator;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
-import info.bioinfweb.jphyloio.model.ElementCollection;
+import info.bioinfweb.jphyloio.JPhyloIOModelWriter;
 
 
 
-/**
- * Implementation of an empty {@link ElementCollection}. Instances of this class can be passed to
- * <i>JPhyloIO</i> writers, if no data of the type in this collection shall be written to the 
- * document.
- * 
- * @author Ben St&ouml;ver
- *
- * @param <E> the type of element in this collection
- * @see AbstractElementCollection
- */
-public class EmptyElementCollection<E> extends AbstractElementCollection<E> {
+public abstract class AbstractModelWriter implements JPhyloIOModelWriter {
+	private Writer writer;
+	
+
 	@Override
-	public long size() {
-		return 0;
+	public void writeDocument(PhyloDocument document, File file, ModelWriterParameterMap parameters) throws Exception {		
+		writeDocument(document, new BufferedWriter(new FileWriter(file)), parameters);	
+	}
+	
+
+	@Override
+	public void writeDocument(PhyloDocument document, OutputStream stream, ModelWriterParameterMap parameters) throws Exception {		
+		writeDocument(document, new BufferedWriter(new OutputStreamWriter(stream)), parameters);		
 	}
 
-	
-	@Override
-	public Iterator<E> iterator() {
-		throw new IndexOutOfBoundsException("There are no elements in this collection.");
+
+	protected Writer getUnderlyingWriter() {
+		return writer;
 	}
 }

@@ -19,16 +19,16 @@
 package info.bioinfweb.jphyloio.model;
 
 
+import java.util.Iterator;
+
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
-public interface ElementCollection<E> {
-	public long getCount();
-	
-	public E get(long elementIndex);
+public interface ElementCollection<E> extends Iterable<E> {
+	public long size();
 	
 	public long getMetaCommentEventCount(long elementIndex);
 
-	public JPhyloIOEvent getMetaCommentEvent(long elementIndex, long metaDataIndex);
+	public Iterator<JPhyloIOEvent> metaCommentEventsIterator(long elementIndex);
 }
