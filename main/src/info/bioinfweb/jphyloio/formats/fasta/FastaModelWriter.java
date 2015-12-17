@@ -20,9 +20,9 @@ package info.bioinfweb.jphyloio.formats.fasta;
 
 
 import info.bioinfweb.commons.SystemUtils;
+import info.bioinfweb.jphyloio.AbstractModelWriter;
 import info.bioinfweb.jphyloio.JPhyloIOModelWriter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.model.AbstractModelWriter;
 import info.bioinfweb.jphyloio.model.CharacterData;
 import info.bioinfweb.jphyloio.model.ElementCollection;
 import info.bioinfweb.jphyloio.model.ModelWriterParameterMap;
@@ -35,8 +35,7 @@ import java.util.Iterator;
 
 
 public class FastaModelWriter extends AbstractModelWriter implements JPhyloIOModelWriter, FASTAConstants {
-	private static final int DEFAULT_LINE_LENGTH = 80;
-	
+	private static final int DEFAULT_LINE_LENGTH = 80;	
 	
 	private int lineLength = DEFAULT_LINE_LENGTH;
 	private int charsPerLineWritten = 0;
@@ -57,7 +56,6 @@ public class FastaModelWriter extends AbstractModelWriter implements JPhyloIOMod
 		if (charsPerLineWritten > 0) {
 			writeNewLine(writer);
 		}
-		System.out.println(sequenceName);
 		writer.write(NAME_START_CHAR + sequenceName + SystemUtils.LINE_SEPARATOR);
 	}
 	
@@ -76,7 +74,6 @@ public class FastaModelWriter extends AbstractModelWriter implements JPhyloIOMod
 			if (charsPerLineWritten + token.length() > lineLength) {
 				writeNewLine(writer);
 			}
-			System.out.println(token);
 			writer.write(token);
 			charsPerLineWritten += token.length();
 		}

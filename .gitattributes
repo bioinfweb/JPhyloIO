@@ -19,6 +19,7 @@ main/lib/commons-lang3-3.1.jar -text
 main/src/info/bioinfweb/jphyloio/AbstractBufferedReaderBasedEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/AbstractEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/AbstractEventWriter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/AbstractModelWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/EventForwarder.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/EventWriteResult.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventListener.java -text svneol=unset#text/plain
@@ -45,6 +46,9 @@ main/src/info/bioinfweb/jphyloio/formats/fasta/package-info.java -text svneol=un
 main/src/info/bioinfweb/jphyloio/formats/mega/MEGAConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLConstants.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTagReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusCommandReaderFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReader.java -text svneol=unset#text/plain
@@ -62,7 +66,6 @@ main/src/info/bioinfweb/jphyloio/formats/phylip/AbstractPhylipEventReader.java -
 main/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/package-info.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/model/AbstractModelWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/model/CharacterData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/model/ElementCollection.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/model/ModelWriterParameterMap.java -text svneol=unset#text/plain

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.model;
+package info.bioinfweb.jphyloio;
 
 
 import java.io.BufferedWriter;
@@ -25,7 +25,8 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import info.bioinfweb.jphyloio.JPhyloIOModelWriter;
+import info.bioinfweb.jphyloio.model.ModelWriterParameterMap;
+import info.bioinfweb.jphyloio.model.PhyloDocument;
 
 
 

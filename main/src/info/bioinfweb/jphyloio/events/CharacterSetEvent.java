@@ -37,7 +37,7 @@ public class CharacterSetEvent extends ConcreteJPhyloIOEvent {
 	/**
 	 * Creates a new instance of this class.
 	 * <p>
-	 * A segment ranges from {@link #getStart()} to {@link #getEnd()}{@code - 1}.
+	 * A segment ranges from {@link #getStart()} to {@link #getEnd()} {@code - 1}.
 	 * 
 	 * @param name the name of the character set that shall be extended
 	 * @param start the index of the first position of the sequence segment to be added to the specified character set
