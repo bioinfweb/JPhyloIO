@@ -23,7 +23,6 @@ import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.ChracterStateMeaning;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.events.EventType;
-import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 
 import java.io.File;
