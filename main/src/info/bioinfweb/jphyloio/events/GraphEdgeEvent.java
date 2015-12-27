@@ -19,30 +19,32 @@
 package info.bioinfweb.jphyloio.events;
 
 
-import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 
-
-
-/**
- * Enumerates the types of events that can be triggered by {@link JPhyloIOEventReader}.
- * 
- * @author Ben St&ouml;ver
- */
-public enum EventType {
-	DOCUMENT_START,
-	DOCUMENT_END,
-	META_INFORMATION,
-	COMMENT,
+public class GraphEdgeEvent extends ConcreteJPhyloIOEvent {
+	private String sourceID;
+	private String targetID;
+	private double length;
 	
-	ALIGNMENT_START,
-	ALIGNMENT_END,
-	SEQUENCE_CHARACTERS,
-	CHARACTER_SET,
-	TOKEN_SET_DEFINITION,
-	SINGLE_TOKEN_DEFINITION,
 	
-	GRAPH_START,
-	GRAPH_END,
-	GRAPH_NODE,
-	GRAPH_EDGE;
+	public GraphEdgeEvent(String sourceID, String targetID, double length) {
+		super(EventType.GRAPH_EDGE);
+		this.sourceID = sourceID;
+		this.targetID = targetID;
+		this.length = length;
+	}
+
+
+	public String getSourceID() {
+		return sourceID;
+	}
+
+
+	public String getTargetID() {
+		return targetID;
+	}
+
+
+	public double getLength() {
+		return length;
+	}	
 }
