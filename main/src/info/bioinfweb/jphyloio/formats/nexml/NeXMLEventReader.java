@@ -116,12 +116,9 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
 	      	if (element.getName().equals(TAG_ROW)) {
-	      		Iterator<Attribute> attributes = element.getAttributes();
-	      		while (attributes.hasNext()) {      			
-	      			Attribute attribute = attributes.next();	
-	      			if (attribute.getName().equals(ATTR_OTU)) {
-	      				reader.setCurrentSequenceName(attribute.getValue());
-	      			}	      			
+	      		String sequenceName = XMLUtils.readStringAttr(element, ATTR_OTU, reader.getCurrentSequenceName());
+	      		if (sequenceName != null) {
+      				reader.setCurrentSequenceName(sequenceName);
 	      		}
 	      		return METHOD_MAP.get(TAG_ROW).readEvent(reader);
 	      	}        
