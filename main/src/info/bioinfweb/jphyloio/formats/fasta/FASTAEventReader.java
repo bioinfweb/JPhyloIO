@@ -225,7 +225,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 					for (int i = 0; i < lineResult.getSequence().length(); i++) {
 						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
 					}
-					lineConsumed = lineResult.isCompletelyRead();					
+					lineConsumed = lineResult.isCompletelyRead();
 					return getSequenceTokensEventManager().createEvent(currentSequenceName, tokenList);
 					
 				case ALIGNMENT_END:
