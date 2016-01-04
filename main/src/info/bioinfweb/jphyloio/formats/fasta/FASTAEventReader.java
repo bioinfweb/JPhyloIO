@@ -32,6 +32,7 @@ import java.util.List;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.events.BlockEndEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
@@ -146,7 +147,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 			}
 		}
 		catch (EOFException e) {
-			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+			return new BlockEndEvent(EventType.ALIGNMENT);
 		}
 	}
 	
@@ -161,7 +162,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 			return null;
 		}
 		catch (EOFException e) {
-			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+			return new BlockEndEvent(EventType.ALIGNMENT);
 		}
 	}
 	
@@ -169,7 +170,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 	@Override
 	protected JPhyloIOEvent readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
-			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
+			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT);
 		}
 		else if (!upcomingEvents.isEmpty()) {
 			return upcomingEvents.poll();
@@ -178,10 +179,10 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 			JPhyloIOEvent alignmentEndEvent;
 			
 			switch (getPreviousEvent().getEventType()) {
-				case DOCUMENT_START:
-					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
+				case DOCUMENT:
+					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT);
 					
-				case ALIGNMENT_START:
+				case ALIGNMENT:
 					alignmentEndEvent = readSequenceStart("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
 					if (alignmentEndEvent != null) {
 						return alignmentEndEvent;
@@ -228,11 +229,17 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 					lineConsumed = lineResult.isCompletelyRead();
 					return getSequenceTokensEventManager().createEvent(currentSequenceName, tokenList);
 					
-				case ALIGNMENT_END:
-					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
+				case BLOCK_END:
+					switch (getPreviousEvent().asBlockEndEvent().getStartEventType()) {
+						case ALIGNMENT:
+							return new BlockEndEvent(EventType.DOCUMENT);
+		
+						case DOCUMENT:
+							return null;  // Calling method will throw a NoSuchElementException.
 
-				case DOCUMENT_END:
-					return null;  // Calling method will throw a NoSuchElementException.
+						default:  // includes META_INFORMATION
+							throw new InternalError("Impossible case");
+					}
 
 				default:  // includes META_INFORMATION
 					throw new InternalError("Impossible case");

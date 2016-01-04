@@ -19,28 +19,18 @@
 package info.bioinfweb.jphyloio.events;
 
 
-import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 
+public class BlockEndEvent extends ConcreteJPhyloIOEvent {
+	private EventType startEventType;
 
-
-/**
- * Enumerates the types of events that can be triggered by {@link JPhyloIOEventReader}.
- * 
- * @author Ben St&ouml;ver
- */
-public enum EventType {
-	BLOCK_END,
-	DOCUMENT,
-	META_INFORMATION,
-	COMMENT,
 	
-	ALIGNMENT,
-	SEQUENCE_CHARACTERS,
-	CHARACTER_SET,
-	TOKEN_SET_DEFINITION,
-	SINGLE_TOKEN_DEFINITION,
-	
-	GRAPH,
-	GRAPH_NODE,
-	GRAPH_EDGE;
+	public BlockEndEvent(EventType startEventType) {
+		super(EventType.BLOCK_END);
+		this.startEventType = startEventType;
+	}
+
+
+	public EventType getStartEventType() {
+		return startEventType;
+	}
 }

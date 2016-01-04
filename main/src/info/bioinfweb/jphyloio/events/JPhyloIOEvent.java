@@ -46,6 +46,14 @@ public interface JPhyloIOEvent {
 	public ParameterMap getMetaInformationMap();
 	
 	/**
+	 * Casts this event to a block end event.
+	 * 
+	 * @return a reference to this event as a block end event
+	 * @throws ClassCastException if this event is not an instance of {@link MetaInformationEvent}
+	 */
+	public BlockEndEvent asBlockEndEvent() throws ClassCastException;
+	
+	/**
 	 * Casts this event to a meta information event.
 	 * 
 	 * @return a reference to this event as a meta information event

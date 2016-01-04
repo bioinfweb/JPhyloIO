@@ -24,7 +24,7 @@ package info.bioinfweb.jphyloio.events;
  * Event that indicates that new information on a character set has been parsed.
  * <p>
  * Note that one or more events with the same character set name may occur any time between 
- * the {@link EventType#ALIGNMENT_START} and {@link EventType#ALIGNMENT_END} events.   
+ * the {@link EventType#ALIGNMENT} and {@link EventType#ALIGNMENT_END} events.   
  * 
  * @author Ben St&ouml;ver
  */

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
+import info.bioinfweb.jphyloio.events.BlockEndEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -124,17 +125,17 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 	@Override
 	protected JPhyloIOEvent readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {
-			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
+			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT);
 		}
 		else {
 			switch (getPreviousEvent().getEventType()) {
-				case DOCUMENT_START:
+				case DOCUMENT:
 					readMatrixDimensions();
 					return createAlignmentStartEvent(getSequenceCount(), getCharacterCount());
 					
-				case ALIGNMENT_START:
+				case ALIGNMENT:
 					if (getSequenceCount() == 0) {  // Empty alignment:
-						return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+						return new BlockEndEvent(EventType.ALIGNMENT);
 					}
 				case SEQUENCE_CHARACTERS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
@@ -149,7 +150,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 						
 						if (getReader().peek() == -1) {  // End of file was reached
 							// if (currentSequenceIndex < sequenceCount) {}  //TODO Should an exception be thrown here, if the specified number of sequences has not been found yet? => Probably not, because parsing files with a wrong number of specified sequences would still make sense, unless this is not a accidental stream break.
-							return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+							return new BlockEndEvent(EventType.ALIGNMENT);
 						}
 					}
 					
@@ -160,11 +161,17 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 					}
 					return event;
 					
-				case ALIGNMENT_END:
-					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
+				case BLOCK_END:
+					switch (getPreviousEvent().asBlockEndEvent().getStartEventType()) {
+						case ALIGNMENT:
+							return new BlockEndEvent(EventType.DOCUMENT);
+		
+						case DOCUMENT:
+							return null;  // Calling method will throw a NoSuchElementException.
 
-				case DOCUMENT_END:
-					return null;  // Calling method will throw a NoSuchElementException.
+						default:  // includes META_INFORMATION
+							throw new InternalError("Impossible case");
+					}
 
 				default:  // includes META_INFORMATION
 					throw new InternalError("Impossible case");

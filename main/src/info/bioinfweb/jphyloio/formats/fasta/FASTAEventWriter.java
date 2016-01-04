@@ -154,7 +154,9 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 	 */
 	@Override
 	public EventWriteResult writeEvent(JPhyloIOEvent event) throws IOException, IllegalStateException, IllegalArgumentException {
-		if (event.getEventType().equals(EventType.DOCUMENT_END) || !alignmentEndReached) {
+		if ((event.getEventType().equals(EventType.BLOCK_END) && 
+				(event.asBlockEndEvent().getStartEventType().equals(EventType.DOCUMENT))) || !alignmentEndReached) {
+			
 			if (commentContinuationExpected && !event.getEventType().equals(EventType.COMMENT)) {
 				commentContinuationExpected = false;
 				writeNewLine();  // Terminate unfinished comment.
@@ -167,14 +169,18 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				case COMMENT:
 					writeCommentEvent(event.asCommentEvent());
 					break;
-				case ALIGNMENT_END:
-					alignmentEndReached = true;
-					break;
-				case DOCUMENT_END:
-					close();
-					break;
-				case DOCUMENT_START:
-				case ALIGNMENT_START:
+
+				case BLOCK_END:
+					switch (event.asBlockEndEvent().getStartEventType()) {
+						case ALIGNMENT:
+							alignmentEndReached = true;
+							break;
+						case DOCUMENT:
+							close();
+							break;
+					}
+				case DOCUMENT:
+				case ALIGNMENT:
 					break;  // Return EventWriteResult.WRITTEN. (This class would allow omitting DOCUMENT_START and ALIGNMENT_START.)
 				default:
 					return EventWriteResult.NOT_WRITTEN;  // Unsupported event.
@@ -182,8 +188,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 			return EventWriteResult.WRITTEN;
 		}
 		else {
-			throw new IllegalStateException("FASTA files do not support multiple alignments. No event except " + 
-					EventType.DOCUMENT_END + " are allowed behind " + EventType.ALIGNMENT_END + ".");
+			throw new IllegalStateException("FASTA files do not support multiple alignments.");
 		}
 	}
 }

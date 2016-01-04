@@ -49,6 +49,7 @@ import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.ChracterStateMeaning;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
+import info.bioinfweb.jphyloio.events.BlockEndEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -258,9 +259,9 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
 	      	if (element.getName().equals(TAG_CHARACTERS)) {
-	      		if (reader.getPreviousEvent().getEventType() != EventType.ALIGNMENT_START 
+	      		if (reader.getPreviousEvent().getEventType() != EventType.ALIGNMENT 
 	      				|| reader.getPreviousEvent().getEventType() != EventType.SEQUENCE_CHARACTERS) {
-	  					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START));
+	  					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventType.ALIGNMENT));
 	  				}
 	      		
 	      		Iterator<Attribute> attributes = element.getAttributes();
@@ -396,11 +397,11 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
         	StartElement element = xmlEvent.asStartElement();
         	if (element.getName().equals(TAG_NEXML)) {
         		encounteredTags.push(element.getName());
-        		result = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
+        		result = new ConcreteJPhyloIOEvent(EventType.DOCUMENT);
         	}
         	else {
         		XMLUtils.reachElementEnd(xmlReader);
-        		result = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
+        		result = new BlockEndEvent(EventType.DOCUMENT);
         	}
 	      }
 			}		

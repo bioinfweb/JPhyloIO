@@ -161,7 +161,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 
 	
 	protected JPhyloIOEvent createAlignmentStartEvent(int sequenceCount, int characterCount) {
-		JPhyloIOEvent event = new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
+		JPhyloIOEvent event = new ConcreteJPhyloIOEvent(EventType.ALIGNMENT);
 		event.getMetaInformationMap().put(META_KEY_SEQUENCE_COUNT, sequenceCount);
 		event.getMetaInformationMap().put(META_KEY_CHARACTER_COUNT, characterCount);
 		return event;
