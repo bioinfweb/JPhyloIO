@@ -19,14 +19,9 @@
 package info.bioinfweb.jphyloio.model;
 
 
-import java.util.Iterator;
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-
-
-
-public interface PhyloDocument extends AnnotatedElement {
-	public ElementCollection<CharacterData> getCharacterDataCollection();
-
-	public ElementCollection<GraphData> getGraphDataCollection();
+public interface NodeData extends AnnotatedElement {
+	public String getID();
+	
+	public String getLabel();
 }

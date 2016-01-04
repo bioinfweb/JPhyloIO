@@ -19,14 +19,14 @@
 package info.bioinfweb.jphyloio.model;
 
 
-import java.util.Iterator;
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-
-
-
-public interface PhyloDocument extends AnnotatedElement {
-	public ElementCollection<CharacterData> getCharacterDataCollection();
-
-	public ElementCollection<GraphData> getGraphDataCollection();
+public interface GraphData {
+	public boolean isTree();
+	
+	public String getRootID();  //TODO Possibly allow multiple roots for graphs
+	
+	public NodeData getNodeInfoByID(String id);
+	
+	public ElementCollection<String> getEdgesByNode(int id);  //TODO Return type must contain the target node ID, the branch length and meta information for each element
+	//TODO ElementCollection should probably not be used here, but a type for each element containing meta information should be used instead. That would be suitable everywhere, except for sequence tokens.
 }

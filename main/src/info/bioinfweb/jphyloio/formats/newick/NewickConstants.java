@@ -16,17 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.model;
-
-
-import java.util.Iterator;
-
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+package info.bioinfweb.jphyloio.formats.newick;
 
 
 
-public interface PhyloDocument extends AnnotatedElement {
-	public ElementCollection<CharacterData> getCharacterDataCollection();
-
-	public ElementCollection<GraphData> getGraphDataCollection();
+public interface NewickConstants {
+	
 }

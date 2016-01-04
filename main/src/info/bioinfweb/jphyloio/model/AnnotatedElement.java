@@ -19,14 +19,20 @@
 package info.bioinfweb.jphyloio.model;
 
 
-import java.util.Iterator;
-
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
+import java.util.Iterator;
 
 
-public interface PhyloDocument extends AnnotatedElement {
-	public ElementCollection<CharacterData> getCharacterDataCollection();
 
-	public ElementCollection<GraphData> getGraphDataCollection();
+/**
+ * Interface to be extended by all model interfaces that describe a data element including its 
+ * meta data. 
+ * 
+ * @author Ben St&ouml;ver
+ */
+public interface AnnotatedElement {
+	public long getMetaCommentEventCount();
+
+	public Iterator<JPhyloIOEvent> getMetaCommentEventIterator();	
 }
