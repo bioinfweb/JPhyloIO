@@ -39,7 +39,7 @@ public class GraphNodeEvent extends ConcreteJPhyloIOEvent {
 	 * @param label an optional label the represented node is carrying (maybe {@code null}).
 	 */
 	public GraphNodeEvent(String id, String label) {
-		super(EventType.GRAPH_NODE);
+		super(EventType.GRAPH_NODE_START);
 		
 		if (id == null) {
 			throw new NullPointerException("The ID must not be null.");

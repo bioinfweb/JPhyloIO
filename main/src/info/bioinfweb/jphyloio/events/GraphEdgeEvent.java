@@ -27,7 +27,7 @@ public class GraphEdgeEvent extends ConcreteJPhyloIOEvent {
 	
 	
 	public GraphEdgeEvent(String sourceID, String targetID, double length) {
-		super(EventType.GRAPH_EDGE);
+		super(EventType.GRAPH_EDGE_START);
 		this.sourceID = sourceID;
 		this.targetID = targetID;
 		this.length = length;
