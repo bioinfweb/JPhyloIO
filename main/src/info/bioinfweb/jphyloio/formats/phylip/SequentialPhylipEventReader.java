@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
-import info.bioinfweb.jphyloio.events.BlockEndEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -125,17 +124,17 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 	@Override
 	protected JPhyloIOEvent readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {
-			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT);
+			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else {
 			switch (getPreviousEvent().getEventType()) {
-				case DOCUMENT:
+				case DOCUMENT_START:
 					readMatrixDimensions();
 					return createAlignmentStartEvent(getSequenceCount(), getCharacterCount());
 					
-				case ALIGNMENT:
+				case ALIGNMENT_START:
 					if (getSequenceCount() == 0) {  // Empty alignment:
-						return new BlockEndEvent(EventType.ALIGNMENT);
+						return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
 					}
 				case SEQUENCE_CHARACTERS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
@@ -150,7 +149,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 						
 						if (getReader().peek() == -1) {  // End of file was reached
 							// if (currentSequenceIndex < sequenceCount) {}  //TODO Should an exception be thrown here, if the specified number of sequences has not been found yet? => Probably not, because parsing files with a wrong number of specified sequences would still make sense, unless this is not a accidental stream break.
-							return new BlockEndEvent(EventType.ALIGNMENT);
+							return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
 						}
 					}
 					
@@ -161,17 +160,11 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 					}
 					return event;
 					
-				case BLOCK_END:
-					switch (getPreviousEvent().asBlockEndEvent().getStartEventType()) {
-						case ALIGNMENT:
-							return new BlockEndEvent(EventType.DOCUMENT);
-		
-						case DOCUMENT:
-							return null;  // Calling method will throw a NoSuchElementException.
+				case ALIGNMENT_END:
+					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 
-						default:  // includes META_INFORMATION
-							throw new InternalError("Impossible case");
-					}
+				case DOCUMENT_END:
+					return null;  // Calling method will throw a NoSuchElementException.
 
 				default:  // includes META_INFORMATION
 					throw new InternalError("Impossible case");

@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
-import info.bioinfweb.jphyloio.events.BlockEndEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
@@ -283,7 +282,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 		if (isBeforeFirstAccess()) {
 			checkStart();
 			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
-			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT);
+			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 		}
 		else if (!upcomingEvents.isEmpty()) {
 			return upcomingEvents.poll();
@@ -292,10 +291,10 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			JPhyloIOEvent event;
 			
 			switch (getLastNonCommentEvent().getEventType()) {
-				case DOCUMENT:
-					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT);
+				case DOCUMENT_START:
+					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
 					
-				case ALIGNMENT:
+				case ALIGNMENT_START:
 				case SEQUENCE_CHARACTERS:
 				case CHARACTER_SET:
 				case META_INFORMATION:
@@ -318,7 +317,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 							return event;
 						}
 						else {
-							return new BlockEndEvent(EventType.ALIGNMENT);
+							return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
 						}
 					}
 					else if (c == SEUQUENCE_START) {
@@ -336,17 +335,11 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 					}
 					return event;
 										
-				case BLOCK_END:
-					switch (getPreviousEvent().asBlockEndEvent().getStartEventType()) {
-						case ALIGNMENT:
-							return new ConcreteJPhyloIOEvent(EventType.DOCUMENT);
-		
-						case DOCUMENT:
-							return null;  // Calling method will throw a NoSuchElementException.
+				case ALIGNMENT_END:
+					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 
-						default:
-							throw new InternalError("Impossible case");
-					}
+				case DOCUMENT_END:
+					return null;  // Calling method will throw a NoSuchElementException.
 
 				default:
 					throw new InternalError("Impossible case");

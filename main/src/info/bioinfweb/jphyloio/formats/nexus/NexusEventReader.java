@@ -31,7 +31,6 @@ import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.SequenceTokensEventManager;
-import info.bioinfweb.jphyloio.events.BlockEndEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -260,7 +259,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
 				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
 			
-			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT);
+			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
 		}
 		else {
 			return null;
@@ -272,7 +271,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
 				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
 			
-			return new BlockEndEvent(EventType.ALIGNMENT);
+			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
 		}
 		else {
 			return null;
@@ -357,7 +356,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			if (isBeforeFirstAccess()) {
 				checkStart();
 				consumeWhiteSpaceAndComments();
-				return new ConcreteJPhyloIOEvent(EventType.DOCUMENT);
+				return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
 			}
 			else if (!upcomingEvents.isEmpty()) {
 				return upcomingEvents.poll();
@@ -375,7 +374,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				}
 				if (event == null) {
 					documentEndReached = true;
-					event = new BlockEndEvent(EventType.DOCUMENT);
+					event = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
 				}
 				return event;
 			}

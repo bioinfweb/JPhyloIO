@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Indicates that one or more sequence tokens have been read from an alignment. This event can be triggered one or more
- * times between {@link EventType#ALIGNMENT} and {@link EventType#ALIGNMENT_END} events.
+ * times between {@link EventType#ALIGNMENT_START} and {@link EventType#ALIGNMENT_END} events.
  * <p>
  * It depends on the implementation of the format specific reader how many tokens are contained in a single event. For 
  * performance reasons most applications will group several tokens together in one event, but not necessarily a whole

@@ -27,7 +27,7 @@ import info.bioinfweb.commons.bio.ChracterStateMeaning;
 /**
  * Event that indicates the definition of a single new valid token that could be contained in a sequence 
  * of the current alignment. One or more events defining a token may occur any time between 
- * the {@link EventType#ALIGNMENT} and the first {@link SequenceTokensEvent}. 
+ * the {@link EventType#ALIGNMENT_START} and the first {@link SequenceTokensEvent}. 
  * <p>
  * Not all formats support or require a token definition, therefore sequences might contain tokens that 
  * were not previously defined by {@link SingleTokenDefinitionEvent}.   
