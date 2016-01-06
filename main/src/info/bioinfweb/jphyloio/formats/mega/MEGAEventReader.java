@@ -138,7 +138,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			MetaInformationEvent result = null;
 			while (getReader().peekChar() != COMMAND_END) {
 				MetaInformationEvent event = readKeyValueMetaInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=', '"');
-				processFormatSubcommand(event.getKey(), event.getValue());
+				processFormatSubcommand(event.getKey(), event.getStringValue());
 				if (result == null) {
 					result = event;
 				}

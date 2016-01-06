@@ -27,7 +27,9 @@ package info.bioinfweb.jphyloio.events;
  */
 public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	private String key;
-	private String value;
+	private String stringValue;
+	private Object objectValue;
+	private String originalType;
 	
 	
 	/**
@@ -44,7 +46,7 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 			throw new NullPointerException("The parameter \"value\" cannot be null.");
 		}
 		else {
-			this.value = value;
+			this.stringValue = value;
 		}
 	}
 
@@ -64,7 +66,17 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @return the string representation of the meta information (Will never be {@code null}.)
 	 */
-	public String getValue() {
-		return value;
+	public String getStringValue() {
+		return stringValue;
+	}
+
+
+	public Object getObjectValue() {
+		return objectValue;
+	}
+
+
+	public String getOriginalType() {
+		return originalType;
 	}
 }

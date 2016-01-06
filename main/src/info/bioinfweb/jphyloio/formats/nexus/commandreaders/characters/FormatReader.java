@@ -118,7 +118,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	
 	private JPhyloIOEvent processSubcommand(MetaInformationEvent event) throws IOException {
 		String key = event.getKey().substring(KEY_PREFIX.length()).toUpperCase();  // Remove key prefix for comparison
-		String value = event.getValue().toUpperCase();
+		String value = event.getStringValue().toUpperCase();
 		JPhyloIOEvent result = event;
 		
 		if (FORMAT_SUBCOMMAND_TOKENS.equals(key) || 
@@ -128,7 +128,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 		}
 		
 		if (FORMAT_SUBCOMMAND_DATA_TYPE.equals(key)) {
-			Matcher matcher = MIXED_DATA_TYPE_VALUE_PATTERN.matcher(event.getValue());  // Does case insensitive matching.
+			Matcher matcher = MIXED_DATA_TYPE_VALUE_PATTERN.matcher(event.getStringValue());  // Does case insensitive matching.
 			if (matcher.matches()) {  // Parse MrBayes extension
 				parseMixedDataType(matcher.group(1));
 				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event for datatype will be returned.
@@ -136,7 +136,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 				}
 			}
 			else {
-				result = new TokenSetDefinitionEvent(getTokenSetType(value), event.getValue());
+				result = new TokenSetDefinitionEvent(getTokenSetType(value), event.getStringValue());
 			}
 		}
 		else if (FORMAT_SUBCOMMAND_INTERLEAVE.equals(key)) {
@@ -149,14 +149,14 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TRANSPOSE, true);
 		}
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
-			getStreamDataProvider().getNexusReader().setMatchToken(event.getValue());
-			result = new SingleTokenDefinitionEvent(event.getValue(), ChracterStateMeaning.MATCH);
+			getStreamDataProvider().getNexusReader().setMatchToken(event.getStringValue());
+			result = new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.MATCH);
 		}
 		else if (FORMAT_SUBCOMMAND_GAP_CHAR.equals(key)) {
-			result = new SingleTokenDefinitionEvent(event.getValue(), ChracterStateMeaning.GAP);
+			result = new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.GAP);
 		}
 		else if (FORMAT_SUBCOMMAND_MISSING_CHAR.equals(key)) {
-			result = new SingleTokenDefinitionEvent(event.getValue(), ChracterStateMeaning.MISSING);
+			result = new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.MISSING);
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
 			if (continuousData) {
@@ -164,8 +164,8 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 						FORMAT_SUBCOMMAND_DATA_TYPE + "=" + FORMAT_VALUE_CONTINUOUS_DATA_TYPE + " was specified.");  //TODO Replace by ParseException
 			}
 			else {
-				for (int i = 0; i < event.getValue().length(); i++) {
-					char c = event.getValue().charAt(i);
+				for (int i = 0; i < event.getStringValue().length(); i++) {
+					char c = event.getStringValue().charAt(i);
 					if (!Character.isWhitespace(c)) {
 						getStreamDataProvider().getUpcomingEvents().add(new SingleTokenDefinitionEvent(
 								Character.toString(c), ChracterStateMeaning.CHARACTER_STATE));
