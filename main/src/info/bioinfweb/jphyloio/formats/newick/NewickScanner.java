@@ -20,13 +20,20 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
 public class NewickScanner implements NewickConstants {
 	private PeekReader reader; 
+	private NewickToken next = null;
+	private NewickToken previous = null;
+	private boolean beforeFirstAccess = true;
+	private boolean dataSourceClosed = false;
 	
 	
 	public NewickScanner(PeekReader reader) {
@@ -63,7 +70,7 @@ public class NewickScanner implements NewickConstants {
 			throw new IOException("Unterminated Newick name");  //TODO Replace by special exception
 		}
 		else {
-			NewickToken token = new NewickToken(TokenType.NAME, -1);
+			NewickToken token = new NewickToken(NewickTokenType.NAME, -1);
 			token.setText(result.toString());
 			token.setDelimited(true);
 			return token;
@@ -110,28 +117,28 @@ public class NewickScanner implements NewickConstants {
 			throw new IOException("Illegal length statement");  //TODO Replace by special exception with position information. EOF after ':' could also have caused this exception.
 		}
 		
-		NewickToken token = new NewickToken(TokenType.LENGTH,  -1);  //TODO Determine position from reader.
+		NewickToken token = new NewickToken(NewickTokenType.LENGTH,  -1);  //TODO Determine position from reader.
 		token.setLength(value);
 		return token; 
 	}
 
 	
-	public NewickToken nextToken() throws IOException {
+	private NewickToken readNextToken() throws IOException {
 		//TODO ConsumeWhiteSpaceAndComments
 		//TODO According comment events or meta events must be fired at the correct position. (Before or associated with a node or an edge).
 		reader.readRegExp("\\s*", true);  // Skip whitespace. Can be removed, when ConsumeWhiteSpaceAndComments is called above.
 		
 		if (reader.peek() == -1) {
-			throw new IOException("Unexpected EOF");  //TODO Replace by other type of exception or return null instead? Unexpected EOF should be indicated on the syntactical analysis level and not here. 
+			return null; 
 		}
 		else {
 			switch (reader.peekChar()) {
 			  case SUBTREE_START:
 			  	reader.read();
-			  	return new NewickToken(TokenType.SUBTREE_START, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
+			  	return new NewickToken(NewickTokenType.SUBTREE_START, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
 			  case SUBTREE_END:
 			  	reader.read();
-			  	return new NewickToken(TokenType.SUBTREE_END, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
+			  	return new NewickToken(NewickTokenType.SUBTREE_END, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
 			  case LENGTH_SEPERATOR:
 			  	reader.read(); // skip LENGTH_SEPERATOR
 					//TODO ConsumeWhiteSpaceAndComments
@@ -144,10 +151,10 @@ public class NewickScanner implements NewickConstants {
 	//		  	break;
 			  case TERMINAL_SYMBOL:
 			  	reader.read();
-			  	return new NewickToken(TokenType.TERMNINAL_SYMBOL, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
+			  	return new NewickToken(NewickTokenType.TERMNINAL_SYMBOL, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
 			  case ELEMENT_SEPERATOR:
-			  	reader.read();  // Skip element separator and avoid an exception below.
-			  	return nextToken(); 
+			  	reader.read();  // Skip element separator
+			  	return new NewickToken(NewickTokenType.ELEMENT_SEPARATOR, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
 			  default:
 			    if (isFreeNameChar(reader.peekChar())) {
 			    	return readFreeName();
@@ -156,6 +163,44 @@ public class NewickScanner implements NewickConstants {
 			    	throw new IOException("Unexpected token '" + reader.peekChar() + "'.");  //TODO Replace by special exception.
 			    }
 			}
+		}
+	}
+	
+	
+	public NewickToken peek() throws IOException {
+		// ensureFirstEvent() is called in hasMoreTokens()
+		if (!hasMoreTokens()) {  //
+			throw new NoSuchElementException("The end of the document was already reached.");
+		}
+		else {
+			return next;
+		}
+	}
+
+
+	private void ensureFirstEvent() throws IOException {
+		if (beforeFirstAccess) {
+			next = readNextToken();
+			beforeFirstAccess = false;
+		}
+	}
+	
+	
+	public boolean hasMoreTokens() throws IOException {
+		ensureFirstEvent();
+		return next != null;
+	}
+
+	
+	public NewickToken nextToken() throws IOException {
+		// ensureFirstEvent() is called in hasMoreTokens()
+		if (!hasMoreTokens()) {  //
+			throw new NoSuchElementException("The end of the document was already reached.");
+		}
+		else {
+			previous = next;  // previous needs to be set before readNextEvent() is called, because it could be accessed in there.
+			next = readNextToken();
+			return previous;
 		}
 	}
 }

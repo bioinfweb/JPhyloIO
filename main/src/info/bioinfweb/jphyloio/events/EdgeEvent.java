@@ -20,14 +20,14 @@ package info.bioinfweb.jphyloio.events;
 
 
 
-public class GraphEdgeEvent extends ConcreteJPhyloIOEvent {
+public class EdgeEvent extends ConcreteJPhyloIOEvent {
 	private String sourceID;
 	private String targetID;
 	private double length;
 	
 	
-	public GraphEdgeEvent(String sourceID, String targetID, double length) {
-		super(EventType.GRAPH_EDGE_START);
+	public EdgeEvent(String sourceID, String targetID, double length) {
+		super(EventType.EDGE_START);
 		this.sourceID = sourceID;
 		this.targetID = targetID;
 		this.length = length;

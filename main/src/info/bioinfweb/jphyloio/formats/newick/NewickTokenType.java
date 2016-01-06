@@ -20,11 +20,12 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 
 
-public enum TokenType {
+public enum NewickTokenType {
 	ROOTED_COMMAND, 
 	UNROOTED_COMMAND, 
 	SUBTREE_START, 
-	SUBTREE_END, 
+	SUBTREE_END,
+	ELEMENT_SEPARATOR,  // Necessary to determine names of internal nodes from possible subsequent terminal nodes. (E.g: "((A, B)C, D);" or "((A, B), C, D);")
 	NAME, 
 	LENGTH,
 	TERMNINAL_SYMBOL;

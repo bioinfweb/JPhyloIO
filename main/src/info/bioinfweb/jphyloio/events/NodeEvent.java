@@ -22,12 +22,12 @@ package info.bioinfweb.jphyloio.events;
 
 /**
  * Event that indicates the definition of a tree node in a document. Different nodes maybe linked by
- * subsequent {@link GraphEdgeEvent}s.
+ * subsequent {@link EdgeEvent}s.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class GraphNodeEvent extends ConcreteJPhyloIOEvent {
+public class NodeEvent extends ConcreteJPhyloIOEvent {
 	private String id;
 	private String label;
 	
@@ -38,8 +38,8 @@ public class GraphNodeEvent extends ConcreteJPhyloIOEvent {
 	 * @param id an ID of this node which is unique for the current document
 	 * @param label an optional label the represented node is carrying (maybe {@code null}).
 	 */
-	public GraphNodeEvent(String id, String label) {
-		super(EventType.GRAPH_NODE_START);
+	public NodeEvent(String id, String label) {
+		super(EventType.NODE_START);
 		
 		if (id == null) {
 			throw new NullPointerException("The ID must not be null.");
@@ -55,8 +55,8 @@ public class GraphNodeEvent extends ConcreteJPhyloIOEvent {
 	 * An ID identifying this node, which is unique for this document. If a format defines IDs (e.g. NeXML 
 	 * or XTG), these are used here. For formats not defining any IDs, the parser will generate its own IDs.
 	 * <p>
-	 * The ID returned here will also be referenced in up-coming {@link GraphEdgeEvent}s connecting two nodes.
-	 * (Applications based on JPhyloIO need this ID only to process up-coming {@link GraphEdgeEvent}s and 
+	 * The ID returned here will also be referenced in up-coming {@link EdgeEvent}s connecting two nodes.
+	 * (Applications based on JPhyloIO need this ID only to process up-coming {@link EdgeEvent}s and 
 	 * do not necessarily have to store that IDs in their data model. Different IDs may be used for writing
 	 * the data in a possible subsequent step.)  
 	 * 

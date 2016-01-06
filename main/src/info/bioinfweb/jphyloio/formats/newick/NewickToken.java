@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 
 public class NewickToken {
-	private TokenType type = TokenType.SUBTREE_START;
+	private NewickTokenType type = NewickTokenType.SUBTREE_START;
 	private int textPos;
 	private String text = "";
 	private double length = 0;
@@ -30,14 +30,14 @@ public class NewickToken {
 	//TODO Adjust properties to JPhyloIO
 	
 	
-	public NewickToken(TokenType type, int textPos) {
+	public NewickToken(NewickTokenType type, int textPos) {
 		this.type = type;
 		this.textPos = textPos;
 	}
 
 	
 	public NewickToken(int textPos, String text, boolean delimited) {
-		this.type = TokenType.NAME;
+		this.type = NewickTokenType.NAME;
 		this.textPos = textPos;
 		this.text = text;
 		this.delimited = delimited;
@@ -45,7 +45,7 @@ public class NewickToken {
 	
 	
 	public NewickToken(int textPos, double length) {
-		this.type = TokenType.LENGTH;
+		this.type = NewickTokenType.LENGTH;
 		this.textPos = textPos;
 		this.length = length;
 	}
@@ -61,7 +61,7 @@ public class NewickToken {
 	}
 
 
-	public TokenType getType() {
+	public NewickTokenType getType() {
 		return type;
 	}
 
