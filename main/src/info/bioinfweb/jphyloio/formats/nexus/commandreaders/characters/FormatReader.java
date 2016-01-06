@@ -126,6 +126,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TOKENS_FORMAT, true);
 		}
+		
 		if (FORMAT_SUBCOMMAND_DATA_TYPE.equals(key)) {
 			Matcher matcher = MIXED_DATA_TYPE_VALUE_PATTERN.matcher(event.getValue());  // Does case insensitive matching.
 			if (matcher.matches()) {  // Parse MrBayes extension

@@ -21,5 +21,13 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 
 public interface NewickConstants {
-	
+	public static final char SUBTREE_START = '(';
+	public static final char SUBTREE_END = ')';
+	public static final char NAME_DELIMITER = '\'';
+	public static final char LENGTH_SEPERATOR = ':'; 
+	public static final char ELEMENT_SEPERATOR = ','; 
+	public static final char TERMINAL_SYMBOL = ';';
+	public static final char COMMENT_START = '[';
+	public static final char COMMENT_END = ']';
+	public static final char FREE_NAME_BLANK = '_';	
 }
