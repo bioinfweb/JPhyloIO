@@ -91,7 +91,7 @@ public class JPhyloIOTestTools {
 		
 		MetaInformationEvent metaInformationEvent = event.asMetaInformationEvent();
 		assertEquals(expectedKey, metaInformationEvent.getKey());
-		assertEquals(expectedValue, metaInformationEvent.getValue());
+		assertEquals(expectedValue, metaInformationEvent.getStringValue());
   }  
 	
 	
