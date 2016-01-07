@@ -85,4 +85,16 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	public SingleTokenDefinitionEvent asSingleTokenDefinitionEvent() throws ClassCastException {
 		return (SingleTokenDefinitionEvent)this;
 	}
+
+
+	@Override
+	public NodeEvent asNodeEvent() throws ClassCastException {
+		return (NodeEvent)this;
+	}
+
+
+	@Override
+	public EdgeEvent asEdgeEvent() throws ClassCastException {
+		return (EdgeEvent)this;
+	}
 }
