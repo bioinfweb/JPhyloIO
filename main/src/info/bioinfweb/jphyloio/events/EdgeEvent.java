@@ -46,5 +46,11 @@ public class EdgeEvent extends ConcreteJPhyloIOEvent {
 
 	public double getLength() {
 		return length;
+	}
+
+
+	@Override
+	public String toString() {
+		return getEventType() + " (" + getSourceID() + " -> " + getTargetID() + "):" + getLength();
 	}	
 }
