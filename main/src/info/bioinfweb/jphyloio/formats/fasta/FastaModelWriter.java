@@ -84,7 +84,7 @@ public class FastaModelWriter extends AbstractModelWriter implements JPhyloIOMod
 		if (charsPerLineWritten > 0) {
 			writeNewLine(writer);
 		}
-		switch (event.getEventType()) {
+		switch (event.getType().getContentType()) {
 			case META_INFORMATION:
 				break;
 			case COMMENT:

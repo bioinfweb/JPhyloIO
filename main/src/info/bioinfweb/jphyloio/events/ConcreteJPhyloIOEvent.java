@@ -29,19 +29,19 @@ import info.bioinfweb.commons.collections.ParameterMap;
  * @author Ben St&ouml;ver
  */
 public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
-	private EventType eventType;
+	private EventType type;
 	private ParameterMap metaInformationMap = new ParameterMap();
 	
 	
-	public ConcreteJPhyloIOEvent(EventType eventType) {
+	public ConcreteJPhyloIOEvent(EventContentType contentType, EventTopologyType topologyType) {
 		super();
-		this.eventType = eventType;
+		this.type = new EventType(contentType, topologyType);
 	}
 
 
 	@Override
-	public EventType getEventType() {
-		return eventType;
+	public EventType getType() {
+		return type;
 	}
 
 

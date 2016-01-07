@@ -34,7 +34,8 @@ import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
@@ -146,7 +147,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 			}
 		}
 		catch (EOFException e) {
-			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+			return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
 		}
 	}
 	
@@ -161,7 +162,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 			return null;
 		}
 		catch (EOFException e) {
-			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+			return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
 		}
 	}
 	
@@ -169,7 +170,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 	@Override
 	protected JPhyloIOEvent readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
-			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
+			return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
 		}
 		else if (!upcomingEvents.isEmpty()) {
 			return upcomingEvents.poll();
@@ -177,20 +178,30 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 		else {
 			JPhyloIOEvent alignmentEndEvent;
 			
-			switch (getPreviousEvent().getEventType()) {
-				case DOCUMENT_START:
-					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
+			switch (getPreviousEvent().getType().getContentType()) {
+				case DOCUMENT:
+					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
+						return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START);
+					}
+					else {
+						return null;  // Calling method will throw a NoSuchElementException.
+					}
 					
-				case ALIGNMENT_START:
-					alignmentEndEvent = readSequenceStart("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
-					if (alignmentEndEvent != null) {
-						return alignmentEndEvent;
+				case ALIGNMENT:
+					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
+						alignmentEndEvent = readSequenceStart("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
+						if (alignmentEndEvent != null) {
+							return alignmentEndEvent;
+						}
+						else if (!upcomingEvents.isEmpty()) {
+							return upcomingEvents.poll();  // Return possible waiting comment event from readSequenceStart(). 
+						}
+						lineConsumed = true;
 					}
-					else if (!upcomingEvents.isEmpty()) {
-						return upcomingEvents.poll();  // Return possible waiting comment event from readSequenceStart(). 
+					else {
+						return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
 					}
-					lineConsumed = true;  
-					// fall through
+					// fall through for if case
 				case SEQUENCE_CHARACTERS:
 				case COMMENT:
 					// Check if new name needs to be read:
@@ -228,12 +239,6 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 					lineConsumed = lineResult.isCompletelyRead();
 					return getSequenceTokensEventManager().createEvent(currentSequenceName, tokenList);
 					
-				case ALIGNMENT_END:
-					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
-
-				case DOCUMENT_END:
-					return null;  // Calling method will throw a NoSuchElementException.
-
 				default:  // includes META_INFORMATION
 					throw new InternalError("Impossible case");
 			}

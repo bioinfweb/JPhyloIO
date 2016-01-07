@@ -19,34 +19,64 @@
 package info.bioinfweb.jphyloio.events;
 
 
-import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 
-
-
-/**
- * Enumerates the types of events that can be triggered by {@link JPhyloIOEventReader}.
- * 
- * @author Ben St&ouml;ver
- */
-public enum EventType {
-	DOCUMENT_START,
-	DOCUMENT_END,
-	META_INFORMATION,
-	COMMENT,
+public class EventType implements Comparable<EventType> {
+	private EventContentType contentType;
+	private EventTopologyType topologyType;
 	
-	ALIGNMENT_START,
-	ALIGNMENT_END,
-	SEQUENCE_CHARACTERS,
-	CHARACTER_SET,
-	TOKEN_SET_DEFINITION,
-	SINGLE_TOKEN_DEFINITION,
 	
-	GRAPH_START,
-	GRAPH_END,
-	TREE_START,
-	TREE_END,
-	NODE_START,
-	NODE_END,
-	EDGE_START,
-	EDGE_END;
+	public EventType(EventContentType contentType, EventTopologyType topologyType) {
+		super();
+		this.contentType = contentType;
+		this.topologyType = topologyType;
+	}
+	
+	
+	public EventContentType getContentType() {
+		return contentType;
+	}
+	
+	
+	public EventTopologyType getTopologyType() {
+		return topologyType;
+	}
+
+
+	@Override
+	public int compareTo(EventType other) {
+		int result = getContentType().compareTo(other.getContentType());
+		if (result == 0) {
+			result = getTopologyType().compareTo(other.getTopologyType());
+		}
+		return result;
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((contentType == null) ? 0 : contentType.hashCode());
+		result = prime * result
+				+ ((topologyType == null) ? 0 : topologyType.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EventType other = (EventType) obj;
+		if (contentType != other.contentType)
+			return false;
+		if (topologyType != other.topologyType)
+			return false;
+		return true;
+	}
 }

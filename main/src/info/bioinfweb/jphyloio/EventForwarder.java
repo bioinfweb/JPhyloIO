@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio;
 
 
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class EventForwarder {
 	 * @param type the type of the event that shall trigger the end of reading
 	 * @throws Exception if {@code reader} throws an exception while parsing
 	 */
-	public void readUntil(JPhyloIOEventReader reader, EventType type) throws Exception {
+	public void readUntil(JPhyloIOEventReader reader, EventContentType type) throws Exception {
 		readUntil(reader, EnumSet.of(type));
 	}
 	
@@ -86,8 +86,8 @@ public class EventForwarder {
 	 * @param types a set of types of the events that shall trigger the end of reading
 	 * @throws Exception if {@code reader} throws an exception while parsing
 	 */
-	public void readUntil(JPhyloIOEventReader reader, Set<EventType> types) throws Exception {
-		while (reader.hasNextEvent() && !types.contains(reader.peek().getEventType())) {
+	public void readUntil(JPhyloIOEventReader reader, Set<EventContentType> types) throws Exception {
+		while (reader.hasNextEvent() && !types.contains(reader.peek().getType())) {
 			JPhyloIOEvent event = reader.next();
 			for (JPhyloIOEventListener listener : listeners) {
 				listener.processEvent(reader, event);

@@ -39,7 +39,7 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	 * @param value the value of the meta information
 	 */
 	public MetaInformationEvent(String key, String value) {
-		super(EventType.META_INFORMATION);
+		super(EventContentType.META_INFORMATION, EventTopologyType.SOLE);  //TODO Possibly change to START later.
 		
 		this.key = key;
 		if (value == null) {

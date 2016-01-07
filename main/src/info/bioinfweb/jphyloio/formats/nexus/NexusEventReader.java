@@ -32,7 +32,8 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.SequenceTokensEventManager;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader;
@@ -259,7 +260,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
 				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
 			
-			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
+			return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START);
 		}
 		else {
 			return null;
@@ -271,7 +272,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
 				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
 			
-			return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+			return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
 		}
 		else {
 			return null;
@@ -356,7 +357,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			if (isBeforeFirstAccess()) {
 				checkStart();
 				consumeWhiteSpaceAndComments();
-				return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
+				return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
 			}
 			else if (!upcomingEvents.isEmpty()) {
 				return upcomingEvents.poll();
@@ -374,7 +375,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				}
 				if (event == null) {
 					documentEndReached = true;
-					event = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
+					event = new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
 				}
 				return event;
 			}

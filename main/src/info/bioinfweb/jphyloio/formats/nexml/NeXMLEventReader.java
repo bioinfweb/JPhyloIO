@@ -50,6 +50,8 @@ import info.bioinfweb.commons.bio.ChracterStateMeaning;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
@@ -258,9 +260,13 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
 	      	if (element.getName().equals(TAG_CHARACTERS)) {
-	      		if (reader.getPreviousEvent().getEventType() != EventType.ALIGNMENT_START 
-	      				|| reader.getPreviousEvent().getEventType() != EventType.SEQUENCE_CHARACTERS) {
-	  					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START));
+	      		if (!reader.getPreviousEvent().getType().equals(
+	      				new EventType(EventContentType.ALIGNMENT, EventTopologyType.START)) 
+	      				|| !reader.getPreviousEvent().getType().getContentType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
+	      				//TODO Additionally check for single token event, when this is implemented! 
+	      			
+	  					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(
+	  							EventContentType.ALIGNMENT, EventTopologyType.START));
 	  				}
 	      		
 	      		Iterator<Attribute> attributes = element.getAttributes();
@@ -396,11 +402,11 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
         	StartElement element = xmlEvent.asStartElement();
         	if (element.getName().equals(TAG_NEXML)) {
         		encounteredTags.push(element.getName());
-        		result = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
+        		result = new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
         	}
         	else {
         		XMLUtils.reachElementEnd(xmlReader);
-        		result = new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
+        		result = new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
         	}
 	      }
 			}		

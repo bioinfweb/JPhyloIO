@@ -39,7 +39,7 @@ public class NodeEvent extends ConcreteJPhyloIOEvent {
 	 * @param label an optional label the represented node is carrying (maybe {@code null}).
 	 */
 	public NodeEvent(String id, String label) {
-		super(EventType.NODE_START);
+		super(EventContentType.NODE, EventTopologyType.START);
 		
 		if (id == null) {
 			throw new NullPointerException("The ID must not be null.");

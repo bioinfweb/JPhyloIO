@@ -41,7 +41,7 @@ public class CommentEvent extends ConcreteJPhyloIOEvent {
 	 *        this comment are more events are ahead.
 	 */
 	public CommentEvent(String content, boolean continuedInNextEvent) {
-		super(EventType.COMMENT);
+		super(EventContentType.COMMENT, EventTopologyType.SOLE);  //TODO Possibly change to START later.
 		this.content = content;
 		this.continuedInNextEvent = continuedInNextEvent;
 	}

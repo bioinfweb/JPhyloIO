@@ -31,11 +31,11 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
  */
 public interface JPhyloIOEvent {
 	/**
-	 * Returns the type of this event.
+	 * Returns the type of this event. 
 	 * 
 	 * @return the event type
 	 */
-	public EventType getEventType();
+	public EventType getType();
 	
 	/**
 	 * Returns a map containing additional (possibly format specific) information about this event that

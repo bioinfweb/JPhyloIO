@@ -24,7 +24,7 @@ package info.bioinfweb.jphyloio.events;
  * Event that indicates that new information on a character set has been parsed.
  * <p>
  * Note that one or more events with the same character set name may occur any time between 
- * the {@link EventType#ALIGNMENT_START} and {@link EventType#ALIGNMENT_END} events.   
+ * the {@link EventContentType#ALIGNMENT} and {@link EventContentType#ALIGNMENT_END} events.   
  * 
  * @author Ben St&ouml;ver
  */
@@ -44,7 +44,7 @@ public class CharacterSetEvent extends ConcreteJPhyloIOEvent {
 	 * @param end the first index after the end of the sequence segment to be added to the specified character set
 	 */
 	public CharacterSetEvent(String name, long start,	long end) {
-		super(EventType.CHARACTER_SET);
+		super(EventContentType.CHARACTER_SET, EventTopologyType.SOLE);  //TODO Possibly change to START later.
 		this.name = name;
 		this.start = start;
 		this.end = end;

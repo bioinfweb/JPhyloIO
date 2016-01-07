@@ -21,7 +21,9 @@ package info.bioinfweb.jphyloio;
 
 import java.util.EnumSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
+import info.bioinfweb.jphyloio.events.EventContentType;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
@@ -123,7 +125,7 @@ public interface JPhyloIOEventReader {
 	 *         element was found
 	 * @throws Exception Implementing classes might throw additional exceptions
 	 */
-	public JPhyloIOEvent nextOfType(EnumSet<EventType> types) throws Exception;
+	public JPhyloIOEvent nextOfType(Set<EventType> types) throws Exception;
 
 	/**
 	 * Returns the event from the underlying document that will be returned in the next call of {@link #next()}

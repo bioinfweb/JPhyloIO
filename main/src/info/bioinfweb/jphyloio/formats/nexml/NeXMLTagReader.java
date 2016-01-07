@@ -22,7 +22,8 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
@@ -34,11 +35,11 @@ public abstract class NeXMLTagReader {
 			if (xmlEvent.isEndElement()) {
 				if (reader.getEncounteredTags().peek().equals(NeXMLConstants.TAG_NEXML)) {
 					reader.getEncounteredTags().pop();
-					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
+					return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
 				}
 				else if (reader.getEncounteredTags().peek().equals(NeXMLConstants.TAG_CHARACTERS)) {
 					reader.getEncounteredTags().pop();
-					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+					return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
 				}
 				reader.getEncounteredTags().pop();
 			}

@@ -31,7 +31,8 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
@@ -268,7 +269,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	
 	
 	private void countCharacters(JPhyloIOEvent event) {
-		if (event.getEventType().equals(EventType.SEQUENCE_CHARACTERS)) {
+		if (event.getType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
 			SequenceTokensEvent charactersEvent = event.asSequenceTokensEvent();
 			if (charactersEvent.getSequenceName().equals(firstSequenceName)) {
 				charactersRead += charactersEvent.getCharacterValues().size();
@@ -282,7 +283,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 		if (isBeforeFirstAccess()) {
 			checkStart();
 			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
-			return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
+			return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
 		}
 		else if (!upcomingEvents.isEmpty()) {
 			return upcomingEvents.poll();
@@ -290,11 +291,19 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 		else {
 			JPhyloIOEvent event;
 			
-			switch (getLastNonCommentEvent().getEventType()) {
-				case DOCUMENT_START:
-					return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
+			switch (getLastNonCommentEvent().getType().getContentType()) {
+				case DOCUMENT:
+					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
+						return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START);
+					}
+					else {
+						return null;  // Calling method will throw a NoSuchElementException.
+					}
 					
-				case ALIGNMENT_START:
+				case ALIGNMENT:
+					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.END)) {
+						return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);						
+					}  // fall throug in else case
 				case SEQUENCE_CHARACTERS:
 				case CHARACTER_SET:
 				case META_INFORMATION:
@@ -317,7 +326,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 							return event;
 						}
 						else {
-							return new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_END);
+							return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
 						}
 					}
 					else if (c == SEUQUENCE_START) {
@@ -335,12 +344,6 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 					}
 					return event;
 										
-				case ALIGNMENT_END:
-					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
-
-				case DOCUMENT_END:
-					return null;  // Calling method will throw a NoSuchElementException.
-
 				default:
 					throw new InternalError("Impossible case");
 			}

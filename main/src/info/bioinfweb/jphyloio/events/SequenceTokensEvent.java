@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Indicates that one or more sequence tokens have been read from an alignment. This event can be triggered one or more
- * times between {@link EventType#ALIGNMENT_START} and {@link EventType#ALIGNMENT_END} events.
+ * times between {@link EventContentType#ALIGNMENT} and {@link EventContentType#ALIGNMENT_END} events.
  * <p>
  * It depends on the implementation of the format specific reader how many tokens are contained in a single event. For 
  * performance reasons most applications will group several tokens together in one event, but not necessarily a whole
@@ -40,7 +40,7 @@ public class SequenceTokensEvent extends ConcreteJPhyloIOEvent {
 	
 	
 	public SequenceTokensEvent(String sequenceName, List<String> tokens) {
-		super(EventType.SEQUENCE_CHARACTERS);
+		super(EventContentType.SEQUENCE_CHARACTERS, EventTopologyType.SOLE);
 		
 		this.sequenceName = sequenceName;
 		this.characterValues = Collections.unmodifiableList(tokens);

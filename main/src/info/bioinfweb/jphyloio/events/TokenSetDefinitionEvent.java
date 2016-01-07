@@ -80,7 +80,7 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
 	public TokenSetDefinitionEvent(CharacterStateType type, String parsedName, String characterSetName) {
-		super(EventType.TOKEN_SET_DEFINITION);
+		super(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.SOLE);  //TODO Possibly change to START later.
 
 		if (type == null) {
 			throw new NullPointerException("The set type must not be null.");

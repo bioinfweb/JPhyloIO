@@ -21,9 +21,12 @@ package info.bioinfweb.jphyloio;
 
 import java.util.EnumSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
@@ -161,7 +164,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 
 	
 	protected JPhyloIOEvent createAlignmentStartEvent(int sequenceCount, int characterCount) {
-		JPhyloIOEvent event = new ConcreteJPhyloIOEvent(EventType.ALIGNMENT_START);
+		JPhyloIOEvent event = new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START);
 		event.getMetaInformationMap().put(META_KEY_SEQUENCE_COUNT, sequenceCount);
 		event.getMetaInformationMap().put(META_KEY_CHARACTER_COUNT, characterCount);
 		return event;
@@ -193,10 +196,10 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 
 
 	@Override
-	public JPhyloIOEvent nextOfType(EnumSet<EventType> types) throws Exception {
+	public JPhyloIOEvent nextOfType(Set<EventType> types) throws Exception {
 		try {
 			JPhyloIOEvent result = next();
-			while (!types.contains(result.getEventType())) {
+			while (!types.contains(result.getType())) {
 				result = next();
 			}
 			return result;

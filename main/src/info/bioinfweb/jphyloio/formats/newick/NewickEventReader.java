@@ -32,7 +32,8 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 
@@ -125,7 +126,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			if (!passedSubnodes.isEmpty()) {  // Nodes on top level do not have to be stored.
 				passedSubnodes.peek().add(new NodeInfo(id, length));			
 			}
-			upcomingEvents.add(new ConcreteJPhyloIOEvent(EventType.NODE_END));  //TODO Put possible annotations and comments in the queue first
+			upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));  //TODO Put possible annotations and comments in the queue first
 			return new NodeEvent(id, label);  //TODO Possibly replace by translation table when used in Nexus. 
 		}		
 	}
@@ -138,7 +139,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			if (token == null) {
 				if (passedSubnodes.isEmpty()) {
 					state = State.IN_DOCUMENT;
-					result = new ConcreteJPhyloIOEvent(EventType.TREE_END);  // End of file without terminal symbol.
+					result = new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END);  // End of file without terminal symbol.
 				}
 				else {
 					throw new IOException("Unexpected EOF.");  //TODO Replace by special exception.
@@ -163,13 +164,13 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 								NodeInfo nodeInfo = levelInfo.poll();
 								upcomingEvents.add(new EdgeEvent(sourceID, nodeInfo.id, nodeInfo.length));
 								//TODO Put possible metadata and comments in between here.
-								upcomingEvents.add(new ConcreteJPhyloIOEvent(EventType.EDGE_END));
+								upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 							}
 						}
 						break;
 					case TERMNINAL_SYMBOL:
 						state = State.IN_DOCUMENT;
-						result = new ConcreteJPhyloIOEvent(EventType.TREE_END);
+						result = new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END);
 						break;
 					default:
 						throw new IOException("Unexpected token " + token.getType());  //TODO Replace by special exception
@@ -189,15 +190,15 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			switch (state) {
 				case START:
 					state = State.IN_DOCUMENT;
-					return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_START);
+					return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
 				case IN_DOCUMENT:
 					if (scanner.hasMoreTokens()) {
 						state = State.IN_TREE;
-						return new ConcreteJPhyloIOEvent(EventType.TREE_START);
+						return new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.START);
 					}
 					else {
 						state = State.END;
-						return new ConcreteJPhyloIOEvent(EventType.DOCUMENT_END);
+						return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
 					}
 				case IN_TREE:
 					return processTree();
