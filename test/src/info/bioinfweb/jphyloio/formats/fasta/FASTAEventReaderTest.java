@@ -19,14 +19,16 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 import java.io.File;
-import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.* ;
-
 
 import static org.junit.Assert.* ;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
@@ -41,10 +43,8 @@ public class FASTAEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(6);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATCGT", reader);
 				
@@ -59,10 +59,8 @@ public class FASTAEventReaderTest {
 				
 				assertCharactersEvent("Seq 3", "GCCAT", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -84,13 +82,14 @@ public class FASTAEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(20);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertEquals(EventType.ALIGNMENT_END, reader.nextOfType(EnumSet.of(EventType.ALIGNMENT_END)).getEventType());
-				assertNull(reader.nextOfType(EnumSet.of(EventType.ALIGNMENT_END)));
+				Set<EventType> set = new HashSet<EventType>();
+				set.add(new EventType(EventContentType.ALIGNMENT, EventTopologyType.END));
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, 
+						reader.nextOfType(set));
+				assertNull(reader.nextOfType(set));
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -110,19 +109,15 @@ public class FASTAEventReaderTest {
 		try {
 			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/MatchToken.fasta"), true);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATCG-AG", reader);
 				assertCharactersEvent("Seq 2", "ATGG-AG", reader);
 				assertCharactersEvent("Seq 3", "AACGTAG", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -144,10 +139,8 @@ public class FASTAEventReaderTest {
 			try {
 				reader.setMaxCommentLength(16);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCommentEvent("comment 1", false, reader);
 				assertCharactersEvent("Seq 1", "ATCGT", reader);
@@ -166,10 +159,8 @@ public class FASTAEventReaderTest {
 				assertCommentEvent(" another comment", false, reader);
 				assertCharactersEvent("Seq 3", "GCCAT", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -189,10 +180,8 @@ public class FASTAEventReaderTest {
 		try {
 			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Indices.fasta"), false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATCGT", reader);
 				assertCharactersEvent("Seq 1", "TCGTA", reader);
@@ -209,10 +198,8 @@ public class FASTAEventReaderTest {
 				
 				assertCharactersEvent("Seq 3", "GCCAT", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}

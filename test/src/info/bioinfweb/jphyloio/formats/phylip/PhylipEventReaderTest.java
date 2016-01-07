@@ -19,7 +19,8 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import org.junit.* ;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
 import static org.junit.Assert.* ;
 
 
@@ -39,10 +41,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(10);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Seq 2", "ATG-TT-CCG", reader);
@@ -50,10 +50,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 4ATCGA", "ATG-TTTCCG", reader);
 				assertCharactersEvent("Seq 5", "ATG-TT-CCC", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -75,10 +73,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(20);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Seq 2", "ATG-TT-CCG", reader);
@@ -86,10 +82,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 4ATCGA", "ATG-TTTCCG", reader);
 				assertCharactersEvent("Seq 5", "ATG-TT-CCC", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -111,10 +105,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(6);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T-", reader);
 				assertCharactersEvent("Seq 1", "-CCG", reader);
@@ -127,10 +119,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 5", "ATG-TT", reader);
 				assertCharactersEvent("Seq 5", "-CCC", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -149,7 +139,8 @@ public class PhylipEventReaderTest {
 		try {
 			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/" + fileName), false, true, false);
 			try {
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());  // To allow peek() the first two events are generated here already.
+				//assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());  // To allow peek() the first two events are generated here already.
+				reader.next();
 				fail("No excpetion");
 			}
 			finally {
@@ -181,10 +172,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(10);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Seq 2", "ATG-TT-CCG", reader);
@@ -198,10 +187,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 4ATCGA", "CCGT-GTTTA", reader);
 				assertCharactersEvent("Seq 5", "CGGT-CTT-A", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -223,10 +210,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(20);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Seq 2", "ATG-TT-CCG", reader);
@@ -240,10 +225,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 4ATCGA", "CCGT-GTTTA", reader);
 				assertCharactersEvent("Seq 5", "CGGT-CTT-A", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -265,10 +248,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(6);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T-", reader);
 				assertCharactersEvent("Seq 1", "-CCG", reader);
@@ -292,10 +273,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 5", "CGGT-C", reader);
 				assertCharactersEvent("Seq 5", "TT-A", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -317,10 +296,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(5);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T", reader);
 				assertCharactersEvent("Seq 1", "--CCG", reader);
@@ -344,10 +321,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 5", "CGGT-", reader);
 				assertCharactersEvent("Seq 5", "CTT-A", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -369,10 +344,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(20);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Seq 2", "ATG-TT-CCG", reader);
@@ -392,10 +365,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 4ATCGA", "ATTAG", reader);
 				assertCharactersEvent("Seq 5", "TTT-G", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -417,10 +388,8 @@ public class PhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(20);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Sequence_name_1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Sequence_name_2", "ATG-TT-CCG", reader);
@@ -440,10 +409,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Sequence_name_4", "ATTAG", reader);
 				assertCharactersEvent("Sequence_name_5", "TTT-G", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -463,10 +430,8 @@ public class PhylipEventReaderTest {
 		try {
 			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/InterleavedMatchCharacter.phy"), true, true, false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Seq 2", "ATG-TT-CCG", reader);
@@ -476,10 +441,8 @@ public class PhylipEventReaderTest {
 				assertCharactersEvent("Seq 2", "CCGT-GTT-A", reader);
 				assertCharactersEvent("Seq 3", "CCGT-CT--A", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}

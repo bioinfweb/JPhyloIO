@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.EventType;
 
 import java.io.File;
@@ -26,6 +28,7 @@ import java.io.File;
 import org.junit.* ;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
 import static org.junit.Assert.* ;
 
 
@@ -38,10 +41,8 @@ public class SequentialPhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(20);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Seq 1", "CCGT-GT--A", reader);
@@ -58,10 +59,8 @@ public class SequentialPhylipEventReaderTest {
 				assertCharactersEvent("Seq 5", "ATG-TT-CCC", reader);
 				assertCharactersEvent("Seq 5", "CGGT-CTT-A", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -83,10 +82,8 @@ public class SequentialPhylipEventReaderTest {
 			try {
 				reader.setMaxTokensToRead(20);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharactersEvent("Sequence_name_1", "ATG-T--CCG", reader);
 				assertCharactersEvent("Sequence_name_1", "CCGT-GT--A", reader);
@@ -103,10 +100,8 @@ public class SequentialPhylipEventReaderTest {
 				assertCharactersEvent("Sequence_name_5", "ATG-TT-CCC", reader);
 				assertCharactersEvent("Sequence_name_5", "CGGT-CTT-A", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}

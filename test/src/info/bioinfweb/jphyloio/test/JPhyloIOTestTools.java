@@ -25,7 +25,8 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 
@@ -41,10 +42,26 @@ import static org.junit.Assert.*;
 
 
 public class JPhyloIOTestTools {
+	public static void assertEventType(EventContentType expectedContentType, 
+			EventTopologyType expectedTopologyType, JPhyloIOEvent event) throws Exception {
+		
+		assertEquals(expectedContentType, event.getType().getContentType());
+		assertEquals(expectedTopologyType, event.getType().getTopologyType());
+	}
+	
+	
+	public static void assertEventType(EventContentType expectedContentType, 
+			EventTopologyType expectedTopologyType, JPhyloIOEventReader reader) throws Exception {
+		
+		assertTrue(reader.hasNextEvent());
+		assertEventType(expectedContentType, expectedTopologyType, reader.next());
+	}
+	
+	
 	public static void assertCharactersEvent(String expectedName, String expectedSequence, JPhyloIOEventReader reader) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.SEQUENCE_CHARACTERS, event.getEventType());
+		assertEquals(EventContentType.SEQUENCE_CHARACTERS, event.getType().getContentType());
 		SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
 		assertEquals(expectedName, tokensEvent.getSequenceName());
 		assertEquals(expectedSequence.length(), tokensEvent.getCharacterValues().size());
@@ -57,7 +74,7 @@ public class JPhyloIOTestTools {
 	public static void assertCharactersEvent(String expectedName, String[] expectedSequence, JPhyloIOEventReader reader) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.SEQUENCE_CHARACTERS, event.getEventType());
+		assertEquals(EventContentType.SEQUENCE_CHARACTERS, event.getType().getContentType());
 		SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
 		assertEquals(expectedName, tokensEvent.getSequenceName());
 		assertEquals(expectedSequence.length, tokensEvent.getCharacterValues().size());
@@ -77,7 +94,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.COMMENT, event.getEventType());
+		assertEquals(EventContentType.COMMENT, event.getType().getContentType());
 		CommentEvent commentEvent = event.asCommentEvent();
 		assertEquals(expectedContent, commentEvent.getContent());
 		assertEquals(expectedContinuedInNextEvent, commentEvent.isContinuedInNextEvent());
@@ -89,7 +106,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.META_INFORMATION, event.getEventType());
+		assertEquals(EventContentType.META_INFORMATION, event.getType().getContentType());
 		
 		MetaInformationEvent metaInformationEvent = event.asMetaInformationEvent();
 		assertEquals(expectedKey, metaInformationEvent.getKey());
@@ -109,7 +126,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.TOKEN_SET_DEFINITION, event.getEventType());
+		assertEquals(EventContentType.TOKEN_SET_DEFINITION, event.getType().getContentType());
 		
 		TokenSetDefinitionEvent tokenSetEvent = event.asTokenSetDefinitionEvent();
 		assertEquals(expectedType, tokenSetEvent.getSetType());
@@ -123,7 +140,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.SINGLE_TOKEN_DEFINITION, event.getEventType());
+		assertEquals(EventContentType.SINGLE_TOKEN_DEFINITION, event.getType().getContentType());
 		
 		SingleTokenDefinitionEvent tokenSetEvent = event.asSingleTokenDefinitionEvent();
 		assertEquals(expectedTokenName, tokenSetEvent.getTokenName());
@@ -136,7 +153,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.CHARACTER_SET, event.getEventType());
+		assertEquals(EventContentType.CHARACTER_SET, event.getType().getContentType());
 		
 		CharacterSetEvent charSetEvent = event.asCharacterSetEvent();
 		assertEquals(expectedName, charSetEvent.getName());
@@ -148,7 +165,7 @@ public class JPhyloIOTestTools {
   public static String assertNodeEvent(String expectedLabel, JPhyloIOEventReader reader) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.NODE_START, event.getEventType());
+		assertEventType(EventContentType.NODE, EventTopologyType.START, event);
 		
 		NodeEvent nodeEvent = event.asNodeEvent();
 		assertEquals(expectedLabel, nodeEvent.getLabel());
@@ -161,7 +178,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.EDGE_START, event.getEventType());
+		assertEventType(EventContentType.EDGE, EventTopologyType.START, event);
 		
 		EdgeEvent edgeEvent = event.asEdgeEvent();
 		assertEquals(expectedSourceID, edgeEvent.getSourceID());

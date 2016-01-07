@@ -21,9 +21,16 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 import java.io.File;
 
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;
+
+
+
+
+
 
 
 
@@ -48,7 +55,7 @@ public class MEGAEventReaderTest {
 		assertTrue(reader.hasNextEvent());
 		
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventType.META_INFORMATION, event.getEventType());
+		assertEquals(EventContentType.META_INFORMATION, event.getType().getContentType());
 		assertEquals(name, event.asMetaInformationEvent().getKey().toUpperCase());
   }
   
@@ -58,10 +65,8 @@ public class MEGAEventReaderTest {
 		try {
 			MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/HLA-3Seq.meg"), false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_TITLE);
 				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_DESCRIPTION);
@@ -124,10 +129,8 @@ public class MEGAEventReaderTest {
 
 				assertCharacterSetEvent("Domain=Alpha_3 Property=Coding", 123, 141, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}
@@ -147,10 +150,8 @@ public class MEGAEventReaderTest {
 		try {
 			MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/MatchToken.meg"), true);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertMetaInformation(reader, MEGAEventReader.COMMAND_NAME_TITLE);
 				assertMetaInformation(reader, MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE");
@@ -170,10 +171,8 @@ public class MEGAEventReaderTest {
 				assertCharactersEvent("B", "CGCTAGTAA", reader);
 				assertCharactersEvent("C", "CGCTAGATA", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				
 				assertFalse(reader.hasNextEvent());
 			}

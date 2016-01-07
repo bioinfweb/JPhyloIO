@@ -20,6 +20,8 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.EventType;
 
 import java.io.File;
@@ -36,53 +38,50 @@ public class NewickReaderTest {
 	public void test_readNextEvent() throws Exception {
 		NewickEventReader reader = new NewickEventReader(new File("data/Newick/InternalsTerminalsLength.nwk"));
 		try {
-			assertTrue(reader.hasNextEvent());
-			assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-			assertTrue(reader.hasNextEvent());
-			assertEquals(EventType.TREE_START, reader.next().getEventType());
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String idA = assertNodeEvent("A", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			String idB = assertNodeEvent("B", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			String idN3 = assertNodeEvent("N3", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN3, idA, 1.05, reader);
-			assertEquals(EventType.EDGE_END, reader.next().getEventType());
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN3, idB, 1.0, reader);
-			assertEquals(EventType.EDGE_END, reader.next().getEventType());
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
 			String idC = assertNodeEvent("C", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			String idN2 = assertNodeEvent("N2", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN2, idN3, 1.5, reader);
-			assertEquals(EventType.EDGE_END, reader.next().getEventType());
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN2, idC, 2.5, reader);
-			assertEquals(EventType.EDGE_END, reader.next().getEventType());
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
 			String idD = assertNodeEvent("D", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			String idE = assertNodeEvent("E", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			String idN4 = assertNodeEvent("N4", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN4, idD, 2.0, reader);
-			assertEquals(EventType.EDGE_END, reader.next().getEventType());
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN4, idE, 2.1, reader);
-			assertEquals(EventType.EDGE_END, reader.next().getEventType());
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
 			String idN1 = assertNodeEvent("N1", reader);
-			assertEquals(EventType.NODE_END, reader.next().getEventType());
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idN2, .8, reader);
-			assertEquals(EventType.EDGE_END, reader.next().getEventType());
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idN4, 1.4, reader);
-			assertEquals(EventType.EDGE_END, reader.next().getEventType());
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			//TODO Event for root node with length?
 
-			assertEquals(EventType.TREE_END, reader.next().getEventType());
-			assertTrue(reader.hasNextEvent());
-			assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
 		finally {

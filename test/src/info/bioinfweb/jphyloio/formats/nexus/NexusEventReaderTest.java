@@ -22,7 +22,8 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.ChracterStateMeaning;
 import info.bioinfweb.commons.collections.ParameterMap;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 
 import java.io.File;
@@ -51,8 +52,7 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSet.nex"), false, factory);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertCommentEvent("comment 1", reader);
 				
 				assertCharacterSetEvent("set01", 3, 6, reader);
@@ -94,8 +94,7 @@ public class NexusEventReaderTest {
 				assertCharacterSetEvent("set'15", 1, 2, reader);
 				assertCharacterSetEvent("set 16;", 1, 2, reader);
 
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -114,9 +113,7 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetInvalidVectorSymbol.nex"), false, factory);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertCharacterSetEvent("set1", 2, 4, reader);  // The exception happens here already, because the parser is always one element ahead.
 				reader.next();
 			}
@@ -141,10 +138,8 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Format.nex"), false, factory);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -159,10 +154,8 @@ public class NexusEventReaderTest {
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
 				assertFalse(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));  // May be false or not contained in the map.
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -181,10 +174,8 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatTokens.nex"), false, factory);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -200,10 +191,8 @@ public class NexusEventReaderTest {
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -222,10 +211,8 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuous.nex"), false, factory);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.CONTINUOUS, "Continuous", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -240,10 +227,8 @@ public class NexusEventReaderTest {
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -263,10 +248,8 @@ public class NexusEventReaderTest {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), false, factory);
 			reader.setMetaEventsForUnknownCommands(false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -281,10 +264,8 @@ public class NexusEventReaderTest {
 				assertCharactersEvent("C", "C-T", reader);
 				assertCharactersEvent("D E", "CGTCATG", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -304,10 +285,8 @@ public class NexusEventReaderTest {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokens.nex"), false, factory);
 			reader.setMetaEventsForUnknownCommands(false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -322,10 +301,8 @@ public class NexusEventReaderTest {
 				assertCommentEvent("comment 3", reader);
 				assertCharactersEvent("C", new String[]{"Zwei", "-"}, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -345,10 +322,8 @@ public class NexusEventReaderTest {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixContinuous.nex"), false, factory);
 			reader.setMetaEventsForUnknownCommands(false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.CONTINUOUS, "continuous", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -362,10 +337,8 @@ public class NexusEventReaderTest {
 				assertCommentEvent("comment 3", reader);
 				assertCharactersEvent("C", new String[]{"20.5", "-"}, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -385,10 +358,8 @@ public class NexusEventReaderTest {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixDNAAlternatives.nex"), false, factory);
 			reader.setMetaEventsForUnknownCommands(false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -402,10 +373,8 @@ public class NexusEventReaderTest {
 				assertCommentEvent("comment 3", reader);
 				assertCharactersEvent("C", new String[]{"C", "-", "T"}, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -425,10 +394,8 @@ public class NexusEventReaderTest {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokensAlternatives.nex"), false, factory);
 			reader.setMetaEventsForUnknownCommands(false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -443,10 +410,8 @@ public class NexusEventReaderTest {
 				assertCommentEvent("comment 3", reader);
 				assertCharactersEvent("C", new String[]{"{Zwei Eins}", "-"}, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -466,10 +431,8 @@ public class NexusEventReaderTest {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleaved.nex"), false, factory);
 			reader.setMetaEventsForUnknownCommands(false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -485,10 +448,8 @@ public class NexusEventReaderTest {
 				assertCharactersEvent("B", "ATCGCAT", reader);
 				assertCharactersEvent("C", "A-CCGAT", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -508,10 +469,8 @@ public class NexusEventReaderTest {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), true, factory);
 			reader.setMetaEventsForUnknownCommands(false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -528,10 +487,8 @@ public class NexusEventReaderTest {
 				assertCharactersEvent("B", "ATCGCAT", reader);
 				assertCharactersEvent("C", "A-CCGAT", reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -552,8 +509,7 @@ public class NexusEventReaderTest {
 			reader.setMaxCommentLength(13);
 			reader.setMetaEventsForUnknownCommands(false);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
 				assertCommentEvent("comment", true, reader);
 				assertCommentEvent("short comment", true, reader);
@@ -562,8 +518,7 @@ public class NexusEventReaderTest {
 				assertCommentEvent("long comment ", false, reader);
 				assertCommentEvent("0123456789", true, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -582,10 +537,8 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Symbols.nex"), false, factory);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.DISCRETE, "Standard", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
@@ -609,10 +562,8 @@ public class NexusEventReaderTest {
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
 				assertFalse(map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false));  // May be false or not contained in the map.
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
@@ -631,10 +582,8 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuousSymbols.nex"), false, factory);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateType.CONTINUOUS, "Continuous", reader);
 				try {
@@ -661,10 +610,8 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatMrBayesDataType.nex"), false, factory);
 			try {
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_START, reader.next().getEventType());
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", 1, 1452, reader);
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
@@ -674,10 +621,8 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("-", ChracterStateMeaning.GAP, reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.ALIGNMENT_END, reader.next().getEventType());
-				assertTrue(reader.hasNextEvent());
-				assertEquals(EventType.DOCUMENT_END, reader.next().getEventType());
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
 			}
 			finally {
