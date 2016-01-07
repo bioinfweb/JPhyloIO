@@ -40,7 +40,6 @@ import info.bioinfweb.jphyloio.events.NodeEvent;
 
 public class NewickEventReader extends AbstractBufferedReaderBasedEventReader implements NewickConstants {
 	private static final String NODE_ID_PREFIX = "n";
-	private static final String EDGE_ID_PREFIX = "e";
 	
 	
 	private static enum State {
