@@ -24,11 +24,13 @@ import info.bioinfweb.commons.bio.ChracterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 
 
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -140,5 +142,35 @@ public class JPhyloIOTestTools {
 		assertEquals(expectedName, charSetEvent.getName());
 		assertEquals(expectedStart, charSetEvent.getStart());
 		assertEquals(expectedEnd, charSetEvent.getEnd());
+  }
+
+
+  public static String assertNodeEvent(String expectedLabel, JPhyloIOEventReader reader) throws Exception {
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEquals(EventType.NODE_START, event.getEventType());
+		
+		NodeEvent nodeEvent = event.asNodeEvent();
+		assertEquals(expectedLabel, nodeEvent.getLabel());
+		return nodeEvent.getID();
+  }
+
+
+  public static void assertEdgeEvent(String expectedSourceID, String expectedTargetID, 
+  		double expectedLength, JPhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEquals(EventType.EDGE_START, event.getEventType());
+		
+		EdgeEvent edgeEvent = event.asEdgeEvent();
+		assertEquals(expectedSourceID, edgeEvent.getSourceID());
+		assertEquals(expectedTargetID, edgeEvent.getTargetID());
+		if (Double.isNaN(expectedLength)) {
+			assertTrue(Double.isNaN(edgeEvent.getLength()));
+		}
+		else {
+			assertEquals(expectedLength, edgeEvent.getLength(), 0.0000001);
+		}
   }
 }

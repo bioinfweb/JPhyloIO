@@ -130,6 +130,7 @@ test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/newick/NewickReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickScannerTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain

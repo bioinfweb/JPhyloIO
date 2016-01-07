@@ -28,7 +28,6 @@ import java.io.IOException;
 import org.junit.* ;
 
 import static org.junit.Assert.* ;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 
 
 
