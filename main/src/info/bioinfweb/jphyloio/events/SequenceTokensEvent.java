@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+
 import java.util.Collections;
 import java.util.List;
 

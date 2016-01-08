@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.events;
+package info.bioinfweb.jphyloio.events.type;
 
 
 
@@ -78,5 +78,11 @@ public class EventType implements Comparable<EventType> {
 		if (topologyType != other.topologyType)
 			return false;
 		return true;
+	}
+
+
+	@Override
+	public String toString() {
+		return getContentType().toString() + "." + getTopologyType().toString();
 	}
 }

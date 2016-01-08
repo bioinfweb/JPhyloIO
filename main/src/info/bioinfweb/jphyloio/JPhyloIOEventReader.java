@@ -23,9 +23,9 @@ import java.util.EnumSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 

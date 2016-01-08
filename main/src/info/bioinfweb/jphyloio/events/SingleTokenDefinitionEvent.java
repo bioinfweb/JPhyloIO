@@ -21,6 +21,8 @@ package info.bioinfweb.jphyloio.events;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.ChracterStateMeaning;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 

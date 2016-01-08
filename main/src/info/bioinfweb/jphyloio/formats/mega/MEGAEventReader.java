@@ -31,11 +31,11 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -141,6 +141,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 				MetaInformationEvent event = readKeyValueMetaInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=', '"');
 				processFormatSubcommand(event.getKey(), event.getStringValue());
 				if (result == null) {
+					upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 					result = event;
 				}
 				else {

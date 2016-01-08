@@ -46,11 +46,11 @@ import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventTopologyType;
-import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 

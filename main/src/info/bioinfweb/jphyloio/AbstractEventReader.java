@@ -25,11 +25,11 @@ import java.util.Set;
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventTopologyType;
-import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 
@@ -190,6 +190,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 				lastNonComment = previous;
 			}
 			next = readNextEvent();
+			System.out.println(previous.getType());
 			return previous;
 		}
 	}

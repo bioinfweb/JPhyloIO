@@ -20,6 +20,9 @@ package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 

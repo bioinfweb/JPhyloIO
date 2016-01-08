@@ -20,10 +20,10 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.io.BufferedReader;
 import java.io.File;

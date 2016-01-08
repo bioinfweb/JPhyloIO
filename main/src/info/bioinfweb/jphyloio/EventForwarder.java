@@ -19,8 +19,8 @@
 package info.bioinfweb.jphyloio;
 
 
-import info.bioinfweb.jphyloio.events.EventContentType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
