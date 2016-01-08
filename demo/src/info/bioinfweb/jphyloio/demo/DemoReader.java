@@ -22,9 +22,9 @@ package info.bioinfweb.jphyloio.demo;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventTopologyType;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
