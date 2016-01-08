@@ -144,9 +144,9 @@ public class NexusEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", ChracterStateMeaning.GAP, reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
 				
 				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
@@ -180,10 +180,10 @@ public class NexusEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", ChracterStateMeaning.GAP, reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
 				
 				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
@@ -217,9 +217,9 @@ public class NexusEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateType.CONTINUOUS, "Continuous", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", ChracterStateMeaning.GAP, reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
 				
 				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
@@ -246,7 +246,7 @@ public class NexusEventReaderTest {
 	public void testReadingMatrix() {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), false, factory);
-			reader.setMetaEventsForUnknownCommands(false);
+			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -283,7 +283,7 @@ public class NexusEventReaderTest {
 	public void testReadingMatrixLongTokens() {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokens.nex"), false, factory);
-			reader.setMetaEventsForUnknownCommands(false);
+			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -291,7 +291,7 @@ public class NexusEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", ChracterStateMeaning.GAP, reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
 
 				assertCommentEvent("comment 1", reader);
 				assertCharactersEvent("A", new String[]{"Eins", "Zwei", "Eins"}, reader);
@@ -320,7 +320,7 @@ public class NexusEventReaderTest {
 	public void testReadingMatrixLongContinuous() {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixContinuous.nex"), false, factory);
-			reader.setMetaEventsForUnknownCommands(false);
+			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -356,7 +356,7 @@ public class NexusEventReaderTest {
 	public void testReadingMatrixDNAAlternatives() {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixDNAAlternatives.nex"), false, factory);
-			reader.setMetaEventsForUnknownCommands(false);
+			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -392,7 +392,7 @@ public class NexusEventReaderTest {
 	public void testReadingMatrixLongTokensAlternatives() {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokensAlternatives.nex"), false, factory);
-			reader.setMetaEventsForUnknownCommands(false);
+			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -400,7 +400,7 @@ public class NexusEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("?", ChracterStateMeaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", ChracterStateMeaning.GAP, reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "tokens", "", reader);
 
 				assertCommentEvent("comment 1", reader);
 				assertCharactersEvent("A", new String[]{"Eins", "(Zwei Drei)", "Eins"}, reader);
@@ -429,7 +429,7 @@ public class NexusEventReaderTest {
 	public void testReadingMatrixInterleaved() {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleaved.nex"), false, factory);
-			reader.setMetaEventsForUnknownCommands(false);
+			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -467,7 +467,7 @@ public class NexusEventReaderTest {
 	public void testReadingMatrixInterleavedMatchCharacter() {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), true, factory);
-			reader.setMetaEventsForUnknownCommands(false);
+			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -507,7 +507,7 @@ public class NexusEventReaderTest {
 		try {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/SplitComments.nex"), false, factory);
 			reader.setMaxCommentLength(13);
-			reader.setMetaEventsForUnknownCommands(false);
+			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
@@ -552,9 +552,9 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("F", ChracterStateMeaning.CHARACTER_STATE, reader);
 				assertSingleTokenDefinitionEvent("G", ChracterStateMeaning.CHARACTER_STATE, reader);
 
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
-				assertMetaInformationEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", reader);
+				assertMetaEvent(FormatReader.KEY_PREFIX + "transpose", "", reader);
 				
 				ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
 				assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));

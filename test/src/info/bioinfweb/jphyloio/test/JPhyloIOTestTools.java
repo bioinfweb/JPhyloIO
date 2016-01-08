@@ -37,6 +37,7 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
 
+import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import static org.junit.Assert.*;
 
 
@@ -101,16 +102,25 @@ public class JPhyloIOTestTools {
   }  
 	
 	
-  public static void assertMetaInformationEvent(String expectedKey, String expectedValue, 
-  		JPhyloIOEventReader reader) throws Exception {
-  	
+  public static void assertMetaEvent(String expectedKey, String expectedValue, JPhyloIOEventReader reader) throws Exception {
+  	assertMetaEvent(expectedKey, expectedValue, true, reader);
+  }
+  
+  
+  public static void assertMetaEvent(String expectedKey, String expectedValue, boolean keyCaseSensitive, JPhyloIOEventReader reader) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventContentType.META_INFORMATION, event.getType().getContentType());
 		
 		MetaInformationEvent metaInformationEvent = event.asMetaInformationEvent();
-		assertEquals(expectedKey, metaInformationEvent.getKey());
-		assertEquals(expectedValue, metaInformationEvent.getStringValue());
+		if (keyCaseSensitive == true) {			
+			assertEquals(expectedKey, metaInformationEvent.getKey());
+			assertEquals(expectedValue, metaInformationEvent.getStringValue());
+		}
+		else {
+			assertEquals(expectedKey.toUpperCase(), metaInformationEvent.getKey().toUpperCase());
+			assertEquals(expectedValue.toUpperCase(), metaInformationEvent.getStringValue().toUpperCase());
+		}
   }  
 	
 	
