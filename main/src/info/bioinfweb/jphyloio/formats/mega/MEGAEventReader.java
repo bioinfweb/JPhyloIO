@@ -36,7 +36,6 @@ import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
-import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 
 
 
@@ -146,12 +145,14 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 				}
 				else {
 					upcomingEvents.add(event);
+					upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 				}
 			}
 			
 			getReader().skip(1); // Consume ';'.
 			if (result == null) {  // No content found.
-				return new MetaInformationEvent(COMMAND_NAME_FORMAT, "");
+				upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				return new MetaInformationEvent(COMMAND_NAME_FORMAT, null, "");
 			}
 			else {
 				return result;
@@ -166,10 +167,12 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	private MetaInformationEvent createMetaInformationEventFromCommand(String content) throws IOException {
 		int afterNameIndex = StringUtils.indexOfWhiteSpace(content);
 		if (afterNameIndex < 1) {
-			return new MetaInformationEvent("", content);
+			upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+			return new MetaInformationEvent("", null, content);
 		}
 		else {
-			return new MetaInformationEvent(content.substring(0, afterNameIndex).toLowerCase(), content.substring(afterNameIndex).trim());
+			upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+			return new MetaInformationEvent(content.substring(0, afterNameIndex).toLowerCase(), null, content.substring(afterNameIndex).trim());
 		}
 	}
 	

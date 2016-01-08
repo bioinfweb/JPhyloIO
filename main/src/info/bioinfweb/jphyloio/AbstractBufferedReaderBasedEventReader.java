@@ -22,9 +22,11 @@ package info.bioinfweb.jphyloio;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EventContentType;
+import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -297,7 +299,8 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 			}
 			consumeWhiteSpaceAndComments(commentStart, commentEnd);
 		}
-		return new MetaInformationEvent(keyPrefix + key, value); // TODO return different event
+		upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+		return new MetaInformationEvent(keyPrefix + key, null, value);
 	}
 	
 	

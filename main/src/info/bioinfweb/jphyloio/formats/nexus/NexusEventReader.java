@@ -321,7 +321,8 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			}
 			else if (end == COMMAND_END) {
 				//TODO Fire according event. (else case should be used here, but reader would have to be moved backwards to make ';' available again.)
-				result = new MetaInformationEvent(commandName, "");
+				upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				result = new MetaInformationEvent(commandName, null, "");
 			}
 			else {
 				currentCommandReader = factory.createReader(currentBlockName, commandName, streamDataProvider);

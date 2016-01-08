@@ -32,24 +32,34 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	private String originalType;
 	
 	
+	public MetaInformationEvent(String key, String originalType, String stringValue) {
+		this(key, originalType, stringValue, stringValue);
+	}
+	
+	
 	/**
-	 * Creates a new instance of this class.
+	 * Creates a new instance of MetaInformationEvent.
 	 * 
-	 * @param key the name or key of the meta information 
-	 * @param value the value of the meta information
+	 * @param key The name or key of the meta information.
+	 * @param originalType The original type of meta information or null. 
+	 * @param stringValue The string value of the meta information. This must not be null.
+	 * @param objectValue The object value of the meta information. If it is null, the stringValue is also used as objectValue.
+	 * 
+	 * @return a new instance of MetaInformationEvent
 	 */
-	public MetaInformationEvent(String key, String value) {
-		super(EventContentType.META_INFORMATION, EventTopologyType.SOLE);  //TODO Possibly change to START later.
-		
+	public MetaInformationEvent(String key, String originalType, String stringValue, Object objectValue) {
+		super(EventContentType.META_INFORMATION, EventTopologyType.START);
 		this.key = key;
-		if (value == null) {
+		if (stringValue == null) {
 			throw new NullPointerException("The parameter \"value\" cannot be null.");
 		}
 		else {
-			this.stringValue = value;
+			this.stringValue = stringValue;
 		}
+		this.objectValue = objectValue;
+		this.originalType = originalType;
 	}
-
+	
 
 	/**
 	 * Returns the name or key of the meta information, if provided in the document. 

@@ -24,35 +24,31 @@ import javax.xml.namespace.QName;
 
 public interface NeXMLConstants {
 	public static final String NAMESPACE_URI = "http://www.nexml.org/2009";
+	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	
 	public static final QName TAG_NEXML = new QName(NAMESPACE_URI, "nexml");
 	public static final QName TAG_META = new QName(NAMESPACE_URI, "meta");
 	
 	public static final QName TAG_OTUS = new QName(NAMESPACE_URI, "otus");
-	public static final QName TAG_CHARACTERS = new QName(NAMESPACE_URI, "characters");
-	
 	public static final QName TAG_OTU = new QName(NAMESPACE_URI, "otu");
-	public static final QName TAG_MATRIX = new QName(NAMESPACE_URI, "matrix");
-	public static final QName TAG_FORMAT = new QName(NAMESPACE_URI, "format");
 	
+	public static final QName TAG_CHARACTERS = new QName(NAMESPACE_URI, "characters");
+	public static final QName TAG_MATRIX = new QName(NAMESPACE_URI, "matrix");	
+	public static final QName TAG_FORMAT = new QName(NAMESPACE_URI, "format");	
 	public static final QName TAG_STATES = new QName(NAMESPACE_URI, "states");
-	public static final QName TAG_ROW = new QName(NAMESPACE_URI, "row");
-	
-	public static final QName TAG_SEQ = new QName(NAMESPACE_URI, "seq");
 	public static final QName TAG_STATE = new QName(NAMESPACE_URI, "state");
 	public static final QName TAG_POLYMORPHIC = new QName(NAMESPACE_URI, "polymorphic_state_set");
-	public static final QName TAG_UNCERTAIN = new QName(NAMESPACE_URI, "uncertain_state_set");
+	public static final QName TAG_UNCERTAIN = new QName(NAMESPACE_URI, "uncertain_state_set");	
+	public static final QName TAG_ROW = new QName(NAMESPACE_URI, "row");	
+	public static final QName TAG_SEQ = new QName(NAMESPACE_URI, "seq");
 	
 	public static final QName ATTR_ID = new QName("id");
 	public static final QName ATTR_LABEL = new QName("label");
-	public static final QName ATTR_ABOUT = new QName("about");
-	
-	public static final QName ATTR_OTU = new QName("otu");
-	
+	public static final QName ATTR_ABOUT = new QName("about");	
+	public static final QName ATTR_OTU = new QName("otu");	
 	public static final QName ATTR_SYMBOL = new QName("symbol");
 	
-	public static final String ATTR_TYPE = "type";	
-	
+	public static final QName ATTR_TYPE = new QName(NAMESPACE_URI_XSI, "type");	
 	public static final QName ATTR_DATATYPE = new QName("datatype");
 	public static final QName ATTR_HREF = new QName("href");
 	public static final QName ATTR_REL = new QName("rel");
@@ -71,6 +67,8 @@ public interface NeXMLConstants {
 	public static final String TYPE_CONTIN_CELLS = "nex:ContinuousCells";
 	public static final String TYPE_STANDARD_SEQ = "nex:StandardSeqs";
 	public static final String TYPE_STANDARD_CELLS = "nex:StandardCells";
+	
+	public static final String TYPE_STRING = "xsd:string";
 	
 	public static final String TYPE_LITERAL_META = "nex:LiteralMeta";
 	public static final String TYPE_RESOURCE_META = "nex:ResourceMeta";
