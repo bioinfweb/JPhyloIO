@@ -100,6 +100,9 @@ test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
 test/data/MEGA/MatchToken.meg -text
 test/data/Newick/InternalsTerminalsLength.nwk -text
+test/data/Newick/LeafNodesNamed.nwk -text
+test/data/Newick/NoNamedNodes.nwk -text
+test/data/Newick/OnlyBranchLengths.nwk -text
 test/data/Nexus/CharSet.nex -text
 test/data/Nexus/CharSetInvalidVectorSymbol.nex -text
 test/data/Nexus/Format.nex -text

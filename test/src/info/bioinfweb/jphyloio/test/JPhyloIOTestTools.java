@@ -174,6 +174,13 @@ public class JPhyloIOTestTools {
 
 
   public static void assertEdgeEvent(String expectedSourceID, String expectedTargetID, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+  	assertEdgeEvent(expectedSourceID, expectedTargetID, Double.NaN, reader);
+  }
+  
+  	
+  public static void assertEdgeEvent(String expectedSourceID, String expectedTargetID, 
   		double expectedLength, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());

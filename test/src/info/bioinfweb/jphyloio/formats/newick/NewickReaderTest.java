@@ -19,10 +19,8 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
-import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.EventContentType;
 import info.bioinfweb.jphyloio.events.EventTopologyType;
-import info.bioinfweb.jphyloio.events.EventType;
 
 import java.io.File;
 
@@ -35,7 +33,7 @@ import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 
 public class NewickReaderTest {
 	@Test
-	public void test_readNextEvent() throws Exception {
+	public void test_readNextEvent_InternalsTerminalsLength() throws Exception {
 		NewickEventReader reader = new NewickEventReader(new File("data/Newick/InternalsTerminalsLength.nwk"));
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -77,6 +75,138 @@ public class NewickReaderTest {
 			assertEdgeEvent(idN1, idN2, .8, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idN4, 1.4, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			//TODO Event for root node with length?
+
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_readNextEvent_NoNamedNodes() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NoNamedNodes.nwk"));
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String id1 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id2 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3_1 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			assertEdgeEvent(id3, id3_1, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id3, id3_2, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+
+			String id0 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id1, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id2, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id3, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			//TODO Event for root node with length?
+
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_readNextEvent_LeafNodesNamed() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/LeafNodesNamed.nwk"));
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String id1 = assertNodeEvent("A", reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id2 = assertNodeEvent("B", reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3_1 = assertNodeEvent("C", reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertNodeEvent("D", reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			assertEdgeEvent(id3, id3_1, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id3, id3_2, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+
+			String id0 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id1, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id2, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id3, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			//TODO Event for root node with length?
+
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_readNextEvent_OnlyBranchLengths() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/OnlyBranchLengths.nwk"));
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String id1 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id2 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3_1 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			assertEdgeEvent(id3, id3_1, .3, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id3, id3_2, .4, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+
+			String id0 = assertNodeEvent(null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id1, .1, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id2, .2, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(id0, id3, .5, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			//TODO Event for root node with length?
 
