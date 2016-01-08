@@ -7,6 +7,7 @@ import java.util.Iterator;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.model.CharacterData;
 import info.bioinfweb.jphyloio.model.ElementCollection;
+import info.bioinfweb.jphyloio.model.GraphData;
 import info.bioinfweb.jphyloio.model.PhyloDocument;
 
 
@@ -26,6 +27,12 @@ public class DemoPhyloDocument implements PhyloDocument {
 	@Override
 	public ElementCollection<CharacterData> getCharacterDataCollection() {
 		return characterData;
+	}
+
+	
+	@Override
+	public ElementCollection<GraphData> getGraphDataCollection() { //TODO return actual graph data
+		return null;
 	}
 	
 
