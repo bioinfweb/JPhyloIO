@@ -270,7 +270,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	
 	
 	private void countCharacters(JPhyloIOEvent event) {
-		if (event.getType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
+		if (event.getType().getContentType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
 			SequenceTokensEvent charactersEvent = event.asSequenceTokensEvent();
 			if (charactersEvent.getSequenceName().equals(firstSequenceName)) {
 				charactersRead += charactersEvent.getCharacterValues().size();
@@ -304,7 +304,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 				case ALIGNMENT:
 					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.END)) {
 						return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);						
-					}  // fall throug in else case
+					}  // fall through in else case
 				case SEQUENCE_CHARACTERS:
 				case CHARACTER_SET:
 				case META_INFORMATION:
