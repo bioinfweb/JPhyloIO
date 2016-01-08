@@ -20,21 +20,10 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 
 import java.io.File;
-import java.io.IOException;
 
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventTopologyType;
-import info.bioinfweb.jphyloio.events.EventType;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;
-
-
-
-
-
-
-
-
 
 
 import org.junit.* ;
@@ -61,16 +50,19 @@ public class MEGAEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", false, reader);
-			assertMetaEvent(MEGAEventReader.COMMAND_NAME_DESCRIPTION, "Extracellular domains 1, 2, and 3 are marked. Antigen recognition sites\r\n(ARS) are shown by plus sign", false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE", "Nucleotide", false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT", "Interleaved", false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA", "3", false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES", "822", false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL", ".", false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING", "?", false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", false,  reader);
+			assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", 
+					true, false, reader);
+			assertMetaEvent(MEGAEventReader.COMMAND_NAME_DESCRIPTION, 
+					"Extracellular domains 1, 2, and 3 are marked. Antigen recognition sites\r\n(ARS) are shown by plus sign", 
+					true, false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE", "Nucleotide", true, false, reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT", "Interleaved", true, false, reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA", "3", true, false, reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES", "822", true, false, reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL", ".", true, false, reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING", "?", true, false, reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", true, false, reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", true, false, reader);
 			
 			assertCommentEvent("Nested [comment]", reader);
 			assertCommentEvent("[Nested] comment", reader);
@@ -141,15 +133,16 @@ public class MEGAEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE", "Nucleotide", false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT", "Interleaved", false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA", "3", false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES", "18", false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL", "i", false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING", "?", false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", false, reader);
+				assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", 
+						true, false, reader);
+				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE", "Nucleotide", true, false, reader);
+				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT", "Interleaved", true, false, reader);
+				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA", "3", true, false, reader);
+				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES", "18", true, false, reader);
+				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL", "i", true, false, reader);
+				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING", "?", true, false, reader);
+				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", true, false, reader);
+				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", true, false, reader);
 				
 				assertCharactersEvent("A", "TATTTCTCC", reader);
 				assertCharactersEvent("B", "TATTTCTAC", reader);

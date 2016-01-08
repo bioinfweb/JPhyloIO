@@ -19,9 +19,8 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventTopologyType;
-import info.bioinfweb.jphyloio.events.EventType;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.io.File;
 

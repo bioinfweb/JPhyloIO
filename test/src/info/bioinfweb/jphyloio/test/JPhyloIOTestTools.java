@@ -25,8 +25,8 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.EventContentType;
-import info.bioinfweb.jphyloio.events.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 
@@ -102,15 +102,10 @@ public class JPhyloIOTestTools {
   }  
 	
 	
-  public static void assertMetaEvent(String expectedKey, String expectedValue, JPhyloIOEventReader reader) throws Exception {
-  	assertMetaEvent(expectedKey, expectedValue, true, reader);
-  }
-  
-  
-  public static void assertMetaEvent(String expectedKey, String expectedValue, boolean keyCaseSensitive, JPhyloIOEventReader reader) throws Exception {
+  public static void assertMetaEvent(String expectedKey, String expectedValue, boolean testEndEvent, boolean keyCaseSensitive, JPhyloIOEventReader reader) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventContentType.META_INFORMATION, event.getType().getContentType());
+		assertEventType(EventContentType.META_INFORMATION, EventTopologyType.START, event);
 		
 		MetaInformationEvent metaInformationEvent = event.asMetaInformationEvent();
 		if (keyCaseSensitive == true) {			
@@ -121,7 +116,12 @@ public class JPhyloIOTestTools {
 			assertEquals(expectedKey.toUpperCase(), metaInformationEvent.getKey().toUpperCase());
 			assertEquals(expectedValue.toUpperCase(), metaInformationEvent.getStringValue().toUpperCase());
 		}
-  }  
+		
+		if (testEndEvent) {
+			assertTrue(reader.hasNextEvent());
+			assertEventType(EventContentType.META_INFORMATION, EventTopologyType.END, reader);
+		}
+  }
 	
 	
   public static void assertTokenSetDefinitionEvent(CharacterStateType expectedType, String expectedParsedName, 
