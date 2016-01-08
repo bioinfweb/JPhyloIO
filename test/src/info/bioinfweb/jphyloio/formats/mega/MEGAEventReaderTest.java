@@ -20,12 +20,15 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 
 import java.io.File;
+import java.io.IOException;
 
 import info.bioinfweb.jphyloio.events.EventContentType;
 import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;
+
+
 
 
 
@@ -52,86 +55,80 @@ public class MEGAEventReaderTest {
   
   
   @Test
-  public void testReadingMEGA() {
+  public void testReadingMEGA() throws Exception {
+		MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/HLA-3Seq.meg"), false);
 		try {
-			MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/HLA-3Seq.meg"), false);
-			try {
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
-				
-				assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", false, reader);
-				assertMetaEvent(MEGAEventReader.COMMAND_NAME_DESCRIPTION, "Extracellular domains 1, 2, and 3 are marked. Antigen recognition sites\r\n(ARS) are shown by plus sign", false,  reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE", "Nucleotide", false,  reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT", "Interleaved", false,  reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA", "3", false,  reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES", "822", false,  reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL", ".", false,  reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING", "?", false,  reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", false,  reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", false,  reader);
-				
-				assertCommentEvent("Nested [comment]", reader);
-				assertCommentEvent("[Nested] comment", reader);
-				
-				assertCommentEvent("in command statement", reader);
-				assertCharactersEvent("A-2301", "GGCTCCCACTCCATGAGGTATTTCTCC", reader);
-				assertCharactersEvent("A-2501", "GGCTCCCACTCCATGAGGTATTTCTAC", reader);
-				assertCharactersEvent("A-3301", "GGCTCCCACTCCATGAGGTATTTCACC", reader);
-				
-				assertCharacterSetEvent("+", 12, 15, reader);
-				assertCharacterSetEvent("+", 18, 21, reader);
-				assertCharacterSetEvent("+", 24, 27, reader);
-				
-				assertCharactersEvent("A-2301", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
-				assertCharactersEvent("A-2501", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
-				assertCharactersEvent("A-3301", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
-				
-				assertCharactersEvent("A-2301", "GAGGGGCCGGAGTATTGGGACGAGGAG", reader);
-				assertCommentEvent("comment 1 in characters", reader);
-				assertCharactersEvent("A-2501", "GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
-				assertCharactersEvent("A-3301", "GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
-				
-				assertCharacterSetEvent("+", 60, 69, reader);
-				assertCharacterSetEvent("+", 72, 81, reader);
-				assertCharacterSetEvent("Domain=Alpha_1  Property=Coding", 0, 81, reader);
-				
-				assertCharactersEvent("A-2301", "GGTTCTCACACCCTCCAGATGATGTTT", reader);
-				assertCharactersEvent("A-2501", "GGTTCTCACACCATCCAGAGGATGTAT", reader);
-				assertCommentEvent("comment 2 in characters", reader);
-				assertCharactersEvent("A-3301", "GGTTCTCACACCATCCAGATGATGTAT", reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+			
+			assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", false, reader);
+			assertMetaEvent(MEGAEventReader.COMMAND_NAME_DESCRIPTION, "Extracellular domains 1, 2, and 3 are marked. Antigen recognition sites\r\n(ARS) are shown by plus sign", false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE", "Nucleotide", false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT", "Interleaved", false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA", "3", false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES", "822", false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL", ".", false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING", "?", false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", false,  reader);
+			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", false,  reader);
+			
+			assertCommentEvent("Nested [comment]", reader);
+			assertCommentEvent("[Nested] comment", reader);
+			
+			assertCommentEvent("in command statement", reader);
+			assertCharactersEvent("A-2301", "GGCTCCCACTCCATGAGGTATTTCTCC", reader);
+			assertCharactersEvent("A-2501", "GGCTCCCACTCCATGAGGTATTTCTAC", reader);
+			assertCharactersEvent("A-3301", "GGCTCCCACTCCATGAGGTATTTCACC", reader);
+			
+			assertCharacterSetEvent("+", 12, 15, reader);
+			assertCharacterSetEvent("+", 18, 21, reader);
+			assertCharacterSetEvent("+", 24, 27, reader);
+			
+			assertCharactersEvent("A-2301", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
+			assertCharactersEvent("A-2501", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
+			assertCharactersEvent("A-3301", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
+			
+			assertCharactersEvent("A-2301", "GAGGGGCCGGAGTATTGGGACGAGGAG", reader);
+			assertCommentEvent("comment 1 in characters", reader);
+			assertCharactersEvent("A-2501", "GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
+			assertCharactersEvent("A-3301", "GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
+			
+			assertCharacterSetEvent("+", 60, 69, reader);
+			assertCharacterSetEvent("+", 72, 81, reader);
+			assertCharacterSetEvent("Domain=Alpha_1  Property=Coding", 0, 81, reader);
+			
+			assertCharactersEvent("A-2301", "GGTTCTCACACCCTCCAGATGATGTTT", reader);
+			assertCharactersEvent("A-2501", "GGTTCTCACACCATCCAGAGGATGTAT", reader);
+			assertCommentEvent("comment 2 in characters", reader);
+			assertCharactersEvent("A-3301", "GGTTCTCACACCATCCAGATGATGTAT", reader);
 
-				assertCommentEvent("comment in label", reader);
-				assertCharacterSetEvent("+", 93, 96, reader);
-				assertCharacterSetEvent("+", 99, 102, reader);
-				assertCharacterSetEvent("+", 105, 108, reader);
+			assertCommentEvent("comment in label", reader);
+			assertCharacterSetEvent("+", 93, 96, reader);
+			assertCharacterSetEvent("+", 99, 102, reader);
+			assertCharacterSetEvent("+", 105, 108, reader);
 
-				assertCharactersEvent("A-2301", "CTGGAGAACGGGAAG", reader);
-				assertCharactersEvent("A-2501", "CTGGAGAACGGGAAG", reader);
-				assertCharactersEvent("A-3301", "CTGGAGAACGGGAAG", reader);
+			assertCharactersEvent("A-2301", "CTGGAGAACGGGAAG", reader);
+			assertCharactersEvent("A-2501", "CTGGAGAACGGGAAG", reader);
+			assertCharactersEvent("A-3301", "CTGGAGAACGGGAAG", reader);
 
-				assertCommentEvent("Nested [comment]", reader);
-				assertCommentEvent("[Nested] comment", reader);
+			assertCommentEvent("Nested [comment]", reader);
+			assertCommentEvent("[Nested] comment", reader);
 
-				assertCharacterSetEvent("Domain=Alpha_2 Property=Coding", 81, 123, reader);
-				
-				assertCharactersEvent("A-2301", "GACCCCCCCAAGACACAT", reader);
-				assertCharactersEvent("A-2501", "GACGCCCCCAAGACGCAT", reader);
-				assertCharactersEvent("A-3301", "GACCCCCCCAGGACGCAT", reader);
+			assertCharacterSetEvent("Domain=Alpha_2 Property=Coding", 81, 123, reader);
+			
+			assertCharactersEvent("A-2301", "GACCCCCCCAAGACACAT", reader);
+			assertCharactersEvent("A-2501", "GACGCCCCCAAGACGCAT", reader);
+			assertCharactersEvent("A-3301", "GACCCCCCCAGGACGCAT", reader);
 
-				assertCharacterSetEvent("Domain=Alpha_3 Property=Coding", 123, 141, reader);
-				
-				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
-				
-				assertFalse(reader.hasNextEvent());
-			}
-			finally {
-				reader.close();
-			}
+			assertCharacterSetEvent("Domain=Alpha_3 Property=Coding", 123, 141, reader);
+			
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			
+			assertFalse(reader.hasNextEvent());
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
+		finally {
+			reader.close();
 		}
   }
   
