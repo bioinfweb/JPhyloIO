@@ -54,6 +54,14 @@ public interface JPhyloIOEvent {
 	public MetaInformationEvent asMetaInformationEvent() throws ClassCastException;
 	
 	/**
+	 * Casts this event to an unknown command event.
+	 * 
+	 * @return a reference to this event as an unknown command event
+	 * @throws ClassCastException if this event is not an instance of {@link UnknownCommandEvent}
+	 */
+	public UnknownCommandEvent asUnknownCommandEvent() throws ClassCastException;
+	
+	/**
 	 * Casts this event to a comment event.
 	 * 
 	 * @return a reference to this event as a tokens event

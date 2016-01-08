@@ -24,6 +24,7 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -273,7 +274,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	
 	
 	protected MetaInformationEvent readKeyValueMetaInformation(String keyPrefix, char commandEnd, char commentStart, 
-			char commentEnd, char keyValueSeparator, char valueDelimiter) throws IOException {
+			char commentEnd, char keyValueSeparator, char valueDelimiter) throws IOException { //TODO should be renamed as soon as it is clear which event is returned
 		
 		PeekReader reader = getReader();
 		
@@ -296,7 +297,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 			}
 			consumeWhiteSpaceAndComments(commentStart, commentEnd);
 		}
-		return new MetaInformationEvent(keyPrefix + key, value);
+		return new MetaInformationEvent(keyPrefix + key, value); // TODO return different event
 	}
 	
 	

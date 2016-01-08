@@ -58,6 +58,12 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
+	public UnknownCommandEvent asUnknownCommandEvent() throws ClassCastException {
+		return (UnknownCommandEvent)this;
+	}
+
+
+	@Override
 	public CommentEvent asCommentEvent() throws ClassCastException {
 		return (CommentEvent)this;
 	}

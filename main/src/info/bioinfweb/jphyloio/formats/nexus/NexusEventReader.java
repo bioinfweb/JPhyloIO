@@ -36,6 +36,7 @@ import info.bioinfweb.jphyloio.events.EventContentType;
 import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
@@ -49,7 +50,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatRea
  */
 public class NexusEventReader extends AbstractBufferedReaderBasedEventReader implements NexusConstants {
 	private NexusCommandReaderFactory factory;
-	private boolean metaEventsForUnknownCommands = false;
+	private boolean createUnknownCommandEvents = false;
 	private String currentBlockName = null;
 	private NexusCommandEventReader currentCommandReader = null;
 	private NexusStreamDataProvider streamDataProvider;
@@ -135,27 +136,27 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 
 	
 	/**
-	 * Specifies whether {@link MetaInformationEvent}s will be fired for all Nexus commands with no according reader
+	 * Specifies whether {@link UnknownCommandEvent}s will be fired for all Nexus commands with no according reader
 	 * stored in the factory. The key will be the name of the command and the value will be its contents.
 	 * <p>
-	 * Note that e.g. {@link FormatReader} will fired additional Nexus specific meta events, even if this property
+	 * Note that e.g. {@link FormatReader} will fire additional Nexus specific meta events, even if this property
 	 * is set to {@code false}.  
 	 * 
-	 * @return {@code true} if meta events will be fired, {@code false} otherwise
+	 * @return {@code true} if unknown command events will be fired, {@code false} otherwise
 	 */
-	public boolean isMetaEventsForUnknownCommands() {
-		return metaEventsForUnknownCommands;
+	public boolean getCreateUnknownCommandEvents() {
+		return createUnknownCommandEvents;
 	}
 
 
 	/**
-	 * Use this method to switch firing meta events for unknown Nexus commands on and off.
+	 * Use this method to switch firing unknown command events for unknown Nexus commands on and off.
 	 * 
-	 * @param metaEventsForUnknownCommands Specify {@code true} here, to receive meta events from now on or 
+	 * @param createUnknownCommandEvents Specify {@code true} here, to receive unknown command events from now on or 
 	 *        {@code false} to let the reader ignore unknown Nexus commands.
 	 */
-	public void setMetaEventsForUnknownCommands(boolean metaEventsForUnknownCommands) {
-		this.metaEventsForUnknownCommands = metaEventsForUnknownCommands;
+	public void setCreateUnknownCommandEvents(boolean createUnknownCommandEvents) {
+		this.createUnknownCommandEvents = createUnknownCommandEvents;
 	}
 
 
@@ -320,12 +321,12 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			}
 			else if (end == COMMAND_END) {
 				//TODO Fire according event. (else case should be used here, but reader would have to be moved backwards to make ';' available again.)
-				result = new MetaInformationEvent(commandName, "");  //TODO Fire different event?
+				result = new MetaInformationEvent(commandName, "");
 			}
 			else {
 				currentCommandReader = factory.createReader(currentBlockName, commandName, streamDataProvider);
 				if (currentCommandReader == null) {
-					if (isMetaEventsForUnknownCommands()) {  // Create meta event from command content.
+					if (getCreateUnknownCommandEvents()) {  // Create unknown command event from command content.
 						currentCommandReader = new DefaultCommandReader(commandName, streamDataProvider);
 					}
 					else if (end != COMMAND_END) {  // Consume content of command without loading large commands into a CharacterSequence as a whole.

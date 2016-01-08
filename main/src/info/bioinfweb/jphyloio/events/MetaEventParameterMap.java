@@ -19,29 +19,17 @@
 package info.bioinfweb.jphyloio.events;
 
 
-import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.commons.collections.ParameterMap;
 
 
 
-/**
- * Enumerates the types of events that can be triggered by {@link JPhyloIOEventReader}.
- * 
- * @author Ben St&ouml;ver
- */
-public enum EventContentType {
-	DOCUMENT,
-	META_INFORMATION,
-	UNKNOWN_COMMAND,
-	COMMENT,
+public class MetaEventParameterMap extends ParameterMap {
+	public static final String KEY_ANNOTATED_BLOCK = "annotatedBlock";
+	public static final String KEY_TYPE = "type";
 	
-	ALIGNMENT,
-	SEQUENCE_CHARACTERS,
-	CHARACTER_SET,
-	TOKEN_SET_DEFINITION,
-	SINGLE_TOKEN_DEFINITION,
-	
-	GRAPH,
-	TREE,
-	NODE,
-	EDGE;
+	public static final String KEY_DATATYPE = "datatype";	
+	public static final String KEY_REL = "rel";
+	public static final String KEY_HREF = "href";
+	public static final String KEY_CONTENT = "content";
+	public static final String KEY_PROPERTY = "property";
 }

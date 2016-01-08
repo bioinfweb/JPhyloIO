@@ -36,6 +36,7 @@ import info.bioinfweb.jphyloio.events.EventTopologyType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 
 
 
@@ -162,7 +163,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	}
 	
 	
-	private MetaInformationEvent createMetaEventFromCommand(String content) throws IOException {
+	private MetaInformationEvent createMetaInformationEventFromCommand(String content) throws IOException {
 		int afterNameIndex = StringUtils.indexOfWhiteSpace(content);
 		if (afterNameIndex < 1) {
 			return new MetaInformationEvent("", content);
@@ -246,7 +247,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 					return result;
 				}
 				else {
-					return createMetaEventFromCommand(content);
+					return createMetaInformationEventFromCommand(content);
 				}
 			}
 		}

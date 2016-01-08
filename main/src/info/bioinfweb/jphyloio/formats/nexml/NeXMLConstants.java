@@ -26,6 +26,7 @@ public interface NeXMLConstants {
 	public static final String NAMESPACE_URI = "http://www.nexml.org/2009";
 	
 	public static final QName TAG_NEXML = new QName(NAMESPACE_URI, "nexml");
+	public static final QName TAG_META = new QName(NAMESPACE_URI, "meta");
 	
 	public static final QName TAG_OTUS = new QName(NAMESPACE_URI, "otus");
 	public static final QName TAG_CHARACTERS = new QName(NAMESPACE_URI, "characters");
@@ -42,12 +43,21 @@ public interface NeXMLConstants {
 	public static final QName TAG_POLYMORPHIC = new QName(NAMESPACE_URI, "polymorphic_state_set");
 	public static final QName TAG_UNCERTAIN = new QName(NAMESPACE_URI, "uncertain_state_set");
 	
-	public static final QName ATTR_LABEL = new QName("label");
 	public static final QName ATTR_ID = new QName("id");
+	public static final QName ATTR_LABEL = new QName("label");
+	public static final QName ATTR_ABOUT = new QName("about");
+	
 	public static final QName ATTR_OTU = new QName("otu");
+	
 	public static final QName ATTR_SYMBOL = new QName("symbol");
 	
-	public static final String ATTR_TYPE = "type";
+	public static final String ATTR_TYPE = "type";	
+	
+	public static final QName ATTR_DATATYPE = new QName("datatype");
+	public static final QName ATTR_HREF = new QName("href");
+	public static final QName ATTR_REL = new QName("rel");
+	public static final QName ATTR_CONTENT = new QName("content");
+	public static final QName ATTR_PROPERTY = new QName("property");	
 	
 	public static final String TYPE_DNA_SEQS = "nex:DnaSeqs";
 	public static final String TYPE_DNA_CELLS = "nex:DnaCells";
@@ -61,4 +71,7 @@ public interface NeXMLConstants {
 	public static final String TYPE_CONTIN_CELLS = "nex:ContinuousCells";
 	public static final String TYPE_STANDARD_SEQ = "nex:StandardSeqs";
 	public static final String TYPE_STANDARD_CELLS = "nex:StandardCells";
+	
+	public static final String TYPE_LITERAL_META = "nex:LiteralMeta";
+	public static final String TYPE_RESOURCE_META = "nex:ResourceMeta";
 }
