@@ -137,7 +137,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 					ReadResult readResult;
 					do {
 						readResult = getReader().readLine(getMaxCommentLength());
-						upcomingEvents.add(new CommentEvent(readResult.getSequence().toString(), !readResult.isCompletelyRead()));
+						getUpcomingEvents().add(new CommentEvent(readResult.getSequence().toString(), !readResult.isCompletelyRead()));
 					} while (!readResult.isCompletelyRead());
 				}
 				return null;
@@ -168,12 +168,9 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 	
 	
 	@Override
-	protected JPhyloIOEvent readNextEvent() throws IOException {
+	protected void readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
-			return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
-		}
-		else if (!upcomingEvents.isEmpty()) {
-			return upcomingEvents.poll();
+			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 		}
 		else {
 			JPhyloIOEvent alignmentEndEvent;
@@ -181,25 +178,27 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START);
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START));
+						break;
 					}
 					else {
-						return null;  // Calling method will throw a NoSuchElementException.
+						return;  // Calling method will throw a NoSuchElementException.
 					}
 					
 				case ALIGNMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
 						alignmentEndEvent = readSequenceStart("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
 						if (alignmentEndEvent != null) {
-							return alignmentEndEvent;
+							getUpcomingEvents().add(alignmentEndEvent);
+							break;
 						}
-						else if (!upcomingEvents.isEmpty()) {
-							return upcomingEvents.poll();  // Return possible waiting comment event from readSequenceStart(). 
+						else {
+							lineConsumed = true;
 						}
-						lineConsumed = true;
 					}
 					else {
-						return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+						break;
 					}
 					// fall through for if case
 				case SEQUENCE_CHARACTERS:
@@ -210,16 +209,17 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 						alignmentEndEvent = readSequenceStart(
 								"Inconsistent stream. (The cause might be code outside this class reading from the same stream.)");
 						if (alignmentEndEvent != null) {
-							return alignmentEndEvent;
+							getUpcomingEvents().add(alignmentEndEvent);
+							break;
 						}
 						else {
 							c = getReader().peek();
 							if ((c == -1) || (c == (int)NAME_START_CHAR)) {  // No characters found before the next name. => empty sequence
-								upcomingEvents.add(getSequenceTokensEventManager().createEvent(
+								getUpcomingEvents().add(getSequenceTokensEventManager().createEvent(
 										currentSequenceName, Collections.<String>emptyList())); 
 							}
-							if (!upcomingEvents.isEmpty()) {
-								return upcomingEvents.poll();  // Return token event from above or waiting comment event from readSequenceStart(). 
+							if (!getUpcomingEvents().isEmpty()) {
+								break;  // Return token event from above or waiting comment event from readSequenceStart(). 
 							}
 						}
 					}
@@ -228,7 +228,8 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 					if (lineConsumed) {
 						alignmentEndEvent = consumeTokenIndex();
 						if (alignmentEndEvent != null) {  // The last line of the file contained only white spaces or token indices.
-							return alignmentEndEvent;
+							getUpcomingEvents().add(alignmentEndEvent);
+							break;
 						}
 					}
 					PeekReader.ReadResult lineResult = getReader().readLine(getMaxTokensToRead());
@@ -237,7 +238,8 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
 					}
 					lineConsumed = lineResult.isCompletelyRead();
-					return getSequenceTokensEventManager().createEvent(currentSequenceName, tokenList);
+					getUpcomingEvents().add(getSequenceTokensEventManager().createEvent(currentSequenceName, tokenList));
+					break;
 					
 				default:  // includes META_INFORMATION
 					throw new InternalError("Impossible case");

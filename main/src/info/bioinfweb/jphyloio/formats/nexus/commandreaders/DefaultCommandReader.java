@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
+import java.util.Collection;
+
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -55,16 +57,18 @@ public class DefaultCommandReader extends AbstractNexusCommandEventReader implem
 
 	
 	@Override
-	protected JPhyloIOEvent doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws Exception {
 		StringBuilder result = new StringBuilder();
 		CharSequence sequence;
 		do {
 			sequence = getStreamDataProvider().getDataReader().readUntil(TERMINATION_SEQUENCES).getSequence();
 			result.append(StringUtils.cutEnd(sequence, 1));
 			if (StringUtils.endsWith(sequence, COMMENT_START)) {
-				getStreamDataProvider().readComment();
+				getStreamDataProvider().readComment();  //TODO Long comments should be fully read within this method (see #85).
 			}
 		} while (!StringUtils.endsWith(sequence, COMMAND_END));
-		return new UnknownCommandEvent(getCommandName(), result.toString());
+		getStreamDataProvider().getUpcomingEvents().add(new UnknownCommandEvent(getCommandName(), result.toString()));
+		//TODO This event should be added to queue before the comment events generated above. 
+		return true;
 	}
 }

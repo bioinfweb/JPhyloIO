@@ -160,29 +160,30 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	
 	
 	@Override
-	protected JPhyloIOEvent readNextEvent() throws Exception {
+	protected void readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {
-			return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
+			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 		}
 		else {
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
 						readMatrixDimensions();
-						return createAlignmentStartEvent(getSequenceCount(), getCharacterCount());
-					}
-					else {
-						return null;  // Calling method will throw a NoSuchElementException.
-					}
+						
+						getUpcomingEvents().add(createAlignmentStartEvent(getSequenceCount(), getCharacterCount()));
+					}  // Calling method will throw a NoSuchElementException for the else case. //TODO Check if this is still true after refactoring in r164.
+					break;
 					
 				case ALIGNMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
 						if (getSequenceCount() == 0) {  // Empty alignment:
-							return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
+							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+							break;
 						}  // fall through
 					}
 					else {
-						return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+						break;
 					}
 				case SEQUENCE_CHARACTERS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
@@ -206,10 +207,18 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 						
 						if (getReader().peek() == -1) {  // End of file was reached
 							// if (currentSequenceIndex < sequenceCount) {}  //TODO Should an exception be thrown here, if the specified number of sequences has not been found yet? => Probably not, because parsing files with a wrong number of specified sequences would still make sense, unless this is not a accidental stream break.
-							return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
+							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+							break;
 						}
 					}
-					return readCharacters(currentSequenceName);
+					JPhyloIOEvent event = readCharacters(currentSequenceName);
+					if (event != null) {
+						getUpcomingEvents().add(event);
+					}
+					else {
+						readNextEvent();  // Make sure to add an event to the list.
+					}
+					break;
 					
 				default:  // includes META_INFORMATION
 					throw new InternalError("Impossible case");

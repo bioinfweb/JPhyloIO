@@ -30,10 +30,13 @@ import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.ChracterStateMeaning;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
@@ -116,10 +119,10 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	}
 	
 	
-	private JPhyloIOEvent processSubcommand(MetaInformationEvent event) throws IOException {
+	private void processSubcommand(MetaInformationEvent event) throws IOException {
 		String key = event.getKey().substring(KEY_PREFIX.length()).toUpperCase();  // Remove key prefix for comparison
 		String value = event.getStringValue().toUpperCase();
-		JPhyloIOEvent result = event;
+		boolean eventReplaced = false;
 		
 		if (FORMAT_SUBCOMMAND_TOKENS.equals(key) || 
 				(FORMAT_SUBCOMMAND_DATA_TYPE.equals(key) && FORMAT_VALUE_CONTINUOUS_DATA_TYPE.equals(value))) {
@@ -132,11 +135,12 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			if (matcher.matches()) {  // Parse MrBayes extension
 				parseMixedDataType(matcher.group(1));
 				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event for datatype will be returned.
-					result = getStreamDataProvider().getUpcomingEvents().poll();
+					eventReplaced = true;
 				}
 			}
 			else {
-				result = new TokenSetDefinitionEvent(getTokenSetType(value), event.getStringValue());
+				getStreamDataProvider().getUpcomingEvents().add(new TokenSetDefinitionEvent(getTokenSetType(value), event.getStringValue()));
+				eventReplaced = true;
 			}
 		}
 		else if (FORMAT_SUBCOMMAND_INTERLEAVE.equals(key)) {
@@ -150,13 +154,19 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 		}
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
 			getStreamDataProvider().getNexusReader().setMatchToken(event.getStringValue());
-			result = new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.MATCH);
+			getStreamDataProvider().getUpcomingEvents().add(
+					new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.MATCH));
+			eventReplaced = true;
 		}
 		else if (FORMAT_SUBCOMMAND_GAP_CHAR.equals(key)) {
-			result = new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.GAP);
+			getStreamDataProvider().getUpcomingEvents().add(
+					new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.GAP));
+			eventReplaced = true;
 		}
 		else if (FORMAT_SUBCOMMAND_MISSING_CHAR.equals(key)) {
-			result = new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.MISSING);
+			getStreamDataProvider().getUpcomingEvents().add(
+					new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.MISSING));
+			eventReplaced = true;
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
 			if (continuousData) {
@@ -172,27 +182,33 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 					}
 				} 
 				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event will be returned, indicating an empty symbols subcommand.
-					result = getStreamDataProvider().getUpcomingEvents().poll();
+					eventReplaced = true;
 				}
 			}
 		}
-		return result;
+		
+		if (!eventReplaced) {
+			getStreamDataProvider().getUpcomingEvents().add(event);
+			getStreamDataProvider().getUpcomingEvents().add(
+					new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+		}
 	}
 	
 	
 	@Override
-	protected JPhyloIOEvent doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws Exception {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		try {
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			if (reader.peekChar() != COMMAND_END) {
 				MetaInformationEvent event = getStreamDataProvider().readKeyValueMetaInformation(KEY_PREFIX);
-				return processSubcommand(event);
+				processSubcommand(event);
+				return true;
 			}
 			else {
 				reader.skip(1); // Consume ';'.
 				setAllDataProcessed(true);
-				return null;
+				return false;
 			}
 		}
 		catch (EOFException e) {

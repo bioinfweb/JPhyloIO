@@ -242,11 +242,14 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	
 	/**
 	 * Returns the queue of upcoming events to be used by implementations of {@link NexusCommandEventReader}.
+	 * <p>
+	 * This reimplementation just delegates to the superclass method. It is made to make this method visible 
+	 * inside this package.
 	 * 
 	 * @return the queue of upcoming events
 	 */
 	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
-		return upcomingEvents;
+		return super.getUpcomingEvents();
 	}
 	
 	
@@ -257,39 +260,24 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
-	private JPhyloIOEvent createBlockStartEvent() {
+	private void addBlockStartEndEvent(EventTopologyType topologyType) {
 		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
 				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
 			
-			return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START);
-		}
-		else {
-			return null;
+			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, topologyType));
 		}
 	}
 	
 	
-	private JPhyloIOEvent createBlockEndEvent() {
-		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
-				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
-			
-			return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
-		}
-		else {
-			return null;
-		}
-	}
-	
-	
-	private JPhyloIOEvent readNextCommand() throws Exception {
-		JPhyloIOEvent result = null;
-		while ((result == null) && (getReader().peek() != -1)) {  // Read commands until an event is produced.  
+	private boolean readNextCommand() throws Exception {
+		       //TODO This way, the method would also return true, if the event queue is not empty before calling this method.
+		while (getUpcomingEvents().isEmpty() && (getReader().peek() != -1)) {  // Read commands until an event is produced.  
 			consumeWhiteSpaceAndComments();
 			String commandName = getReader().readRegExp(UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence().toString();
-			char end = StringUtils.lastChar(commandName);
+			char lastChar = StringUtils.lastChar(commandName);
 			commandName = StringUtils.cutEnd(commandName, 1).toUpperCase();
 			
-			if (end == COMMENT_START) {
+			if (lastChar == COMMENT_START) {
 				readComment();
 			}
 			
@@ -298,10 +286,10 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 					consumeWhiteSpaceAndComments();
 					currentBlockName = getReader().readRegExp(
 							UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence().toString().toUpperCase();
-					end = StringUtils.lastChar(currentBlockName);
+					lastChar = StringUtils.lastChar(currentBlockName);
 					currentBlockName = StringUtils.cutEnd(currentBlockName, 1);
-					result = createBlockStartEvent();
-					if (end != COMMAND_END) {
+					addBlockStartEndEvent(EventTopologyType.START);
+					if (lastChar != COMMAND_END) {
 						consumeWhiteSpaceAndComments();
 						if (getReader().peekChar() == COMMAND_END) {
 							getReader().skip(1);  // Consume ';'.
@@ -316,13 +304,13 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				}
 			}
 			else if (END_COMMAND.equals(commandName) || ALTERNATIVE_END_COMMAND.equals(commandName)) {
-				result = createBlockEndEvent();  // Must be called before currentBlockName is set to null.
+				addBlockStartEndEvent(EventTopologyType.END);  // Must be called before currentBlockName is set to null.
 				currentBlockName = null;
 			}
-			else if (end == COMMAND_END) {
+			else if (lastChar == COMMAND_END) {
 				//TODO Fire according event. (else case should be used here, but reader would have to be moved backwards to make ';' available again.)
-				upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-				result = new MetaInformationEvent(commandName, null, "");
+				getUpcomingEvents().add(new MetaInformationEvent(commandName, null, ""));
+				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 			else {
 				currentCommandReader = factory.createReader(currentBlockName, commandName, streamDataProvider);
@@ -330,7 +318,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 					if (getCreateUnknownCommandEvents()) {  // Create unknown command event from command content.
 						currentCommandReader = new DefaultCommandReader(commandName, streamDataProvider);
 					}
-					else if (end != COMMAND_END) {  // Consume content of command without loading large commands into a CharacterSequence as a whole.
+					else if (lastChar != COMMAND_END) {  // Consume content of command without loading large commands into a CharacterSequence as a whole.
 						ReadResult readResult;
 						do {
 							readResult = getReader().readUntil(getMaxTokensToRead(), Character.toString(COMMAND_END));
@@ -338,48 +326,37 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 					}
 				}
 				if (currentCommandReader != null) {
-					result = currentCommandReader.readNextEvent();
+					return currentCommandReader.readNextEvent();
 				}
 			}
-			
-			if ((result == null) && !upcomingEvents.isEmpty()) {
-				return upcomingEvents.poll();
-			}
 		}
-		return result;
+		return getReader().peek() != -1;
 	}
 	
 	
 	@Override
-	protected JPhyloIOEvent readNextEvent() throws Exception {
-		if (documentEndReached) { 
-			return null;
-		}
-		else {
+	protected void readNextEvent() throws Exception {
+		if (!documentEndReached) { 
 			if (isBeforeFirstAccess()) {
 				checkStart();
+				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 				consumeWhiteSpaceAndComments();
-				return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
-			}
-			else if (!upcomingEvents.isEmpty()) {
-				return upcomingEvents.poll();
 			}
 			else {
-				JPhyloIOEvent event = null;
+				boolean eventCreated = false;
 				if (currentCommandReader == null) {
-					event = readNextCommand();
+					eventCreated = readNextCommand();
 				}
 				else {
-					event = currentCommandReader.readNextEvent();
-					if (event == null) {
-						event = readNextCommand();
+					eventCreated = currentCommandReader.readNextEvent();
+					if (!eventCreated) {
+						eventCreated = readNextCommand();
 					}
 				}
-				if (event == null) {
+				if (!eventCreated) {
 					documentEndReached = true;
-					event = new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 				}
-				return event;
 			}
 		}
 	}

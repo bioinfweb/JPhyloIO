@@ -56,9 +56,10 @@ public interface NexusCommandEventReader {
 	public Collection<String> getValidBlocks();
 	
 	/**
-	 * Returns the next event generated from the parsed Nexus command.
+	 * Adds at least one additional event (generated from the current Nexus command) to the event queue.
 	 * 
-	 * @return the next event or {@code null} if no more events can be generated from the current command data
+	 * @return {@code true} if at least one additional event was added or {@code false} if the underlying Nexus
+	 *         command was already completely processed an not more events can generated from it
 	 */
-	public JPhyloIOEvent readNextEvent() throws Exception;
+	public boolean readNextEvent() throws Exception;
 }

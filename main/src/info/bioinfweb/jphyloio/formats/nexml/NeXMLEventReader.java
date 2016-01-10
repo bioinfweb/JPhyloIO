@@ -62,7 +62,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	private String currentSequenceName;
 //	private boolean parseStates = false;
-	private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
+	//private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
 
 	
 	private static Map<QName, NeXMLTagReader> createMap() {
@@ -441,18 +441,10 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 //	}
 
 
-	public Queue<JPhyloIOEvent> getUpcomingEvents() {
-		return upcomingEvents;
-	}
-
-
-	public void setUpcomingEvents(Queue<JPhyloIOEvent> upcomingEvents) {
-		this.upcomingEvents = upcomingEvents;
-	}
-
-
 	@Override
 	protected JPhyloIOEvent readNextEvent() throws Exception {
+		//TODO Refactor according to to r164 by not using a return value anymore.
+		
 		XMLEvent xmlEvent;
 		JPhyloIOEvent result = null;
 		NeXMLTagReader tagReader = null;
@@ -491,9 +483,9 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
       	}	      
 	    }
 		}
-		if (!upcomingEvents.isEmpty()) {
-			upcomingEvents.add(result);
-			return upcomingEvents.poll();
+		if (!getUpcomingEvents().isEmpty()) {
+			getUpcomingEvents().add(result);
+			return getUpcomingEvents().poll();
 		}
 		else {
 			return result;

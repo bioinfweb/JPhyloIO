@@ -19,8 +19,9 @@
 package info.bioinfweb.jphyloio;
 
 
-import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.Set;
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -42,6 +43,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	private JPhyloIOEvent next = null;
 	private JPhyloIOEvent previous = null;
 	private JPhyloIOEvent lastNonComment = null;
+	private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
 	private boolean beforeFirstAccess = true;
 	private boolean dataSourceClosed = false;
 	private int maxTokensToRead;
@@ -59,6 +61,11 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 		super();
 		this.maxTokensToRead = maxTokensToRead;
 		this.translateMatchToken = translateMatchToken;
+	}
+
+
+	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
+		return upcomingEvents;
 	}
 
 
@@ -171,6 +178,14 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	}
 	
 	
+	private JPhyloIOEvent getNextEventFromQueue() throws Exception {
+		if (getUpcomingEvents().isEmpty()) {
+			readNextEvent();
+		}
+		return getUpcomingEvents().poll();  // May still return null, if no further event could be added by readNextEvent().
+	}
+	
+	
 	@Override
 	public boolean hasNextEvent() throws Exception {
 		ensureFirstEvent();
@@ -189,8 +204,8 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 			if (!(previous instanceof CommentEvent)) {  // Also works for possible future subelements of CommentEvent
 				lastNonComment = previous;
 			}
-			next = readNextEvent();
-			System.out.println(previous.getType());
+			next = getNextEventFromQueue();
+			//System.out.println(previous.getType());
 			return previous;
 		}
 	}
@@ -225,19 +240,17 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 
 	private void ensureFirstEvent() throws Exception {
 		if (beforeFirstAccess) {
-			next = readNextEvent();
+			next = getNextEventFromQueue();
 			beforeFirstAccess = false;
 		}
 	}
 	
 	
 	/**
-	 * Method to be implemented be inherited classes that returns the next event determined from the underlying
-	 * data source.
-	 * 
-	 * @return the next event or {@code null} if the end of the document has been reached
+	 * Method to be implemented be inherited classes that adds at least one additional event (determined from 
+	 * the underlying data source) to the event queue.
 	 */
-	protected abstract JPhyloIOEvent readNextEvent() throws Exception;
+	protected abstract void readNextEvent() throws Exception;
 
 
 	@Override

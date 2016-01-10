@@ -126,20 +126,21 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			if (!passedSubnodes.isEmpty()) {  // Nodes on top level do not have to be stored.
 				passedSubnodes.peek().add(new NodeInfo(id, length));			
 			}
-			upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));  //TODO Put possible annotations and comments in the queue first
-			return new NodeEvent(id, label);  //TODO Possibly replace by translation table when used in Nexus. 
+			NodeEvent result = new NodeEvent(id, label);  //TODO Possibly replace by translation table when used in Nexus. 
+			getUpcomingEvents().add(result);
+			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));  //TODO Put possible annotations and comments in the queue first
+			return result;
 		}		
 	}
 
 	
-	private JPhyloIOEvent processTree() throws IOException {
-		JPhyloIOEvent result = null;
-		while (result == null) {
+	private void processTree() throws IOException {
+		while (getUpcomingEvents().isEmpty()) {
 			NewickToken token = scanner.nextToken();
 			if (token == null) {
 				if (passedSubnodes.isEmpty()) {
 					state = State.IN_DOCUMENT;
-					result = new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END);  // End of file without terminal symbol.
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
 				}
 				else {
 					throw new IOException("Unexpected EOF.");  //TODO Replace by special exception.
@@ -150,7 +151,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 					case SUBTREE_START:
 						passedSubnodes.add(new ArrayDeque<NodeInfo>());
 					case ELEMENT_SEPARATOR:  // fall through
-						result = readNode();  // Will be null, if another SUBTREE_START follows.
+						readNode();  // Will not add an element, if another SUBTREE_START follows.
 						break;
 					case SUBTREE_END:
 						if (scanner.peek().getType().equals(NewickTokenType.SUBTREE_START)) {
@@ -158,55 +159,52 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						}
 						else {
 							Queue<NodeInfo> levelInfo = passedSubnodes.pop();
-							result = readNode();  // Cannot be null, because SUBTREE_START has been handled.
-							String sourceID = ((NodeEvent)result).getID();
+							NodeEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
+							String sourceID = nodeEvent.getID();
 							while (!levelInfo.isEmpty()) {
 								NodeInfo nodeInfo = levelInfo.poll();
-								upcomingEvents.add(new EdgeEvent(sourceID, nodeInfo.id, nodeInfo.length));
+								getUpcomingEvents().add(new EdgeEvent(sourceID, nodeInfo.id, nodeInfo.length));
 								//TODO Put possible metadata and comments in between here.
-								upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+								getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 							}
 						}
 						break;
 					case TERMNINAL_SYMBOL:
 						state = State.IN_DOCUMENT;
-						result = new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END);
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
 						break;
 					default:
 						throw new IOException("Unexpected token " + token.getType());  //TODO Replace by special exception
 				}
 			}
 		}
-		return result;
 	}
 	
 	
 	@Override
-	protected JPhyloIOEvent readNextEvent() throws Exception {
-		if (!upcomingEvents.isEmpty()) {
-			return upcomingEvents.poll();
-		}
-		else {
-			switch (state) {
-				case START:
-					state = State.IN_DOCUMENT;
-					return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
-				case IN_DOCUMENT:
-					if (scanner.hasMoreTokens()) {
-						state = State.IN_TREE;
-						return new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.START);
-					}
-					else {
-						state = State.END;
-						return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
-					}
-				case IN_TREE:
-					return processTree();
-				case END:
-					return null;
-				default:
-					throw new InternalError("Unsupported state " + state + ".");
-			}
+	protected void readNextEvent() throws Exception {
+		switch (state) {
+			case START:
+				state = State.IN_DOCUMENT;
+				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+				break;
+			case IN_DOCUMENT:
+				if (scanner.hasMoreTokens()) {
+					state = State.IN_TREE;
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.START));
+				}
+				else {
+					state = State.END;
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+				}
+				break;
+			case IN_TREE:
+				processTree();
+				break;
+			case END:
+				break;
+			default:
+				throw new InternalError("Unsupported state " + state + ".");
 		}
 	}
 }

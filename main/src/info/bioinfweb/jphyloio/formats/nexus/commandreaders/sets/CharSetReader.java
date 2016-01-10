@@ -183,19 +183,22 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	}
 	
 	
-	private JPhyloIOEvent endParsing(boolean isFirstCall) {
+	private boolean endParsing(boolean isFirstCall) {
 		setAllDataProcessed(true);
 		if (isFirstCall) {
-			return new CharacterSetEvent(name, 0, 0);  // Empty character sets are not valid in Nexus but are anyway supported here.
+			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetEvent(name, 0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
+			return true;
 		}
 		else {
-			return null;
+			return false;
 		}
 	}
 	
 	
 	@Override
-	protected JPhyloIOEvent doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws Exception {
+		int initialEventCount = getStreamDataProvider().getUpcomingEvents().size();
+		
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		
 		// Read set name:
@@ -203,7 +206,8 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		if (isFirstCall) {
 			JPhyloIOEvent result = readNameAndFormat();
 			if (result != null) {
-				return result;
+				getStreamDataProvider().getUpcomingEvents().add(result);
+				return true;
 			}
 		}
 
@@ -225,8 +229,11 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			else {
 				result = readStandardFormat(isFirstCall);
 			}
+			if (result != null) {
+				getStreamDataProvider().getUpcomingEvents().add(result);
+			}
 			getStreamDataProvider().consumeWhiteSpaceAndComments();  // Consume upcomming comments to have the fired before the next character set event.
-			return result;
+			return initialEventCount < getStreamDataProvider().getUpcomingEvents().size();
 		}
 	}
 }

@@ -131,32 +131,24 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	}
 	
 	
-	private MetaInformationEvent readFormatCommand() throws IOException {
+	private void readFormatCommand() throws IOException {
 		try {
 			getReader().skip(COMMAND_NAME_FORMAT.length());  // Consume command name.
 			consumeWhiteSpaceAndComments(COMMAND_START, COMMENT_END);
 			
-			MetaInformationEvent result = null;
+			boolean eventAdded = false;
 			while (getReader().peekChar() != COMMAND_END) {
 				MetaInformationEvent event = readKeyValueMetaInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=', '"');
 				processFormatSubcommand(event.getKey(), event.getStringValue());
-				if (result == null) {
-					upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-					result = event;
-				}
-				else {
-					upcomingEvents.add(event);
-					upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-				}
+				getUpcomingEvents().add(event);
+				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				eventAdded = true;
 			}
 			
 			getReader().skip(1); // Consume ';'.
-			if (result == null) {  // No content found.
-				upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-				return new MetaInformationEvent(COMMAND_NAME_FORMAT, null, "");
-			}
-			else {
-				return result;
+			if (!eventAdded) {  // No content found.
+				getUpcomingEvents().add(new MetaInformationEvent(COMMAND_NAME_FORMAT, null, ""));
+				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 		}
 		catch (EOFException e) {
@@ -168,17 +160,16 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	private MetaInformationEvent createMetaInformationEventFromCommand(String content) throws IOException {
 		int afterNameIndex = StringUtils.indexOfWhiteSpace(content);
 		if (afterNameIndex < 1) {
-			upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			return new MetaInformationEvent("", null, content);
 		}
 		else {
-			upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			return new MetaInformationEvent(content.substring(0, afterNameIndex).toLowerCase(), null, content.substring(afterNameIndex).trim());
 		}
 	}
 	
 	
-	private void createCharacterSetEventsFromLabel() throws IOException {
+	private boolean createCharacterSetEventsFromLabel() throws IOException {
+		boolean result = false;
 		getReader().skip(COMMAND_NAME_LABEL.length());
 		
 		long pos = currentLabelPos;
@@ -194,7 +185,8 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			    //     start of new character set                                      || end of current set
 					if (((currentName == DEFAULT_LABEL_CHAR) && (c != DEFAULT_LABEL_CHAR)) || (c != currentName)) {
 						if ((c != currentName) && (currentName != DEFAULT_LABEL_CHAR)) {  // end current set
-							upcomingEvents.add(new CharacterSetEvent("" + currentName, start, pos));
+							getUpcomingEvents().add(new CharacterSetEvent("" + currentName, start, pos));
+							result = true;
 						}
 						start = pos;
 						currentName = c;  // Either DEFAULT_LABEL_CHAR if a set ended or a new name if a new set started will be set here.
@@ -205,13 +197,20 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			c = getReader().readChar();
 		}
 		if (currentName != DEFAULT_LABEL_CHAR) {
-			upcomingEvents.add(new CharacterSetEvent("" + currentName, start, pos));
+			getUpcomingEvents().add(new CharacterSetEvent("" + currentName, start, pos));
+			result = true;
 		}
 		currentLabelPos = pos;
+		return result;
 	}
 	
 	
-	private JPhyloIOEvent readCommand() throws Exception {
+	/**
+	 * @return {@code true} if at least one event was added to the event queue as a result of calling this method
+	 * @throws Exception
+	 */
+	private boolean readCommand() throws Exception {
+		boolean result = false;
 		int c = getReader().peek();
 		if ((c != -1) && ((char)c == COMMAND_START)) {
 			getReader().read();  // Consume command start
@@ -219,11 +218,11 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			// Read command:
 			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 			if (getReader().peekString(COMMAND_NAME_LABEL.length()).toUpperCase().equals(COMMAND_NAME_LABEL)) {  // Process label events directly from the reader because they might contain many characters.
-				createCharacterSetEventsFromLabel();  // Add event to the queue.
-				return readNextEvent();  // If character set events have been added to the queue, the first one will be returned here.
+				result = createCharacterSetEventsFromLabel();
 			}
-			if (getReader().peekString(COMMAND_NAME_FORMAT.length()).toUpperCase().equals(COMMAND_NAME_FORMAT)) {
-				return readFormatCommand();
+			else if (getReader().peekString(COMMAND_NAME_FORMAT.length()).toUpperCase().equals(COMMAND_NAME_FORMAT)) {
+				readFormatCommand();  // Always adds an event.
+				result = true;
 			}
 			else {
 				StringBuilder contentBuffer = new StringBuilder();
@@ -242,22 +241,21 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 				if (!upperCaseContent.startsWith(COMMAND_NAME_TITLE) && !upperCaseContent.startsWith(COMMAND_NAME_DESCRIPTION) &&
 						(upperCaseContent.contains(COMMAND_NAME_DOMAIN + "=") || upperCaseContent.contains(COMMAND_NAME_GENE + "="))) {
 					
-					CharacterSetEvent result = null;
 					if (currentGeneOrDomainName != null) {
-						result = new CharacterSetEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead);
+						getUpcomingEvents().add(new CharacterSetEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead));
+						result = true;
 					}
 					currentGeneOrDomainName = content;
 					currentGeneOrDomainStart = charactersRead;
-					return result;
 				}
 				else {
-					return createMetaInformationEventFromCommand(content);
+					getUpcomingEvents().add(createMetaInformationEventFromCommand(content));
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+					result = true;
 				}
 			}
 		}
-		else {
-			return null;
-		}
+		return result;
 	}
 	
 	
@@ -284,14 +282,11 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	
 	
 	@Override
-	protected JPhyloIOEvent readNextEvent() throws Exception {
+	protected void readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {
 			checkStart();
 			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
-			return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
-		}
-		else if (!upcomingEvents.isEmpty()) {
-			return upcomingEvents.poll();
+			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 		}
 		else {
 			JPhyloIOEvent event;
@@ -299,55 +294,55 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			switch (getLastNonCommentEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START);
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START));
 					}
-					else {
-						return null;  // Calling method will throw a NoSuchElementException.
-					}
+					break;
 					
 				case ALIGNMENT:
 					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.END)) {
-						return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);						
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+						break;
 					}  // fall through in else case
 				case SEQUENCE_CHARACTERS:
 				case CHARACTER_SET:
 				case META_INFORMATION:
 				case COMMENT:
 					// Read commands:
-					event = readCommand();
+					readCommand();
 					consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
-					if (event != null) {
-						return event;
-					}
-					else if (!upcomingEvents.isEmpty()) {
-						return upcomingEvents.poll();  // Return comment that was possibly read in the last call of readCommand().
-					}
-					
-					int c = getReader().peek();
-					if (c == -1) {
-						if (currentGeneOrDomainName != null) {
-							event = new CharacterSetEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead);
-							currentGeneOrDomainName = null;  // Avoid multiple firing of this event
-							return event;
+					if (getUpcomingEvents().isEmpty()) {
+						int c = getReader().peek();
+						if (c == -1) {
+							if (currentGeneOrDomainName != null) {
+								getUpcomingEvents().add(new CharacterSetEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead));
+								currentGeneOrDomainName = null;  // Avoid multiple firing of this event
+							}
+							else {
+								getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+							}
+							break;
+						}
+						else if (c == SEUQUENCE_START) {
+							readSequenceName();
+							consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
+						}
+						
+						// Parse characters (either after sequence name or continue previous read):
+						//nestedNextCalls++;
+						event = readCharacters(currentSequenceName, COMMENT_START, COMMENT_END);
+						//nestedNextCalls--;
+						//if (nestedNextCalls == 0) {  // readCharacters() makes recursive calls of readNextEvent(). -> Make sure not to count the same characters several times.
+						if (event != null) {
+							consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
+							countCharacters(event);
+							getUpcomingEvents().add(event);
 						}
 						else {
-							return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
+							readNextEvent();  // Make sure to add an event to the list.
 						}
+						//return event;
 					}
-					else if (c == SEUQUENCE_START) {
-						readSequenceName();
-						consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
-					}
-					
-					// Parse characters (either after sequence name or continue previous read):
-					nestedNextCalls++;
-					event = readCharacters(currentSequenceName, COMMENT_START, COMMENT_END);
-					nestedNextCalls--;
-					if (nestedNextCalls == 0) {  // readCharacters() makes recursive calls of readNextEvent(). -> Make sure not to count the same characters several times.
-						consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
-						countCharacters(event);
-					}
-					return event;
+					break;
 										
 				default:
 					throw new InternalError("Impossible case");

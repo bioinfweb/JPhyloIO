@@ -95,13 +95,13 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	}
 
 
-	protected abstract JPhyloIOEvent doReadNextEvent() throws Exception;
+	protected abstract boolean doReadNextEvent() throws Exception;
 	
 	
 	@Override
-	public JPhyloIOEvent readNextEvent() throws Exception {
+	public boolean readNextEvent() throws Exception {
 		if (isAllDataProcessed()) {
-			return null;
+			return false;
 		}
 		else {
 			return doReadNextEvent();

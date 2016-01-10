@@ -35,6 +35,8 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 public abstract class NeXMLTagReader implements NeXMLConstants {
+	//TODO Refactor according to to r164 by not using a return value anymore.
+	
 //	private String about; //stores information from the "about"-attribute of NeXML tags with meta subtags (usually an id)
 	
 	public JPhyloIOEvent readEvent(NeXMLEventReader reader) throws Exception {

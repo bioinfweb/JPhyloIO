@@ -56,7 +56,6 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	private int maxCommentLength = DEFAULT_MAX_COMMENT_LENGTH;
 	private PeekReader reader;
 	protected boolean lineConsumed = true;
-	protected Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
 	
 	
 	/**
@@ -172,7 +171,8 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	
 	/**
 	 * Reads a single comment from the reader. Only the first one of subsequent comments (e.g. 
-	 * {@code [comment 1][comment 2]}) would be parsed. 
+	 * {@code [comment 1][comment 2]}) would be read. Nested comments are included in the
+	 * parsed comment.
 	 * <p>
 	 * This method assumes that the comment start symbol has already been consumed. 
 	 * 
@@ -195,14 +195,14 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 				length++;
 				if (length >= getMaxCommentLength()) {
 					c = reader.peekChar();
-					upcomingEvents.add(new CommentEvent(content.toString(), (c == -1) || (c == commentEnd)));
+					getUpcomingEvents().add(new CommentEvent(content.toString(), (c == -1) || (c == commentEnd)));
 					content.delete(0, content.length());
 					length = 0;
 				}
 				c = getReader().readChar();
 			}
 			if (content.length() > 0) {
-				upcomingEvents.add(new CommentEvent(content.toString(), true));
+				getUpcomingEvents().add(new CommentEvent(content.toString(), true));
 			}
 		}
 		catch (EOFException e) {
@@ -214,7 +214,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	private JPhyloIOEvent eventFromCharacters(String currentSequenceName, CharSequence content) throws Exception {
 		List<String> characters = createTokenList(content);
 		if (characters.isEmpty()) {  // The rest of the line was consisting only of spaces
-			return readNextEvent();  // Continue parsing to create the next event
+			return null;
 		}
 		else {
 			return getSequenceTokensEventManager().createEvent(currentSequenceName, characters);
@@ -276,7 +276,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	
 	
 	protected MetaInformationEvent readKeyValueMetaInformation(String keyPrefix, char commandEnd, char commentStart, 
-			char commentEnd, char keyValueSeparator, char valueDelimiter) throws IOException { //TODO should be renamed as soon as it is clear which event is returned
+			char commentEnd, char keyValueSeparator, char valueDelimiter) throws IOException {
 		
 		PeekReader reader = getReader();
 		
@@ -299,7 +299,6 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 			}
 			consumeWhiteSpaceAndComments(commentStart, commentEnd);
 		}
-		upcomingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 		return new MetaInformationEvent(keyPrefix + key, null, value);
 	}
 	

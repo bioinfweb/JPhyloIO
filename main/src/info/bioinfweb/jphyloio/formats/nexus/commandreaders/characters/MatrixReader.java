@@ -91,7 +91,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 	
 	
 	@Override
-	protected JPhyloIOEvent doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws Exception {
 		ParameterMap map = getStreamDataProvider().getSharedInformationMap();
 		if (map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false)) {
 			throw new InternalError("Transposed Nexus matrices are currently not supported by JPhyloIO.");
@@ -108,15 +108,14 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 				if (c == COMMAND_END) {
 					reader.skip(1);  // Consume ';'.
 					setAllDataProcessed(true);
-					return null;
+					return false;
 				}
 				else {
 					// Read name:
 					if (currentSequenceLabel == null) {
 						getStreamDataProvider().consumeWhiteSpaceAndComments();
-						JPhyloIOEvent waitingEvent = getStreamDataProvider().getUpcomingEvents().poll();
-						if (waitingEvent != null) {
-							return waitingEvent;  // Immediately return comment in front of sequence name.
+						if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {
+							return true;  // Immediately return comment in front of sequence name.
 						}
 						currentSequenceLabel = getStreamDataProvider().readNexusWord();
 					}
@@ -124,7 +123,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					// Read tokens:
 					List<String> tokens = new ArrayList<String>();
 					c = reader.peekChar();
-					SequenceTokensEvent result = null;
+					boolean result = false;
 					boolean tokenListComplete = false;
 					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getNexusReader().getMaxTokensToRead()) && 
 							!tokenListComplete) {
@@ -132,19 +131,22 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						if (StringUtils.isNewLineChar(c)) {
 							reader.consumeNewLine();  //TODO Can sequences in non-interleaved matrices span over multiple lines? (Could be checked by the number of characters, but not in an UNALIGNED block.)
 							if (!tokens.isEmpty()) {  //TODO What about events for empty sequences?
-								result = getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens);
+								getStreamDataProvider().getUpcomingEvents().add(
+										getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
+								result = true;
 							}
 							currentSequenceLabel = null;  // Read new label next time.
 							tokenListComplete = true;
 						}
 						else if (c == COMMENT_START) {
 							reader.skip(1);  // Consume '['.
-							getStreamDataProvider().readComment();
+							getStreamDataProvider().readComment();  //TODO The comments read here should be added after the event below. (Should be solved together with #85.)
+							result = true;
 							if (!tokens.isEmpty()) {
 								tokenListComplete = true;  // Make sure not to include tokens after the comment in the current event.
 							}
 							else {  // Comment before the first token of a sequence.
-								return getStreamDataProvider().getUpcomingEvents().poll();  // Return comment that was just parsed.
+								return true;  // Return comment that was just parsed.
 							}
 						}
 						else if (Character.isWhitespace(c)) {  // consumeWhitespaceAndComments() cannot be used here, because line breaks are relevant.
@@ -161,7 +163,9 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					
 					// Return event:
 					if (!tokens.isEmpty() && (currentSequenceLabel != null)) {  // Max number of tokens was reached.
-						result = getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens);
+						getStreamDataProvider().getUpcomingEvents().add(
+								getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
+						result = true;
 					}
 					if (c == COMMAND_END) {
 						setAllDataProcessed(true);
