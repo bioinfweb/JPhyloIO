@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 
 import java.util.ArrayList;

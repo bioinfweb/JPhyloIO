@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
