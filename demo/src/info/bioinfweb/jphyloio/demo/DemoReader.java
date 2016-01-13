@@ -34,10 +34,11 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 public class DemoReader {
 	public static void readNeXML(DemoModel collection, NeXMLEventReader reader) throws Exception {
 		if (reader.hasNextEvent()) {
-			int i = 0;
+//			int i = 0;
+			
 			while (reader.hasNextEvent()) {
 				JPhyloIOEvent event = reader.next();
-//				System.out.println(event.getEventType());
+				System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 				
 				if (event.getType().getContentType().equals(EventContentType.TOKEN_SET_DEFINITION)) {
 //					System.out.println("Character State Type: " + event.asTokenSetDefinitionEvent().getSetType());
@@ -49,8 +50,12 @@ public class DemoReader {
 //					System.out.println("Size: " + event.asSequenceTokensEvent().getCharacterValues().size());
 				}
 				else if (event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-					i++;
-					System.out.println(i + ": ID: " + event.asMetaInformationEvent().getKey());
+					if (!event.getType().getTopologyType().equals(EventTopologyType.END) && event.asMetaInformationEvent().getKey().equals("id")) {
+						System.out.println(event.asMetaInformationEvent().getStringValue());
+					}
+//					i++;
+//					System.out.println(i + ": Key: " + event.asMetaInformationEvent().getKey());
+//					System.out.println("Content: " + event.asMetaInformationEvent().getStringValue());
 				}
 			}
 		}	
