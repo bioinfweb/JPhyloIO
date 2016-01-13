@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:prism="http://prismstandard.org/namespaces/1.2/basic/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:tb="http://treebase.org/terms#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" about="#nex_nexml2" generator="org.nexml.model.impl.DocumentImpl" id="S794" version="0.9" xml:base="http://purl.org/phylo/treebase/phylows/study/TB2:">
+  <meta href="http://purl.org/phylo/treebase/phylows/study/TB2:A1269" id="meta1833" rel="tb:identifier.analysis" xsi:type="nex:ResourceMeta">
+    <meta href="http://purl.org/phylo/treebase/phylows/study/TB2:As1269" id="meta1834" rel="tb:identifier.analysisstep" xsi:type="nex:ResourceMeta">
+      <meta href="http://purl.org/phylo/treebase/phylows/study/TB2:Al1269" id="meta1837" rel="tb:identifier.algorithm" xsi:type="nex:ResourceMeta">
+        <meta content="neighbor joining" datatype="xsd:string" id="meta1839" property="dc:description" xsi:type="nex:LiteralMeta"/>
+      </meta>
+    </meta>
+  </meta>
+  <meta content="Mycologia" datatype="xsd:string" id="meta17" property="dc:publisher" xsi:type="nex:LiteralMeta"/>
+  <otus id="Tls10691" label="TaxonLabelSet10691" xml:base="http://purl.org/phylo/treebase/phylows/taxon/TB2:">
+    <otu about="#Tl126179" id="Tl126179" label="Grifola sordulenta">
+      <meta content="29804" datatype="xsd:long" id="meta23" property="tb:identifier.taxonVariant" xsi:type="nex:LiteralMeta"/>
+      <meta href="http://purl.uniprot.org/taxonomy/172312" id="meta22" rel="skos:closeMatch" xsi:type="nex:ResourceMeta"/>
+    </otu>
+    <otu about="#Tl261" id="Tl261" label="Grifola frondosa WC836">
+      <meta content="29801" datatype="xsd:long" id="meta30" property="tb:identifier.taxonVariant" xsi:type="nex:LiteralMeta"/>
+      <meta href="http://purl.uniprot.org/taxonomy/5627" id="meta29" rel="skos:closeMatch" xsi:type="nex:ResourceMeta"/>
+    </otu>
+  </otus>
+  <characters about="#M83" id="M83" label="ITS and BT" otus="Tls10691" xml:base="http://purl.org/phylo/treebase/phylows/matrix/TB2:" xsi:type="nex:DnaSeqs">
+	<meta content="DNA" datatype="xsd:string" id="meta1615" property="tb:type.matrix" xsi:type="nex:LiteralMeta"/>
+    <format>
+      <states id="states383">
+        <state id="state384" symbol="A"/>
+        <state id="state385" symbol="C"/>
+        <state id="state386" symbol="G"/>
+        <state id="state387" symbol="T"/>
+        <uncertain_state_set id="uncertain_state_set388" symbol="K">
+          <member state="state386"/>
+          <member state="state387"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set389" symbol="M">
+          <member state="state385"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set390" symbol="R">
+          <member state="state386"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set391" symbol="S">
+          <member state="state386"/>
+          <member state="state385"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set392" symbol="W">
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set393" symbol="Y">
+          <member state="state385"/>
+          <member state="state387"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set394" symbol="B">
+          <member state="state386"/>
+          <member state="state387"/>
+          <member state="state385"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set395" symbol="D">
+          <member state="state386"/>
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set396" symbol="H">
+          <member state="state386"/>
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set397" symbol="V">
+          <member state="state386"/>
+          <member state="state385"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set398" symbol="N">
+          <member state="state386"/>
+          <member state="state385"/>
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set399" symbol="X">
+          <member state="state386"/>
+          <member state="state385"/>
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set400" symbol="-"/>
+        <uncertain_state_set id="uncertain_state_set401" symbol="?">
+          <member state="uncertain_state_set400"/>
+          <member state="state386"/>
+          <member state="state384"/>
+          <member state="state387"/>
+          <member state="state385"/>
+        </uncertain_state_set>
+      </states>
+      <char id="char402" states="states383"/>
+      <char id="char403" states="states383"/>
+      <char id="char404" states="states383"/>
+      <char id="char405" states="states383"/>
+      <char id="char406" states="states383"/>
+      <char id="char407" states="states383"/>
+      <char id="char408" states="states383"/>
+      <char id="char409" states="states383"/>
+      <char id="char410" states="states383"/>
+      <char id="char411" states="states383"/>
+      <char id="char412" states="states383"/>
+      <char id="char413" states="states383"/>
+      <char id="char414" states="states383"/>
+      <char id="char415" states="states383"/>
+      <char id="char416" states="states383"/>
+      <char id="char417" states="states383"/>
+      <char id="char418" states="states383"/>
+      <char id="char419" states="states383"/>
+      <char id="char420" states="states383"/>
+      <char id="char421" states="states383"/>
+    </format>
+    <matrix>
+      <row id="row1563" otu="Tl126179">
+        <seq>AG?TCTGAAACGG--TGTAG</seq>
+      </row>
+      <row id="row1564" otu="Tl261">
+        <seq>AGTT--GAAAAGGGT?GTCG</seq>
+      </row>
+    </matrix>
+  </characters>
+  <trees about="#Tb6045" id="Tb6045" label="Tb6045" otus="Tls10691" xml:base="http://purl.org/phylo/treebase/phylows/tree/TB2:">
+    <meta href="http://purl.org/phylo/treebase/phylows/study/TB2:S794" id="meta1621" rel="rdfs:isDefinedBy" xsi:type="nex:ResourceMeta"/>
+    <tree about="#Tr3926" id="Tr3926" label="Fig. 4" xsi:type="nex:FloatTree">
+      <meta href="http://purl.org/phylo/treebase/phylows/study/TB2:As1269" id="meta1841" rel="tb:output.analysisstep" xsi:type="nex:ResourceMeta"/>
+      <node id="Tn274900"/>
+      <node id="Tn274857" label="Grifola frondosa"/>
+      <node id="Tn274833"/>
+      <edge id="edge1" source="Tn274900" target="Tn274857"/>
+      <edge id="edge2" source="Tn274900" target="Tn274833"/>
+    </tree>
+  </trees>
+</nex:nexml>

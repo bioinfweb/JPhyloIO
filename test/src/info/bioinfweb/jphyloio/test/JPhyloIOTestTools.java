@@ -37,7 +37,6 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
 
-import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import static org.junit.Assert.*;
 
 
@@ -51,8 +50,8 @@ public class JPhyloIOTestTools {
 	}
 	
 	
-	public static void assertEventType(EventContentType expectedContentType, 
-			EventTopologyType expectedTopologyType, JPhyloIOEventReader reader) throws Exception {
+	public static void assertEventType(EventContentType expectedContentType, EventTopologyType expectedTopologyType, 
+			JPhyloIOEventReader reader) throws Exception {
 		
 		assertTrue(reader.hasNextEvent());
 		assertEventType(expectedContentType, expectedTopologyType, reader.next());
