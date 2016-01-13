@@ -58,7 +58,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	private long currentLabelPos = 0;
 	private String currentGeneOrDomainName = null;
 	private long currentGeneOrDomainStart = -1;
-	private int nestedNextCalls = 0;
+	private int nestedNextCalls = 0; //TODO is never used now, possible future use?
 	
 	
 	/**

@@ -27,44 +27,38 @@ import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-public abstract class NeXMLTagReader implements NeXMLConstants {
-	//TODO Refactor according to to r164 by not using a return value anymore.
-	
-//	private String about; //stores information from the "about"-attribute of NeXML tags with meta subtags (usually an id)
-	
-	public JPhyloIOEvent readEvent(NeXMLEventReader reader) throws Exception {
+public abstract class NeXMLTagReader implements NeXMLConstants {	
+	public void readEvent(NeXMLEventReader reader) throws Exception {
 		if (reader.getXMLReader().hasNext()) {
 			XMLEvent xmlEvent = reader.getXMLReader().nextEvent();
 			if (xmlEvent.isEndElement()) {
 				if (reader.getEncounteredTags().peek().equals(TAG_NEXML)) {
 					reader.getEncounteredTags().pop();
-					return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
+					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 				}
 				else if (reader.getEncounteredTags().peek().equals(TAG_CHARACTERS)) {
 					reader.getEncounteredTags().pop();
-					return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
+					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 				}
 				reader.getEncounteredTags().pop();
 			}
 			else {
-				return readEventCore(reader, xmlEvent);
+				readEventCore(reader, xmlEvent);
 			}
 		}
-		return null;
 	}
 	
 	
-	protected abstract JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception;
+	protected abstract void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception;
 	
 	
-	public JPhyloIOEvent readMeta(NeXMLEventReader reader, StartElement element) {		
+	public void readMeta(NeXMLEventReader reader, StartElement element) {		
 		String type = XMLUtils.readStringAttr(element, ATTR_TYPE, null);
 		String key = null;	
 		String stringValue = null;
@@ -86,26 +80,18 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 			catch (MalformedURLException e) {}
 			dataType = type;
 		}
-		else {}
+		else {} //TODO Possibly throw exception or write to warning log, if invalid types are encountered
  		
  		if (stringValue != null && objectValue != null) {
- 			return new MetaInformationEvent(key, dataType, stringValue, objectValue);
+ 			reader.getUpcomingEvents().add(new MetaInformationEvent(key, dataType, stringValue, objectValue));
  		}
  		else if (stringValue != null) {
- 			return new MetaInformationEvent(key, dataType, stringValue);
+ 			reader.getUpcomingEvents().add(new MetaInformationEvent(key, dataType, stringValue));
  		}
- 		else {  //TODO Possibly throw exception or write to warning log, if necessary NeXML attributes are missing.
- 			return null;
- 		}
+ 		//TODO Possibly throw exception or write to warning log, if necessary NeXML attributes are missing. 
+ 		
+ 		reader.readID(reader, element);
+		
+		reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 	}
-
-
-//	public String getAbout() {
-//		return about;
-//	}
-
-
-//	public void setAbout(String about) {
-//		this.about = about;
-//	}
 }

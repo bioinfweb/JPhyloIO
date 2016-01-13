@@ -31,7 +31,7 @@ public class NewickScanner implements NewickConstants {
 	private NewickToken next = null;
 	private NewickToken previous = null;
 	private boolean beforeFirstAccess = true;
-	private boolean dataSourceClosed = false;
+	private boolean dataSourceClosed = false; //TODO is never used now, possible future use?
 	
 	
 	public NewickScanner(PeekReader reader) {

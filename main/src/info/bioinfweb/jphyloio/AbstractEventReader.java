@@ -196,7 +196,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	@Override
 	public JPhyloIOEvent next() throws Exception {
 		// ensureFirstEvent() is called in hasNextEvent()
-		if (!hasNextEvent()) {  //
+		if (!hasNextEvent()) {
 			throw new NoSuchElementException("The end of the document was already reached.");
 		}
 		else {
@@ -205,7 +205,6 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 				lastNonComment = previous;
 			}
 			next = getNextEventFromQueue();
-			//System.out.println(previous.getType());
 			return previous;
 		}
 	}

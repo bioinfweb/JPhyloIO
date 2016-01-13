@@ -54,7 +54,7 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 		super(EventContentType.META_INFORMATION, EventTopologyType.START);
 		this.key = key;
 		if (stringValue == null) {
-			throw new NullPointerException("The parameter \"value\" cannot be null.");
+			throw new NullPointerException("The parameter \"string value\" cannot be null.");
 		}
 		else {
 			this.stringValue = stringValue;
@@ -75,7 +75,7 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 
 
 	/**
-	 * Returns the value of the meta information.
+	 * Returns the string value of the meta information.
 	 * 
 	 * @return the string representation of the meta information (Will never be {@code null}.)
 	 */

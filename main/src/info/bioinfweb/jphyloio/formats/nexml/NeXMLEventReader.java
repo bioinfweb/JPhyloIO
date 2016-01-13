@@ -28,7 +28,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -47,6 +46,7 @@ import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -62,7 +62,6 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	private String currentSequenceName;
 //	private boolean parseStates = false;
-	//private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
 
 	
 	private static Map<QName, NeXMLTagReader> createMap() {
@@ -70,62 +69,54 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 		
 		map.put(TAG_SEQ, new NeXMLTagReader() {			
 			@Override
-			public JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+			public void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				List<String> tokenList = new ArrayList<String>();
 				if (event.isCharacters()) {
 					String tokens = event.asCharacters().toString(); // TODO influence read length of character events
 		   	  for (int i = 0; i < tokens.length(); i++) {
 		   	  	tokenList.add(Character.toString(tokens.charAt(i))); //TODO handle tokens longer than one character
-		   	  }		   	  
-		   	  return reader.getSequenceTokensEventManager().createEvent(reader.getCurrentSequenceName(), tokenList);
+		   	  }
+		   	 reader.getUpcomingEvents().add(reader.getSequenceTokensEventManager().createEvent(reader.getCurrentSequenceName(), tokenList));
 				}
 				else if (event.isStartElement()) {
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
 	      	if (element.getName().equals(TAG_META)) {
-	      		reader.getUpcomingEvents().add(readMeta(reader, element));
-	      		return new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END);
+	      		readMeta(reader, element);
 	      	}        
 	      	else {
 	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 	      		reader.getEncounteredTags().pop();
-	      		return null;
 	        }
 				}
-				else {
-					return null;
-				}
+				else {}
 			}
 		});
 		
 		map.put(TAG_ROW, new NeXMLTagReader() {			
 			@Override
-			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				if (event.isStartElement()) {
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
 	      	if (element.getName().equals(TAG_SEQ)) {
-	      		return METHOD_MAP.get(TAG_SEQ).readEvent(reader);
+	      		METHOD_MAP.get(TAG_SEQ).readEvent(reader);
 	      	}
 	      	else if (element.getName().equals(TAG_META)) {
-	      		reader.getUpcomingEvents().add(readMeta(reader, element));
-	      		return new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END);
+	      		readMeta(reader, element);
 	      	}        
 	      	else {
 	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 	      		reader.getEncounteredTags().pop();
-	      		return null;
 	        }	      	
 	      }
-				else {
-					return null;
-				}
+				else {}
 			}
 		});
 		
 		map.put(TAG_MATRIX, new NeXMLTagReader() {			
 			@Override
-			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 	      if (event.isStartElement()) {
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
@@ -134,21 +125,17 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      		if (sequenceName != null) {
       				reader.setCurrentSequenceName(sequenceName);
 	      		}
-	      		return METHOD_MAP.get(TAG_ROW).readEvent(reader);
+	      		METHOD_MAP.get(TAG_ROW).readEvent(reader);
 	      	}
 	      	else if (element.getName().equals(TAG_META)) {
-	      		reader.getUpcomingEvents().add(readMeta(reader, element));
-	      		return new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END);
+	      		readMeta(reader, element);
 	      	}        
 	      	else {
 	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 	      		reader.getEncounteredTags().pop();
-	      		return null;
 	        }	      	
 	      }	     
-	      else {
-	      	return null;
-	      }
+	      else {}
 			}
 		});
 		
@@ -208,7 +195,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 		
 		map.put(TAG_CHARACTERS, new NeXMLTagReader() {			
 			@Override
-			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 	      if (event.isStartElement()) {
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
@@ -216,49 +203,41 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 //	      		return METHOD_MAP.get(TAG_FORMAT).readEvent(reader);
 //	      	}	      	
 	      	if (element.getName().equals(TAG_MATRIX)) {
-	      		return METHOD_MAP.get(TAG_MATRIX).readEvent(reader);
+	      		METHOD_MAP.get(TAG_MATRIX).readEvent(reader);
 	      	}
 	      	else if (element.getName().equals(TAG_META)) {
-	      		reader.getUpcomingEvents().add(readMeta(reader, element));
-	      		return new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END);
+	      		readMeta(reader, element);
 	      	}        
 	      	else {
 	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 	      		reader.getEncounteredTags().pop();
-	      		return null;
 	        }	      	
 	      }
-	      else {
-	      	return null;				
-	      }
+	      else {}
 			}
 		});
 		
 		map.put(TAG_OTU, new NeXMLTagReader() {			
 			@Override
-			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				if (event.isStartElement()) {
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
 	      	if (element.getName().equals(TAG_META)) {
-	      		reader.getUpcomingEvents().add(readMeta(reader, element));
-	      		return new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END);
+	      		readMeta(reader, element);
 	      	}        
 	      	else {
 	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 	      		reader.getEncounteredTags().pop();
-	      		return null;
 	        }	      	
 	      }
-				else {
-					return null;
-				}
+				else {}
 			}
 		});
 		
 		map.put(TAG_OTUS, new NeXMLTagReader() {			
 			@Override
-			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {	     
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {	     
 				if (event.isStartElement()) {
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
@@ -270,68 +249,58 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	    			if (label != null && id != null) {
 	    				reader.getIDToLabelMap().put(id, label);
 	    			}		    			
-		    		return METHOD_MAP.get(TAG_OTU).readEvent(reader);
+		    		METHOD_MAP.get(TAG_OTU).readEvent(reader);
 	        }
 	      	else if (element.getName().equals(TAG_META)) {
-	      		reader.getUpcomingEvents().add(readMeta(reader, element));
-	      		return new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END);
+	      		readMeta(reader, element);
 	      	}
 	      	else {
 	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 	      		reader.getEncounteredTags().pop();
-	      		return null;
 	      	}
 	      }
-				else  {
-					return null;
-				}
+				else  {}
 			}
 		});
 		
 		map.put(TAG_META, new NeXMLTagReader() {			
 			@Override
-			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				if (event.isStartElement()) {
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
 	      	if (element.getName().equals(TAG_META)) {
-	      		reader.getUpcomingEvents().add(readMeta(reader, element));
-	      		return new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END);
+	      		readMeta(reader, element);
 	      	}        
 	      	else {
 	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 	      		reader.getEncounteredTags().pop();
-	      		return null;
 	        }	      	
 	      }
-				else {
-					return null;
-				}				
+				else {}				
 			}
 		});
 		
 		map.put(TAG_NEXML, new NeXMLTagReader() {			
 			@Override
-			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				if (event.isStartElement()) {					
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
-//	      	Map<String, String> attributeMap = readAttributes(reader, element);
 	      	
 	      	if (element.getName().equals(TAG_CHARACTERS)) {
 	      		if (!reader.getPreviousEvent().getType().equals(
 	      				new EventType(EventContentType.ALIGNMENT, EventTopologyType.START)) 
 	      				|| !reader.getPreviousEvent().getType().getContentType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
-	      				//TODO Additionally check for single token event, when this is implemented! 
-	      			
+	      				//TODO Additionally check for single token event, when this is implemented!	      			
 	  					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START));
 	  				}
+	      		
+	      		reader.readID(reader, element);
 
     				String tokenSetType = XMLUtils.readStringAttr(element, ATTR_TYPE, null);
-    				TokenSetDefinitionEvent tokenSetEvent;
-    				if (tokenSetType.equals(null)) {
-    					return null;
-    				}
+    				TokenSetDefinitionEvent tokenSetEvent = null;
+    				if (tokenSetType.equals(null)) {}
     				else if (tokenSetType.equals(TYPE_DNA_SEQS) || tokenSetType.equals(TYPE_DNA_CELLS)) {
     					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.DNA, "DNA"); //standard IUPAC nucleotide symbols
     				}
@@ -354,26 +323,22 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
     				}
     				reader.getUpcomingEvents().add(tokenSetEvent);
       		
-	      		return METHOD_MAP.get(TAG_CHARACTERS).readEvent(reader);
+	      		METHOD_MAP.get(TAG_CHARACTERS).readEvent(reader);
 	      	}
 	      	
 	      	else if (element.getName().equals(TAG_OTUS)) {
-	      		return METHOD_MAP.get(TAG_OTUS).readEvent(reader);
+	      		METHOD_MAP.get(TAG_OTUS).readEvent(reader);
 	      	}
 	      	
 	      	else if (element.getName().equals(TAG_META)) {
-	      		reader.getUpcomingEvents().add(readMeta(reader, element));
-	      		return new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END);
+	      		readMeta(reader, element);
 	      	}
 	      	else {
 	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 	      		reader.getEncounteredTags().pop();
-	      		return null;
 	        }	      	
 	      }
-	      else {
-	      	return null;		
-	      }
+	      else {}
 			}
 		});
 		
@@ -442,40 +407,37 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 
 
 	@Override
-	protected JPhyloIOEvent readNextEvent() throws Exception {
-		//TODO Refactor according to to r164 by not using a return value anymore.
-		
+	protected void readNextEvent() throws Exception {
 		XMLEvent xmlEvent;
-		JPhyloIOEvent result = null;
 		NeXMLTagReader tagReader = null;
-    
-		while (xmlReader.hasNext() && result == null) {	
+		
+		while (xmlReader.hasNext() && getUpcomingEvents().isEmpty()) {	
 			if (encounteredTags.isEmpty())  {	
 				xmlEvent = xmlReader.nextEvent();
 	      if (xmlEvent.isStartElement()) {
         	StartElement element = xmlEvent.asStartElement();
         	if (element.getName().equals(TAG_NEXML)) {
         		encounteredTags.push(element.getName());
+        		getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+        		
+        		readID(this, element);
         		
 //        		String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
 //        		if (about != null) {
 //        			METHOD_MAP.get(TAG_NEXML).setAbout(about);
 //        		}
-		    		
-        		result = new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
         	}
         	else {
         		XMLUtils.reachElementEnd(xmlReader);
-        		result = new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END);
+        		getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
         	}
 	      }
 			}		
-		
 			else {
 				QName currentTag = encounteredTags.peek();
 	      tagReader = METHOD_MAP.get(currentTag);	      
 	      if (tagReader != null) {
-	      	result = METHOD_MAP.get(currentTag).readEvent(this);
+	      	METHOD_MAP.get(currentTag).readEvent(this);
 	      }
 	      else {
       		XMLUtils.reachElementEnd(xmlReader);
@@ -483,12 +445,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
       	}	      
 	    }
 		}
-		if (!getUpcomingEvents().isEmpty()) {
-			getUpcomingEvents().add(result);
-			return getUpcomingEvents().poll();
-		}
-		else {
-			return result;
+	}
+	
+	
+	protected void readID(NeXMLEventReader reader, StartElement element) {
+		String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
+		if (id != null) {
+			reader.getUpcomingEvents().add(new MetaInformationEvent("id", "string", id));
+			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 		}
 	}
 
@@ -503,6 +467,11 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	@Override
 	public void setMaxCommentLength(int maxCommentLength) {
 		// TODO Auto-generated method stub		
+	}
+	
+	
+	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
+		return super.getUpcomingEvents();
 	}
 	
 	
