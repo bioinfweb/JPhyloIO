@@ -328,19 +328,14 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 						}
 						
 						// Parse characters (either after sequence name or continue previous read):
-						//nestedNextCalls++;
 						event = readCharacters(currentSequenceName, COMMENT_START, COMMENT_END);
-						//nestedNextCalls--;
-						//if (nestedNextCalls == 0) {  // readCharacters() makes recursive calls of readNextEvent(). -> Make sure not to count the same characters several times.
 						if (event != null) {
 							consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 							countCharacters(event);
-							getUpcomingEvents().add(event);
 						}
 						else {
 							readNextEvent();  // Make sure to add an event to the list.
 						}
-						//return event;
 					}
 					break;
 										

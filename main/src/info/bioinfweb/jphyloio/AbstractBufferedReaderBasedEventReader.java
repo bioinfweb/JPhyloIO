@@ -224,30 +224,38 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 	
 	
+	/**
+	 * Reads characters from the stream and adds an according sequence tokens event to the queue. Additionally comment events
+	 * are added to the queue, if comments are found.
+	 * 
+	 * @param currentSequenceName
+	 * @param commentStart
+	 * @param commentEnd
+	 * @return the sequence tokens event that was added to the event queue
+	 * @throws Exception
+	 */
 	protected JPhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws Exception {
 		final Pattern pattern = Pattern.compile(".*(\\n|\\r|\\" + commentStart + ")");
-		StringBuffer content = new StringBuffer(getMaxTokensToRead());
-		char lastChar = commentStart;
-		while (lastChar == commentStart) {
-			PeekReader.ReadResult readResult = getReader().readRegExp(getMaxTokensToRead() - content.length(), pattern, false);  // In greedy mode the start of a nested comment could be consumed.
-			lastChar = StringUtils.lastChar(readResult.getSequence()); 
-			if (lastChar == commentStart) {
-				readComment(commentStart, commentEnd);
-			}
-			else if (StringUtils.isNewLineChar(lastChar)) {
-			  // Consume rest of line break:
-				int nextChar = getReader().peek();
-				if ((nextChar != -1) && (lastChar == '\r') && ((char)nextChar == '\n')) {
-					getReader().skip(1);
-				}
-				lineConsumed = true;
-			}
-			else {  // Maximum length was reached.
-				lineConsumed = false;
-			}
-			content.append(StringUtils.cutEnd(readResult.getSequence(), 1));
+		PeekReader.ReadResult readResult = getReader().readRegExp(getMaxTokensToRead() /*- content.length()*/, pattern, false);  // In greedy mode the start of a nested comment could be consumed.
+		char lastChar = StringUtils.lastChar(readResult.getSequence());
+		
+		JPhyloIOEvent result = eventFromCharacters(currentSequenceName, StringUtils.cutEnd(readResult.getSequence(), 1));
+		getUpcomingEvents().add(result);
+		if (lastChar == commentStart) {
+			readComment(commentStart, commentEnd);
 		}
-		return eventFromCharacters(currentSequenceName, content);
+		else if (StringUtils.isNewLineChar(lastChar)) {
+		  // Consume rest of line break:
+			int nextChar = getReader().peek();
+			if ((nextChar != -1) && (lastChar == '\r') && ((char)nextChar == '\n')) {
+				getReader().skip(1);
+			}
+			lineConsumed = true;
+		}
+		else {  // Maximum length was reached.
+			lineConsumed = false;
+		}
+		return result;
 	}
 
 	
