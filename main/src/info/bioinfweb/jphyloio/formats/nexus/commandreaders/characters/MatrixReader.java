@@ -137,15 +137,14 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							tokenListComplete = true;
 						}
 						else if (c == COMMENT_START) {
+							if (!tokens.isEmpty()) {
+								getStreamDataProvider().getUpcomingEvents().add(  // Make sure to add token event before comment event.
+										getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
+							}
+							
 							reader.skip(1);  // Consume '['.
 							getStreamDataProvider().readComment();  //TODO The comments read here should be added after the event below. (Should be solved together with #85.)
-							result = true;
-							if (!tokens.isEmpty()) {
-								tokenListComplete = true;  // Make sure not to include tokens after the comment in the current event.
-							}
-							else {  // Comment before the first token of a sequence.
-								return true;  // Return comment that was just parsed.
-							}
+							return true;  // Return comment that was just read.
 						}
 						else if (Character.isWhitespace(c)) {  // consumeWhitespaceAndComments() cannot be used here, because line breaks are relevant.
 							reader.skip(1);  // Consume white space.

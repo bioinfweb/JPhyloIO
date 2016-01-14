@@ -107,15 +107,18 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	}
 	
 	
-	private JPhyloIOEvent readVectorFormat(boolean isFirstCall) throws IOException {
+	private void readVectorFormat(boolean isFirstCall) throws IOException {
 		char c = getStreamDataProvider().getDataReader().readChar();
 		long currentStartColumn = -1;
 		while (c != COMMAND_END) {
 			if (!Character.isWhitespace(c)) {
 				switch (c) {
 					case COMMENT_START:
+						if (currentStartColumn != -1) {
+							getStreamDataProvider().getUpcomingEvents().add(new CharacterSetEvent(name, currentStartColumn, currentColumn));
+						}
 						getStreamDataProvider().readComment();
-						break;
+						return;
 					case CHAR_SET_CONTAINED:
 						if (currentStartColumn == -1) {
 							currentStartColumn = currentColumn;
@@ -125,7 +128,8 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 					case CHAR_SET_NOT_CONTAINED:
 						currentColumn++;
 						if (currentStartColumn != -1) {
-							return new CharacterSetEvent(name, currentStartColumn, currentColumn - 1);
+							getStreamDataProvider().getUpcomingEvents().add(new CharacterSetEvent(name, currentStartColumn, currentColumn - 1));
+							return;
 						}
 						break;
 					default:
@@ -137,13 +141,10 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		
 		setAllDataProcessed(true);
 		if (currentStartColumn != -1) {  // No terminal '0' was found.
-			return new CharacterSetEvent(name, currentStartColumn, currentColumn);
+			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetEvent(name, currentStartColumn, currentColumn));
 		}
 		else if (isFirstCall) {  // A sequence of only '0' was found.
-			return new CharacterSetEvent(name, 0, 0);
-		}
-		else {
-			return null;
+			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetEvent(name, 0, 0));
 		}
 	}
 	
@@ -159,7 +160,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	}
 	
 	
-	private JPhyloIOEvent readStandardFormat(boolean isFirstCall) throws IOException {
+	private void readStandardFormat(boolean isFirstCall) throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		
 		int start = parseInteger();
@@ -178,7 +179,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 				}
 			}
 			
-			return new CharacterSetEvent(name, start, end + 1);
+			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetEvent(name, start, end + 1));
 		}
 	}
 	
@@ -222,17 +223,13 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			return endParsing(isFirstCall);
 		}
 		else {
-			JPhyloIOEvent result;
 			if (isVectorFormat) {
-				result = readVectorFormat(isFirstCall);
+				readVectorFormat(isFirstCall);
 			}
 			else {
-				result = readStandardFormat(isFirstCall);
+				readStandardFormat(isFirstCall);
 			}
-			if (result != null) {
-				getStreamDataProvider().getUpcomingEvents().add(result);
-			}
-			getStreamDataProvider().consumeWhiteSpaceAndComments();  // Consume upcomming comments to have the fired before the next character set event.
+			getStreamDataProvider().consumeWhiteSpaceAndComments();  // Consume upcoming comments to have the fired before the next character set event.
 			return initialEventCount < getStreamDataProvider().getUpcomingEvents().size();
 		}
 	}
