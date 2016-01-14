@@ -61,7 +61,7 @@ public class JPhyloIOTestTools {
 	public static void assertCharactersEvent(String expectedName, String expectedSequence, JPhyloIOEventReader reader) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventContentType.SEQUENCE_CHARACTERS, event.getType().getContentType());
+		assertEquals(EventContentType.SEQUENCE_TOKENS, event.getType().getContentType());
 		SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
 		assertEquals(expectedName, tokensEvent.getSequenceName());
 		assertEquals(expectedSequence.length(), tokensEvent.getCharacterValues().size());
@@ -74,7 +74,7 @@ public class JPhyloIOTestTools {
 	public static void assertCharactersEvent(String expectedName, String[] expectedSequence, JPhyloIOEventReader reader) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventContentType.SEQUENCE_CHARACTERS, event.getType().getContentType());
+		assertEquals(EventContentType.SEQUENCE_TOKENS, event.getType().getContentType());
 		SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
 		assertEquals(expectedName, tokensEvent.getSequenceName());
 		assertEquals(expectedSequence.length, tokensEvent.getCharacterValues().size());

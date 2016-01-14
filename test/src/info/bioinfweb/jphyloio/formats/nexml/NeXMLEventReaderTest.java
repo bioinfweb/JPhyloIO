@@ -85,9 +85,9 @@ public class NeXMLEventReaderTest {
 				assertMetaEvent("id", "meta1615", true, true, reader);
 				assertEventType(EventContentType.META_INFORMATION, EventTopologyType.END, reader);
 				
-				assertEventType(EventContentType.SEQUENCE_CHARACTERS, EventTopologyType.SOLE, reader);
+				assertEventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE, reader);
 				
-				assertEventType(EventContentType.SEQUENCE_CHARACTERS, EventTopologyType.SOLE, reader);
+				assertEventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				
@@ -112,9 +112,9 @@ public class NeXMLEventReaderTest {
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertEventType(EventContentType.SEQUENCE_CHARACTERS, EventTopologyType.SOLE, reader);
+				assertEventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE, reader);
 				
-				assertEventType(EventContentType.SEQUENCE_CHARACTERS, EventTopologyType.SOLE, reader);
+				assertEventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				
