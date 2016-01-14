@@ -90,8 +90,9 @@ public class MEGAEventReaderTest {
 			assertCharacterSetEvent("Domain=Alpha_1  Property=Coding", 0, 81, reader);
 			
 			assertCharactersEvent("A-2301", "GGTTCTCACACCCTCCAGATGATGTTT", reader);
-			assertCommentEvent("comment 2 in characters", reader);  //TODO A-2501 should be split by comment here.
-			assertCharactersEvent("A-2501", "GGTTCTCACACCATCCAGAGGATGTAT", reader);
+			assertCharactersEvent("A-2501", "GGTTCTCACACCATC", reader);
+			assertCommentEvent("comment 2 in characters", reader);
+			assertCharactersEvent("A-2501", "CAGAGGATGTAT", reader);
 			assertCharactersEvent("A-3301", "GGTTCTCACACCATCCAGATGATGTAT", reader);
 
 			assertCommentEvent("comment in label", reader);
@@ -101,11 +102,9 @@ public class MEGAEventReaderTest {
 
 			assertCharactersEvent("A-2301", "CTGGAGAACGGGAAG", reader);
 			assertCharactersEvent("A-2501", "CTGGAGAACGGGAAG", reader);
-//			assertCommentEvent("Nested [comment]", reader); 
-//			assertCommentEvent("[Nested] comment", reader);
 			assertCharactersEvent("A-3301", "CTGGAGAACGGGAAG", reader);
 
-			assertCommentEvent("Nested [comment]", reader);  // This is the desired position of the comments. The current implementation returns them at the position above. Comment processing refactoring needs to be completed as described in #85 to solve this problem.
+			assertCommentEvent("Nested [comment]", reader);
 			assertCommentEvent("[Nested] comment", reader);
 
 			assertCharacterSetEvent("Domain=Alpha_2 Property=Coding", 81, 123, reader);
