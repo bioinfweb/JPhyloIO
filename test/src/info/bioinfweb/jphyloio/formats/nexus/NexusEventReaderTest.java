@@ -61,9 +61,9 @@ public class NexusEventReaderTest {
 				
 				assertCharacterSetEvent("set02", 4, 10, reader);
 				
-				assertCharacterSetEvent("set03", 4, 7, reader);
 				assertCommentEvent("comment 2", reader);
 				assertCommentEvent("comment 3", reader);
+				assertCharacterSetEvent("set03", 4, 7, reader);
 				assertCharacterSetEvent("set03", 12, 13, reader);
 				
 				assertCharacterSetEvent("set04", 4, 7, reader);
@@ -71,8 +71,9 @@ public class NexusEventReaderTest {
 				assertCharacterSetEvent("set04", 12, 13, reader);
 
 				assertCharacterSetEvent("set05", 3, 4, reader);
-				assertCharacterSetEvent("set05", 5, 8, reader);
+				assertCharacterSetEvent("set05", 5, 7, reader);
 				assertCommentEvent("comment 5", reader);
+				assertCharacterSetEvent("set05", 7, 8, reader);
 				assertCharacterSetEvent("set05", 9, 10, reader);
 				assertCharacterSetEvent("set05", 11, 13, reader);
 
