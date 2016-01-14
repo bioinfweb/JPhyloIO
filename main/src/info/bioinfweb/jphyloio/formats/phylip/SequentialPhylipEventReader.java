@@ -147,7 +147,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 						break;
 					}
-				case SEQUENCE_CHARACTERS:
+				case SEQUENCE_TOKENS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
 						while (getReader().isNewLineNext()) {  // Ignore empty lines.
 							getReader().consumeNewLine();
@@ -172,7 +172,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 					}
 					else {
 						getUpcomingEvents().add(event);
-						if (EventContentType.SEQUENCE_CHARACTERS.equals(event.getType().getContentType())) {
+						if (EventContentType.SEQUENCE_TOKENS.equals(event.getType().getContentType())) {
 							charactersRead += ((SequenceTokensEvent)event).getCharacterValues().size();
 						}
 					}

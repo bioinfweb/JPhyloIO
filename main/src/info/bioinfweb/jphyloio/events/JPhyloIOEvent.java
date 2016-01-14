@@ -71,12 +71,36 @@ public interface JPhyloIOEvent {
 	public CommentEvent asCommentEvent() throws ClassCastException;
 	
 	/**
+	 * Casts this event to a sequence end event.
+	 * 
+	 * @return a reference to this event as a sequence end event
+	 * @throws ClassCastException if this event is not an instance of {@link SequenceEndEvent}
+	 */
+	public SequenceEndEvent asSequenceEndEvent() throws ClassCastException;
+	
+	/**
+	 * Casts this event to a sequence start event.
+	 * 
+	 * @return a reference to this event as a sequence start event
+	 * @throws ClassCastException if this event is not an instance of {@link SequenceStartEvent}
+	 */
+	public SequenceStartEvent asSequenceStartEvent() throws ClassCastException;
+	
+	/**
 	 * Casts this event to a tokens event.
 	 * 
 	 * @return a reference to this event as a tokens event
 	 * @throws ClassCastException if this event is not an instance of {@link SequenceTokensEvent}
 	 */
 	public SequenceTokensEvent asSequenceTokensEvent() throws ClassCastException;
+	
+	/**
+	 * Casts this event to a single token event.
+	 * 
+	 * @return a reference to this event as a single token event
+	 * @throws ClassCastException if this event is not an instance of {@link SingleSequenceTokenEvent}
+	 */
+	public SingleSequenceTokenEvent asSingleSequenceTokenEvent() throws ClassCastException;
 	
 	/**
 	 * Casts this event to a character set event.

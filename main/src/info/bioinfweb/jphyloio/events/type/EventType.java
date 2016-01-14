@@ -20,6 +20,11 @@ package info.bioinfweb.jphyloio.events.type;
 
 
 
+/**
+ * Event type object that combines the content and topology type of an event.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class EventType implements Comparable<EventType> {
 	private EventContentType contentType;
 	private EventTopologyType topologyType;

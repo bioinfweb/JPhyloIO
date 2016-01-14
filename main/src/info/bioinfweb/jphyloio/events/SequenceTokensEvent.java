@@ -43,7 +43,7 @@ public class SequenceTokensEvent extends ConcreteJPhyloIOEvent {
 	
 	
 	public SequenceTokensEvent(String sequenceName, List<String> tokens) {
-		super(EventContentType.SEQUENCE_CHARACTERS, EventTopologyType.SOLE);
+		super(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE);
 		
 		this.sequenceName = sequenceName;
 		this.characterValues = Collections.unmodifiableList(tokens);

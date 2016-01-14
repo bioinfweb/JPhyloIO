@@ -185,7 +185,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 						break;
 					}
-				case SEQUENCE_CHARACTERS:
+				case SEQUENCE_TOKENS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
 						while (getReader().isNewLineNext()) {  // Ignore empty lines between interleaved blocks.
 							getReader().consumeNewLine();  // Note: Parsing this way does not allow to have empty lines for some sequences in interleaved format, if they ended earlier than others. (Sequences with different lengths are anyway not allowed by the format definition. E.g. unaligned could still be read from non-interleaved files.

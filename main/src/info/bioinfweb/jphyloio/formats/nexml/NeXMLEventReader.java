@@ -291,7 +291,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      	if (element.getName().equals(TAG_CHARACTERS)) {
 	      		if (!reader.getPreviousEvent().getType().equals(
 	      				new EventType(EventContentType.ALIGNMENT, EventTopologyType.START)) 
-	      				|| !reader.getPreviousEvent().getType().getContentType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
+	      				|| !reader.getPreviousEvent().getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
 	      				//TODO Additionally check for single token event, when this is implemented!	      			
 	  					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START));
 	  				}

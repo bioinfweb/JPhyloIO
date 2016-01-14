@@ -201,7 +201,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 						break;
 					}
 					// fall through for if case
-				case SEQUENCE_CHARACTERS:
+				case SEQUENCE_TOKENS:
 				case COMMENT:
 					// Check if new name needs to be read:
 					int c = getReader().peek();
