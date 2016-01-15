@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 public class SingleSequenceTokenEvent extends ConcreteJPhyloIOEvent {
 	private String token;
+	//TODO should there be properties for the sequence name and the character this token belongs in?
 
 	
 	public SingleSequenceTokenEvent(String token) {

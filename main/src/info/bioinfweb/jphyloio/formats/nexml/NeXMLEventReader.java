@@ -47,6 +47,7 @@ import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -61,11 +62,89 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	private String currentSequenceName;
+	private String currentBranchLengthsFormat;
 //	private boolean parseStates = false;
 
 	
 	private static Map<QName, NeXMLTagReader> createMap() {
 		Map<QName, NeXMLTagReader> map = new HashMap<QName, NeXMLTagReader>();
+		
+		map.put(TAG_NETWORK, new NeXMLTagReader() {			
+			@Override
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {				
+				if (event.isStartElement()) {
+	      	StartElement element = event.asStartElement();
+	      	reader.getEncounteredTags().push(element.getName()); //TODO check if nodes are declared before edges     	
+	      	if (element.getName().equals(TAG_NODE)) {
+	      		readNode(reader, element);
+	      	}
+	      	else if (element.getName().equals(TAG_EDGE)) {	      		
+	      		readEdge(reader, element);
+	      	}
+	      	else if (element.getName().equals(TAG_META)) {
+	      		readMeta(reader, element);
+	      	}        
+	      	else {
+	      		XMLUtils.reachElementEnd(reader.getXMLReader());
+	      		reader.getEncounteredTags().pop();
+	        }	      	
+	      }
+	      else {}				
+			}
+		});
+		
+		map.put(TAG_TREE, new NeXMLTagReader() {		
+			@Override
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+				if (event.isStartElement()) {
+	      	StartElement element = event.asStartElement();
+	      	reader.getEncounteredTags().push(element.getName()); //TODO check if nodes are declared before edges     	
+	      	if (element.getName().equals(TAG_NODE)) {
+	      		readNode(reader, element);
+	      	}
+	      	else if (element.getName().equals(TAG_EDGE) || element.getName().equals(TAG_ROOTEDGE)) {	      		
+	      		readEdge(reader, element);
+	      	}
+	      	else if (element.getName().equals(TAG_META)) {
+	      		readMeta(reader, element);
+	      	}        
+	      	else {
+	      		XMLUtils.reachElementEnd(reader.getXMLReader());
+	      		reader.getEncounteredTags().pop();
+	        }	      	
+	      }
+	      else {}				
+			}
+		});
+		
+		map.put(TAG_TREES, new NeXMLTagReader() {
+			@Override
+			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+				if (event.isStartElement()) {
+	      	StartElement element = event.asStartElement();
+	      	reader.getEncounteredTags().push(element.getName());	      	
+	      	if (element.getName().equals(TAG_TREE)) {
+	      		String branchLengthsFormat = XMLUtils.readStringAttr(element, ATTR_TYPE, null);
+    				if (branchLengthsFormat.equals(null)) {}
+    				else if (branchLengthsFormat.equals(TYPE_FLOAT_TREE)) {
+    					reader.setCurrentBranchLengthsFormat(TYPE_FLOAT_TREE);
+    				}
+    				else if (branchLengthsFormat.equals(TYPE_INT_TREE)) {
+    					reader.setCurrentBranchLengthsFormat(TYPE_INT_TREE);
+    				}
+	      		METHOD_MAP.get(TAG_TREE).readEvent(reader);
+	      	}
+	      	else if (element.getName().equals(TAG_META)) {
+	      		readMeta(reader, element);
+	      	}        
+	      	else {
+	      		XMLUtils.reachElementEnd(reader.getXMLReader());
+	      		reader.getEncounteredTags().pop();
+	        }	      	
+	      }
+	      else {}				
+			}
+		});
 		
 		map.put(TAG_SEQ, new NeXMLTagReader() {			
 			@Override
@@ -102,6 +181,10 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      	if (element.getName().equals(TAG_SEQ)) {
 	      		METHOD_MAP.get(TAG_SEQ).readEvent(reader);
 	      	}
+	      	else if (element.getName().equals(TAG_CELL)) {
+	      		String token = XMLUtils.readStringAttr(element, ATTR_STATE, "-");
+	  				reader.getUpcomingEvents().add(new SingleSequenceTokenEvent(token));
+	      	}   
 	      	else if (element.getName().equals(TAG_META)) {
 	      		readMeta(reader, element);
 	      	}        
@@ -141,55 +224,49 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 		
 //		map.put(TAG_STATES, new NeXMLTagReader() {
 //			@Override
-//			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+//			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 //				if (event.isStartElement()) {
 //	      	StartElement element = event.asStartElement();
 //	      	reader.getEncounteredTags().push(element.getName());
 //	      	if (element.getName().equals(TAG_STATE) || element.getName().equals(TAG_POLYMORPHIC) || element.getName().equals(TAG_UNCERTAIN)) {
-//	      		String id = null;
-//	      		String symbol = null;
-//	      		Iterator<Attribute> attributes = element.getAttributes();
-//	      		while (attributes.hasNext()) {      			
-//	      			Attribute attribute = attributes.next();	
-////	      			if (attribute.getName().equals(ATTR_ID)) { //TODO eventuell per Abfrage in der Implementierung klären ob id auch geparsed werden soll
-////	      				id = attribute.getValue(); 
-////	      			}
-//	      			if (attribute.getName().equals(ATTR_SYMBOL)) {
-//	      				symbol = attribute.getValue(); //symbol is always an integer
-//	      			}
+//	      		String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
+//	      		String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
+//	      		Integer symbol = XMLUtils.readIntAttr(element, ATTR_SYMBOL, 0);	//since this symbol is used in the alignment it should be parsed somehow   		
+//	      		
+//	      		if (label != null) {
+//	      			reader.getUpcomingEvents().add(new SingleTokenDefinitionEvent(label, ChracterStateMeaning.OTHER)); //since this method should only be used in standard character blocks the meaning is always other (non nucleotide or aa)
 //	      		}
-//	      		return new SingleTokenDefinitionEvent(symbol, ChracterStateMeaning.OTHER); //since this method should only be used in standard character blocks the meaning is always other (non nucleotide or aa)
+//	      		else if (id != null) { // ID should never be null in a valid NeXML file
+//	      			reader.getUpcomingEvents().add(new SingleTokenDefinitionEvent(id, ChracterStateMeaning.OTHER));
+//	      		}
 //	      	}        
 //	      	else {
 //	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 //	      		reader.getEncounteredTags().pop();
-//	      		return null;
 //	        }	      	
 //	      }	     
-//	      else {
-//	      	return null;
-//	      }
+//	      else {}
 //			}
 //		});
 //		
 //		map.put(TAG_FORMAT, new NeXMLTagReader() {			
 //			@Override
-//			protected JPhyloIOEvent readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
+//			protected void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception {
 //				if (event.isStartElement()) {
 //	      	StartElement element = event.asStartElement();
 //	      	reader.getEncounteredTags().push(element.getName());
 //	      	if (element.getName().equals(TAG_STATES)) {
-//	      		return METHOD_MAP.get(TAG_STATES).readEvent(reader);
-//	      	}        
+//	      		METHOD_MAP.get(TAG_STATES).readEvent(reader);
+//	      	}
+//	      	else if (element.getName().equals(TAG_META)) {
+//	      		readMeta(reader, element);
+//	      	} 
 //	      	else {
 //	      		XMLUtils.reachElementEnd(reader.getXMLReader());
 //	      		reader.getEncounteredTags().pop();
-//	      		return null;
 //	        }	      	
 //	      }
-//				else {
-//					return null;
-//				}
+//				else {}
 //			}
 //		});
 		
@@ -199,7 +276,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      if (event.isStartElement()) {
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
-//	      	if (element.getName().equals(TAG_FORMAT) && reader.getParseStates()) {
+//	      	if (element.getName().equals(TAG_FORMAT) && reader.getParseStates()) { //TODO is there any necessary information in the format block that should be parsed?
 //	      		return METHOD_MAP.get(TAG_FORMAT).readEvent(reader);
 //	      	}	      	
 	      	if (element.getName().equals(TAG_MATRIX)) {
@@ -330,6 +407,10 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      		METHOD_MAP.get(TAG_OTUS).readEvent(reader);
 	      	}
 	      	
+	      	else if (element.getName().equals(TAG_TREES)) {
+	      		METHOD_MAP.get(TAG_TREES).readEvent(reader);
+	      	}
+	      	
 	      	else if (element.getName().equals(TAG_META)) {
 	      		readMeta(reader, element);
 	      	}
@@ -406,12 +487,22 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 //	}
 
 
+	public String getCurrentBranchLengthsFormat() {
+		return currentBranchLengthsFormat;
+	}
+
+
+	public void setCurrentBranchLengthsFormat(String currentBranchLengthsFormat) {
+		this.currentBranchLengthsFormat = currentBranchLengthsFormat;
+	}
+
+
 	@Override
 	protected void readNextEvent() throws Exception {
 		XMLEvent xmlEvent;
 		NeXMLTagReader tagReader = null;
 		
-		while (xmlReader.hasNext() && getUpcomingEvents().isEmpty()) {	
+		while (xmlReader.hasNext() && getUpcomingEvents().isEmpty()) {
 			if (encounteredTags.isEmpty())  {	
 				xmlEvent = xmlReader.nextEvent();
 	      if (xmlEvent.isStartElement()) {
@@ -419,13 +510,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
         	if (element.getName().equals(TAG_NEXML)) {
         		encounteredTags.push(element.getName());
         		getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-        		
         		readID(this, element);
-        		
-//        		String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
-//        		if (about != null) {
-//        			METHOD_MAP.get(TAG_NEXML).setAbout(about);
-//        		}
         	}
         	else {
         		XMLUtils.reachElementEnd(xmlReader);

@@ -33,6 +33,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 public class NodeEvent extends ConcreteJPhyloIOEvent {
 	private String id;
 	private String label;
+	//TODO do node events need a "rooted"-attribute or should that information (if given) be in a Meta-Event?
 	
 	
 	/**

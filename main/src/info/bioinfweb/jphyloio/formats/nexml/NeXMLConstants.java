@@ -18,6 +18,7 @@
  */
 package info.bioinfweb.jphyloio.formats.nexml;
 
+
 import javax.xml.namespace.QName;
 
 
@@ -39,14 +40,27 @@ public interface NeXMLConstants {
 	public static final QName TAG_STATE = new QName(NAMESPACE_URI, "state");
 	public static final QName TAG_POLYMORPHIC = new QName(NAMESPACE_URI, "polymorphic_state_set");
 	public static final QName TAG_UNCERTAIN = new QName(NAMESPACE_URI, "uncertain_state_set");	
-	public static final QName TAG_ROW = new QName(NAMESPACE_URI, "row");	
+	public static final QName TAG_ROW = new QName(NAMESPACE_URI, "row");
+	public static final QName TAG_CELL = new QName(NAMESPACE_URI, "cell");
 	public static final QName TAG_SEQ = new QName(NAMESPACE_URI, "seq");
+	
+	public static final QName TAG_TREES = new QName(NAMESPACE_URI, "trees");
+	public static final QName TAG_TREE = new QName(NAMESPACE_URI, "tree");
+	public static final QName TAG_NETWORK = new QName(NAMESPACE_URI, "network");
+	public static final QName TAG_NODE = new QName(NAMESPACE_URI, "node");
+	public static final QName TAG_EDGE = new QName(NAMESPACE_URI, "edge");
+	public static final QName TAG_ROOTEDGE = new QName(NAMESPACE_URI, "rootedge");
 	
 	public static final QName ATTR_ID = new QName("id");
 	public static final QName ATTR_LABEL = new QName("label");
 	public static final QName ATTR_ABOUT = new QName("about");	
 	public static final QName ATTR_OTU = new QName("otu");	
 	public static final QName ATTR_SYMBOL = new QName("symbol");
+	public static final QName ATTR_STATE = new QName("state");
+	
+	public static final QName ATTR_SOURCE = new QName("source");
+	public static final QName ATTR_TARGET = new QName("target");
+	public static final QName ATTR_LENGTH = new QName("length");
 	
 	public static final QName ATTR_TYPE = new QName(NAMESPACE_URI_XSI, "type");	
 	public static final QName ATTR_DATATYPE = new QName("datatype");
@@ -67,6 +81,9 @@ public interface NeXMLConstants {
 	public static final String TYPE_CONTIN_CELLS = "nex:ContinuousCells";
 	public static final String TYPE_STANDARD_SEQ = "nex:StandardSeqs";
 	public static final String TYPE_STANDARD_CELLS = "nex:StandardCells";
+	
+	public static final String TYPE_FLOAT_TREE = "nex:FloatTree";
+	public static final String TYPE_INT_TREE = "nex:IntTree";
 	
 	public static final String TYPE_STRING = "xsd:string";
 	

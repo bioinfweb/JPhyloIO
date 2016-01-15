@@ -27,7 +27,9 @@ import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -39,11 +41,9 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 			XMLEvent xmlEvent = reader.getXMLReader().nextEvent();
 			if (xmlEvent.isEndElement()) {
 				if (reader.getEncounteredTags().peek().equals(TAG_NEXML)) {
-					reader.getEncounteredTags().pop();
 					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 				}
 				else if (reader.getEncounteredTags().peek().equals(TAG_CHARACTERS)) {
-					reader.getEncounteredTags().pop();
 					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 				}
 				reader.getEncounteredTags().pop();
@@ -93,5 +93,43 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
  		reader.readID(reader, element);
 		
 		reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+	}
+	
+	
+	public void readNode(NeXMLEventReader reader, StartElement element) {
+		String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
+		String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
+		if (id != null) {
+			reader.getUpcomingEvents().add(new NodeEvent(id, label));
+			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+		}
+	}
+	
+	
+	public void readEdge(NeXMLEventReader reader, StartElement element) {
+		String sourceID = null;
+		String targetID = XMLUtils.readStringAttr(element, ATTR_TARGET, null);	      		
+		double length = Double.NaN;	 
+		
+		if (reader.getCurrentBranchLengthsFormat().equals(TYPE_FLOAT_TREE)) { 
+			length = XMLUtils.readDoubleAttr(element, ATTR_LENGTH, Double.NaN); //TODO possibly check if value is really a double and throw exception if not?
+		}
+		else { //Type IntTree
+			try {
+				length = Integer.parseInt(element.getAttributeByName(ATTR_LENGTH).getValue());
+			}
+			catch (NumberFormatException e) {
+				throw new NumberFormatException("The branch length in an IntTree must be an Integer.");
+			}
+			catch (NullPointerException e) {}
+		}
+		
+		if (targetID != null) {
+			if (element.getName().equals(TAG_EDGE)) {
+				sourceID = XMLUtils.readStringAttr(element, ATTR_SOURCE, null);
+			}
+			reader.getUpcomingEvents().add(new EdgeEvent(sourceID, targetID, length));
+			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+		}
 	}
 }

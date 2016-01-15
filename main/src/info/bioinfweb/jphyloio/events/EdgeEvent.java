@@ -27,13 +27,20 @@ public class EdgeEvent extends ConcreteJPhyloIOEvent {
 	private String sourceID;
 	private String targetID;
 	private double length;
+	//TODO should there be an ID property?
 	
 	
 	public EdgeEvent(String sourceID, String targetID, double length) {
 		super(EventContentType.EDGE, EventTopologyType.START);
-		this.sourceID = sourceID;
-		this.targetID = targetID;
-		this.length = length;
+
+		if (targetID == null) {
+			throw new NullPointerException("The target node ID must not be null.");
+		}
+		else {
+			this.sourceID = sourceID; //can be null if edge is a root edge
+			this.targetID = targetID;
+			this.length = length;
+		}
 	}
 
 
