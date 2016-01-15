@@ -178,7 +178,7 @@ public class JPhyloIOTestTools {
 		
 		NodeEvent nodeEvent = event.asNodeEvent();
 		assertEquals(expectedLabel, nodeEvent.getLabel());
-		return nodeEvent.getID();
+		return nodeEvent.getNodeID();
   }
 
 
