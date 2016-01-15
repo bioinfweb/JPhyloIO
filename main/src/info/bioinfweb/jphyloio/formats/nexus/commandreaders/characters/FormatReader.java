@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
-import info.bioinfweb.commons.bio.ChracterStateMeaning;
+import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -155,17 +155,17 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
 			getStreamDataProvider().getNexusReader().setMatchToken(event.getStringValue());
 			getStreamDataProvider().getUpcomingEvents().add(
-					new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.MATCH));
+					new SingleTokenDefinitionEvent(event.getStringValue(), CharacterStateMeaning.MATCH));
 			eventReplaced = true;
 		}
 		else if (FORMAT_SUBCOMMAND_GAP_CHAR.equals(key)) {
 			getStreamDataProvider().getUpcomingEvents().add(
-					new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.GAP));
+					new SingleTokenDefinitionEvent(event.getStringValue(), CharacterStateMeaning.GAP));
 			eventReplaced = true;
 		}
 		else if (FORMAT_SUBCOMMAND_MISSING_CHAR.equals(key)) {
 			getStreamDataProvider().getUpcomingEvents().add(
-					new SingleTokenDefinitionEvent(event.getStringValue(), ChracterStateMeaning.MISSING));
+					new SingleTokenDefinitionEvent(event.getStringValue(), CharacterStateMeaning.MISSING));
 			eventReplaced = true;
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
@@ -178,7 +178,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 					char c = event.getStringValue().charAt(i);
 					if (!Character.isWhitespace(c)) {
 						getStreamDataProvider().getUpcomingEvents().add(new SingleTokenDefinitionEvent(
-								Character.toString(c), ChracterStateMeaning.CHARACTER_STATE));
+								Character.toString(c), CharacterStateMeaning.CHARACTER_STATE));
 					}
 				} 
 				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event will be returned, indicating an empty symbols subcommand.

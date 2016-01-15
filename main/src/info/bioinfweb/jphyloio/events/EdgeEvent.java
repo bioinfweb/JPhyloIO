@@ -27,7 +27,6 @@ public class EdgeEvent extends ConcreteJPhyloIOEvent {
 	private String sourceID;
 	private String targetID;
 	private double length;
-	//TODO should there be an ID property?
 	
 	
 	public EdgeEvent(String sourceID, String targetID, double length) {
