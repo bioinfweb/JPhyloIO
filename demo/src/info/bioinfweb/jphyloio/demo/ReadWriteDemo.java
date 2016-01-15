@@ -39,7 +39,7 @@ public class ReadWriteDemo {
 	public static void main(String[] args) throws Exception {
 		DemoModel demoModel = new DemoModel(); 
 //		FASTAEventReader reader = new FASTAEventReader(new File("data/test.fasta"), false);
-		NeXMLEventReader neXMLReader = new NeXMLEventReader(new File("data/LargeNeXMLFile.xml"), false);
+		NeXMLEventReader neXMLReader = new NeXMLEventReader(new File("data/UnknownTag.xml"), false);
 //	NexusCommandReaderFactory factory = new NexusCommandReaderFactory();
 //	factory.addJPhyloIOReaders();
 //		NexusEventReader reader = new NexusEventReader(new File("data/MatrixInterleaved.nex"), false, factory);

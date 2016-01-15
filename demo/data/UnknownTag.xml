@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <unknownTag/>
+  <otus id="taxa">
+  	<unknownTag/>
+    <otu id="taxon1"/>
+    <otu id="taxon2">
+	  <unknownTag/>
+    </otu>
+	<otu id="taxon3"/>
+  </otus>
+  <characters id="alignment" otus="taxa" xsi:type="nex:DnaSeqs">
+  	<unknownTag/>
+    <format>
+		<unknownTag/>
+      <states id="states383">
+     	<unknownTag/>
+        <state id="state384" symbol="A"/>
+        <state id="state385" symbol="C"/>
+        <state id="state386" symbol="G"/>
+        <state id="state387" symbol="T"/>
+        <uncertain_state_set id="uncertain_state_set388" symbol="K">
+        	<unknownTag/>
+          <member state="state386"/>
+          <member state="state387"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set389" symbol="M">
+          <member state="state385"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set390" symbol="R">
+          <member state="state386"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set391" symbol="S">
+          <member state="state386"/>
+          <member state="state385"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set392" symbol="W">
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set393" symbol="Y">
+          <member state="state385"/>
+          <member state="state387"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set394" symbol="B">
+          <member state="state386"/>
+          <member state="state387"/>
+          <member state="state385"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set395" symbol="D">
+          <member state="state386"/>
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set396" symbol="H">
+          <member state="state386"/>
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set397" symbol="V">
+          <member state="state386"/>
+          <member state="state385"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set398" symbol="N">
+          <member state="state386"/>
+          <member state="state385"/>
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set399" symbol="X">
+          <member state="state386"/>
+          <member state="state385"/>
+          <member state="state387"/>
+          <member state="state384"/>
+        </uncertain_state_set>
+        <uncertain_state_set id="uncertain_state_set400" symbol="-"/>
+        <uncertain_state_set id="uncertain_state_set401" symbol="?">
+          <member state="uncertain_state_set400"/>
+          <member state="state386"/>
+          <member state="state384"/>
+          <member state="state387"/>
+          <member state="state385"/>
+        </uncertain_state_set>
+      </states>
+      <char id="char402" states="states383"/>
+      <char id="char403" states="states383"/>
+      <char id="char404" states="states383"/>
+      <char id="char405" states="states383"/>
+      <char id="char406" states="states383"/>
+      <char id="char407" states="states383"/>
+      <char id="char408" states="states383"/>
+      <char id="char409" states="states383"/>
+      <char id="char410" states="states383"/>
+      <char id="char411" states="states383"/>
+      <char id="char412" states="states383"/>
+      <char id="char413" states="states383"/>
+      <char id="char414" states="states383"/>
+      <char id="char415" states="states383"/>
+      <char id="char416" states="states383"/>
+      <char id="char417" states="states383"/>
+      <char id="char418" states="states383"/>
+      <char id="char419" states="states383"/>
+      <char id="char420" states="states383"/>
+      <char id="char421" states="states383"/>
+    </format>
+    <matrix>
+    	<unknownTag/>
+      <row id="row1" otu="taxon1">
+      	<unknownTag/>
+        <seq>AG?TCTGAAACGG--TGTAG</seq>
+      </row>
+      <row id="row2" otu="taxon2">
+        <seq>AGTT--GAAAAGGGT?GTCG</seq>
+      </row>
+    </matrix>
+  </characters>
+  <trees id="trees" otus="taxa">
+  	<unknownTag/>
+    <tree id="tree1" xsi:type="nex:IntTree">
+    	<unknownTag/>
+      <node id="taxon1"/>
+      <node id="taxon2"/>
+	  <node id="internal1"/>
+      <edge id="edge1" source="internal1" target="taxon1" length="5"/>
+      <edge id="edge2" source="internal1" target="taxon2"/>
+    </tree>
+    <tree id="tree2" xsi:type="nex:FloatTree">
+    	<unknownTag/>
+      <node id="taxon1"/>
+      <node id="taxon2"/>
+	  <node id="internal1" root="true"/>
+	  <rootedge id="root" target="internal1"/>
+      <edge id="edge1" source="internal1" target="taxon1" length="5"/>
+      <edge id="edge2" source="internal1" target="taxon2" length="4.0"/>
+    </tree>
+  </trees>
+</nex:nexml>

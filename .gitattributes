@@ -4,6 +4,7 @@ demo/.project -text svneol=unset#text/plain
 demo/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 demo/data/LargeNeXMLFile.xml -text svneol=unset#text/plain
 demo/data/MatrixInterleaved.nex -text
+demo/data/UnknownTag.xml -text svneol=unset#text/plain
 demo/data/output_test.fasta -text
 demo/data/test.fasta -text
 demo/src/info/bioinfweb/jphyloio/demo/CollectionToElementCollectionAdapter.java -text svneol=unset#text/plain

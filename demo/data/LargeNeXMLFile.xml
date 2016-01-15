@@ -1955,7 +1955,7 @@
       <node id="Tn274909" label="Grifola frondosa M021" otu="Tl250"/>
       <node id="Tn274921" label="Grifola frondosa WC493" otu="Tl279"/>
       <node id="Tn274859" label="Grifola sordulenta" otu="Tl126179"/>
-      <edge id="edge1630" source="Tn274900" target="Tn274857"/>
+      <edge id="edge1630" source="Tn274900" target="Tn274857" length="0,5"/>
       <edge id="edge1632" source="Tn274857" target="Tn274833"/>
       <edge id="edge1634" source="Tn274833" target="Tn274867"/>
       <edge id="edge1636" source="Tn274867" target="Tn274830"/>

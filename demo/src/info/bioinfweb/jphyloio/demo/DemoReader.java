@@ -41,22 +41,28 @@ public class DemoReader {
 				System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 				
 				if (event.getType().getContentType().equals(EventContentType.TOKEN_SET_DEFINITION)) {
-//					System.out.println("Character State Type: " + event.asTokenSetDefinitionEvent().getSetType());
+					System.out.println("Character State Type: " + event.asTokenSetDefinitionEvent().getSetType());
 				}
-				else if (event.getType().getContentType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
+				else if (event.getType().getContentType().equals(EventContentType.NODE) && event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					System.out.println(event.asNodeEvent().getID() + ", " + event.asNodeEvent().getLabel());
+				}
+				else if (event.getType().getContentType().equals(EventContentType.EDGE) && event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					System.out.println(event.asEdgeEvent().getLength() + ", " + event.asEdgeEvent().getSourceID() + ", " + event.asEdgeEvent().getTargetID());
+				}
+//				else if (event.getType().getContentType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
 //					i ++;
 //					System.out.println("Name: " + event.asSequenceTokensEvent().getSequenceName());
 //					System.out.println(i + ": " + event.asSequenceTokensEvent().getCharacterValues());
 //					System.out.println("Size: " + event.asSequenceTokensEvent().getCharacterValues().size());
-				}
-				else if (event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-					if (!event.getType().getTopologyType().equals(EventTopologyType.END) && event.asMetaInformationEvent().getKey().equals("id")) {
-						System.out.println(event.asMetaInformationEvent().getStringValue());
-					}
+//				}
+//				else if (event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
+//					if (!event.getType().getTopologyType().equals(EventTopologyType.END) && event.asMetaInformationEvent().getKey().equals("id")) {
+//						System.out.println(event.asMetaInformationEvent().getStringValue());
+//					}
 //					i++;
 //					System.out.println(i + ": Key: " + event.asMetaInformationEvent().getKey());
 //					System.out.println("Content: " + event.asMetaInformationEvent().getStringValue());
-				}
+//				}
 			}
 		}	
 	}
@@ -78,7 +84,7 @@ public class DemoReader {
 	
 	
 	public static void addSequenceToElementCollection(DemoModel collection, JPhyloIOEvent event) {
-		if (event.getType().getContentType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
+		if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
 			SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
 			String sequenceName = tokensEvent.getSequenceName();
 			List<String> sequence = collection.getSequence(sequenceName);
