@@ -36,6 +36,13 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	private ParameterMap metaInformationMap = new ParameterMap();
 	
 	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param contentType the content type of the event
+	 * @param topologyType the topology type of the event
+	 * @throws NullPointerException if {@code contentType} or {@code topologyType} are {@code null}
+	 */
 	public ConcreteJPhyloIOEvent(EventContentType contentType, EventTopologyType topologyType) {
 		super();
 		this.type = new EventType(contentType, topologyType);
@@ -79,8 +86,8 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
-	public SequenceStartEvent asSequenceStartEvent() throws ClassCastException {
-		return (SequenceStartEvent)this;
+	public BasicOTUEvent asBasicOTUEvent() throws ClassCastException {
+		return (BasicOTUEvent)this;
 	}
 
 

@@ -30,10 +30,27 @@ public class EventType implements Comparable<EventType> {
 	private EventTopologyType topologyType;
 	
 	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param contentType the content type
+	 * @param topologyType the topology type
+	 * @throws NullPointerException if {@code contentType} or {@code topologyType} are {@code null}
+	 */
 	public EventType(EventContentType contentType, EventTopologyType topologyType) {
 		super();
-		this.contentType = contentType;
-		this.topologyType = topologyType;
+		if (contentType == null) {
+			throw new NullPointerException("The content type must not be null.");
+		}
+		else {
+			this.contentType = contentType;
+		}
+		if (topologyType == null) {
+			throw new NullPointerException("The topology type must not be null.");
+		}
+		else {
+			this.topologyType = topologyType;
+		}
 	}
 	
 	

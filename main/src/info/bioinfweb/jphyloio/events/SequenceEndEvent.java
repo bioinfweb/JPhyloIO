@@ -28,7 +28,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * Indicates the end of a sequence or subsequence.
  * <p>
  * Sequences may be split across several sequences of sequence token events (each surrounded by a 
- * {@link SequenceStartEvent} and a {@link SequenceEndEvent} event), especially when interleaved formats 
+ * {@link BasicOTUEvent} and a {@link SequenceEndEvent} event), especially when interleaved formats 
  * are read. {@link #isSequenceTerminated()} determines whether another part of the same 
  * sequence may follow.
  * 
@@ -53,7 +53,7 @@ public class SequenceEndEvent extends ConcreteJPhyloIOEvent {
 	 * Specifies whether another part of the same sequence may follow.
 	 * <p>
 	 * Sequences may be split across several sequences of sequence token events (each surrounded by a 
-	 * {@link SequenceStartEvent} and a {@link SequenceEndEvent} event), especially when interleaved formats
+	 * {@link BasicOTUEvent} and a {@link SequenceEndEvent} event), especially when interleaved formats
 	 * are read. 
 	 * 
 	 * @return {@code true} if this sequence is definitely terminated or {@code false} if another part may (or may not) follow 

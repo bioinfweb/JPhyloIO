@@ -104,7 +104,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			return null;
 		}
 		else {  // In this a case a node is defined, even if no name or length token are present (if this method is called only at appropriate positions). 
-			String id = NODE_ID_PREFIX + nodeIDManager.createNewID();
+			String nodeID = NODE_ID_PREFIX + nodeIDManager.createNewID();
 			
 			// Read label:
 			String label = null;
@@ -123,9 +123,10 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			
 			// Generate node information:
 			if (!passedSubnodes.isEmpty()) {  // Nodes on top level do not have to be stored.
-				passedSubnodes.peek().add(new NodeInfo(id, length));			
+				passedSubnodes.peek().add(new NodeInfo(nodeID, length));			
 			}
-			NodeEvent result = new NodeEvent(id, label);  //TODO Possibly replace by translation table when used in Nexus. 
+			NodeEvent result = new NodeEvent(label, null, nodeID);  //TODO Possibly replace by translation table when used in Nexus.
+			                                              //TODO Possibly use OTU link, if used in Nexus.
 			getUpcomingEvents().add(result);
 			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));  //TODO Put possible annotations and comments in the queue first
 			return result;
@@ -159,7 +160,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						else {
 							Queue<NodeInfo> levelInfo = passedSubnodes.pop();
 							NodeEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
-							String sourceID = nodeEvent.getID();
+							String sourceID = nodeEvent.getNodeID();
 							while (!levelInfo.isEmpty()) {
 								NodeInfo nodeInfo = levelInfo.poll();
 								getUpcomingEvents().add(new EdgeEvent(sourceID, nodeInfo.id, nodeInfo.length));

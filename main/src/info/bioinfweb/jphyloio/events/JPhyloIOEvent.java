@@ -79,12 +79,12 @@ public interface JPhyloIOEvent {
 	public SequenceEndEvent asSequenceEndEvent() throws ClassCastException;
 	
 	/**
-	 * Casts this event to a sequence start event.
+	 * Casts this event to a basic OTU event.
 	 * 
-	 * @return a reference to this event as a sequence start event
-	 * @throws ClassCastException if this event is not an instance of {@link SequenceStartEvent}
+	 * @return a reference to this event as a basic OTU event
+	 * @throws ClassCastException if this event is not an instance of {@link BasicOTUEvent}
 	 */
-	public SequenceStartEvent asSequenceStartEvent() throws ClassCastException;
+	public BasicOTUEvent asBasicOTUEvent() throws ClassCastException;
 	
 	/**
 	 * Casts this event to a tokens event.

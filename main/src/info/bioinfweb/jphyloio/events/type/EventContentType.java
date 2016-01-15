@@ -36,6 +36,9 @@ public enum EventContentType {
 	UNKNOWN_COMMAND,
 	COMMENT,
 	
+	OTU_LIST,
+	OTU,
+	
 	ALIGNMENT,
 	SEQUENCE,
 	SEQUENCE_TOKENS,

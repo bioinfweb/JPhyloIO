@@ -97,10 +97,11 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 	
 	
 	public void readNode(NeXMLEventReader reader, StartElement element) {
-		String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
+		String nodeID = XMLUtils.readStringAttr(element, ATTR_ID, null);
 		String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
-		if (id != null) {
-			reader.getUpcomingEvents().add(new NodeEvent(id, label));
+		String otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
+		if (nodeID != null) {
+			reader.getUpcomingEvents().add(new NodeEvent(label, otuID, nodeID));
 			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 		}
 	}

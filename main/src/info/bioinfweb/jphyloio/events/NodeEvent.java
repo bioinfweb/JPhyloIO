@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -31,27 +30,26 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class NodeEvent extends ConcreteJPhyloIOEvent {
-	private String id;
-	private String label;
+public class NodeEvent extends BasicOTUEvent {
+	private String nodeID;
 	//TODO do node events need a "rooted"-attribute or should that information (if given) be in a Meta-Event?
 	
 	
 	/**
 	 * Creates a new instance of this event.
 	 * 
-	 * @param id an ID of this node which is unique for the current document
 	 * @param label an optional label the represented node is carrying (maybe {@code null}).
+	 * @param otuID the ID of the linked OTU (Maybe {@code null}, if not OTU is linked.)
+	 * @param nodeID an ID of this node which is unique for the current document
+	 * @throws NullPointerException if {@code nodeID} is {@code null}
 	 */
-	public NodeEvent(String id, String label) {
-		super(EventContentType.NODE, EventTopologyType.START);
-		
-		if (id == null) {
+	public NodeEvent(String label, String otuID, String nodeID) {
+		super(EventContentType.NODE, label, otuID);
+		if (nodeID == null) {
 			throw new NullPointerException("The ID must not be null.");
 		}
 		else {
-			this.id = id;
-			this.label = label;
+			this.nodeID = nodeID;
 		}
 	}
 
@@ -67,20 +65,7 @@ public class NodeEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @return the ID of this node (unique for this document)
 	 */
-	public String getID() {
-		return id;
-	}
-
-
-	/**
-	 * Returns the label attached to this node.
-	 * <p>
-	 * Note that additional annotations of this node may be specified by up-coming metaevents, even if the node
-	 * carries no label.
-	 * 
-	 * @return the label string of {@code null} if this node carries no label
-	 */
-	public String getLabel() {
-		return label;
+	public String getNodeID() {
+		return nodeID;
 	}
 }
