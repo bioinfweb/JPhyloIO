@@ -256,14 +256,25 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);
 
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
 				assertCommentEvent("comment 1", reader);
-				assertCharactersEvent("A", "CGGTCAT", reader);
+				assertCharactersEvent("CGGTCAT", reader);
+				assertSequenceEndEvent(true, reader);
+				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
 				assertCommentEvent("comment 2", reader);
-				assertCharactersEvent("B", "CG-TCTT", reader);
-				assertCharactersEvent("C", "CG-T", reader);
+				assertCharactersEvent("CG-TCTT", reader);
+				assertSequenceEndEvent(true, reader);
+				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent("CG-T", reader);
 				assertCommentEvent("comment 3", reader);
-				assertCharactersEvent("C", "C-T", reader);
-				assertCharactersEvent("D E", "CGTCATG", reader);
+				assertCharactersEvent("C-T", reader);
+				assertSequenceEndEvent(true, reader);
+				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "D E", null, reader);
+				assertCharactersEvent("CGTCATG", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -294,13 +305,21 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);
 				assertMetaEvent(FormatReader.KEY_PREFIX + "tokens", "", true, true, reader);
 
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
 				assertCommentEvent("comment 1", reader);
-				assertCharactersEvent("A", new String[]{"Eins", "Zwei", "Eins"}, reader);
+				assertCharactersEvent(new String[]{"Eins", "Zwei", "Eins"}, reader);
+				assertSequenceEndEvent(true, reader);
+
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
 				assertCommentEvent("comment 2", reader);
-				assertCharactersEvent("B", new String[]{"Zwei", "Zwei", "Eins"}, reader);
-				assertCharactersEvent("C", new String[]{"Drei"}, reader);
+				assertCharactersEvent(new String[]{"Zwei", "Zwei", "Eins"}, reader);
+				assertSequenceEndEvent(true, reader);
+
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent(new String[]{"Drei"}, reader);
 				assertCommentEvent("comment 3", reader);
-				assertCharactersEvent("C", new String[]{"Zwei", "-"}, reader);
+				assertCharactersEvent(new String[]{"Zwei", "-"}, reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -330,13 +349,21 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);
 
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
 				assertCommentEvent("comment 1", reader);
-				assertCharactersEvent("A", new String[]{"18", "20", "2"}, reader);
+				assertCharactersEvent(new String[]{"18", "20", "2"}, reader);
+				assertSequenceEndEvent(true, reader);
+
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
 				assertCommentEvent("comment 2", reader);
-				assertCharactersEvent("B", new String[]{"4.1", "-3.9", "2E10"}, reader);
-				assertCharactersEvent("C", new String[]{"19"}, reader);
+				assertCharactersEvent(new String[]{"4.1", "-3.9", "2E10"}, reader);
+				assertSequenceEndEvent(true, reader);
+
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent(new String[]{"19"}, reader);
 				assertCommentEvent("comment 3", reader);
-				assertCharactersEvent("C", new String[]{"20.5", "-"}, reader);
+				assertCharactersEvent(new String[]{"20.5", "-"}, reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -366,13 +393,21 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, reader);
 				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);
 				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
 				assertCommentEvent("comment 1", reader);
-				assertCharactersEvent("A", new String[]{"(CG)", "G", "G", "T", "C", "A", "T"}, reader);
+				assertCharactersEvent(new String[]{"(CG)", "G", "G", "T", "C", "A", "T"}, reader);
+				assertSequenceEndEvent(true, reader);
+
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
 				assertCommentEvent("comment 2", reader);
-				assertCharactersEvent("B", new String[]{"C", "G", "-", "T", "C", "{TA}", "T"}, reader);
-				assertCharactersEvent("C", new String[]{"C", "G", "-", "T"}, reader);
+				assertCharactersEvent(new String[]{"C", "G", "-", "T", "C", "{TA}", "T"}, reader);
+				assertSequenceEndEvent(true, reader);
+
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent(new String[]{"C", "G", "-", "T"}, reader);
 				assertCommentEvent("comment 3", reader);
-				assertCharactersEvent("C", new String[]{"C", "-", "T"}, reader);
+				assertCharactersEvent(new String[]{"C", "-", "T"}, reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -403,13 +438,21 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);
 				assertMetaEvent(FormatReader.KEY_PREFIX + "tokens", "", true, true, reader);
 
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
 				assertCommentEvent("comment 1", reader);
-				assertCharactersEvent("A", new String[]{"Eins", "(Zwei Drei)", "Eins"}, reader);
+				assertCharactersEvent(new String[]{"Eins", "(Zwei Drei)", "Eins"}, reader);
+				assertSequenceEndEvent(true, reader);
+
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
 				assertCommentEvent("comment 2", reader);
-				assertCharactersEvent("B", new String[]{"Zwei", "Zwei", "Eins"}, reader);
-				assertCharactersEvent("C", new String[]{"Drei"}, reader);
+				assertCharactersEvent(new String[]{"Zwei", "Zwei", "Eins"}, reader);
+				assertSequenceEndEvent(true, reader);
+
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent(new String[]{"Drei"}, reader);
 				assertCommentEvent("comment 3", reader);
-				assertCharactersEvent("C", new String[]{"{Zwei Eins}", "-"}, reader);
+				assertCharactersEvent(new String[]{"{Zwei Eins}", "-"}, reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -440,14 +483,26 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);
 
 				assertCommentEvent(" 0....5. ", reader);
-				assertCharactersEvent("A", "CGGTCAT", reader);
-				assertCharactersEvent("B", "CG-TCTT", reader);
-				assertCharactersEvent("C", "CG-TC-T", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
+				assertCharactersEvent("CGGTCAT", reader);
+				assertSequenceEndEvent(false, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
+				assertCharactersEvent("CG-TCTT", reader);
+				assertSequenceEndEvent(false, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent("CG-TC-T", reader);
+				assertSequenceEndEvent(false, reader);
 
 				assertCommentEvent(" ...10.. ", reader);
-				assertCharactersEvent("A", "A-CGGAT", reader);
-				assertCharactersEvent("B", "ATCGCAT", reader);
-				assertCharactersEvent("C", "A-CCGAT", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
+				assertCharactersEvent("A-CGGAT", reader);
+				assertSequenceEndEvent(true, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
+				assertCharactersEvent("ATCGCAT", reader);
+				assertSequenceEndEvent(true, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent("A-CCGAT", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -479,14 +534,26 @@ public class NexusEventReaderTest {
 				assertSingleTokenDefinitionEvent("i", CharacterStateMeaning.MATCH, reader);
 
 				assertCommentEvent(" 0....5. ", reader);
-				assertCharactersEvent("A", "CGGTCAT", reader);
-				assertCharactersEvent("B", "CG-TCTT", reader);
-				assertCharactersEvent("C", "CG-TC-T", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
+				assertCharactersEvent("CGGTCAT", reader);
+				assertSequenceEndEvent(false, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
+				assertCharactersEvent("CG-TCTT", reader);
+				assertSequenceEndEvent(false, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent("CG-TC-T", reader);
+				assertSequenceEndEvent(false, reader);
 
 				assertCommentEvent(" ...10.. ", reader);
-				assertCharactersEvent("A", "A-CGGAT", reader);
-				assertCharactersEvent("B", "ATCGCAT", reader);
-				assertCharactersEvent("C", "A-CCGAT", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
+				assertCharactersEvent("A-CGGAT", reader);
+				assertSequenceEndEvent(true, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
+				assertCharactersEvent("ATCGCAT", reader);
+				assertSequenceEndEvent(true, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent("A-CCGAT", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);

@@ -26,8 +26,10 @@ import java.io.File;
 
 import org.junit.* ;
 
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertBasicOTUEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSequenceEndEvent;
 import static org.junit.Assert.* ;
 
 
@@ -43,20 +45,30 @@ public class SequentialPhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertCharactersEvent("Seq 1", "ATG-T--CCG", reader);
-				assertCharactersEvent("Seq 1", "CCGT-GT--A", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
+				assertCharactersEvent("ATG-T--CCG", reader);
+				assertCharactersEvent("CCGT-GT--A", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Seq 2", "ATG-TT-CCG", reader);
-				assertCharactersEvent("Seq 2", "CCGT-GTT-A", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
+				assertCharactersEvent("ATG-TT-CCG", reader);
+				assertCharactersEvent("CCGT-GTT-A", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Seq 3", "ATG-T--CGG", reader);
-				assertCharactersEvent("Seq 3", "CCGT-CT--A", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
+				assertCharactersEvent("ATG-T--CGG", reader);
+				assertCharactersEvent("CCGT-CT--A", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Seq 4ATCGA", "ATG-TTTCCG", reader);
-				assertCharactersEvent("Seq 4ATCGA", "CCGT-GTTTA", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 4ATCGA", null, reader);
+				assertCharactersEvent("ATG-TTTCCG", reader);
+				assertCharactersEvent("CCGT-GTTTA", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Seq 5", "ATG-TT-CCC", reader);
-				assertCharactersEvent("Seq 5", "CGGT-CTT-A", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 5", null, reader);
+				assertCharactersEvent("ATG-TT-CCC", reader);
+				assertCharactersEvent("CGGT-CTT-A", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -84,20 +96,30 @@ public class SequentialPhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertCharactersEvent("Sequence_name_1", "ATG-T--CCG", reader);
-				assertCharactersEvent("Sequence_name_1", "CCGT-GT--A", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_1", null, reader);
+				assertCharactersEvent("ATG-T--CCG", reader);
+				assertCharactersEvent("CCGT-GT--A", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Sequence_name_2", "ATG-TT-CCG", reader);
-				assertCharactersEvent("Sequence_name_2", "CCGT-GTT-A", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_2", null, reader);
+				assertCharactersEvent("ATG-TT-CCG", reader);
+				assertCharactersEvent("CCGT-GTT-A", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Sequence_name_3", "ATG-T--CGG", reader);
-				assertCharactersEvent("Sequence_name_3", "CCGT-CT--A", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_3", null, reader);
+				assertCharactersEvent("ATG-T--CGG", reader);
+				assertCharactersEvent("CCGT-CT--A", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Sequence_name_4", "ATG-TTTCCG", reader);
-				assertCharactersEvent("Sequence_name_4", "CCGT-GTTTA", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_4", null, reader);
+				assertCharactersEvent("ATG-TTTCCG", reader);
+				assertCharactersEvent("CCGT-GTTTA", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Sequence_name_5", "ATG-TT-CCC", reader);
-				assertCharactersEvent("Sequence_name_5", "CGGT-CTT-A", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_5", null, reader);
+				assertCharactersEvent("ATG-TT-CCC", reader);
+				assertCharactersEvent("CGGT-CTT-A", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);

@@ -21,9 +21,11 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 import java.io.File;
 
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;
+
 
 
 import org.junit.* ;
@@ -68,50 +70,86 @@ public class MEGAEventReaderTest {
 			assertCommentEvent("[Nested] comment", reader);
 			
 			assertCommentEvent("in command statement", reader);
-			assertCharactersEvent("A-2301", "GGCTCCCACTCCATGAGGTATTTCTCC", reader);
-			assertCharactersEvent("A-2501", "GGCTCCCACTCCATGAGGTATTTCTAC", reader);
-			assertCharactersEvent("A-3301", "GGCTCCCACTCCATGAGGTATTTCACC", reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
+			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCTCC", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
+			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCTAC", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
+			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCACC", reader);
+			assertSequenceEndEvent(false, reader);
 			
 			assertCharacterSetEvent("+", 12, 15, reader);
 			assertCharacterSetEvent("+", 18, 21, reader);
 			assertCharacterSetEvent("+", 24, 27, reader);
 			
-			assertCharactersEvent("A-2301", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
-			assertCharactersEvent("A-2501", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
-			assertCharactersEvent("A-3301", "GTGGACGACACGCAGTTCGTGCGGTTC", reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
+			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
+			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
+			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
+			assertSequenceEndEvent(false, reader);
 			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
 			assertCommentEvent("comment 1 in characters", reader);
-			assertCharactersEvent("A-2301", "GAGGGGCCGGAGTATTGGGACGAGGAG", reader);
-			assertCharactersEvent("A-2501", "GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
-			assertCharactersEvent("A-3301", "GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
+			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACGAGGAG", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
+			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
+			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
+			assertSequenceEndEvent(false, reader);
 			
 			assertCharacterSetEvent("+", 60, 69, reader);
 			assertCharacterSetEvent("+", 72, 81, reader);
 			assertCharacterSetEvent("Domain=Alpha_1  Property=Coding", 0, 81, reader);
 			
-			assertCharactersEvent("A-2301", "GGTTCTCACACCCTCCAGATGATGTTT", reader);
-			assertCharactersEvent("A-2501", "GGTTCTCACACCATC", reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
+			assertCharactersEvent("GGTTCTCACACCCTCCAGATGATGTTT", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
+			assertCharactersEvent("GGTTCTCACACCATC", reader);
 			assertCommentEvent("comment 2 in characters", reader);
-			assertCharactersEvent("A-2501", "CAGAGGATGTAT", reader);
-			assertCharactersEvent("A-3301", "GGTTCTCACACCATCCAGATGATGTAT", reader);
+			assertCharactersEvent("CAGAGGATGTAT", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
+			assertCharactersEvent("GGTTCTCACACCATCCAGATGATGTAT", reader);
+			assertSequenceEndEvent(false, reader);
 
 			assertCommentEvent("comment in label", reader);
 			assertCharacterSetEvent("+", 93, 96, reader);
 			assertCharacterSetEvent("+", 99, 102, reader);
 			assertCharacterSetEvent("+", 105, 108, reader);
 
-			assertCharactersEvent("A-2301", "CTGGAGAACGGGAAG", reader);
-			assertCharactersEvent("A-2501", "CTGGAGAACGGGAAG", reader);
-			assertCharactersEvent("A-3301", "CTGGAGAACGGGAAG", reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
+			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
+			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
+			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
+			assertSequenceEndEvent(false, reader);
 
 			assertCommentEvent("Nested [comment]", reader);
 			assertCommentEvent("[Nested] comment", reader);
 
 			assertCharacterSetEvent("Domain=Alpha_2 Property=Coding", 81, 123, reader);
 			
-			assertCharactersEvent("A-2301", "GACCCCCCCAAGACACAT", reader);
-			assertCharactersEvent("A-2501", "GACGCCCCCAAGACGCAT", reader);
-			assertCharactersEvent("A-3301", "GACCCCCCCAGGACGCAT", reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
+			assertCharactersEvent("GACCCCCCCAAGACACAT", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
+			assertCharactersEvent("GACGCCCCCAAGACGCAT", reader);
+			assertSequenceEndEvent(false, reader);
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
+			assertCharactersEvent("GACCCCCCCAGGACGCAT", reader);
+			assertSequenceEndEvent(false, reader);
 
 			assertCharacterSetEvent("Domain=Alpha_3 Property=Coding", 123, 141, reader);
 			
@@ -145,13 +183,25 @@ public class MEGAEventReaderTest {
 				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", true, false, reader);
 				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", true, false, reader);
 				
-				assertCharactersEvent("A", "TATTTCTCC", reader);
-				assertCharactersEvent("B", "TATTTCTAC", reader);
-				assertCharactersEvent("C", "TATTTCACC", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
+				assertCharactersEvent("TATTTCTCC", reader);
+				assertSequenceEndEvent(false, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
+				assertCharactersEvent("TATTTCTAC", reader);
+				assertSequenceEndEvent(false, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent("TATTTCACC", reader);
+				assertSequenceEndEvent(false, reader);
 				
-				assertCharactersEvent("A", "CGCTAGTTA", reader);
-				assertCharactersEvent("B", "CGCTAGTAA", reader);
-				assertCharactersEvent("C", "CGCTAGATA", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
+				assertCharactersEvent("CGCTAGTTA", reader);
+				assertSequenceEndEvent(false, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
+				assertCharactersEvent("CGCTAGTAA", reader);
+				assertSequenceEndEvent(false, reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+				assertCharactersEvent("CGCTAGATA", reader);
+				assertSequenceEndEvent(false, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);

@@ -46,18 +46,22 @@ public class FASTAEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertCharactersEvent("Seq 1", "ATCGT", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
+				assertCharactersEvent("ATCGT", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Seq 2", "CGT>AA", reader);
-				assertCharactersEvent("Seq 2", ">CG", reader);
-				assertCharactersEvent("Seq 2", "ACGT", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
+				assertCharactersEvent("CGT>AA", reader);
+				assertCharactersEvent(">CG", reader);
+				assertCharactersEvent("ACGT", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				SequenceTokensEvent event = reader.next().asSequenceTokensEvent();
-				assertEquals("Empty sequence", event.getSequenceName());
-				assertEquals(0, event.getCharacterValues().size());
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Empty sequence", null, reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Seq 3", "GCCAT", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
+				assertCharactersEvent("GCCAT", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -112,9 +116,17 @@ public class FASTAEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertCharactersEvent("Seq 1", "ATCG-AG", reader);
-				assertCharactersEvent("Seq 2", "ATGG-AG", reader);
-				assertCharactersEvent("Seq 3", "AACGTAG", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
+				assertCharactersEvent("ATCG-AG", reader);
+				assertSequenceEndEvent(true, reader);
+				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
+				assertCharactersEvent("ATGG-AG", reader);
+				assertSequenceEndEvent(true, reader);
+				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
+				assertCharactersEvent("AACGTAG", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -142,22 +154,30 @@ public class FASTAEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCommentEvent("comment 1", false, reader);
-				assertCharactersEvent("Seq 1", "ATCGT", reader);
+				assertCharactersEvent("ATCGT", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Seq 2", "CGT>AA>CG", reader);
-				assertCharactersEvent("Seq 2", "ACGT", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
+				assertCharactersEvent("CGT>AA>CG", reader);
+				assertCharactersEvent("ACGT", reader);
+				assertSequenceEndEvent(true, reader);
 				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Empty sequence", null, reader);
 				assertCommentEvent(" comment 2 ", false, reader);
-				assertTrue(reader.hasNextEvent());
-				SequenceTokensEvent event = reader.next().asSequenceTokensEvent();
-				assertEquals("Empty sequence", event.getSequenceName());
-				assertEquals(0, event.getCharacterValues().size());
+				assertSequenceEndEvent(true, reader);
+//				assertTrue(reader.hasNextEvent());
+//				SequenceTokensEvent event = reader.next().asSequenceTokensEvent();
+//				assertEquals("Empty sequence", event.getSequenceName());
+//				assertEquals(0, event.getCharacterValues().size());
 				
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
 				assertCommentEvent("longer comment 0", true, reader);
 				assertCommentEvent("123456789", false, reader);
 				assertCommentEvent(" another comment", false, reader);
-				assertCharactersEvent("Seq 3", "GCCAT", reader);
+				assertCharactersEvent("GCCAT", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -183,20 +203,28 @@ public class FASTAEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertCharactersEvent("Seq 1", "ATCGT", reader);
-				assertCharactersEvent("Seq 1", "TCGTA", reader);
-				assertCharactersEvent("Seq 1", "TCCTG", reader);
-				assertCharactersEvent("Seq 1", "TA", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
+				assertCharactersEvent("ATCGT", reader);
+				assertCharactersEvent("TCGTA", reader);
+				assertCharactersEvent("TCCTG", reader);
+				assertCharactersEvent("TA", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertCharactersEvent("Seq 2", "CGT>AA>CG", reader);
-				assertCharactersEvent("Seq 2", "ACGT", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
+				assertCharactersEvent("CGT>AA>CG", reader);
+				assertCharactersEvent("ACGT", reader);
+				assertSequenceEndEvent(true, reader);
 				
-				assertTrue(reader.hasNextEvent());
-				SequenceTokensEvent event = reader.next().asSequenceTokensEvent();
-				assertEquals("Empty sequence", event.getSequenceName());
-				assertEquals(0, event.getCharacterValues().size());
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Empty sequence", null, reader);
+				assertSequenceEndEvent(true, reader);
+//				assertTrue(reader.hasNextEvent());
+//				SequenceTokensEvent event = reader.next().asSequenceTokensEvent();
+//				assertEquals("Empty sequence", event.getSequenceName());
+//				assertEquals(0, event.getCharacterValues().size());
 				
-				assertCharactersEvent("Seq 3", "GCCAT", reader);
+				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
+				assertCharactersEvent("GCCAT", reader);
+				assertSequenceEndEvent(true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
