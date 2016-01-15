@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nex:nexml  id="test" version="0.9" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <unknownTag/>
   <otus id="taxa">
+  	<unknownTag/>
     <otu id="taxon1"/>
     <otu id="taxon2">
 	  <unknownTag/>
@@ -8,13 +10,17 @@
 	<otu id="taxon3"/>
   </otus>
   <characters id="alignment" otus="taxa" xsi:type="nex:DnaSeqs">
+  	<unknownTag/>
     <format>
+		<unknownTag/>
       <states id="states383">
+     	<unknownTag/>
         <state id="state384" symbol="A"/>
         <state id="state385" symbol="C"/>
         <state id="state386" symbol="G"/>
         <state id="state387" symbol="T"/>
         <uncertain_state_set id="uncertain_state_set388" symbol="K">
+        	<unknownTag/>
           <member state="state386"/>
           <member state="state387"/>
         </uncertain_state_set>
@@ -101,7 +107,9 @@
       <char id="char421" states="states383"/>
     </format>
     <matrix>
+    	<unknownTag/>
       <row id="row1" otu="taxon1">
+      	<unknownTag/>
         <seq>AG?TCTGAAACGG--TGTAG</seq>
       </row>
       <row id="row2" otu="taxon2">
@@ -110,12 +118,23 @@
     </matrix>
   </characters>
   <trees id="trees" otus="taxa">
-    <tree id="tree1" xsi:type="nex:FloatTree">
+  	<unknownTag/>
+    <tree id="tree1" xsi:type="nex:IntTree">
+    	<unknownTag/>
       <node id="taxon1"/>
       <node id="taxon2"/>
 	  <node id="internal1"/>
-      <edge id="edge1" source="internal1" target="taxon1"/>
+      <edge id="edge1" source="internal1" target="taxon1" length="5"/>
       <edge id="edge2" source="internal1" target="taxon2"/>
+    </tree>
+    <tree id="tree2" xsi:type="nex:FloatTree">
+    	<unknownTag/>
+      <node id="taxon1"/>
+      <node id="taxon2"/>
+	  <node id="internal1" root="true"/>
+	  <rootedge id="root" target="internal1"/>
+      <edge id="edge1" source="internal1" target="taxon1" length="5"/>
+      <edge id="edge2" source="internal1" target="taxon2" length="4.0"/>
     </tree>
   </trees>
 </nex:nexml>

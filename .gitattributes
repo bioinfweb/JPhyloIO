@@ -105,6 +105,7 @@ test/data/Fasta/OutputTestShortTokens.fasta -text
 test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
 test/data/MEGA/MatchToken.meg -text
+test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownTag.xml -text svneol=unset#text/plain
 test/data/Newick/InternalsTerminalsLength.nwk -text

@@ -85,11 +85,31 @@ public class NeXMLEventReaderTest {
 				assertMetaEvent("id", "meta1615", true, true, reader);
 				assertEventType(EventContentType.META_INFORMATION, EventTopologyType.END, reader);
 				
-				assertEventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE, reader);
-				
-				assertEventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE, reader);
+				assertCharactersEvent("Tl126179", "AG?TCTGAAACGG--TGTAG", reader);
+
+				assertCharactersEvent("Tl261", "AGTT--GAAAAGGGT?GTCG", reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				
+				assertMetaEvent("rdfs:isDefinedBy", "http://purl.org/phylo/treebase/phylows/study/TB2:S794" , false, true, reader);
+				assertMetaEvent("id", "meta1621", true, true, reader);
+				assertEventType(EventContentType.META_INFORMATION, EventTopologyType.END, reader);
+				
+				assertMetaEvent("tb:output.analysisstep", "http://purl.org/phylo/treebase/phylows/study/TB2:As1269" , false, true, reader);
+				assertMetaEvent("id", "meta1841", true, true, reader);
+				assertEventType(EventContentType.META_INFORMATION, EventTopologyType.END, reader);
+				
+				assertNodeEvent(null, reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				assertNodeEvent("Grifola frondosa", reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				assertNodeEvent(null, reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				
+				assertEdgeEvent("Tn274900", "Tn274857", reader);
+				assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+				assertEdgeEvent("Tn274900", "Tn274833", reader);
+				assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			}
@@ -103,18 +123,85 @@ public class NeXMLEventReaderTest {
 		}
 	}
 	
+	
+	@Test
 	public void testReadingUnknownTags() {
 		try {
 			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/UnknownTag.xml"), false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-				assertMetaEvent("id", "S794", true, true, reader);
+				assertMetaEvent("id", "test", true, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				assertMetaEvent("id", "alignment", true, true, reader);
 				
-				assertEventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE, reader);
+				assertEventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.SOLE, reader);
 				
-				assertEventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE, reader);
+				assertCharactersEvent("taxon1", "AG?TCTGAAACGG--TGTAG", reader);
+				
+				assertCharactersEvent("taxon2", "AGTT--GAAAAGGGT?GTCG", reader);
+				
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+				
+				assertNodeEvent(null, reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				assertNodeEvent(null, reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				assertNodeEvent(null, reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				
+				assertEdgeEvent("internal1", "taxon1", 5.0, reader);
+				assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+				assertEdgeEvent("internal1", "taxon2", reader);
+				assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+				
+				assertNodeEvent(null, reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				assertNodeEvent(null, reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				assertNodeEvent(null, reader);
+				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+				
+				assertEdgeEvent(null, "internal1", reader);
+				assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+				assertEdgeEvent("internal1", "taxon1", 5.0, reader);
+				assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+				assertEdgeEvent("internal1", "taxon2", 4.0, reader);
+				assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+				
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingDNACells() {
+		try {
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/DNACells.xml"), false);
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertMetaEvent("id", "test", true, true, reader);
+				
+				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				assertMetaEvent("id", "alignment", true, true, reader);
+				
+				assertEventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.SOLE, reader);
+				
+				assertCharactersEvent("taxon1", "A", reader);
+				assertCharactersEvent("taxon1", "G", reader);
+				assertCharactersEvent("taxon1", "A", reader);
+				
+				assertCharactersEvent("taxon2", "A", reader);
+				assertCharactersEvent("taxon2", "G", reader);
+				assertCharactersEvent("taxon2", "T", reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				
