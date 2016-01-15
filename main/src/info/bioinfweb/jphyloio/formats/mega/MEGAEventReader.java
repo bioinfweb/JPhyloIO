@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.events.BasicOTUEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -268,13 +269,14 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 		else if (firstSequenceName.equals(currentSequenceName)) {
 			currentLabelPos = Math.max(currentLabelPos, charactersRead);  // Label command can be omitted in interleaved format.
 		}
+		getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceName, null));
 	}
 	
 	
 	private void countCharacters(JPhyloIOEvent event) {
 		if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
 			SequenceTokensEvent charactersEvent = event.asSequenceTokensEvent();
-			if (charactersEvent.getSequenceName().equals(firstSequenceName)) {
+			if (currentSequenceName.equals(firstSequenceName)) {
 				charactersRead += charactersEvent.getCharacterValues().size();
 			}
 		}
@@ -303,6 +305,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 						break;
 					}  // fall through in else case
+				case SEQUENCE:
 				case SEQUENCE_TOKENS:
 				case CHARACTER_SET:
 				case META_INFORMATION:

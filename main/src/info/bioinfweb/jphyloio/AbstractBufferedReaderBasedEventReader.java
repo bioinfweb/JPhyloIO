@@ -24,6 +24,7 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.SequenceEndEvent;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -240,7 +241,9 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 		char lastChar = StringUtils.lastChar(readResult.getSequence());
 		
 		JPhyloIOEvent result = eventFromCharacters(currentSequenceName, StringUtils.cutEnd(readResult.getSequence(), 1));
-		getUpcomingEvents().add(result);
+		if (result != null) {
+			getUpcomingEvents().add(result);
+		}
 		if (lastChar == commentStart) {
 			readComment(commentStart, commentEnd);
 		}
@@ -251,6 +254,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 				getReader().skip(1);
 			}
 			lineConsumed = true;
+			getUpcomingEvents().add(new SequenceEndEvent(false));
 		}
 		else {  // Maximum length was reached.
 			lineConsumed = false;

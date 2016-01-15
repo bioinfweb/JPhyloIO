@@ -27,6 +27,9 @@ import java.util.List;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.events.BasicOTUEvent;
+import info.bioinfweb.jphyloio.events.SequenceEndEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
@@ -116,6 +119,8 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							return true;  // Immediately return comment in front of sequence name.
 						}
 						currentSequenceLabel = getStreamDataProvider().readNexusWord();
+					  //TODO Link possible taxon with sequence start event.
+						getStreamDataProvider().getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceLabel, null));
 					}
 					
 					// Read tokens:
@@ -126,8 +131,8 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getNexusReader().getMaxTokensToRead()) && 
 							!tokenListComplete) {
 						
-						if (StringUtils.isNewLineChar(c)) {
-							reader.consumeNewLine();  //TODO Can sequences in non-interleaved matrices span over multiple lines? (Could be checked by the number of characters, but not in an UNALIGNED block.)
+						if (StringUtils.isNewLineChar(c)) {  //TODO Line break is not the relevant character. (It is determined by NTAX in Characters and by a comma in UNALIGNED.)
+							reader.consumeNewLine();  //TODO Can sequences in non-interleaved matrices span over multiple lines? => Yes!
 							if (!tokens.isEmpty()) {  //TODO What about events for empty sequences?
 								getStreamDataProvider().getUpcomingEvents().add(
 										getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
@@ -135,6 +140,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							}
 							currentSequenceLabel = null;  // Read new label next time.
 							tokenListComplete = true;
+							getStreamDataProvider().getUpcomingEvents().add(new SequenceEndEvent(false));  //TODO Set boolean according to NTAX or ','/';'.
 						}
 						else if (c == COMMENT_START) {
 							if (!tokens.isEmpty()) {
@@ -167,6 +173,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					if (c == COMMAND_END) {
 						setAllDataProcessed(true);
 						reader.skip(1);  // Consume ';'.
+						getStreamDataProvider().getUpcomingEvents().add(new SequenceEndEvent(true));
 					}
 					return result;
 				}

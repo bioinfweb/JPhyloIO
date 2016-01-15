@@ -157,7 +157,7 @@ public class SequenceTokensEventManager {
 					}
 				}
 			}
-			return new SequenceTokensEvent(sequenceName, tokens);
+			return new SequenceTokensEvent(tokens);
 		}
 	}
 }

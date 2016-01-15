@@ -19,6 +19,18 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
+import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.commons.io.PeekReader.ReadResult;
+import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.events.BasicOTUEvent;
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SequenceEndEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
@@ -28,16 +40,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.commons.io.PeekReader.ReadResult;
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
-import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -132,6 +134,8 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
+			  //TODO Optionally an additional OTU event with an ID could be generated here
+				getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
 				while (getReader().peekChar() == COMMENT_START_CHAR) {
 					getReader().read();  // Consume ';'.
 					ReadResult readResult;
@@ -152,17 +156,23 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
-	private JPhyloIOEvent consumeTokenIndex() throws IOException {
+	/**
+	 * Consumes whitespace and token indices and returns whether the file contains any additional content
+	 * 
+	 * @return {@code true} if additional content is to be read or {@code false} otherwise
+	 * @throws IOException
+	 */
+	private boolean consumeTokenIndex() throws IOException {
 		try {
 			char c = getReader().peekChar();
 			while (Character.isWhitespace(c) || Character.isDigit(c)) {
 				getReader().skip(1);
 				c = getReader().peekChar();
 			}
-			return null;
+			return true;
 		}
 		catch (EOFException e) {
-			return new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END);
+			return false;
 		}
 	}
 	
@@ -201,34 +211,28 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 						break;
 					}
 					// fall through for if case
+				case SEQUENCE:
 				case SEQUENCE_TOKENS:
 				case COMMENT:
 					// Check if new name needs to be read:
 					int c = getReader().peek();
 					if ((c == -1) || (lineConsumed && (c == (int)NAME_START_CHAR))) {
+						getUpcomingEvents().add(new SequenceEndEvent(true));
 						alignmentEndEvent = readSequenceStart(
 								"Inconsistent stream. (The cause might be code outside this class reading from the same stream.)");
 						if (alignmentEndEvent != null) {
 							getUpcomingEvents().add(alignmentEndEvent);
-							break;
 						}
-						else {
-							c = getReader().peek();
-							if ((c == -1) || (c == (int)NAME_START_CHAR)) {  // No characters found before the next name. => empty sequence
-								getUpcomingEvents().add(getSequenceTokensEventManager().createEvent(
-										currentSequenceName, Collections.<String>emptyList())); 
-							}
-							if (!getUpcomingEvents().isEmpty()) {
-								break;  // Return token event from above or waiting comment event from readSequenceStart(). 
-							}
+						if (!getUpcomingEvents().isEmpty()) {
+							break;  // Return token or sequence end event from above or waiting comment event from readSequenceStart(). 
 						}
 					}
 
 					// Read new tokens:
 					if (lineConsumed) {
-						alignmentEndEvent = consumeTokenIndex();
-						if (alignmentEndEvent != null) {  // The last line of the file contained only white spaces or token indices.
-							getUpcomingEvents().add(alignmentEndEvent);
+						if (!consumeTokenIndex()) {  // The last line of the file contained only white spaces or token indices.
+							getUpcomingEvents().add(new SequenceEndEvent(true));
+							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 							break;
 						}
 					}

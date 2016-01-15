@@ -19,8 +19,10 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
+import info.bioinfweb.jphyloio.events.BasicOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SequenceEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -156,6 +158,13 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 						if (charactersRead >= getCharacterCount()) {  // Read next name:
 							currentSequenceName = readSequenceName();
 							charactersRead = 0;
+							
+							if (!getPreviousEvent().getType().getContentType().equals(EventContentType.ALIGNMENT)) {
+								getUpcomingEvents().add(new SequenceEndEvent(false));  //TODO Set sequenceTerminated according to current status.
+							}
+							if (getReader().peek() != -1) {  // Do not start a new sequence, if the end of the alignment was reached.
+								getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceName, null));
+							}
 						}
 						
 						if (getReader().peek() == -1) {  // End of file was reached

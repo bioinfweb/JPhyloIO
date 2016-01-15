@@ -27,8 +27,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.bioinfweb.jphyloio.events.BasicOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SequenceEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -185,6 +187,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 						break;
 					}
+				case SEQUENCE:
 				case SEQUENCE_TOKENS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
 						while (getReader().isNewLineNext()) {  // Ignore empty lines between interleaved blocks.
@@ -203,12 +206,18 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 								throw new IllegalStateException("Interleaved Phylip format found, although interleaved parsing was not allowed.");
 							}
 						}
+						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.ALIGNMENT)) {
+							getUpcomingEvents().add(new SequenceEndEvent(false));  //TODO Set sequenceTerminated according to current status.
+						}
 						increaseSequenceIndex();
 						
 						if (getReader().peek() == -1) {  // End of file was reached
-							// if (currentSequenceIndex < sequenceCount) {}  //TODO Should an exception be thrown here, if the specified number of sequences has not been found yet? => Probably not, because parsing files with a wrong number of specified sequences would still make sense, unless this is not a accidental stream break.
+							// if (currentSequenceIndex < sequenceCount) {}  //TODO Should an exception be thrown here, if the specified number of sequences has not been found yet? => Probably not, because reading files with a wrong number of specified sequences would still make sense, unless this is not a accidental stream break.
 							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 							break;
+						}
+						else {
+							getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceName, null));
 						}
 					}
 					JPhyloIOEvent event = readCharacters(currentSequenceName);
