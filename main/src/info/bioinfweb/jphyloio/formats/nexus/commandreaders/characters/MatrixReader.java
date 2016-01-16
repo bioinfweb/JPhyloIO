@@ -123,7 +123,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						currentSequenceLabel = getStreamDataProvider().readNexusWord();
 					  //TODO Link possible taxon with sequence start event.
 						getStreamDataProvider().getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceLabel, null));
-						currentSequencePosition = getStreamDataProvider().getSequenceTokensEventManager().getCurrentBlockStartPosition();  // Should always be 0, except in interleaved reading.
+						currentSequencePosition = 0;  // getStreamDataProvider().getSequenceTokensEventManager().getCurrentBlockStartPosition() does not work here, because it does not return the updated value for the first sequence of the second and following blocks, since the event is processed after this command.
 					}
 					
 					// Read tokens:
