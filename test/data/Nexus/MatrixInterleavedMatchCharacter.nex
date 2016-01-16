@@ -1,7 +1,7 @@
 #NEXUS
 
 BEGIN Characters;
-  Dimensions NTax=3 NChar=7;
+  Dimensions NTax=3 NChar=14;
   Format DataType = DNA INTERLEAVE Missing=? Gap= - MatchChar=i;
   Matrix 
   

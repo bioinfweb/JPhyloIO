@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
@@ -245,52 +246,47 @@ public class NexusEventReaderTest {
 	
 	
 	@Test
-	public void testReadingMatrix() {
+	public void testReadingMatrix() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), false, factory);
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), false, factory);
 			reader.setCreateUnknownCommandEvents(false);
-			try {
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
-				
-				assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-				assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
+			
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+			
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
 
-				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
-				assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, reader);
-				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);
+			assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
+			assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, reader);
+			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);  // Reads sequence start and comment in here.
 
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
-				assertCommentEvent("comment 1", reader);
-				assertCharactersEvent("CGGTCAT", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
-				assertCommentEvent("comment 2", reader);
-				assertCharactersEvent("CG-TCTT", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
-				assertCharactersEvent("CG-T", reader);
-				assertCommentEvent("comment 3", reader);
-				assertCharactersEvent("C-T", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "D E", null, reader);
-				assertCharactersEvent("CGTCATG", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
-				assertFalse(reader.hasNextEvent());
-			}
-			finally {
-				reader.close();
-			}
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
+			assertCommentEvent("comment 1", reader);
+			assertCharactersEvent("CGGTCAT", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
+			assertCommentEvent("comment 2", reader);
+			assertCharactersEvent("CG-TCTT", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
+			assertCharactersEvent("CG-T", reader);
+			assertCommentEvent("comment 3", reader);
+			assertCharactersEvent("C-T", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "D E", null, reader);
+			assertCharactersEvent("CGTCATG", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
+		finally {
+			reader.close();
 		}
 	}
 	
@@ -550,7 +546,7 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
 			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "14", null, new Long(14), true, true, reader);
 
 			assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
@@ -606,7 +602,7 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
 			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "14", null, new Long(14), true, true, reader);
 
 			assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
 			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
