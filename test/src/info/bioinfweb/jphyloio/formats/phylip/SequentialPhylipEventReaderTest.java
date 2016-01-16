@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -29,6 +30,7 @@ import org.junit.* ;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertBasicOTUEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertMetaEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSequenceEndEvent;
 import static org.junit.Assert.* ;
 
@@ -44,6 +46,9 @@ public class SequentialPhylipEventReaderTest {
 				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -95,6 +100,9 @@ public class SequentialPhylipEventReaderTest {
 				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);

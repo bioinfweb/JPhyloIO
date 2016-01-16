@@ -65,7 +65,7 @@ public class JPhyloIOTestTools {
 		
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(expectedType, event.getType().getContentType());
+		assertEventType(expectedType, EventTopologyType.START, event);
 
 		BasicOTUEvent otuEvent = event.asBasicOTUEvent();
 		assertEquals(expectedLabel, otuEvent.getLabel());

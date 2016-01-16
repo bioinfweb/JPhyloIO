@@ -19,8 +19,10 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import org.junit.* ;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertBasicOTUEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertMetaEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSequenceEndEvent;
 import static org.junit.Assert.* ;
 
@@ -45,6 +48,9 @@ public class PhylipEventReaderTest {
 				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -92,6 +98,9 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
+				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertSequenceEndEvent(true, reader);
@@ -137,6 +146,9 @@ public class PhylipEventReaderTest {
 				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T-", reader);
@@ -219,6 +231,9 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
+				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertSequenceEndEvent(false, reader);
@@ -285,6 +300,9 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
+				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertSequenceEndEvent(false, reader);
@@ -350,6 +368,9 @@ public class PhylipEventReaderTest {
 				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T-", reader);
@@ -418,77 +439,74 @@ public class PhylipEventReaderTest {
 	
 	
 	@Test
-	public void testReadingInterleavedHalfLength() {
+	public void testReadingInterleavedHalfLength() throws Exception {
+		PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
-			try {
-				reader.setMaxTokensToRead(5);
-				
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
-				assertCharactersEvent("ATG-T", reader);
-				assertCharactersEvent("--CCG", reader);
-				assertSequenceEndEvent(false, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
-				assertCharactersEvent("ATG-T", reader);
-				assertCharactersEvent("T-CCG", reader);
-				assertSequenceEndEvent(false, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
-				assertCharactersEvent("ATG-T", reader);
-				assertCharactersEvent("--CGG", reader);
-				assertSequenceEndEvent(false, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 4ATCGA", null, reader);
-				assertCharactersEvent("ATG-T", reader);
-				assertCharactersEvent("TTCCG", reader);
-				assertSequenceEndEvent(false, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 5", null, reader);
-				assertCharactersEvent("ATG-T", reader);
-				assertCharactersEvent("T-CCC", reader);
-				assertSequenceEndEvent(false, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
-				assertCharactersEvent("CCGT-", reader);
-				assertCharactersEvent("GT--A", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
-				assertCharactersEvent("CCGT-", reader);
-				assertCharactersEvent("GTT-A", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
-				assertCharactersEvent("CCGT-", reader);
-				assertCharactersEvent("CT--A", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 4ATCGA", null, reader);
-				assertCharactersEvent("CCGT-", reader);
-				assertCharactersEvent("GTTTA", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 5", null, reader);
-				assertCharactersEvent("CGGT-", reader);
-				assertCharactersEvent("CTT-A", reader);
-				assertSequenceEndEvent(true, reader);
-				
-				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
-				
-				assertFalse(reader.hasNextEvent());
-			}
-			finally {
-				reader.close();
-			}
+			reader.setMaxTokensToRead(5);
+			
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+
+			assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+			assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
+			assertCharactersEvent("ATG-T", reader);
+			assertCharactersEvent("--CCG", reader);
+			assertSequenceEndEvent(false, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
+			assertCharactersEvent("ATG-T", reader);
+			assertCharactersEvent("T-CCG", reader);
+			assertSequenceEndEvent(false, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
+			assertCharactersEvent("ATG-T", reader);
+			assertCharactersEvent("--CGG", reader);
+			assertSequenceEndEvent(false, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 4ATCGA", null, reader);
+			assertCharactersEvent("ATG-T", reader);
+			assertCharactersEvent("TTCCG", reader);
+			assertSequenceEndEvent(false, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 5", null, reader);
+			assertCharactersEvent("ATG-T", reader);
+			assertCharactersEvent("T-CCC", reader);
+			assertSequenceEndEvent(false, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
+			assertCharactersEvent("CCGT-", reader);
+			assertCharactersEvent("GT--A", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
+			assertCharactersEvent("CCGT-", reader);
+			assertCharactersEvent("GTT-A", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
+			assertCharactersEvent("CCGT-", reader);
+			assertCharactersEvent("CT--A", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 4ATCGA", null, reader);
+			assertCharactersEvent("CCGT-", reader);
+			assertCharactersEvent("GTTTA", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 5", null, reader);
+			assertCharactersEvent("CGGT-", reader);
+			assertCharactersEvent("CTT-A", reader);
+			assertSequenceEndEvent(true, reader);
+			
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			
+			assertFalse(reader.hasNextEvent());
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
+		finally {
+			reader.close();
 		}
 	}
 	
@@ -502,6 +520,9 @@ public class PhylipEventReaderTest {
 				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "25", null, new Long(25), true, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -589,6 +610,9 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "25", null, new Long(25), true, true, reader);
+				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertSequenceEndEvent(false, reader);
@@ -672,6 +696,9 @@ public class PhylipEventReaderTest {
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+				
+				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "3", null, new Long(3), true, true, reader);
+				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
