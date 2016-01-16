@@ -39,14 +39,6 @@ public interface JPhyloIOEvent {
 	public EventType getType();
 	
 	/**
-	 * Returns a map containing additional (possibly format specific) information about this event that
-	 * are not covered by properties of the implementing event object.
-	 * 
-	 * @return a (possibly empty) map object
-	 */
-	public ParameterMap getMetaInformationMap();
-	
-	/**
 	 * Casts this event to a meta information event.
 	 * 
 	 * @return a reference to this event as a meta information event

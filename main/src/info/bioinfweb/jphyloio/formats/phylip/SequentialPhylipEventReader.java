@@ -133,22 +133,19 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START));
 						readMatrixDimensions();
-						getUpcomingEvents().add(createAlignmentStartEvent(getSequenceCount(), getCharacterCount()));
 					}  // Calling method will throw a NoSuchElementException for the else case. //TODO Check if this is still true after refactoring in r164.
 					break;
 					
-				case ALIGNMENT:
-					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						if (getSequenceCount() == 0) {  // Empty alignment:
-							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
-							break;
-						}  // fall through
-					}
-					else {
-						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+				case ALIGNMENT:  // Only for the END case. START cannot happen, because it is directly followed by metaevents.
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+					break;
+				case META_INFORMATION:
+					if (getSequenceCount() == 0) {  // Empty alignment:
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 						break;
-					}
+					}  // fall through
 				case SEQUENCE_TOKENS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
 						while (getReader().isNewLineNext()) {  // Ignore empty lines.
@@ -159,7 +156,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 							currentSequenceName = readSequenceName();
 							charactersRead = 0;
 							
-							if (!getPreviousEvent().getType().getContentType().equals(EventContentType.ALIGNMENT)) {
+							if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_INFORMATION)) {
 								getUpcomingEvents().add(new SequenceEndEvent(false));  //TODO Set sequenceTerminated according to current status.
 							}
 							if (getReader().peek() != -1) {  // Do not start a new sequence, if the end of the alignment was reached.

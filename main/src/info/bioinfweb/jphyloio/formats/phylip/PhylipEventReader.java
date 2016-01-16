@@ -30,6 +30,7 @@ import java.util.List;
 import info.bioinfweb.jphyloio.events.BasicOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -170,23 +171,19 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						readMatrixDimensions();
-						
-						getUpcomingEvents().add(createAlignmentStartEvent(getSequenceCount(), getCharacterCount()));
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.START));
+						readMatrixDimensions();  // Adds metaevents to the queue.
 					}  // Calling method will throw a NoSuchElementException for the else case. //TODO Check if this is still true after refactoring in r164.
 					break;
 					
-				case ALIGNMENT:
-					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						if (getSequenceCount() == 0) {  // Empty alignment:
-							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
-							break;
-						}  // fall through
-					}
-					else {
-						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+				case ALIGNMENT:  // Only for the END case. START cannot happen, because it is directly followed by metaevents.
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+					break;
+				case META_INFORMATION:  //TODO This case needs to be handled differently, if additional metaevents will be fired in the future.
+					if (getSequenceCount() == 0) {  // Empty alignment:
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 						break;
-					}
+					}  // fall through
 				case SEQUENCE:
 				case SEQUENCE_TOKENS:
 					if (lineConsumed) {  // Keep current name if current line was not completely consumed yet.
@@ -206,7 +203,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 								throw new IllegalStateException("Interleaved Phylip format found, although interleaved parsing was not allowed.");
 							}
 						}
-						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.ALIGNMENT)) {
+						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_INFORMATION)) {
 							getUpcomingEvents().add(new SequenceEndEvent(false));  //TODO Set sequenceTerminated according to current status.
 						}
 						increaseSequenceIndex();
