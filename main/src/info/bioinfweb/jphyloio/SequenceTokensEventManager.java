@@ -37,7 +37,7 @@ public class SequenceTokensEventManager {
 	private JPhyloIOEventReader owner;
 	private List<String> firstSequence;
 	private List<String> unmodifiableFirstSequence;
-	private long currentPosition = -1;
+	private long currentPosition = 0;  //TODO Does -1 need to be specified here? If so, this would be inconsistent with the initial block start.
 	private long currentBlockStartPosition = 0;
 	private long currentBlockLength = 0;
 	private String firstSequenceName = null;

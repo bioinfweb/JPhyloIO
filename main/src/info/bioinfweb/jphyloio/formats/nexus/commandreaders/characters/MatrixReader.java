@@ -43,6 +43,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
  */
 public class MatrixReader extends AbstractNexusCommandEventReader implements NexusConstants {
 	private String currentSequenceLabel = null;
+	private long currentSequencePosition = 0;
 	
 	
 	public MatrixReader(NexusStreamDataProvider nexusDocument) {
@@ -121,6 +122,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						currentSequenceLabel = getStreamDataProvider().readNexusWord();
 					  //TODO Link possible taxon with sequence start event.
 						getStreamDataProvider().getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceLabel, null));
+						currentSequencePosition = getStreamDataProvider().getSequenceTokensEventManager().getCurrentBlockStartPosition();  // Should always be 0, except in interleaved reading.
 					}
 					
 					// Read tokens:
@@ -131,17 +133,17 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getNexusReader().getMaxTokensToRead()) && 
 							!tokenListComplete) {
 						
-						if ((c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) || /*(interleaved &&*/ StringUtils.isNewLineChar(c)/*) /*||
-								(getStreamDataProvider().getSequenceTokensEventManager().getCurrentPosition() + tokens.size() >= )*/) {
+						
+						if ((c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) || (interleaved && StringUtils.isNewLineChar(c)) ||
+								(currentSequencePosition >= map.getLong(DimensionsReader.INFO_KEY_CHAR, Long.MAX_VALUE))) {  // Position from SequenceTokensEventManager cannot be used here, because it is not valid until all read tokens have been passed to createEvent(). 
 							
 							if (c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) {  // If ',' should be allowed as a token in CHARACTERS and DATA blocks, an additional check whether the current block is UNALIGNED would be needed here.
 								reader.skip(1);  // Consume ','.
 							}
-							reader.consumeNewLine();  //TODO Can sequences in non-interleaved matrices span over multiple lines? => Yes!
+							reader.consumeNewLine();
 							if (!tokens.isEmpty()) {  //TODO What about events for empty sequences?
 								getStreamDataProvider().getUpcomingEvents().add(
 										getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
-								//System.out.println(getStreamDataProvider().getSequenceTokensEventManager().getCurrentSequenceName() + " " + getStreamDataProvider().getSequenceTokensEventManager().getCurrentPosition() + " " + getStreamDataProvider().getSharedInformationMap().getLong(DIMENSIONS_SUBCOMMAND_NCHAR, -1));
 								result = true;
 							}
 							currentSequenceLabel = null;  // Read new label next time.
@@ -155,7 +157,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							}
 							
 							reader.skip(1);  // Consume '['.
-							getStreamDataProvider().readComment();  //TODO The comments read here should be added after the event below. (Should be solved together with #85.)
+							getStreamDataProvider().readComment();
 							return true;  // Return comment that was just read.
 						}
 						else if (Character.isWhitespace(c)) {  // consumeWhitespaceAndComments() cannot be used here, because line breaks are relevant.
@@ -165,6 +167,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							String token = readToken(longTokens);
 							if (!"".equals(token)) {
 								tokens.add(token);
+								currentSequencePosition++;
 							}
 						}
 						c = reader.peekChar();
