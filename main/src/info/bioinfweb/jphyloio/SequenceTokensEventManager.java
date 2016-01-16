@@ -73,6 +73,11 @@ public class SequenceTokensEventManager {
 	}
 	
 	
+	public long getCurrentPosition() {
+		return currentPosition;
+	}
+
+
 	public long getCurrentBlockStartPosition() {
 		return currentBlockStartPosition;
 	}
@@ -125,6 +130,9 @@ public class SequenceTokensEventManager {
 	 * This method stores the tokens of the first sequence and the current sequence position. Therefore implementing 
 	 * readers supporting match token replacement must always use this method to create sequence character event 
 	 * objects and never do this directly, otherwise the replacement by this method will not work.
+	 * <p>
+	 * Note that the algorithm for position monitoring will only work for interleaved formats where each sequence part
+	 * has the same length in each block or for non-interleaved formats (where each sequence only occurs once).
 	 * 
 	 * @param sequenceName the name of the sequence to append the tokens
 	 * @param tokens the newly read tokens
@@ -136,26 +144,34 @@ public class SequenceTokensEventManager {
 			throw new NullPointerException("Sequence names must not be null.");
 		}
 		else {
-			if (getOwner().isTranslateMatchToken()) {
-				if (!sequenceName.equals(currentSequenceName)) {
-					currentSequenceName = sequenceName;
-					currentPosition = currentBlockStartPosition;
-				}
-				if (firstSequenceName == null) {
-					firstSequenceName = sequenceName;
-				}
-				
-				if (firstSequenceName.equals(sequenceName)) {
-					firstSequence.addAll(tokens);
+			boolean sequenceNameChange = !sequenceName.equals(currentSequenceName);
+			if (sequenceNameChange) {
+				currentSequenceName = sequenceName;
+				currentPosition = currentBlockStartPosition;  // Will be 0, until the second interleaved block is reached. (Therefore this implementation also works for non-interleaved data, where the sequences have an unequal length.) 
+			}
+			if (firstSequenceName == null) {
+				firstSequenceName = sequenceName;
+			}
+			
+			if (firstSequenceName.equals(sequenceName)) {
+				firstSequence.addAll(tokens);
+				if (sequenceNameChange) {
 					currentBlockStartPosition += currentBlockLength;  // Add length of previous block that is now finished.
 					currentBlockLength = tokens.size();  // Save length of current block to add it to the start after it was processed.
 				}
 				else {
-					for (int i = 0; i < tokens.size(); i++) {
-						tokens.set(i, replaceMatchToken(tokens.get(i)));
-						currentPosition++;
-					}
+					currentBlockLength += tokens.size();  // Add additional length, if one block is split into separate events.
 				}
+				currentPosition += tokens.size();
+			}
+			else if (getOwner().isTranslateMatchToken()) {
+				for (int i = 0; i < tokens.size(); i++) {
+					tokens.set(i, replaceMatchToken(tokens.get(i)));
+					currentPosition++;
+				}
+			}
+			else {
+				currentPosition += tokens.size();
 			}
 			return new SequenceTokensEvent(tokens);
 		}

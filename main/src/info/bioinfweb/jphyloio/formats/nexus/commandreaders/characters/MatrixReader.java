@@ -102,7 +102,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 		}
 		else {
 			boolean longTokens = map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false);
-			//boolean interleaved = map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false);
+			boolean interleaved = map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false);
 			PeekReader reader = getStreamDataProvider().getDataReader();
 			try {
 				char c = reader.peekChar();
@@ -131,11 +131,17 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getNexusReader().getMaxTokensToRead()) && 
 							!tokenListComplete) {
 						
-						if (StringUtils.isNewLineChar(c)) {  //TODO Line break is not the relevant character. (It is determined by NTAX in Characters and by a comma in UNALIGNED.)
+						if ((c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) || /*(interleaved &&*/ StringUtils.isNewLineChar(c)/*) /*||
+								(getStreamDataProvider().getSequenceTokensEventManager().getCurrentPosition() + tokens.size() >= )*/) {
+							
+							if (c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) {  // If ',' should be allowed as a token in CHARACTERS and DATA blocks, an additional check whether the current block is UNALIGNED would be needed here.
+								reader.skip(1);  // Consume ','.
+							}
 							reader.consumeNewLine();  //TODO Can sequences in non-interleaved matrices span over multiple lines? => Yes!
 							if (!tokens.isEmpty()) {  //TODO What about events for empty sequences?
 								getStreamDataProvider().getUpcomingEvents().add(
 										getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
+								//System.out.println(getStreamDataProvider().getSequenceTokensEventManager().getCurrentSequenceName() + " " + getStreamDataProvider().getSequenceTokensEventManager().getCurrentPosition() + " " + getStreamDataProvider().getSharedInformationMap().getLong(DIMENSIONS_SUBCOMMAND_NCHAR, -1));
 								result = true;
 							}
 							currentSequenceLabel = null;  // Read new label next time.

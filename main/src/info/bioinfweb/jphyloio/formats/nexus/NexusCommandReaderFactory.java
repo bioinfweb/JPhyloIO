@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.MatrixReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets.CharSetReader;
@@ -55,6 +56,7 @@ public class NexusCommandReaderFactory {
 	 * Adds all Nexus command readers available in JPhyloIO to this instance.
 	 */
 	public void addJPhyloIOReaders() {
+		addReaderClass(DimensionsReader.class);
 		addReaderClass(FormatReader.class);
 		addReaderClass(MatrixReader.class);
 		addReaderClass(CharSetReader.class);

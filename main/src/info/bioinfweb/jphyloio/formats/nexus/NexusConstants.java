@@ -48,6 +48,9 @@ public interface NexusConstants {
 	public static final String BLOCK_NAME_SETS = "SETS";
 	public static final String BLOCK_NAME_TREES = "TREES";
 	
+	public static final String DIMENSIONS_SUBCOMMAND_NTAX = "NTAX";
+	public static final String DIMENSIONS_SUBCOMMAND_NCHAR = "NCHAR";
+	
 	public static final String FORMAT_NAME_STANDARD = "STANDARD";
 	public static final String FORMAT_NAME_VECTOR = "VECTOR";
 
@@ -74,6 +77,7 @@ public interface NexusConstants {
 	public static final char MATRIX_POLYMORPHIC_TOKEN_END = ')';
 	public static final char MATRIX_UNCERTAINS_TOKEN_START = '{';
 	public static final char MATRIX_UNCERTAINS_TOKEN_END = '}';
+	public static final char MATRIX_UNALIGNED_SEQUENCE_SEPARATOR = ',';
 	
 	public static final char CHAR_SET_NOT_CONTAINED = '0';
 	public static final char CHAR_SET_CONTAINED = '1';

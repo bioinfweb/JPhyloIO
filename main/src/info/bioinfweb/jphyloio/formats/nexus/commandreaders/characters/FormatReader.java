@@ -39,6 +39,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 
@@ -48,7 +49,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
  * 
  * @author Ben St&ouml;ver
  */
-public class FormatReader extends AbstractNexusCommandEventReader implements NexusConstants {
+public class FormatReader extends AbstractKeyValueCommandReader implements NexusConstants {
 	public static final String KEY_PREFIX = "info.bioinfweb.jphyloio.formats.nexus.format.";
 	
 	public static final String INFO_KEY_TOKENS_FORMAT = "info.bioinfweb.jphyloio.nexus.tokens";
@@ -66,7 +67,7 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	
 	
 	public FormatReader(NexusStreamDataProvider nexusDocument) {
-		super("Format", new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument);
+		super("Format", new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument, KEY_PREFIX);
 	}
 	
 	
@@ -119,9 +120,8 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 	}
 	
 	
-	private void processSubcommand(MetaInformationEvent event) throws IOException {
-		String key = event.getKey().substring(KEY_PREFIX.length()).toUpperCase();  // Remove key prefix for comparison
-		String value = event.getStringValue().toUpperCase();
+	@Override
+	protected void processSubcommand(MetaInformationEvent event, String key, String value) throws IOException {
 		boolean eventReplaced = false;
 		
 		if (FORMAT_SUBCOMMAND_TOKENS.equals(key) || 
@@ -191,28 +191,6 @@ public class FormatReader extends AbstractNexusCommandEventReader implements Nex
 			getStreamDataProvider().getUpcomingEvents().add(event);
 			getStreamDataProvider().getUpcomingEvents().add(
 					new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-		}
-	}
-	
-	
-	@Override
-	protected boolean doReadNextEvent() throws Exception {
-		PeekReader reader = getStreamDataProvider().getDataReader();
-		try {
-			getStreamDataProvider().consumeWhiteSpaceAndComments();
-			if (reader.peekChar() != COMMAND_END) {
-				MetaInformationEvent event = getStreamDataProvider().readKeyValueMetaInformation(KEY_PREFIX);
-				processSubcommand(event);
-				return true;
-			}
-			else {
-				reader.skip(1); // Consume ';'.
-				setAllDataProcessed(true);
-				return false;
-			}
-		}
-		catch (EOFException e) {
-			throw new IOException("Unexpected end of file in " + getCommandName() + " command.");  //TODO Replace by ParseException
 		}
 	}
 }

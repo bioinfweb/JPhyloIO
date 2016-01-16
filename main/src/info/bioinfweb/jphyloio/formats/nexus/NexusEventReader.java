@@ -270,9 +270,8 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	
 	
 	private boolean readNextCommand() throws Exception {
-		       //TODO This way, the method would also return true, if the event queue is not empty before calling this method.
+		consumeWhiteSpaceAndComments();  // Needs to be done before the loop once, if the rest of the file only consists of whitespace and comments.
 		while (getUpcomingEvents().isEmpty() && (getReader().peek() != -1)) {  // Read commands until an event is produced.  
-			consumeWhiteSpaceAndComments();
 			String commandName = getReader().readRegExp(UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence().toString();
 			char lastChar = StringUtils.lastChar(commandName);
 			commandName = StringUtils.cutEnd(commandName, 1).toUpperCase();
@@ -329,6 +328,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 					return currentCommandReader.readNextEvent();
 				}
 			}
+			consumeWhiteSpaceAndComments();
 		}
 		return getReader().peek() != -1;
 	}
