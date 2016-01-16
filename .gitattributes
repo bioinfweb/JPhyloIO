@@ -128,6 +128,7 @@ test/data/Nexus/MatrixInterleaved.nex -text
 test/data/Nexus/MatrixInterleavedMatchCharacter.nex -text
 test/data/Nexus/MatrixLongTokens.nex -text
 test/data/Nexus/MatrixLongTokensAlternatives.nex -text
+test/data/Nexus/MatrixUnaligned.nex -text
 test/data/Nexus/SplitComments.nex -text
 test/data/Nexus/Symbols.nex -text
 test/data/Phylip/Interleaved.phy -text

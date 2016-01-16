@@ -128,7 +128,9 @@ public class JPhyloIOTestTools {
   }  
 	
 	
-  public static void assertMetaEvent(String expectedKey, String expectedValue, boolean testEndEvent, boolean keyCaseSensitive, JPhyloIOEventReader reader) throws Exception {
+  public static MetaInformationEvent assertMetaEvent(String expectedKey, String expectedValue, boolean testEndEvent, boolean keyCaseSensitive, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEventType(EventContentType.META_INFORMATION, EventTopologyType.START, event);
@@ -147,6 +149,17 @@ public class JPhyloIOTestTools {
 			assertTrue(reader.hasNextEvent());
 			assertEventType(EventContentType.META_INFORMATION, EventTopologyType.END, reader);
 		}
+		
+		return metaInformationEvent;
+  }
+  
+  
+  public static void assertMetaEvent(String expectedKey, String expectedValue, String expectedOriginalType, 
+  		Object expectedObjectValue, boolean testEndEvent,	boolean keyCaseSensitive,	JPhyloIOEventReader reader) throws Exception {
+  	
+  	MetaInformationEvent metaInformationEvent = assertMetaEvent(expectedKey, expectedValue, testEndEvent, keyCaseSensitive, reader);
+  	assertEquals(expectedOriginalType, metaInformationEvent.getOriginalType());
+  	assertEquals(expectedObjectValue, metaInformationEvent.getObjectValue());
   }
 	
 	

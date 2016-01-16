@@ -2,7 +2,7 @@
 
 BEGIN Characters;
   Dimensions NTax=3 NChar=7;
-  Format DataType = DNA Missing=? Gap= - MatchChar=i;
+  Format DataType = DNA INTERLEAVE Missing=? Gap= - MatchChar=i;
   Matrix 
   
     [ 0....5. ]
