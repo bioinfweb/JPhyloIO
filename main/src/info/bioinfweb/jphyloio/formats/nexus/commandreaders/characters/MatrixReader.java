@@ -134,8 +134,9 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getNexusReader().getMaxTokensToRead()) && 
 							!tokenListComplete) {
 						
-						boolean alignmentLengthReached = (currentSequencePosition >= alignmentLength);  // Position from SequenceTokensEventManager cannot be used here, because it is not valid until all read tokens have been passed to createEvent().
-						if ((c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) || (interleaved && StringUtils.isNewLineChar(c)) || alignmentLengthReached) {   
+						if ((c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) || (interleaved && StringUtils.isNewLineChar(c)) || 
+								(currentSequencePosition >= alignmentLength)) {  // Position from SequenceTokensEventManager cannot be used here, because it is not valid until all read tokens have been passed to createEvent().
+							
 							if (c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) {  // If ',' should be allowed as a token in CHARACTERS and DATA blocks, an additional check whether the current block is UNALIGNED would be needed here.
 								reader.skip(1);  // Consume ','.
 							}
