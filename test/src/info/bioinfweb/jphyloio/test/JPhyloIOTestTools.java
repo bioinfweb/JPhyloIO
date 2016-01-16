@@ -83,7 +83,7 @@ public class JPhyloIOTestTools {
 		JPhyloIOEvent event = reader.next();
 		assertEventType(EventContentType.SEQUENCE, EventTopologyType.END, event);
 		SequenceEndEvent endEvent = event.asSequenceEndEvent();
-		//assertEquals(expectedSequenceTerminated, endEvent.isSequenceTerminated());
+		assertEquals(expectedSequenceTerminated, endEvent.isSequenceTerminated());
 	}
 	
 	
