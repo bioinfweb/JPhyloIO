@@ -158,6 +158,7 @@ public class SequenceTokensEventManager {
 				if (sequenceNameChange) {
 					currentBlockStartPosition += currentBlockLength;  // Add length of previous block that is now finished.
 					currentBlockLength = tokens.size();  // Save length of current block to add it to the start after it was processed.
+					currentPosition = currentBlockStartPosition;
 				}
 				else {
 					currentBlockLength += tokens.size();  // Add additional length, if one block is split into separate events.

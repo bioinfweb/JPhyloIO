@@ -104,6 +104,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 		else {
 			boolean longTokens = map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false);
 			boolean interleaved = map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false);
+			long alignmentLength = map.getLong(DimensionsReader.INFO_KEY_CHAR, Long.MAX_VALUE);
 			PeekReader reader = getStreamDataProvider().getDataReader();
 			try {
 				char c = reader.peekChar();
@@ -133,10 +134,8 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getNexusReader().getMaxTokensToRead()) && 
 							!tokenListComplete) {
 						
-						
-						if ((c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) || (interleaved && StringUtils.isNewLineChar(c)) ||
-								(currentSequencePosition >= map.getLong(DimensionsReader.INFO_KEY_CHAR, Long.MAX_VALUE))) {  // Position from SequenceTokensEventManager cannot be used here, because it is not valid until all read tokens have been passed to createEvent(). 
-							
+						boolean alignmentLengthReached = (currentSequencePosition >= alignmentLength);  // Position from SequenceTokensEventManager cannot be used here, because it is not valid until all read tokens have been passed to createEvent().
+						if ((c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) || (interleaved && StringUtils.isNewLineChar(c)) || alignmentLengthReached) {   
 							if (c == MATRIX_UNALIGNED_SEQUENCE_SEPARATOR) {  // If ',' should be allowed as a token in CHARACTERS and DATA blocks, an additional check whether the current block is UNALIGNED would be needed here.
 								reader.skip(1);  // Consume ','.
 							}
@@ -148,7 +147,8 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							}
 							currentSequenceLabel = null;  // Read new label next time.
 							tokenListComplete = true;
-							getStreamDataProvider().getUpcomingEvents().add(new SequenceEndEvent(false));  //TODO Set boolean according to NTAX or ','/';'.
+							getStreamDataProvider().getUpcomingEvents().add(new SequenceEndEvent(!interleaved || 
+									(getStreamDataProvider().getSequenceTokensEventManager().getCurrentPosition() >= alignmentLength)));  // Since the event has already been added, the position should be valid here.
 						}
 						else if (c == COMMENT_START) {
 							if (!tokens.isEmpty()) {
