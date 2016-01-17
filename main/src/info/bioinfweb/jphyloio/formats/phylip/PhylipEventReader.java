@@ -30,7 +30,6 @@ import java.util.List;
 import info.bioinfweb.jphyloio.events.BasicOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -115,7 +114,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	 * @param allowInterleavedParsing defines whether interleaved Phylip files shall be supported by this parser instance
 	 *        (In order to support this feature the reader needs to keep a list of all sequence names. To parse files with 
 	 *        a very large number of sequences which are not interleaved, this feature can be switched off to save memory.
-	 *        If this switch is set to {@code true} non-interleaved files can also still be parsed.)
+	 *        If this switch is set to {@code true} non-interleaved files can still be parsed, too.)
 	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
 	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
 	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
@@ -204,7 +203,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 							}
 						}
 						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-							getUpcomingEvents().add(new SequenceEndEvent(false));  //TODO Set sequenceTerminated according to current status.
+							getUpcomingEvents().add(new SequenceEndEvent(getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
 						}
 						increaseSequenceIndex();
 						

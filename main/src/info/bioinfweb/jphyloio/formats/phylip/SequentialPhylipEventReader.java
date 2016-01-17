@@ -157,7 +157,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 							charactersRead = 0;
 							
 							if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-								getUpcomingEvents().add(new SequenceEndEvent(false));  //TODO Set sequenceTerminated according to current status.
+								getUpcomingEvents().add(new SequenceEndEvent(getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
 							}
 							if (getReader().peek() != -1) {  // Do not start a new sequence, if the end of the alignment was reached.
 								getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceName, null));
