@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 
 
 import info.bioinfweb.jphyloio.events.NodeEvent;
-import info.bioinfweb.jphyloio.events.SequenceEndEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -82,8 +82,8 @@ public class JPhyloIOTestTools {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEventType(EventContentType.SEQUENCE, EventTopologyType.END, event);
-		SequenceEndEvent endEvent = event.asSequenceEndEvent();
-		assertEquals(expectedSequenceTerminated, endEvent.isSequenceTerminated());
+		PartEndEvent endEvent = event.asSequenceEndEvent();
+		assertEquals(expectedSequenceTerminated, endEvent.isTerminated());
 	}
 	
 	
@@ -202,7 +202,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventContentType.CHARACTER_SET, event.getType().getContentType());
+		assertEquals(EventContentType.CHARACTER_SET_INTERVAL, event.getType().getContentType());
 		
 		CharacterSetEvent charSetEvent = event.asCharacterSetEvent();
 		assertEquals(expectedName, charSetEvent.getName());
