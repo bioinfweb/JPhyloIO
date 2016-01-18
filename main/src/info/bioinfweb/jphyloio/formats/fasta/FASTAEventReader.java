@@ -19,10 +19,11 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
+import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
-import info.bioinfweb.jphyloio.events.BasicOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -134,8 +135,9 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
-			  //TODO Optionally an additional OTU event with an ID could be generated here
-				getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
+			  //TODO Optionally an additional OTU event with an ID could be generated here.
+				getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
+						DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(),	currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
 				while (getReader().peekChar() == COMMENT_START_CHAR) {
 					getReader().read();  // Consume ';'.
 					ReadResult readResult;

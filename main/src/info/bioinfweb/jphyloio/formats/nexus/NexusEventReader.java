@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Queue;
 
+import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
@@ -174,6 +175,13 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 
 	
+	@Override
+	protected LongIDManager getIDManager() {  // Enable package visibility
+		return super.getIDManager();
+	}
+
+	
+	@Override
 	protected SequenceTokensEventManager getSequenceTokensEventManager() {  // Enable package visibility
 		return super.getSequenceTokensEventManager();
 	}

@@ -28,8 +28,8 @@ import javax.xml.stream.events.XMLEvent;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -38,8 +38,9 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 public abstract class NeXMLTagReader implements NeXMLConstants {
 	protected static class OTUEventInformation {
-		public String otuID;
+		public String id;
 		public String label;	
+		public String otuID;
 	}
 	
 	
@@ -119,18 +120,14 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 	
 	
 	public void readNode(NeXMLEventReader reader, StartElement element) {
-		String nodeID = XMLUtils.readStringAttr(element, ATTR_ID, null);
-		if (nodeID != null) {
-			OTUEventInformation otuEventInformation = getOTUEventInformation(reader, element);
-			reader.getUpcomingEvents().add(new NodeEvent(otuEventInformation.label, otuEventInformation.otuID, nodeID));
-			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
-		}
+		OTUEventInformation info = getOTUEventInformation(reader, element);
+		reader.getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.NODE, info.id,	info.label, info.otuID));
+		reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 	}
 	
 	
 	public void readEdge(NeXMLEventReader reader, StartElement element) {
 		String sourceID = null;
-		String targetID = XMLUtils.readStringAttr(element, ATTR_TARGET, null);	      		
 		double length = Double.NaN;	 
 		
 		if (reader.getCurrentBranchLengthsFormat().equals(TYPE_FLOAT_TREE)) { 
@@ -146,26 +143,27 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 			catch (NullPointerException e) {}
 		}
 		
-		if (targetID != null) {
-			if (element.getName().equals(TAG_EDGE)) {
-				sourceID = XMLUtils.readStringAttr(element, ATTR_SOURCE, null);
-			}
-			reader.getUpcomingEvents().add(new EdgeEvent(sourceID, targetID, length));
-			reader.readID(reader, element);
-			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+		if (element.getName().equals(TAG_EDGE)) {
+			sourceID = XMLUtils.readStringAttr(element, ATTR_SOURCE, null);
 		}
+		reader.getUpcomingEvents().add(new EdgeEvent(XMLUtils.readStringAttr(element, ATTR_ID, null), 
+				XMLUtils.readStringAttr(element, ATTR_LABEL, null), sourceID, XMLUtils.readStringAttr(element, ATTR_TARGET, null), 
+				length));  // Throws a NullPointerException, if any needed parameter is null. //TODO Throw special parse exception instead 
+		reader.readID(reader, element);
+		reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 	}
 	
 	
 	protected OTUEventInformation getOTUEventInformation(NeXMLEventReader reader, StartElement element) {
 		OTUEventInformation otuEventInformation = new OTUEventInformation();
-		otuEventInformation.otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
+		otuEventInformation.id = XMLUtils.readStringAttr(element, ATTR_ID, null);
 		otuEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
+		otuEventInformation.otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuID != null)) {
 			otuEventInformation.label = reader.getIDToLabelMap().get(otuEventInformation.otuID);
 		}
 		if (otuEventInformation.label == null) {
-			otuEventInformation.label = XMLUtils.readStringAttr(element, ATTR_ID, null);	
+			otuEventInformation.label = otuEventInformation.id;	
 		}
 		return otuEventInformation;
 	}

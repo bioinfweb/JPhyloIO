@@ -27,7 +27,8 @@ import java.util.List;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
-import info.bioinfweb.jphyloio.events.BasicOTUEvent;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
@@ -122,7 +123,9 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						}
 						currentSequenceLabel = getStreamDataProvider().readNexusWord();
 					  //TODO Link possible taxon with sequence start event.
-						getStreamDataProvider().getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceLabel, null));
+						getStreamDataProvider().getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
+								JPhyloIOEventReader.DEFAULT_SEQUENCE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+								currentSequenceLabel, null));
 						currentSequencePosition = 0;  // getStreamDataProvider().getSequenceTokensEventManager().getCurrentBlockStartPosition() does not work here, because it does not return the updated value for the first sequence of the second and following blocks, since the event is processed after this command.
 					}
 					

@@ -40,7 +40,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * {@link #getParsedName()} in such cases, to determine the meaning.
  * <p>
  * If this token set should only be valid for some columns of the alignment, a character set (defined by a
- * {@link CharacterSetEvent}) will be referenced by the return value of {@link #getCharacterSetName()} (which
+ * {@link CharacterSetIntervalEvent}) will be referenced by the return value of {@link #getCharacterSetName()} (which
  * should not be mixed up with {@link #getParsedName()} which is just the string representation of this token
  * set as it was given in the parsed file.)
  * 
@@ -78,7 +78,7 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * @param characterSetName the set of the character set (set of alignment columns) this token (character state) 
 	 *        set shall be valid for (Specify {@code null} here if this character state set shall be valid for the 
 	 *        whole alignment or the columns are unknown. The references character set should have been defined by a
-	 *        previously fired instance if {@link CharacterSetEvent}.)
+	 *        previously fired instance if {@link CharacterSetIntervalEvent}.)
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
 	public TokenSetDefinitionEvent(CharacterStateType type, String parsedName, String characterSetName) {
@@ -122,7 +122,7 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 
 	/**
 	 * Returns the name of character set (which was defined in a previously fired instance of 
-	 * {@link CharacterSetEvent}) for which this character state set shall be valid.
+	 * {@link CharacterSetIntervalEvent}) for which this character state set shall be valid.
 	 * <p>
 	 * Note that the name of the character state set described by this event is different from 
 	 * the referenced character set name returned here. This can be obtained by calling

@@ -44,7 +44,8 @@ import javax.xml.stream.events.XMLEvent;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
-import info.bioinfweb.jphyloio.events.BasicOTUEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -206,8 +207,8 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	      	StartElement element = event.asStartElement();
 	      	reader.getEncounteredTags().push(element.getName());
 	      	if (element.getName().equals(TAG_ROW)) {
-	      		OTUEventInformation otuEventInformation = getOTUEventInformation(reader, element);
-	      		reader.getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, otuEventInformation.label, otuEventInformation.otuID));
+	      		OTUEventInformation otuInfo = getOTUEventInformation(reader, element);
+	      		reader.getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, otuInfo.id, otuInfo.label, otuInfo.otuID));
 	      		reader.readID(reader, element);
 //	      		METHOD_MAP.get(TAG_ROW).readEvent(reader);
 	      	}
@@ -321,7 +322,10 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	    		
 	    			if (id != null) {
 	    				reader.getIDToLabelMap().put(id, label);
-	    				reader.getUpcomingEvents().add(new BasicOTUEvent(EventContentType.OTU, label, id));
+	    				reader.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU, id, label));
+	    			}
+	    			else {
+	    				throw new IOException("OTU definition without ID");  //TODO Replace by special exception.
 	    			}
 //		    		METHOD_MAP.get(TAG_OTU).readEvent(reader);
 	        }

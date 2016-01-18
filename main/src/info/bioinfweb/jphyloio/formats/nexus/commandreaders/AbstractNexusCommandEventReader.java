@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
+import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 
 import java.util.ArrayList;

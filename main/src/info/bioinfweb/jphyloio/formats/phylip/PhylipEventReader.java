@@ -27,7 +27,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.bioinfweb.jphyloio.events.BasicOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
@@ -214,7 +214,8 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 							break;
 						}
 						else {
-							getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceName, null));
+							getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
+									DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(), currentSequenceName, null));
 						}
 					}
 					JPhyloIOEvent event = readCharacters(currentSequenceName);

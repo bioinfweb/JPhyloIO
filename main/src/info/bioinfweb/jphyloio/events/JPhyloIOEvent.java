@@ -73,9 +73,9 @@ public interface JPhyloIOEvent {
 	 * Casts this event to a basic OTU event.
 	 * 
 	 * @return a reference to this event as a basic OTU event
-	 * @throws ClassCastException if this event is not an instance of {@link BasicOTUEvent}
+	 * @throws ClassCastException if this event is not an instance of {@link LinkedOTUEvent}
 	 */
-	public BasicOTUEvent asBasicOTUEvent() throws ClassCastException;
+	public LinkedOTUEvent asLinkedOTUEvent() throws ClassCastException;
 	
 	/**
 	 * Casts this event to a tokens event.
@@ -97,9 +97,9 @@ public interface JPhyloIOEvent {
 	 * Casts this event to a character set event.
 	 * 
 	 * @return a reference to this event as a tokens event
-	 * @throws ClassCastException if this event is not an instance of {@link CharacterSetEvent}
+	 * @throws ClassCastException if this event is not an instance of {@link CharacterSetIntervalEvent}
 	 */
-	public CharacterSetEvent asCharacterSetEvent() throws ClassCastException;	
+	public CharacterSetIntervalEvent asCharacterSetEvent() throws ClassCastException;	
 	
 	/**
 	 * Casts this event to a character state set definition event.
@@ -116,14 +116,6 @@ public interface JPhyloIOEvent {
 	 * @throws ClassCastException if this event is not an instance of {@link SingleTokenDefinitionEvent}
 	 */
 	public SingleTokenDefinitionEvent asSingleTokenDefinitionEvent() throws ClassCastException;	
-	
-	/**
-	 * Casts this event to a tree or graph node event.
-	 * 
-	 * @return a reference to this event as a node event
-	 * @throws ClassCastException if this event is not an instance of {@link SingleTokenDefinitionEvent}
-	 */
-	public NodeEvent asNodeEvent() throws ClassCastException;	
 	
 	/**
 	 * Casts this event to a tree or graph edge event.

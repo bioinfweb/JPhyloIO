@@ -32,7 +32,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.NodeEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -64,7 +64,6 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 	
 	private State state = State.START;
 	private NewickScanner scanner;
-	private LongIDManager nodeIDManager = new LongIDManager();
 	private Stack<Queue<NodeInfo>> passedSubnodes;
 	
 	
@@ -98,13 +97,13 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 	}
 	
 	
-	private NodeEvent readNode() throws IOException {
+	private LinkedOTUEvent readNode() throws IOException {
 		NewickToken token = scanner.peek();  //TODO Catch NoSuchElementException for unexpected EOF here or somewhere above.
 		if (token.getType().equals(NewickTokenType.SUBTREE_START)) {  // No name to read.
 			return null;
 		}
 		else {  // In this a case a node is defined, even if no name or length token are present (if this method is called only at appropriate positions). 
-			String nodeID = NODE_ID_PREFIX + nodeIDManager.createNewID();
+			String nodeID = NODE_ID_PREFIX + getIDManager().createNewID();
 			
 			// Read label:
 			String label = null;
@@ -125,7 +124,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			if (!passedSubnodes.isEmpty()) {  // Nodes on top level do not have to be stored.
 				passedSubnodes.peek().add(new NodeInfo(nodeID, length));			
 			}
-			NodeEvent result = new NodeEvent(label, null, nodeID);  //TODO Possibly replace by translation table when used in Nexus.
+			LinkedOTUEvent result = new LinkedOTUEvent(EventContentType.NODE, nodeID, label, null);  //TODO Possibly replace by translation table when used in Nexus.
 			                                              //TODO Possibly use OTU link, if used in Nexus.
 			getUpcomingEvents().add(result);
 			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));  //TODO Put possible annotations and comments in the queue first
@@ -159,11 +158,12 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						}
 						else {
 							Queue<NodeInfo> levelInfo = passedSubnodes.pop();
-							NodeEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
-							String sourceID = nodeEvent.getNodeID();
+							LinkedOTUEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
+							String sourceID = nodeEvent.getID();
 							while (!levelInfo.isEmpty()) {
 								NodeInfo nodeInfo = levelInfo.poll();
-								getUpcomingEvents().add(new EdgeEvent(sourceID, nodeInfo.id, nodeInfo.length));
+								getUpcomingEvents().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + getIDManager().createNewID(), 
+										null, sourceID, nodeInfo.id, nodeInfo.length));
 								//TODO Put possible metadata and comments in between here.
 								getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 							}

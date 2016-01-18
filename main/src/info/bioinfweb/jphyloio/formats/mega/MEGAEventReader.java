@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
-import info.bioinfweb.jphyloio.events.BasicOTUEvent;
-import info.bioinfweb.jphyloio.events.CharacterSetEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -186,7 +186,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			    //     start of new character set                                      || end of current set
 					if (((currentName == DEFAULT_LABEL_CHAR) && (c != DEFAULT_LABEL_CHAR)) || (c != currentName)) {
 						if ((c != currentName) && (currentName != DEFAULT_LABEL_CHAR)) {  // end current set
-							getUpcomingEvents().add(new CharacterSetEvent("" + currentName, start, pos));
+							getUpcomingEvents().add(new CharacterSetIntervalEvent("" + currentName, start, pos));
 							result = true;
 						}
 						start = pos;
@@ -198,7 +198,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			c = getReader().readChar();
 		}
 		if (currentName != DEFAULT_LABEL_CHAR) {
-			getUpcomingEvents().add(new CharacterSetEvent("" + currentName, start, pos));
+			getUpcomingEvents().add(new CharacterSetIntervalEvent("" + currentName, start, pos));
 			result = true;
 		}
 		currentLabelPos = pos;
@@ -243,7 +243,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 						(upperCaseContent.contains(COMMAND_NAME_DOMAIN + "=") || upperCaseContent.contains(COMMAND_NAME_GENE + "="))) {
 					
 					if (currentGeneOrDomainName != null) {
-						getUpcomingEvents().add(new CharacterSetEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead));
+						getUpcomingEvents().add(new CharacterSetIntervalEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead));
 						result = true;
 					}
 					currentGeneOrDomainName = content;
@@ -269,7 +269,8 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 		else if (firstSequenceName.equals(currentSequenceName)) {
 			currentLabelPos = Math.max(currentLabelPos, charactersRead);  // Label command can be omitted in interleaved format.
 		}
-		getUpcomingEvents().add(new BasicOTUEvent(EventContentType.SEQUENCE, currentSequenceName, null));
+		getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
+				DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(), currentSequenceName, null));
 	}
 	
 	
@@ -317,7 +318,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 						int c = getReader().peek();
 						if (c == -1) {
 							if (currentGeneOrDomainName != null) {
-								getUpcomingEvents().add(new CharacterSetEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead));
+								getUpcomingEvents().add(new CharacterSetIntervalEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead));
 								currentGeneOrDomainName = null;  // Avoid multiple firing of this event
 							}
 							else {

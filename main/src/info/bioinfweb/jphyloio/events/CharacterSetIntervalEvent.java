@@ -32,11 +32,11 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * <p>
  * After the first event with a certain name was fired, that name can be used a reference in
  * {@link TokenSetDefinitionEvent#getCharacterSetName()}, even if additional 
- * {@link CharacterSetEvent}s with the same name will follow. 
+ * {@link CharacterSetIntervalEvent}s with the same name will follow. 
  * 
  * @author Ben St&ouml;ver
  */
-public class CharacterSetEvent extends ConcreteJPhyloIOEvent {
+public class CharacterSetIntervalEvent extends ConcreteJPhyloIOEvent {
 	private String name;
 	private long start;
 	private long end;
@@ -51,7 +51,7 @@ public class CharacterSetEvent extends ConcreteJPhyloIOEvent {
 	 * @param start the index of the first position of the sequence segment to be added to the specified character set
 	 * @param end the first index after the end of the sequence segment to be added to the specified character set
 	 */
-	public CharacterSetEvent(String name, long start,	long end) {
+	public CharacterSetIntervalEvent(String name, long start,	long end) {
 		super(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE);  //TODO Possibly change to START later.
 		this.name = name;
 		this.start = start;

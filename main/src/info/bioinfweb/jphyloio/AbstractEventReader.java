@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
 
+import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -49,6 +50,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	private int maxTokensToRead;
 	private boolean translateMatchToken;
 	private String matchToken = ".";
+	private LongIDManager idManager = new LongIDManager();
 	private SequenceTokensEventManager sequenceTokensEventManager = new SequenceTokensEventManager(this);
 
 	
@@ -122,6 +124,11 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	@Override
 	public void setMatchToken(String matchToken) {
 		this.matchToken = matchToken;
+	}
+
+
+	protected LongIDManager getIDManager() {
+		return idManager;
 	}
 
 

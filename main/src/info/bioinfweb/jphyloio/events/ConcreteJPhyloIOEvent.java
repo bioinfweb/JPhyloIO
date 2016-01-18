@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.events;
 
 
-import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
@@ -80,8 +79,8 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
-	public BasicOTUEvent asBasicOTUEvent() throws ClassCastException {
-		return (BasicOTUEvent)this;
+	public LinkedOTUEvent asLinkedOTUEvent() throws ClassCastException {
+		return (LinkedOTUEvent)this;
 	}
 
 
@@ -98,8 +97,8 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
-	public CharacterSetEvent asCharacterSetEvent() throws ClassCastException {
-		return (CharacterSetEvent)this;
+	public CharacterSetIntervalEvent asCharacterSetEvent() throws ClassCastException {
+		return (CharacterSetIntervalEvent)this;
 	}
 
 
@@ -112,12 +111,6 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	@Override
 	public SingleTokenDefinitionEvent asSingleTokenDefinitionEvent() throws ClassCastException {
 		return (SingleTokenDefinitionEvent)this;
-	}
-
-
-	@Override
-	public NodeEvent asNodeEvent() throws ClassCastException {
-		return (NodeEvent)this;
 	}
 
 

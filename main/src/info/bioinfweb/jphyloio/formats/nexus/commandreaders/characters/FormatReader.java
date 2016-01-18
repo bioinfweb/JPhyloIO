@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.jphyloio.events.CharacterSetEvent;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -105,7 +105,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			if (matcher.matches()) {
 				String charSetName = DATA_TYPE_CHARACTER_SET_NAME_PREFIX + (i + 1);
 				try {
-					events.add(new CharacterSetEvent(charSetName, Long.parseLong(matcher.group(2)),	Long.parseLong(matcher.group(3)) + 1));
+					events.add(new CharacterSetIntervalEvent(charSetName, Long.parseLong(matcher.group(2)),	Long.parseLong(matcher.group(3)) + 1));
 				}
 				catch (NumberFormatException e) {
 					return;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?

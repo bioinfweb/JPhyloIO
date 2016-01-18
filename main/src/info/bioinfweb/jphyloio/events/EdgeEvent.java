@@ -20,18 +20,17 @@ package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-public class EdgeEvent extends ConcreteJPhyloIOEvent {
+public class EdgeEvent extends LabeledIDEvent {
 	private String sourceID;
 	private String targetID;
 	private double length;
 	
 	
-	public EdgeEvent(String sourceID, String targetID, double length) {
-		super(EventContentType.EDGE, EventTopologyType.START);
+	public EdgeEvent(String id, String label,	String sourceID, String targetID, double length) {
+		super(EventContentType.EDGE, id, label);
 
 		if (targetID == null) {
 			throw new NullPointerException("The target node ID must not be null.");

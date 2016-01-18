@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import java.io.IOException;
 import java.util.Queue;
 
+import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.SequenceTokensEventManager;
@@ -87,6 +88,11 @@ public class NexusStreamDataProvider {
 	 */
 	public PeekReader getDataReader() {
 		return dataReader;
+	}
+	
+	
+	public LongIDManager getIDManager() {
+		return nexusReader.getIDManager();
 	}
 	
 	

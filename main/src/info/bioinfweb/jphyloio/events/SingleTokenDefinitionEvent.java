@@ -36,7 +36,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
+public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {  //TODO Inherit from LabeledIDEvent?
 	private String tokenName;
 	private CharacterStateMeaning meaning;
 	private CharacterStateType tokenSetType;
