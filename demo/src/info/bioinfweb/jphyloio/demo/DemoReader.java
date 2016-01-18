@@ -44,7 +44,7 @@ public class DemoReader {
 					System.out.println("Character State Type: " + event.asTokenSetDefinitionEvent().getSetType());
 				}
 				else if (event.getType().getContentType().equals(EventContentType.NODE) && event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					System.out.println(event.asNodeEvent().getNodeID() + ", " + event.asNodeEvent().getLabel());
+					System.out.println(event.asLinkedOTUEvent().getID() + ", " + event.asLinkedOTUEvent().getLabel());
 				}
 				else if (event.getType().getContentType().equals(EventContentType.EDGE) && event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					System.out.println(event.asEdgeEvent().getLength() + ", " + event.asEdgeEvent().getSourceID() + ", " + event.asEdgeEvent().getTargetID());
