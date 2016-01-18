@@ -36,9 +36,8 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * implementing event readers must match the following 
  * <a href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">EBNF</a>:
  * <pre>
- * Document = "DOCUMENT.START", DocumentContent, "DOCUMENT.END";
- * DocumentContent = {MetaInformation,} {OTUSet,} {DocumentPart};
- * DocumentPart = Matrix | Tree | Network | CharacterSetPart | MetaInformation;
+ * Document = "DOCUMENT.START", {DocumentContent,} "DOCUMENT.END";
+ * DocumentContent = OTUSet | Matrix | Tree | Network | CharacterSetPart | MetaInformation;
  * 
  * OTUSet = "OTUS.START", {OTUContent,} "OTUS.END";
  * OTUContent = OTU | MetaInformation;
