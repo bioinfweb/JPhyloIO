@@ -307,7 +307,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 					}  // fall through in else case
 				case SEQUENCE:
 				case SEQUENCE_TOKENS:
-				case CHARACTER_SET:
+				case CHARACTER_SET_INTERVAL:
 				case META_INFORMATION:
 				case COMMENT:
 					// Read commands:

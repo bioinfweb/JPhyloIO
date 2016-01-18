@@ -65,9 +65,9 @@ public interface JPhyloIOEvent {
 	 * Casts this event to a sequence end event.
 	 * 
 	 * @return a reference to this event as a sequence end event
-	 * @throws ClassCastException if this event is not an instance of {@link SequenceEndEvent}
+	 * @throws ClassCastException if this event is not an instance of {@link PartEndEvent}
 	 */
-	public SequenceEndEvent asSequenceEndEvent() throws ClassCastException;
+	public PartEndEvent asSequenceEndEvent() throws ClassCastException;
 	
 	/**
 	 * Casts this event to a basic OTU event.

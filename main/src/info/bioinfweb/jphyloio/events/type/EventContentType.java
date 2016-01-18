@@ -43,7 +43,10 @@ public enum EventContentType {
 	SEQUENCE,
 	SEQUENCE_TOKENS,
 	SINGLE_SEQUENCE_TOKEN,
+	
+	/** Indicates the start or end of a sequence of {@link #CHARACTER_SET_INTERVAL} events. */
 	CHARACTER_SET,
+	CHARACTER_SET_INTERVAL,
 	TOKEN_SET_DEFINITION,
 	SINGLE_TOKEN_DEFINITION,
 	

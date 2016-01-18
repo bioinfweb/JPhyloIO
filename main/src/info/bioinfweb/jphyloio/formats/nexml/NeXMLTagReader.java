@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
-import info.bioinfweb.jphyloio.events.SequenceEndEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -54,7 +54,7 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 				}
 				else if (reader.getEncounteredTags().peek().equals(TAG_ROW)) {
-					reader.getUpcomingEvents().add(new SequenceEndEvent(true));
+					reader.getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 				}
 				else if (reader.getEncounteredTags().peek().equals(TAG_TREE)) {
 					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));

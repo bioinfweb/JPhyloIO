@@ -28,7 +28,7 @@ import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.BasicOTUEvent;
-import info.bioinfweb.jphyloio.events.SequenceEndEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
@@ -148,7 +148,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							}
 							currentSequenceLabel = null;  // Read new label next time.
 							tokenListComplete = true;
-							getStreamDataProvider().getUpcomingEvents().add(new SequenceEndEvent(!interleaved || 
+							getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, !interleaved || 
 									(getStreamDataProvider().getSequenceTokensEventManager().getCurrentPosition() >= alignmentLength)));  // Since the event has already been added, the position should be valid here.
 						}
 						else if (c == COMMENT_START) {
@@ -183,7 +183,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					if (c == COMMAND_END) {
 						setAllDataProcessed(true);
 						reader.skip(1);  // Consume ';'.
-						getStreamDataProvider().getUpcomingEvents().add(new SequenceEndEvent(true));
+						getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 					}
 					return result;
 				}

@@ -52,7 +52,7 @@ public class CharacterSetEvent extends ConcreteJPhyloIOEvent {
 	 * @param end the first index after the end of the sequence segment to be added to the specified character set
 	 */
 	public CharacterSetEvent(String name, long start,	long end) {
-		super(EventContentType.CHARACTER_SET, EventTopologyType.SOLE);  //TODO Possibly change to START later.
+		super(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE);  //TODO Possibly change to START later.
 		this.name = name;
 		this.start = start;
 		this.end = end;

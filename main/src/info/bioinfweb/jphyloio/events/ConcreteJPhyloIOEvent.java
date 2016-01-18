@@ -74,8 +74,8 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
-	public SequenceEndEvent asSequenceEndEvent() throws ClassCastException {
-		return (SequenceEndEvent)this;
+	public PartEndEvent asSequenceEndEvent() throws ClassCastException {
+		return (PartEndEvent)this;
 	}
 
 

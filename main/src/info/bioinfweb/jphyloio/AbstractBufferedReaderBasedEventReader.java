@@ -24,7 +24,8 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.SequenceEndEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -254,7 +255,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 				getReader().skip(1);
 			}
 			lineConsumed = true;
-			getUpcomingEvents().add(new SequenceEndEvent(false));
+			getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, false));
 		}
 		else {  // Maximum length was reached.
 			lineConsumed = false;

@@ -30,7 +30,7 @@ import java.util.List;
 import info.bioinfweb.jphyloio.events.BasicOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.SequenceEndEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -203,7 +203,8 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 							}
 						}
 						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-							getUpcomingEvents().add(new SequenceEndEvent(getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
+							getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, 
+									getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
 						}
 						increaseSequenceIndex();
 						

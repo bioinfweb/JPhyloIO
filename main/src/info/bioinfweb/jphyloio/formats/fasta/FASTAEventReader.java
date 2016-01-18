@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.events.BasicOTUEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.SequenceEndEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -217,7 +217,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 					// Check if new name needs to be read:
 					int c = getReader().peek();
 					if ((c == -1) || (lineConsumed && (c == (int)NAME_START_CHAR))) {
-						getUpcomingEvents().add(new SequenceEndEvent(true));
+						getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 						alignmentEndEvent = readSequenceStart(
 								"Inconsistent stream. (The cause might be code outside this class reading from the same stream.)");
 						if (alignmentEndEvent != null) {
@@ -231,7 +231,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 					// Read new tokens:
 					if (lineConsumed) {
 						if (!consumeTokenIndex()) {  // The last line of the file contained only white spaces or token indices.
-							getUpcomingEvents().add(new SequenceEndEvent(true));
+							getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 							break;
 						}
