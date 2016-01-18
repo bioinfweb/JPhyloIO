@@ -62,12 +62,12 @@ public interface JPhyloIOEvent {
 	public CommentEvent asCommentEvent() throws ClassCastException;
 	
 	/**
-	 * Casts this event to a sequence end event.
+	 * Casts this event to a part end event.
 	 * 
-	 * @return a reference to this event as a sequence end event
+	 * @return a reference to this event as a part end event
 	 * @throws ClassCastException if this event is not an instance of {@link PartEndEvent}
 	 */
-	public PartEndEvent asSequenceEndEvent() throws ClassCastException;
+	public PartEndEvent asPartEndEvent() throws ClassCastException;
 	
 	/**
 	 * Casts this event to a basic OTU event.
