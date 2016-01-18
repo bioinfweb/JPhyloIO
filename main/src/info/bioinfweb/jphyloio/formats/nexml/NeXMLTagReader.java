@@ -30,12 +30,19 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
+import info.bioinfweb.jphyloio.events.SequenceEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-public abstract class NeXMLTagReader implements NeXMLConstants {	
+public abstract class NeXMLTagReader implements NeXMLConstants {
+	protected static class OTUEventInformation {
+		public String otuID;
+		public String label;	
+	}
+	
+	
 	public void readEvent(NeXMLEventReader reader) throws Exception {
 		if (reader.getXMLReader().hasNext()) {
 			XMLEvent xmlEvent = reader.getXMLReader().nextEvent();
@@ -45,6 +52,21 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 				}
 				else if (reader.getEncounteredTags().peek().equals(TAG_CHARACTERS)) {
 					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+				}
+				else if (reader.getEncounteredTags().peek().equals(TAG_ROW)) {
+					reader.getUpcomingEvents().add(new SequenceEndEvent(true));
+				}
+				else if (reader.getEncounteredTags().peek().equals(TAG_TREE)) {
+					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
+				}
+				else if (reader.getEncounteredTags().peek().equals(TAG_NETWORK)) {
+					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.GRAPH, EventTopologyType.END));
+				}
+				else if (reader.getEncounteredTags().peek().equals(TAG_OTU)) {
+					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
+				}
+				else if (reader.getEncounteredTags().peek().equals(TAG_OTUS)) {
+					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
 				}
 				reader.getEncounteredTags().pop();
 			}
@@ -58,7 +80,7 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 	protected abstract void readEventCore(NeXMLEventReader reader, XMLEvent event) throws Exception;
 	
 	
-	public void readMeta(NeXMLEventReader reader, StartElement element) {		
+	protected void readMeta(NeXMLEventReader reader, StartElement element) {		
 		String type = XMLUtils.readStringAttr(element, ATTR_TYPE, null);
 		String key = null;	
 		String stringValue = null;
@@ -98,10 +120,9 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 	
 	public void readNode(NeXMLEventReader reader, StartElement element) {
 		String nodeID = XMLUtils.readStringAttr(element, ATTR_ID, null);
-		String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
-		String otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
 		if (nodeID != null) {
-			reader.getUpcomingEvents().add(new NodeEvent(label, otuID, nodeID));
+			OTUEventInformation otuEventInformation = getOTUEventInformation(reader, element);
+			reader.getUpcomingEvents().add(new NodeEvent(otuEventInformation.label, otuEventInformation.otuID, nodeID));
 			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 		}
 	}
@@ -130,7 +151,22 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 				sourceID = XMLUtils.readStringAttr(element, ATTR_SOURCE, null);
 			}
 			reader.getUpcomingEvents().add(new EdgeEvent(sourceID, targetID, length));
+			reader.readID(reader, element);
 			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 		}
+	}
+	
+	
+	protected OTUEventInformation getOTUEventInformation(NeXMLEventReader reader, StartElement element) {
+		OTUEventInformation otuEventInformation = new OTUEventInformation();
+		otuEventInformation.otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
+		otuEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
+		if ((otuEventInformation.label == null) && (otuEventInformation.otuID != null)) {
+			otuEventInformation.label = reader.getIDToLabelMap().get(otuEventInformation.otuID);
+		}
+		if (otuEventInformation.label == null) {
+			otuEventInformation.label = XMLUtils.readStringAttr(element, ATTR_ID, null);	
+		}
+		return otuEventInformation;
 	}
 }
