@@ -60,7 +60,7 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
 				}
 				else if (reader.getEncounteredTags().peek().equals(TAG_NETWORK)) {
-					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.GRAPH, EventTopologyType.END));
+					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NETWORK, EventTopologyType.END));
 				}
 				else if (reader.getEncounteredTags().peek().equals(TAG_OTU)) {
 					reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));

@@ -18,16 +18,21 @@
  */
 package info.bioinfweb.jphyloio.events;
 
+
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
 /**
- * Event that indicates that new information on a character set has been parsed.
+ * Event that indicates that new information on a character set has been read.
  * <p>
  * Note that one or more events with the same character set name may occur any time between 
- * the {@link EventContentType#ALIGNMENT} and {@link EventContentType#ALIGNMENT_END} events.   
+ * the {@link EventContentType#ALIGNMENT} and {@link EventContentType#ALIGNMENT_END} events.
+ * <p>
+ * After the first event with a certain name was fired, that name can be used a reference in
+ * {@link TokenSetDefinitionEvent#getCharacterSetName()}, even if additional 
+ * {@link CharacterSetEvent}s with the same name will follow. 
  * 
  * @author Ben St&ouml;ver
  */

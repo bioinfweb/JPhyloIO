@@ -136,7 +136,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 //	      		METHOD_MAP.get(TAG_TREE).readEvent(reader);
 	      	}
 	      	else if (element.getName().equals(TAG_NETWORK)) {
-	      		reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.GRAPH, EventTopologyType.START));
+	      		reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NETWORK, EventTopologyType.START));
 	      		reader.readID(reader, element);
 	      	}
 	      	else if (element.getName().equals(TAG_META)) {

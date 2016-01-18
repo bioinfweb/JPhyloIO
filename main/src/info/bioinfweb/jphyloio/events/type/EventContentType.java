@@ -47,7 +47,7 @@ public enum EventContentType {
 	TOKEN_SET_DEFINITION,
 	SINGLE_TOKEN_DEFINITION,
 	
-	GRAPH,
+	NETWORK,
 	TREE,
 	NODE,
 	EDGE;
