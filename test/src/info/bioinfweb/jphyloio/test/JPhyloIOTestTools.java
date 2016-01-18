@@ -22,17 +22,14 @@ package info.bioinfweb.jphyloio.test;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
-import info.bioinfweb.jphyloio.events.CharacterSetEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.events.BasicOTUEvent;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-
-
-import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
@@ -60,14 +57,17 @@ public class JPhyloIOTestTools {
 	}
 	
 	
-	public static void assertBasicOTUEvent(EventContentType expectedType, String expectedLabel, String expectedOTUID, 
-			JPhyloIOEventReader reader) throws Exception {
+	public static String assertBasicOTUEvent(EventContentType expectedType, String expectedID, String expectedLabel, 
+			String expectedOTUID,	JPhyloIOEventReader reader) throws Exception {
 		
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEventType(expectedType, EventTopologyType.START, event);
 
-		BasicOTUEvent otuEvent = event.asBasicOTUEvent();
+		LinkedOTUEvent otuEvent = event.asLinkedOTUEvent();
+		if (expectedID != null) {
+			assertEquals(expectedID, otuEvent.getID());
+		}
 		assertEquals(expectedLabel, otuEvent.getLabel());
 		if (expectedOTUID == null) {
 			assertNull(otuEvent.getOTUID());
@@ -75,6 +75,7 @@ public class JPhyloIOTestTools {
 		else {
 			assertEquals(expectedOTUID, otuEvent.getOTUID());
 		}
+		return otuEvent.getID();
 	}
 	
 	
@@ -204,21 +205,10 @@ public class JPhyloIOTestTools {
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventContentType.CHARACTER_SET_INTERVAL, event.getType().getContentType());
 		
-		CharacterSetEvent charSetEvent = event.asCharacterSetEvent();
+		CharacterSetIntervalEvent charSetEvent = event.asCharacterSetEvent();
 		assertEquals(expectedName, charSetEvent.getName());
 		assertEquals(expectedStart, charSetEvent.getStart());
 		assertEquals(expectedEnd, charSetEvent.getEnd());
-  }
-
-
-  public static String assertNodeEvent(String expectedLabel, JPhyloIOEventReader reader) throws Exception {
-		assertTrue(reader.hasNextEvent());
-		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.NODE, EventTopologyType.START, event);
-		
-		NodeEvent nodeEvent = event.asNodeEvent();
-		assertEquals(expectedLabel, nodeEvent.getLabel());
-		return nodeEvent.getNodeID();
   }
 
 
