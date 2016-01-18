@@ -72,13 +72,13 @@ public class MEGAEventReaderTest {
 			assertCommentEvent("in command statement", reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
 			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCTCC", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
 			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCTAC", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
 			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCACC", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
 			assertCharacterSetEvent("+", 12, 15, reader);
 			assertCharacterSetEvent("+", 18, 21, reader);
@@ -86,24 +86,24 @@ public class MEGAEventReaderTest {
 			
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
 			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
 			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
 			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
 			assertCommentEvent("comment 1 in characters", reader);
 			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACGAGGAG", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
 			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
 			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
 			assertCharacterSetEvent("+", 60, 69, reader);
 			assertCharacterSetEvent("+", 72, 81, reader);
@@ -111,15 +111,15 @@ public class MEGAEventReaderTest {
 			
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
 			assertCharactersEvent("GGTTCTCACACCCTCCAGATGATGTTT", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
 			assertCharactersEvent("GGTTCTCACACCATC", reader);
 			assertCommentEvent("comment 2 in characters", reader);
 			assertCharactersEvent("CAGAGGATGTAT", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
 			assertCharactersEvent("GGTTCTCACACCATCCAGATGATGTAT", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
 			assertCommentEvent("comment in label", reader);
 			assertCharacterSetEvent("+", 93, 96, reader);
@@ -128,13 +128,13 @@ public class MEGAEventReaderTest {
 
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
 			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
 			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
 			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
 			assertCommentEvent("Nested [comment]", reader);
 			assertCommentEvent("[Nested] comment", reader);
@@ -143,13 +143,13 @@ public class MEGAEventReaderTest {
 			
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2301", null, reader);
 			assertCharactersEvent("GACCCCCCCAAGACACAT", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-2501", null, reader);
 			assertCharactersEvent("GACGCCCCCAAGACGCAT", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertBasicOTUEvent(EventContentType.SEQUENCE, "A-3301", null, reader);
 			assertCharactersEvent("GACCCCCCCAGGACGCAT", reader);
-			assertSequenceEndEvent(false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
 			assertCharacterSetEvent("Domain=Alpha_3 Property=Coding", 123, 141, reader);
 			
@@ -185,23 +185,23 @@ public class MEGAEventReaderTest {
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
 				assertCharactersEvent("TATTTCTCC", reader);
-				assertSequenceEndEvent(false, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
 				assertCharactersEvent("TATTTCTAC", reader);
-				assertSequenceEndEvent(false, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
 				assertCharactersEvent("TATTTCACC", reader);
-				assertSequenceEndEvent(false, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "A", null, reader);
 				assertCharactersEvent("CGCTAGTTA", reader);
-				assertSequenceEndEvent(false, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "B", null, reader);
 				assertCharactersEvent("CGCTAGTAA", reader);
-				assertSequenceEndEvent(false, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "C", null, reader);
 				assertCharactersEvent("CGCTAGATA", reader);
-				assertSequenceEndEvent(false, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);

@@ -31,7 +31,7 @@ import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertBasicOTUEvent
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertMetaEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSequenceEndEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertPartEndEvent;
 import static org.junit.Assert.* ;
 
 
@@ -53,27 +53,27 @@ public class SequentialPhylipEventReaderTest {
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertCharactersEvent("CCGT-GT--A", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertCharactersEvent("CCGT-GTT-A", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertCharactersEvent("CCGT-CT--A", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATG-TTTCCG", reader);
 				assertCharactersEvent("CCGT-GTTTA", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Seq 5", null, reader);
 				assertCharactersEvent("ATG-TT-CCC", reader);
 				assertCharactersEvent("CGGT-CTT-A", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -107,27 +107,27 @@ public class SequentialPhylipEventReaderTest {
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertCharactersEvent("CCGT-GT--A", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertCharactersEvent("CCGT-GTT-A", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertCharactersEvent("CCGT-CT--A", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_4", null, reader);
 				assertCharactersEvent("ATG-TTTCCG", reader);
 				assertCharactersEvent("CCGT-GTTTA", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertBasicOTUEvent(EventContentType.SEQUENCE, "Sequence_name_5", null, reader);
 				assertCharactersEvent("ATG-TT-CCC", reader);
 				assertCharactersEvent("CGGT-CTT-A", reader);
-				assertSequenceEndEvent(true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);

@@ -78,11 +78,11 @@ public class JPhyloIOTestTools {
 	}
 	
 	
-	public static void assertSequenceEndEvent(boolean expectedSequenceTerminated, JPhyloIOEventReader reader) throws Exception {
+	public static void assertPartEndEvent(EventContentType contentType, boolean expectedSequenceTerminated, JPhyloIOEventReader reader) throws Exception {
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.SEQUENCE, EventTopologyType.END, event);
-		PartEndEvent endEvent = event.asSequenceEndEvent();
+		assertEventType(contentType, EventTopologyType.END, event);
+		PartEndEvent endEvent = event.asPartEndEvent();
 		assertEquals(expectedSequenceTerminated, endEvent.isTerminated());
 	}
 	
