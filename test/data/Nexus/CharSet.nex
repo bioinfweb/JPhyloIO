@@ -2,6 +2,7 @@
 
 BEGIN Sets [comment 1];
 	CharSet set01 = 3 - 5 9 12-016;
+	[comment 1a]
 	CharSet set02=4-9;
 	CharSet [comment 2]set03=[comment 3]4-6 12 ;
 	CharSet set04= 4-6 [comment 4]12 ;

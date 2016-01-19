@@ -57,45 +57,87 @@ public class NexusEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertCommentEvent("comment 1", reader);
 				
-				assertCharacterSetEvent("set01", 3, 6, reader);
-				assertCharacterSetEvent("set01", 9, 10, reader);
-				assertCharacterSetEvent("set01", 12, 17, reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", reader);
+				assertCharacterSetEvent(3, 6, reader);
+				assertCharacterSetEvent(9, 10, reader);
+				assertCharacterSetEvent(12, 17, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertCharacterSetEvent("set02", 4, 10, reader);
+				assertCommentEvent("comment 1a", reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set02", reader);
+				assertCharacterSetEvent(4, 10, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
 				assertCommentEvent("comment 2", reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set03", reader);
 				assertCommentEvent("comment 3", reader);
-				assertCharacterSetEvent("set03", 4, 7, reader);
-				assertCharacterSetEvent("set03", 12, 13, reader);
+				assertCharacterSetEvent(4, 7, reader);
+				assertCharacterSetEvent(12, 13, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertCharacterSetEvent("set04", 4, 7, reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set04", reader);
+				assertCharacterSetEvent(4, 7, reader);
 				assertCommentEvent("comment 4", reader);
-				assertCharacterSetEvent("set04", 12, 13, reader);
+				assertCharacterSetEvent(12, 13, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
-				assertCharacterSetEvent("set05", 3, 4, reader);
-				assertCharacterSetEvent("set05", 5, 7, reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set05", reader);
+				assertCharacterSetEvent(3, 4, reader);
+				assertCharacterSetEvent(5, 7, reader);
 				assertCommentEvent("comment 5", reader);
-				assertCharacterSetEvent("set05", 7, 8, reader);
-				assertCharacterSetEvent("set05", 9, 10, reader);
-				assertCharacterSetEvent("set05", 11, 13, reader);
+				assertCharacterSetEvent(7, 8, reader);
+				assertCharacterSetEvent(9, 10, reader);
+				assertCharacterSetEvent(11, 13, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
-				assertCharacterSetEvent("set06", 0, 1, reader);
-				assertCharacterSetEvent("set06", 2, 5, reader);
-				assertCharacterSetEvent("set06", 6, 7, reader);
-				assertCharacterSetEvent("set06", 8, 10, reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set06", reader);
+				assertCharacterSetEvent(0, 1, reader);
+				assertCharacterSetEvent(2, 5, reader);
+				assertCharacterSetEvent(6, 7, reader);
+				assertCharacterSetEvent(8, 10, reader);
 				assertCommentEvent("comment 6", reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertCharacterSetEvent("set07", 0, 0, reader);
-				assertCharacterSetEvent("set08", 0, 1, reader);
-				assertCharacterSetEvent("set09", 1, 2, reader);
-				assertCharacterSetEvent("set10", 0, 0, reader);
-				assertCharacterSetEvent("set11", 12, 18, reader);
-				assertCharacterSetEvent("set12", 3, 4, reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set07", reader);
+				assertCharacterSetEvent(0, 0, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set08", reader);
+				assertCharacterSetEvent(0, 1, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set09", reader);
+				assertCharacterSetEvent(1, 2, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set10", reader);
+				assertCharacterSetEvent(0, 0, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set11", reader);
+				assertCharacterSetEvent(12, 18, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set12", reader);
+				assertCharacterSetEvent(3, 4, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
-				assertCharacterSetEvent("set.13", 1, 2, reader);
-				assertCharacterSetEvent("set.14", 1, 2, reader);
-				assertCharacterSetEvent("set'15", 1, 2, reader);
-				assertCharacterSetEvent("set 16;", 1, 2, reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.13", reader);
+				assertCharacterSetEvent(1, 2, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.14", reader);
+				assertCharacterSetEvent(1, 2, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set'15", reader);
+				assertCharacterSetEvent(1, 2, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set 16;", reader);
+				assertCharacterSetEvent(1, 2, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 				assertFalse(reader.hasNextEvent());
@@ -117,7 +159,8 @@ public class NexusEventReaderTest {
 			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetInvalidVectorSymbol.nex"), false, factory);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-				assertCharacterSetEvent("set1", 2, 4, reader);  // The exception happens here already, because the parser is always one element ahead.
+				//assertCharacterSetEvent("set1", 2, 4, reader);  // The exception happens here already, because the parser is always one element ahead.
+				reader.next();
 				reader.next();
 			}
 			finally {
@@ -753,9 +796,14 @@ public class NexusEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", 1, 1452, reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
+				assertCharacterSetEvent(1, 1452, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
-				assertCharacterSetEvent(FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", 1452, 1549, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
+				assertCharacterSetEvent(1452, 1549, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				assertTokenSetDefinitionEvent(CharacterStateType.DISCRETE, "Standard", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
 				
 				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, reader);

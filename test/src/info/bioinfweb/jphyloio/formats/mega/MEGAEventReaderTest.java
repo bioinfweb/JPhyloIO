@@ -35,7 +35,7 @@ import static org.junit.Assert.* ;
 
 
 
-public class MEGAEventReaderTest {
+public class MEGAEventReaderTest implements MEGAConstants {
 //  @Test  // READ_COMMAND_PATTERN needs to be set public to run this test.
 //  public void test_READ_COMMAND_PATTERN() {
 //  	assertTrue(MEGAEventReader.READ_COMMAND_PATTERN.matcher("SomeCommand [").matches());
@@ -80,9 +80,11 @@ public class MEGAEventReaderTest {
 			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCACC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
-			assertCharacterSetEvent("+", 12, 15, reader);
-			assertCharacterSetEvent("+", 18, 21, reader);
-			assertCharacterSetEvent("+", 24, 27, reader);
+			assertLabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, Character.toString(DEFAULT_LABEL_CHAR), reader);
+			assertCharacterSetEvent(12, 15, reader);
+			assertCharacterSetEvent(18, 21, reader);
+			assertCharacterSetEvent(24, 27, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
 			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A-2301", null, reader);
 			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
@@ -105,9 +107,14 @@ public class MEGAEventReaderTest {
 			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
-			assertCharacterSetEvent("+", 60, 69, reader);
-			assertCharacterSetEvent("+", 72, 81, reader);
-			assertCharacterSetEvent("Domain=Alpha_1  Property=Coding", 0, 81, reader);
+			assertLabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, Character.toString(DEFAULT_LABEL_CHAR), reader);
+			assertCharacterSetEvent(60, 69, reader);
+			assertCharacterSetEvent(72, 81, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
+			assertLabeledIDEvent(EventContentType.CHARACTER_SET, COMMAND_NAME_DOMAIN + ".Alpha_1", 
+					"Domain=Alpha_1  Property=Coding", reader);
+			assertCharacterSetEvent(0, 81, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
 			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A-2301", null, reader);
 			assertCharactersEvent("GGTTCTCACACCCTCCAGATGATGTTT", reader);
@@ -121,10 +128,12 @@ public class MEGAEventReaderTest {
 			assertCharactersEvent("GGTTCTCACACCATCCAGATGATGTAT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
+			assertLabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, Character.toString(DEFAULT_LABEL_CHAR), reader);
 			assertCommentEvent("comment in label", reader);
-			assertCharacterSetEvent("+", 93, 96, reader);
-			assertCharacterSetEvent("+", 99, 102, reader);
-			assertCharacterSetEvent("+", 105, 108, reader);
+			assertCharacterSetEvent(93, 96, reader);
+			assertCharacterSetEvent(99, 102, reader);
+			assertCharacterSetEvent(105, 108, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 
 			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A-2301", null, reader);
 			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
@@ -139,7 +148,10 @@ public class MEGAEventReaderTest {
 			assertCommentEvent("Nested [comment]", reader);
 			assertCommentEvent("[Nested] comment", reader);
 
-			assertCharacterSetEvent("Domain=Alpha_2 Property=Coding", 81, 123, reader);
+			assertLabeledIDEvent(EventContentType.CHARACTER_SET, COMMAND_NAME_DOMAIN + ".Alpha_2", 
+					"Domain=Alpha_2 Property=Coding", reader);
+			assertCharacterSetEvent(81, 123, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
 			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A-2301", null, reader);
 			assertCharactersEvent("GACCCCCCCAAGACACAT", reader);
@@ -151,7 +163,10 @@ public class MEGAEventReaderTest {
 			assertCharactersEvent("GACCCCCCCAGGACGCAT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
-			assertCharacterSetEvent("Domain=Alpha_3 Property=Coding", 123, 141, reader);
+			assertLabeledIDEvent(EventContentType.CHARACTER_SET, COMMAND_NAME_DOMAIN + ".Alpha_3", 
+					"Domain=Alpha_3 Property=Coding", reader);
+			assertCharacterSetEvent(123, 141, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
