@@ -1,0 +1,5 @@
+#NEXUS
+
+BEGIN DATA;
+	FORMAT datatype=mixed(DNA:1-1451,Standard:1452-1548) gap=- missing=?;
+end;

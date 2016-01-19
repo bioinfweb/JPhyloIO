@@ -121,6 +121,8 @@ test/data/Nexus/Format.nex -text
 test/data/Nexus/FormatContinuous.nex -text
 test/data/Nexus/FormatContinuousSymbols.nex -text
 test/data/Nexus/FormatMrBayesDataType.nex -text
+test/data/Nexus/FormatMrBayesDataTypeInvalidSymbols.nex -text
+test/data/Nexus/FormatMrBayesDataTypeNoSingleDefs.nex -text
 test/data/Nexus/FormatTokens.nex -text
 test/data/Nexus/Matrix.nex -text
 test/data/Nexus/MatrixContinuous.nex -text

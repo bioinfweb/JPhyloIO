@@ -807,8 +807,25 @@ public class NexusEventReaderTest {
 	
 	
 	@Test
-	public void testReadingMrBayesDataTypeExtension() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatMrBayesDataType.nex"), false, factory);
+	public void testReadingMrBayesDataTypeExtensionValid() throws Exception {
+		testReadingMrBayesDataTypeExtension("data/Nexus/FormatMrBayesDataType.nex", true);
+	}
+	
+	
+	@Test
+	public void testReadingMrBayesDataTypeExtensionInvalid() throws Exception {
+		testReadingMrBayesDataTypeExtension("data/Nexus/FormatMrBayesDataTypeInvalidSymbols.nex", true);
+	}
+	
+	
+	@Test
+	public void testReadingMrBayesDataTypeExtensionNoSingleDefs() throws Exception {
+		testReadingMrBayesDataTypeExtension("data/Nexus/FormatMrBayesDataTypeNoSingleDefs.nex", true);
+	}
+	
+	
+	private void testReadingMrBayesDataTypeExtension(String file, boolean testSingleDefs) throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File(file), false, factory);
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -822,13 +839,17 @@ public class NexusEventReaderTest {
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
-			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
-			assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, true, reader);
+			if (testSingleDefs) {
+				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
+				assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, true, reader);
+			}
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateType.DISCRETE, "Standard", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
-			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
-			assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, true, reader);
+			if (testSingleDefs) {
+				assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
+				assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, true, reader);
+			}
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
