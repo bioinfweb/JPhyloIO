@@ -33,6 +33,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
 
 
@@ -51,6 +52,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 	private boolean allowInterleavedParsing = true;
 	private List<String> sequenceNames = new ArrayList<String>();
 	private int currentSequenceIndex = 0;
+	private IDToNameManager sequenceIDToNameManager = new IDToNameManager(DEFAULT_SEQUENCE_ID_PREFIX);
 	
 	
 	/**
@@ -215,7 +217,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 						}
 						else {
 							getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
-									DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(), currentSequenceName, null));
+									sequenceIDToNameManager.getID(currentSequenceName), currentSequenceName, null));
 						}
 					}
 					JPhyloIOEvent event = readCharacters(currentSequenceName);

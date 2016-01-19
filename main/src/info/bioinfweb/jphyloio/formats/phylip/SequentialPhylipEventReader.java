@@ -162,7 +162,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
 							}
 							if (getReader().peek() != -1) {  // Do not start a new sequence, if the end of the alignment was reached.
 								getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
-										DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(), currentSequenceName, null));
+										DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(), currentSequenceName, null));  // Saving IDs to names in not necessary, since sequential Phylip cannot be interleaved.
 							}
 						}
 						
