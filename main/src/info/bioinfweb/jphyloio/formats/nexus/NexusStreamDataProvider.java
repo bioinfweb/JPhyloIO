@@ -25,6 +25,7 @@ import java.util.Queue;
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
@@ -71,7 +72,7 @@ public class NexusStreamDataProvider {
 	}
 	
 	
-	public MetaInformationEvent readKeyValueMetaInformation(String keyPrefix) throws IOException {
+	public KeyValueInformation readKeyValueMetaInformation(String keyPrefix) throws IOException {
 		return nexusReader.readKeyValueMetaInformation(keyPrefix);
 	}
 	

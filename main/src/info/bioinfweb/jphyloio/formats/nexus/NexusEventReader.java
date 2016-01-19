@@ -243,8 +243,8 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
-	protected MetaInformationEvent readKeyValueMetaInformation(String keyPrefix) throws IOException {
-		return readKeyValueMetaInformation(keyPrefix, COMMAND_END, COMMENT_START, COMMENT_END, KEY_VALUE_SEPARATOR, VALUE_DELIMITER);
+	protected KeyValueInformation readKeyValueMetaInformation(String keyPrefix) throws IOException {
+		return readKeyValueInformation(keyPrefix, COMMAND_END, COMMENT_START, COMMENT_END, KEY_VALUE_SEPARATOR, VALUE_DELIMITER);
 	}
 	
 	

@@ -50,6 +50,32 @@ import java.util.regex.Pattern;
 public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEventReader {
 	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
 	
+	public static class KeyValueInformation {
+		private String key;
+		private String originalKey;
+		private String value;
+		
+		public KeyValueInformation(String prefix, String key, String value) {
+			super();
+			this.key = prefix + key;
+			this.originalKey = key;
+			this.value = value;
+		}
+		
+		public String getKey() {
+			return key;
+		}
+
+		public String getOriginalKey() {
+			return originalKey;
+		}
+
+		public String getValue() {
+			return value;
+		}
+	}
+	
+	
 	private int maxCommentLength = DEFAULT_MAX_COMMENT_LENGTH;
 	private PeekReader reader;
 	protected boolean lineConsumed = true;
@@ -283,7 +309,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 	
 	
-	protected MetaInformationEvent readKeyValueMetaInformation(String keyPrefix, char commandEnd, char commentStart, 
+	protected KeyValueInformation readKeyValueInformation(String keyPrefix, char commandEnd, char commentStart, 
 			char commentEnd, char keyValueSeparator, char valueDelimiter) throws IOException {
 		
 		PeekReader reader = getReader();
@@ -307,7 +333,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 			}
 			consumeWhiteSpaceAndComments(commentStart, commentEnd);
 		}
-		return new MetaInformationEvent(keyPrefix + key, null, value);
+		return new KeyValueInformation(keyPrefix, key, value);
 	}
 	
 	

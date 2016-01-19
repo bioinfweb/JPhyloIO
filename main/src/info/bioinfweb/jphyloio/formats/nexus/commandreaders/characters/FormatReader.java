@@ -19,16 +19,17 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
-import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -42,7 +43,6 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 
 
@@ -66,6 +66,8 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	
 	
 	private boolean continuousData = false;
+	private List<TokenSetDefinitionEvent> tokenSetDefinitionEvents = new ArrayList<TokenSetDefinitionEvent>();
+	private List<SingleTokenDefinitionEvent> singleTokenDefinitionEvents = new ArrayList<SingleTokenDefinitionEvent>();
 	
 	
 	public FormatReader(NexusStreamDataProvider nexusDocument) {
@@ -99,52 +101,68 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	}
 	
 	
-	private void parseMixedDataType(String content) {
+	private boolean parseMixedDataType(String content) {
 		String[] parts = content.split("\\,");
-		List<JPhyloIOEvent> events = new ArrayList<JPhyloIOEvent>(parts.length * 2);
+		List<JPhyloIOEvent> charSetEvents = new ArrayList<JPhyloIOEvent>(parts.length * 3);
+		List<TokenSetDefinitionEvent> tokenSetEvents = new ArrayList<TokenSetDefinitionEvent>(parts.length);
 		for (int i = 0; i < parts.length; i++) {
 			Matcher matcher = MIXED_DATA_TYPE_SINGLE_SET_PATTERN.matcher(parts[i]);
 			if (matcher.matches()) {
 				String charSetName = DATA_TYPE_CHARACTER_SET_NAME_PREFIX + (i + 1);
 				try {
-					events.add(new LabeledIDEvent(EventContentType.CHARACTER_SET, charSetName, charSetName));
-					events.add(new CharacterSetIntervalEvent(Long.parseLong(matcher.group(2)), Long.parseLong(matcher.group(3)) + 1));
-					events.add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+					charSetEvents.add(new LabeledIDEvent(EventContentType.CHARACTER_SET, charSetName, charSetName));
+					charSetEvents.add(new CharacterSetIntervalEvent(Long.parseLong(matcher.group(2)), Long.parseLong(matcher.group(3)) + 1));
+					charSetEvents.add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 				}
 				catch (NumberFormatException e) {
-					return;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
+					return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
 				}
-				events.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), matcher.group(1), charSetName));
+				tokenSetEvents.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), matcher.group(1), charSetName));
 			}
 			else {
-				return;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
+				return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
 			}
 		}
-		getStreamDataProvider().getUpcomingEvents().addAll(events);  // Events are added to the queue when its sure that there was no parsing error.
+		getStreamDataProvider().getUpcomingEvents().addAll(charSetEvents);  // Events are added to the queue when its sure that there was no parsing error.
+		tokenSetDefinitionEvents.addAll(tokenSetEvents);  // Save to nest single token symbol definitions later.
+		return true;
+	}
+	
+	
+	private void addSingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning) {
+		singleTokenDefinitionEvents.add(new SingleTokenDefinitionEvent(tokenName, meaning));
 	}
 	
 	
 	@Override
-	protected void processSubcommand(MetaInformationEvent event, String key, String value) throws IOException {
-		boolean eventReplaced = false;
+	protected boolean processSubcommand(KeyValueInformation info) throws IOException {
+		boolean eventCreated = false;
+		boolean eventAddedToQueue = false;
 		
+		String key = info.getOriginalKey().toUpperCase();
+		String upperCaseValue = info.getValue().toUpperCase();
 		if (FORMAT_SUBCOMMAND_TOKENS.equals(key) || 
-				(FORMAT_SUBCOMMAND_DATA_TYPE.equals(key) && FORMAT_VALUE_CONTINUOUS_DATA_TYPE.equals(value))) {
+				(FORMAT_SUBCOMMAND_DATA_TYPE.equals(key) && FORMAT_VALUE_CONTINUOUS_DATA_TYPE.equals(upperCaseValue))) {
 			
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TOKENS_FORMAT, true);
 		}
 		
 		if (FORMAT_SUBCOMMAND_DATA_TYPE.equals(key)) {
-			Matcher matcher = MIXED_DATA_TYPE_VALUE_PATTERN.matcher(event.getStringValue());  // Does case insensitive matching.
+			Matcher matcher = MIXED_DATA_TYPE_VALUE_PATTERN.matcher(info.getValue());  // Does case insensitive matching.
 			if (matcher.matches()) {  // Parse MrBayes extension
-				parseMixedDataType(matcher.group(1));
-				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event for datatype will be returned.
-					eventReplaced = true;
+				if (parseMixedDataType(matcher.group(1))) {  // Otherwise the previously constructed meta event for datatype will be returned.
+					eventCreated = true;
+					eventAddedToQueue = true;
 				}
 			}
 			else {
-				getStreamDataProvider().getUpcomingEvents().add(new TokenSetDefinitionEvent(getTokenSetType(value), event.getStringValue()));
-				eventReplaced = true;
+				if (tokenSetDefinitionEvents.isEmpty()) {  // Only MrBayes extension allows to specify more than one token set.
+					tokenSetDefinitionEvents.add(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), info.getValue()));
+					eventCreated = true;
+				}
+				else {
+					throw new IOException("Duplicate token set definition in Nexus FORMAT command.");
+				}
 			}
 		}
 		else if (FORMAT_SUBCOMMAND_INTERLEAVE.equals(key)) {
@@ -157,20 +175,17 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TRANSPOSE, true);
 		}
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
-			getStreamDataProvider().getNexusReader().setMatchToken(event.getStringValue());
-			getStreamDataProvider().getUpcomingEvents().add(
-					new SingleTokenDefinitionEvent(event.getStringValue(), CharacterStateMeaning.MATCH));
-			eventReplaced = true;
+			getStreamDataProvider().getNexusReader().setMatchToken(info.getValue());
+			addSingleTokenDefinitionEvent(info.getValue(), CharacterStateMeaning.MATCH);
+			eventCreated = true;
 		}
 		else if (FORMAT_SUBCOMMAND_GAP_CHAR.equals(key)) {
-			getStreamDataProvider().getUpcomingEvents().add(
-					new SingleTokenDefinitionEvent(event.getStringValue(), CharacterStateMeaning.GAP));
-			eventReplaced = true;
+			addSingleTokenDefinitionEvent(info.getValue(), CharacterStateMeaning.GAP);
+			eventCreated = true;
 		}
 		else if (FORMAT_SUBCOMMAND_MISSING_CHAR.equals(key)) {
-			getStreamDataProvider().getUpcomingEvents().add(
-					new SingleTokenDefinitionEvent(event.getStringValue(), CharacterStateMeaning.MISSING));
-			eventReplaced = true;
+			addSingleTokenDefinitionEvent(info.getValue(), CharacterStateMeaning.MISSING);
+			eventCreated = true;
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
 			if (continuousData) {
@@ -178,23 +193,70 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 						FORMAT_SUBCOMMAND_DATA_TYPE + "=" + FORMAT_VALUE_CONTINUOUS_DATA_TYPE + " was specified.");  //TODO Replace by ParseException
 			}
 			else {
-				for (int i = 0; i < event.getStringValue().length(); i++) {
-					char c = event.getStringValue().charAt(i);
+				for (int i = 0; i < info.getValue().length(); i++) {
+					char c = info.getValue().charAt(i);
 					if (!Character.isWhitespace(c)) {
-						getStreamDataProvider().getUpcomingEvents().add(new SingleTokenDefinitionEvent(
-								Character.toString(c), CharacterStateMeaning.CHARACTER_STATE));
+						addSingleTokenDefinitionEvent(Character.toString(c), CharacterStateMeaning.CHARACTER_STATE);
+						eventCreated = true;  // Otherwise the previously constructed meta event will be returned, indicating an empty symbols subcommand.
 					}
 				} 
-				if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {  // Otherwise the previously constructed meta event will be returned, indicating an empty symbols subcommand.
-					eventReplaced = true;
-				}
 			}
 		}
 		
-		if (!eventReplaced) {
-			getStreamDataProvider().getUpcomingEvents().add(event);
+		if (!eventCreated) {
+			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
 			getStreamDataProvider().getUpcomingEvents().add(
 					new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+			eventAddedToQueue = true;
 		}
+		return eventAddedToQueue;
+	}
+	
+	
+	private void removeWaitingCharacterStateEvents() {
+		Iterator<SingleTokenDefinitionEvent> iterator = singleTokenDefinitionEvents.iterator();
+		while (iterator.hasNext()) {
+			if (CharacterStateMeaning.CHARACTER_STATE.equals(iterator.next().getMeaning())) {
+				iterator.remove();
+			}
+		}
+	}
+
+
+	/**
+	 * Adds the stored token set event with nested single token definition events to the queue, if present.
+	 * <p>
+	 * In the case of MrBayes {@code MIXED} data type more than one token set definition event may be added. The 
+	 * stored single token definition events are nested into each of these token set definition event, except for 
+	 * events with the meaning {@link CharacterStateMeaning#CHARACTER_STATE}, which are removed in this case, 
+	 * because they may not fit to all defined token sets.
+	 * <p>
+	 * If only single token definition events could be created from the format command and no token set, no
+	 * events will be added.
+	 * 
+	 * @see info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader#addStoredEvents()
+	 */
+	@Override
+	protected boolean addStoredEvents() {
+		boolean result = !tokenSetDefinitionEvents.isEmpty();
+		if (result) {
+			Queue<JPhyloIOEvent> queue = getStreamDataProvider().getUpcomingEvents();
+			if (tokenSetDefinitionEvents.size() > 1) {  // DATATYPE = MIXED
+				removeWaitingCharacterStateEvents();  // Possibly such events would not fit to all token sets.
+			}
+			
+			for (JPhyloIOEvent tokenSetEvent : tokenSetDefinitionEvents) {
+				queue.add(tokenSetEvent);
+				for (SingleTokenDefinitionEvent singleTokenDefinitionEvent : singleTokenDefinitionEvents) {
+					queue.add(singleTokenDefinitionEvent);
+					queue.add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END));
+				}
+				queue.add(new ConcreteJPhyloIOEvent(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.END));
+			}
+	
+			tokenSetDefinitionEvents.clear();
+			singleTokenDefinitionEvents.clear();
+		}
+		return result;
 	}
 }

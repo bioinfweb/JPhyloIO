@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 import java.io.IOException;
 
+import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -45,13 +46,14 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 
 
 	@Override
-	protected void processSubcommand(MetaInformationEvent event, String key, String value) throws IOException {
+	protected boolean processSubcommand(KeyValueInformation info) throws IOException {
 		long longValue = Long.MIN_VALUE;
 		try {
-			longValue = Long.parseLong(value);
+			longValue = Long.parseLong(info.getValue());
 		}
 		catch (NumberFormatException e) {}  // Nothing to do.
 		
+		String key = info.getOriginalKey().toUpperCase();
 		if (longValue > 0) {
 			if (DIMENSIONS_SUBCOMMAND_NTAX.equals(key)) {
 				getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_NTAX, longValue);
@@ -60,15 +62,23 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 				getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_CHAR, longValue);
 			}
 			
-			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(event.getKey(), null, value, longValue));  //TODO Does a type need to specified, if an object value is provided?
+			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue(), longValue));  //TODO Does a type need to specified, if an object value is provided?
 		}
 		else if (DIMENSIONS_SUBCOMMAND_NTAX.equals(key) || DIMENSIONS_SUBCOMMAND_NCHAR.equals(key)) {
-			throw new IOException("\"" + value + "\" is not a valid positive integer. Only positive integer values are valid for NTAX or NCHAR in the Nexus DIMENSIONS command.");
+			throw new IOException("\"" + info.getValue() + "\" is not a valid positive integer. Only positive integer values are valid for NTAX or NCHAR in the Nexus DIMENSIONS command.");
 		}
 		else {  // Possible unknown subcommand
-			getStreamDataProvider().getUpcomingEvents().add(event);  //TODO Does a type need to specified, if an object value is provided?
+			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
 		}
 		getStreamDataProvider().getUpcomingEvents().add(
 				new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+		
+		return true;  // An event is added to the queue in every case.
+	}
+
+
+	@Override
+	protected boolean addStoredEvents() {
+		return false;  // This reader does not store any events.
 	}
 }

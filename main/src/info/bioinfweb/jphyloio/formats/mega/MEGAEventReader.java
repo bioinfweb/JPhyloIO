@@ -137,7 +137,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	
 	private void processFormatSubcommand(String key, String value) {
 		if (key.substring(FORMAT_KEY_PREFIX.length()).toUpperCase().equals(FORMAT_SUBCOMMAND_IDENTICAL)) {
-			setMatchToken(value);
+			setMatchToken(value);  //TODO The generation of an according meta event could be suppressed, since match characters are anyway replaced by JPhyloIO (and the according event would be a SingleTokenDefinitionEvent).
 		}
 	}
 	
@@ -149,9 +149,9 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			
 			boolean eventAdded = false;
 			while (getReader().peekChar() != COMMAND_END) {
-				MetaInformationEvent event = readKeyValueMetaInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=', '"');
-				processFormatSubcommand(event.getKey(), event.getStringValue());
-				getUpcomingEvents().add(event);
+				KeyValueInformation info = readKeyValueInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=', '"');
+				processFormatSubcommand(info.getKey(), info.getValue());
+				getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
 				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 				eventAdded = true;
 			}

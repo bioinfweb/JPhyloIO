@@ -58,7 +58,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {  //TODO 
 	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning, CharacterStateType tokenSetType,
 			String tokenSetName) {
 		
-		super(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.SOLE);  //TODO Possibly change to START later.
+		super(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.START);
 
 		if (tokenName == null) {
 			throw new NullPointerException("The token name must not be null.");

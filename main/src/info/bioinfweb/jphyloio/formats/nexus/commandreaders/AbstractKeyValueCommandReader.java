@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
@@ -46,25 +47,43 @@ public abstract class AbstractKeyValueCommandReader extends AbstractNexusCommand
 	}
 
 
-	protected abstract void processSubcommand(MetaInformationEvent event, String key, String value) throws IOException;
+	/**
+	 * Inherited classes should implement this method by adding one or more events to the queue, which have
+	 * been generated from the specified key value pair.
+	 * 
+	 * @param info the key and value
+	 * @return {@code true} if at least one event has been added to the queue by this or {@code false} otherwise
+	 * @throws IOException if an exception occurs when trying to read from the underlying stream
+	 */
+	protected abstract boolean processSubcommand(KeyValueInformation info) throws IOException;
+	
+	
+	/**
+	 * Implementations that need to store events, until all generated events are known should add such events
+	 * to the queue, when this method is called. It is guaranteed that this method will not be called by 
+	 * {@link AbstractKeyValueCommandReader}, before the whole command was processed.
+	 * 
+	 * @return {@code true} if events were added by this method or {@code false} otherwise
+	 */
+	protected abstract boolean addStoredEvents();
 	
 	
 	@Override
 	protected boolean doReadNextEvent() throws Exception {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		try {
-			getStreamDataProvider().consumeWhiteSpaceAndComments();
-			if (reader.peekChar() != COMMAND_END) {
-				MetaInformationEvent event = getStreamDataProvider().readKeyValueMetaInformation(getKeyPrefix());
-				processSubcommand(event, event.getKey().substring(getKeyPrefix().length()).toUpperCase(),  // Remove key prefix for comparison
-						event.getStringValue().toUpperCase());
-				return true;
+			while (reader.peekChar() != COMMAND_END) {
+				getStreamDataProvider().consumeWhiteSpaceAndComments();
+				KeyValueInformation info = getStreamDataProvider().readKeyValueMetaInformation(getKeyPrefix());
+				if (processSubcommand(info)) {
+					return true;
+				}
 			}
-			else {
-				reader.skip(1); // Consume ';'.
-				setAllDataProcessed(true);
-				return false;
-			}
+			boolean result = addStoredEvents();  // Add possibly stored events to the queue.
+			
+			reader.skip(1); // Consume ';'.
+			setAllDataProcessed(true);
+			return result;
 		}
 		catch (EOFException e) {
 			throw new IOException("Unexpected end of file in " + getCommandName() + " command.");  //TODO Replace by ParseException
