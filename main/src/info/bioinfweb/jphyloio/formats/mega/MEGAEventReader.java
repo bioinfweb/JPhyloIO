@@ -40,6 +40,7 @@ import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
 
 
@@ -68,7 +69,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	private long currentLabelPos = 0;
 	private String currentGeneOrDomainName = null;
 	private long currentGeneOrDomainStart = -1;
-	private int nestedNextCalls = 0; //TODO is never used now, possible future use?
+	private IDToNameManager sequenceIDToNameManager = new IDToNameManager(DEFAULT_SEQUENCE_ID_PREFIX);
 	
 	
 	/**
@@ -307,8 +308,8 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 		else if (firstSequenceName.equals(currentSequenceName)) {
 			currentLabelPos = Math.max(currentLabelPos, charactersRead);  // Label command can be omitted in interleaved format.
 		}
-		getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
-				DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(), currentSequenceName, null));
+		getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE,
+				sequenceIDToNameManager.getID(currentSequenceName), currentSequenceName, null));
 	}
 	
 	
