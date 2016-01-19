@@ -99,11 +99,11 @@ public class NeXMLEventReaderTest {
 				assertMetaEvent("id", "meta1841", true, true, reader);
 				assertEventType(EventContentType.META_INFORMATION, EventTopologyType.END, reader);
 				
-				assertBasicOTUEvent(null, reader);
+				assertLinkedOTUEvent(null, reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-				assertBasicOTUEvent("Grifola frondosa", reader);
+				assertLinkedOTUEvent("Grifola frondosa", reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-				assertBasicOTUEvent(null, reader);
+				assertLinkedOTUEvent(null, reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 				
 				assertEdgeEvent("Tn274900", "Tn274857", reader);
@@ -143,11 +143,11 @@ public class NeXMLEventReaderTest {
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
 				
-				assertBasicOTUEvent(null, reader);
+				assertLinkedOTUEvent(null, reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-				assertBasicOTUEvent(null, reader);
+				assertLinkedOTUEvent(null, reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-				assertBasicOTUEvent(null, reader);
+				assertLinkedOTUEvent(null, reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 				
 				assertEdgeEvent("internal1", "taxon1", 5.0, reader);
@@ -155,11 +155,11 @@ public class NeXMLEventReaderTest {
 				assertEdgeEvent("internal1", "taxon2", reader);
 				assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 				
-				assertBasicOTUEvent(null, reader);
+				assertLinkedOTUEvent(null, reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-				assertBasicOTUEvent(null, reader);
+				assertLinkedOTUEvent(null, reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-				assertBasicOTUEvent(null, reader);
+				assertLinkedOTUEvent(null, reader);
 				assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 				
 				assertEdgeEvent(null, "internal1", reader);

@@ -39,38 +39,38 @@ public class NewickReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String idA = assertBasicOTUEvent(EventContentType.NODE, null, "A", null, reader);
+			String idA = assertLinkedOTUEvent(EventContentType.NODE, null, "A", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idB = assertBasicOTUEvent(EventContentType.NODE, null, "B", null, reader);
+			String idB = assertLinkedOTUEvent(EventContentType.NODE, null, "B", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idN3 = assertBasicOTUEvent(EventContentType.NODE, null, "N3", null, reader);
+			String idN3 = assertLinkedOTUEvent(EventContentType.NODE, null, "N3", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN3, idA, 1.05, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN3, idB, 1.0, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
-			String idC = assertBasicOTUEvent(EventContentType.NODE, null, "C", null, reader);
+			String idC = assertLinkedOTUEvent(EventContentType.NODE, null, "C", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idN2 = assertBasicOTUEvent(EventContentType.NODE, null, "N2", null, reader);
+			String idN2 = assertLinkedOTUEvent(EventContentType.NODE, null, "N2", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN2, idN3, 1.5, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN2, idC, 2.5, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
-			String idD = assertBasicOTUEvent(EventContentType.NODE, null, "D", null, reader);
+			String idD = assertLinkedOTUEvent(EventContentType.NODE, null, "D", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idE = assertBasicOTUEvent(EventContentType.NODE, null, "E", null, reader);
+			String idE = assertLinkedOTUEvent(EventContentType.NODE, null, "E", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idN4 = assertBasicOTUEvent(EventContentType.NODE, null, "N4", null, reader);
+			String idN4 = assertLinkedOTUEvent(EventContentType.NODE, null, "N4", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN4, idD, 2.0, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN4, idE, 2.1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
-			String idN1 = assertBasicOTUEvent(EventContentType.NODE, null, "N1", null, reader);
+			String idN1 = assertLinkedOTUEvent(EventContentType.NODE, null, "N1", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idN2, .8, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -95,24 +95,24 @@ public class NewickReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String id1 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id2 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			
-			String id3_1 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3_2 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
-			String id3 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id3_1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_2, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
-			String id0 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id0 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -139,24 +139,24 @@ public class NewickReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String id1 = assertBasicOTUEvent(EventContentType.NODE, null, "A", null, reader);
+			String id1 = assertLinkedOTUEvent(EventContentType.NODE, null, "A", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id2 = assertBasicOTUEvent(EventContentType.NODE, null, "B", null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			
-			String id3_1 = assertBasicOTUEvent(EventContentType.NODE, null, "C", null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3_2 = assertBasicOTUEvent(EventContentType.NODE, null, "D", null, reader);
+			String id2 = assertLinkedOTUEvent(EventContentType.NODE, null, "B", null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
-			String id3 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id3_1 = assertLinkedOTUEvent(EventContentType.NODE, null, "C", null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertLinkedOTUEvent(EventContentType.NODE, null, "D", null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_2, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
-			String id0 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id0 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -183,24 +183,24 @@ public class NewickReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String id1 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id2 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			
-			String id3_1 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3_2 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
-			String id3 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id3_1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_1, .3, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_2, .4, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
-			String id0 = assertBasicOTUEvent(EventContentType.NODE, null, null, null, reader);
+			String id0 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id1, .1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);

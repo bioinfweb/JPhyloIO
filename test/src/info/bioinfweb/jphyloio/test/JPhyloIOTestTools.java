@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
@@ -57,18 +58,26 @@ public class JPhyloIOTestTools {
 	}
 	
 	
-	public static String assertBasicOTUEvent(EventContentType expectedType, String expectedID, String expectedLabel, 
-			String expectedOTUID,	JPhyloIOEventReader reader) throws Exception {
+	public static LabeledIDEvent assertLabeledIDEvent(EventContentType expectedType, String expectedID, String expectedLabel, 
+			JPhyloIOEventReader reader) throws Exception {
 		
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEventType(expectedType, EventTopologyType.START, event);
 
-		LinkedOTUEvent otuEvent = event.asLinkedOTUEvent();
+		LabeledIDEvent labeledIDEvent = event.asLinkedOTUEvent();
 		if (expectedID != null) {
-			assertEquals(expectedID, otuEvent.getID());
+			assertEquals(expectedID, labeledIDEvent.getID());
 		}
-		assertEquals(expectedLabel, otuEvent.getLabel());
+		assertEquals(expectedLabel, labeledIDEvent.getLabel());
+		return labeledIDEvent;
+	}
+		
+	
+	public static String assertLinkedOTUEvent(EventContentType expectedType, String expectedID, String expectedLabel, 
+			String expectedOTUID,	JPhyloIOEventReader reader) throws Exception {
+		
+		LinkedOTUEvent otuEvent = assertLabeledIDEvent(expectedType, expectedID, expectedLabel, reader).asLinkedOTUEvent();
 		if (expectedOTUID == null) {
 			assertNull(otuEvent.getOTUID());
 		}
