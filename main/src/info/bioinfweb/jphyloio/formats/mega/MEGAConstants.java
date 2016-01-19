@@ -37,4 +37,6 @@ public interface MEGAConstants {
 	public static final String COMMAND_NAME_DOMAIN = "DOMAIN";
 
 	public static final String FORMAT_SUBCOMMAND_IDENTICAL = "IDENTICAL";
+
+	public static final String LABEL_CHAR_SET_ID = "MEGALabelCharacterSet";
 }

@@ -25,15 +25,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -49,6 +52,12 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	private static final Pattern READ_COMMAND_PATTERN = 
 			Pattern.compile(".+(\\" + COMMENT_START + "|\\" + COMMAND_END + ")", Pattern.DOTALL);
 	private static final Pattern SEQUENCE_NAME_PATTERN = Pattern.compile(".+\\s+");
+	
+	private static final String GENE_DONAIN_COMMAND_PATTERN_SUFFIX = "\\s*\\=\\s*(\\w+).*";
+	private static final Pattern GENE_COMMAND_PATTERN = 
+			Pattern.compile(".*" + COMMAND_NAME_GENE + GENE_DONAIN_COMMAND_PATTERN_SUFFIX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern DOMAIN_COMMAND_PATTERN = 
+			Pattern.compile(".*" + COMMAND_NAME_DOMAIN + GENE_DONAIN_COMMAND_PATTERN_SUFFIX, Pattern.CASE_INSENSITIVE);
 
 	public static final String FORMAT_KEY_PREFIX = "info.bioinfweb.jphyloio.formats.mega.format.";
 	
@@ -177,6 +186,8 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 		long start = -1;
 		char currentName = DEFAULT_LABEL_CHAR;
 		char c = getReader().readChar();
+		getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, 
+				Character.toString(DEFAULT_LABEL_CHAR)));
 		while (c != COMMAND_END) {
 			if (!Character.isWhitespace(c)) {
 				if (c == COMMENT_START) {
@@ -186,7 +197,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			    //     start of new character set                                      || end of current set
 					if (((currentName == DEFAULT_LABEL_CHAR) && (c != DEFAULT_LABEL_CHAR)) || (c != currentName)) {
 						if ((c != currentName) && (currentName != DEFAULT_LABEL_CHAR)) {  // end current set
-							getUpcomingEvents().add(new CharacterSetIntervalEvent("" + currentName, start, pos));
+							getUpcomingEvents().add(new CharacterSetIntervalEvent(start, pos));
 							result = true;
 						}
 						start = pos;
@@ -198,11 +209,37 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			c = getReader().readChar();
 		}
 		if (currentName != DEFAULT_LABEL_CHAR) {
-			getUpcomingEvents().add(new CharacterSetIntervalEvent("" + currentName, start, pos));
+			getUpcomingEvents().add(new CharacterSetIntervalEvent(start, pos));
 			result = true;
 		}
 		currentLabelPos = pos;
+		getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, false));
 		return result;
+	}
+	
+	
+	private static String extractGeneOrDomainID(String geneOrDomainCommand) {
+		Matcher matcher = GENE_COMMAND_PATTERN.matcher(geneOrDomainCommand);
+		if (matcher.matches()) {
+			return COMMAND_NAME_GENE + "." + matcher.group(1);
+		}
+		else {
+			matcher = DOMAIN_COMMAND_PATTERN.matcher(geneOrDomainCommand);
+			if (matcher.matches()) {
+				return COMMAND_NAME_DOMAIN + "." + matcher.group(1);
+			}
+			else {
+				return null;
+			}
+		}
+	}
+	
+	
+	private void createGeneOrDomainCharSetEvents() {
+		getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
+				extractGeneOrDomainID(currentGeneOrDomainName), currentGeneOrDomainName));  // Throws NullPointerException if no ID can be extracted.
+		getUpcomingEvents().add(new CharacterSetIntervalEvent(currentGeneOrDomainStart, charactersRead));
+		getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, false));  // For simplification, it is not tested whether gene or domain character sets are extended later on, because they usually consist of only one part. 
 	}
 	
 	
@@ -239,11 +276,12 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 				// Process command:
 				String content = contentBuffer.toString().trim();
 				String upperCaseContent = content.toUpperCase();
+				
 				if (!upperCaseContent.startsWith(COMMAND_NAME_TITLE) && !upperCaseContent.startsWith(COMMAND_NAME_DESCRIPTION) &&
-						(upperCaseContent.contains(COMMAND_NAME_DOMAIN + "=") || upperCaseContent.contains(COMMAND_NAME_GENE + "="))) {
+						(DOMAIN_COMMAND_PATTERN.matcher(content).matches() || GENE_COMMAND_PATTERN.matcher(content).matches())) {
 					
 					if (currentGeneOrDomainName != null) {
-						getUpcomingEvents().add(new CharacterSetIntervalEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead));
+						createGeneOrDomainCharSetEvents();
 						result = true;
 					}
 					currentGeneOrDomainName = content;
@@ -308,7 +346,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 					}  // fall through in else case
 				case SEQUENCE:
 				case SEQUENCE_TOKENS:
-				case CHARACTER_SET_INTERVAL:
+				case CHARACTER_SET:
 				case META_INFORMATION:
 				case COMMENT:
 					// Read commands:
@@ -318,7 +356,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 						int c = getReader().peek();
 						if (c == -1) {
 							if (currentGeneOrDomainName != null) {
-								getUpcomingEvents().add(new CharacterSetIntervalEvent(currentGeneOrDomainName, currentGeneOrDomainStart, charactersRead));
+								createGeneOrDomainCharSetEvents();
 								currentGeneOrDomainName = null;  // Avoid multiple firing of this event
 							}
 							else {

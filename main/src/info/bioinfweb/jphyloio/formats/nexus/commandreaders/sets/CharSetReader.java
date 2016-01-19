@@ -23,8 +23,12 @@ import java.io.IOException;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
@@ -57,7 +61,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	}
 	
 	
-	private JPhyloIOEvent readNameAndFormat() throws IOException {
+	private boolean readNameAndFormat() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		
 		// Read name:
@@ -74,7 +78,12 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		else if (end == COMMAND_END) {  // character set definition incomplete
 			setAllDataProcessed(true);
 			if (name.length() > 1) {
-				return new CharacterSetIntervalEvent(StringUtils.cutEnd(name, 1), 0, 0);  // Empty character sets are not valid in Nexus but are anyway supported here.
+				getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
+						JPhyloIOEventReader.DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+						StringUtils.cutEnd(name, 1)));
+				getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
+				getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+				return true;
 			}
 			else {
 				throw new IOException("Empty CharSet command. At least a set name must be specified.");  //TODO Replace by ParseException with line and column information.
@@ -97,13 +106,20 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			char c = reader.readChar();
 			if (c == COMMAND_END) {
 				setAllDataProcessed(true);
-				return new CharacterSetIntervalEvent(name, 0, 0);  // Empty character sets are not valid in Nexus but are anyway supported here.
+				getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
+						JPhyloIOEventReader.DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
+				getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
+				getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+				return true;
 			}
 			else if (c != KEY_VALUE_SEPARATOR) {
 				throw new IOException("Unexpected token '" + c + "' found in CharSet command.");  //TODO Replace by parse exception.
 			}
-		}		
-		return null;
+		}
+		
+		getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
+				JPhyloIOEventReader.DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
+		return false;
 	}
 	
 	
@@ -115,7 +131,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 				switch (c) {
 					case COMMENT_START:
 						if (currentStartColumn != -1) {
-							getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(name, currentStartColumn, currentColumn));
+							getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn));
 						}
 						getStreamDataProvider().readComment();
 						return;
@@ -128,7 +144,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 					case CHAR_SET_NOT_CONTAINED:
 						currentColumn++;
 						if (currentStartColumn != -1) {
-							getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(name, currentStartColumn, currentColumn - 1));
+							getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn - 1));
 							return;
 						}
 						break;
@@ -141,12 +157,13 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		
 		setAllDataProcessed(true);
 		if (currentStartColumn != -1) {  // No terminal '0' was found.
-			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(name, currentStartColumn, currentColumn));
+			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn));
 		}
 		else if (isFirstCall) {  // A sequence of only '0' was found.
-			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(name, 0, 0));
+			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(0, 0));
 		}
-	}
+		getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+}
 	
 	
 	private int parseInteger() throws IOException {  //TODO Move method to PeekReader
@@ -179,7 +196,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 				}
 			}
 			
-			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(name, start, end + 1));
+			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(start, end + 1));
 		}
 	}
 	
@@ -187,12 +204,10 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	private boolean endParsing(boolean isFirstCall) {
 		setAllDataProcessed(true);
 		if (isFirstCall) {
-			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(name, 0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
-			return true;
+			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
 		}
-		else {
-			return false;
-		}
+		getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+		return isFirstCall;
 	}
 	
 	
@@ -205,9 +220,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		// Read set name:
 		boolean isFirstCall = (name == null);  // Save for later use
 		if (isFirstCall) {
-			JPhyloIOEvent result = readNameAndFormat();
-			if (result != null) {
-				getStreamDataProvider().getUpcomingEvents().add(result);
+			if (readNameAndFormat()) {
 				return true;
 			}
 		}

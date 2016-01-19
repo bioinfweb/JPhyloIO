@@ -79,6 +79,12 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
+	public LabeledIDEvent asLabeledIDEvent() throws ClassCastException {
+		return (LabeledIDEvent)this;
+	}
+
+
+	@Override
 	public LinkedOTUEvent asLinkedOTUEvent() throws ClassCastException {
 		return (LinkedOTUEvent)this;
 	}

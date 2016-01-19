@@ -32,7 +32,9 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -105,7 +107,9 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			if (matcher.matches()) {
 				String charSetName = DATA_TYPE_CHARACTER_SET_NAME_PREFIX + (i + 1);
 				try {
-					events.add(new CharacterSetIntervalEvent(charSetName, Long.parseLong(matcher.group(2)),	Long.parseLong(matcher.group(3)) + 1));
+					events.add(new LabeledIDEvent(EventContentType.CHARACTER_SET, charSetName, charSetName));
+					events.add(new CharacterSetIntervalEvent(Long.parseLong(matcher.group(2)), Long.parseLong(matcher.group(3)) + 1));
+					events.add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 				}
 				catch (NumberFormatException e) {
 					return;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?

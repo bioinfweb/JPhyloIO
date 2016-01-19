@@ -37,7 +37,6 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * @author Ben St&ouml;ver
  */
 public class CharacterSetIntervalEvent extends ConcreteJPhyloIOEvent {
-	private String name;
 	private long start;
 	private long end;
 	
@@ -47,25 +46,13 @@ public class CharacterSetIntervalEvent extends ConcreteJPhyloIOEvent {
 	 * <p>
 	 * A segment ranges from {@link #getStart()} to {@link #getEnd()} {@code - 1}.
 	 * 
-	 * @param name the name of the character set that shall be extended
 	 * @param start the index of the first position of the sequence segment to be added to the specified character set
 	 * @param end the first index after the end of the sequence segment to be added to the specified character set
 	 */
-	public CharacterSetIntervalEvent(String name, long start,	long end) {
-		super(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE);  //TODO Possibly change to START later.
-		this.name = name;
+	public CharacterSetIntervalEvent(long start,	long end) {
+		super(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE);
 		this.start = start;
 		this.end = end;
-	}
-
-
-	/**
-	 * The name of the character set. Depending on the parsed format the name might have a special form.
-	 * 
-	 * @return the parsed name
-	 */
-	public String getName() {
-		return name;
 	}
 
 

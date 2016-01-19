@@ -62,6 +62,14 @@ public interface JPhyloIOEvent {
 	public CommentEvent asCommentEvent() throws ClassCastException;
 	
 	/**
+	 * Casts this event to a labeled ID event.
+	 * 
+	 * @return a reference to this event as a labeled ID event
+	 * @throws ClassCastException if this event is not an instance of {@link LabeledIDEvent}
+	 */
+	public LabeledIDEvent asLabeledIDEvent() throws ClassCastException;
+	
+	/**
 	 * Casts this event to a part end event.
 	 * 
 	 * @return a reference to this event as a part end event

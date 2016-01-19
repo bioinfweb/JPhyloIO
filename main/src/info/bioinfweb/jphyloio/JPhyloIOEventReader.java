@@ -72,6 +72,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  */
 public interface JPhyloIOEventReader {
 	public static final String DEFAULT_SEQUENCE_ID_PREFIX = "seq";
+	public static final String DEFAULT_CHAR_SET_ID_PREFIX = "charSet";
 	public static final String DEFAULT_NODE_ID_PREFIX = "n";
 	public static final String DEFAULT_EDGE_ID_PREFIX = "e";
 	
