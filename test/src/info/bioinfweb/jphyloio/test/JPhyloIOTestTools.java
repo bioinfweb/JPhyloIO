@@ -58,6 +58,12 @@ public class JPhyloIOTestTools {
 	}
 	
 	
+	public static void assertEndEvent(EventContentType expectedContentType, JPhyloIOEventReader reader) throws Exception {
+		assertTrue(reader.hasNextEvent());
+		assertEventType(expectedContentType, EventTopologyType.END, reader);
+	}
+	
+	
 	public static LabeledIDEvent assertLabeledIDEvent(EventContentType expectedType, String expectedID, String expectedLabel, 
 			JPhyloIOEventReader reader) throws Exception {
 		
@@ -138,8 +144,8 @@ public class JPhyloIOTestTools {
   }  
 	
 	
-  public static MetaInformationEvent assertMetaEvent(String expectedKey, String expectedValue, boolean testEndEvent, boolean keyCaseSensitive, 
-  		JPhyloIOEventReader reader) throws Exception {
+  public static MetaInformationEvent assertMetaEvent(String expectedKey, String expectedValue, boolean testEndEvent, 
+  		boolean keyCaseSensitive, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
@@ -156,8 +162,7 @@ public class JPhyloIOTestTools {
 		}
 		
 		if (testEndEvent) {
-			assertTrue(reader.hasNextEvent());
-			assertEventType(EventContentType.META_INFORMATION, EventTopologyType.END, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
 		}
 		
 		return metaInformationEvent;
@@ -185,7 +190,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventContentType.TOKEN_SET_DEFINITION, event.getType().getContentType());
+		assertEventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.START, event);
 		
 		TokenSetDefinitionEvent tokenSetEvent = event.asTokenSetDefinitionEvent();
 		assertEquals(expectedType, tokenSetEvent.getSetType());
@@ -195,15 +200,19 @@ public class JPhyloIOTestTools {
 	
 	
   public static void assertSingleTokenDefinitionEvent(String expectedTokenName, 
-  		CharacterStateMeaning expectedMeaning,	JPhyloIOEventReader reader) throws Exception {
+  		CharacterStateMeaning expectedMeaning, boolean testEndEvent, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEquals(EventContentType.SINGLE_TOKEN_DEFINITION, event.getType().getContentType());
+		assertEventType(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.START, event);
 		
 		SingleTokenDefinitionEvent tokenSetEvent = event.asSingleTokenDefinitionEvent();
 		assertEquals(expectedTokenName, tokenSetEvent.getTokenName());
 		assertEquals(expectedMeaning, tokenSetEvent.getMeaning());
+		
+		if (testEndEvent) {
+			assertEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION, reader);
+		}
   }  
 	
 	
