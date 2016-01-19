@@ -39,8 +39,6 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {  //TODO Inherit from LabeledIDEvent?
 	private String tokenName;
 	private CharacterStateMeaning meaning;
-	private CharacterStateType tokenSetType;
-	private String tokenSetName;
 
 	
 	/**
@@ -51,13 +49,6 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {  //TODO 
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
 	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning) {
-		this(tokenName, meaning, null, null);
-	}
-	
-	
-	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning, CharacterStateType tokenSetType,
-			String tokenSetName) {
-		
 		super(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.START);
 
 		if (tokenName == null) {
@@ -69,14 +60,6 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {  //TODO 
 		else {
 			this.tokenName = tokenName;
 			this.meaning = meaning;
-			
-			this.tokenSetType = tokenSetType;
-			if ((tokenSetName == null) && (tokenSetType != null)) {
-				this.tokenSetName = tokenSetType.toString();
-			}
-			else {
-				this.tokenSetName = tokenSetName;
-			}
 		}
 	}
 
@@ -98,31 +81,5 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {  //TODO 
 	 */
 	public CharacterStateMeaning getMeaning() {
 		return meaning;
-	}
-
-
-	/**
-	 * Returns the type of the character state set this token belongs to.
-	 * 
-	 * @return the token set type or {@code null} if no set was specified in the parsed file for this token
-	 *         (This usually means that this token is valid for all token sets or there is only one token
-	 *         set in the file.)
-	 */
-	public CharacterStateType getTokenSetType() {
-		return tokenSetType;
-	}
-
-
-	/**
-	 * Returns the string representation of the name of the token set, this token belongs to.
-	 * <p>
-	 * If no such name was read from the file, but a token set type could anyway be determined, the string 
-	 * representation of {@link #getTokenSetType()} will be returned here.
-	 * 
-	 * @return the name or {@code null} if no name is available
-	 * @see #getTokenSetType()
-	 */
-	public String getTokenSetName() {
-		return tokenSetName;
 	}
 }
