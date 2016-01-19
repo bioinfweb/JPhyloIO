@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio;
+package info.bioinfweb.jphyloio.tools;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 import java.util.ArrayList;

@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
+import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 
 

@@ -30,7 +30,6 @@ main/src/info/bioinfweb/jphyloio/JPhyloIOEventReader.java -text svneol=unset#tex
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOModelWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/ReadWriteConstants.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/SequenceTokensEventManager.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/CharacterSetIntervalEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/CommentEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/ConcreteJPhyloIOEvent.java -text svneol=unset#text/plain
@@ -94,6 +93,8 @@ main/src/info/bioinfweb/jphyloio/model/implementations/AbstractElementCollection
 main/src/info/bioinfweb/jphyloio/model/implementations/EmptyCharacterData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/model/implementations/EmptyElementCollection.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/tools/IDToNameManager.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/tools/SequenceTokensEventManager.java -text svneol=unset#text/plain
 test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain

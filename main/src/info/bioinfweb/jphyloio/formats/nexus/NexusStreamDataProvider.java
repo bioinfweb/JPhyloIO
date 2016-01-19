@@ -25,10 +25,10 @@ import java.util.Queue;
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.jphyloio.SequenceTokensEventManager;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
+import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 
 

@@ -31,7 +31,6 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
-import info.bioinfweb.jphyloio.SequenceTokensEventManager;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -41,6 +40,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
+import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 
 

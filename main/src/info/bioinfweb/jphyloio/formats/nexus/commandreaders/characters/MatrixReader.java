@@ -36,6 +36,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
+import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
 
 
@@ -47,7 +48,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
 public class MatrixReader extends AbstractNexusCommandEventReader implements NexusConstants {
 	private String currentSequenceLabel = null;
 	private long currentSequencePosition = 0;
-	private Map<String, String> sequenceLabelToIDMap = new HashMap<String, String>();
+	private IDToNameManager idToNameManager = new IDToNameManager(JPhyloIOEventReader.DEFAULT_SEQUENCE_ID_PREFIX);
 	
 	
 	public MatrixReader(NexusStreamDataProvider nexusDocument) {
@@ -96,22 +97,6 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 	}
 	
 	
-	/**
-	 * Makes sure that only one ID as assigned to each sequence Nexus name.
-	 * 
-	 * @param sequenceLabel
-	 * @return
-	 */
-	private String getSequenceID(String sequenceLabel) {
-		String result = sequenceLabelToIDMap.get(sequenceLabel);
-		if (result == null) {
-			result = JPhyloIOEventReader.DEFAULT_SEQUENCE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
-			sequenceLabelToIDMap.put(sequenceLabel, result);
-		}
-		return result;
-	}
-	
-	
 	@Override
 	protected boolean doReadNextEvent() throws Exception {
 		ParameterMap map = getStreamDataProvider().getSharedInformationMap();
@@ -143,7 +128,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						currentSequenceLabel = getStreamDataProvider().readNexusWord();
 					  //TODO Link possible taxon with sequence start event.
 						getStreamDataProvider().getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
-								getSequenceID(currentSequenceLabel), currentSequenceLabel, null));
+								idToNameManager.getID(currentSequenceLabel), currentSequenceLabel, null));
 						currentSequencePosition = 0;  // getStreamDataProvider().getSequenceTokensEventManager().getCurrentBlockStartPosition() does not work here, because it does not return the updated value for the first sequence of the second and following blocks, since the event is processed after this command.
 					}
 					
