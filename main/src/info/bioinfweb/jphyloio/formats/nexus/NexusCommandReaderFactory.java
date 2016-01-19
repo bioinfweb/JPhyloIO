@@ -104,6 +104,7 @@ public class NexusCommandReaderFactory {
 	public NexusCommandEventReader createReader(String blockName, String commandName, NexusStreamDataProvider streamDataProvider) {
 		Class<? extends NexusCommandEventReader> readerClass = readers.get(blockName.toUpperCase() + BLOCK_COMMAND_CONNECTOR + 
 				commandName.toUpperCase());
+		
 		if (readerClass == null) {
 			return null;
 		}
