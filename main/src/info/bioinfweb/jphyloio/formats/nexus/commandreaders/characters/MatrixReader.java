@@ -45,6 +45,7 @@ import info.bioinfweb.jphyloio.tools.IDToNameManager;
  */
 public class MatrixReader extends AbstractNexusCommandEventReader implements NexusConstants {
 	private String currentSequenceLabel = null;
+	private int currentSequenceIndex = 0;
 	private long currentSequencePosition = 0;
 	private IDToNameManager idToNameManager = new IDToNameManager(JPhyloIOEventReader.DEFAULT_SEQUENCE_ID_PREFIX);
 	
@@ -101,9 +102,6 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 		if (map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false)) {
 			throw new InternalError("Transposed Nexus matrices are currently not supported by JPhyloIO.");
 		}
-		else if (!map.getBoolean(FormatReader.INFO_KEY_LABELS, true)) {
-			throw new InternalError("Nexus matrices without labels are currently not supported by JPhyloIO.");
-		}
 		else {
 			boolean longTokens = map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false);
 			boolean interleaved = map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false);
@@ -124,9 +122,15 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {
 							return true;  // Immediately return comment in front of sequence name.
 						}
-						currentSequenceLabel = getStreamDataProvider().readNexusWord();
 						
-						//TODO Alternatively get label from TAXA block list, if NOLABELS was specified in FORMAT.
+						if (noLabels) {
+							currentSequenceLabel = getStreamDataProvider().getTaxaList().get(currentSequenceIndex);
+						}
+						else {
+							currentSequenceLabel = getStreamDataProvider().readNexusWord();
+						}
+						currentSequenceIndex++;
+						
 						getStreamDataProvider().getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
 								idToNameManager.getID(currentSequenceLabel), currentSequenceLabel, 
 								getStreamDataProvider().getTaxaToIDMap().get(currentSequenceLabel)));  // Returns the OTU ID or null, if it is not found in the map.
