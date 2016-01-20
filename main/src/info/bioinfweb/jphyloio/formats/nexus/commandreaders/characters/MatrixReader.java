@@ -124,7 +124,14 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						}
 						
 						if (noLabels) {
-							currentSequenceLabel = getStreamDataProvider().getTaxaList().get(currentSequenceIndex);
+							if (currentSequenceIndex >= getStreamDataProvider().getTaxaList().size()) {
+								throw new IOException("A MATRIX command contains more sequences than defined in the TAXA block. "
+										+ "This is invalid, if NOLABELS was specified. An alternative cause could be an invalid sequence "
+										+ "length definition.");  //TODO Replace by special exception.
+							}
+							else {
+								currentSequenceLabel = getStreamDataProvider().getTaxaList().get(currentSequenceIndex);
+							}
 						}
 						else {
 							currentSequenceLabel = getStreamDataProvider().readNexusWord();
