@@ -27,12 +27,10 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 /**
  * Event that indicates that new information on a character set has been read.
  * <p>
- * Note that one or more events with the same character set name may occur any time between 
- * the {@link EventContentType#ALIGNMENT} and {@link EventContentType#ALIGNMENT_END} events.
- * <p>
- * After the first event with a certain name was fired, that name can be used a reference in
- * {@link TokenSetDefinitionEvent#getCharacterSetName()}, even if additional 
- * {@link CharacterSetIntervalEvent}s with the same name will follow. 
+ * This event defines an interval belonging to the current character set. All events of this
+ * type must be enclosed between a start and an end event with content type 
+ * {@link EventContentType#CHARACTER_SET}. The start event will define the ID and the name
+ * of the set.
  * 
  * @author Ben St&ouml;ver
  */

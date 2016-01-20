@@ -40,7 +40,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * {@link #getParsedName()} in such cases, to determine the meaning.
  * <p>
  * If this token set should only be valid for some columns of the alignment, a character set (defined by a
- * {@link CharacterSetIntervalEvent}) will be referenced by the return value of {@link #getCharacterSetName()} (which
+ * {@link CharacterSetIntervalEvent}) will be referenced by the return value of {@link #getCharacterSetID()} (which
  * should not be mixed up with {@link #getParsedName()} which is just the string representation of this token
  * set as it was given in the parsed file.)
  * 
@@ -49,7 +49,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	private CharacterStateType setType;
 	private String parsedName;
-	private String characterSetName = null;
+	private String characterSetID = null;
 	
 	
 	/**
@@ -75,13 +75,13 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @param type the meaning of the token set as defined by {@link TokenSetType}
 	 * @param parsedName the format specific name of the new token set
-	 * @param characterSetName the set of the character set (set of alignment columns) this token (character state) 
-	 *        set shall be valid for (Specify {@code null} here if this character state set shall be valid for the 
-	 *        whole alignment or the columns are unknown. The references character set should have been defined by a
-	 *        previously fired instance if {@link CharacterSetIntervalEvent}.)
+	 * @param characterSetID the ID of the character set (set of alignment columns) this token set shall be valid 
+	 *        for. (Specify {@code null} here if this token set shall be valid for the whole alignment or the 
+	 *        columns are unknown. The referenced character set should have been defined by a
+	 *        previously fired events.)
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
-	public TokenSetDefinitionEvent(CharacterStateType type, String parsedName, String characterSetName) {
+	public TokenSetDefinitionEvent(CharacterStateType type, String parsedName, String characterSetID) {
 		super(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.START);
 
 		if (type == null) {
@@ -95,7 +95,7 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 			else {
 				this.parsedName = parsedName;
 			}
-			this.characterSetName = characterSetName;
+			this.characterSetID = characterSetID;
 		}
 	}
 
@@ -121,19 +121,15 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 
 
 	/**
-	 * Returns the name of character set (which was defined in a previously fired instance of 
-	 * {@link CharacterSetIntervalEvent}) for which this character state set shall be valid.
-	 * <p>
-	 * Note that the name of the character state set described by this event is different from 
-	 * the referenced character set name returned here. This can be obtained by calling
-	 * {@link #getParsedName()}. 
+	 * Returns the ID of character set (which was defined in a previously fired series of 
+	 * character set events) for which this token set shall be valid.
 	 * 
 	 * @return the name of the according character set or {@code null} if no character set was 
 	 *         referenced in the parsed file (e.g. because this character state set shall be 
 	 *         valid for the whole alignment)
 	 */
-	public String getCharacterSetName() {
-		return characterSetName;
+	public String getCharacterSetID() {
+		return characterSetID;
 	}
 	
 	
@@ -142,11 +138,11 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * previous event.
 	 * 
 	 * @return {@code true} if this set is only valid for the character set defined by the return 
-	 *         value of {@link #getCharacterSetName()} or {@code false} if no character set was 
+	 *         value of {@link #getCharacterSetID()} or {@code false} if no character set was 
 	 *         referenced in the parsed file (e.g. because this character state set shall be 
 	 *         valid for the whole alignment) 
 	 */
 	public boolean hasLinkedCharacterSet() {
-		return characterSetName != null;
+		return characterSetID != null;
 	}
 }
