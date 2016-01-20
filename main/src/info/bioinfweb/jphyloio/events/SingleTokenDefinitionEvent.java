@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
-import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -36,7 +35,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {  //TODO Inherit from LabeledIDEvent?
+public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	private String tokenName;
 	private CharacterStateMeaning meaning;
 
