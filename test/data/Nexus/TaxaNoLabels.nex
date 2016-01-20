@@ -1,0 +1,8 @@
+#NEXUS
+BEGIN TAXA;[comment 1]
+	DIMENSIONS NTAX = 5;
+	[comment 2]
+	TAXLABELS A[comment 3]
+		B 'C C'[comment 4]
+		'D''' [comment 5]E; 
+END; 

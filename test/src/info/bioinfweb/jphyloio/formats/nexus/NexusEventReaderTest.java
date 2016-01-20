@@ -902,4 +902,41 @@ public class NexusEventReaderTest {
 			reader.close();
 		}
 	}
+
+
+	@Test
+	public void testReadingTaxaNoLabels() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabels.nex"), false, factory);
+		try {
+			reader.setCreateUnknownCommandEvents(false);
+
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			assertCommentEvent("comment 1", reader);
+			assertCommentEvent("comment 2", reader);
+			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
+			
+			assertLabeledIDEvent(EventContentType.OTU, null, "A", reader);
+			assertEndEvent(EventContentType.OTU, reader);
+			assertCommentEvent("comment 3", reader);
+			assertLabeledIDEvent(EventContentType.OTU, null, "B", reader);
+			assertEndEvent(EventContentType.OTU, reader);
+			assertLabeledIDEvent(EventContentType.OTU, null, "C C", reader);
+			assertEndEvent(EventContentType.OTU, reader);
+			assertCommentEvent("comment 4", reader);
+			assertLabeledIDEvent(EventContentType.OTU, null, "D'", reader);
+			assertEndEvent(EventContentType.OTU, reader);
+			assertCommentEvent("comment 5", reader);
+			assertLabeledIDEvent(EventContentType.OTU, null, "E", reader);
+			assertEndEvent(EventContentType.OTU, reader);
+			
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }
