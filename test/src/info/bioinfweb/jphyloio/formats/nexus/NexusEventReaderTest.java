@@ -1008,4 +1008,53 @@ public class NexusEventReaderTest {
 			reader.close();
 		}
 	}
+
+
+	@Test(expected=IOException.class)
+	public void testReadingTaxaNoLabelsInvalid() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabelsInvalid.nex"), false, factory);
+		try {
+			reader.setCreateUnknownCommandEvents(false);
+
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
+			
+			String idA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			
+			assertNotEquals(idA, idB);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
+			
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+			
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "5", null, new Long(5), true, true, reader);
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
+			
+			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", null, "", true, true, reader);
+			assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
+			assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, true, reader);
+			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
+			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+
+			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A", idA, reader);
+			assertCharactersEvent("CGGTCAT", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "B", idB, reader);
+			assertCharactersEvent("CG-TCTT", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+			
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }

@@ -136,6 +136,7 @@ test/data/Nexus/MatrixUnaligned.nex -text
 test/data/Nexus/SplitComments.nex -text
 test/data/Nexus/Symbols.nex -text
 test/data/Nexus/TaxaNoLabels.nex -text
+test/data/Nexus/TaxaNoLabelsInvalid.nex -text
 test/data/Phylip/Interleaved.phy -text
 test/data/Phylip/Interleaved3Blocks.phy -text
 test/data/Phylip/InterleavedMatchCharacter.phy -text

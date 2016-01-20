@@ -1,0 +1,17 @@
+#NEXUS
+BEGIN TAXA;
+	DIMENSIONS NTAX = 5;
+	TAXLABELS 
+		A
+		B; 
+END; 
+
+BEGIN CHARACTERS;
+  Dimensions NTax=5 NChar=7;
+  Format DataType = DNA Missing=? Gap= - NoLabels;
+  Matrix CGGTCAT
+         CG-TCTT 
+         CG-TC-T
+         CGTCATG
+         CCTGATG;
+END;
