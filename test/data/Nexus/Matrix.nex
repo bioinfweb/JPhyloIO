@@ -1,5 +1,15 @@
 #NEXUS
 
+BEGIN TAXA;
+	DIMENSIONS NTAX = 5;
+	TAXLABELS 
+		A
+		B
+		C
+		'D E'
+		F; 
+END; 
+
 BEGIN Characters;
   Dimensions NTax=3 NChar=7;
   Format DataType = DNA Missing=? Gap= -;

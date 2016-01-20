@@ -294,6 +294,32 @@ public class NexusEventReaderTest {
 			reader.setCreateUnknownCommandEvents(false);
 			
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
+			
+			String idA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idDE = assertLabeledIDEvent(EventContentType.OTU, null, "D E", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idF = assertLabeledIDEvent(EventContentType.OTU, null, "F", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			
+			assertNotEquals(idA, idB);
+			assertNotEquals(idA, idC);
+			assertNotEquals(idA, idDE);
+			assertNotEquals(idA, idF);
+			assertNotEquals(idB, idC);
+			assertNotEquals(idB, idDE);
+			assertNotEquals(idB, idF);
+			assertNotEquals(idC, idDE);
+			assertNotEquals(idC, idF);
+			assertNotEquals(idDE, idF);			
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
 			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
@@ -304,23 +330,23 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A", null, reader);
+			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A", idA, reader);
 			assertCommentEvent("comment 1", reader);
 			assertCharactersEvent("CGGTCAT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "B", null, reader);
+			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "B", idB, reader);
 			assertCommentEvent("comment 2", reader);
 			assertCharactersEvent("CG-TCTT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "C", null, reader);
+			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "C", idC, reader);
 			assertCharactersEvent("CG-T", reader);
 			assertCommentEvent("comment 3", reader);
 			assertCharactersEvent("C-T", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "D E", null, reader);
+			assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "D E", idDE, reader);
 			assertCharactersEvent("CGTCATG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
