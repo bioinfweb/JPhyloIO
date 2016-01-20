@@ -6,3 +6,13 @@ BEGIN TAXA;[comment 1]
 		B 'C C'[comment 4]
 		'D''' [comment 5]E; 
 END; 
+
+BEGIN CHARACTERS;
+  Dimensions NTax=5 NChar=7;
+  Format DataType = DNA Missing=? Gap= - NoLabels;
+  Matrix CGGTCAT
+         CG-TCTT 
+         CG-TC-T
+         CGTCATG
+         CCTGATG;
+END;
