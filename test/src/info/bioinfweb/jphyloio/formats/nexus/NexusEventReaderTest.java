@@ -294,7 +294,6 @@ public class NexusEventReaderTest {
 			reader.setCreateUnknownCommandEvents(false);
 			
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-			
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
 			
 			String idA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
