@@ -77,6 +77,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/MatrixR
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/sets/CharSetReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/sets/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/taxa/TaxLabelsReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/AbstractPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain

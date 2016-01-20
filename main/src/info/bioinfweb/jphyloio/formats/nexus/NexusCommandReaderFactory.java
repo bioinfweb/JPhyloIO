@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.Dimension
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.MatrixReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets.CharSetReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.taxa.TaxLabelsReader;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -56,6 +57,7 @@ public class NexusCommandReaderFactory {
 	 * Adds all Nexus command readers available in JPhyloIO to this instance.
 	 */
 	public void addJPhyloIOReaders() {
+		addReaderClass(TaxLabelsReader.class);
 		addReaderClass(DimensionsReader.class);
 		addReaderClass(FormatReader.class);
 		addReaderClass(MatrixReader.class);

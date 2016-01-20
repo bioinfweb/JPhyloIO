@@ -107,6 +107,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 		else {
 			boolean longTokens = map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false);
 			boolean interleaved = map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false);
+			boolean noLabels = !map.getBoolean(FormatReader.INFO_KEY_LABELS, true);
 			long alignmentLength = map.getLong(DimensionsReader.INFO_KEY_CHAR, Long.MAX_VALUE);
 			PeekReader reader = getStreamDataProvider().getDataReader();
 			try {
@@ -124,9 +125,11 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							return true;  // Immediately return comment in front of sequence name.
 						}
 						currentSequenceLabel = getStreamDataProvider().readNexusWord();
-					  //TODO Link possible taxon with sequence start event.
+						
+						//TODO Alternatively get label from TAXA block list, if NOLABELS was specified in FORMAT.
 						getStreamDataProvider().getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
-								idToNameManager.getID(currentSequenceLabel), currentSequenceLabel, null));
+								idToNameManager.getID(currentSequenceLabel), currentSequenceLabel, 
+								getStreamDataProvider().getTaxaToIDMap().get(currentSequenceLabel)));  // Returns the OTU ID or null, if it is not found in the map.
 						currentSequencePosition = 0;  // getStreamDataProvider().getSequenceTokensEventManager().getCurrentBlockStartPosition() does not work here, because it does not return the updated value for the first sequence of the second and following blocks, since the event is processed after this command.
 					}
 					

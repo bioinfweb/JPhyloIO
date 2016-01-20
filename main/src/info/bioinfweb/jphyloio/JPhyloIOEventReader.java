@@ -71,6 +71,8 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * @author Ben St&ouml;ver
  */
 public interface JPhyloIOEventReader {
+	public static final String DEFAULT_OTU_LIST_ID_PREFIX = "otus";
+	public static final String DEFAULT_OTU_ID_PREFIX = "otu";
 	public static final String DEFAULT_SEQUENCE_ID_PREFIX = "seq";
 	public static final String DEFAULT_CHAR_SET_ID_PREFIX = "charSet";
 	public static final String DEFAULT_TOKEN_SET_ID_PREFIX = "tokenSet";

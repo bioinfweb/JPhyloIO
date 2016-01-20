@@ -20,6 +20,10 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import info.bioinfweb.commons.LongIDManager;
@@ -29,6 +33,7 @@ import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueIn
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.taxa.TaxLabelsReader;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 
@@ -110,5 +115,25 @@ public class NexusStreamDataProvider {
 	 */
 	public ParameterMap getSharedInformationMap() {
 		return sharedInformationMap;
+	}
+	
+	
+	public List<String> getTaxaList() {
+		List<String> result = (List<String>)getSharedInformationMap().get(TaxLabelsReader.INFO_KEY_TAXA_LIST);  // Casting null is possible.
+		if (result == null) {
+			result = new ArrayList<String>();
+			getSharedInformationMap().put(TaxLabelsReader.INFO_KEY_TAXA_LIST, result);
+		}
+		return result;
+	}
+	
+	
+	public Map<String, String> getTaxaToIDMap() {
+		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(TaxLabelsReader.INFO_KEY_TAXA_MAP);  // Casting null is possible.
+		if (result == null) {
+			result = new HashMap<String, String>();
+			getSharedInformationMap().put(TaxLabelsReader.INFO_KEY_TAXA_MAP, result);
+		}
+		return result;
 	}
 }
