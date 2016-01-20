@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -117,7 +118,9 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 				catch (NumberFormatException e) {
 					return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
 				}
-				tokenSetEvents.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), matcher.group(1), charSetName));
+				tokenSetEvents.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), 
+						JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+						matcher.group(1), charSetName));
 			}
 			else {
 				return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
@@ -157,7 +160,9 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			}
 			else {
 				if (tokenSetDefinitionEvents.isEmpty()) {  // Only MrBayes extension allows to specify more than one token set.
-					tokenSetDefinitionEvents.add(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), info.getValue()));
+					tokenSetDefinitionEvents.add(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), 
+							JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
+							info.getValue()));
 					eventCreated = true;
 				}
 				else {

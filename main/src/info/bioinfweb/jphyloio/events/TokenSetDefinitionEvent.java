@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.events;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -46,9 +45,8 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
+public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	private CharacterStateType setType;
-	private String parsedName;
 	private String characterSetID = null;
 	
 	
@@ -59,11 +57,12 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * string ("").
 	 * 
 	 * @param type the meaning of the token set as defined by {@link TokenSetType}
-	 * @param parsedName the format specific name of the new token set
+	 * @param id a document-wide unique ID identifying this token set
+	 * @param label a name describing this token set
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
-	public TokenSetDefinitionEvent(CharacterStateType type, String parsedName) {
-		this (type, parsedName, null);
+	public TokenSetDefinitionEvent(CharacterStateType type, String id, String label) {
+		this (type, id, label, null);
 	}
 	
 	
@@ -74,28 +73,23 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * string ("").
 	 * 
 	 * @param type the meaning of the token set as defined by {@link TokenSetType}
-	 * @param parsedName the format specific name of the new token set
-	 * @param characterSetID the ID of the character set (set of alignment columns) this token set shall be valid 
+	 * @param id a document-wide unique ID identifying this token set
+	 * @param label a name describing this token set
+	 * @param linkedCharacterSetID the ID of the character set (set of alignment columns) this token set shall be valid 
 	 *        for. (Specify {@code null} here if this token set shall be valid for the whole alignment or the 
 	 *        columns are unknown. The referenced character set should have been defined by a
 	 *        previously fired events.)
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
-	public TokenSetDefinitionEvent(CharacterStateType type, String parsedName, String characterSetID) {
-		super(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.START);
+	public TokenSetDefinitionEvent(CharacterStateType type, String id, String label, String linkedCharacterSetID) {
+		super(EventContentType.TOKEN_SET_DEFINITION, id, label);
 
 		if (type == null) {
 			throw new NullPointerException("The set type must not be null.");
 		}
 		else {
 			this.setType = type;
-			if (parsedName == null) {
-				this.parsedName = "";
-			}
-			else {
-				this.parsedName = parsedName;
-			}
-			this.characterSetID = characterSetID;
+			this.characterSetID = linkedCharacterSetID;
 		}
 	}
 
@@ -110,16 +104,6 @@ public class TokenSetDefinitionEvent extends ConcreteJPhyloIOEvent {
 	}
 	
 	
-	/**
-	 * The name of the new character state/token set as it was found in the file.
-	 * 
-	 * @return a format specific name of the new token set (never {@code null})
-	 */
-	public String getParsedName() {
-		return parsedName;
-	}
-
-
 	/**
 	 * Returns the ID of character set (which was defined in a previously fired series of 
 	 * character set events) for which this token set shall be valid.

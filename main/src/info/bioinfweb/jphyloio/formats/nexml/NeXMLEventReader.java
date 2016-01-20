@@ -44,6 +44,7 @@ import javax.xml.stream.events.XMLEvent;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -378,24 +379,30 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
     				TokenSetDefinitionEvent tokenSetEvent = null;
     				if (tokenSetType.equals(null)) {}
     				else if (tokenSetType.equals(TYPE_DNA_SEQS) || tokenSetType.equals(TYPE_DNA_CELLS)) {
-    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.DNA, "DNA"); //standard IUPAC nucleotide symbols
+    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.DNA, 
+    							JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + reader.getIDManager().createNewID(), "DNA"); //standard IUPAC nucleotide symbols
     				}
     				else if (tokenSetType.equals(TYPE_RNA_SEQS) || tokenSetType.equals(TYPE_RNA_CELLS)) {
-    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.RNA, "RNA"); //standard IUPAC nucleotide symbols
+    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.RNA, 
+    							JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + reader.getIDManager().createNewID(), "RNA"); //standard IUPAC nucleotide symbols
     				}
     				else if (tokenSetType.equals(TYPE_PROTEIN_SEQS) || tokenSetType.equals(TYPE_PROTEIN_CELLS)) {
-    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.AMINO_ACID, "AminoAcids"); //standard IUPAC amino acid symbols
+    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.AMINO_ACID, 
+    							JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + reader.getIDManager().createNewID(), "AminoAcids"); //standard IUPAC amino acid symbols
     				}
     				else if (tokenSetType.equals(TYPE_CONTIN_SEQ) || tokenSetType.equals(TYPE_CONTIN_CELLS)) {
-    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.CONTINUOUS, "ContinuousData");
+    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.CONTINUOUS, 
+    							JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + reader.getIDManager().createNewID(), "ContinuousData");
     				}
     				else if (tokenSetType.equals(TYPE_RESTRICTION_SEQS) || tokenSetType.equals(TYPE_RESTRICTION_CELLS)) {
 //	      					reader.setParseStates(true);
-    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.DISCRETE, "RestrictionSiteData");
+    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.DISCRETE, 
+    							JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + reader.getIDManager().createNewID(), "RestrictionSiteData");
     				}
     				else { // type of character block is StandardSeqs or StandardCells
 //	      					reader.setParseStates(true);
-    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.DISCRETE, "StandardData");
+    					tokenSetEvent = new TokenSetDefinitionEvent(CharacterStateType.DISCRETE, 
+    							JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + reader.getIDManager().createNewID(), "StandardData");
     				}
     				reader.getUpcomingEvents().add(tokenSetEvent);
       		
