@@ -26,6 +26,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
@@ -126,31 +127,31 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 	}
 	
 	
-	public void readEdge(NeXMLEventReader reader, StartElement element) {
-		String sourceID = null;
-		double length = Double.NaN;	 
-		
-		if (reader.getCurrentBranchLengthsFormat().equals(TYPE_FLOAT_TREE)) { 
-			length = XMLUtils.readDoubleAttr(element, ATTR_LENGTH, Double.NaN); //TODO possibly check if value is really a double and throw exception if not?
-		}
-		else { //Type IntTree
-			try {
-				length = Integer.parseInt(element.getAttributeByName(ATTR_LENGTH).getValue());
+	public void readEdge(NeXMLEventReader reader, StartElement element) throws JPhyloIOReaderException {
+		try {
+			String edgeID = XMLUtils.readStringAttr(element, ATTR_ID, null);
+			String targetID = XMLUtils.readStringAttr(element, ATTR_TARGET, null);
+			double length = XMLUtils.readDoubleAttr(element, ATTR_LENGTH, Double.NaN);	// It is not a problem for JPhyloIO, if floating point values are specified for IntTrees.
+
+			if (edgeID == null) {
+				throw new JPhyloIOReaderException("The \"id\" attribute of an edge or rootedge definition in NeXML must not be omitted.", 
+						element.getLocation());
 			}
-			catch (NumberFormatException e) {
-				throw new NumberFormatException("The branch length in an IntTree must be an Integer.");
+			else if (targetID == null) {
+				throw new JPhyloIOReaderException("The \"target\" attribute of an edge or rootedge definition in NeXML must not be omitted.", 
+						element.getLocation());
 			}
-			catch (NullPointerException e) {}
+			else {
+				reader.getUpcomingEvents().add(new EdgeEvent(edgeID, XMLUtils.readStringAttr(element, ATTR_LABEL, null), 
+						XMLUtils.readStringAttr(element, ATTR_SOURCE, null), targetID, length));  // The source ID will be null for rootedges, which is valid.
+				//TODO Where are nested metaevents read? (Must happen before end event is added.)
+				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+			}
 		}
-		
-		if (element.getName().equals(TAG_EDGE)) {
-			sourceID = XMLUtils.readStringAttr(element, ATTR_SOURCE, null);
+		catch (NumberFormatException e) {
+			throw new JPhyloIOReaderException("The attribute value \"" + element.getAttributeByName(ATTR_LENGTH).getValue() + 
+					"\" is not a valid branch length.", element.getLocation());
 		}
-		reader.getUpcomingEvents().add(new EdgeEvent(XMLUtils.readStringAttr(element, ATTR_ID, null), 
-				XMLUtils.readStringAttr(element, ATTR_LABEL, null), sourceID, XMLUtils.readStringAttr(element, ATTR_TARGET, null), 
-				length));  // Throws a NullPointerException, if any needed parameter is null. //TODO Throw special parse exception instead 
-		reader.readID(reader, element);
-		reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 	}
 	
 	
