@@ -22,18 +22,13 @@ package info.bioinfweb.jphyloio.formats.phylip;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.junit.* ;
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLinkedOTUEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertMetaEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertPartEndEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.* ;
 
 
