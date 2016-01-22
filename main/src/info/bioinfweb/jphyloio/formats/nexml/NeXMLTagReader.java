@@ -150,7 +150,7 @@ public abstract class NeXMLTagReader implements NeXMLConstants {
 		}
 		catch (NumberFormatException e) {
 			throw new JPhyloIOReaderException("The attribute value \"" + element.getAttributeByName(ATTR_LENGTH).getValue() + 
-					"\" is not a valid branch length.", element.getLocation());
+					"\" is not a valid branch length.", element.getLocation(), e);
 		}
 	}
 	
