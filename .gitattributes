@@ -116,6 +116,7 @@ test/data/NeXML/UnknownTag.xml -text svneol=unset#text/plain
 test/data/Newick/InternalsTerminalsLength.nwk -text
 test/data/Newick/LeafNodesNamed.nwk -text
 test/data/Newick/NoNamedNodes.nwk -text
+test/data/Newick/NoTrees.nwk -text
 test/data/Newick/OnlyBranchLengths.nwk -text
 test/data/Nexus/CharSet.nex -text
 test/data/Nexus/CharSetInvalidVectorSymbol.nex -text

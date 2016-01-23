@@ -218,4 +218,18 @@ public class NewickReaderTest {
 			reader.close();
 		}
 	}
+	
+	
+	@Test
+	public void test_readNextEvent_NoTrees() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NoTrees.nwk"));
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }
