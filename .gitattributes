@@ -56,6 +56,7 @@ main/src/info/bioinfweb/jphyloio/formats/fasta/package-info.java -text svneol=un
 main/src/info/bioinfweb/jphyloio/formats/mega/MEGAConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/newick/HotCommentDataReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickScanner.java -text svneol=unset#text/plain

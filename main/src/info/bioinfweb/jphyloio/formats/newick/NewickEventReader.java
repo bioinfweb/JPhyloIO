@@ -24,14 +24,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -53,18 +58,22 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 	private static class NodeInfo {
 		public String id;
 		public double length;
+		public Collection<JPhyloIOEvent> nestedEdgeEvents;
 
-		public NodeInfo(String id, double length) {
+		public NodeInfo(String id, double length, Collection<JPhyloIOEvent> nestedEdgeEvents) {
 			super();
 			this.id = id;
 			this.length = length;
+			this.nestedEdgeEvents = nestedEdgeEvents;
 		}
 	}
 	
 	
 	private State state = State.START;
+	private boolean currentTreeRooted = false;
 	private NewickScanner scanner;
 	private Stack<Queue<NodeInfo>> passedSubnodes;
+	private HotCommentDataReader hotCommentDataReader = new HotCommentDataReader();
 	
 	
 	private void init() {
@@ -97,6 +106,26 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 	}
 	
 	
+	private Collection<JPhyloIOEvent> createMetaAndCommentEvents(boolean isOnNode) throws IOException {
+		Collection<JPhyloIOEvent> result = new ArrayList<JPhyloIOEvent>();
+		if (scanner.hasMoreTokens() && scanner.peek().getType().equals(NewickTokenType.COMMENT)) {
+			boolean isFirstComment = true;
+			do {
+				String text = scanner.nextToken().getText();
+				if (isFirstComment || text.trim().startsWith("" + HotCommentDataReader.START_SYMBOL)) {  // First comment could be an unnamed hot comment, which does not start with a start symbol.
+					hotCommentDataReader.read(text, result, isOnNode);
+				}
+				else {
+					result.add(new CommentEvent(text, false));
+				}
+				isFirstComment = false;
+			} while (scanner.hasMoreTokens() && scanner.peek().getType().equals(NewickTokenType.COMMENT) && 
+					(scanner.peek().getText().trim().charAt(0) != HotCommentDataReader.START_SYMBOL));  // Read subsequent comments, if they are not hot comments. (A subsequent hot comment may belong to the branch, of the length id omitted.)
+		}
+		return result;
+	}
+	
+	
 	private LinkedOTUEvent readNode() throws IOException {
 		NewickToken token = scanner.peek();  //TODO Catch NoSuchElementException for unexpected EOF here or somewhere above.
 		if (token.getType().equals(NewickTokenType.SUBTREE_START)) {  // No name to read.
@@ -107,26 +136,31 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			
 			// Read label:
 			String label = null;
+			new ArrayList<JPhyloIOEvent>();
 			if (token.getType().equals(NewickTokenType.NAME)) {
 				label = token.getText();
 				scanner.nextToken();  // Skip name token
-				token = scanner.peek();
 			}
+			Collection<JPhyloIOEvent> nestedNodeEvents = createMetaAndCommentEvents(true);  // Metadata can also be present, if no name is present.
+			token = scanner.peek();
 			
 			// Read length:
 			double length = Double.NaN;
+			new ArrayList<JPhyloIOEvent>();
 			if (token.getType().equals(NewickTokenType.LENGTH)) {
 				length = token.getLength();
 				scanner.nextToken();  // Skip length token
 			}
+			Collection<JPhyloIOEvent> nestedEdgeEvents = createMetaAndCommentEvents(false);  // Metadata for omitted branch lengths can be contained in a comment following the node metadata.
 			
 			// Generate node information:
 			if (!passedSubnodes.isEmpty()) {  // Nodes on top level do not have to be stored.
-				passedSubnodes.peek().add(new NodeInfo(nodeID, length));			
+				passedSubnodes.peek().add(new NodeInfo(nodeID, length, nestedEdgeEvents));			
 			}
 			LinkedOTUEvent result = new LinkedOTUEvent(EventContentType.NODE, nodeID, label, null);  //TODO Possibly replace by translation table when used in Nexus.
 			                                              //TODO Possibly use OTU link, if used in Nexus.
 			getUpcomingEvents().add(result);
+			getUpcomingEvents().addAll(nestedNodeEvents);
 			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));  //TODO Put possible annotations and comments in the queue first
 			return result;
 		}		
@@ -165,7 +199,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 								NodeInfo nodeInfo = levelInfo.poll();
 								getUpcomingEvents().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + getIDManager().createNewID(), 
 										null, sourceID, nodeInfo.id, nodeInfo.length));
-								//TODO Put possible metadata and comments in between here.
+								getUpcomingEvents().addAll(nodeInfo.nestedEdgeEvents);
 								getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 							}
 						}
@@ -173,6 +207,9 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 					case TERMNINAL_SYMBOL:
 						state = State.IN_DOCUMENT;
 						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
+						break;
+					case COMMENT:
+						getUpcomingEvents().add(new CommentEvent(token.getText(), false));
 						break;
 					default:
 						throw new JPhyloIOReaderException("Unexpected Newick token \"" + token.getType() + "\"", token.getLocation());
@@ -191,8 +228,18 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 				break;
 			case IN_DOCUMENT:
 				if (scanner.hasMoreTokens()) {
-					state = State.IN_TREE;
-					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.START));
+					NewickTokenType type = scanner.peek().getType();
+					if (NewickTokenType.COMMENT.equals(type)) {  // Comments before a tree
+						getUpcomingEvents().add(new CommentEvent(scanner.nextToken().getText(), false));
+					}
+					else {
+						if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
+							currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
+							scanner.nextToken();  // Skip rooted token.
+						}
+						state = State.IN_TREE;
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.START));
+					}
 				}
 				else {
 					state = State.END;
