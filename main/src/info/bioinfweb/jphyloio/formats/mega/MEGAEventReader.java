@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
@@ -130,7 +131,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 	
 	private void checkStart() throws IOException {
 		if (!FIRST_LINE.equals(getReader().readString(FIRST_LINE.length()).toUpperCase())) { 
-			throw new IOException("All MEGA files must start with \"" + FIRST_LINE + "\".");
+			throw new JPhyloIOReaderException("All MEGA files must start with \"" + FIRST_LINE + "\".", 0, 0, 0);
 		}
 	}
 	
@@ -163,7 +164,7 @@ public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader impl
 			}
 		}
 		catch (EOFException e) {
-			throw new IOException("Unexpected end of file in " + COMMAND_NAME_FORMAT + " command.");  //TODO Replace by ParseException
+			throw new JPhyloIOReaderException("Unexpected end of file in " + COMMAND_NAME_FORMAT + " command.", getReader(), e);
 		}
 	}
 	
