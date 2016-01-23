@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -81,7 +82,7 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 			}
 		}
 		catch (EOFException e) {
-			throw new IOException("Unexpected end of file in " + getCommandName() + " command.");  //TODO Replace by ParseException
+			throw new JPhyloIOReaderException("Unexpected end of file in " + getCommandName() + " command.", reader);
 		}
 	}
 }

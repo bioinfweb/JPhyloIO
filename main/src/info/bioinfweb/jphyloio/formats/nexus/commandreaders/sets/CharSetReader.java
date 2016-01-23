@@ -20,10 +20,12 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets;
 
 
 import java.io.IOException;
+import java.util.Queue;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -68,7 +70,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		getStreamDataProvider().consumeWhiteSpaceAndComments();
 		name = getStreamDataProvider().readNexusWord();
 		if (name.length() == 0) {  // Can only happen if end of file was reached. (Otherwise at least ';' or '[' must be in name.)
-			throw new IOException("Unexpected end of file");  //TODO Replace by ParseException with line and column information.
+			throw new JPhyloIOReaderException("Unexpected end of file in a Nexus CHARSET command.", reader);
 		}
 		char end = reader.readChar();  //StringUtils.lastChar(name);
 		
@@ -86,7 +88,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 				return true;
 			}
 			else {
-				throw new IOException("Empty CharSet command. At least a set name must be specified.");  //TODO Replace by ParseException with line and column information.
+				throw new JPhyloIOReaderException("Empty Nexus CHARSET command. At least a set name must be specified.", reader);
 			}
 		}
 		else if (end != KEY_VALUE_SEPARATOR) {
@@ -113,7 +115,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 				return true;
 			}
 			else if (c != KEY_VALUE_SEPARATOR) {
-				throw new IOException("Unexpected token '" + c + "' found in CharSet command.");  //TODO Replace by parse exception.
+				throw new JPhyloIOReaderException("Unexpected token '" + c + "' found in CharSet command.", reader);
 			}
 		}
 		
@@ -124,14 +126,17 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	
 	
 	private void readVectorFormat(boolean isFirstCall) throws IOException {
-		char c = getStreamDataProvider().getDataReader().readChar();
+		PeekReader reader = getStreamDataProvider().getDataReader();
+		Queue<JPhyloIOEvent> queue = getStreamDataProvider().getUpcomingEvents();
+		
+		char c = reader.readChar();
 		long currentStartColumn = -1;
 		while (c != COMMAND_END) {
 			if (!Character.isWhitespace(c)) {
 				switch (c) {
 					case COMMENT_START:
 						if (currentStartColumn != -1) {
-							getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn));
+							queue.add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn));
 						}
 						getStreamDataProvider().readComment();
 						return;
@@ -144,25 +149,25 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 					case CHAR_SET_NOT_CONTAINED:
 						currentColumn++;
 						if (currentStartColumn != -1) {
-							getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn - 1));
+							queue.add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn - 1));
 							return;
 						}
 						break;
 					default:
-						throw new IOException("Invalid CharSet vector symbol '" + c + "' found.");  //TODO Replace by ParseException with line and column information.
+						throw new JPhyloIOReaderException("Invalid CHARSET vector symbol '" + c + "' found.", reader);
 				}
 			}
-			c = getStreamDataProvider().getDataReader().readChar();
+			c = reader.readChar();
 		}
 		
 		setAllDataProcessed(true);
 		if (currentStartColumn != -1) {  // No terminal '0' was found.
-			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn));
+			queue.add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn));
 		}
 		else if (isFirstCall) {  // A sequence of only '0' was found.
-			getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(0, 0));
+			queue.add(new CharacterSetIntervalEvent(0, 0));
 		}
-		getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+		queue.add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 }
 	
 	
@@ -182,7 +187,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		
 		int start = parseInteger();
 		if (start == -1) {  // Command end, comment or white space was already checked before calling this method. 
-			throw new IOException("Unexpected token '" + reader.peekChar() + "' found in CharSet command.");  //TODO Replace by parse exception.
+			throw new JPhyloIOReaderException("Unexpected token '" + reader.peekChar() + "' found in Nexus CHARSET command.", reader);
 		}
 		else {
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
@@ -192,7 +197,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
 				end = parseInteger();
 				if (end == -1) {
-					throw new IOException("Unexpected end of file in character set definition."); 	//TODO Replace by ParseException
+					throw new JPhyloIOReaderException("Unexpected end of file in Nexus character set definition.", reader);
 				}
 			}
 			
@@ -229,7 +234,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		getStreamDataProvider().consumeWhiteSpaceAndComments();
 		int nextChar = reader.peek();
 		if (nextChar == -1) {
-			throw new IOException("Unexpected end of file");  // At least ';' end "END Sets" would be still to come.  //TODO Replace by ParseException with line and column information.
+			throw new JPhyloIOReaderException("Unexpected end of file in Nexus CHARSET command.", reader);  // At least ';' end "END Sets" would be still to come.
 		}
 		else if ((char)nextChar == COMMAND_END) {
 			reader.skip(1);  // Consume ';'.

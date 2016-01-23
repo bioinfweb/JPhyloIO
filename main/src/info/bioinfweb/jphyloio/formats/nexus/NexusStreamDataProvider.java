@@ -31,7 +31,6 @@ import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.taxa.TaxLabelsReader;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;

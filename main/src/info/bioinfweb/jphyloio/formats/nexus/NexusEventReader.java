@@ -31,6 +31,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -227,7 +228,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			return result.toString();
 		}
 		catch (EOFException e) {
-			throw new IOException("Unexpected end of file inside a Nexus name.");  //TODO Replace by ParseException
+			throw new JPhyloIOReaderException("Unexpected end of file inside a Nexus name.", getReader(), e);
 		}
 	}
 	
@@ -263,7 +264,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	
 	private void checkStart() throws IOException {
 		if (!FIRST_LINE.equals(getReader().readString(FIRST_LINE.length()).toUpperCase())) { 
-			throw new IOException("All Nexus files must start with \"" + FIRST_LINE + "\".");
+			throw new JPhyloIOReaderException("All Nexus files must start with \"" + FIRST_LINE + "\".", 0, 0, 0);
 		}
 	}
 	
@@ -302,12 +303,13 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 							getReader().skip(1);  // Consume ';'.
 						}
 						else {
-							throw new IOException("Invalid character '" + getReader().peekChar() + "' in " + BEGIN_COMMAND + " command.");
+							throw new JPhyloIOReaderException("Invalid character '" + getReader().peekChar() + "' in " + BEGIN_COMMAND + 
+									" command.", getReader());
 						}
 					}
 				}
 				else {
-					throw new IOException("Nested blocks are not allowed in Nexus.");  //TODO Throw other exception
+					throw new JPhyloIOReaderException("Nested blocks are not allowed in Nexus.", getReader());
 				}
 			}
 			else if (END_COMMAND.equals(commandName) || ALTERNATIVE_END_COMMAND.equals(commandName)) {

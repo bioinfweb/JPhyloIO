@@ -31,6 +31,7 @@ import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -166,7 +167,8 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 					eventCreated = true;
 				}
 				else {
-					throw new IOException("Duplicate token set definition in Nexus FORMAT command.");
+					throw new JPhyloIOReaderException("Duplicate token set definition in Nexus FORMAT command.", 
+							getStreamDataProvider().getDataReader());
 				}
 			}
 		}
@@ -194,8 +196,9 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
 			if (continuousData) {
-				throw new IOException("The subcommand " + FORMAT_SUBCOMMAND_SYMBOLS + " of " + getCommandName() + " is not allowed if " +
-						FORMAT_SUBCOMMAND_DATA_TYPE + "=" + FORMAT_VALUE_CONTINUOUS_DATA_TYPE + " was specified.");  //TODO Replace by ParseException
+				throw new JPhyloIOReaderException("The subcommand " + FORMAT_SUBCOMMAND_SYMBOLS + " of " + getCommandName() + 
+						" is not allowed if " +	FORMAT_SUBCOMMAND_DATA_TYPE + "=" + FORMAT_VALUE_CONTINUOUS_DATA_TYPE + " was specified.",
+						getStreamDataProvider().getDataReader());
 			}
 			else {
 				for (int i = 0; i < info.getValue().length(); i++) {

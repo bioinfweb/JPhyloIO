@@ -28,6 +28,7 @@ import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -125,9 +126,9 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						
 						if (noLabels) {
 							if (currentSequenceIndex >= getStreamDataProvider().getTaxaList().size()) {
-								throw new IOException("A MATRIX command contains more sequences than defined in the TAXA block. "
+								throw new JPhyloIOReaderException("A MATRIX command contains more sequences than defined in the TAXA block. "
 										+ "This is invalid, if NOLABELS was specified. An alternative cause could be an invalid sequence "
-										+ "length definition.");  //TODO Replace by special exception.
+										+ "length definition.", getStreamDataProvider().getDataReader());
 							}
 							else {
 								currentSequenceLabel = getStreamDataProvider().getTaxaList().get(currentSequenceIndex);

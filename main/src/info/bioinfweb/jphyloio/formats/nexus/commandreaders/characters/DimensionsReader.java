@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 import java.io.IOException;
 
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -65,7 +66,8 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue(), longValue));  //TODO Does a type need to specified, if an object value is provided?
 		}
 		else if (DIMENSIONS_SUBCOMMAND_NTAX.equals(key) || DIMENSIONS_SUBCOMMAND_NCHAR.equals(key)) {
-			throw new IOException("\"" + info.getValue() + "\" is not a valid positive integer. Only positive integer values are valid for NTAX or NCHAR in the Nexus DIMENSIONS command.");
+			throw new JPhyloIOReaderException("\"" + info.getValue() + "\" is not a valid positive integer. Only positive integer "
+					+ "values are valid for NTAX or NCHAR in the Nexus DIMENSIONS command.", getStreamDataProvider().getDataReader());  //TODO Is the position of the reader too far behind?
 		}
 		else {  // Possible unknown subcommand
 			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
