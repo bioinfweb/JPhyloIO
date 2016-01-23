@@ -34,6 +34,7 @@ import static org.junit.Assert.* ;
 public class NewickScannerTest {
 	private static void assertNameToken(String expectedName, NewickScanner scanner) throws IOException {
 		NewickToken token = scanner.nextToken();
+		assertNotNull(token);
 		assertEquals(NewickTokenType.NAME, token.getType());
 		assertEquals(expectedName, token.getText());
 	}
@@ -41,8 +42,17 @@ public class NewickScannerTest {
 	
 	private static void assertLengthToken(double expectedLength, NewickScanner scanner) throws IOException {
 		NewickToken token = scanner.nextToken();
+		assertNotNull(token);
 		assertEquals(NewickTokenType.LENGTH, token.getType());
 		assertEquals(expectedLength, token.getLength(), 0.0000001);
+	}
+	
+	
+	private static void assertCommentToken(String expectedComment, NewickScanner scanner) throws IOException {
+		NewickToken token = scanner.nextToken();
+		assertNotNull(token);
+		assertEquals(NewickTokenType.COMMENT, token.getType());
+		assertEquals(expectedComment, token.getText());
 	}
 	
 	
@@ -81,6 +91,44 @@ public class NewickScannerTest {
 			assertEquals(NewickTokenType.SUBTREE_END, scanner.nextToken().getType());
 			assertNameToken("N1", scanner);
 			assertEquals(NewickTokenType.TERMNINAL_SYMBOL, scanner.nextToken().getType());
+			assertEquals(-1, reader.peek());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_nextToken_comments() throws IOException {
+		PeekReader reader = new PeekReader(new BufferedReader(new FileReader("data/Newick/Comments.nwk")));
+		try {
+			NewickScanner scanner = new NewickScanner(reader);
+			assertEquals(NewickTokenType.UNROOTED_COMMAND, scanner.nextToken().getType());
+			assertEquals(NewickTokenType.ROOTED_COMMAND, scanner.nextToken().getType());
+			assertCommentToken("c1", scanner);
+			assertEquals(NewickTokenType.SUBTREE_START, scanner.nextToken().getType());
+			assertCommentToken("c2", scanner);
+			assertEquals(NewickTokenType.SUBTREE_START, scanner.nextToken().getType());
+			assertCommentToken("c3", scanner);
+			assertNameToken("A", scanner);
+			assertCommentToken("c4", scanner);
+			assertCommentToken("c5", scanner);
+			assertCommentToken("c6", scanner);
+			assertLengthToken(1.0, scanner);
+			assertCommentToken("c7", scanner);
+			assertEquals(NewickTokenType.ELEMENT_SEPARATOR, scanner.nextToken().getType());
+			assertCommentToken("c8", scanner);
+			assertNameToken("B", scanner);
+			assertCommentToken("c9", scanner);
+			assertEquals(NewickTokenType.SUBTREE_END, scanner.nextToken().getType());
+			assertCommentToken("c10", scanner);
+			assertEquals(NewickTokenType.ELEMENT_SEPARATOR, scanner.nextToken().getType());
+			assertNameToken("C", scanner);
+			assertEquals(NewickTokenType.SUBTREE_END, scanner.nextToken().getType());
+			assertCommentToken("c11", scanner);
+			assertEquals(NewickTokenType.TERMNINAL_SYMBOL, scanner.nextToken().getType());
+			assertCommentToken("c12", scanner);
 			assertEquals(-1, reader.peek());
 		}
 		finally {

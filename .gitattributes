@@ -113,6 +113,7 @@ test/data/MEGA/MatchToken.meg -text
 test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownTag.xml -text svneol=unset#text/plain
+test/data/Newick/Comments.nwk -text
 test/data/Newick/InternalsTerminalsLength.nwk -text
 test/data/Newick/LeafNodesNamed.nwk -text
 test/data/Newick/NoNamedNodes.nwk -text
