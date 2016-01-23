@@ -19,34 +19,37 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
+import info.bioinfweb.commons.io.StreamLocation;
+import info.bioinfweb.commons.io.StreamLocationProvider;
+
+
 
 public class NewickToken {
 	private NewickTokenType type = NewickTokenType.SUBTREE_START;
-	private int textPos;
 	private String text = "";
 	private double length = 0;
 	private boolean delimited = false;
 	private String comment = "";
-	//TODO Adjust properties to JPhyloIO
+	private StreamLocation location;
 	
 	
-	public NewickToken(NewickTokenType type, int textPos) {
+	public NewickToken(NewickTokenType type, StreamLocationProvider location) {
 		this.type = type;
-		this.textPos = textPos;
+		this.location = new StreamLocation(location);
 	}
 
 	
-	public NewickToken(int textPos, String text, boolean delimited) {
+	public NewickToken(StreamLocationProvider location, String text, boolean delimited) {
 		this.type = NewickTokenType.NAME;
-		this.textPos = textPos;
+		this.location = new StreamLocation(location);;
 		this.text = text;
 		this.delimited = delimited;
 	}
 	
 	
-	public NewickToken(int textPos, double length) {
+	public NewickToken(StreamLocationProvider location, double length) {
 		this.type = NewickTokenType.LENGTH;
-		this.textPos = textPos;
+		this.location = new StreamLocation(location);;
 		this.length = length;
 	}
 
@@ -76,8 +79,8 @@ public class NewickToken {
 	}
 
 
-	public int getTextPos() {
-		return textPos;
+	public StreamLocation getLocation() {
+		return location;
 	}
 
 

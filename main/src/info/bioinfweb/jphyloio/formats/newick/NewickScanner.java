@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 
 
 
@@ -68,7 +69,7 @@ public class NewickScanner implements NewickConstants {
 			throw new IOException("Unterminated Newick name");  //TODO Replace by special exception
 		}
 		else {
-			NewickToken token = new NewickToken(NewickTokenType.NAME, -1);
+			NewickToken token = new NewickToken(NewickTokenType.NAME, reader);
 			token.setText(result.toString());
 			token.setDelimited(true);
 			return token;
@@ -90,10 +91,10 @@ public class NewickScanner implements NewickConstants {
 		}
 		
 		if (reader.peek() == -1) {
-			throw new IOException("Unterminated Newick name");  //TODO Replace by special exception
+			throw new JPhyloIOReaderException("Unterminated Newick name.", reader);
 		}
 		else {
-			return new NewickToken(-1, result.toString(), false);  //TODO Determine position from reader.
+			return new NewickToken(reader, result.toString(), false);
 		}
 	}
 	
@@ -115,7 +116,7 @@ public class NewickScanner implements NewickConstants {
 			throw new IOException("Illegal length statement");  //TODO Replace by special exception with position information. EOF after ':' could also have caused this exception.
 		}
 		
-		NewickToken token = new NewickToken(NewickTokenType.LENGTH,  -1);  //TODO Determine position from reader.
+		NewickToken token = new NewickToken(NewickTokenType.LENGTH, reader);
 		token.setLength(value);
 		return token; 
 	}
@@ -133,10 +134,10 @@ public class NewickScanner implements NewickConstants {
 			switch (reader.peekChar()) {
 			  case SUBTREE_START:
 			  	reader.read();
-			  	return new NewickToken(NewickTokenType.SUBTREE_START, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
+			  	return new NewickToken(NewickTokenType.SUBTREE_START, reader);
 			  case SUBTREE_END:
 			  	reader.read();
-			  	return new NewickToken(NewickTokenType.SUBTREE_END, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
+			  	return new NewickToken(NewickTokenType.SUBTREE_END, reader);
 			  case LENGTH_SEPERATOR:
 			  	reader.read(); // skip LENGTH_SEPERATOR
 					//TODO ConsumeWhiteSpaceAndComments
@@ -149,10 +150,10 @@ public class NewickScanner implements NewickConstants {
 	//		  	break;
 			  case TERMINAL_SYMBOL:
 			  	reader.read();
-			  	return new NewickToken(NewickTokenType.TERMNINAL_SYMBOL, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
+			  	return new NewickToken(NewickTokenType.TERMNINAL_SYMBOL, reader);
 			  case ELEMENT_SEPERATOR:
 			  	reader.read();  // Skip element separator
-			  	return new NewickToken(NewickTokenType.ELEMENT_SEPARATOR, -1);  //TODO Determine position by reader (line and column properties to be implemented in reader)
+			  	return new NewickToken(NewickTokenType.ELEMENT_SEPARATOR, reader);
 			  default:
 			    if (isFreeNameChar(reader.peekChar())) {
 			    	return readFreeName();

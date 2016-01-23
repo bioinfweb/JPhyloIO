@@ -154,7 +154,8 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						break;
 					case SUBTREE_END:
 						if (scanner.peek().getType().equals(NewickTokenType.SUBTREE_START)) {
-							throw new JPhyloIOReaderException("Unexpected Newick token \"" + NewickTokenType.SUBTREE_START + "\"", getReader());
+							throw new JPhyloIOReaderException("Unexpected Newick token \"" + NewickTokenType.SUBTREE_START + "\"", 
+									scanner.peek().getLocation());
 						}
 						else {
 							Queue<NodeInfo> levelInfo = passedSubnodes.pop();
@@ -174,7 +175,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
 						break;
 					default:
-						throw new JPhyloIOReaderException("Unexpected Newick token \"" + token.getType() + "\"", getReader());
+						throw new JPhyloIOReaderException("Unexpected Newick token \"" + token.getType() + "\"", token.getLocation());
 				}
 			}
 		}
