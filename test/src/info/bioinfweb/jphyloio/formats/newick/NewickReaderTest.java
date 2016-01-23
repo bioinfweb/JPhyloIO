@@ -232,4 +232,120 @@ public class NewickReaderTest {
 			reader.close();
 		}
 	}
+	
+	
+	@Test
+	public void test_readNextEvent_Metadata() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/Metadata.nwk"));
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String idA = assertLinkedOTUEvent(EventContentType.NODE, null, "A", null, reader);
+			assertMetaEvent("prob", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertMetaEvent("prob_stddev", "0", null, new Double(0.0), true, true, reader);
+			assertMetaEvent("prob_range", null, null, null, false, true, reader);
+			assertMetaEvent("prob_range[0]", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertMetaEvent("prob_range[1]", "1", null, new Double(1.0), true, true, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
+			assertMetaEvent("prob(percent)", "100", null, "100", true, true, reader);
+			assertMetaEvent("prob+-sd", "100+-0", null, "100+-0", true, true, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			String idB = assertLinkedOTUEvent(EventContentType.NODE, null, "B", null, reader);
+			assertMetaEvent("prob", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertMetaEvent("prob_stddev", "0.000000000000000e+000", null, new Double(0.0), true, true, reader);
+			assertMetaEvent("prob_range", null, null, null, false, true, reader);
+			assertMetaEvent("prob_range[0]", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertMetaEvent("prob_range[1]", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
+			assertMetaEvent("prob(percent)", "100", null, "100", true, true, reader);
+			assertMetaEvent("prob+-sd", "100+-0", null, "100+-0", true, true, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			String idC = assertLinkedOTUEvent(EventContentType.NODE, null, "C", null, reader);
+			assertMetaEvent("prob", "6.364056912805381e-001", null, new Double(6.364056912805381e-001), true, true, reader);
+			assertMetaEvent("prob_stddev", "7.249475639180907e-004", null, new Double(7.249475639180907e-004), true, true, reader);	
+			assertMetaEvent("prob_range", null, null, null, false, true, reader);
+			assertMetaEvent("prob_range[0]", "6.358930759420870e-001", null, new Double(6.358930759420870e-001), true, true, reader);
+			assertMetaEvent("prob_range[1]", "6.369183066189893e-001", null, new Double(6.369183066189893e-001), true, true, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
+			assertMetaEvent("prob(percent)", "64", null, "64", true, true, reader);
+			assertMetaEvent("prob+-sd", "64+-0", null, "64+-0", true, true, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			
+			String idN1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertMetaEvent("prob", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertMetaEvent("prob_stddev", "0.000000000000000e+000", null, new Double(0.0), true, true, reader);
+			assertMetaEvent("prob_range", null, null, null, false, true, reader);
+			assertMetaEvent("prob_range[0]", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertMetaEvent("prob_range[1]", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
+			assertMetaEvent("prob(percent)", "100", null, "100", true, true, reader);
+			assertMetaEvent("prob+-sd", "100+-0", null, "100+-0", true, true, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			assertEdgeEvent(idN1, idB, 6.244293083853111e-001, reader);
+			assertMetaEvent("length_mean", "6.345415111023917e-001", null, new Double(6.345415111023917e-001), true, true, reader);
+			assertMetaEvent("length_median", "6.244293083853111e-001", null, new Double(6.244293083853111e-001), true, true, reader);
+			assertMetaEvent("length_95%HPD", null, null, null, false, true, reader);
+			assertMetaEvent("length_95%HPD[0]", "4.360295861156825e-001", null, new Double(4.360295861156825e-001), true, true, reader);
+			assertMetaEvent("length_95%HPD[1]", "8.441623753050405e-001", null, new Double(8.441623753050405e-001), true, true, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEdgeEvent(idN1, idC, 7.039004236028111e-002, reader);
+			assertMetaEvent("length_mean", "7.419012044002400e-002", null, new Double(7.419012044002400e-002), true, true, reader);
+			assertMetaEvent("length_median", "7.039004236028111e-002", null, new Double(7.039004236028111e-002), true, true, reader);
+			assertMetaEvent("length_95%HPD", null, null, null, false, true, reader);
+			assertMetaEvent("length_95%HPD[0]", "9.114712766459516e-003", null, new Double(9.114712766459516e-003), true, true, reader);
+			assertMetaEvent("length_95%HPD[1]", "1.418351647155842e-001", null, new Double(1.418351647155842e-001), true, true, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+
+			String idN2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertMetaEvent(HotCommentDataReader.UNNAMED_NODE_DATA_NAME, "18", null, new Double(18), true, true, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			assertEdgeEvent(idN2, idA, .3682008685714568, reader);
+			assertMetaEvent("length_mean", "3.744759260623280e-001", null, new Double(3.744759260623280e-001), true, true, reader);
+			assertMetaEvent("length_median", "3.682008685714568e-001", null, new Double(3.682008685714568e-001), true, true, reader);
+			assertMetaEvent("length_95%HPD", null, null, null, false, true, reader);
+			assertMetaEvent("length_95%HPD[0]", "2.494893056441154e-001", null, new Double(2.494893056441154e-001), true, true, reader);
+			assertMetaEvent("length_95%HPD[1]", "5.088322191162278e-001", null, new Double(5.088322191162278e-001), true, true, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEdgeEvent(idN2, idN1, reader);
+			assertMetaEvent("length_mean", "0.000000000000000e+000", null, new Double(0.0), true, true, reader);
+			assertMetaEvent("length_median", "0.000000000000000e+000", null, new Double(0.0), true, true, reader);
+			assertMetaEvent("length_95%HPD", null, null, null, false, true, reader);
+			assertMetaEvent("length_95%HPD[0]", "0.000000000000000e+000", null, new Double(0.0), true, true, reader);
+			assertMetaEvent("length_95%HPD[1]", "0.000000000000000e+000", null, new Double(0.0), true, true, reader);
+			assertEndEvent(EventContentType.META_INFORMATION, reader);
+			assertCommentEvent("comment 1", false, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			//TODO Test root branch with length 0 and metadata [20]
+			
+			assertNotEquals(idA, idB);
+			assertNotEquals(idA, idC);
+			assertNotEquals(idA, idN1);
+			assertNotEquals(idA, idN2);
+			assertNotEquals(idB, idC);
+			assertNotEquals(idB, idN1);
+			assertNotEquals(idB, idN2);
+			assertNotEquals(idC, idN1);
+			assertNotEquals(idC, idN2);
+			assertNotEquals(idN1, idN2);
+			
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }
