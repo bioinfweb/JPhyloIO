@@ -25,11 +25,10 @@ import info.bioinfweb.commons.io.StreamLocationProvider;
 
 
 public class NewickToken {
-	private NewickTokenType type = NewickTokenType.SUBTREE_START;
+	private NewickTokenType type;
 	private String text = "";
 	private double length = 0;
 	private boolean delimited = false;
-	private String comment = "";
 	private StreamLocation location;
 	
 	
@@ -52,8 +51,8 @@ public class NewickToken {
 		this.location = new StreamLocation(location);;
 		this.length = length;
 	}
-
-
+	
+	
 	public double getLength() {
 		return length;
 	}
@@ -91,20 +90,5 @@ public class NewickToken {
 
 	public void setDelimited(boolean delimited) {
 		this.delimited = delimited;
-	}
-
-
-	/**
-	 * Returns the comment which was located behind this element in the Newick string (if there was 
-	 * any).
-	 * @return
-	 */
-	public String getComment() {
-		return comment;
-	}
-
-
-	public void setComment(String comment) {
-		this.comment = comment;
 	}
 }

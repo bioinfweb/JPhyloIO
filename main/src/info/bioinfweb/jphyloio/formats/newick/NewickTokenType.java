@@ -28,7 +28,8 @@ public enum NewickTokenType {
 	ELEMENT_SEPARATOR,  // Necessary to determine names of internal nodes from possible subsequent terminal nodes. (E.g: "((A, B)C, D);" or "((A, B), C, D);")
 	NAME, 
 	LENGTH,
-	TERMNINAL_SYMBOL;
+	TERMNINAL_SYMBOL,
+	COMMENT;
 
 	
 	@Override

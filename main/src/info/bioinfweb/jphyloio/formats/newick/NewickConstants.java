@@ -29,5 +29,8 @@ public interface NewickConstants {
 	public static final char TERMINAL_SYMBOL = ';';
 	public static final char COMMENT_START = '[';
 	public static final char COMMENT_END = ']';
-	public static final char FREE_NAME_BLANK = '_';	
+	public static final char FREE_NAME_BLANK = '_';
+	
+	public static final String ROOTED_HOT_COMMENT = "&r";
+	public static final String UNROOTED_HOT_COMMENT = "&u";
 }

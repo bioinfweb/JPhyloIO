@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.commons.io.StreamLocation;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 
 
@@ -32,7 +33,7 @@ public class NewickScanner implements NewickConstants {
 	private NewickToken next = null;
 	private NewickToken previous = null;
 	private boolean beforeFirstAccess = true;
-	private boolean dataSourceClosed = false; //TODO is never used now, possible future use?
+	private boolean branchLengthExpected = false;
 	
 	
 	public NewickScanner(PeekReader reader) {
@@ -100,35 +101,79 @@ public class NewickScanner implements NewickConstants {
 	
 	
 	/**
-	 * Reads a length statement in an Newick string.
+	 * Reads a length statement in an Newick string or a comment before a branch length definition.
 	 */
-	private  NewickToken readBranchLength() throws IOException {
-		StringBuilder text = new StringBuilder();
-		while ((reader.peek() != -1) && !isCharAfterLength(reader.peekChar())) {
-			text.append(reader.readChar());
+	private NewickToken readBranchLength() throws IOException {
+		reader.readRegExp("\\s*", true);  // Skip whitespace.
+		if (reader.peek() == -1) {
+			throw new JPhyloIOReaderException("Unexpected end of file in a Newick branch length definition.", reader);
 		}
-		
-		double value; 
-		try {
-			value = Double.parseDouble(text.toString());
+		else {
+			StreamLocation location = new StreamLocation(reader);
+			if (reader.peekChar() == COMMENT_START) {
+				return readComment();
+			}
+			else {
+				StringBuilder text = new StringBuilder();
+				while ((reader.peek() != -1) && !isCharAfterLength(reader.peekChar())) {
+					text.append(reader.readChar());
+				}
+	
+				double value; 
+				try {
+					value = Double.parseDouble(text.toString());
+				}
+				catch (NumberFormatException e) {
+					throw new JPhyloIOReaderException("\"" + text + "\" is not a valid Newick branch length.", location);
+				}
+				
+				NewickToken token = new NewickToken(NewickTokenType.LENGTH, location);
+				token.setLength(value);
+				branchLengthExpected = false;
+				return token;
+			}
 		}
-		catch (NumberFormatException e) {
-			throw new IOException("Illegal length statement");  //TODO Replace by special exception with position information. EOF after ':' could also have caused this exception.
-		}
-		
-		NewickToken token = new NewickToken(NewickTokenType.LENGTH, reader);
-		token.setLength(value);
-		return token; 
 	}
 
 	
+	private NewickToken readComment() throws IOException {
+		StreamLocation location = new StreamLocation(reader);
+		reader.read();  // Skip COMMENT_START.
+		StringBuilder buffer = new StringBuilder();
+		while ((reader.peek() != -1) && (reader.peekChar() != COMMENT_END)) {
+			buffer.append(reader.readChar());
+		}
+		
+		if (reader.peek() == -1) {
+			throw new JPhyloIOReaderException("Unexpected end of file inside a Newick comment.", reader);
+		}
+		else {
+			reader.read();  // Skip COMMENT_END.
+			String text = buffer.toString();
+			String lowerCase = text.trim().toLowerCase();
+			if (lowerCase.equals(UNROOTED_HOT_COMMENT)) {
+				return new NewickToken(NewickTokenType.UNROOTED_COMMAND, location);
+			}
+			else if (lowerCase.equals(ROOTED_HOT_COMMENT)) {
+				return new NewickToken(NewickTokenType.ROOTED_COMMAND, location);
+			}
+			else {
+				NewickToken result = new NewickToken(NewickTokenType.COMMENT, location);
+				result.setText(text);
+				return result;
+			}
+		}
+	}
+	
+	
 	private NewickToken readNextToken() throws IOException {
-		//TODO ConsumeWhiteSpaceAndComments
-		//TODO According comment events or meta events must be fired at the correct position. (Before or associated with a node or an edge).
 		reader.readRegExp("\\s*", true);  // Skip whitespace. Can be removed, when ConsumeWhiteSpaceAndComments is called above.
 		
 		if (reader.peek() == -1) {
 			return null; 
+		}
+		else if (branchLengthExpected) {
+			return readBranchLength();
 		}
 		else {
 			switch (reader.peekChar()) {
@@ -139,27 +184,25 @@ public class NewickScanner implements NewickConstants {
 			  	reader.read();
 			  	return new NewickToken(NewickTokenType.SUBTREE_END, reader);
 			  case LENGTH_SEPERATOR:
+			  	branchLengthExpected = true;
 			  	reader.read(); // skip LENGTH_SEPERATOR
-					//TODO ConsumeWhiteSpaceAndComments
-					reader.readRegExp("\\s*", true);  // Skip whitespace. Can be removed, when ConsumeWhiteSpaceAndComments is called above.
 			  	return readBranchLength();
 			  case NAME_DELIMITER:
 			  	return readDelimitedName();
-	//		  case COMMENT_START:  // Can be skipped, if comments are consumed above
-	//		  	pos = readComment(text, pos, result);
-	//		  	break;
 			  case TERMINAL_SYMBOL:
 			  	reader.read();
 			  	return new NewickToken(NewickTokenType.TERMNINAL_SYMBOL, reader);
 			  case ELEMENT_SEPERATOR:
 			  	reader.read();  // Skip element separator
 			  	return new NewickToken(NewickTokenType.ELEMENT_SEPARATOR, reader);
+			  case COMMENT_START:
+			  	return readComment();
 			  default:
 			    if (isFreeNameChar(reader.peekChar())) {
 			    	return readFreeName();
 			    }
 			    else {  // Whitespaces have been consumed before.
-			    	throw new IOException("Unexpected token '" + reader.peekChar() + "'.");  //TODO Replace by special exception.
+			    	throw new JPhyloIOReaderException("Unexpected token '" + reader.peekChar() + "'.", reader);
 			    }
 			}
 		}
