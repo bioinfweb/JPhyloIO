@@ -27,6 +27,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -200,8 +201,9 @@ public class PhylipEventReader extends AbstractPhylipEventReader {
 							if (allowInterleavedParsing) {  // Reuse saved name for interleaved lines:
 								currentSequenceName = sequenceNames.get(currentSequenceIndex);
 							}
-							else {  // Not saved names available
-								throw new IllegalStateException("Interleaved Phylip format found, although interleaved parsing was not allowed.");
+							else {  // No saved names available
+								throw new JPhyloIOReaderException("Interleaved Phylip format found, although interleaved parsing was not allowed.", 
+										getReader());
 							}
 						}
 						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_INFORMATION)) {

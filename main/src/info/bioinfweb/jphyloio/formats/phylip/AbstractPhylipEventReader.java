@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -93,7 +94,8 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 	protected void readMatrixDimensions() throws IOException {
 		PeekReader.ReadResult firstLine = getReader().readLine();
 		if (!firstLine.isCompletelyRead()) {
-			throw new IOException("First line of Phylip file is too long. It does not seem to be a valid Phylip file.");
+			throw new JPhyloIOReaderException("First line of Phylip file is too long. It does not seem to be a valid Phylip file.", 
+					getReader());
 		}
 		else {
 			String[] parts = firstLine.getSequence().toString().trim().split("\\s+");
@@ -102,7 +104,8 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 					sequenceCount = Long.parseLong(parts[0]);
 				}
 				catch (NumberFormatException e) {
-					throw new IOException("Invalid integer constant \"" + parts[0] + "\" found for the sequence count in line 1.");
+					throw new JPhyloIOReaderException("Invalid integer value \"" + parts[0] + "\" found for the Phylip sequence count.", 
+							getReader());
 				}
 				getUpcomingEvents().add(new MetaInformationEvent(META_KEY_SEQUENCE_COUNT, null, parts[0], sequenceCount));
 				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
@@ -111,14 +114,15 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 					characterCount = Long.parseLong(parts[1]);
 				}
 				catch (NumberFormatException e) {
-					throw new IOException("Invalid integer constant \"" + parts[1] + "\" found for the character count in line 1.");
+					throw new JPhyloIOReaderException("Invalid integer value \"" + parts[1] + "\" found for the Phylip character count.", 
+							getReader());
 				}
 				getUpcomingEvents().add(new MetaInformationEvent(META_KEY_CHARACTER_COUNT, null, parts[1], characterCount));
 				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 			else {
-				throw new IOException("The first line of a Phylip file needs to contain exactly two integer values spcifying the "
-						+ "sequence and character count. " + parts.length + " value(s) was/were found instead.");
+				throw new JPhyloIOReaderException("The first line of a Phylip file needs to contain exactly two integer values "
+						+ "spcifying the sequence and character count. " + parts.length + " value(s) was/were found instead.", getReader());
 			}
 		}
 	}
