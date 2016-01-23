@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -199,7 +200,7 @@ public class PhylipEventReaderTest {
 			}
 		}
 		catch (Exception e) {
-			assertTrue(e instanceof IOException);
+			assertTrue(e instanceof JPhyloIOReaderException);
 			assertEquals(errorMessage, e.getMessage());
 		}
 	}
@@ -207,8 +208,8 @@ public class PhylipEventReaderTest {
 	
 	@Test
 	public void testInvalidCounts() {
-		testInvalidCount("InvalidSequenceCount.phy", "Invalid integer constant \"A\" found for the sequence count in line 1.");
-		testInvalidCount("InvalidCharacterCount.phy", "Invalid integer constant \"A\" found for the character count in line 1.");
+		testInvalidCount("InvalidSequenceCount.phy", "Invalid integer value \"A\" found for the Phylip sequence count.");
+		testInvalidCount("InvalidCharacterCount.phy", "Invalid integer value \"A\" found for the Phylip character count.");
 		testInvalidCount("MissingCharacterCount.phy", "The first line of a Phylip file needs to contain exactly two integer values "
 				+ "spcifying the sequence and character count. 1 value(s) was/were found instead.");
 		testInvalidCount("TooManyCounts.phy", "The first line of a Phylip file needs to contain exactly two integer values spcifying "
