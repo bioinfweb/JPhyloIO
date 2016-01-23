@@ -19,26 +19,30 @@
 package info.bioinfweb.jphyloio;
 
 
+import java.io.IOException;
+
+import info.bioinfweb.commons.io.StreamLocationProvider;
+
 import javax.xml.stream.Location;
 
 
 
-public class JPhyloIOReaderException extends Exception {
-	private long charIndex;
-	private long line;
-	private long column;
+public class JPhyloIOReaderException extends IOException implements StreamLocationProvider {
+	private long characterOffset;
+	private long lineNumber;
+	private long columnNumber;
 	
 	
-	public JPhyloIOReaderException(String message, long charIndex, long line, long column, Throwable cause) {
+	public JPhyloIOReaderException(String message, long characterOffset, long lineNumber, long columnNumber, Throwable cause) {
 		super(message, cause);
-		this.charIndex = charIndex;
-		this.line = line;
-		this.column = column;
+		this.characterOffset = characterOffset;
+		this.lineNumber = lineNumber;
+		this.columnNumber = columnNumber;
 	}
 
 
-	public JPhyloIOReaderException(String message, long charIndex, long line, long column) {
-		this(message, charIndex, line, column, null);
+	public JPhyloIOReaderException(String message, long characterOffset, long lineNumber, long columnNumber) {
+		this(message, characterOffset, lineNumber, columnNumber, null);
 	}
 
 
@@ -52,14 +56,25 @@ public class JPhyloIOReaderException extends Exception {
 	}
 
 
+	public JPhyloIOReaderException(String message, StreamLocationProvider location, Throwable cause) {
+		this(message, location.getCharacterOffset(), location.getLineNumber(), location.getColumnNumber(), cause);
+	}
+
+
+	public JPhyloIOReaderException(String message, StreamLocationProvider location) {
+		this(message, location.getCharacterOffset(), location.getLineNumber(), location.getColumnNumber(), null);
+	}
+
+
 	/**
 	 * Returns the index of the character in the underlying data source, where the error occurred.
 	 * The first character in the stream would have the index 0.
 	 * 
 	 * @return the character index or -1 if the index is unknown
 	 */
-	public long getCharIndex() {
-		return charIndex;
+	@Override
+	public long getCharacterOffset() {
+		return characterOffset;
 	}
 
 
@@ -69,8 +84,9 @@ public class JPhyloIOReaderException extends Exception {
 	 * 
 	 * @return the line index or -1 if the index is unknown
 	 */
-	public long getLine() {
-		return line;
+	@Override
+	public long getLineNumber() {
+		return lineNumber;
 	}
 
 
@@ -80,7 +96,8 @@ public class JPhyloIOReaderException extends Exception {
 	 * 
 	 * @return the column index or -1 if the index is unknown
 	 */
-	public long getColumn() {
-		return column;
+	@Override
+	public long getColumnNumber() {
+		return columnNumber;
 	}
 }

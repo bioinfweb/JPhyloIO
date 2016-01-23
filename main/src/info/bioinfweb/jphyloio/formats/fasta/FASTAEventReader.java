@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.fasta;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -147,7 +148,7 @@ public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader imp
 				return null;
 			}
 			else {
-				throw new IOException(exceptionMessage);
+				throw new JPhyloIOReaderException(exceptionMessage, getReader());
 			}
 		}
 		catch (EOFException e) {
