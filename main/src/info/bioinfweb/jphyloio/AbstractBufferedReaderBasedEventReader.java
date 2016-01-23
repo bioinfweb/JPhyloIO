@@ -23,7 +23,6 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
@@ -217,7 +216,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 				content.append(c);
 				length++;
 				if (length >= getMaxCommentLength()) {
-					c = reader.peekChar();
+					c = getReader().peekChar();
 					getUpcomingEvents().add(new CommentEvent(content.toString(), (c == -1) || (c == commentEnd)));
 					content.delete(0, content.length());
 					length = 0;
@@ -229,7 +228,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 			}
 		}
 		catch (EOFException e) {
-			throw new IOException("Unexpected end of file inside a comment.");  //TODO Replace by ParseException
+			throw new JPhyloIOReaderException("Unexpected end of file inside a comment.", getReader());
 		}
 	}
 	
