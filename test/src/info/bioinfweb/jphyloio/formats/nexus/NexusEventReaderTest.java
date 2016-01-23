@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
@@ -168,8 +169,8 @@ public class NexusEventReaderTest {
 			fail("Expected exception not fired.");
 		}
 		catch (Exception e) {
-			if (e instanceof IOException) {
-				assertEquals("Invalid CharSet vector symbol '2' found.", e.getMessage());
+			if (e instanceof JPhyloIOReaderException) {
+				assertEquals("Invalid CHARSET vector symbol '2' found.", e.getMessage());
 			}
 			else {
 				fail(e.getLocalizedMessage());
