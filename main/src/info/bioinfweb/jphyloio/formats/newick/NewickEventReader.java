@@ -27,9 +27,9 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Stack;
 
-import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
@@ -142,7 +142,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
 				}
 				else {
-					throw new IOException("Unexpected EOF.");  //TODO Replace by special exception.
+					throw new JPhyloIOReaderException("Unexpected end of file inside a subtree defintion.", getReader());
 				}
 			}
 			else {
@@ -154,7 +154,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						break;
 					case SUBTREE_END:
 						if (scanner.peek().getType().equals(NewickTokenType.SUBTREE_START)) {
-							throw new IOException("Unexpected token " + NewickTokenType.SUBTREE_START);  //TODO Replace by special exception
+							throw new JPhyloIOReaderException("Unexpected Newick token \"" + NewickTokenType.SUBTREE_START + "\"", getReader());
 						}
 						else {
 							Queue<NodeInfo> levelInfo = passedSubnodes.pop();
@@ -174,7 +174,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
 						break;
 					default:
-						throw new IOException("Unexpected token " + token.getType());  //TODO Replace by special exception
+						throw new JPhyloIOReaderException("Unexpected Newick token \"" + token.getType() + "\"", getReader());
 				}
 			}
 		}
