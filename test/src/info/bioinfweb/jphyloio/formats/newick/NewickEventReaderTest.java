@@ -256,8 +256,8 @@ public class NewickEventReaderTest {
 			assertMetaEvent("prob", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
 			assertMetaEvent("prob_stddev", "0.000000000000000e+000", null, new Double(0.0), true, true, reader);
 			assertMetaEvent("prob_range", null, null, null, false, true, reader);
-			assertMetaEvent("prob_range[0]", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
-			assertMetaEvent("prob_range[1]", "1.000000000000000e+000", null, new Double(1.0), true, true, reader);
+			assertMetaEvent("prob_range[0]", "AB C", null, "AB C", true, true, reader);
+			assertMetaEvent("prob_range[1]", "ABC", null, "ABC", true, true, reader);
 			assertEndEvent(EventContentType.META_INFORMATION, reader);
 			assertMetaEvent("prob(percent)", "100", null, "100", true, true, reader);
 			assertMetaEvent("prob+-sd", "100+-0", null, "100+-0", true, true, reader);
