@@ -31,7 +31,7 @@ import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 
 
 
-public class NewickReaderTest {
+public class NewickEventReaderTest {
 	@Test
 	public void test_readNextEvent_InternalsTerminalsLength() throws Exception {
 		NewickEventReader reader = new NewickEventReader(new File("data/Newick/InternalsTerminalsLength.nwk"));
@@ -305,7 +305,8 @@ public class NewickReaderTest {
 			assertEndEvent(EventContentType.EDGE, reader);
 
 			String idN2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
-			assertMetaEvent(HotCommentDataReader.UNNAMED_NODE_DATA_NAME, "18", null, new Double(18), true, true, reader);
+			assertCommentEvent("18", false, reader);
+			//assertMetaEvent(HotCommentDataReader.UNNAMED_NODE_DATA_NAME, "18", null, new Double(18), true, true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
 			assertEdgeEvent(idN2, idA, .3682008685714568, reader);
@@ -339,6 +340,53 @@ public class NewickReaderTest {
 			assertNotEquals(idC, idN1);
 			assertNotEquals(idC, idN2);
 			assertNotEquals(idN1, idN2);
+			
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_readNextEvent_ProblematicComments() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/ProblematicComments.nwk"));
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String idA = assertLinkedOTUEvent(EventContentType.NODE, null, "A", null, reader);
+			assertMetaEvent("a", "1", null, new Double(1.0), true, true, reader);
+			assertMetaEvent("b", "2", null, new Double(2.0), true, true, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			String idB = assertLinkedOTUEvent(EventContentType.NODE, null, "B", null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			String idC = assertLinkedOTUEvent(EventContentType.NODE, null, "C", null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			String idN1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			assertEdgeEvent(idN1, idB, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEdgeEvent(idN1, idC, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			String idN2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			assertEdgeEvent(idN2, idA, 18.0, reader);
+			assertMetaEvent("c", "3", null, new Double(3.0), true, true, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEdgeEvent(idN2, idN1, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEndEvent(EventContentType.DOCUMENT, reader);
