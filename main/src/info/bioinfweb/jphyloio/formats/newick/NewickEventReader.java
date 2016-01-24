@@ -38,6 +38,7 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -300,7 +301,8 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						getUpcomingEvents().add(new CommentEvent(scanner.nextToken().getText(), false));
 					}
 					else {
-						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.START));
+						getUpcomingEvents().add(new LabeledIDEvent(EventContentType.TREE, 
+								DEFAULT_TREE_ID_PREFIX + getIDManager().createNewID(), null));  //TODO Use label from Nexus, if available.
 						if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 							currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 							scanner.nextToken();  // Skip rooted token.

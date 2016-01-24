@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -273,7 +274,13 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
 				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
 			
-			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, topologyType));
+			if (topologyType.equals(EventTopologyType.START)) {
+				getUpcomingEvents().add(new LabeledIDEvent(EventContentType.ALIGNMENT, 
+						DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null));
+			}
+			else {
+				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+			}
 		}
 	}
 	

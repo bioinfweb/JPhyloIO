@@ -25,6 +25,7 @@ import java.util.Set;
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventType;
 
 
@@ -66,9 +67,14 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * MetaInformation = "META_INFORMATION.START", {MetaInformation,} "META_INFORMATION.END";
  * </pre>
  * Additionally {@link CommentEvent}s ({@code "COMMENT.SOLE"}) may occur at any position in the stream, which 
- * is not shown in the grammar for greater clarity. 
+ * is not shown in the grammar for greater clarity.
+ * <p>
+ * The documentation of {@link EventContentType} contains information on which event classes are used for which
+ * event type.
  * 
  * @author Ben St&ouml;ver
+ * @see EventContentType
+ * @see JPhyloIOModelWriter
  */
 public interface JPhyloIOEventReader {
 	/**
