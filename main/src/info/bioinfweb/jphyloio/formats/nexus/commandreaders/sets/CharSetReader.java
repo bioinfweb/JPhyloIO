@@ -26,6 +26,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -42,7 +43,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
  * 
  * @author Ben St&ouml;ver
  */
-public class CharSetReader extends AbstractNexusCommandEventReader implements NexusConstants {
+public class CharSetReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
 	private String name = null;
 	private boolean isVectorFormat = false;
 	private long currentColumn = 0;
@@ -81,7 +82,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			setAllDataProcessed(true);
 			if (name.length() > 1) {
 				getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
-						JPhyloIOEventReader.DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+						DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
 						StringUtils.cutEnd(name, 1)));
 				getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
 				getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
@@ -109,7 +110,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			if (c == COMMAND_END) {
 				setAllDataProcessed(true);
 				getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
-						JPhyloIOEventReader.DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
+						DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
 				getStreamDataProvider().getUpcomingEvents().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
 				getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 				return true;
@@ -120,7 +121,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		}
 		
 		getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
-				JPhyloIOEventReader.DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
+				DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
 		return false;
 	}
 	

@@ -29,6 +29,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -44,11 +45,11 @@ import info.bioinfweb.jphyloio.tools.IDToNameManager;
  * 
  * @author Ben St&ouml;ver
  */
-public class MatrixReader extends AbstractNexusCommandEventReader implements NexusConstants {
+public class MatrixReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
 	private String currentSequenceLabel = null;
 	private int currentSequenceIndex = 0;
 	private long currentSequencePosition = 0;
-	private IDToNameManager idToNameManager = new IDToNameManager(JPhyloIOEventReader.DEFAULT_SEQUENCE_ID_PREFIX);
+	private IDToNameManager idToNameManager = new IDToNameManager(DEFAULT_SEQUENCE_ID_PREFIX);
 	
 	
 	public MatrixReader(NexusStreamDataProvider nexusDocument) {

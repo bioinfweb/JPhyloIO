@@ -25,6 +25,7 @@ import java.io.IOException;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -35,7 +36,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
 
 
 
-public class TaxLabelsReader extends AbstractNexusCommandEventReader implements NexusConstants {
+public class TaxLabelsReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxalist";
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxamap";
 	
@@ -55,7 +56,7 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 			if (beforeStart) {
 				beforeStart = false;
 				getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU_LIST, 
-						JPhyloIOEventReader.DEFAULT_OTU_LIST_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), null));
+						DEFAULT_OTU_LIST_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), null));
 				return true;
 			}
 			else {
@@ -70,7 +71,7 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 				}
 				else {
 					String taxon = getStreamDataProvider().readNexusWord();
-					String id = JPhyloIOEventReader.DEFAULT_OTU_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+					String id = DEFAULT_OTU_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
 					
 					getStreamDataProvider().getTaxaList().add(taxon);
 					getStreamDataProvider().getTaxaToIDMap().put(taxon, id);

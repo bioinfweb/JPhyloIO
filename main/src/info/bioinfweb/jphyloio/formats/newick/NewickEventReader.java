@@ -37,6 +37,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -232,12 +233,15 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						getUpcomingEvents().add(new CommentEvent(scanner.nextToken().getText(), false));
 					}
 					else {
+						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.START));
 						if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 							currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 							scanner.nextToken();  // Skip rooted token.
+							getUpcomingEvents().add(new MetaInformationEvent(META_KEY_DISPLAY_TREE_ROOTED, null, 
+									Boolean.toString(currentTreeRooted), new Boolean(currentTreeRooted)));
+							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 						}
 						state = State.IN_TREE;
-						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.START));
 					}
 				}
 				else {

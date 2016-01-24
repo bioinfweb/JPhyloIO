@@ -32,6 +32,7 @@ import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -53,7 +54,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueComm
  * 
  * @author Ben St&ouml;ver
  */
-public class FormatReader extends AbstractKeyValueCommandReader implements NexusConstants {
+public class FormatReader extends AbstractKeyValueCommandReader implements NexusConstants, ReadWriteConstants {
 	public static final String KEY_PREFIX = "info.bioinfweb.jphyloio.formats.nexus.format.";
 	
 	public static final String INFO_KEY_TOKENS_FORMAT = "info.bioinfweb.jphyloio.nexus.tokens";
@@ -120,7 +121,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 					return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
 				}
 				tokenSetEvents.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), 
-						JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+						DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
 						matcher.group(1), charSetName));
 			}
 			else {
@@ -162,7 +163,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			else {
 				if (tokenSetDefinitionEvents.isEmpty()) {  // Only MrBayes extension allows to specify more than one token set.
 					tokenSetDefinitionEvents.add(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), 
-							JPhyloIOEventReader.DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
+							DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
 							info.getValue()));
 					eventCreated = true;
 				}
