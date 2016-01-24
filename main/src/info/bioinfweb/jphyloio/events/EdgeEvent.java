@@ -19,16 +19,39 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
+/**
+ * Event indicating an edge in a tree or network. Edges are directed and connect a source node with a target node, 
+ * which are references by their IDs. If an edge represents a root of a tree or network, its source node ID 
+ * reference is {@code null}. All referenced nodes must have been defined in the event stream before this event
+ * is fired.
+ * <p>
+ * This event is a start event, which is followed by an end event of the same content type. Comment
+ * and metainformation events maybe nested between this and its according end event. (See the description
+ * of {@link JPhyloIOEventReader} for the complete grammar definition of JPhyloIO event streams.)
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class EdgeEvent extends LabeledIDEvent {
 	private String sourceID;
 	private String targetID;
 	private double length;
 	
 	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param id the ID of the represented edge
+	 * @param label an optional label associated with this edge (Maybe {@code null}.)
+	 * @param sourceID the ID of the source node of this edge (Maybe {@code null} if this a root edge.) 
+	 * @param targetID the ID of the target node of this edge
+	 * @param length an optional lengths of this edge (Maybe {@link Double#NaN} if no length is given.)
+	 * @throws NullPointerException if {@code id} or {@code targetID} are {@code null}
+	 */
 	public EdgeEvent(String id, String label,	String sourceID, String targetID, double length) {
 		super(EventContentType.EDGE, id, label);
 
@@ -43,18 +66,60 @@ public class EdgeEvent extends LabeledIDEvent {
 	}
 
 
+	/**
+	 * Returns the ID of the source node linked by this edge.
+	 * 
+	 * @return the ID of the source node or {@code null} if this event represents a root edge
+	 * @see #isRoot()
+	 */
 	public String getSourceID() {
 		return sourceID;
 	}
 
-
+	
+	/**
+	 * Indicates whether this edge is a root edge or connects two nodes inside a tree or network.
+	 * <p>
+	 * If this method returns {@code true}, {@link #getSourceID()} will return {@code null}.
+	 * 
+	 * @return {@code true} if this edge is a root edge or {@code false} otherwise
+	 */
+	public boolean isRoot() {
+		return getSourceID() == null;
+	}
+	
+	
+	/**
+	 * Returns the ID of the target node linked by this edge.
+	 * 
+	 * @return the ID of the target node (never {@code null})
+	 */
 	public String getTargetID() {
 		return targetID;
 	}
 
 
+	/**
+	 * Returns the length of this edge.
+	 * <p>
+	 * Additional information (e.g. on length confidence intervals) maybe given in upcoming nested metaevents.
+	 * 
+	 * @return the length of this edge or {@link Double#NaN} if this edge does not have a defined length
+	 */
 	public double getLength() {
 		return length;
+	}
+	
+	
+	/**
+	 * Indicates whether this edge has a defined length.
+	 * <p>
+	 * If this method returns {@code false}, {@link #getLength()} will return {@code Double#NaN}.
+	 * 
+	 * @return {@code true} if this edge has a defined length or {@code false} otherwise
+	 */
+	public boolean hasLength() {
+		return !Double.isNaN(getLength());
 	}
 
 
