@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -40,19 +41,29 @@ public class LabeledIDEvent extends ConcreteJPhyloIOEvent {
 	 * Instances are always start events.
 	 * 
 	 * @param contentType the content type of the event
-	 * @param id the unique ID associated with the represented data element
+	 * @param id the unique ID associated with the represented data element (Must not contain any whitespace.)
 	 * @param label a label associated with the represented data element (Maybe {@code null}.)
 	 * @throws NullPointerException if {@code contentType}, {@code topologyType} or {@code id} are {@code null}
+	 * @throws IllegalArgumentException if the specified ID is an empty string or contains whitespace
 	 */
 	public LabeledIDEvent(EventContentType contentType,	String id, String label) {
 		super(contentType, EventTopologyType.START);
 		
+		checkID(id, "ID");
+		this.id = id;
+		this.label = label;
+	}
+	
+	
+	protected void checkID(String id, String idName) {
 		if (id == null) {
-			throw new NullPointerException("The ID must not be null.");
+			throw new NullPointerException("The " + idName + " of this event must not be null.");
 		}
-		else {
-			this.id = id;
-			this.label = label;
+		else if ("".equals(id)) {
+			throw new IllegalArgumentException("The " + idName + " of this event must not be an empty string.");
+		}
+		else if (StringUtils.containsWhitespace(id)) {
+			throw new IllegalArgumentException("The " + idName + " of this event must not contain any whitespace. (\"" + id + "\")");
 		}
 	}
 

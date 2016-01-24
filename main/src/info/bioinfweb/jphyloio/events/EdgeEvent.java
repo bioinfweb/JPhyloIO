@@ -51,18 +51,19 @@ public class EdgeEvent extends LabeledIDEvent {
 	 * @param targetID the ID of the target node of this edge
 	 * @param length an optional lengths of this edge (Maybe {@link Double#NaN} if no length is given.)
 	 * @throws NullPointerException if {@code id} or {@code targetID} are {@code null}
+	 * @throws IllegalArgumentException if {@code id}, {@code sourceID} or {@code targetID} are an empty 
+	 *         string or contain whitespace
 	 */
 	public EdgeEvent(String id, String label,	String sourceID, String targetID, double length) {
 		super(EventContentType.EDGE, id, label);
 
-		if (targetID == null) {
-			throw new NullPointerException("The target node ID must not be null.");
+		checkID(targetID, "target ID");
+		if (sourceID != null) {  //can be null if edge is a root edge
+			checkID(sourceID, "source ID");
 		}
-		else {
-			this.sourceID = sourceID; //can be null if edge is a root edge
-			this.targetID = targetID;
-			this.length = length;
-		}
+		this.sourceID = sourceID;
+		this.targetID = targetID;
+		this.length = length;
 	}
 
 

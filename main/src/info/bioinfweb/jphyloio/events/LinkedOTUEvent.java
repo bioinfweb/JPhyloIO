@@ -41,9 +41,14 @@ public class LinkedOTUEvent extends LabeledIDEvent {
 	 * @param label the label of the modeled data element (Maybe {@code null}, if no label is present.)
 	 * @param otuID the declared or linked OTU ID (Maybe {@code null}, if none is present.)
 	 * @throws NullPointerException if {@code contentType} is {@code null}
+	 * @throws IllegalArgumentException if {@code id} or {@code otuID} are an empty string or contain whitespace
 	 */
 	public LinkedOTUEvent(EventContentType contentType, String id, String label, String otuID) {
 		super(contentType, id, label);
+		
+		if (otuID != null) {
+			checkID(otuID, "linked OTU ID");
+		}
 		this.linkedOTUID = otuID;
 	}
 
