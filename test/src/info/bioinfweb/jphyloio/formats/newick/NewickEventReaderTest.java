@@ -76,7 +76,9 @@ public class NewickEventReaderTest {
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idN4, 1.4, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
-			//TODO Event for root node with length?
+			
+			assertEdgeEvent(null, idN1, reader);
+			assertEndEvent(EventContentType.EDGE, reader);			
 
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -120,8 +122,10 @@ public class NewickEventReaderTest {
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id3, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
-			//TODO Event for root node with length?
 
+			assertEdgeEvent(null, id0, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
@@ -164,8 +168,10 @@ public class NewickEventReaderTest {
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id3, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
-			//TODO Event for root node with length?
 
+			assertEdgeEvent(null, id0, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
@@ -208,8 +214,10 @@ public class NewickEventReaderTest {
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id3, .5, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
-			//TODO Event for root node with length?
 
+			assertEdgeEvent(null, id0, 0.0, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
@@ -328,7 +336,9 @@ public class NewickEventReaderTest {
 			assertCommentEvent("comment 1", false, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			
-			//TODO Test root branch with length 0 and metadata [20]
+			assertEdgeEvent(null, idN2, 0.0, reader);
+			assertCommentEvent("20", false, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertNotEquals(idA, idB);
 			assertNotEquals(idA, idC);
@@ -386,6 +396,9 @@ public class NewickEventReaderTest {
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEdgeEvent(idN2, idN1, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEdgeEvent(null, idN2, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
