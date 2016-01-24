@@ -247,15 +247,24 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			Collection<JPhyloIOEvent> nestedEdgeEvents = createMetaAndCommentEvents(tokens[1], false);
 			
 			// Generate node information:
-			if (!passedSubnodes.isEmpty()) {  // Nodes on top level do not have to be stored.
-				passedSubnodes.peek().add(new NodeInfo(nodeID, length, nestedEdgeEvents));			
-			}
+			passedSubnodes.peek().add(new NodeInfo(nodeID, length, nestedEdgeEvents));			
 			LinkedOTUEvent result = new LinkedOTUEvent(EventContentType.NODE, nodeID, label, null);  //TODO Possibly replace by translation table when used in Nexus.
 			                                              //TODO Possibly use OTU link, if used in Nexus.
 			getUpcomingEvents().add(result);
 			getUpcomingEvents().addAll(nestedNodeEvents);
 			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));  //TODO Put possible annotations and comments in the queue first
 			return result;
+		}		
+	}
+	
+	
+	private void addEdgeEvents(String sourceID, Queue<NodeInfo> nodeInfos) {
+		while (!nodeInfos.isEmpty()) {
+			NodeInfo nodeInfo = nodeInfos.poll();
+			getUpcomingEvents().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + getIDManager().createNewID(), 
+					null, sourceID, nodeInfo.id, nodeInfo.length));
+			getUpcomingEvents().addAll(nodeInfo.nestedEdgeEvents);
+			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 		}		
 	}
 
@@ -288,16 +297,11 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 							Queue<NodeInfo> levelInfo = passedSubnodes.pop();
 							LinkedOTUEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
 							String sourceID = nodeEvent.getID();
-							while (!levelInfo.isEmpty()) {
-								NodeInfo nodeInfo = levelInfo.poll();
-								getUpcomingEvents().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + getIDManager().createNewID(), 
-										null, sourceID, nodeInfo.id, nodeInfo.length));
-								getUpcomingEvents().addAll(nodeInfo.nestedEdgeEvents);
-								getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
-							}
+							addEdgeEvents(sourceID, levelInfo);
 						}
 						break;
 					case TERMNINAL_SYMBOL:
+						addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
 						state = State.IN_DOCUMENT;
 						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
 						break;
@@ -335,6 +339,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 									Boolean.toString(currentTreeRooted), new Boolean(currentTreeRooted)));
 							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 						}
+						passedSubnodes.add(new ArrayDeque<NewickEventReader.NodeInfo>());  // Add queue for top level.
 						state = State.IN_TREE;
 					}
 				}
