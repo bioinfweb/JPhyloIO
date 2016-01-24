@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.formats.fasta;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
-import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 import java.io.File;
 import java.util.HashSet;
