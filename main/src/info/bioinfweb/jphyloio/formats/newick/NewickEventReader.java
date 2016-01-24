@@ -26,8 +26,10 @@ import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
@@ -45,6 +47,9 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 public class NewickEventReader extends AbstractBufferedReaderBasedEventReader implements NewickConstants {
 	private static final String NODE_ID_PREFIX = "n";
+	private static final Pattern HOT_COMMENT_PATTERN = Pattern.compile("\\s*\\&.*");
+	private static final int NO_HOT_COMMENT_READ = -2;
+	private static final int ONE_HOT_COMMENT_READ = -1;
 	
 	
 	private static enum State {
@@ -106,23 +111,86 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 	}
 	
 	
-	private Collection<JPhyloIOEvent> createMetaAndCommentEvents(boolean isOnNode) throws IOException {
+	private boolean isHotComment(String text) {
+		return HOT_COMMENT_PATTERN.matcher(text).matches();  // text.trim().startsWith("" + HotCommentDataReader.START_SYMBOL);
+	}
+	
+	
+	private Collection<JPhyloIOEvent> createMetaAndCommentEvents(List<NewickToken> tokens, boolean isOnNode) throws IOException {
 		Collection<JPhyloIOEvent> result = new ArrayList<JPhyloIOEvent>();
-		if (scanner.hasMoreTokens() && scanner.peek().getType().equals(NewickTokenType.COMMENT)) {
-			boolean isFirstComment = true;
-			do {
-				String text = scanner.nextToken().getText();
-				if (isFirstComment || text.trim().startsWith("" + HotCommentDataReader.START_SYMBOL)) {  // First comment could be an unnamed hot comment, which does not start with a start symbol.
-					hotCommentDataReader.read(text, result, isOnNode);
-				}
-				else {
-					result.add(new CommentEvent(text, false));
-				}
-				isFirstComment = false;
-			} while (scanner.hasMoreTokens() && scanner.peek().getType().equals(NewickTokenType.COMMENT) && 
-					(scanner.peek().getText().trim().charAt(0) != HotCommentDataReader.START_SYMBOL));  // Read subsequent comments, if they are not hot comments. (A subsequent hot comment may belong to the branch, of the length id omitted.)
+		for (NewickToken token : tokens) {
+			if (token.getText().trim().startsWith("" + HotCommentDataReader.START_SYMBOL)) {
+				hotCommentDataReader.read(token.getText(), result, isOnNode);
+			}
+			else {
+				result.add(new CommentEvent(token.getText(), false));
+			}
 		}
 		return result;
+	}
+	
+	
+	/**
+	 * Collects events relevant for the upcoming node and edge.
+	 * 
+	 * @return a list of the events
+	 * @throws IOException 
+	 */
+	private List<NewickToken>[] collectNodeEdgeTokens() throws IOException {
+		List<NewickToken> nodeTokens = new ArrayList<NewickToken>();
+		List<NewickToken> edgeTokens = new ArrayList<NewickToken>();
+		boolean nameExpected = true;
+		boolean lengthExpected = true;
+		int secondHotCommentPosition = NO_HOT_COMMENT_READ;
+		NewickToken token = scanner.peek();
+		NewickTokenType type = token.getType();
+		
+		while ((token != null) && ((nameExpected && type.equals(NewickTokenType.NAME)) || 
+				(lengthExpected && type.equals(NewickTokenType.LENGTH)) || type.equals(NewickTokenType.COMMENT))) {
+			
+			switch (type) {
+				case NAME:
+					nodeTokens.add(scanner.nextToken());
+					nameExpected = false;
+					break;
+				case LENGTH:
+					edgeTokens.add(scanner.nextToken());
+					lengthExpected = false;
+					break;
+				case COMMENT:  // Note that comment tokens before a name token are not possible, because this method would not have been called then.
+					if (lengthExpected) {  // Before possible length token
+						if (isHotComment(token.getText())) {
+							if (secondHotCommentPosition == NO_HOT_COMMENT_READ) {
+								secondHotCommentPosition = ONE_HOT_COMMENT_READ;
+							}
+							else if (secondHotCommentPosition == ONE_HOT_COMMENT_READ) {
+								secondHotCommentPosition = nodeTokens.size();
+							}
+						}
+						nodeTokens.add(token);
+					}
+					else {  // After length token
+						edgeTokens.add(token);
+					}
+					scanner.nextToken();  // Skip added token.
+					break;
+				default:
+					throw new InternalError("Impossible case");  // If this happens, the loop condition has errors.
+			}
+			
+			token = scanner.peek();
+			type = token.getType();
+		}
+		
+		// Possibly move tokens to edge list. 
+		if (lengthExpected && (secondHotCommentPosition > 0)) {  // No length token, but two hot comments were found. (Position 0 is not possible for the second hot comment.)
+			List<NewickToken> tokensToMove = nodeTokens.subList(secondHotCommentPosition, nodeTokens.size());
+			edgeTokens.addAll(tokensToMove);  // edgeTokens should be empty before this.
+			tokensToMove.clear();  // Remove tokens from node list.
+		}
+		
+		//TODO Throw exception for unexpected token, if next is other than SUBTREE_END, TREE_END or ELEMENT_SEPARATOR?
+		return new List[]{nodeTokens, edgeTokens};
 	}
 	
 	
@@ -134,24 +202,23 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 		else {  // In this a case a node is defined, even if no name or length token are present (if this method is called only at appropriate positions). 
 			String nodeID = NODE_ID_PREFIX + getIDManager().createNewID();
 			
-			// Read label:
-			String label = null;
-			new ArrayList<JPhyloIOEvent>();
-			if (token.getType().equals(NewickTokenType.NAME)) {
-				label = token.getText();
-				scanner.nextToken();  // Skip name token
-			}
-			Collection<JPhyloIOEvent> nestedNodeEvents = createMetaAndCommentEvents(true);  // Metadata can also be present, if no name is present.
-			token = scanner.peek();
+			List<NewickToken>[] tokens = collectNodeEdgeTokens();  // All tokens need to be read before, to determine if a length definition exists behind a possible second hot comment.
 			
-			// Read length:
-			double length = Double.NaN;
-			new ArrayList<JPhyloIOEvent>();
-			if (token.getType().equals(NewickTokenType.LENGTH)) {
-				length = token.getLength();
-				scanner.nextToken();  // Skip length token
+			// Read node data:
+			String label = null;
+			if (!tokens[0].isEmpty() && tokens[0].get(0).getType().equals(NewickTokenType.NAME)) {
+				label = tokens[0].get(0).getText();
+				tokens[0].remove(0);
 			}
-			Collection<JPhyloIOEvent> nestedEdgeEvents = createMetaAndCommentEvents(false);  // Metadata for omitted branch lengths can be contained in a comment following the node metadata.
+			Collection<JPhyloIOEvent> nestedNodeEvents = createMetaAndCommentEvents(tokens[0], true);
+			
+			// Read edge data:
+			double length = Double.NaN;
+			if (!tokens[1].isEmpty() && tokens[1].get(0).getType().equals(NewickTokenType.LENGTH)) {
+				length = tokens[1].get(0).getLength();
+				tokens[1].remove(0);
+			}
+			Collection<JPhyloIOEvent> nestedEdgeEvents = createMetaAndCommentEvents(tokens[1], false);
 			
 			// Generate node information:
 			if (!passedSubnodes.isEmpty()) {  // Nodes on top level do not have to be stored.
