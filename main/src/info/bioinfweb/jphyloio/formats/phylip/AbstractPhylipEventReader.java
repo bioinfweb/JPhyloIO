@@ -105,7 +105,7 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 				}
 				catch (NumberFormatException e) {
 					throw new JPhyloIOReaderException("Invalid integer value \"" + parts[0] + "\" found for the Phylip sequence count.", 
-							getReader());
+							getReader(), e);
 				}
 				getUpcomingEvents().add(new MetaInformationEvent(META_KEY_SEQUENCE_COUNT, null, parts[0], sequenceCount));
 				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
@@ -115,7 +115,7 @@ public abstract class AbstractPhylipEventReader extends AbstractBufferedReaderBa
 				}
 				catch (NumberFormatException e) {
 					throw new JPhyloIOReaderException("Invalid integer value \"" + parts[1] + "\" found for the Phylip character count.", 
-							getReader());
+							getReader(), e);
 				}
 				getUpcomingEvents().add(new MetaInformationEvent(META_KEY_CHARACTER_COUNT, null, parts[1], characterCount));
 				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));

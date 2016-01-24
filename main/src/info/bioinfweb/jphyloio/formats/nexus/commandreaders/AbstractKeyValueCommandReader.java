@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
@@ -86,7 +87,7 @@ public abstract class AbstractKeyValueCommandReader extends AbstractNexusCommand
 			return result;
 		}
 		catch (EOFException e) {
-			throw new IOException("Unexpected end of file in " + getCommandName() + " command.");  //TODO Replace by ParseException
+			throw new JPhyloIOReaderException("Unexpected end of file in Nexus " + getCommandName() + " command.", reader, e);
 		}
 	}
 }

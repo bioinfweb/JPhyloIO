@@ -67,7 +67,7 @@ public class NewickScanner implements NewickConstants {
 		} while ((reader.peek() != -1) && (reader.peekChar() != NAME_DELIMITER));
 		
 		if (reader.peek() == -1) {
-			throw new IOException("Unterminated Newick name");  //TODO Replace by special exception
+			throw new JPhyloIOReaderException("Unterminated Newick token.", reader);
 		}
 		else {
 			NewickToken token = new NewickToken(NewickTokenType.NAME, reader);
@@ -124,7 +124,7 @@ public class NewickScanner implements NewickConstants {
 					value = Double.parseDouble(text.toString());
 				}
 				catch (NumberFormatException e) {
-					throw new JPhyloIOReaderException("\"" + text + "\" is not a valid Newick branch length.", location);
+					throw new JPhyloIOReaderException("\"" + text + "\" is not a valid Newick branch length.", location, e);
 				}
 				
 				NewickToken token = new NewickToken(NewickTokenType.LENGTH, location);

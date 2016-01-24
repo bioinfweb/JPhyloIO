@@ -208,7 +208,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 				}
 			}
 			catch (EOFException e) {
-				throw new IOException("Unexpected end of file in " + getCommandName() + " command.");  //TODO Replace by ParseException
+				throw new JPhyloIOReaderException("Unexpected end of file in Nexus " + getCommandName() + " command.", reader, e);
 			}
 		}
 	}
