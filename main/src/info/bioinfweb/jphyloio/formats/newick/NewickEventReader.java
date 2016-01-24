@@ -46,6 +46,24 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
+/**
+ * Reads tree files in Newick format. Newick files are considered as text files, that contain trees as Newick strings
+ * which are separated by {@code ';'}. Any whitespace, as well as comments contained in {@code '['} and {@code ']'} 
+ * is allowed between all tokens.
+ * <p>
+ * Additionally this reader is able to parse hot comments associated with nodes or edges as metadata. Newick strings
+ * containing such hot comments are sometimes referred to as "New Hampshire eXtended format" or "NHX". The following
+ * format of hot comments is recognized by this reader:
+ * <p>
+ * {@code [&numericValue1=1.05,numericValue2=2.76e-5,stringValue1="12",stringValue2=ABC,arrayValue={18,"AB C"}]}
+ * <p>
+ * Each hot comment needs to start with an {@code '&'} and can contain one or more key/value pairs separated by 
+ * {@code ','}. Each value can either be a numeric value, a string value or an array value. Arrays are indicated
+ * by braces and array elements are separated by {@code ','}, as shown in the example above. Array elements maybe
+ * any numeric or string value in any combination.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class NewickEventReader extends AbstractBufferedReaderBasedEventReader implements NewickConstants {
 	private static final String NODE_ID_PREFIX = "n";
 	private static final Pattern HOT_COMMENT_PATTERN = Pattern.compile("\\s*\\&.*");
