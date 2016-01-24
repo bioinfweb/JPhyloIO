@@ -165,63 +165,80 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 	private List<NewickToken>[] collectNodeEdgeTokens() throws IOException {
 		List<NewickToken> nodeTokens = new ArrayList<NewickToken>();
 		List<NewickToken> edgeTokens = new ArrayList<NewickToken>();
-		boolean nameExpected = true;
-		boolean lengthExpected = true;
-		int secondHotCommentPosition = NO_HOT_COMMENT_READ;
-		NewickToken token = scanner.peek();
-		NewickTokenType type = token.getType();
-		
-		while ((token != null) && ((nameExpected && type.equals(NewickTokenType.NAME)) || 
-				(lengthExpected && type.equals(NewickTokenType.LENGTH)) || type.equals(NewickTokenType.COMMENT))) {
+		if (scanner.hasMoreTokens()) {
+			boolean nameExpected = true;
+			boolean lengthExpected = true;
+			int secondHotCommentPosition = NO_HOT_COMMENT_READ;
+			NewickToken token = scanner.peek();
+			NewickTokenType type = token.getType();
 			
-			switch (type) {
-				case NAME:
-					nodeTokens.add(scanner.nextToken());
-					nameExpected = false;
-					break;
-				case LENGTH:
-					edgeTokens.add(scanner.nextToken());
-					lengthExpected = false;
-					break;
-				case COMMENT:  // Note that comment tokens before a name token are not possible, because this method would not have been called then.
-					if (lengthExpected) {  // Before possible length token
-						if (isHotComment(token.getText())) {
-							if (secondHotCommentPosition == NO_HOT_COMMENT_READ) {
-								secondHotCommentPosition = ONE_HOT_COMMENT_READ;
+			while ((token != null) && ((nameExpected && type.equals(NewickTokenType.NAME)) || 
+					(lengthExpected && type.equals(NewickTokenType.LENGTH)) || type.equals(NewickTokenType.COMMENT))) {
+				
+				switch (type) {
+					case NAME:
+						nodeTokens.add(scanner.nextToken());
+						nameExpected = false;
+						break;
+					case LENGTH:
+						edgeTokens.add(scanner.nextToken());
+						lengthExpected = false;
+						break;
+					case COMMENT:  // Note that comment tokens before a name token are not possible, because this method would not have been called then.
+						if (lengthExpected) {  // Before possible length token
+							if (isHotComment(token.getText())) {
+								if (secondHotCommentPosition == NO_HOT_COMMENT_READ) {
+									secondHotCommentPosition = ONE_HOT_COMMENT_READ;
+								}
+								else if (secondHotCommentPosition == ONE_HOT_COMMENT_READ) {
+									secondHotCommentPosition = nodeTokens.size();
+								}
 							}
-							else if (secondHotCommentPosition == ONE_HOT_COMMENT_READ) {
-								secondHotCommentPosition = nodeTokens.size();
-							}
+							nodeTokens.add(token);
 						}
-						nodeTokens.add(token);
-					}
-					else {  // After length token
-						edgeTokens.add(token);
-					}
-					scanner.nextToken();  // Skip added token.
-					break;
-				default:
-					throw new InternalError("Impossible case");  // If this happens, the loop condition has errors.
+						else {  // After length token
+							edgeTokens.add(token);
+						}
+						scanner.nextToken();  // Skip added token.
+						break;
+					default:
+						throw new InternalError("Impossible case");  // If this happens, the loop condition has errors.
+				}
+				
+				if (scanner.hasMoreTokens()) {
+					token = scanner.peek();
+					type = token.getType();
+				}
+				else {
+					token = null;
+				}
 			}
 			
-			token = scanner.peek();
-			type = token.getType();
+			// Possibly move tokens to edge list. 
+			if (lengthExpected && (secondHotCommentPosition > 0)) {  // No length token, but two hot comments were found. (Position 0 is not possible for the second hot comment.)
+				List<NewickToken> tokensToMove = nodeTokens.subList(secondHotCommentPosition, nodeTokens.size());
+				edgeTokens.addAll(tokensToMove);  // edgeTokens should be empty before this.
+				tokensToMove.clear();  // Remove tokens from node list.
+			}
+			
+			//TODO Throw exception for unexpected token, if next is other than SUBTREE_END, TREE_END or ELEMENT_SEPARATOR?^
 		}
-		
-		// Possibly move tokens to edge list. 
-		if (lengthExpected && (secondHotCommentPosition > 0)) {  // No length token, but two hot comments were found. (Position 0 is not possible for the second hot comment.)
-			List<NewickToken> tokensToMove = nodeTokens.subList(secondHotCommentPosition, nodeTokens.size());
-			edgeTokens.addAll(tokensToMove);  // edgeTokens should be empty before this.
-			tokensToMove.clear();  // Remove tokens from node list.
-		}
-		
-		//TODO Throw exception for unexpected token, if next is other than SUBTREE_END, TREE_END or ELEMENT_SEPARATOR?
 		return new List[]{nodeTokens, edgeTokens};
 	}
 	
 	
 	private LinkedOTUEvent readNode() throws IOException {
-		NewickToken token = scanner.peek();  //TODO Catch NoSuchElementException for unexpected EOF here or somewhere above.
+		NewickToken token;
+		if (scanner.hasMoreTokens()) {
+			token = scanner.peek();
+		}
+		else if (passedSubnodes.size() == 1) {  // Omitted terminal symbol
+			token = new NewickToken(NewickTokenType.TERMNINAL_SYMBOL, getReader());
+		}
+		else {  // No more tokens available although the top level has not been reached again.
+			throw new JPhyloIOReaderException("Unexpected end of file inside a Newick tree definition.", getReader());
+		}
+		
 		if (token.getType().equals(NewickTokenType.SUBTREE_START)) {  // No name to read.
 			return null;
 		}
@@ -267,21 +284,27 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 		}		
 	}
+	
+	
+	private void endTree() {
+		addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
+		state = State.IN_DOCUMENT;
+		getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
+	}
 
 	
 	private void processTree() throws IOException {
 		while (getUpcomingEvents().isEmpty()) {
-			NewickToken token = scanner.nextToken();
-			if (token == null) {
-				if (passedSubnodes.isEmpty()) {
-					state = State.IN_DOCUMENT;
-					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
+			if (!scanner.hasMoreTokens()) {
+				if (passedSubnodes.size() == 1) {
+					endTree();
 				}
 				else {
 					throw new JPhyloIOReaderException("Unexpected end of file inside a subtree defintion.", getReader());
 				}
 			}
 			else {
+				NewickToken token = scanner.nextToken();
 				switch (token.getType()) {
 					case SUBTREE_START:
 						passedSubnodes.add(new ArrayDeque<NodeInfo>());
@@ -289,7 +312,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						readNode();  // Will not add an element, if another SUBTREE_START follows.
 						break;
 					case SUBTREE_END:
-						if (scanner.peek().getType().equals(NewickTokenType.SUBTREE_START)) {
+						if (scanner.hasMoreTokens() && scanner.peek().getType().equals(NewickTokenType.SUBTREE_START)) {
 							throw new JPhyloIOReaderException("Unexpected Newick token \"" + NewickTokenType.SUBTREE_START + "\"", 
 									scanner.peek().getLocation());
 						}
@@ -301,9 +324,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						}
 						break;
 					case TERMNINAL_SYMBOL:
-						addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
-						state = State.IN_DOCUMENT;
-						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
+						endTree();
 						break;
 					case COMMENT:
 						getUpcomingEvents().add(new CommentEvent(token.getText(), false));
