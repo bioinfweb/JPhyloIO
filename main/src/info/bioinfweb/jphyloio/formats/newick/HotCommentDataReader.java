@@ -26,7 +26,6 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.util.Collection;
-import java.util.Queue;
 
 
 
@@ -47,8 +46,8 @@ public class HotCommentDataReader {
 	public static final char INDEX_START_SYMBOL = '[';
 	public static final char INDEX_END_SYMBOL = ']';
 	
-	public static final String UNNAMED_EDGE_DATA_NAME = "unnamedEdgeHotComment";  //TODO Specify URL or similar ID here?
-	public static final String UNNAMED_NODE_DATA_NAME = "unnamedNodeHotComment";  //TODO Specify URL or similar ID here?
+//	public static final String UNNAMED_EDGE_DATA_NAME = "unnamedEdgeHotComment";  //TODO Specify URL or similar ID here?
+//	public static final String UNNAMED_NODE_DATA_NAME = "unnamedNodeHotComment";  //TODO Specify URL or similar ID here?
 	
 	
 	private static class Value {
@@ -170,12 +169,14 @@ public class HotCommentDataReader {
 				end = findAllocationEnd(comment, start);
 			}
 		}
-		else if (comment.length() > 0) {  // Read unformatted comment
-			String name = UNNAMED_EDGE_DATA_NAME;
-			if (isOnNode) {
-				name = UNNAMED_NODE_DATA_NAME;
-			}
-			addMetaInformation(name, readTextElementData(comment), eventQueue, true);
-		}
+		// The following case is currently unused, because JPhyloIO creates comment events from unnamed hot comments 
+		// and its up to the application, whether these shall be interpreted as metainformation or not.
+//		else if (comment.length() > 0) {  // Read unformatted comment
+//			String name = UNNAMED_EDGE_DATA_NAME;
+//			if (isOnNode) {
+//				name = UNNAMED_NODE_DATA_NAME;
+//			}
+//			addMetaInformation(name, readTextElementData(comment), eventQueue, true);
+//		}
 	}
 }
