@@ -54,13 +54,20 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * Additionally this reader is able to parse hot comments associated with nodes or edges as metadata. Newick strings
  * containing such hot comments are sometimes referred to as "New Hampshire eXtended format" or "NHX". The following
  * format of hot comments is recognized by this reader:
- * <p>
- * {@code [&numericValue1=1.05,numericValue2=2.76e-5,stringValue1="12",stringValue2=ABC,arrayValue={18,"AB C"}]}
- * <p>
+ * <pre>
+ * [&numericValue1=1.05, numericValue2 = 2.76e-5, stringValue1="12", stringValue2=ABC, arrayValue={18, "AB C"}]
+ * </pre>
  * Each hot comment needs to start with an {@code '&'} and can contain one or more key/value pairs separated by 
  * {@code ','}. Each value can either be a numeric value, a string value or an array value. Arrays are indicated
  * by braces and array elements are separated by {@code ','}, as shown in the example above. Array elements maybe
- * any numeric or string value in any combination.
+ * any numeric or string value in any combination. Whitespace between tokens of a hot comment is allowed but not
+ * necessary.
+ * <p>
+ * Hot comments following a node name or a subtree are considered a metadata attached to a node and hot comments 
+ * following a branch length definition are considered to be attached to an edge (branch). Subsequent hot comments
+ * are combined, with the exception that a branch length definition is omitted. In such a case, the first hot 
+ * comment is considered to attached to the node and all subsequent hot comments are considered to be attached to
+ * the edge.
  * 
  * @author Ben St&ouml;ver
  */
