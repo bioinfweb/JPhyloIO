@@ -68,7 +68,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 public class NeXMLEventReader extends AbstractEventReader implements NeXMLConstants {
-	private static final Map<XMLElementType, NeXMLTagReader> ELEMENT_READER_MAP = createMap();
+	private static final Map<XMLElementType, NeXMLElementReader> ELEMENT_READER_MAP = createMap();
 	
 	private Map<String, String> idToLabelMap = new TreeMap<String, String>();
 	private XMLEventReader xmlReader;
@@ -77,10 +77,10 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 //	private boolean parseStates = false;
 
 	
-	private static Map<XMLElementType, NeXMLTagReader> createMap() {
-		Map<XMLElementType, NeXMLTagReader> map = new HashMap<XMLElementType, NeXMLTagReader>();
+	private static Map<XMLElementType, NeXMLElementReader> createMap() {
+		Map<XMLElementType, NeXMLElementReader> map = new HashMap<XMLElementType, NeXMLElementReader>();
 		
-		NeXMLTagReader readMetaStart = new NeXMLTagReader() {			
+		NeXMLElementReader readMetaStart = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 	    	StartElement element = event.asStartElement();
@@ -118,14 +118,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		};
 		
-		NeXMLTagReader readMetaEnd = new NeXMLTagReader() {			
+		NeXMLElementReader readMetaEnd = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 		};
 		
-		NeXMLTagReader readNodeStart = new NeXMLTagReader() {			
+		NeXMLElementReader readNodeStart = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();				
@@ -134,14 +134,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		};
 		
-		NeXMLTagReader readNodeEnd = new NeXMLTagReader() {			
+		NeXMLElementReader readNodeEnd = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 			}
 		};
 		
-		NeXMLTagReader readEdgeStart = new NeXMLTagReader() {			
+		NeXMLElementReader readEdgeStart = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();		
@@ -170,7 +170,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		};
 		
-		NeXMLTagReader readEdgeEnd = new NeXMLTagReader() {			
+		NeXMLElementReader readEdgeEnd = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
@@ -221,7 +221,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 		
 		map.put(new XMLElementType(TAG_EDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_OTUS, XMLStreamConstants.START_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_NEXML, TAG_OTUS, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -230,14 +230,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_OTUS, XMLStreamConstants.END_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_NEXML, TAG_OTUS, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_OTUS, TAG_OTU, XMLStreamConstants.START_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_OTUS, TAG_OTU, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -249,14 +249,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_OTUS, TAG_OTU, XMLStreamConstants.END_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_OTUS, TAG_OTU, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.START_ELEMENT), new NeXMLTagReader() {		
+		map.put(new XMLElementType(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -302,14 +302,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.END_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_MATRIX, TAG_ROW, XMLStreamConstants.START_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_MATRIX, TAG_ROW, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -318,14 +318,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_MATRIX, TAG_ROW, XMLStreamConstants.END_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_MATRIX, TAG_ROW, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_ROW, TAG_CELL, XMLStreamConstants.START_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_ROW, TAG_CELL, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();				
@@ -334,14 +334,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_ROW, TAG_CELL, XMLStreamConstants.END_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_ROW, TAG_CELL, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.SEQUENCE_TOKENS, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_SEQ, null, XMLStreamConstants.CHARACTERS), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_SEQ, null, XMLStreamConstants.CHARACTERS), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				String tokens = event.asCharacters().toString(); // TODO Influence read length of character events
@@ -353,7 +353,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREES, TAG_TREE, XMLStreamConstants.START_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_TREES, TAG_TREE, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -372,14 +372,14 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREES, TAG_TREE, XMLStreamConstants.END_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_TREES, TAG_TREE, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREES, TAG_NETWORK, XMLStreamConstants.START_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_TREES, TAG_NETWORK, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -388,7 +388,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREES, TAG_NETWORK, XMLStreamConstants.END_ELEMENT), new NeXMLTagReader() {			
+		map.put(new XMLElementType(TAG_TREES, TAG_NETWORK, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NETWORK, EventTopologyType.END));
@@ -525,7 +525,7 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 
 	@Override
 	protected void readNextEvent() throws Exception {
-		NeXMLTagReader tagReader = null;
+		NeXMLElementReader tagReader = null;
 		
 		while (xmlReader.hasNext() && getUpcomingEvents().isEmpty()) {
 			XMLEvent xmlEvent = getXMLReader().nextEvent();			

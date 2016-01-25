@@ -31,7 +31,7 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * @author Sarah Wiechers
  */
-public abstract class NeXMLTagReader implements NeXMLConstants {
+public abstract class NeXMLElementReader implements NeXMLConstants {
 	protected static class OTUEventInformation {
 		public String id;
 		public String label;	
