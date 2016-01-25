@@ -31,7 +31,7 @@ public interface ReadWriteConstants {
 	public static final String META_KEY_SEQUENCE_COUNT = "info.bioinfweb.jphyloio.sequenceCount";
 	public static final String META_KEY_CHARACTER_COUNT = "info.bioinfweb.jphyloio.characterCount";
 	public static final String META_KEY_DISPLAY_TREE_ROOTED = "info.bioinfweb.jphyloio.displayTreeRooted";
-	//TODO Replace these keys by URLs? (Depends on the ontology modelling classes to be added.)
+	//TODO Replace these keys by URLs? (Depends on the ontology modeling classes to be added.)
 	
 	public static final String DEFAULT_OTU_LIST_ID_PREFIX = "otus";
 	public static final String DEFAULT_OTU_ID_PREFIX = "otu";
@@ -41,5 +41,5 @@ public interface ReadWriteConstants {
 	public static final String DEFAULT_TOKEN_SET_ID_PREFIX = "tokenSet";
 	public static final String DEFAULT_TREE_ID_PREFIX = "tree";
 	public static final String DEFAULT_NODE_ID_PREFIX = "n";
-	public static final String DEFAULT_EDGE_ID_PREFIX = "e";	
+	public static final String DEFAULT_EDGE_ID_PREFIX = "e";
 }

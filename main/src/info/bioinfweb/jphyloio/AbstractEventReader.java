@@ -26,11 +26,8 @@ import java.util.Set;
 
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 

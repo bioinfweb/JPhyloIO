@@ -18,6 +18,7 @@
  */
 package info.bioinfweb.jphyloio.events;
 
+
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -45,8 +46,8 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @param key The name or key of the meta information.
 	 * @param originalType The original type of meta information or null. 
-	 * @param stringValue The string value of the meta information. This must not be null.
-	 * @param objectValue The object value of the meta information. If it is null, the stringValue is also used as objectValue.
+	 * @param stringValue The string value of the meta information.
+	 * @param objectValue The object value of the meta information.
 	 * 
 	 * @return a new instance of MetaInformationEvent
 	 */

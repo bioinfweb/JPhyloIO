@@ -36,11 +36,11 @@ import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 
 
 /**
- * Enumerates the content types of an {@link JPhyloIOEvent}. Elements of each content type can either
+ * Enumerates the content types of a {@link JPhyloIOEvent}. Elements of each content type can either
  * occur in one version in combination with {@link EventTopologyType#SOLE} or in two versions in
  * combination with {@link EventTopologyType#START} or {@link EventTopologyType#END}.
  * <p>
- * The documentation of the single types includes information an which event classes are used with
+ * The documentation of the single types includes information on which event classes are used with
  * each type and whether it is separated into a start and end event or not. In addition, the
  * documentation of {@link JPhyloIOEventReader} contains a full grammar of JPhyloIO event streams.
  * 
@@ -58,11 +58,11 @@ public enum EventContentType {
 	 * Both start and end events of this type are instances of {@link ConcreteJPhyloIOEvent}.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
-	 */  //TODO Can the start event also be LabeledIDEvent e.g. in NeXML?
+	 */
 	DOCUMENT,
 	
 	/**
-	 * Indicates metainformation attached to the object modeled by the preceding start event.
+	 * Indicates meta information attached to the object modeled by the preceding start event.
 	 * <p>
 	 * Start events of this type are instances of {@link MetaInformationEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}.
@@ -73,7 +73,7 @@ public enum EventContentType {
 	
 	/** 
 	 * Events of this type are used by some readers to provide the application with contents
-	 * of unknown commits in a format.
+	 * of unknown commands in a format.
 	 * <p>
 	 * Events of this type are instances of {@link UnknownCommandEvent} and always have the
 	 * topology type {@link EventTopologyType#SOLE}. 

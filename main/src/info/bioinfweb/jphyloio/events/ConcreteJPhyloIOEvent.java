@@ -32,7 +32,6 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  */
 public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	private EventType type;
-	//private ParameterMap metaInformationMap = new ParameterMap();
 	
 	
 	/**
