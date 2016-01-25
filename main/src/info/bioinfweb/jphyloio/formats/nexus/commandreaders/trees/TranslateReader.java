@@ -16,10 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexus.commandreaders.taxa;
+package info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees;
 
-
-import java.io.EOFException;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
@@ -32,49 +30,36 @@ import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
+import java.io.EOFException;
 
 
-public class TaxLabelsReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
-	private boolean beforeStart = true;
-	
-	
-	public TaxLabelsReader(NexusStreamDataProvider nexusDocument) {
-		super("TaxLabels", new String[]{BLOCK_NAME_TAXA}, nexusDocument);
+
+public class TranslateReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
+	public TranslateReader(NexusStreamDataProvider nexusDocument) {
+		super("Translate", new String[]{BLOCK_NAME_TREES}, nexusDocument);
 	}
 
 	
 	@Override
 	protected boolean doReadNextEvent() throws Exception {
 		PeekReader reader = getStreamDataProvider().getDataReader();
+		getStreamDataProvider().consumeWhiteSpaceAndComments();
 		try {
-			if (beforeStart) {
-				beforeStart = false;
-				getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU_LIST, 
-						DEFAULT_OTU_LIST_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), null));
-				return true;
-			}
-			else {
+			while (reader.peekChar() != COMMAND_END) {
+				String key = getStreamDataProvider().readNexusWord();
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				char c = reader.peekChar();
-				if (c == COMMAND_END) {
-					getStreamDataProvider().getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
-					
-					reader.skip(1);  // Consume ';'.
-					setAllDataProcessed(true);
-					return false;
-				}
-				else {
-					String taxon = getStreamDataProvider().readNexusWord();
-					String id = DEFAULT_OTU_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
-					
-					getStreamDataProvider().getTaxaList().add(taxon);
-					getStreamDataProvider().getTaxaToIDMap().put(taxon, id);
-					
-					getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU, id, taxon));
-					getStreamDataProvider().getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
-					return true;
+				String value = getStreamDataProvider().readNexusWord();
+				getStreamDataProvider().consumeWhiteSpaceAndComments();
+				getStreamDataProvider().getTreesTranslationTable().add(key, value);  //TODO Make sure the table is emptied at the end (or beginning) of each trees block.
+				
+				if (reader.peekChar() == ELEMENT_SEPARATOR) {
+					reader.read();  // Skip ELEMENT_SEPARATOR.
 				}
 			}
+			
+			reader.read();  // Skip COMMAND_END.
+			setAllDataProcessed(true);
+			return false;  // This reader does not produce any events.
 		}
 		catch (EOFException e) {
 			throw new JPhyloIOReaderException("Unexpected end of file in " + getCommandName() + " command.", reader);

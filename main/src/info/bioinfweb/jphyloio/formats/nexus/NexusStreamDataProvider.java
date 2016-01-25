@@ -33,6 +33,7 @@ import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueIn
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.taxa.TaxLabelsReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.TranslationTable;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 
@@ -44,6 +45,11 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
  * @author Ben St&ouml;ver
  */
 public class NexusStreamDataProvider {
+	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
+	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaidmap";
+	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
+	
+	
 	private NexusEventReader nexusReader;
 	private PeekReader dataReader;
 	private ParameterMap sharedInformationMap = new ParameterMap();
@@ -118,20 +124,32 @@ public class NexusStreamDataProvider {
 	
 	
 	public List<String> getTaxaList() {
-		List<String> result = (List<String>)getSharedInformationMap().get(TaxLabelsReader.INFO_KEY_TAXA_LIST);  // Casting null is possible.
+		@SuppressWarnings("unchecked")
+		List<String> result = (List<String>)getSharedInformationMap().get(INFO_KEY_TAXA_LIST);  // Casting null is possible.
 		if (result == null) {
 			result = new ArrayList<String>();
-			getSharedInformationMap().put(TaxLabelsReader.INFO_KEY_TAXA_LIST, result);
+			getSharedInformationMap().put(INFO_KEY_TAXA_LIST, result);
 		}
 		return result;
 	}
 	
 	
 	public Map<String, String> getTaxaToIDMap() {
-		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(TaxLabelsReader.INFO_KEY_TAXA_MAP);  // Casting null is possible.
+		@SuppressWarnings("unchecked")
+		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(INFO_KEY_TAXA_MAP);  // Casting null is possible.
 		if (result == null) {
 			result = new HashMap<String, String>();
-			getSharedInformationMap().put(TaxLabelsReader.INFO_KEY_TAXA_MAP, result);
+			getSharedInformationMap().put(INFO_KEY_TAXA_MAP, result);
+		}
+		return result;
+	}
+	
+	
+	public TranslationTable getTreesTranslationTable() {
+		TranslationTable result = (TranslationTable)getSharedInformationMap().get(INFO_KEY_TREES_TRANSLATION);  // Casting null is possible.
+		if (result == null) {
+			result = new TranslationTable();
+			getSharedInformationMap().put(INFO_KEY_TREES_TRANSLATION, result);
 		}
 		return result;
 	}

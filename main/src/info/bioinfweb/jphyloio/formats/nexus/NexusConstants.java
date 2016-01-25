@@ -40,6 +40,7 @@ public interface NexusConstants {
 	public static final char VALUE_DELIMITER = '"';
 	public static final char WORD_DELIMITER = '\'';
 	public static final char CHAR_SET_TO = '-';
+	public static final char ELEMENT_SEPARATOR = ',';
 	
 	public static final String BLOCK_NAME_TAXA = "TAXA";
 	public static final String BLOCK_NAME_CHARACTERS = "CHARACTERS";
@@ -77,7 +78,6 @@ public interface NexusConstants {
 	public static final char MATRIX_POLYMORPHIC_TOKEN_END = ')';
 	public static final char MATRIX_UNCERTAINS_TOKEN_START = '{';
 	public static final char MATRIX_UNCERTAINS_TOKEN_END = '}';
-	public static final char MATRIX_UNALIGNED_SEQUENCE_SEPARATOR = ',';
 	
 	public static final char CHAR_SET_NOT_CONTAINED = '0';
 	public static final char CHAR_SET_CONTAINED = '1';
