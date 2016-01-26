@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,30 @@ public class NexusBlockHandlerMap {
 	private Map<String, NexusBlockHandler> handlers = new HashMap<String, NexusBlockHandler>();
 	
 	
+	/**
+	 * Returns a new instance of this class, already containing all block handlers available in
+	 * the core module of <i>JPhyloIO</i>. ({@link #addJPhyloIOHandlers()} is called internally.)
+	 * 
+	 * @return the new instance
+	 */
+	public static NexusBlockHandlerMap newJPhyloIOInstance() {
+		NexusBlockHandlerMap result = new NexusBlockHandlerMap();
+		result.addJPhyloIOHandlers();
+		return result;
+	}
+	
+	
+	/**
+	 * Creates a new empty instance of this class.
+	 * 
+	 * @see #addJPhyloIOHandlers()
+	 * @see #newJPhyloIOInstance()
+	 */
+	public NexusBlockHandlerMap() {
+		super();
+	}
+
+
 	/**
 	 * Adds a new handler to this map.
 	 * <p>

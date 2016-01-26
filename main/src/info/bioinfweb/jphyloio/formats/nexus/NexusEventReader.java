@@ -34,7 +34,6 @@ import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -92,9 +91,25 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	
 
 	/**
+	 * Creates a new instance of this class with a default block handler map and command reader factory. These contain all
+	 * handlers and command readers available in the core module of <i>JPhyloIO</i>. 
+	 * 
+	 * @param file the Nexus file to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NexusEventReader(File file, boolean translateMatchToken) throws IOException {
+		this(file, translateMatchToken, NexusBlockHandlerMap.newJPhyloIOInstance(), NexusCommandReaderFactory.newJPhyloIOInstance());
+	}
+	
+
+	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param reader the stream providing the Nexus data to be read 
+	 * @param stream the stream providing the Nexus data to be read 
 	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
 	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
@@ -110,6 +125,22 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		this.blockHandlerMap = blockHandlerMap;
 		this.factory = factory;
 		initStreamDataProvider();
+	}
+	
+
+	/**
+	 * Creates a new instance of this class with a default block handler map and command reader factory. These contain all
+	 * handlers and command readers available in the core module of <i>JPhyloIO</i>. 
+	 * 
+	 * @param stream the stream providing the Nexus data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NexusEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
+		this(stream, translateMatchToken, NexusBlockHandlerMap.newJPhyloIOInstance(), NexusCommandReaderFactory.newJPhyloIOInstance());
 	}
 	
 
@@ -136,9 +167,25 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 
 	
 	/**
+	 * Creates a new instance of this class with a default block handler map and command reader factory. These contain all
+	 * handlers and command readers available in the core module of <i>JPhyloIO</i>. 
+	 * 
+	 * @param reader the reader providing the Nexus data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NexusEventReader(PeekReader reader, boolean translateMatchToken) throws IOException {
+		this(reader, translateMatchToken, NexusBlockHandlerMap.newJPhyloIOInstance(), NexusCommandReaderFactory.newJPhyloIOInstance());
+	}
+	
+
+	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param reader the reader providing the FASTA data to be read 
+	 * @param reader the reader providing the Nexus data to be read 
 	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
 	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
@@ -157,6 +204,22 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 
 	
+	/**
+	 * Creates a new instance of this class with a default block handler map and command reader factory. These contain all
+	 * handlers and command readers available in the core module of <i>JPhyloIO</i>. 
+	 * 
+	 * @param reader the reader providing the Nexus data to be read 
+	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
+	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
+	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
+	 *        to replace the match token.)
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NexusEventReader(Reader reader, boolean translateMatchToken) throws IOException {
+		this(reader, translateMatchToken, NexusBlockHandlerMap.newJPhyloIOInstance(), NexusCommandReaderFactory.newJPhyloIOInstance());
+	}
+	
+
 	/**
 	 * Specifies whether {@link UnknownCommandEvent}s will be fired for all Nexus commands with no according reader
 	 * stored in the factory. The key will be the name of the command and the value will be its contents.

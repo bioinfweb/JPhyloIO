@@ -57,6 +57,30 @@ public class NexusCommandReaderFactory {
 
 	
 	/**
+	 * Returns a new instance of this class, already containing all command readers available in
+	 * the core module of <i>JPhyloIO</i>. ({@link #addJPhyloIOReaders()} is called internally.)
+	 * 
+	 * @return the new instance
+	 */
+	public static NexusCommandReaderFactory newJPhyloIOInstance() {
+		NexusCommandReaderFactory result = new NexusCommandReaderFactory();
+		result.addJPhyloIOReaders();
+		return result;
+	}
+	
+	
+	/**
+	 * Creates a new empty instance of this class.
+	 * 
+	 * @see #addJPhyloIOReaders()
+	 * @see #newJPhyloIOInstance()
+	 */
+	public NexusCommandReaderFactory() {
+		super();
+	}
+
+
+	/**
 	 * Adds all Nexus command readers available in JPhyloIO to this instance.
 	 */
 	public void addJPhyloIOReaders() {
