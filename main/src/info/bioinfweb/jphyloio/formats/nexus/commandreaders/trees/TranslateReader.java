@@ -46,7 +46,7 @@ public class TranslateReader extends AbstractNexusCommandEventReader implements 
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
 				String value = getStreamDataProvider().readNexusWord();
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				getStreamDataProvider().getTreesTranslationTable().add(key, value);  //TODO Make sure the table is emptied at the end (or beginning) of each trees block.
+				getStreamDataProvider().getTreesTranslationTable().add(key, value);
 				
 				if (reader.peekChar() == ELEMENT_SEPARATOR) {
 					reader.read();  // Skip ELEMENT_SEPARATOR.

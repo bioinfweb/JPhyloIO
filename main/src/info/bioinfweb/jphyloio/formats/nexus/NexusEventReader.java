@@ -273,7 +273,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	}
 	
 	
-	private void addBlockStartEndEvent(EventTopologyType topologyType) {
+	private void processBlockStartEnd(EventTopologyType topologyType) {
 		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
 				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
 			
@@ -284,6 +284,9 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			else {
 				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 			}
+		}
+		else if (BLOCK_NAME_TREES.equals(currentBlockName) && EventTopologyType.END.equals(topologyType)) {
+			getStreamDataProvider().getTreesTranslationTable().clear();  // Clear for another possible upcoming TREES block.
 		}
 	}
 	
@@ -306,7 +309,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 							UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence().toString().toUpperCase();
 					lastChar = StringUtils.lastChar(currentBlockName);
 					currentBlockName = StringUtils.cutEnd(currentBlockName, 1);
-					addBlockStartEndEvent(EventTopologyType.START);
+					processBlockStartEnd(EventTopologyType.START);
 					if (lastChar != COMMAND_END) {
 						consumeWhiteSpaceAndComments();
 						if (getReader().peekChar() == COMMAND_END) {
@@ -323,7 +326,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				}
 			}
 			else if (END_COMMAND.equals(commandName) || ALTERNATIVE_END_COMMAND.equals(commandName)) {
-				addBlockStartEndEvent(EventTopologyType.END);  // Must be called before currentBlockName is set to null.
+				processBlockStartEnd(EventTopologyType.END);  // Must be called before currentBlockName is set to null.
 				currentBlockName = null;
 				
 				consumeWhiteSpaceAndComments();
