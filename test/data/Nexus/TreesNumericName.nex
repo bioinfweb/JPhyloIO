@@ -1,0 +1,11 @@
+#NEXUS
+
+BEGIN TAXA ; 
+	TAXLABELS
+		'Scarabaeus bug' 
+		Drosophila; 
+END ; 
+
+BEGIN TREES ; 
+	TREE 'my tree' = ((1,2),3); 
+END ; 

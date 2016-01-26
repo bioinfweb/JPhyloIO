@@ -1134,4 +1134,55 @@ public class NexusEventReaderTest {
 			reader.close();
 		}
 	}
+
+
+	@Test
+	public void testReadingTreesNumericName() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesNumericName.nex"), false, factory);
+		try {
+			reader.setCreateUnknownCommandEvents(false);
+
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
+			String otuIDScarabaeus = assertLabeledIDEvent(EventContentType.OTU, null, "Scarabaeus bug", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDDrosophila = assertLabeledIDEvent(EventContentType.OTU, null, "Drosophila", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+
+			assertLabeledIDEvent(EventContentType.TREE, null, "my tree", reader);
+			
+			String nodeIDScarabaeus = assertLinkedOTUEvent(EventContentType.NODE, null, "Scarabaeus bug", otuIDScarabaeus, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String nodeIDDrosophila = assertLinkedOTUEvent(EventContentType.NODE, null, "Drosophila", otuIDDrosophila, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String nodeIDN1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			assertEdgeEvent(nodeIDN1, nodeIDScarabaeus, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(nodeIDN1, nodeIDDrosophila, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			
+			String nodeIDAranaeus = assertLinkedOTUEvent(EventContentType.NODE, null, "3", null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String nodeIDN2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			assertEdgeEvent(nodeIDN2, nodeIDN1, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(nodeIDN2, nodeIDAranaeus, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(null, nodeIDN2, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }
