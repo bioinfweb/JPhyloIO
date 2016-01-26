@@ -64,26 +64,40 @@ public class NewickStringReader implements ReadWriteConstants {
 	
 	
 	private StreamDataProvider streamDataProvider;
-	private boolean readSequence;
+	private String treeLabel;
+	private NewickNodeLabelProcessor nodeLabelProcessor;
 	private NewickScanner scanner;
 	private Stack<Queue<NodeInfo>> passedSubnodes;
 	private HotCommentDataReader hotCommentDataReader = new HotCommentDataReader();
 	private boolean isInTree = false;
-	private boolean firstTreeFinished = false;
 	
 	
 	/**
 	 * Creates a new instance of this class.
 	 * 
 	 * @param streamDataProvider the stream data provider that allows this reader to access the necessary event reader properties 
-	 * @param readSequence Specify {@code true} here, if this reader shall read multiple Newick strings separated by ';' from
-	 *        the underlying stream or {@code false} if the reader shall stop at the first encountered tree end (';').
+	 * @param treeLabel the label of the tree to be read (This parameter also determines whether one or more trees shall be read
+	 *        from the underlying reader. If a string is specified, only one tree is read and the specified label is used for it.
+	 *        If {@code null} is specified, multiple trees are read until the end of the file is reached. None of them gets a
+	 *        defined label.)
+	 * @param nodeLabelProcessor the node label processor to be used to possibly translate node labels in Newick strings
+	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
-	public NewickStringReader(StreamDataProvider streamDataProvider, boolean readSequence) {
+	public NewickStringReader(StreamDataProvider streamDataProvider, String treeLabel, NewickNodeLabelProcessor nodeLabelProcessor) {
 		super();
+		
+		if (streamDataProvider == null) {
+			throw new NullPointerException("streamDataProvider must not be null.");
+		}
+		if (nodeLabelProcessor == null) {
+			throw new NullPointerException("nodeLabelProcessor must not be null.");
+		}
+		
 		this.streamDataProvider = streamDataProvider;
-		this.readSequence = readSequence;
-		scanner = new NewickScanner(streamDataProvider.getDataReader());
+		this.treeLabel = treeLabel;
+		this.nodeLabelProcessor = nodeLabelProcessor;
+		
+		scanner = new NewickScanner(streamDataProvider.getDataReader(), treeLabel == null);
 		passedSubnodes = new Stack<Queue<NodeInfo>>();
 	}
 	
@@ -215,12 +229,14 @@ public class NewickStringReader implements ReadWriteConstants {
 			Collection<JPhyloIOEvent> nestedEdgeEvents = createMetaAndCommentEvents(tokens[1], false);
 			
 			// Generate node information:
-			passedSubnodes.peek().add(new NodeInfo(nodeID, length, nestedEdgeEvents));			
-			LinkedOTUEvent result = new LinkedOTUEvent(EventContentType.NODE, nodeID, label, null);  //TODO Possibly replace by translation table when used in Nexus.
-			                                              //TODO Possibly use OTU link, if used in Nexus.
+			passedSubnodes.peek().add(new NodeInfo(nodeID, length, nestedEdgeEvents));
+			String processedLabel = nodeLabelProcessor.processLabel(label);
+			LinkedOTUEvent result = new LinkedOTUEvent(EventContentType.NODE, nodeID, processedLabel,
+					nodeLabelProcessor.getLinkedOTUID(processedLabel));
 			streamDataProvider.getUpcomingEvents().add(result);
 			streamDataProvider.getUpcomingEvents().addAll(nestedNodeEvents);
-			streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));  //TODO Put possible annotations and comments in the queue first
+			streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+			
 			return result;
 		}		
 	}
@@ -240,7 +256,6 @@ public class NewickStringReader implements ReadWriteConstants {
 	private void endTree() {
 		addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
 		streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
-		firstTreeFinished = true;
 		isInTree = false;
 	}
 
@@ -295,17 +310,25 @@ public class NewickStringReader implements ReadWriteConstants {
 	}
 	
 	
+	/**
+	 * Creates the next JPhyloIO event(s) from the Newick string provided by the underlying reader.
+	 * 
+	 * @return {@code true} if more events were added to the queue or {@code false} if reading of the current tree(s)
+	 *         is finished.
+	 * @throws IOException
+	 */
 	public boolean addNextEvents() throws IOException {
 		if (!isInTree) {
-			boolean readMoreTokens = scanner.hasMoreTokens() && (readSequence || !firstTreeFinished);
-			if (readMoreTokens /*scanner.hasMoreTokens()*/) {
+			boolean readMoreTokens = scanner.hasMoreTokens();
+			//TODO Does an unexpected EOF need to be checked here?
+			if (readMoreTokens) {
 				NewickTokenType type = scanner.peek().getType();
 				if (NewickTokenType.COMMENT.equals(type)) {  // Comments before a tree
 					streamDataProvider.getUpcomingEvents().add(new CommentEvent(scanner.nextToken().getText(), false));
 				}
 				else {
 					streamDataProvider.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.TREE, 
-							DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null));  //TODO Use label from Nexus, if available.
+							DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), treeLabel));
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 						boolean currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 						scanner.nextToken();  // Skip rooted token.

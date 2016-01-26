@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueIn
 import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.TranslationTable;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.NexusTranslationTable;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 
@@ -145,10 +145,10 @@ public class NexusStreamDataProvider implements StreamDataProvider {
 	}
 	
 	
-	public TranslationTable getTreesTranslationTable() {
-		TranslationTable result = (TranslationTable)getSharedInformationMap().get(INFO_KEY_TREES_TRANSLATION);  // Casting null is possible.
+	public NexusTranslationTable getTreesTranslationTable() {
+		NexusTranslationTable result = (NexusTranslationTable)getSharedInformationMap().get(INFO_KEY_TREES_TRANSLATION);  // Casting null is possible.
 		if (result == null) {
-			result = new TranslationTable();
+			result = new NexusTranslationTable();
 			getSharedInformationMap().put(INFO_KEY_TREES_TRANSLATION, result);
 		}
 		return result;

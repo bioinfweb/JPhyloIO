@@ -25,20 +25,38 @@ import java.util.NoSuchElementException;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.StreamLocation;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.TreeReader;
 
 
 
+/**
+ * Reads Newick tokens from a stream. (This class is used internally by JPhyloIO reader reading Newick tree definitions.)
+ * 
+ * @author Ben St&ouml;ver
+ * @see NewickStringReader
+ * @see NewickEventReader
+ * @see TreeReader
+ */
 public class NewickScanner implements NewickConstants {
 	private PeekReader reader; 
+	private boolean readSequence;
 	private NewickToken next = null;
 	private NewickToken previous = null;
 	private boolean beforeFirstAccess = true;
 	private boolean branchLengthExpected = false;
 	
 	
-	public NewickScanner(PeekReader reader) {
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param reader the underlying reader to read the tokens from
+	 * @param readSequence Specify {@code true} here, if this reader shall read multiple Newick strings separated by ';' from
+	 *        the underlying stream or {@code false} if the reader shall stop at the first encountered tree end (';').
+	 */
+	public NewickScanner(PeekReader reader, boolean readSequence) {
 		super();
 		this.reader = reader;
+		this.readSequence = readSequence;
 	}
 
 
@@ -241,7 +259,12 @@ public class NewickScanner implements NewickConstants {
 		}
 		else {
 			previous = next;  // previous needs to be set before readNextEvent() is called, because it could be accessed in there.
-			next = readNextToken();
+			if (!readSequence && NewickTokenType.TERMNINAL_SYMBOL.equals(previous.getType())) {
+				next = null;
+			}
+			else {
+				next = readNextToken();
+			}
 			return previous;
 		}
 	}

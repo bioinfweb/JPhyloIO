@@ -32,7 +32,7 @@ import java.util.TreeMap;
  * 
  * @author Ben St&ouml;ver
  */
-public class TranslationTable {
+public class NexusTranslationTable {
   private Map<String, Integer> keyMap = new TreeMap<String, Integer>();
   private List<String> nameList = new ArrayList<String>();
   

@@ -19,46 +19,50 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees;
 
 
+import java.io.EOFException;
+
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
-import java.io.EOFException;
 
 
-
-public class TranslateReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
-	public TranslateReader(NexusStreamDataProvider nexusDocument) {
-		super("Translate", new String[]{BLOCK_NAME_TREES}, nexusDocument);
+public class TreeReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
+	private NewickStringReader newickStringReader = null;
+	
+	
+	public TreeReader(NexusStreamDataProvider nexusDocument) {
+		super("Tree", new String[]{BLOCK_NAME_TREES}, nexusDocument);
 	}
 
 	
 	@Override
 	protected boolean doReadNextEvent() throws Exception {
 		PeekReader reader = getStreamDataProvider().getDataReader();
+		
 		try {
-			while (reader.peekChar() != COMMAND_END) {
+			if (newickStringReader == null) {  // First call
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				String key = getStreamDataProvider().readNexusWord();
+				String label = getStreamDataProvider().readNexusWord();
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				String value = getStreamDataProvider().readNexusWord();
-				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				getStreamDataProvider().getTreesTranslationTable().add(key, value);  //TODO Make sure the table is emptied at the end (or beginning) of each trees block.
-				
-				if (reader.peekChar() == ELEMENT_SEPARATOR) {
-					reader.read();  // Skip ELEMENT_SEPARATOR.
+				if (reader.peekChar() == KEY_VALUE_SEPARATOR) {
+					reader.read();  // Skip KEY_VALUE_SEPARATOR.
+					newickStringReader = new NewickStringReader(getStreamDataProvider(), label, 
+							new NexusNewickNodeLabelProcessor(getStreamDataProvider()));
+				}
+				else {
+					throw new JPhyloIOReaderException("Expected \"" + KEY_VALUE_SEPARATOR + 
+							"\" behind the tree label in the TREE command, but found \"" + reader.peekChar() + "\".", reader);
 				}
 			}
-			
-			reader.read();  // Skip COMMAND_END.
-			setAllDataProcessed(true);
-			return false;  // This reader does not produce any events.
+			return newickStringReader.addNextEvents();
 		}
 		catch (EOFException e) {
-			throw new JPhyloIOReaderException("Unexpected end of file in " + getCommandName() + " command.", reader);
+			throw new JPhyloIOReaderException("Unexpected end of file inside a Nexus TREE command.", reader, e);
 		}
 	}
 }

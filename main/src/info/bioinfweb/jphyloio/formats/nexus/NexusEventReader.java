@@ -221,7 +221,9 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				}
 			}
 			else {
-				while (!Character.isWhitespace(c) && (c != COMMENT_START) && (c != COMMAND_END) && (c != KEY_VALUE_SEPARATOR)) {
+				while (!Character.isWhitespace(c) && (c != COMMENT_START) && (c != COMMAND_END) && (c != KEY_VALUE_SEPARATOR) 
+						&& (c != ELEMENT_SEPARATOR)) {  //TODO Add more special characters
+					
 					result.append(c);
 					getReader().skip(1);
 					c = getReader().peekChar();
@@ -368,7 +370,10 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				else {
 					eventCreated = currentCommandReader.readNextEvent();
 					if (!eventCreated) {
-						eventCreated = readNextCommand();
+						do {
+							eventCreated = readNextCommand();
+							consumeWhiteSpaceAndComments();
+						} while (!eventCreated && (getReader().peek() != -1));
 					}
 				}
 				if (!eventCreated) {
