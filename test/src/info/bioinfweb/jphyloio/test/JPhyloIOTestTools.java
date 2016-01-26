@@ -128,7 +128,7 @@ public class JPhyloIOTestTools {
 	
 	
   public static void assertCommentEvent(String expectedContent, JPhyloIOEventReader reader) throws Exception {
-  	assertCommentEvent(expectedContent, true, reader);  	
+  	assertCommentEvent(expectedContent, false, reader);  	
   }
   
   

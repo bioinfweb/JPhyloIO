@@ -6,6 +6,6 @@ BEGIN TAXA ;
 		Drosophila; 
 END ; 
 
-BEGIN TREES ; 
+BEGIN TREES [comment] ; 
 	TREE 'my tree' = ((1,2),3); 
 END ; 
