@@ -172,6 +172,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	 * 
 	 * @return the shared stream and data provider
 	 */
+	@Override
 	public NexusStreamDataProvider getStreamDataProvider() {
 		return streamDataProvider;
 	}

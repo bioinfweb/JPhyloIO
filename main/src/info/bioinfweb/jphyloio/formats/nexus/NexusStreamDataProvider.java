@@ -30,9 +30,9 @@ import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
+import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.taxa.TaxLabelsReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.TranslationTable;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
@@ -44,7 +44,7 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
  * 
  * @author Ben St&ouml;ver
  */
-public class NexusStreamDataProvider {
+public class NexusStreamDataProvider implements StreamDataProvider {
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaidmap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
