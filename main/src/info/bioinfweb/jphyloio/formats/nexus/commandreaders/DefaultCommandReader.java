@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
-import info.bioinfweb.jphyloio.formats.nexus.NexusCommandReaderFactory;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;

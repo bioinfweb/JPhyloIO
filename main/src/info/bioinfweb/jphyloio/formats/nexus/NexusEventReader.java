@@ -39,8 +39,11 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
+import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandlerMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
@@ -52,6 +55,7 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
  * @author Ben St&ouml;ver
  */
 public class NexusEventReader extends AbstractBufferedReaderBasedEventReader implements NexusConstants {
+	private NexusBlockHandlerMap blockHandlerMap;
 	private NexusCommandReaderFactory factory;
 	private boolean createUnknownCommandEvents = false;
 	private String currentBlockName = null;
@@ -73,12 +77,16 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
 	 *        to replace the match token.)
-	 * @param factory the factory to create instances of Nexus command readers that shall be used for parsing the document
+	 * @param blockHandlerMap the map of Nexus block handlers to be used with this instance 
+	 * @param commandReaderFactory the factory to create instances of Nexus command readers that shall be used for parsing the document
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public NexusEventReader(File file, boolean translateMatchToken, NexusCommandReaderFactory factory) throws IOException {
+	public NexusEventReader(File file, boolean translateMatchToken, NexusBlockHandlerMap blockHandlerMap, 
+			NexusCommandReaderFactory commandReaderFactory) throws IOException {
+		
 		super(file, translateMatchToken);
-		this.factory = factory;
+		this.blockHandlerMap = blockHandlerMap;
+		this.factory = commandReaderFactory;
 		initStreamDataProvider();
 	}
 	
@@ -91,12 +99,15 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
 	 *        to replace the match token.)
-	 * @param translateMatchToken
+	 * @param blockHandlerMap the map of Nexus block handlers to be used with this instance 
 	 * @param factory the factory to create instances of Nexus command readers that shall be used for parsing the document
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public NexusEventReader(InputStream stream, boolean translateMatchToken, NexusCommandReaderFactory factory) throws IOException {
+	public NexusEventReader(InputStream stream, boolean translateMatchToken, NexusBlockHandlerMap blockHandlerMap,
+			NexusCommandReaderFactory factory) throws IOException {
+		
 		super(stream, translateMatchToken);
+		this.blockHandlerMap = blockHandlerMap;
 		this.factory = factory;
 		initStreamDataProvider();
 	}
@@ -110,11 +121,15 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
 	 *        to replace the match token.)
+	 * @param blockHandlerMap the map of Nexus block handlers to be used with this instance 
 	 * @param factory the factory to create instances of Nexus command readers that shall be used for parsing the document
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public NexusEventReader(PeekReader reader, boolean translateMatchToken, NexusCommandReaderFactory factory) {
+	public NexusEventReader(PeekReader reader, boolean translateMatchToken, NexusBlockHandlerMap blockHandlerMap,
+			NexusCommandReaderFactory factory) {
+		
 		super(reader, translateMatchToken);
+		this.blockHandlerMap = blockHandlerMap;
 		this.factory = factory;
 		initStreamDataProvider();
 	}
@@ -128,11 +143,15 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
 	 *        to replace the match token.)
+	 * @param blockHandlerMap the map of Nexus block handlers to be used with this instance 
 	 * @param factory the factory to create instances of Nexus command readers that shall be used for parsing the document
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public NexusEventReader(Reader reader, boolean translateMatchToken, NexusCommandReaderFactory factory) throws IOException {
+	public NexusEventReader(Reader reader, boolean translateMatchToken, NexusBlockHandlerMap blockHandlerMap,
+			NexusCommandReaderFactory factory) throws IOException {
+		
 		super(reader, translateMatchToken);
+		this.blockHandlerMap = blockHandlerMap;
 		this.factory = factory;
 		initStreamDataProvider();
 	}
@@ -274,19 +293,14 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	
 	
 	private void processBlockStartEnd(EventTopologyType topologyType) {
-		if (BLOCK_NAME_CHARACTERS.equals(currentBlockName) || BLOCK_NAME_DATA.equals(currentBlockName) || 
-				BLOCK_NAME_UNALIGNED.equals(currentBlockName)) {
-			
-			if (topologyType.equals(EventTopologyType.START)) {
-				getUpcomingEvents().add(new LabeledIDEvent(EventContentType.ALIGNMENT, 
-						DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null));
+		NexusBlockHandler handler = blockHandlerMap.getHandler(currentBlockName);
+		if (handler != null) {
+			if (EventTopologyType.START.equals(topologyType)) {
+				handler.handleBegin(getStreamDataProvider());
 			}
 			else {
-				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+				handler.handleEnd(getStreamDataProvider());
 			}
-		}
-		else if (BLOCK_NAME_TREES.equals(currentBlockName) && EventTopologyType.END.equals(topologyType)) {
-			getStreamDataProvider().getTreesTranslationTable().clear();  // Clear for another possible upcoming TREES block.
 		}
 	}
 	

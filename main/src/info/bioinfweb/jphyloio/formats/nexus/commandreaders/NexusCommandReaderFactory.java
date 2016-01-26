@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexus;
+package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.MatrixReader;
