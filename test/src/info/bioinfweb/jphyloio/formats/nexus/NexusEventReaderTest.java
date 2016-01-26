@@ -26,6 +26,8 @@ import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandlerMap;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 
@@ -40,11 +42,14 @@ import static org.junit.Assert.* ;
 
 
 public class NexusEventReaderTest {
+	private NexusBlockHandlerMap handlerMap;
 	private NexusCommandReaderFactory factory;
 	
 	
 	public NexusEventReaderTest() {
 		super();
+		handlerMap = new NexusBlockHandlerMap();
+		handlerMap.addJPhyloIOHandlers();
 		factory = new NexusCommandReaderFactory();
 		factory.addJPhyloIOReaders();
 	}
@@ -53,7 +58,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingCharSets() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSet.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSet.nex"), false, handlerMap, factory);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertCommentEvent("comment 1", reader);
@@ -157,7 +162,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingCharSetsInvalidSymbol() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetInvalidVectorSymbol.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetInvalidVectorSymbol.nex"), false, handlerMap, factory);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				//assertCharacterSetEvent("set1", 2, 4, reader);  // The exception happens here already, because the parser is always one element ahead.
@@ -182,7 +187,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingFormatCommand() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Format.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Format.nex"), false, handlerMap, factory);
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -215,7 +220,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingFormatCommandTokens() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatTokens.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatTokens.nex"), false, handlerMap, factory);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -254,7 +259,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingFormatCommandContinuous() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuous.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuous.nex"), false, handlerMap, factory);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -291,7 +296,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrix() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), false, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 			
@@ -364,7 +369,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingMatrixLongTokens() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokens.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokens.nex"), false, handlerMap, factory);
 			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -414,7 +419,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingMatrixLongContinuous() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixContinuous.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixContinuous.nex"), false, handlerMap, factory);
 			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -462,7 +467,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingMatrixDNAAlternatives() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixDNAAlternatives.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixDNAAlternatives.nex"), false, handlerMap, factory);
 			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -510,7 +515,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingMatrixLongTokensAlternatives() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokensAlternatives.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokensAlternatives.nex"), false, handlerMap, factory);
 			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -559,7 +564,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingMatrixInterleaved() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleaved.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleaved.nex"), false, handlerMap, factory);
 			reader.setCreateUnknownCommandEvents(false);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -618,7 +623,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixInterleavedMatchCharacterSplit() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), true, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), true, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 			reader.setMaxTokensToRead(4);
@@ -681,7 +686,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixInterleavedMatchCharacter() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), true, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), true, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 
@@ -738,7 +743,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingSplitComments() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/SplitComments.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/SplitComments.nex"), false, handlerMap, factory);
 			reader.setMaxCommentLength(13);
 			reader.setCreateUnknownCommandEvents(false);
 			try {
@@ -768,7 +773,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingSymbols() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Symbols.nex"), false, factory);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Symbols.nex"), false, handlerMap, factory);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -813,7 +818,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingFormatSymbols() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuousSymbols.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuousSymbols.nex"), false, handlerMap, factory);
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
@@ -852,7 +857,7 @@ public class NexusEventReaderTest {
 	
 	
 	private void testReadingMrBayesDataTypeExtension(String file, boolean testSingleDefs) throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File(file), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File(file), false, handlerMap, factory);
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -891,7 +896,7 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingMatrixUnaligned() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixUnaligned.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixUnaligned.nex"), false, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 
@@ -933,7 +938,7 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingTaxaNoLabels() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabels.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabels.nex"), false, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 
@@ -1014,7 +1019,7 @@ public class NexusEventReaderTest {
 
 	@Test(expected=IOException.class)
 	public void testReadingTaxaNoLabelsInvalid() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabelsInvalid.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabelsInvalid.nex"), false, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 
@@ -1105,7 +1110,7 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingTreesTranslate() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesTranslate.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesTranslate.nex"), false, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 
@@ -1139,7 +1144,7 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingTreesNumericName() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesNumericName.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesNumericName.nex"), false, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 
@@ -1192,7 +1197,7 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingTreesMetadata() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesMetadata.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesMetadata.nex"), false, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 
@@ -1326,7 +1331,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingTreesMultipleBlocks() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MultipleTreesBlocks.nex"), false, factory);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MultipleTreesBlocks.nex"), false, handlerMap, factory);
 		try {
 			reader.setCreateUnknownCommandEvents(false);
 
