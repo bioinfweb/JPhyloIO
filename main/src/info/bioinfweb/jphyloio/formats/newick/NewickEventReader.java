@@ -101,7 +101,6 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 	
 	
 	private State state = State.START;
-	private boolean currentTreeRooted = false;
 	private NewickScanner scanner;
 	private Stack<Queue<NodeInfo>> passedSubnodes;
 	private HotCommentDataReader hotCommentDataReader = new HotCommentDataReader();
@@ -288,16 +287,23 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 	
 	private void endTree() {
 		addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
-		state = State.IN_DOCUMENT;
+		//state = State.IN_DOCUMENT;
 		getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
 	}
 
 	
-	private void processTree() throws IOException {
+	/**
+	 * Read the contents of a Newick string and generates JPhyloIO events from it.
+	 * 
+	 * @return {@code true} if the end of the tree was reached or {@code false} if reading this Newick string needs to be continued 
+	 * @throws IOException
+	 */
+	private boolean processTree() throws IOException {
 		while (getUpcomingEvents().isEmpty()) {
 			if (!scanner.hasMoreTokens()) {
 				if (passedSubnodes.size() == 1) {
 					endTree();
+					return true;
 				}
 				else {
 					throw new JPhyloIOReaderException("Unexpected end of file inside a subtree defintion.", getReader());
@@ -325,7 +331,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						break;
 					case TERMNINAL_SYMBOL:
 						endTree();
-						break;
+						return true;
 					case COMMENT:
 						getUpcomingEvents().add(new CommentEvent(token.getText(), false));
 						break;
@@ -334,6 +340,18 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 				}
 			}
 		}
+		return false;
+	}
+	
+	
+	/**
+	 * Initializes processing a Newick string and adds initial events to the queue.
+	 * 
+	 * @return {@code true} if processing of a new tree could be started or {@code false} if no additional tree
+	 *         can be read from the underlying reader
+	 */
+	private boolean processTreeStart() {
+		return false;
 	}
 	
 	
@@ -354,7 +372,7 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 						getUpcomingEvents().add(new LabeledIDEvent(EventContentType.TREE, 
 								DEFAULT_TREE_ID_PREFIX + getIDManager().createNewID(), null));  //TODO Use label from Nexus, if available.
 						if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
-							currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
+							boolean currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 							scanner.nextToken();  // Skip rooted token.
 							getUpcomingEvents().add(new MetaInformationEvent(META_KEY_DISPLAY_TREE_ROOTED, null, 
 									Boolean.toString(currentTreeRooted), new Boolean(currentTreeRooted)));
@@ -370,7 +388,9 @@ public class NewickEventReader extends AbstractBufferedReaderBasedEventReader im
 				}
 				break;
 			case IN_TREE:
-				processTree();
+				if (processTree()) {
+					state = State.IN_DOCUMENT;
+				}
 				break;
 			case END:
 				break;
