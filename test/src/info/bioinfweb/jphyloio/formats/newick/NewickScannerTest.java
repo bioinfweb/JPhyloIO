@@ -60,7 +60,7 @@ public class NewickScannerTest {
 	public void test_nextToken() throws IOException {
 		PeekReader reader = new PeekReader(new BufferedReader(new FileReader("data/Newick/InternalsTerminalsLength.nwk")));
 		try {
-			NewickScanner scanner = new NewickScanner(reader);
+			NewickScanner scanner = new NewickScanner(reader, true);
 			assertEquals(NewickTokenType.SUBTREE_START, scanner.nextToken().getType());
 			assertEquals(NewickTokenType.SUBTREE_START, scanner.nextToken().getType());
 			assertEquals(NewickTokenType.SUBTREE_START, scanner.nextToken().getType());
@@ -103,7 +103,7 @@ public class NewickScannerTest {
 	public void test_nextToken_comments() throws IOException {
 		PeekReader reader = new PeekReader(new BufferedReader(new FileReader("data/Newick/Comments.nwk")));
 		try {
-			NewickScanner scanner = new NewickScanner(reader);
+			NewickScanner scanner = new NewickScanner(reader, true);
 			assertEquals(NewickTokenType.UNROOTED_COMMAND, scanner.nextToken().getType());
 			assertEquals(NewickTokenType.ROOTED_COMMAND, scanner.nextToken().getType());
 			assertCommentToken("c1", scanner);
