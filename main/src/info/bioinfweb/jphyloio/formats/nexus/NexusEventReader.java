@@ -325,6 +325,11 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 			else if (END_COMMAND.equals(commandName) || ALTERNATIVE_END_COMMAND.equals(commandName)) {
 				addBlockStartEndEvent(EventTopologyType.END);  // Must be called before currentBlockName is set to null.
 				currentBlockName = null;
+				
+				consumeWhiteSpaceAndComments();
+				if ((getReader().peek() != -1) && (getReader().peekChar() == COMMAND_END)) {
+					getReader().read();  // Skip COMMAND_END. (Necessary if ';' is not located directly behind the "END".)
+				}
 			}
 			else if (lastChar == COMMAND_END) {
 				//TODO Fire according event. (else case should be used here, but reader would have to be moved backwards to make ';' available again.)
