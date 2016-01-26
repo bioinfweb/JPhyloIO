@@ -1,0 +1,24 @@
+#NEXUS
+
+BEGIN TAXA; 
+	TAXLABELS
+		Scarabaeus 
+		Drosophila 
+		Aranaeus
+		beetle
+		fly
+		spider;
+END; 
+
+BEGIN TREES; 
+	TRANSLATE
+		beetle Scarabaeus, 
+		fly Drosophila, 
+		spider Aranaeus; 
+	TREE tree1 = ((1,2),3); 
+	TREE tree2=((beetle, fly), spider); 
+	TREE tree3=((Scarabaeus, Drosophila), Aranaeus); 
+END; 
+BEGIN TREES; 
+	TREE otherTree=((beetle, fly), spider); 
+END; 

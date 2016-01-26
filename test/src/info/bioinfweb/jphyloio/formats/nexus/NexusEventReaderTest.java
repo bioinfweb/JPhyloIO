@@ -1322,4 +1322,71 @@ public class NexusEventReaderTest {
 			reader.close();
 		}
 	}
+	
+	
+	@Test
+	public void testReadingTreesMultipleBlocks() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MultipleTreesBlocks.nex"), false, factory);
+		try {
+			reader.setCreateUnknownCommandEvents(false);
+
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
+			String otuIDScarabaeus = assertLabeledIDEvent(EventContentType.OTU, null, "Scarabaeus", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDDrosophila = assertLabeledIDEvent(EventContentType.OTU, null, "Drosophila", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDAranaeus = assertLabeledIDEvent(EventContentType.OTU, null, "Aranaeus", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDBeetle = assertLabeledIDEvent(EventContentType.OTU, null, "beetle", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDFly = assertLabeledIDEvent(EventContentType.OTU, null, "fly", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDSpider = assertLabeledIDEvent(EventContentType.OTU, null, "spider", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+
+			assertNotEquals(otuIDScarabaeus, otuIDDrosophila);
+			assertNotEquals(otuIDScarabaeus, otuIDAranaeus);
+			assertNotEquals(otuIDDrosophila, otuIDAranaeus);
+			
+			testReadingTreesTranslateSingleTree(reader, "tree1", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
+			testReadingTreesTranslateSingleTree(reader, "tree2", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
+			testReadingTreesTranslateSingleTree(reader, "tree3", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
+			
+			assertLabeledIDEvent(EventContentType.TREE, null, "otherTree", reader);
+			
+			String nodeIDBeetle = assertLinkedOTUEvent(EventContentType.NODE, null, "beetle", otuIDBeetle, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String nodeIDFly = assertLinkedOTUEvent(EventContentType.NODE, null, "fly", otuIDFly, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String nodeIDN1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			assertEdgeEvent(nodeIDN1, nodeIDBeetle, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(nodeIDN1, nodeIDFly, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			
+			String nodeIDSpider = assertLinkedOTUEvent(EventContentType.NODE, null, "spider", otuIDSpider, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String nodeIDN2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			assertEdgeEvent(nodeIDN2, nodeIDN1, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(nodeIDN2, nodeIDSpider, reader);
+			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
+			assertEdgeEvent(null, nodeIDN2, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }
