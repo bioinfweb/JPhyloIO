@@ -246,14 +246,14 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 				length++;
 				if (length >= getMaxCommentLength()) {
 					c = getReader().peekChar();
-					getUpcomingEvents().add(new CommentEvent(content.toString(), (c == -1) || (c == commentEnd)));
+					getUpcomingEvents().add(new CommentEvent(content.toString(), (c == -1) || (c != commentEnd)));
 					content.delete(0, content.length());
 					length = 0;
 				}
 				c = getReader().readChar();
 			}
 			if (content.length() > 0) {
-				getUpcomingEvents().add(new CommentEvent(content.toString(), true));
+				getUpcomingEvents().add(new CommentEvent(content.toString(), false));
 			}
 		}
 		catch (EOFException e) {
