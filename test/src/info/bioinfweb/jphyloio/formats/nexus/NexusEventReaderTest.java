@@ -1151,7 +1151,7 @@ public class NexusEventReaderTest {
 			assertEndEvent(EventContentType.OTU, reader);
 			assertEndEvent(EventContentType.OTU_LIST, reader);
 
-			assertCommentEvent("comment", false, reader);
+			assertCommentEvent("comment 1", reader);
 			assertLabeledIDEvent(EventContentType.TREE, null, "my tree", reader);
 			
 			String nodeIDScarabaeus = assertLinkedOTUEvent(EventContentType.NODE, null, "Scarabaeus bug", otuIDScarabaeus, reader);
@@ -1178,7 +1178,8 @@ public class NexusEventReaderTest {
 			assertEdgeEvent(null, nodeIDN2, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
-			
+
+			assertCommentEvent("comment 2", reader);
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());
 		}
