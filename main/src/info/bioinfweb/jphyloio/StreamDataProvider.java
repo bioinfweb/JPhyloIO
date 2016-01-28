@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
+import java.util.Collection;
 import java.util.Queue;
 
 
@@ -54,8 +55,51 @@ public class StreamDataProvider {
 	public AbstractEventReader getEventReader() {
 		return eventReader;
 	}
-
-
+	
+	
+	/**
+	 * Sets the current event collection to {@link #getUpcomingEvents()}.
+	 * 
+	 * @return the replaced event collection
+	 */
+	protected Collection<JPhyloIOEvent> resetCurrentEventCollection() {
+		return getEventReader().resetCurrentEventCollection();
+	}
+	
+	
+	/**
+	 * Sets a new current event collection.
+	 * 
+	 * @param newCollection the new collection to take up new events from now on 
+	 * @return the replaced event collection
+	 * @throws NullPointerException if {@code newCollection} is {@code null}
+	 */
+	protected Collection<JPhyloIOEvent> setCurrentEventCollection(Collection<JPhyloIOEvent> newCollection) {
+		return getEventReader().setCurrentEventCollection(newCollection);
+	}
+	
+	
+	/**
+	 * Returns the event collection that is currently used to take up new events.
+	 * 
+	 * @return the current event collection
+	 */
+	protected Collection<JPhyloIOEvent> getCurrentEventCollection() {
+		return getEventReader().getCurrentEventCollection();
+	}
+	
+	
+	/**
+	 * Determines whether the current event collection is different from the queue of upcoming events.
+	 * 
+	 * @return {@code false} if {@link #getCurrentEventCollection()} returns the same instance as {@link #getUpcomingEvents()}
+	 *         or {@code true} otherwise
+	 */
+	protected boolean hasSpecialEventCollection() {
+		return getEventReader().hasSpecialEventCollection(); 
+	}
+	
+	
 	public Queue<JPhyloIOEvent> getUpcomingEvents() {
 		return getEventReader().getUpcomingEvents();
 	}

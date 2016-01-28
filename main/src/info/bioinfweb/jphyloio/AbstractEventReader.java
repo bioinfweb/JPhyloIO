@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio;
 
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
@@ -44,6 +45,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	private JPhyloIOEvent lastNonComment = null;
 	private StreamDataProvider streamDataProvider;  // Must not be set to anything here.
 	private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
+	private Collection<JPhyloIOEvent> currentEventCollection;
 	private boolean beforeFirstAccess = true;
 	private boolean dataSourceClosed = false;
 	private int maxTokensToRead;
@@ -63,6 +65,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 		this.maxTokensToRead = maxTokensToRead;
 		this.translateMatchToken = translateMatchToken;
 		streamDataProvider = createStreamDataProvider();
+		resetCurrentEventCollection();
 	}
 	
 	
@@ -85,6 +88,63 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	}
 	
 	
+	/**
+	 * Sets the current event collection to {@link #getUpcomingEvents()}.
+	 * 
+	 * @return the replaced event collection
+	 */
+	protected Collection<JPhyloIOEvent> resetCurrentEventCollection() {
+		return setCurrentEventCollection(upcomingEvents);
+	}
+	
+	
+	/**
+	 * Sets a new current event collection.
+	 * 
+	 * @param newCollection the new collection to take up new events from now on 
+	 * @return the replaced event collection
+	 * @throws NullPointerException if {@code newCollection} is {@code null}
+	 */
+	protected Collection<JPhyloIOEvent> setCurrentEventCollection(Collection<JPhyloIOEvent> newCollection) {
+		if (newCollection == null) {
+			throw new NullPointerException("The current event collection must not be null.");
+		}
+		else {
+			Collection<JPhyloIOEvent> previous = currentEventCollection;
+			currentEventCollection = newCollection;
+			return previous;
+		}
+	}
+	
+	
+	/**
+	 * Returns the event collection that is currently used to take up new events.
+	 * 
+	 * @return the current event collection
+	 */
+	protected Collection<JPhyloIOEvent> getCurrentEventCollection() {
+		return currentEventCollection;
+	}
+	
+	
+	/**
+	 * Determines whether the current event collection is different from the queue of upcoming events.
+	 * 
+	 * @return {@code false} if {@link #getCurrentEventCollection()} returns the same instance as {@link #getUpcomingEvents()}
+	 *         or {@code true} otherwise
+	 */
+	protected boolean hasSpecialEventCollection() {
+		return upcomingEvents != currentEventCollection;  // equals() does not make sense here, because 
+	}
+	
+	
+	/**
+	 * Returns the queue to store events in, that shall be returned by upcoming calls of {@link #next()}.
+	 * <p>
+	 * Note that new events should generally be added to {@link #getCurrentEventCollection()} instead.
+	 * 
+	 * @return the queue of upcoming events
+	 */
 	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
 		return upcomingEvents;
 	}
