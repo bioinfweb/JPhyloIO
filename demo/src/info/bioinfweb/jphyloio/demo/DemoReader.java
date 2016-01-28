@@ -26,45 +26,20 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 
 
 
 public class DemoReader {
-	public static void readNeXML(DemoModel collection, NeXMLEventReader reader) throws Exception {
-		if (reader.hasNextEvent()) {
-//			int i = 0;
-			
-			while (reader.hasNextEvent()) {
-				JPhyloIOEvent event = reader.next();
-				System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
-				
-				if (event.getType().getContentType().equals(EventContentType.TOKEN_SET_DEFINITION)) {
-					System.out.println("Character State Type: " + event.asTokenSetDefinitionEvent().getSetType());
-				}
-				else if (event.getType().getContentType().equals(EventContentType.NODE) && event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					System.out.println(event.asLinkedOTUEvent().getID() + ", " + event.asLinkedOTUEvent().getLabel());
-				}
-				else if (event.getType().getContentType().equals(EventContentType.EDGE) && event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					System.out.println(event.asEdgeEvent().getLength() + ", " + event.asEdgeEvent().getSourceID() + ", " + event.asEdgeEvent().getTargetID());
-				}
-//				else if (event.getType().getContentType().equals(EventContentType.SEQUENCE_CHARACTERS)) {
-//					i ++;
-//					System.out.println("Name: " + event.asSequenceTokensEvent().getSequenceName());
-//					System.out.println(i + ": " + event.asSequenceTokensEvent().getCharacterValues());
-//					System.out.println("Size: " + event.asSequenceTokensEvent().getCharacterValues().size());
-//				}
-//				else if (event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-//					if (!event.getType().getTopologyType().equals(EventTopologyType.END) && event.asMetaInformationEvent().getKey().equals("id")) {
-//						System.out.println(event.asMetaInformationEvent().getStringValue());
-//					}
-//					i++;
-//					System.out.println(i + ": Key: " + event.asMetaInformationEvent().getKey());
-//					System.out.println("Content: " + event.asMetaInformationEvent().getStringValue());
-//				}
-			}
-		}	
+	private static String currentSequenceName = null;
+	
+	public static void readNeXML(DemoModel collection, NeXMLEventReader reader) throws Exception {		
+		while (reader.hasNextEvent()) {
+			JPhyloIOEvent event = reader.next();
+			addSequenceToElementCollection(collection, event);
+		}
 	}
 	
 	
@@ -84,16 +59,18 @@ public class DemoReader {
 	
 	
 	public static void addSequenceToElementCollection(DemoModel collection, JPhyloIOEvent event) {
-		if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
+		if (event.getType().getContentType().equals(EventContentType.SEQUENCE) && event.getType().getTopologyType().equals(EventTopologyType.START)) {
+			LinkedOTUEvent sequenceStartEvent = event.asLinkedOTUEvent();
+			currentSequenceName = sequenceStartEvent.getLabel();
+		}
+		else if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
 			SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
-			String sequenceName = tokensEvent.getSequenceName();
-			List<String> sequence = collection.getSequence(sequenceName);
+			List<String> sequence = collection.getSequence(currentSequenceName);
 			
 			for (int i = 0; i < tokensEvent.getCharacterValues().size(); i++) {
 				sequence.add(tokensEvent.getCharacterValues().get(i));
 			}
-			
-			collection.getAlignmentData().put(sequenceName, sequence);
+			collection.getAlignmentData().put(currentSequenceName, sequence);
 		}
 	}
 }
