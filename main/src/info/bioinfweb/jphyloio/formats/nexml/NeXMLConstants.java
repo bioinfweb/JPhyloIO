@@ -26,6 +26,9 @@ import javax.xml.namespace.QName;
 public interface NeXMLConstants {
 	public static final String NAMESPACE_URI = "http://www.nexml.org/2009";
 	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+	public static final String NAMESPACE_BIOINFWEB = "http://bioinfweb.info/JPhyloIO/technical";
+	
+	public static final QName TAG_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
 	
 	public static final QName TAG_NEXML = new QName(NAMESPACE_URI, "nexml");
 	public static final QName TAG_META = new QName(NAMESPACE_URI, "meta");

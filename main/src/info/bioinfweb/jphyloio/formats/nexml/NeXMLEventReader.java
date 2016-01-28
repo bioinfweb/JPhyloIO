@@ -102,7 +102,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	private static Map<XMLElementType, NeXMLElementReader> createMap() {
 		Map<XMLElementType, NeXMLElementReader> map = new HashMap<XMLElementType, NeXMLElementReader>();
 		
-		NeXMLElementReader readMetaToEventQueueStart = new NeXMLElementReader() {			
+		NeXMLElementReader readMetaStart = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 	    	StartElement element = event.asStartElement();
@@ -127,75 +127,28 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	  			catch (MalformedURLException e) {}
 	  			dataType = type;
 	  		}
-	  		else {} //TODO Possibly throw exception or write to warning log, if invalid types are encountered
+	  		else {
+	  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + TYPE_RESOURCE_META + "\".", element.getLocation());
+	  		}
 	   		
 	   		if (stringValue != null && objectValue != null) {
-	   			reader.getUpcomingEvents().add(new MetaInformationEvent(key, dataType, stringValue, objectValue));
+	   			reader.getCurrentEventCollection().add(new MetaInformationEvent(key, dataType, stringValue, objectValue));
 	   		}
 	   		else if (stringValue != null) {
-	   			reader.getUpcomingEvents().add(new MetaInformationEvent(key, dataType, stringValue));
+	   			reader.getCurrentEventCollection().add(new MetaInformationEvent(key, dataType, stringValue));
 	   		}
-	   		//TODO Possibly throw exception or write to warning log, if necessary NeXML attributes are missing. 		
+	   		else {
+	   			throw new JPhyloIOReaderException("Meta tag must either have an attribute called \"" + ATTR_CONTENT + "\" or \"" + ATTR_HREF + "\".", element.getLocation());
+	   		}
+	   		
 	   		reader.readID(reader, element);
 			}
 		};
 		
-		NeXMLElementReader readMetaToEventQueueEnd = new NeXMLElementReader() {			
+		NeXMLElementReader readMetaEnd = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-			}
-		};
-		
-		NeXMLElementReader readMetaToTokenSetInfoStart = new NeXMLElementReader() {			
-			@Override
-			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-	    	StartElement element = event.asStartElement();
-	    	String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
-	    	String type = XMLUtils.readStringAttr(element, ATTR_TYPE, null);
-	  		String key = null;	
-	  		String stringValue = null;
-	  		Object objectValue = null;
-	  		String dataType = null;
-	  		
-	  		if (type.equals(TYPE_LITERAL_META)) {
-	  			key = XMLUtils.readStringAttr(element, ATTR_PROPERTY, null);
-	  			stringValue = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
-	  			dataType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null);
-	  			//TODO Delegate java object construction to ontology definition instance, which is able to convert a QName to a Java class.
-	  		}
-	  		else if (type.equals(TYPE_RESOURCE_META)) {
-	  			key = XMLUtils.readStringAttr(element, ATTR_REL, null);
-	  			stringValue = XMLUtils.readStringAttr(element, ATTR_HREF, null);
-	  			try {
-	  				objectValue = new URL(stringValue);
-	  			} 
-	  			catch (MalformedURLException e) {}
-	  			dataType = type;
-	  		}
-	  		else {} //TODO Possibly throw exception or write to warning log, if invalid types are encountered
-	   		
-	   		if (stringValue != null && objectValue != null) {
-	   			reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
- 							.add(new MetaInformationEvent(key, dataType, stringValue, objectValue));
-	   		}
-	   		else if (stringValue != null) {
-	   			reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-	   					.add(new MetaInformationEvent(key, dataType, stringValue));
-	   		}
-	   		//TODO Possibly throw exception or write to warning log, if necessary NeXML attributes are missing. 		
-	   		reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-	   				.add(new MetaInformationEvent("id", "string", id));
-				reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-						.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-			}
-		};
-		
-		NeXMLElementReader readMetaToTokenSetInfoEnd = new NeXMLElementReader() {			
-			@Override
-			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-						.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 		};
 		
@@ -204,14 +157,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();				
 				OTUEventInformation info = getOTUEventInformation(reader, element);
-				reader.getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.NODE, info.id,	info.label, info.otuID));
+				reader.getCurrentEventCollection().add(new LinkedOTUEvent(EventContentType.NODE, info.id,	info.label, info.otuID));
 			}
 		};
 		
 		NeXMLElementReader readNodeEnd = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 			}
 		};
 		
@@ -233,7 +186,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 								element.getLocation());
 					}
 					else {
-						reader.getUpcomingEvents().add(new EdgeEvent(edgeID, XMLUtils.readStringAttr(element, ATTR_LABEL, null), 
+						reader.getCurrentEventCollection().add(new EdgeEvent(edgeID, XMLUtils.readStringAttr(element, ATTR_LABEL, null), 
 								XMLUtils.readStringAttr(element, ATTR_SOURCE, null), targetID, length));  // The source ID will be null for rootedges, which is valid.
 					}
 				}
@@ -247,7 +200,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		NeXMLElementReader readEdgeEnd = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 			}
 		};
 		
@@ -260,19 +213,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				String symbol = XMLUtils.readStringAttr(element, ATTR_SYMBOL, null);
 				
 				reader.getStreamDataProvider().setCurrentSingleTokenDefinitionID(id);
+				reader.getStreamDataProvider().setCurrentSingleTokenDefinitionLabel(label);
 				
-	  		if (symbol != null) { //symbol should never be null in a valid NeXML file
+	  		if (symbol != null) {
 	  			reader.getStreamDataProvider().getTokenDefinitionIDToSymbolMap().put(id, symbol);
 	  		}
-	  		
-	  		reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-	  				.add(new MetaInformationEvent("id", "string", id));
-	  		reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-	  				.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-	  		reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-	  				.add(new MetaInformationEvent("label", "string", label));
-	  		reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-	  				.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+	  		else {
+	  			throw new JPhyloIOReaderException("State tag must have an attribute called \"" + ATTR_SYMBOL + "\".", element.getLocation());
+	  		}
 	  		
 	  		List<String> currentConstitituents = new ArrayList<String>();		
 				reader.getStreamDataProvider().setConstituents(currentConstitituents);
@@ -292,13 +240,20 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					meaning = CharacterStateMeaning.GAP;
 				}
 				else {
-					meaning = CharacterStateMeaning.CHARACTER_STATE; //TODO handle case restriction data
+					meaning = CharacterStateMeaning.CHARACTER_STATE; //TODO handle case restriction data or standard data (both have integers as symbols)
 				}
 				
-				reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-						.add(new SingleTokenDefinitionEvent(symbol, meaning, reader.getStreamDataProvider().getConstituents()));				
-				reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-						.add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(symbol, meaning, reader.getStreamDataProvider().getConstituents()));
+				
+				reader.getCurrentEventCollection().add(new MetaInformationEvent("id", "string", reader.getStreamDataProvider().getCurrentSingleTokenDefinitionID()));
+  			reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));  			
+  			String label = reader.getStreamDataProvider().getCurrentSingleTokenDefinitionLabel();
+  			if (label != null) {
+	  			reader.getCurrentEventCollection().add(new MetaInformationEvent("label", "string", label));
+	  			reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+	  		}
+  			
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END));
 			}
 		};
 		
@@ -311,87 +266,87 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		};
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_NEXML, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_NEXML, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_META, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_META, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_META, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_META, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_CHARACTERS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_CHARACTERS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_CHARACTERS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_CHARACTERS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_OTUS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_OTUS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_OTUS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_OTUS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_OTU, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_OTU, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_OTU, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_OTU, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_FORMAT, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToTokenSetInfoStart);
+		map.put(new XMLElementType(TAG_FORMAT, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_FORMAT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToTokenSetInfoEnd);
+		map.put(new XMLElementType(TAG_FORMAT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToTokenSetInfoStart);
+		map.put(new XMLElementType(TAG_STATES, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToTokenSetInfoEnd);
+		map.put(new XMLElementType(TAG_STATES, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_STATE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToTokenSetInfoStart);
+		map.put(new XMLElementType(TAG_STATE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_STATE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToTokenSetInfoEnd);
+		map.put(new XMLElementType(TAG_STATE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToTokenSetInfoStart);
+		map.put(new XMLElementType(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToTokenSetInfoEnd);
+		map.put(new XMLElementType(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToTokenSetInfoStart);
+		map.put(new XMLElementType(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToTokenSetInfoEnd);
+		map.put(new XMLElementType(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_CHAR, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToTokenSetInfoStart);
+		map.put(new XMLElementType(TAG_CHAR, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_CHAR, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToTokenSetInfoEnd);
+		map.put(new XMLElementType(TAG_CHAR, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_MATRIX, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_MATRIX, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_MATRIX, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_MATRIX, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_ROW, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_ROW, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_ROW, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_ROW, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_TREE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_TREE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_TREE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_TREE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_NETWORK, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_NETWORK, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_NETWORK, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_NETWORK, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_NODE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_NODE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_NODE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_NODE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_EDGE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaToEventQueueStart);
+		map.put(new XMLElementType(TAG_EDGE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_EDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaToEventQueueEnd);
+		map.put(new XMLElementType(TAG_EDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
 		map.put(new XMLElementType(TAG_NEXML, TAG_OTUS, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
 				OTUEventInformation info = getOTUEventInformation(reader, element);
-				reader.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU_LIST, info.id,	info.label));
+				reader.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU_LIST, info.id,	info.label));
 			}
 		});
 		
 		map.put(new XMLElementType(TAG_NEXML, TAG_OTUS, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
 			}
 		});
 		
@@ -403,14 +358,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);			
 				
 				reader.getStreamDataProvider().getOtuIDToLabelMap().put(id, label);
-				reader.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU, id, label));
+				reader.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, id, label));
 			}
 		});
 		
 		map.put(new XMLElementType(TAG_OTUS, TAG_OTU, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
 			}
 		});
 		
@@ -423,20 +378,20 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				
 				String tokenSetType = XMLUtils.readStringAttr(element, ATTR_TYPE, null);				
 				if (tokenSetType == null) {
-					throw new JPhyloIOReaderException("Character tag must have an attribute called \"xsi:type\"", element.getLocation());
+					throw new JPhyloIOReaderException("Character tag must have an attribute called \"" + ATTR_TYPE + "\".", element.getLocation());
 				}
 				else {
 					reader.getStreamDataProvider().setCurrentTokenSetType(tokenSetType);
 				}
 				
-				reader.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.ALIGNMENT, id,	label));				
+				reader.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.ALIGNMENT, id,	label));				
 			}
 		});
 		
 		map.put(new XMLElementType(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 			}
 		});		
 		
@@ -447,7 +402,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementType(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {				
 				//TODO Direct char sets
@@ -459,9 +414,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					String tokenSetID = tokenSetIDIterator.next();
 					NeXMLTokenSetInformation info = reader.getStreamDataProvider().getTokenSets().get(tokenSetID);
 				}
-//			reader.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, "ID", "label")); //TODO set correct id and label
-//			reader.getUpcomingEvents().add(new CharacterSetIntervalEvent(reader.getStreamDataProvider().getStartChar(), reader.getStreamDataProvider().getCurrentChar()));
-//			reader.getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+//			reader.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, "ID", "label")); //TODO set correct id and label
+//			reader.getCurrentEventCollection().add(new CharacterSetIntervalEvent(reader.getStreamDataProvider().getStartChar(), reader.getStreamDataProvider().getCurrentChar()));
+//			reader.getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 				
 				//Token set definitions
 				tokenSetIDIterator = reader.getStreamDataProvider().getTokenSets().keySet().iterator();
@@ -473,11 +428,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					String label = info.getLabel();
 					String charSetID = info.getCharacterSetID();
 					
-					reader.getUpcomingEvents().add(new TokenSetDefinitionEvent(type, id, label, charSetID));
+					reader.getCurrentEventCollection().add(new TokenSetDefinitionEvent(type, id, label, charSetID));
 					Iterator<JPhyloIOEvent> tokenEventsIterator = reader.getStreamDataProvider().getTokenSets()
 								.get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens().iterator();					
 					while (tokenEventsIterator.hasNext()) {
-						reader.getUpcomingEvents().add(tokenEventsIterator.next());
+						reader.getCurrentEventCollection().add(tokenEventsIterator.next());
 					}
 				}
 				reader.getStreamDataProvider().getTokenSets().clear();
@@ -525,16 +480,15 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				reader.getStreamDataProvider().getTokenSets().put(id, new NeXMLTokenSetInformation(id, label, setType));
 				reader.getStreamDataProvider().getTokenSets().get(id).setSingleTokens(singleTokens);
 				reader.getStreamDataProvider().getTokenSets().get(id).setCharSetIntervals(charSetIntervals);
-				//TODO set singleTokens list as default for adding events
+				reader.setCurrentEventCollection(reader.getStreamDataProvider().getTokenSets().get(id).getSingleTokens());
 			}
 		});
 		
 		map.put(new XMLElementType(TAG_FORMAT, TAG_STATES, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getStreamDataProvider().getTokenSets().get(reader.getStreamDataProvider().getCurrentTokenSetID()).getSingleTokens()
-						.add(new ConcreteJPhyloIOEvent(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.END));
-				//TODO set normal event queue as default list for adding events
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.END));
+				reader.resetCurrentEventCollection();
 			}
 		});
 		
@@ -577,14 +531,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
 				OTUEventInformation otuInfo = getOTUEventInformation(reader, element);
-	  		reader.getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, otuInfo.id, otuInfo.label, otuInfo.otuID));
+	  		reader.getCurrentEventCollection().add(new LinkedOTUEvent(EventContentType.SEQUENCE, otuInfo.id, otuInfo.label, otuInfo.otuID));
 			}
 		});
 		
 		map.put(new XMLElementType(TAG_MATRIX, TAG_ROW, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+				reader.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 			}
 		});
 		
@@ -593,14 +547,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();				
 				String token = XMLUtils.readStringAttr(element, ATTR_STATE, "-");	      		
-				reader.getUpcomingEvents().add(new SingleSequenceTokenEvent(token));
+				reader.getCurrentEventCollection().add(new SingleSequenceTokenEvent(token));
 			}
 		});
 		
 		map.put(new XMLElementType(TAG_ROW, TAG_CELL, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.SEQUENCE_TOKENS, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.SEQUENCE_TOKENS, EventTopologyType.END));
 			}
 		});
 		
@@ -612,7 +566,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		   	for (int i = 0; i < tokens.length(); i++) {
 	   	  	tokenList.add(Character.toString(tokens.charAt(i))); //TODO Handle tokens longer than one character
 	   	  }
-		   	reader.getUpcomingEvents().add(new SequenceTokensEvent(tokenList));				
+		   	reader.getCurrentEventCollection().add(new SequenceTokensEvent(tokenList));				
 			}
 		});
 		
@@ -622,7 +576,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				StartElement element = event.asStartElement();
 				
 				OTUEventInformation info = getOTUEventInformation(reader, element);
-				reader.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.TREE, info.id,	info.label));
+				reader.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, info.id,	info.label));
 				
 	  		String branchLengthsFormat = XMLUtils.readStringAttr(element, ATTR_TYPE, null);
 				if (branchLengthsFormat.equals(null)) {}
@@ -638,7 +592,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		map.put(new XMLElementType(TAG_TREES, TAG_TREE, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
 			}
 		});
 		
@@ -647,14 +601,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
 				OTUEventInformation otuInfo = getOTUEventInformation(reader, element);
-	  		reader.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.NETWORK, otuInfo.id, otuInfo.label));
+	  		reader.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NETWORK, otuInfo.id, otuInfo.label));
 			}
 		});
 		
 		map.put(new XMLElementType(TAG_TREES, TAG_NETWORK, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception {
-				reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NETWORK, EventTopologyType.END));
+				reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NETWORK, EventTopologyType.END));
 			}
 		});
 		
@@ -701,15 +655,12 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 
 	@Override
 	public int getMaxCommentLength() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 
 	@Override
-	public void setMaxCommentLength(int maxCommentLength) {
-		// TODO Auto-generated method stub		
-	}
+	public void setMaxCommentLength(int maxCommentLength) {}
 	
 	
 	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
@@ -732,7 +683,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				parentTag = encounteredTags.peek();
 			}
 			else {
-				parentTag = null;
+				parentTag = TAG_ROOT;
 			}
 			
 			int xmlEventType = xmlEvent.getEventType();
@@ -750,7 +701,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					encounteredTags.push(elementName);
 					break;
 				case 2:
-					EndElement endElement = xmlEvent.asEndElement();			
+					EndElement endElement = xmlEvent.asEndElement();
 					tagReader = ELEMENT_READER_MAP.get(new XMLElementType(parentTag, endElement.getName(), XMLStreamConstants.END_ELEMENT));
 					break;
 				case 4:				
@@ -773,8 +724,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	protected void readID(NeXMLEventReader reader, StartElement element) {
 		String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
 		if (id != null) {
-			reader.getUpcomingEvents().add(new MetaInformationEvent("id", "string", id));
-			reader.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+			reader.getCurrentEventCollection().add(new MetaInformationEvent("id", "string", id));
+			reader.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 		}
 	}
 	

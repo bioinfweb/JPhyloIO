@@ -35,7 +35,8 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	private String currentTokenSetID = null;
 	private String currentTokenSetType;
 	
-	private String currentSingleTokenDefinitionID = null;	
+	private String currentSingleTokenDefinitionID = null;
+	private String currentSingleTokenDefinitionLabel = null;
 	private Map<String, String> tokenDefinitionIDToSymbolMap = new TreeMap<String, String>();
 	private Collection<String> constituents;
 	
@@ -105,6 +106,17 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	public void setCurrentSingleTokenDefinitionID(
 			String currentSingleTokenDefinitionID) {
 		this.currentSingleTokenDefinitionID = currentSingleTokenDefinitionID;
+	}
+
+
+	public String getCurrentSingleTokenDefinitionLabel() {
+		return currentSingleTokenDefinitionLabel;
+	}
+
+
+	public void setCurrentSingleTokenDefinitionLabel(
+			String currentSingleTokenDefinitionLabel) {
+		this.currentSingleTokenDefinitionLabel = currentSingleTokenDefinitionLabel;
 	}
 
 
