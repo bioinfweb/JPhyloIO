@@ -24,7 +24,6 @@ import java.util.Queue;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
-import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;

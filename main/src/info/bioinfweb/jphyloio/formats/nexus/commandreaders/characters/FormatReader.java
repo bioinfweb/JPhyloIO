@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
@@ -46,6 +45,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader.KeyValueInformation;
 
 
 
@@ -183,7 +183,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TRANSPOSE, true);
 		}
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
-			getStreamDataProvider().getNexusReader().setMatchToken(info.getValue());
+			getStreamDataProvider().getEventReader().setMatchToken(info.getValue());
 			addSingleTokenDefinitionEvent(info.getValue(), CharacterStateMeaning.MATCH);
 			eventCreated = true;
 		}

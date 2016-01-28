@@ -20,20 +20,68 @@ package info.bioinfweb.jphyloio;
 
 
 import info.bioinfweb.commons.LongIDManager;
-import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 import java.util.Queue;
 
 
 
-public interface StreamDataProvider {
-	public Queue<JPhyloIOEvent> getUpcomingEvents();	
+/**
+ * Stream data providers are objects used by helper classes of JPhyloIO event readers (e.g. command readers for Nexus,
+ * {@link NewickStringReader} or element readers for XML formats). They have two major functions:
+ * <ol>
+ *   <li>Delegate protected properties of their associated event reader to allow accessing to them by helper classes
+ *       in other packages.</li>
+ *   <li>Act as a repository for data that shall be shared among different helper classes of a reader.</li>
+ * </ol>
+ * 
+ * @author Ben St&ouml;ver
+ * @see AbstractEventReader#getStreamDataProvider()
+ * @see AbstractEventReader#createStreamDataProvider()
+ */
+public class StreamDataProvider {
+	private AbstractEventReader eventReader;
 	
-	public PeekReader getDataReader();
 	
-	public LongIDManager getIDManager();
+	public StreamDataProvider(AbstractEventReader eventReader) {
+		super();
+		this.eventReader = eventReader;
+	}
+
+
+	public AbstractEventReader getEventReader() {
+		return eventReader;
+	}
+
+
+	public Queue<JPhyloIOEvent> getUpcomingEvents() {
+		return getEventReader().getUpcomingEvents();
+	}
 	
-	public SequenceTokensEventManager getSequenceTokensEventManager();
+	
+	public LongIDManager getIdManager() {
+		return getEventReader().getIDManager();
+	}
+	
+	
+	public SequenceTokensEventManager getSequenceTokensEventManager() {
+		return getEventReader().getSequenceTokensEventManager();
+	}
+
+
+	public boolean isTranslateMatchToken() {
+		return getEventReader().isTranslateMatchToken();
+	}
+
+
+	public String getMatchToken() {
+		return getEventReader().getMatchToken();
+	}
+	
+	
+	public LongIDManager getIDManager() {
+		return getEventReader().getIDManager();
+	}
 }

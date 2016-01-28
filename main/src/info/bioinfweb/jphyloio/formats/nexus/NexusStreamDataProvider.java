@@ -19,22 +19,17 @@
 package info.bioinfweb.jphyloio.formats.nexus;
 
 
-import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.collections.ParameterMap;
-import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
-import info.bioinfweb.jphyloio.StreamDataProvider;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.NexusTranslationTable;
-import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader.KeyValueInformation;
+import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 
 
@@ -44,71 +39,43 @@ import java.util.Queue;
  * 
  * @author Ben St&ouml;ver
  */
-public class NexusStreamDataProvider implements StreamDataProvider {
+public class NexusStreamDataProvider extends TextStreamDataProvider {
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaidmap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
 	
 	
-	private NexusEventReader nexusReader;
-	private PeekReader dataReader;
 	private ParameterMap sharedInformationMap = new ParameterMap();
 	
 	
-	public NexusStreamDataProvider(NexusEventReader nexusReader, PeekReader dataReader) {
-		super();
-		this.nexusReader = nexusReader;
-		this.dataReader = dataReader;
+	public NexusStreamDataProvider(NexusEventReader nexusReader) {
+		super(nexusReader);
 	}
 
 
-	public NexusEventReader getNexusReader() {
-		return nexusReader;
+	@Override
+	public NexusEventReader getEventReader() {
+		return (NexusEventReader)super.getEventReader();
 	}
 
 
 	public void consumeWhiteSpaceAndComments() throws IOException {
-		nexusReader.consumeWhiteSpaceAndComments();
+		getEventReader().consumeWhiteSpaceAndComments();
 	}
 	
 	
 	public String readNexusWord() throws IOException {
-		return nexusReader.readNexusWord();
+		return getEventReader().readNexusWord();
 	}
 	
 	
 	public void readComment() throws IOException {
-		nexusReader.readComment();
+		getEventReader().readComment();
 	}
 	
 	
 	public KeyValueInformation readKeyValueMetaInformation(String keyPrefix) throws IOException {
-		return nexusReader.readKeyValueMetaInformation(keyPrefix);
-	}
-	
-	
-	public Queue<JPhyloIOEvent> getUpcomingEvents() {
-		return nexusReader.getUpcomingEvents();
-	}
-	
-	
-	/**
-	 * The reader from the associated {@link NexusEventReader}.
-	 * 
-	 * @return the reader to read the command content data from
-	 */
-	public PeekReader getDataReader() {
-		return dataReader;
-	}
-	
-	
-	public LongIDManager getIDManager() {
-		return nexusReader.getIDManager();
-	}
-	
-	
-	public SequenceTokensEventManager getSequenceTokensEventManager() {
-		return nexusReader.getSequenceTokensEventManager();
+		return getEventReader().readKeyValueMetaInformation(keyPrefix);
 	}
 	
 	

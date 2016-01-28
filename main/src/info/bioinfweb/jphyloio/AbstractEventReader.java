@@ -42,6 +42,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	private JPhyloIOEvent next = null;
 	private JPhyloIOEvent previous = null;
 	private JPhyloIOEvent lastNonComment = null;
+	private StreamDataProvider streamDataProvider;  // Must not be set to anything here.
 	private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
 	private boolean beforeFirstAccess = true;
 	private boolean dataSourceClosed = false;
@@ -61,9 +62,29 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 		super();
 		this.maxTokensToRead = maxTokensToRead;
 		this.translateMatchToken = translateMatchToken;
+		streamDataProvider = createStreamDataProvider();
+	}
+	
+	
+	/**
+	 * This method is called in the constructor of {@link AbstractEventReader} to initialize the stream
+	 * data provider that will be returned by {@link #getStreamDataProvider()}. Inherit classes that use
+	 * their own stream data provider implementation should overwrite this method.
+	 * <p>
+	 * This default implementation creates a new instance of {@link StreamDataProvider}.
+	 * 
+	 * @return the stream data provider to be used with this instance
+	 */
+	protected StreamDataProvider createStreamDataProvider() {
+		return new StreamDataProvider(this);
 	}
 
-
+	
+	protected StreamDataProvider getStreamDataProvider() {
+		return streamDataProvider;
+	}
+	
+	
 	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
 		return upcomingEvents;
 	}

@@ -29,7 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
@@ -41,6 +40,7 @@ import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
 
@@ -50,7 +50,7 @@ import info.bioinfweb.jphyloio.tools.IDToNameManager;
  * 
  * @author Ben St&ouml;ver
  */
-public class MEGAEventReader extends AbstractBufferedReaderBasedEventReader implements MEGAConstants {
+public class MEGAEventReader extends AbstractTextEventReader implements MEGAConstants {
 	private static final Pattern READ_COMMAND_PATTERN = 
 			Pattern.compile(".+(\\" + COMMENT_START + "|\\" + COMMAND_END + ")", Pattern.DOTALL);
 	private static final Pattern SEQUENCE_NAME_PATTERN = Pattern.compile(".+\\s+");

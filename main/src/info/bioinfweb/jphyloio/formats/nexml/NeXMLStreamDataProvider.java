@@ -19,15 +19,15 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
 
 
-public class NeXMLStreamDataProvider {
-	NeXMLEventReader nexmlEventReader;
-
+public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
 	
 	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
@@ -47,13 +47,13 @@ public class NeXMLStreamDataProvider {
 	
 	
 	public NeXMLStreamDataProvider(NeXMLEventReader nexmlEventReader) {
-		super();
-		this.nexmlEventReader = nexmlEventReader;
+		super(nexmlEventReader);
 	}
 
 
+	@Override
 	public NeXMLEventReader getEventReader() {
-		return nexmlEventReader;
+		return (NeXMLEventReader)super.getEventReader();
 	}
 
 

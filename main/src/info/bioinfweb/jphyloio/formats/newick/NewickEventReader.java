@@ -32,7 +32,6 @@ import java.util.Stack;
 import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -43,6 +42,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 
 
 
@@ -71,7 +71,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-public class NewickEventReader extends AbstractBufferedReaderBasedEventReader implements NewickConstants {
+public class NewickEventReader extends AbstractTextEventReader implements NewickConstants {
 	private static enum State {
 		START,
 		IN_DOCUMENT,

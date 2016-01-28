@@ -30,7 +30,6 @@ import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -44,6 +43,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 
@@ -53,19 +53,13 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
  * 
  * @author Ben St&ouml;ver
  */
-public class NexusEventReader extends AbstractBufferedReaderBasedEventReader implements NexusConstants {
+public class NexusEventReader extends AbstractTextEventReader implements NexusConstants {
 	private NexusBlockHandlerMap blockHandlerMap;
 	private NexusCommandReaderFactory factory;
 	private boolean createUnknownCommandEvents = false;
 	private String currentBlockName = null;
 	private NexusCommandEventReader currentCommandReader = null;
-	private NexusStreamDataProvider streamDataProvider;
 	private boolean documentEndReached = false;
-	
-	
-	private void initStreamDataProvider() {
-		streamDataProvider = new NexusStreamDataProvider(this, getReader());
-	}
 	
 	
 	/**
@@ -86,7 +80,6 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		super(file, translateMatchToken);
 		this.blockHandlerMap = blockHandlerMap;
 		this.factory = commandReaderFactory;
-		initStreamDataProvider();
 	}
 	
 
@@ -124,7 +117,6 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		super(stream, translateMatchToken);
 		this.blockHandlerMap = blockHandlerMap;
 		this.factory = factory;
-		initStreamDataProvider();
 	}
 	
 
@@ -162,7 +154,6 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		super(reader, translateMatchToken);
 		this.blockHandlerMap = blockHandlerMap;
 		this.factory = factory;
-		initStreamDataProvider();
 	}
 
 	
@@ -200,7 +191,6 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		super(reader, translateMatchToken);
 		this.blockHandlerMap = blockHandlerMap;
 		this.factory = factory;
-		initStreamDataProvider();
 	}
 
 	
@@ -219,6 +209,12 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 		this(reader, translateMatchToken, NexusBlockHandlerMap.newJPhyloIOInstance(), NexusCommandReaderFactory.newJPhyloIOInstance());
 	}
 	
+
+	@Override
+	protected NexusStreamDataProvider createStreamDataProvider() {
+		return new NexusStreamDataProvider(this);
+	}
+
 
 	/**
 	 * Specifies whether {@link UnknownCommandEvent}s will be fired for all Nexus commands with no according reader
@@ -256,7 +252,7 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 	 */
 	@Override
 	public NexusStreamDataProvider getStreamDataProvider() {
-		return streamDataProvider;
+		return (NexusStreamDataProvider)super.getStreamDataProvider();
 	}
 
 	
@@ -417,10 +413,10 @@ public class NexusEventReader extends AbstractBufferedReaderBasedEventReader imp
 				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 			else {
-				currentCommandReader = factory.createReader(currentBlockName, commandName, streamDataProvider);
+				currentCommandReader = factory.createReader(currentBlockName, commandName, getStreamDataProvider());
 				if (currentCommandReader == null) {
 					if (getCreateUnknownCommandEvents()) {  // Create unknown command event from command content.
-						currentCommandReader = new DefaultCommandReader(commandName, streamDataProvider);
+						currentCommandReader = new DefaultCommandReader(commandName, getStreamDataProvider());
 					}
 					else if (lastChar != COMMAND_END) {  // Consume content of command without loading large commands into a CharacterSequence as a whole.
 						ReadResult readResult;

@@ -16,16 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio;
+package info.bioinfweb.jphyloio.formats.text;
 
 
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.AbstractEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 import java.io.BufferedReader;
@@ -44,12 +48,13 @@ import java.util.regex.Pattern;
 
 
 /**
- * Abstract implementation of {@link AbstractEventReader} for all readers that
- * read their data from a {@link BufferedReader}.
+ * Abstract base class for all readers that read their data from a file using a {@link PeekReader}.
+ * <p>
+ * Those are currently readers all reader reading non-XML formats from text files.
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEventReader {
+public abstract class AbstractTextEventReader extends AbstractEventReader {
 	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
 	
 	public static class KeyValueInformation {
@@ -92,7 +97,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
 	 *        to replace the match token.)
 	 */
-	public AbstractBufferedReaderBasedEventReader(PeekReader reader, boolean translateMatchToken) {
+	public AbstractTextEventReader(PeekReader reader, boolean translateMatchToken) {
 		super(translateMatchToken);
 		this.reader = reader;
 	}
@@ -107,7 +112,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
 	 *        to replace the match token.)
 	 */
-	public AbstractBufferedReaderBasedEventReader(Reader reader, boolean translateMatchToken) throws IOException {
+	public AbstractTextEventReader(Reader reader, boolean translateMatchToken) throws IOException {
 		super(translateMatchToken);
 		if (!(reader instanceof BufferedReader)) {
 			reader = new BufferedReader(reader);
@@ -125,7 +130,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
 	 *        to replace the match token.)
 	 */
-	public AbstractBufferedReaderBasedEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
+	public AbstractTextEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
 		this(new InputStreamReader(stream), translateMatchToken);
 	}
 	
@@ -139,8 +144,14 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
 	 *        to replace the match token.)
 	 */
-	public AbstractBufferedReaderBasedEventReader(File file, boolean translateMatchToken) throws IOException{
+	public AbstractTextEventReader(File file, boolean translateMatchToken) throws IOException{
 		this(new FileReader(file), translateMatchToken);
+	}
+
+
+	@Override
+	protected TextStreamDataProvider createStreamDataProvider() {
+		return new TextStreamDataProvider(this);
 	}
 
 
@@ -151,7 +162,7 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	 * 
 	 * @return the maximum allowed number of characters for a single comment
 	 */
-	public int getMaxCommentLength() {
+	public int getMaxCommentLength() {  //TODO Move to parent class?
 		return maxCommentLength;
 	}
 
@@ -167,29 +178,9 @@ public abstract class AbstractBufferedReaderBasedEventReader extends AbstractEve
 	}
 	
 	
-	protected StreamDataProvider getStreamDataProvider() {
-		final AbstractBufferedReaderBasedEventReader reader = this;
-		return new StreamDataProvider() {
-			@Override
-			public Queue<JPhyloIOEvent> getUpcomingEvents() {
-				return reader.getUpcomingEvents();
-			}
-			
-			@Override
-			public SequenceTokensEventManager getSequenceTokensEventManager() {
-				return reader.getSequenceTokensEventManager();
-			}
-			
-			@Override
-			public LongIDManager getIDManager() {
-				return reader.getIDManager();
-			}
-			
-			@Override
-			public PeekReader getDataReader() {
-				return reader.getReader();
-			}
-		};
+	@Override
+	protected TextStreamDataProvider getStreamDataProvider() {
+		return (TextStreamDataProvider)super.getStreamDataProvider();
 	}
 
 

@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
-import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -31,6 +30,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -63,7 +63,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	}
 	
 	
-	private StreamDataProvider streamDataProvider;
+	private TextStreamDataProvider streamDataProvider;
 	private String treeLabel;
 	private NewickNodeLabelProcessor nodeLabelProcessor;
 	private NewickScanner scanner;
@@ -83,7 +83,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	 * @param nodeLabelProcessor the node label processor to be used to possibly translate node labels in Newick strings
 	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
-	public NewickStringReader(StreamDataProvider streamDataProvider, String treeLabel, NewickNodeLabelProcessor nodeLabelProcessor) {
+	public NewickStringReader(TextStreamDataProvider streamDataProvider, String treeLabel, NewickNodeLabelProcessor nodeLabelProcessor) {
 		super();
 		
 		if (streamDataProvider == null) {

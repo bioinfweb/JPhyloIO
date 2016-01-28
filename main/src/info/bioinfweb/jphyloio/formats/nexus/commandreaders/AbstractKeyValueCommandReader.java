@@ -20,11 +20,11 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader.KeyValueInformation;
 
 import java.io.EOFException;
 import java.io.IOException;

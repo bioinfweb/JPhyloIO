@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 import java.io.IOException;
 
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader.KeyValueInformation;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -30,6 +29,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader.KeyValueInformation;
 
 
 

@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.fasta;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
-import info.bioinfweb.jphyloio.AbstractBufferedReaderBasedEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
@@ -32,6 +31,7 @@ import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -67,7 +67,7 @@ import java.util.List;
  * 
  * @author Ben St&ouml;ver
  */
-public class FASTAEventReader extends AbstractBufferedReaderBasedEventReader implements FASTAConstants {
+public class FASTAEventReader extends AbstractTextEventReader implements FASTAConstants {
 	private String currentSequenceName = null;
 	
 	

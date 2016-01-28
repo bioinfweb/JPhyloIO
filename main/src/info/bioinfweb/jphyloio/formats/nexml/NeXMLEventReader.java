@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.io.XMLUtils;
-import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -38,6 +37,7 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -67,13 +67,37 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class NeXMLEventReader extends AbstractEventReader implements NeXMLConstants {
+public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLConstants {
 	private static final Map<XMLElementType, NeXMLElementReader> ELEMENT_READER_MAP = createMap();
 	
-	private NeXMLStreamDataProvider streamDataProvider;
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
 
+	
+	public NeXMLEventReader(File file, boolean translateMatchToken) throws IOException, XMLStreamException {
+		this(new FileReader(file), translateMatchToken);
+	}
+
+	
+	public NeXMLEventReader(InputStream stream, boolean translateMatchToken) throws IOException, XMLStreamException {
+		this(new InputStreamReader(stream), translateMatchToken);
+	}
+
+	
+	public NeXMLEventReader(XMLEventReader reader, boolean translateMatchToken) {
+		super(translateMatchToken);
+		this.xmlReader = reader;
+	}
+
+	
+	public NeXMLEventReader(Reader reader, boolean translateMatchToken) throws IOException, XMLStreamException {
+		super(translateMatchToken);
+		if (!(reader instanceof BufferedReader)) {
+			reader = new BufferedReader(reader);
+		}
+		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);
+	}
+	
 	
 	private static Map<XMLElementType, NeXMLElementReader> createMap() {
 		Map<XMLElementType, NeXMLElementReader> map = new HashMap<XMLElementType, NeXMLElementReader>();
@@ -654,49 +678,24 @@ public class NeXMLEventReader extends AbstractEventReader implements NeXMLConsta
 	}
 	
 
-	public NeXMLEventReader(File file, boolean translateMatchToken) throws IOException, XMLStreamException {
-		this(new FileReader(file), translateMatchToken);
+	@Override
+	protected NeXMLStreamDataProvider createStreamDataProvider() {
+		return new NeXMLStreamDataProvider(this);
 	}
 
-	
-	public NeXMLEventReader(InputStream stream, boolean translateMatchToken) throws IOException, XMLStreamException {
-		this(new InputStreamReader(stream), translateMatchToken);
+
+	@Override
+	protected NeXMLStreamDataProvider getStreamDataProvider() {
+		return (NeXMLStreamDataProvider)super.getStreamDataProvider();
 	}
 
-	
-	public NeXMLEventReader(XMLEventReader reader, boolean translateMatchToken) {
-		super(translateMatchToken);
-		this.xmlReader = reader;
-		this.streamDataProvider = new NeXMLStreamDataProvider(this);
-	}
 
-	
-	public NeXMLEventReader(Reader reader, boolean translateMatchToken) throws IOException, XMLStreamException {
-		super(translateMatchToken);
-		if (!(reader instanceof BufferedReader)) {
-			reader = new BufferedReader(reader);
-		}
-		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);
-		this.streamDataProvider = new NeXMLStreamDataProvider(this);
-	}
-	
-	
 	protected XMLEventReader getXMLReader() {
 		return xmlReader;
 	}
 
 	protected Stack<QName> getEncounteredTags() {
 		return encounteredTags;
-	}
-
-
-	public NeXMLStreamDataProvider getStreamDataProvider() {
-		return streamDataProvider;
-	}
-
-
-	public void setStreamDataProvider(NeXMLStreamDataProvider streamDataProvider) {
-		this.streamDataProvider = streamDataProvider;
 	}
 
 
