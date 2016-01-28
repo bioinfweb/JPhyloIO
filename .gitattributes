@@ -69,6 +69,8 @@ main/src/info/bioinfweb/jphyloio/formats/newick/NewickTokenType.java -text svneo
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLStreamDataProvider.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTokenSetInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/XMLElementType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReader.java -text svneol=unset#text/plain

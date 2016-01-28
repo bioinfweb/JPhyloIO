@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import java.util.Collection;
+import java.util.Collections;
+
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -38,6 +41,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	private String tokenName;
 	private CharacterStateMeaning meaning;
+	private Collection<String> constituents = null;
 
 	
 	/**
@@ -47,7 +51,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * @param meaning the meaning of the new token
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
-	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning) {
+	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning, Collection<String> constituents) {
 		super(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.START);
 
 		if (tokenName == null) {
@@ -59,6 +63,10 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 		else {
 			this.tokenName = tokenName;
 			this.meaning = meaning;
+			
+			if (constituents != null) {
+				this.constituents = Collections.unmodifiableCollection(constituents);
+			}
 		}
 	}
 
@@ -80,5 +88,28 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 */
 	public CharacterStateMeaning getMeaning() {
 		return meaning;
+	}
+
+	/**
+	 * Returns a collection of tokens that are constituents of this token (e.g. in case of ambiguity codes) or null, if no constituents are specified.
+	 * 
+	 * @return a collection of constituents or null
+	 */
+	public Collection<String> getConstituents() {
+		return constituents;
+	}
+	
+	/**
+	 * Returns true if a collection of constituents is specified for this token or false if it is not.
+	 * 
+	 * @return true if this token has constituents that are specified or false if not
+	 */
+	public boolean hasConstituents() {
+		if (constituents != null) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

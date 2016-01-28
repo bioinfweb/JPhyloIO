@@ -39,7 +39,9 @@ public interface NeXMLConstants {
 	public static final QName TAG_STATES = new QName(NAMESPACE_URI, "states");
 	public static final QName TAG_STATE = new QName(NAMESPACE_URI, "state");
 	public static final QName TAG_POLYMORPHIC = new QName(NAMESPACE_URI, "polymorphic_state_set");
-	public static final QName TAG_UNCERTAIN = new QName(NAMESPACE_URI, "uncertain_state_set");	
+	public static final QName TAG_UNCERTAIN = new QName(NAMESPACE_URI, "uncertain_state_set");
+	public static final QName TAG_MEMBER = new QName(NAMESPACE_URI, "member");
+	public static final QName TAG_CHAR = new QName(NAMESPACE_URI, "char");
 	public static final QName TAG_ROW = new QName(NAMESPACE_URI, "row");
 	public static final QName TAG_CELL = new QName(NAMESPACE_URI, "cell");
 	public static final QName TAG_SEQ = new QName(NAMESPACE_URI, "seq");
@@ -57,6 +59,7 @@ public interface NeXMLConstants {
 	public static final QName ATTR_OTU = new QName("otu");	
 	public static final QName ATTR_SYMBOL = new QName("symbol");
 	public static final QName ATTR_STATE = new QName("state");
+	public static final QName ATTR_STATES = new QName("states");
 	
 	public static final QName ATTR_SOURCE = new QName("source");
 	public static final QName ATTR_TARGET = new QName("target");

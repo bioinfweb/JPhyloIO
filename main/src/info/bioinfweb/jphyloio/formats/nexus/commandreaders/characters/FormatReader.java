@@ -135,7 +135,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	
 	
 	private void addSingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning) {
-		singleTokenDefinitionEvents.add(new SingleTokenDefinitionEvent(tokenName, meaning));
+		singleTokenDefinitionEvents.add(new SingleTokenDefinitionEvent(tokenName, meaning, null));
 	}
 	
 	

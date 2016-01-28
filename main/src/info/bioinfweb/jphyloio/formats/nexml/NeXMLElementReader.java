@@ -48,7 +48,7 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 		otuEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 		otuEventInformation.otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuID != null)) {
-			otuEventInformation.label = reader.getIDToLabelMap().get(otuEventInformation.otuID);
+			otuEventInformation.label = reader.getStreamDataProvider().getOtuIDToLabelMap().get(otuEventInformation.otuID);
 		}
 		if (otuEventInformation.label == null) {
 			otuEventInformation.label = otuEventInformation.id;	
