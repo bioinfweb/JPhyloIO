@@ -3,7 +3,7 @@
   <unknownTag/>
   <otus id="taxa">
   	<unknownTag/>
-    <otu id="taxon1"/>
+    <otu id="taxon1" label="Ab cd"/>
     <otu id="taxon2">
 	  <unknownTag/>
     </otu>
@@ -24,65 +24,17 @@
           <member state="state386"/>
           <member state="state387"/>
         </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set389" symbol="M">
-          <member state="state385"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set390" symbol="R">
-          <member state="state386"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set391" symbol="S">
-          <member state="state386"/>
-          <member state="state385"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set392" symbol="W">
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set393" symbol="Y">
-          <member state="state385"/>
-          <member state="state387"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set394" symbol="B">
-          <member state="state386"/>
-          <member state="state387"/>
-          <member state="state385"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set395" symbol="D">
-          <member state="state386"/>
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set396" symbol="H">
-          <member state="state386"/>
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set397" symbol="V">
-          <member state="state386"/>
-          <member state="state385"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set398" symbol="N">
-          <member state="state386"/>
-          <member state="state385"/>
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set399" symbol="X">
-          <member state="state386"/>
-          <member state="state385"/>
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set400" symbol="-"/>
-        <uncertain_state_set id="uncertain_state_set401" symbol="?">
-          <member state="uncertain_state_set400"/>
-          <member state="state386"/>
-          <member state="state384"/>
-          <member state="state387"/>
-          <member state="state385"/>
+      </states>
+      <states id="states384">
+     	<unknownTag/>
+        <state id="state388" symbol="B"/>
+        <state id="state389" symbol="R"/>
+        <state id="state390" symbol="F"/>
+        <state id="state391" symbol="K"/>
+        <uncertain_state_set id="uncertain_state_set388" symbol="K">
+        	<unknownTag/>
+          <member state="state389"/>
+          <member state="state390"/>
         </uncertain_state_set>
       </states>
       <char id="char402" states="states383"/>
@@ -99,7 +51,7 @@
       <char id="char413" states="states383"/>
       <char id="char414" states="states383"/>
       <char id="char415" states="states383"/>
-      <char id="char416" states="states383"/>
+      <char id="char416" states="states384"/>
       <char id="char417" states="states383"/>
       <char id="char418" states="states383"/>
       <char id="char419" states="states383"/>
@@ -110,10 +62,10 @@
     	<unknownTag/>
       <row id="row1" otu="taxon1">
       	<unknownTag/>
-        <seq>AG?TCTGAAACGG--TGTAG</seq>
+        <seq>AGCTCTGAAACGGARTGTAG</seq>
       </row>
       <row id="row2" otu="taxon2">
-        <seq>AGTT--GAAAAGGGT?GTCG</seq>
+        <seq>AGTTTAGAAAAGGGBTGTCG</seq>
       </row>
     </matrix>
   </characters>
