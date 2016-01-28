@@ -39,16 +39,16 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 	}
 	
 	
-	public abstract void readEvent(NeXMLEventReader reader, XMLEvent event) throws Exception;
+	public abstract void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
 
 	
-	protected OTUEventInformation getOTUEventInformation(NeXMLEventReader reader, StartElement element) {
+	protected OTUEventInformation getOTUEventInformation(NeXMLStreamDataProvider streamDataProvider, StartElement element) {
 		OTUEventInformation otuEventInformation = new OTUEventInformation();
 		otuEventInformation.id = XMLUtils.readStringAttr(element, ATTR_ID, null);
 		otuEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 		otuEventInformation.otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuID != null)) {
-			otuEventInformation.label = reader.getStreamDataProvider().getOtuIDToLabelMap().get(otuEventInformation.otuID);
+			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuID);
 		}
 		if (otuEventInformation.label == null) {
 			otuEventInformation.label = otuEventInformation.id;	

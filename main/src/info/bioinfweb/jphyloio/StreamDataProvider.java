@@ -62,7 +62,7 @@ public class StreamDataProvider {
 	 * 
 	 * @return the replaced event collection
 	 */
-	protected Collection<JPhyloIOEvent> resetCurrentEventCollection() {
+	public Collection<JPhyloIOEvent> resetCurrentEventCollection() {
 		return getEventReader().resetCurrentEventCollection();
 	}
 	
@@ -74,7 +74,7 @@ public class StreamDataProvider {
 	 * @return the replaced event collection
 	 * @throws NullPointerException if {@code newCollection} is {@code null}
 	 */
-	protected Collection<JPhyloIOEvent> setCurrentEventCollection(Collection<JPhyloIOEvent> newCollection) {
+	public Collection<JPhyloIOEvent> setCurrentEventCollection(Collection<JPhyloIOEvent> newCollection) {
 		return getEventReader().setCurrentEventCollection(newCollection);
 	}
 	
@@ -84,7 +84,7 @@ public class StreamDataProvider {
 	 * 
 	 * @return the current event collection
 	 */
-	protected Collection<JPhyloIOEvent> getCurrentEventCollection() {
+	public Collection<JPhyloIOEvent> getCurrentEventCollection() {
 		return getEventReader().getCurrentEventCollection();
 	}
 	
@@ -95,7 +95,7 @@ public class StreamDataProvider {
 	 * @return {@code false} if {@link #getCurrentEventCollection()} returns the same instance as {@link #getUpcomingEvents()}
 	 *         or {@code true} otherwise
 	 */
-	protected boolean hasSpecialEventCollection() {
+	public boolean hasSpecialEventCollection() {
 		return getEventReader().hasSpecialEventCollection(); 
 	}
 	
