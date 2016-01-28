@@ -44,7 +44,7 @@ public class NeXMLTokenSetInformation {
 	}
 
 
-	public String getId() {
+	public String getID() {
 		return id;
 	}
 	

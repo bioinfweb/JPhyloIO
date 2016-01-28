@@ -18,46 +18,42 @@
  */
 package info.bioinfweb.jphyloio.formats.nexml;
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLElementReader.OTUEventInformation;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
 
+
 public class NeXMLStreamDataProvider {
 	NeXMLEventReader nexmlEventReader;
 
-	private String currentBranchLengthsFormat;
+	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
 	
 	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
 	
 	private String currentTokenSetID = null;
 	private String currentTokenSetType;
+	
+	private String currentSingleTokenDefinitionID = null;	
+	private Map<String, String> tokenDefinitionIDToSymbolMap = new TreeMap<String, String>();
 	private Collection<String> constituents;
 	
-	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
-	private Map<String, String> tokenDefinitionIDToSymbolMap = new TreeMap<String, String>();	
-	private String currentSingleTokenDefinitionID = null;	
 	private int startChar;
 	private int currentChar;
 	private String currentStates;
+	
+	private String currentBranchLengthsFormat;	
 	
 	
 	public NeXMLStreamDataProvider(NeXMLEventReader nexmlEventReader) {
 		super();
 		this.nexmlEventReader = nexmlEventReader;
 	}
-	
 
-	public NeXMLEventReader getNexmlEventReader() {
+
+	public NeXMLEventReader getEventReader() {
 		return nexmlEventReader;
-	}
-	
-
-	public void setNexmlEventReader(NeXMLEventReader nexmlEventReader) {
-		this.nexmlEventReader = nexmlEventReader;
 	}
 
 
@@ -81,27 +77,6 @@ public class NeXMLStreamDataProvider {
 	}
 
 
-	public String getCurrentTokenSetType() {
-		return currentTokenSetType;
-	}
-
-
-	public void setCurrentTokenSetType(String currentTokenSetType) {
-		this.currentTokenSetType = currentTokenSetType;
-	}
-
-
-	public Map<String, String> getTokenDefinitionIDToSymbolMap() {
-		return tokenDefinitionIDToSymbolMap;
-	}
-
-
-	public void setTokenDefinitionIDToSymbolMap(
-			Map<String, String> tokenDefinitionIDToSymbolMap) {
-		this.tokenDefinitionIDToSymbolMap = tokenDefinitionIDToSymbolMap;
-	}
-
-
 	public String getCurrentTokenSetID() {
 		return currentTokenSetID;
 	}
@@ -109,6 +84,16 @@ public class NeXMLStreamDataProvider {
 
 	public void setCurrentTokenSetID(String currentTokenSetID) {
 		this.currentTokenSetID = currentTokenSetID;
+	}
+
+
+	public String getCurrentTokenSetType() {
+		return currentTokenSetType;
+	}
+
+
+	public void setCurrentTokenSetType(String currentTokenSetType) {
+		this.currentTokenSetType = currentTokenSetType;
 	}
 
 
@@ -123,25 +108,15 @@ public class NeXMLStreamDataProvider {
 	}
 
 
-//	public Collection<JPhyloIOEvent> getCurrentSingleTokens() {
-//		return currentSingleTokens;
-//	}
-//
-//
-//	public void setCurrentSingleTokens(Collection<JPhyloIOEvent> currentSingleTokens) {
-//		this.currentSingleTokens = currentSingleTokens;
-//	}
-//
-//
-//	public Collection<JPhyloIOEvent> getCurrentCharSetIntervals() {
-//		return currentCharSetIntervals;
-//	}
-//
-//
-//	public void setCurrentCharSetIntervals(
-//			Collection<JPhyloIOEvent> currentCharSetIntervals) {
-//		this.currentCharSetIntervals = currentCharSetIntervals;
-//	}
+	public Map<String, String> getTokenDefinitionIDToSymbolMap() {
+		return tokenDefinitionIDToSymbolMap;
+	}
+
+
+	public void setTokenDefinitionIDToSymbolMap(
+			Map<String, String> tokenDefinitionIDToSymbolMap) {
+		this.tokenDefinitionIDToSymbolMap = tokenDefinitionIDToSymbolMap;
+	}
 
 
 	public Collection<String> getConstituents() {
@@ -151,16 +126,6 @@ public class NeXMLStreamDataProvider {
 
 	public void setConstituents(Collection<String> constituents) {
 		this.constituents = constituents;
-	}
-
-
-	public String getCurrentBranchLengthsFormat() {
-		return currentBranchLengthsFormat;
-	}
-
-
-	public void setCurrentBranchLengthsFormat(String currentBranchLengthsFormat) {
-		this.currentBranchLengthsFormat = currentBranchLengthsFormat;
 	}
 
 
@@ -191,5 +156,15 @@ public class NeXMLStreamDataProvider {
 
 	public void setCurrentStates(String currentStates) {
 		this.currentStates = currentStates;
+	}
+
+
+	public String getCurrentBranchLengthsFormat() {
+		return currentBranchLengthsFormat;
+	}
+
+
+	public void setCurrentBranchLengthsFormat(String currentBranchLengthsFormat) {
+		this.currentBranchLengthsFormat = currentBranchLengthsFormat;
 	}
 }
