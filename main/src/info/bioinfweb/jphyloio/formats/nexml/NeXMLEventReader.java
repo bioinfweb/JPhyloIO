@@ -642,7 +642,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				String tokens = event.asCharacters().toString(); // TODO Influence read length of character events				
-		   	streamDataProvider.getCurrentEventCollection().add(new SequenceTokensEvent(readSequence(tokens, streamDataProvider.getEventReader().getTranslateTokens())));				
+		   	streamDataProvider.getCurrentEventCollection().add(new SequenceTokensEvent(readSequence(streamDataProvider, tokens, streamDataProvider.getEventReader().getTranslateTokens())));				
 			}
 		});
 		

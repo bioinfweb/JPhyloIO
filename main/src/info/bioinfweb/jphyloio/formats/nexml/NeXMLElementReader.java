@@ -45,12 +45,27 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 	protected abstract void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
 
 	
-	protected List<String> readSequence(String sequence, TranslateTokens translateTokens) {		
+	protected List<String> readSequence(NeXMLStreamDataProvider streamDataProvider, String sequence, TranslateTokens translateTokens) {		
 		List<String> tokenList = new ArrayList<String>();
-		System.out.println(translateTokens);
-   	for (int i = 0; i < sequence.length(); i++) {
- 	  	tokenList.add(Character.toString(sequence.charAt(i))); //TODO Handle tokens longer than one character
- 	  }
+		String currentChar;
+		String currentToken = "";		
+   	
+ 		for (int i = 0; i < sequence.length(); i++) {
+   		currentChar = Character.toString(sequence.charAt(i));
+   		if (sequence.contains(" ")) { //TODO maybe add parameter allowLongTokens
+     		if (!currentChar.equals(" ")) {
+     			currentToken.concat(currentChar);
+     		}
+     		else {
+     			tokenList.add(currentToken);
+     			currentToken = "";
+     		}
+   		}   	
+	   	else {
+	   		currentToken = currentChar;
+	   	}
+   		tokenList.add(currentToken);
+ 		}		
    	
    	return tokenList;
 	}
