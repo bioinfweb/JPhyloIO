@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.demo;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAEventReader;
 import info.bioinfweb.jphyloio.formats.fasta.FastaModelWriter;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
+import info.bioinfweb.jphyloio.formats.nexml.TranslateTokens;
 import info.bioinfweb.jphyloio.model.CharacterData;
 import info.bioinfweb.jphyloio.model.ModelWriterParameterMap;
 import info.bioinfweb.jphyloio.model.PhyloDocument;
@@ -39,7 +40,7 @@ public class ReadWriteDemo {
 	public static void main(String[] args) throws Exception {
 		DemoModel demoModel = new DemoModel(); 
 //		FASTAEventReader reader = new FASTAEventReader(new File("data/test.fasta"), false);
-		NeXMLEventReader neXMLReader = new NeXMLEventReader(new File("data/LargeNeXMLFile.xml"), false);
+		NeXMLEventReader neXMLReader = new NeXMLEventReader(new File("data/LargeNeXMLFile.xml"), TranslateTokens.SYMBOL_TO_LABEL);
 //	NexusCommandReaderFactory factory = new NexusCommandReaderFactory();
 //	factory.addJPhyloIOReaders();
 //	NexusEventReader reader = new NexusEventReader(new File("data/MatrixInterleaved.nex"), false, factory);
