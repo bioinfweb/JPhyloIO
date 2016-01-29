@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import info.bioinfweb.commons.io.XMLUtils;
 
 import javax.xml.stream.events.StartElement;
@@ -39,8 +42,19 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 	}
 	
 	
-	public abstract void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
+	protected abstract void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
 
+	
+	protected List<String> readSequence(String sequence, TranslateTokens translateTokens) {		
+		List<String> tokenList = new ArrayList<String>();
+		System.out.println(translateTokens);
+   	for (int i = 0; i < sequence.length(); i++) {
+ 	  	tokenList.add(Character.toString(sequence.charAt(i))); //TODO Handle tokens longer than one character
+ 	  }
+   	
+   	return tokenList;
+	}
+	
 	
 	protected OTUEventInformation getOTUEventInformation(NeXMLStreamDataProvider streamDataProvider, StartElement element) {
 		OTUEventInformation otuEventInformation = new OTUEventInformation();

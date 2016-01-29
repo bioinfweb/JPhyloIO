@@ -73,30 +73,33 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
+	private TranslateTokens translateTokens;
 
 	
-	public NeXMLEventReader(File file, boolean translateMatchToken) throws IOException, XMLStreamException {
-		this(new FileReader(file), translateMatchToken);
+	public NeXMLEventReader(File file, TranslateTokens translateTokens) throws IOException, XMLStreamException {
+		this(new FileReader(file), translateTokens);
 	}
 
 	
-	public NeXMLEventReader(InputStream stream, boolean translateMatchToken) throws IOException, XMLStreamException {
-		this(new InputStreamReader(stream), translateMatchToken);
+	public NeXMLEventReader(InputStream stream, TranslateTokens translateTokens) throws IOException, XMLStreamException {
+		this(new InputStreamReader(stream), translateTokens);
 	}
 
 	
-	public NeXMLEventReader(XMLEventReader reader, boolean translateMatchToken) {
-		super(translateMatchToken);
+	public NeXMLEventReader(XMLEventReader reader, TranslateTokens translateTokens) {
+		super(true);
 		this.xmlReader = reader;
+		this.translateTokens = translateTokens;
 	}
 
 	
-	public NeXMLEventReader(Reader reader, boolean translateMatchToken) throws IOException, XMLStreamException {
-		super(translateMatchToken);
+	public NeXMLEventReader(Reader reader, TranslateTokens translateTokens) throws IOException, XMLStreamException {
+		super(true);
 		if (!(reader instanceof BufferedReader)) {
 			reader = new BufferedReader(reader);
 		}
 		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);
+		this.translateTokens = translateTokens;
 	}
 	
 	
@@ -638,12 +641,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		map.put(new XMLElementType(TAG_SEQ, null, XMLStreamConstants.CHARACTERS), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				String tokens = event.asCharacters().toString(); // TODO Influence read length of character events
-				List<String> tokenList = new ArrayList<String>();				
-		   	for (int i = 0; i < tokens.length(); i++) {
-	   	  	tokenList.add(Character.toString(tokens.charAt(i))); //TODO Handle tokens longer than one character
-	   	  }
-		   	streamDataProvider.getCurrentEventCollection().add(new SequenceTokensEvent(tokenList));				
+				String tokens = event.asCharacters().toString(); // TODO Influence read length of character events				
+		   	streamDataProvider.getCurrentEventCollection().add(new SequenceTokensEvent(readSequence(tokens, streamDataProvider.getEventReader().getTranslateTokens())));				
 			}
 		});
 		
@@ -727,6 +726,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 
 	protected Stack<QName> getEncounteredTags() {
 		return encounteredTags;
+	}
+
+
+	public TranslateTokens getTranslateTokens() {
+		return translateTokens;
 	}
 
 
