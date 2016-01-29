@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import java.util.Collection;
+import java.util.Map;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -34,6 +35,8 @@ public class NeXMLTokenSetInformation {
 	
 	private Collection<JPhyloIOEvent> singleTokens;
 	private Collection<JPhyloIOEvent> charSetIntervals;
+	
+	private Map<String, String> symbolToLabelMap;
 	
 	
 	public NeXMLTokenSetInformation(String id, String label, CharacterStateType setType) { //TODO make sure ID and set type are not null
@@ -101,5 +104,15 @@ public class NeXMLTokenSetInformation {
 
 	public void setCharSetIntervals(Collection<JPhyloIOEvent> charSetIntervals) {
 		this.charSetIntervals = charSetIntervals;
+	}
+
+
+	public Map<String, String> getSymbolToLabelMap() {
+		return symbolToLabelMap;
+	}
+
+
+	public void setSymbolToLabelMap(Map<String, String> symbolToLabelMap) {
+		this.symbolToLabelMap = symbolToLabelMap;
 	}
 }

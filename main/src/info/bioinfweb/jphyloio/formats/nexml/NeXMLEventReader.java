@@ -212,10 +212,13 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 				String symbol = XMLUtils.readStringAttr(element, ATTR_SYMBOL, null);
 				
-				streamDataProvider.setCurrentSingleTokenDefinitionID(id);
-				streamDataProvider.setCurrentSingleTokenDefinitionLabel(label);
+				if (label == null) {
+					label = id;
+				}
 				
 	  		if (symbol != null) {
+	  			streamDataProvider.setCurrentSymbol(symbol);
+	  			streamDataProvider.getTokenSets().get(streamDataProvider.getCurrentTokenSetID()).getSymbolToLabelMap().put(symbol, label);
 	  			streamDataProvider.getTokenDefinitionIDToSymbolMap().put(id, symbol);
 	  		}
 	  		else {
@@ -230,7 +233,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		NeXMLElementReader readStateEnd = new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				String symbol = streamDataProvider.getTokenDefinitionIDToSymbolMap().get(streamDataProvider.getCurrentSingleTokenDefinitionID());
+				String symbol = streamDataProvider.getCurrentSymbol();
 				CharacterStateMeaning meaning;
 				
 				if (symbol.equals("?")) {
@@ -244,16 +247,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				}
 				
 				streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(symbol, meaning, streamDataProvider.getConstituents()));
-				
-				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent("id", "string", streamDataProvider.getCurrentSingleTokenDefinitionID()));
-  			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));  			
-  			String label = streamDataProvider.getCurrentSingleTokenDefinitionLabel();
-  			if (label != null) {
-	  			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent("label", "string", label));
-	  			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-	  		}
   			
-				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END));
+				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END)); //TODO probably give end event some place else, so meta events can be given in between
 			}
 		};
 		
@@ -392,12 +387,17 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+				streamDataProvider.getTokenSets().clear();
 			}
 		});		
 		
 		map.put(new XMLElementType(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				List<String> charIDs = new ArrayList<String>();
+				Map<String, String> charIDToStatesMap = new HashMap<String, String>();
+				streamDataProvider.setCharIDs(charIDs);
+				streamDataProvider.setCharIDToStatesMap(charIDToStatesMap);
 				//TODO generate character sets, if there is only one token set, there can be only one character set
 			}
 		});
@@ -408,15 +408,37 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				//TODO Direct char sets
 				
 				
-				//TODO Indirect char sets
+				//Indirect char sets
+				String currentStates = null;
+				String previousStates = null;
+				int startChar = 0;
+				for (int i = 0; i < streamDataProvider.getCharIDs().size(); i++) {
+					previousStates = currentStates;
+					currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
+					if ((previousStates != null) && !currentStates.equals(previousStates)) {						
+						streamDataProvider.getTokenSets().get(previousStates).getCharSetIntervals()
+								.add(new CharacterSetIntervalEvent(startChar, i - 1));
+						startChar = i;
+					}
+				}
+							
 				Iterator<String> tokenSetIDIterator = streamDataProvider.getTokenSets().keySet().iterator();
 				while (tokenSetIDIterator.hasNext()) {
 					String tokenSetID = tokenSetIDIterator.next();
 					NeXMLTokenSetInformation info = streamDataProvider.getTokenSets().get(tokenSetID);
+					if (!info.getCharSetIntervals().isEmpty()) {						
+						String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+						info.setCharacterSetID(charSetID);
+						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, charSetID, null));
+						
+						Iterator<JPhyloIOEvent> charSetEventsIterator = info.getCharSetIntervals().iterator();					
+						while (charSetEventsIterator.hasNext()) {
+							streamDataProvider.getCurrentEventCollection().add(charSetEventsIterator.next());
+						}
+
+						streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+					}
 				}
-//			reader.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, "ID", "label")); //TODO set correct id and label
-//			reader.getCurrentEventCollection().add(new CharacterSetIntervalEvent(reader.getStreamDataProvider().getStartChar(), reader.getStreamDataProvider().getCurrentChar()));
-//			reader.getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 				
 				//Token set definitions
 				tokenSetIDIterator = streamDataProvider.getTokenSets().keySet().iterator();
@@ -428,14 +450,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					String label = info.getLabel();
 					String charSetID = info.getCharacterSetID();
 					
-					streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(type, id, label, charSetID));
-					Iterator<JPhyloIOEvent> tokenEventsIterator = streamDataProvider.getTokenSets()
-								.get(streamDataProvider.getCurrentTokenSetID()).getSingleTokens().iterator();					
-					while (tokenEventsIterator.hasNext()) {
-						streamDataProvider.getCurrentEventCollection().add(tokenEventsIterator.next());
+					if (!info.getSingleTokens().isEmpty()) {
+						streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(type, id, label, charSetID));
+						Iterator<JPhyloIOEvent> tokenEventsIterator = info.getSingleTokens().iterator();					
+						while (tokenEventsIterator.hasNext()) {
+							streamDataProvider.getCurrentEventCollection().add(tokenEventsIterator.next());
+						}
 					}
 				}
-				streamDataProvider.getTokenSets().clear();
 			}
 		});
 		
@@ -448,6 +470,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				CharacterStateType setType = null;
 				List<JPhyloIOEvent> singleTokens = new ArrayList<JPhyloIOEvent>();
 				List<JPhyloIOEvent> charSetIntervals = new ArrayList<JPhyloIOEvent>();
+				Map<String, String> symbolToLabelMap = new HashMap<String, String>();
+				Map<String, String> idToSymbolMap = new HashMap<String, String>();
 				
 				String tokenSetType = streamDataProvider.getCurrentTokenSetType();				
 				if (tokenSetType.equals(TYPE_DNA_SEQS) || tokenSetType.equals(TYPE_DNA_CELLS)) {
@@ -480,6 +504,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				streamDataProvider.getTokenSets().put(id, new NeXMLTokenSetInformation(id, label, setType));
 				streamDataProvider.getTokenSets().get(id).setSingleTokens(singleTokens);
 				streamDataProvider.getTokenSets().get(id).setCharSetIntervals(charSetIntervals);
+				streamDataProvider.getTokenSets().get(id).setSymbolToLabelMap(symbolToLabelMap);
+				streamDataProvider.setTokenDefinitionIDToSymbolMap(idToSymbolMap);
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getTokenSets().get(id).getSingleTokens());
 			}
 		});
@@ -512,17 +538,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
+				String id =	XMLUtils.readStringAttr(element, ATTR_ID, null);
 				String states =	XMLUtils.readStringAttr(element, ATTR_STATES, null);
-				String previousStates = streamDataProvider.getCurrentStates();
-				streamDataProvider.setCurrentStates(states);
 				
-				if ((previousStates != null) && !streamDataProvider.getCurrentStates().equals(states)) {
-					streamDataProvider.getTokenSets().get(previousStates).getCharSetIntervals()
-							.add(new CharacterSetIntervalEvent(streamDataProvider.getStartChar(), streamDataProvider.getCurrentChar()));					
-					streamDataProvider.setStartChar(streamDataProvider.getCurrentChar() + 1);
-				}
-				
-				streamDataProvider.setCurrentChar(streamDataProvider.getCurrentChar() + 1);
+				streamDataProvider.getCharIDs().add(id);
+				streamDataProvider.getCharIDToStatesMap().put(id, states);
 			}
 		});
 		

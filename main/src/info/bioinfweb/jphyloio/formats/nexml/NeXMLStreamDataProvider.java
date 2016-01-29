@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,14 +36,12 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	private String currentTokenSetID = null;
 	private String currentTokenSetType;
 	
-	private String currentSingleTokenDefinitionID = null;
-	private String currentSingleTokenDefinitionLabel = null;
-	private Map<String, String> tokenDefinitionIDToSymbolMap = new TreeMap<String, String>();
+	private String currentSymbol = null;
+	private Map<String, String> tokenDefinitionIDToSymbolMap;
 	private Collection<String> constituents;
 	
-	private int startChar;
-	private int currentChar;
-	private String currentStates;
+	private List<String> charIDs;
+	private Map<String, String> charIDToStatesMap;
 	
 	private String currentBranchLengthsFormat;	
 	
@@ -98,25 +97,13 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	}
 
 
-	public String getCurrentSingleTokenDefinitionID() {
-		return currentSingleTokenDefinitionID;
+	public String getCurrentSymbol() {
+		return currentSymbol;
 	}
 
 
-	public void setCurrentSingleTokenDefinitionID(
-			String currentSingleTokenDefinitionID) {
-		this.currentSingleTokenDefinitionID = currentSingleTokenDefinitionID;
-	}
-
-
-	public String getCurrentSingleTokenDefinitionLabel() {
-		return currentSingleTokenDefinitionLabel;
-	}
-
-
-	public void setCurrentSingleTokenDefinitionLabel(
-			String currentSingleTokenDefinitionLabel) {
-		this.currentSingleTokenDefinitionLabel = currentSingleTokenDefinitionLabel;
+	public void setCurrentSymbol(String currentSymbol) {
+		this.currentSymbol = currentSymbol;
 	}
 
 
@@ -141,33 +128,23 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	}
 
 
-	public int getStartChar() {
-		return startChar;
+	public List<String> getCharIDs() {
+		return charIDs;
 	}
 
 
-	public void setStartChar(int startChar) {
-		this.startChar = startChar;
+	public void setCharIDs(List<String> charIDs) {
+		this.charIDs = charIDs;
 	}
 
 
-	public int getCurrentChar() {
-		return currentChar;
+	public Map<String, String> getCharIDToStatesMap() {
+		return charIDToStatesMap;
 	}
 
 
-	public void setCurrentChar(int currentChar) {
-		this.currentChar = currentChar;
-	}
-
-
-	public String getCurrentStates() {
-		return currentStates;
-	}
-
-
-	public void setCurrentStates(String currentStates) {
-		this.currentStates = currentStates;
+	public void setCharIDToStatesMap(Map<String, String> charIDToStatesMap) {
+		this.charIDToStatesMap = charIDToStatesMap;
 	}
 
 
