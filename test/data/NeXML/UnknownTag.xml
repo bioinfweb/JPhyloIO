@@ -57,6 +57,7 @@
       <char id="char419" states="states383"/>
       <char id="char420" states="states383"/>
       <char id="char421" states="states383"/>
+      <set id="charSet1" label="chars" char="char407 char406 char405 char408 char410 char411"/>
     </format>
     <matrix>
     	<unknownTag/>

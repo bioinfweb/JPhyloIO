@@ -37,11 +37,11 @@ public class NeXMLEventReaderTest {
 	@Test
 	public void testOutputNeXML() {
 		try {
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/UnknownTag.xml"), false);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MultipleCharactersTags.xml"), TranslateTokens.SYMBOL_TO_LABEL);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
+//					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 					
 					if (event.getType().equals(new EventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.START))) {
 	//						System.out.println("Character State Type: " + event.asTokenSetDefinitionEvent().getSetType());
@@ -55,6 +55,9 @@ public class NeXMLEventReaderTest {
 					else if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
 //							System.out.println("ID: " + event.asMetaInformationEvent().getStringValue());
 					}
+					else if (event.getType().equals(new EventType(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE))) {
+//						System.out.println("Start: " + event.asCharacterSetEvent().getStart() + " End: " + event.asCharacterSetEvent().getEnd());
+				}
 				}
 			}
 			finally {
