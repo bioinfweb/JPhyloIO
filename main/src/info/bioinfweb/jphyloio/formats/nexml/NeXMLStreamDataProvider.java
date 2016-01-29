@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 import java.util.Collection;
@@ -35,6 +36,7 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	
 	private String currentTokenSetID = null;
 	private String currentTokenSetType;
+	private CharacterStateType currentCharacterSetType;
 	
 	private String currentSymbol = null;
 	private Map<String, String> tokenDefinitionIDToSymbolMap;
@@ -96,6 +98,17 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 
 	public void setCurrentTokenSetType(String currentTokenSetType) {
 		this.currentTokenSetType = currentTokenSetType;
+	}
+
+
+	public CharacterStateType getCurrentCharacterSetType() {
+		return currentCharacterSetType;
+	}
+
+
+	public void setCurrentCharacterSetType(
+			CharacterStateType currentCharacterSetType) {
+		this.currentCharacterSetType = currentCharacterSetType;
 	}
 
 

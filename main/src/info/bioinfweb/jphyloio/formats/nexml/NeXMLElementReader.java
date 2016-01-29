@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.io.XMLUtils;
 
 import javax.xml.stream.events.StartElement;
@@ -49,12 +50,12 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 		List<String> tokenList = new ArrayList<String>();
 		String currentChar;
 		String currentToken = "";		
-   	
+   	System.out.println(sequence);
  		for (int i = 0; i < sequence.length(); i++) {
    		currentChar = Character.toString(sequence.charAt(i));
-   		if (sequence.contains(" ")) { //TODO maybe add parameter allowLongTokens
+   		if (sequence.contains(" ")) {
      		if (!currentChar.equals(" ")) {
-     			currentToken.concat(currentChar);
+     			currentToken.concat(currentChar); //TODO maybe add parameter allowLongTokens
      		}
      		else {
      			tokenList.add(currentToken);
@@ -64,7 +65,14 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 	   	else {
 	   		currentToken = currentChar;
 	   	}
-   		tokenList.add(currentToken);
+   		System.out.println("Token: " + currentToken); //TODO token is always empty string
+   		if (streamDataProvider.getCurrentCharacterSetType().equals(CharacterStateType.DISCRETE)) {
+   			System.out.println("Number of chars: " + streamDataProvider.getCharIDs().size() + " Number of tokens: " + tokenList.size());
+   			String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(tokenList.size()));
+   			currentToken = streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(currentToken);   			
+   		}   		
+   		tokenList.add(currentToken);   		
+   		//possible data types: DNA, RNA, AA, Continuous, Discrete(Standard, Restriction)
  		}		
    	
    	return tokenList;

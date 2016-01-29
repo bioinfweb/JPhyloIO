@@ -215,14 +215,21 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
 				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 				String symbol = XMLUtils.readStringAttr(element, ATTR_SYMBOL, null);
+				String translation = symbol;
 				
-				if (label == null) {
-					label = id;
-				}
+				if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TranslateTokens.NEVER)) {
+	   			if (streamDataProvider.getEventReader().getTranslateTokens().equals(TranslateTokens.SYMBOL_TO_LABEL) 
+	   					&& (label != null)) {
+	   				translation = label;
+	   			}
+	   			else { //SYMBOL_TO_ID or label was null
+	   				translation = id;
+	   			}
+	   		}
 				
 	  		if (symbol != null) {
 	  			streamDataProvider.setCurrentSymbol(symbol);
-	  			streamDataProvider.getTokenSets().get(streamDataProvider.getCurrentTokenSetID()).getSymbolToLabelMap().put(symbol, label);
+	  			streamDataProvider.getTokenSets().get(streamDataProvider.getCurrentTokenSetID()).getSymbolTranslationMap().put(symbol, translation);
 	  			streamDataProvider.getTokenDefinitionIDToSymbolMap().put(id, symbol);
 	  		}
 	  		else {
@@ -452,7 +459,10 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				//Indirect char sets
 				if (streamDataProvider.getTokenSets().size() == 1) {
 					streamDataProvider.getTokenSets().get(streamDataProvider.getCurrentTokenSetID()).getCharSetIntervals()
-					.add(new CharacterSetIntervalEvent(0, streamDataProvider.getCharIDs().size()));
+							.add(new CharacterSetIntervalEvent(0, streamDataProvider.getCharIDs().size()));
+				}
+				else if (streamDataProvider.getTokenSets().isEmpty()) {
+					//TODO there are no token sets for continuous data
 				}
 				else {
 					String currentStates = null;
@@ -467,7 +477,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 							startChar = i;
 						}						
 					}
-					streamDataProvider.getTokenSets().get(previousStates).getCharSetIntervals()
+					streamDataProvider.getTokenSets().get(currentStates).getCharSetIntervals()
 							.add(new CharacterSetIntervalEvent(startChar, streamDataProvider.getCharIDs().size() - 1));
 				}
 							
@@ -561,10 +571,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				
 				label = XMLUtils.readStringAttr(element, ATTR_ID, label);
 				streamDataProvider.setCurrentTokenSetID(id);
+				streamDataProvider.setCurrentCharacterSetType(setType);
 				streamDataProvider.getTokenSets().put(id, new NeXMLTokenSetInformation(id, label, setType));
 				streamDataProvider.getTokenSets().get(id).setSingleTokens(singleTokens);
 				streamDataProvider.getTokenSets().get(id).setCharSetIntervals(charSetIntervals);
-				streamDataProvider.getTokenSets().get(id).setSymbolToLabelMap(symbolToLabelMap);
+				streamDataProvider.getTokenSets().get(id).setSymbolTranslationMap(symbolToLabelMap);
 				streamDataProvider.setTokenDefinitionIDToSymbolMap(idToSymbolMap);
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getTokenSets().get(id).getSingleTokens());
 			}

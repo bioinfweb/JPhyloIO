@@ -36,7 +36,7 @@ public class NeXMLTokenSetInformation {
 	private Collection<JPhyloIOEvent> singleTokens;
 	private Collection<JPhyloIOEvent> charSetIntervals;
 	
-	private Map<String, String> symbolToLabelMap;
+	private Map<String, String> symbolTranslationMap;
 	
 	
 	public NeXMLTokenSetInformation(String id, String label, CharacterStateType setType) { //TODO make sure ID and set type are not null
@@ -107,12 +107,12 @@ public class NeXMLTokenSetInformation {
 	}
 
 
-	public Map<String, String> getSymbolToLabelMap() {
-		return symbolToLabelMap;
+	public Map<String, String> getSymbolTranslationMap() {
+		return symbolTranslationMap;
 	}
 
 
-	public void setSymbolToLabelMap(Map<String, String> symbolToLabelMap) {
-		this.symbolToLabelMap = symbolToLabelMap;
+	public void setSymbolTranslationMap(Map<String, String> symbolToLabelMap) {
+		this.symbolTranslationMap = symbolToLabelMap;
 	}
 }
