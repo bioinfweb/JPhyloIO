@@ -43,6 +43,8 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	private List<String> charIDs;
 	private Map<String, String> charIDToStatesMap;
 	
+	private Map<String, String[]> directCharSets;
+	
 	private String currentBranchLengthsFormat;	
 	
 	
@@ -145,6 +147,16 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 
 	public void setCharIDToStatesMap(Map<String, String> charIDToStatesMap) {
 		this.charIDToStatesMap = charIDToStatesMap;
+	}
+
+
+	public Map<String, String[]> getDirectCharSets() {
+		return directCharSets;
+	}
+
+
+	public void setDirectCharSets(Map<String, String[]> directCharSets) {
+		this.directCharSets = directCharSets;
 	}
 
 

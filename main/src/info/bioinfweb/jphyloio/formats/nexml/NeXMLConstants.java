@@ -32,6 +32,7 @@ public interface NeXMLConstants {
 	
 	public static final QName TAG_NEXML = new QName(NAMESPACE_URI, "nexml");
 	public static final QName TAG_META = new QName(NAMESPACE_URI, "meta");
+	public static final QName TAG_SET = new QName(NAMESPACE_URI, "set");
 	
 	public static final QName TAG_OTUS = new QName(NAMESPACE_URI, "otus");
 	public static final QName TAG_OTU = new QName(NAMESPACE_URI, "otu");
@@ -63,6 +64,7 @@ public interface NeXMLConstants {
 	public static final QName ATTR_SYMBOL = new QName("symbol");
 	public static final QName ATTR_STATE = new QName("state");
 	public static final QName ATTR_STATES = new QName("states");
+	public static final QName ATTR_CHAR = new QName("char");
 	
 	public static final QName ATTR_SOURCE = new QName("source");
 	public static final QName ATTR_TARGET = new QName("target");
