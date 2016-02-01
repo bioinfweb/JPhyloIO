@@ -74,32 +74,35 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	private TranslateTokens translateTokens;
+	private boolean allowLongTokens;;
 
 	
-	public NeXMLEventReader(File file, TranslateTokens translateTokens) throws IOException, XMLStreamException {
-		this(new FileReader(file), translateTokens);
+	public NeXMLEventReader(File file, TranslateTokens translateTokens, boolean allowLongTokens) throws IOException, XMLStreamException {
+		this(new FileReader(file), translateTokens, allowLongTokens);
 	}
 
 	
-	public NeXMLEventReader(InputStream stream, TranslateTokens translateTokens) throws IOException, XMLStreamException {
-		this(new InputStreamReader(stream), translateTokens);
+	public NeXMLEventReader(InputStream stream, TranslateTokens translateTokens, boolean allowLongTokens) throws IOException, XMLStreamException {
+		this(new InputStreamReader(stream), translateTokens, allowLongTokens);
 	}
 
 	
-	public NeXMLEventReader(XMLEventReader reader, TranslateTokens translateTokens) {
+	public NeXMLEventReader(XMLEventReader reader, TranslateTokens translateTokens, boolean allowLongTokens) {
 		super(true);
 		this.xmlReader = reader;
 		this.translateTokens = translateTokens;
+		this.allowLongTokens = allowLongTokens;
 	}
 
 	
-	public NeXMLEventReader(Reader reader, TranslateTokens translateTokens) throws IOException, XMLStreamException {
+	public NeXMLEventReader(Reader reader, TranslateTokens translateTokens, boolean allowLongTokens) throws IOException, XMLStreamException {
 		super(true);
 		if (!(reader instanceof BufferedReader)) {
 			reader = new BufferedReader(reader);
 		}
 		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);
 		this.translateTokens = translateTokens;
+		this.allowLongTokens = allowLongTokens;
 	}
 	
 	
@@ -759,6 +762,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		return super.getUpcomingEvents();
 	}
 	
+
+	public boolean isAllowLongTokens() {
+		return allowLongTokens;
+	}
+
 
 	@Override
 	protected void readNextEvent() throws Exception {

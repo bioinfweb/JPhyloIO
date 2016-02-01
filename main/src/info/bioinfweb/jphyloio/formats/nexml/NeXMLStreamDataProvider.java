@@ -35,7 +35,7 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
 	
 	private String currentTokenSetID = null;
-	private String currentTokenSetType;
+	private String currentTokenSetType = null;
 	private CharacterStateType currentCharacterSetType;
 	
 	private String currentSymbol = null;
@@ -47,7 +47,7 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	
 	private Map<String, String[]> directCharSets;
 	
-	private String currentBranchLengthsFormat;	
+	private String currentBranchLengthsFormat = null;	
 	
 	
 	public NeXMLStreamDataProvider(NeXMLEventReader nexmlEventReader) {

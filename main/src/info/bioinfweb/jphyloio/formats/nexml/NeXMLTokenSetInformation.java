@@ -39,11 +39,19 @@ public class NeXMLTokenSetInformation {
 	private Map<String, String> symbolTranslationMap;
 	
 	
-	public NeXMLTokenSetInformation(String id, String label, CharacterStateType setType) { //TODO make sure ID and set type are not null
-		super();		
-		this.id = id; 
-		this.label = label;
-		this.setType = setType;
+	public NeXMLTokenSetInformation(String id, String label, CharacterStateType setType) {
+		super();
+		if (id == null) {
+			throw new NullPointerException("The ID of this event must not be null.");
+		}
+		else if (setType == null) {
+			throw new NullPointerException("The set type of this event must not be null.");
+		}
+		else {
+			this.id = id; 
+			this.label = label;
+			this.setType = setType;
+		}
 	}
 
 

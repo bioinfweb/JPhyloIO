@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
@@ -48,33 +49,25 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 	
 	protected List<String> readSequence(NeXMLStreamDataProvider streamDataProvider, String sequence, TranslateTokens translateTokens) {		
 		List<String> tokenList = new ArrayList<String>();
-		String currentChar;
-		String currentToken = "";		
-   	System.out.println(sequence);
- 		for (int i = 0; i < sequence.length(); i++) {
-   		currentChar = Character.toString(sequence.charAt(i));
-   		if (sequence.contains(" ")) {
-     		if (!currentChar.equals(" ")) {
-     			currentToken.concat(currentChar); //TODO maybe add parameter allowLongTokens
-     		}
-     		else {
-     			tokenList.add(currentToken);
-     			currentToken = "";
-     		}
-   		}   	
-	   	else {
-	   		currentToken = currentChar;
-	   	}
-   		System.out.println("Token: " + currentToken); //TODO token is always empty string
-   		if (streamDataProvider.getCurrentCharacterSetType().equals(CharacterStateType.DISCRETE)) {
-   			System.out.println("Number of chars: " + streamDataProvider.getCharIDs().size() + " Number of tokens: " + tokenList.size());
-   			String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(tokenList.size()));
-   			currentToken = streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(currentToken);   			
-   		}   		
-   		tokenList.add(currentToken);   		
-   		//possible data types: DNA, RNA, AA, Continuous, Discrete(Standard, Restriction)
- 		}		
    	
+   	if (sequence.contains(" ")) {
+ 			String[] sequenceAsArray = sequence.split(" ");
+ 			for (String token : sequenceAsArray) {
+				tokenList.add(token);
+			}
+ 		}
+   	else {
+	 		for (int i = 0; i < sequence.length(); i++) {
+	   		tokenList.add(Character.toString(sequence.charAt(i)));
+	 		}
+   	}
+   	
+ 		if (streamDataProvider.getCurrentCharacterSetType().equals(CharacterStateType.DISCRETE) && streamDataProvider.getEventReader().isTranslateMatchToken()) {
+ 			for (int i = 0; i < tokenList.size(); i++) {
+ 				String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
+ 	 			tokenList.set(i, streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(tokenList.get(i)));
+			} 			   			
+ 		}
    	return tokenList;
 	}
 	
