@@ -178,6 +178,7 @@ test/data/Phylip/RelaxedInterleaved3Blocks.phy -text
 test/data/Phylip/RelaxedSequential.phy -text
 test/data/Phylip/Sequential.phy -text
 test/data/Phylip/TooManyCounts.phy -text
+test/data/XML/Invalid.xml -text svneol=unset#text/plain
 test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
 test/lib/hamcrest-core-1.3.jar -text
 test/lib/junit-4.12.jar -text
@@ -192,4 +193,5 @@ test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.
 test/src/info/bioinfweb/jphyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/WhiteSpaceTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/test/XMLTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/XMLLongAttribiteTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/XMLStreamExceptionTest.java -text svneol=unset#text/plain

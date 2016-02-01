@@ -33,7 +33,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class XMLTest {
+public class XMLLongAttribiteTest {
 	public static void main(String[] args) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
 		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader("data/XML/LongAttribute.xml"));
 		try {
