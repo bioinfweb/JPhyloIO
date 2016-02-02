@@ -70,7 +70,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReader.java -text svneo
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTokenSetInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/TranslateTokens.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/nexml/XMLElementType.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/XMLElementReaderKey.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusStreamDataProvider.java -text svneol=unset#text/plain

@@ -69,7 +69,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLConstants {
-	private static final Map<XMLElementType, NeXMLElementReader> ELEMENT_READER_MAP = createMap();
+	private static final Map<XMLElementReaderKey, NeXMLElementReader> ELEMENT_READER_MAP = createMap();
 	
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
@@ -106,8 +106,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	}
 	
 	
-	private static Map<XMLElementType, NeXMLElementReader> createMap() {
-		Map<XMLElementType, NeXMLElementReader> map = new HashMap<XMLElementType, NeXMLElementReader>();
+	private static Map<XMLElementReaderKey, NeXMLElementReader> createMap() {
+		Map<XMLElementReaderKey, NeXMLElementReader> map = new HashMap<XMLElementReaderKey, NeXMLElementReader>();
 		
 		NeXMLElementReader readMetaStart = new NeXMLElementReader() {
 			@Override
@@ -278,75 +278,75 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		};
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_META, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_META, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_META, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_META, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_CHARACTERS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_CHARACTERS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_CHARACTERS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_CHARACTERS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_OTUS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_OTUS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_OTUS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_OTUS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_OTU, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_OTU, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_OTU, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_OTU, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_FORMAT, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_FORMAT, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_FORMAT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_FORMAT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_STATES, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_STATES, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_STATE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_STATE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_STATE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_STATE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_CHAR, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_CHAR, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_CHAR, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_CHAR, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_MATRIX, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_MATRIX, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_MATRIX, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_MATRIX, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_ROW, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_ROW, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_ROW, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_ROW, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_TREE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_TREE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_TREE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_TREE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_NETWORK, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_NETWORK, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_NETWORK, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_NETWORK, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_NODE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_NODE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_NODE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_NODE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_EDGE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_EDGE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementType(TAG_EDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_EDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_OTUS, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_OTUS, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -355,14 +355,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_OTUS, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_OTUS, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_OTUS, TAG_OTU, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_OTUS, TAG_OTU, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -374,14 +374,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_OTUS, TAG_OTU, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_OTUS, TAG_OTU, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {		
+		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -400,7 +400,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {		
+		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
@@ -408,7 +408,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});		
 		
-		map.put(new XMLElementType(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				List<String> charIDs = new ArrayList<String>();
@@ -421,7 +421,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {		
+		map.put(new XMLElementReaderKey(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {				
 				//Direct char sets
@@ -525,7 +525,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_FORMAT, TAG_SET, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_FORMAT, TAG_SET, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -537,7 +537,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_FORMAT, TAG_STATES, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_FORMAT, TAG_STATES, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -587,7 +587,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_FORMAT, TAG_STATES, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_FORMAT, TAG_STATES, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.END));
@@ -595,23 +595,23 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_STATE, XMLStreamConstants.START_ELEMENT), readStateStart);
+		map.put(new XMLElementReaderKey(TAG_STATES, TAG_STATE, XMLStreamConstants.START_ELEMENT), readStateStart);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_STATE, XMLStreamConstants.END_ELEMENT), readStateEnd);
+		map.put(new XMLElementReaderKey(TAG_STATES, TAG_STATE, XMLStreamConstants.END_ELEMENT), readStateEnd);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_UNCERTAIN, XMLStreamConstants.START_ELEMENT), readStateStart);
+		map.put(new XMLElementReaderKey(TAG_STATES, TAG_UNCERTAIN, XMLStreamConstants.START_ELEMENT), readStateStart);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_UNCERTAIN, XMLStreamConstants.END_ELEMENT), readStateEnd);
+		map.put(new XMLElementReaderKey(TAG_STATES, TAG_UNCERTAIN, XMLStreamConstants.END_ELEMENT), readStateEnd);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_POLYMORPHIC, XMLStreamConstants.START_ELEMENT), readStateStart);
+		map.put(new XMLElementReaderKey(TAG_STATES, TAG_POLYMORPHIC, XMLStreamConstants.START_ELEMENT), readStateStart);
 		
-		map.put(new XMLElementType(TAG_STATES, TAG_POLYMORPHIC, XMLStreamConstants.END_ELEMENT), readStateEnd);
+		map.put(new XMLElementReaderKey(TAG_STATES, TAG_POLYMORPHIC, XMLStreamConstants.END_ELEMENT), readStateEnd);
 		
-		map.put(new XMLElementType(TAG_UNCERTAIN, TAG_MEMBER, XMLStreamConstants.START_ELEMENT), readMemberStart);
+		map.put(new XMLElementReaderKey(TAG_UNCERTAIN, TAG_MEMBER, XMLStreamConstants.START_ELEMENT), readMemberStart);
 		
-		map.put(new XMLElementType(TAG_POLYMORPHIC, TAG_MEMBER, XMLStreamConstants.START_ELEMENT), readMemberStart);
+		map.put(new XMLElementReaderKey(TAG_POLYMORPHIC, TAG_MEMBER, XMLStreamConstants.START_ELEMENT), readMemberStart);
 		
-		map.put(new XMLElementType(TAG_FORMAT, TAG_CHAR, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_FORMAT, TAG_CHAR, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -623,7 +623,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_MATRIX, TAG_ROW, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_MATRIX, TAG_ROW, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -632,14 +632,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_MATRIX, TAG_ROW, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_MATRIX, TAG_ROW, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_ROW, TAG_CELL, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_ROW, TAG_CELL, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();				
@@ -648,14 +648,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_ROW, TAG_CELL, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_ROW, TAG_CELL, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.SEQUENCE_TOKENS, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_SEQ, null, XMLStreamConstants.CHARACTERS), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_SEQ, null, XMLStreamConstants.CHARACTERS), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				String tokens = event.asCharacters().toString(); // TODO Influence read length of character events				
@@ -663,7 +663,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREES, TAG_TREE, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_TREES, TAG_TREE, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -682,14 +682,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREES, TAG_TREE, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_TREES, TAG_TREE, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREES, TAG_NETWORK, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_TREES, TAG_NETWORK, XMLStreamConstants.START_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -698,28 +698,28 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREES, TAG_NETWORK, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_TREES, TAG_NETWORK, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NETWORK, EventTopologyType.END));
 			}
 		});
 		
-		map.put(new XMLElementType(TAG_TREE, TAG_NODE, XMLStreamConstants.START_ELEMENT), readNodeStart);
+		map.put(new XMLElementReaderKey(TAG_TREE, TAG_NODE, XMLStreamConstants.START_ELEMENT), readNodeStart);
 		
-		map.put(new XMLElementType(TAG_TREE, TAG_NODE, XMLStreamConstants.END_ELEMENT), readNodeEnd);
+		map.put(new XMLElementReaderKey(TAG_TREE, TAG_NODE, XMLStreamConstants.END_ELEMENT), readNodeEnd);
 		
-		map.put(new XMLElementType(TAG_NETWORK, TAG_NODE, XMLStreamConstants.START_ELEMENT), readNodeStart);
+		map.put(new XMLElementReaderKey(TAG_NETWORK, TAG_NODE, XMLStreamConstants.START_ELEMENT), readNodeStart);
 		
-		map.put(new XMLElementType(TAG_NETWORK, TAG_NODE, XMLStreamConstants.END_ELEMENT), readNodeEnd);
+		map.put(new XMLElementReaderKey(TAG_NETWORK, TAG_NODE, XMLStreamConstants.END_ELEMENT), readNodeEnd);
 		
-		map.put(new XMLElementType(TAG_TREE, TAG_EDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
+		map.put(new XMLElementReaderKey(TAG_TREE, TAG_EDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
 		
-		map.put(new XMLElementType(TAG_TREE, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
+		map.put(new XMLElementReaderKey(TAG_TREE, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
 		
-		map.put(new XMLElementType(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
+		map.put(new XMLElementReaderKey(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
 		
-		map.put(new XMLElementType(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
+		map.put(new XMLElementReaderKey(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
 		
 		return map; 
 	}
@@ -769,6 +769,21 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	public boolean isAllowLongTokens() {
 		return allowLongTokens;
 	}
+	
+	
+	protected NeXMLElementReader getElementReader(QName parentTag, QName elementTag, int eventType) {
+		NeXMLElementReader result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(parentTag, elementTag, eventType));
+		if (result == null) {
+			result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(null, elementTag, eventType));
+			if (result == null) {
+				result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(parentTag, null, eventType));
+				if (result == null) {
+					result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(null, null, eventType));
+				}
+			}
+		}
+		return result;
+	}
 
 
 	@Override
@@ -777,11 +792,27 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		
 		while (xmlReader.hasNext() && getUpcomingEvents().isEmpty()) {
 			XMLEvent xmlEvent = getXMLReader().nextEvent();			
-			QName parentTag;
 			
-			if (xmlEvent.isEndElement()) {
-				encounteredTags.pop();
+			QName elementTag = null;
+			switch (xmlEvent.getEventType()) {
+				case XMLStreamConstants.START_DOCUMENT:  //TODO Could also be handled by an element reader
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+					break;
+				case XMLStreamConstants.END_DOCUMENT:  //TODO Could also be handled by an element reader
+					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+					break;
+				case XMLStreamConstants.START_ELEMENT:
+					encounteredTags.pop();
+					elementTag = xmlEvent.asStartElement().getName();
+					break;
+				case XMLStreamConstants.END_ELEMENT:
+					elementTag = xmlEvent.asEndElement().getName();
+					break;
+				default: 
+					break;  // Nothing to do.
 			}
+			
+			QName parentTag;
 			if (!encounteredTags.isEmpty()) {
 				parentTag = encounteredTags.peek();
 			}
@@ -789,31 +820,10 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				parentTag = TAG_ROOT;
 			}
 			
-			switch (xmlEvent.getEventType()) {
-				case XMLStreamConstants.START_DOCUMENT: 
-					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-					break;
-				case XMLStreamConstants.END_DOCUMENT:
-					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
-					break;
-				case XMLStreamConstants.START_ELEMENT:
-					StartElement startElement = xmlEvent.asStartElement();
-					QName elementName = startElement.getName();				
-					tagReader = ELEMENT_READER_MAP.get(new XMLElementType(parentTag, elementName, XMLStreamConstants.START_ELEMENT));
-					encounteredTags.push(elementName);
-					break;
-				case XMLStreamConstants.END_ELEMENT:
-					EndElement endElement = xmlEvent.asEndElement();
-					tagReader = ELEMENT_READER_MAP.get(new XMLElementType(parentTag, endElement.getName(), XMLStreamConstants.END_ELEMENT));
-					break;
-				case XMLStreamConstants.CHARACTERS:				
-					tagReader = ELEMENT_READER_MAP.get(new XMLElementType(parentTag, null, XMLStreamConstants.CHARACTERS));
-					break;
-				case XMLStreamConstants.COMMENT:
-					System.out.println("Comment");
-					break;
-				default: 
-					XMLUtils.reachElementEnd(xmlReader);  //TODO Skipping whole substructures does not make sense anymore with the current element reader map architecture.
+			tagReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
+			
+			if (xmlEvent.isStartElement()) {
+				encounteredTags.push(xmlEvent.asStartElement().getName());
 			}
 			
 			if (tagReader != null) {

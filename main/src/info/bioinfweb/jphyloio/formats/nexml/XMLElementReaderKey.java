@@ -23,13 +23,13 @@ import javax.xml.namespace.QName;
 
 
 
-public class XMLElementType {
+public class XMLElementReaderKey {
 	private QName parentTag;
 	private QName tagName;
 	private int xmlEventType;
 	
 	
-	public XMLElementType(QName parentTag, QName tagName, int xmlEventType) {
+	public XMLElementReaderKey(QName parentTag, QName tagName, int xmlEventType) {
 		super();
 		this.parentTag = parentTag; //can be null in case of root element
 		this.tagName = tagName; //can be null in case of character or comment event
@@ -86,7 +86,7 @@ public class XMLElementType {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		XMLElementType other = (XMLElementType) obj;
+		XMLElementReaderKey other = (XMLElementReaderKey) obj;
 		if (parentTag == null) {
 			if (other.parentTag != null)
 				return false;
