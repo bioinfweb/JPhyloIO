@@ -788,8 +788,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 
 	@Override
 	protected void readNextEvent() throws Exception {
-		NeXMLElementReader tagReader = null;
-		
 		while (xmlReader.hasNext() && getUpcomingEvents().isEmpty()) {
 			XMLEvent xmlEvent = getXMLReader().nextEvent();			
 			
@@ -820,14 +818,13 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				parentTag = TAG_ROOT;
 			}
 			
-			tagReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
-			
 			if (xmlEvent.isStartElement()) {
 				encounteredTags.push(xmlEvent.asStartElement().getName());
 			}
 			
-			if (tagReader != null) {
-				tagReader.readEvent(getStreamDataProvider(), xmlEvent);
+			NeXMLElementReader elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
+			if (elementReader != null) {
+				elementReader.readEvent(getStreamDataProvider(), xmlEvent);
 			}			
 		}
 	}

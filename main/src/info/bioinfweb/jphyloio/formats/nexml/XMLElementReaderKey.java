@@ -42,28 +42,13 @@ public class XMLElementReaderKey {
 	}
 
 
-	public void setParentTag(QName parentTag) {
-		this.parentTag = parentTag;
-	}
-
-
-	public QName getTagname() {
+	public QName getTagName() {
 		return tagName;
-	}
-
-
-	public void setTagname(QName tagname) {
-		this.tagName = tagname;
 	}
 
 
 	public int getXmlEventType() {
 		return xmlEventType;
-	}
-
-
-	public void setXmlEventType(int xmlEventType) {
-		this.xmlEventType = xmlEventType;
 	}
 
 
