@@ -31,8 +31,8 @@ public class XMLElementReaderKey {
 	
 	public XMLElementReaderKey(QName parentTag, QName tagName, int xmlEventType) {
 		super();
-		this.parentTag = parentTag; //can be null in case of root element
-		this.tagName = tagName; //can be null in case of character or comment event
+		this.parentTag = parentTag;
+		this.tagName = tagName;
 		this.xmlEventType = xmlEventType;
 	}
 
