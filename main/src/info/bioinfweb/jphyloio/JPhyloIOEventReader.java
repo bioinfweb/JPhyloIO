@@ -64,7 +64,8 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * Node = "NODE.START", {MetaInformation,} "NODE.END";
  * Edge = "EDGE.START", {MetaInformation,} "EDGE.END";
  * 
- * MetaInformation = "META_INFORMATION.START", {MetaInformation,} "META_INFORMATION.END";
+ * MetaInformation = "META_INFORMATION.START", MetaContent, "META_INFORMATION.END";
+ * MetaContent = {MetaInformation,} | {"META_XML_CONTENT.SOLE",};
  * </pre>
  * Additionally {@link CommentEvent}s ({@code "COMMENT.SOLE"}) may occur at any position in the stream, which 
  * is not shown in the grammar for greater clarity.

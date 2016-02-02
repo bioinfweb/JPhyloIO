@@ -37,6 +37,7 @@ main/src/info/bioinfweb/jphyloio/events/JPhyloIOEvent.java -text svneol=unset#te
 main/src/info/bioinfweb/jphyloio/events/LabeledIDEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/LinkedOTUEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/MetaInformationEvent.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/events/MetaXMLEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/PartEndEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/SequenceTokensEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/SingleSequenceTokenEvent.java -text svneol=unset#text/plain

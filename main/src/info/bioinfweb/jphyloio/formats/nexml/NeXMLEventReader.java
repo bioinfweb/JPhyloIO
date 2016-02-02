@@ -109,7 +109,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	private static Map<XMLElementType, NeXMLElementReader> createMap() {
 		Map<XMLElementType, NeXMLElementReader> map = new HashMap<XMLElementType, NeXMLElementReader>();
 		
-		NeXMLElementReader readMetaStart = new NeXMLElementReader() {			
+		NeXMLElementReader readMetaStart = new NeXMLElementReader() {
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 	    	StartElement element = event.asStartElement();
@@ -128,6 +128,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	  		else if (type.equals(TYPE_RESOURCE_META)) {
 	  			key = XMLUtils.readStringAttr(element, ATTR_REL, null);
 	  			stringValue = XMLUtils.readStringAttr(element, ATTR_HREF, null);
+	  			//TODO Create XMLStreamReader instance here, if nested XML is present. (In this case there will be no href attribute.)
 	  			try {
 	  				objectValue = new URL(stringValue);
 	  			} 
@@ -135,7 +136,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	  			dataType = type;
 	  		}
 	  		else {
-	  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + TYPE_RESOURCE_META + "\".", element.getLocation());
+	  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + 
+	  					TYPE_RESOURCE_META + "\".", element.getLocation());
 	  		}
 	   		
 	   		if (stringValue != null && objectValue != null) {
@@ -145,7 +147,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	   			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key, dataType, stringValue));
 	   		}
 	   		else {
-	   			throw new JPhyloIOReaderException("Meta tag must either have an attribute called \"" + ATTR_CONTENT + "\" or \"" + ATTR_HREF + "\".", element.getLocation());
+	   			throw new JPhyloIOReaderException("Meta tag must either have an attribute called \"" + ATTR_CONTENT + "\" or \"" + 
+	   					ATTR_HREF + "\".", element.getLocation());
 	   		}
 	   		
 	   		streamDataProvider.getEventReader().readID(element);
