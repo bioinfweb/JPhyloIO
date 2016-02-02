@@ -31,7 +31,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * Adapter class allows reading a sequence of {@link MetaXMLEvent}s using a {@link XMLStreamReader}.
+ * Adapter class that allows reading a sequence of {@link MetaXMLEvent}s using a {@link XMLStreamReader}.
  * 
  * @author Ben St&ouml;ver
  */
@@ -52,7 +52,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 
 
 	@Override
-	public Object next() {
+	public Object next() throws NoSuchElementException {
 		try {
 			return nextEvent();
 		}
@@ -63,7 +63,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 
 	
 	@Override
-	public void remove() {
+	public void remove() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("A passed event stream cannot be modified.");
 	}
 
@@ -79,7 +79,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 	
 	@Override
 	public String getElementText() throws XMLStreamException {
-		// TODO Auto-generated method stub
+		// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
 		return null;
 	}
 
@@ -93,7 +93,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 
 	@Override
 	public boolean hasNext() {
-		// TODO Auto-generated method stub
+		// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
 		return false;
 	}
 	
@@ -101,7 +101,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 	@Override
 	public XMLEvent nextEvent() throws XMLStreamException {
 		if (!endReached) {
-			// TODO Auto-generated method stub
+			// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
 			return null;
 		}
 		else {
@@ -112,7 +112,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 
 	@Override
 	public XMLEvent nextTag() throws XMLStreamException {
-		// TODO Auto-generated method stub
+		// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
 		return null;
 	}
 	
@@ -120,7 +120,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 	@Override
 	public XMLEvent peek() throws XMLStreamException {
 		if (!endReached) {
-			// TODO Auto-generated method stub
+			// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
 			return null;
 		}
 		else {
