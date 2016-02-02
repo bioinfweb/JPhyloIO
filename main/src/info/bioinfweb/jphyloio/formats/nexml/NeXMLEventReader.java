@@ -789,32 +789,31 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				parentTag = TAG_ROOT;
 			}
 			
-			int xmlEventType = xmlEvent.getEventType();
-			switch (xmlEventType) {
-				case 7: 
+			switch (xmlEvent.getEventType()) {
+				case XMLStreamConstants.START_DOCUMENT: 
 					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 					break;
-				case 8:
+				case XMLStreamConstants.END_DOCUMENT:
 					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 					break;
-				case 1:
+				case XMLStreamConstants.START_ELEMENT:
 					StartElement startElement = xmlEvent.asStartElement();
 					QName elementName = startElement.getName();				
 					tagReader = ELEMENT_READER_MAP.get(new XMLElementType(parentTag, elementName, XMLStreamConstants.START_ELEMENT));
 					encounteredTags.push(elementName);
 					break;
-				case 2:
+				case XMLStreamConstants.END_ELEMENT:
 					EndElement endElement = xmlEvent.asEndElement();
 					tagReader = ELEMENT_READER_MAP.get(new XMLElementType(parentTag, endElement.getName(), XMLStreamConstants.END_ELEMENT));
 					break;
-				case 4:				
+				case XMLStreamConstants.CHARACTERS:				
 					tagReader = ELEMENT_READER_MAP.get(new XMLElementType(parentTag, null, XMLStreamConstants.CHARACTERS));
 					break;
-				case 5:
+				case XMLStreamConstants.COMMENT:
 					System.out.println("Comment");
 					break;
 				default: 
-					XMLUtils.reachElementEnd(xmlReader);
+					XMLUtils.reachElementEnd(xmlReader);  //TODO Skipping whole substructures does not make sense anymore with the current element reader map architecture.
 			}
 			
 			if (tagReader != null) {
