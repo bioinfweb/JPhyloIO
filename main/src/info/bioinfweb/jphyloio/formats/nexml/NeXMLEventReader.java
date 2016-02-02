@@ -802,10 +802,10 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 					break;
 				case XMLStreamConstants.START_ELEMENT:
-					encounteredTags.pop();
 					elementTag = xmlEvent.asStartElement().getName();
 					break;
 				case XMLStreamConstants.END_ELEMENT:
+					encounteredTags.pop();
 					elementTag = xmlEvent.asEndElement().getName();
 					break;
 				default: 
