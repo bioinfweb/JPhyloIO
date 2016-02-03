@@ -16,15 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.model;
+package info.bioinfweb.jphyloio;
 
 
-import info.bioinfweb.commons.collections.ParameterMap;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
+import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 
 
 
-public class ModelWriterParameterMap extends ParameterMap {
-	public static final String KEY_ALLOW_LONG_TOKENS = "allowLongTokens";
+public abstract class AbstractEventWriter implements JPhyloIOEventWriter {
+	@Override
+	public void writeDocument(DocumentDataAdapter document, File file, EventWriterParameterMap parameters) throws Exception {		
+		writeDocument(document, new BufferedWriter(new FileWriter(file)), parameters);	
+	}
 	
-	public static final String KEY_EXTEND_SEQUENCE_WITH_GAPS = "extendSequenceWithGaps";
+
+	@Override
+	public void writeDocument(DocumentDataAdapter document, OutputStream stream, EventWriterParameterMap parameters) throws Exception {		
+		writeDocument(document, new BufferedWriter(new OutputStreamWriter(stream)), parameters);		
+	}
 }

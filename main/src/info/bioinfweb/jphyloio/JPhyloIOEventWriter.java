@@ -19,26 +19,18 @@
 package info.bioinfweb.jphyloio;
 
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.Writer;
 
-import info.bioinfweb.jphyloio.model.ModelWriterParameterMap;
-import info.bioinfweb.jphyloio.model.PhyloDocument;
-
+import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 
 
-public abstract class AbstractModelWriter implements JPhyloIOModelWriter {
-	@Override
-	public void writeDocument(PhyloDocument document, File file, ModelWriterParameterMap parameters) throws Exception {		
-		writeDocument(document, new BufferedWriter(new FileWriter(file)), parameters);	
-	}
+
+public interface JPhyloIOEventWriter {
+	public void writeDocument(DocumentDataAdapter document, OutputStream stream, EventWriterParameterMap parameters) throws Exception;
 	
-
-	@Override
-	public void writeDocument(PhyloDocument document, OutputStream stream, ModelWriterParameterMap parameters) throws Exception {		
-		writeDocument(document, new BufferedWriter(new OutputStreamWriter(stream)), parameters);		
-	}
+	public void writeDocument(DocumentDataAdapter document, File file, EventWriterParameterMap parameters) throws Exception;
+	
+	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception;
 }

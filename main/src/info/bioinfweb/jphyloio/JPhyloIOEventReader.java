@@ -75,7 +75,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * 
  * @author Ben St&ouml;ver
  * @see EventContentType
- * @see JPhyloIOModelWriter
+ * @see JPhyloIOEventWriter
  */
 public interface JPhyloIOEventReader {
 	/**
