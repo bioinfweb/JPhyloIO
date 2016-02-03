@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 /**
  * Allows to provide data for a list of phylogenetic objects. All objects need to be identified by
- * unique IDs, provided by {@link #getIDs()} and the event sequence for each object will be requested
+ * unique IDs, provided by {@link #getIDIterator()} and the event sequence for each object will be requested
  * be separate calls of {@link #writeData(JPhyloIOEventReceiver, String)}.
  * <p>
  * Such objects may e.g. be OTUs, token setsor character sets, depending on where instances of this 
@@ -35,17 +35,26 @@ import java.util.Iterator;
  */
 public interface ObjectListDataAdapter {
 	/**
+	 * Returns the number of objects to be returned by {@link #getIDIterator()}.
+	 * 
+	 * @return the number of objects in the list modeled by this instance
+	 */
+	public long getCount();
+	
+	/**
 	 * Returns an iterator returning the IDs of all objects contained in the list modeled by this instance.
 	 * 
-	 * @return an iterator returning the IDs (Must return at least one element.)
+	 * @return an iterator returning the IDs (Depending in the usage of this object, the returned iterator 
+	 *         must return at least one element or can be empty, but it may never be {@code null}.)
 	 */
-	public Iterator<String> getIDs();
+	public Iterator<String> getIDIterator();
 	
 	/**
 	 * Writes the events describing the specified object, including possible nested objects.
 	 * 
-	 * @param writer the writer accepting the events
+	 * @param receiver the receiver for the events
 	 * @param nodeID the ID of the requested node
+	 * @throws IllegalArgumentException if an unknown ID was specified
 	 */
-	public void writeData(JPhyloIOEventReceiver writer, String id);
+	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException;
 }

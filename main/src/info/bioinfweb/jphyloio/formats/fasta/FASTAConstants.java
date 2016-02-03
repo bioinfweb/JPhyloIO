@@ -26,6 +26,8 @@ package info.bioinfweb.jphyloio.formats.fasta;
  * @author Ben St&ouml;ver
  */
 public interface FASTAConstants {
+	public static final int DEFAULT_LINE_LENGTH = 80;	
+	
 	public static final char NAME_START_CHAR = '>';
 	public static final char COMMENT_START_CHAR = ';';
 }

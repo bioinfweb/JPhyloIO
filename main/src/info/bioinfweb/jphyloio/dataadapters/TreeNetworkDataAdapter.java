@@ -43,10 +43,11 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter {
 	/**
 	 * Writes the events describing the specified node and possible nested metadata.
 	 * 
-	 * @param writer the writer accepting the events
+	 * @param receiver the receiver for the events
 	 * @param nodeID the ID of the requested node
+	 * @throws IllegalArgumentException if an unknown node ID was specified
 	 */
-	public void writeNodeData(JPhyloIOEventReceiver writer, String nodeID);  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
 	
 	/**
 	 * Returns an iterator returning the IDs of all edges starting at the specified node. This includes 
@@ -55,8 +56,9 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter {
 	 * 
 	 * @param nodeID the ID of the parent node
 	 * @return an iterator returning the edge IDs (Maybe an empty iterator but not {@code null}.)
+	 * @throws IllegalArgumentException if an unknown node ID was specified
 	 */
-	public Iterator<String> getEdgeIDsFromNode(String nodeID);  //TODO Using this pattern may include circular references in networks.
+	public Iterator<String> getEdgeIDsFromNode(String nodeID) throws IllegalArgumentException;  //TODO Using this pattern may include circular references in networks.
 
-	public void writeEdgeData(JPhyloIOEventReceiver writer, String edgeID);  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
 }

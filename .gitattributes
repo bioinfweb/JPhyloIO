@@ -55,6 +55,8 @@ main/src/info/bioinfweb/jphyloio/events/type/EventTopologyType.java -text svneol
 main/src/info/bioinfweb/jphyloio/events/type/EventType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/fasta/FASTASequenceEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/MEGAConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReader.java -text svneol=unset#text/plain

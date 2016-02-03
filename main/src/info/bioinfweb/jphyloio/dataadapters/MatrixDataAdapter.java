@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
@@ -28,14 +31,45 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter {
 	//TODO Allow exceptions from write methods?
   //TODO If token and character sets are modeled in here, does this cause problems when writing to a single SETS block in Nexus?
 	
-	public boolean isAligned();
-	
 	public long getSequenceCount();
 	
+	/**
+	 * Returns the number of columns the modeled matrix has, if it contains aligned data or -1 if it 
+	 * contains unaligned data and each sequence may have a different length.
+	 * <p>
+	 * For some writers the return value of this method may also determine which type of sequence
+	 * data is written. (A Nexus writer would e.g. use an UNALIGNED instead of a CHARACTERS block,
+	 * if -1 is returned.)
+	 * 
+	 * @return the number of columns in the matrix or -1 if each sequence may have a different length
+	 */
 	public long getColumnCount();
 	
+	/**
+	 * Returns whether tokens longer than one character are contained in the matrix modeled by this 
+	 * instance. Some writers will use this information to determine, whether whitespace needs to be
+	 * inserted to separate tokens.
+	 * 
+	 * @return {@code true} if tokens longer than one character may occur, or {@code false} if all tokens
+	 *         are exactly one character long
+	 */
+	public boolean containsLongTokens();
+	
+	/**
+	 * Returns a list of character sets defined for the matrix modeled by this instance.
+	 * 
+	 * @return a (possibly empty) list of character sets
+	 */
 	public ObjectListDataAdapter getCharacterSets();
 	
+	/**
+	 * Returns a list of token sets defined for the matrix modeled by this instance.
+	 * <p>
+	 * Note that character sets referenced by token sets provided here, are expected be contained
+	 * in the return value of {@link #getCharacterSets()}.
+	 * 
+	 * @return a (possibly empty) list of character sets
+	 */
 	public ObjectListDataAdapter getTokenSets();
 	
 	/**
@@ -49,7 +83,40 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter {
 	 * 
 	 * @return an iterator returning the edge IDs (Must return at least one element.)
 	 */
-	public Iterator<String> getSequenceIDs();
+	public Iterator<String> getSequenceIDIterator();
 	
-	public void writeSequencePartContentData(JPhyloIOEventReceiver writer, String sequenceID, long startColumn, long endColumn);
+	/**
+	 * Returns an event describing the sequence with the specified ID.
+	 * 
+	 * @param sequenceID the ID of the sequence to be described
+	 * @return an linked OTU event describing the specified sequence
+	 */
+	public LinkedOTUEvent getSequenceStartEvent(String sequenceID);
+	
+	/**
+	 * Returns the length for the specified sequence. If {@link #getColumnCount()} returns does not return -1,
+	 * this method should return the same value as {@link #getColumnCount()} for each sequence. Otherwise it 
+	 * may return different values for each sequence.
+	 *  
+	 * @param sequenceID the ID of the sequence which defined the length
+	 * @return the length of the according sequence
+	 * @throws IllegalArgumentException if an unknown sequence ID was specified
+	 */
+	public long getSequenceLength(String sequenceID) throws IllegalArgumentException;
+	
+	/**
+	 * Implementing classes must write a sequence of events here, that describe the sequence tokens present in
+	 * the specified column range. A valid event sequence corresponds to the grammar node 
+	 * {@code SequencePartContent} in the documentation of {@link JPhyloIOEventReader}.
+	 * <p>
+	 * Note that column indices in <i>JPhyloIO</i> start with 0.   
+	 * 
+	 * @param receiver the receiver to write the events to
+	 * @param sequenceID the ID of the sequence from which a part shall be written
+	 * @param startColumn the first column of the sequence part to be written (inclusive)
+	 * @param endColumn the last column of the sequence part to be written (exclusive)
+	 * @throws IllegalArgumentException if an unknown sequence ID was specified
+	 */
+	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
+			long endColumn) throws IllegalArgumentException;
 }
