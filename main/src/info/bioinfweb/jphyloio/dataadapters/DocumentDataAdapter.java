@@ -16,23 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio;
+package info.bioinfweb.jphyloio.dataadapters;
 
 
-import java.io.Closeable;
-import java.io.Flushable;
-
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import java.util.Iterator;
 
 
 
-public interface JPhyloIOEventWriter extends Closeable, Flushable {
+public interface DocumentDataAdapter extends AnnotatedDataAdapter {
+	public Iterator<AnnotatedObjectListDataAdapter> getOTULists();  //TODO Can OTU lists be empty, of a matrix or tree is present? (In this case, writer would have to reconstruct the OTUs from the sequences and nodes.)
+
 	/**
-	 * Writes the specified event to the stream.
+	 * Returns an iterator providing access to all matrices contained in the document
+	 * to be written. 
 	 * 
-	 * @param event the event to written to the current position of the stream
-	 * @return the result of this write operation (Events can be written, not written or queued to be written later.)
+	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
-	public EventWriteResult writeEvent(JPhyloIOEvent event) throws Exception;  
-	//TODO Throw container exception instead (also to be used in the reader classes)? Alternatively, implementing methods can restrict the exception type(s)
+	public Iterator<MatrixDataAdapter> getMatrices();
+
+	/**
+	 * Returns an iterator providing access to all trees and networks contained in the 
+	 * document to be written. 
+	 * 
+	 * @return the iterator (Maybe empty but not {@code null}.)
+	 */
+	public Iterator<TreeNetworkDataAdapter> getTreesNetworks();
 }

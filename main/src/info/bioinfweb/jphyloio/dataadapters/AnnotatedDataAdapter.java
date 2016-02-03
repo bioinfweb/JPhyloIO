@@ -16,20 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.model;
+package info.bioinfweb.jphyloio.dataadapters;
 
 
 
-/**
- * This interface provides (aligned) sequence data to <i>JPhyloIO</i> writer classes.
- * <p>
- * Application developers should implement this interface to provide an adapter from their 
- * application business model to be accessed by <i>JPhyloIO</i> writers.
- * 
- * @author Ben St&ouml;ver
- */
-public interface CharacterData {
-	public ElementCollection<String> getSequenceNames();
-	
-	public ElementCollection<String> getTokens(String sequenceName);
+public interface AnnotatedDataAdapter {
+	/**
+	 * Writes events describing the metadata associates with the object represented by this instance.
+	 * 
+	 * @param writer the writer accepting the events
+	 */
+	public void writeMetadata(JPhyloIOEventReceiver writer);
 }
