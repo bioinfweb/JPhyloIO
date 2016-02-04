@@ -19,12 +19,36 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+
 import java.util.Iterator;
 
 
 
+/**
+ * The root adapter interface to be used with {@link JPhyloIOEventWriter}s. Implementations model a document 
+ * containing phylogenetic data, consisting of taxon lists, character matrices and trees or networks.
+ * <p>
+ * Application developers need to implement this and one or more of the references interfaces with an adapter
+ * class, that allows {@link JPhyloIOEventWriter}s to access the business model of their application. 
+ * (Alternatively the business model classes of the application may also implement these interfaces directly,
+ * if suitable.) <i>JPhyloIO</i> offers a set of default implementations that could be used as superclasses of
+ * application adapter implementations, which may reduce the workload in application development.
+ * 
+ * @author Ben St&ouml;ver
+ * @see JPhyloIOEventWriter
+ * @see OTUListDataAdapter
+ * @see MatrixDataAdapter
+ * @see TreeNetworkDataAdapter
+ */
 public interface DocumentDataAdapter extends AnnotatedDataAdapter {
-	public Iterator<AnnotatedObjectListDataAdapter> getOTULists();  //TODO Can OTU lists be empty, if a matrix or tree is present? (In this case, writer would have to reconstruct the OTUs from the sequences and nodes.)
+	/**
+	 * Returns an iterator providing access to all OTU lists contained in the document
+	 * to be written. 
+	 * 
+	 * @return the iterator (Maybe empty but not {@code null}.)
+	 */
+	public Iterator<OTUListDataAdapter> getOTUListIterator();  //TODO Can OTU lists be empty, of a matrix or tree is present? (In this case, writer would have to reconstruct the OTUs from the sequences and nodes.)
 
 	/**
 	 * Returns an iterator providing access to all matrices contained in the document
@@ -32,7 +56,7 @@ public interface DocumentDataAdapter extends AnnotatedDataAdapter {
 	 * 
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
-	public Iterator<MatrixDataAdapter> getMatrices();
+	public Iterator<MatrixDataAdapter> getMatrixIterator();
 
 	/**
 	 * Returns an iterator providing access to all trees and networks contained in the 
@@ -40,5 +64,5 @@ public interface DocumentDataAdapter extends AnnotatedDataAdapter {
 	 * 
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
-	public Iterator<TreeNetworkDataAdapter> getTreesNetworks();
+	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator();
 }

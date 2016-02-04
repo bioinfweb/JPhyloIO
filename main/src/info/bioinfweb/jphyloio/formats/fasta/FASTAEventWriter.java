@@ -49,7 +49,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 		
 		//TODO Create possible OTU map
 		
-		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrices();
+		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
 		if (matrixIterator.hasNext()) {
 			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
 			FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, matrixDataAdapter, 

@@ -19,10 +19,24 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+
+
 
 /**
- * Interface that combines {@link ObjectListDataAdapter} and {@link AnnotatedDataAdapter}.
+ * Allows to access data from the application business model that make up an OTU list. 
  * 
  * @author Ben St&ouml;ver
+ * @see DocumentDataAdapter
+ * @see JPhyloIOEventWriter
  */
-public interface AnnotatedObjectListDataAdapter extends ObjectListDataAdapter, AnnotatedDataAdapter {}
+public interface OTUListDataAdapter extends ObjectListDataAdapter, AnnotatedDataAdapter {
+	/**
+	 * Returns an event describing the OTU list modeled by this instance. This event allows
+	 * to specify a label and an ID, which will be used by some writers.
+	 * 
+	 * @return an event describing the OTU list
+	 */
+	public LabeledIDEvent getListStartEvent();
+}
