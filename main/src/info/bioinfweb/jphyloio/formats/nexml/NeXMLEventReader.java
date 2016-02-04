@@ -554,46 +554,27 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				streamDataProvider.getDirectCharSetIDs().add(id);
 						
 				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, id, label));
-				
-//				List<Integer> indexList = new ArrayList<Integer>();
-				int[] charSets = new int[streamDataProvider.getCharIDs().size()];
-				for (String charID: charIDArray) {
-//					indexList.add(streamDataProvider.getCharIDs().indexOf(charID));					
-					charSets[streamDataProvider.getCharIDs().indexOf(charID)] = 1;					
+
+				boolean[] charSets = new boolean[streamDataProvider.getCharIDs().size()];
+				for (String charID: charIDArray) {	
+					charSets[streamDataProvider.getCharIDs().indexOf(charID)] = true;					
 				}
 				
-//				int currentIndex = -1;
-//				int previousIndex = -1;
+				int currentIndex = -1;
 				int startIndex = -1;
 				
 				for (int i = 0; i < charSets.length; i++) {
-					if (charSets[i] == 1 && charSets[i - 1] == 0) {
+					if (charSets[i]) {
+						currentIndex = i;
+					}
+					
+					if (charSets[i] && !charSets[i - 1]) {
 						startIndex = i;
 					}
-					else if (charSets[i] == 1 && charSets[i + 1] == 0) {
-						streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, i));
+					else if (charSets[i] && ((i + 1 == charSets.length) || !charSets[i + 1])) {
+						streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex));
 					}
 				}
-//				Collections.sort(indexList); //TODO use field of boolean instead of sorting a list to reduce runtime
-				
-//				if ((indexList.get(indexList.size() - 1) - indexList.get(0)) == (indexList.size() - 1)) {
-//					streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(indexList.get(0), indexList.get(indexList.size() - 1)));
-//				}
-//				else {
-//					int currentIndex = -1;
-//					int previousIndex = -1;
-//					int startIndex = indexList.get(0);
-//					
-//					for (int index: indexList) {						
-//						previousIndex = currentIndex;
-//						currentIndex = index;
-//						if (((previousIndex != -1) && (currentIndex != (previousIndex + 1)))) {						
-//							streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, previousIndex));
-//							startIndex = currentIndex;
-//						}
-//					}
-//					streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex));
-//				}				
 			}				
 		});
 		
