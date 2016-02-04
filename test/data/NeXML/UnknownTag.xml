@@ -21,6 +21,7 @@
         <state id="state387" symbol="T"/>
         <uncertain_state_set id="uncertain_state_set388" symbol="K">
         	<unknownTag/>
+        	<meta href="http://www.test.de" id="metaStateTest" rel="xsi:test" xsi:type="nex:ResourceMeta"/>
           <member state="state386"/>
           <member state="state387"/>
         </uncertain_state_set>
