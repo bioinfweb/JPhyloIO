@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -45,7 +46,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	private JPhyloIOEvent lastNonComment = null;
 	private StreamDataProvider streamDataProvider;  // Must not be set to anything here.
 	private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
-	private Collection<JPhyloIOEvent> currentEventCollection;
+	private Stack<Collection<JPhyloIOEvent>> eventCollections = new Stack<Collection<JPhyloIOEvent>>();
 	private boolean beforeFirstAccess = true;
 	private boolean dataSourceClosed = false;
 	private int maxTokensToRead;
@@ -65,7 +66,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 		this.maxTokensToRead = maxTokensToRead;
 		this.translateMatchToken = translateMatchToken;
 		streamDataProvider = createStreamDataProvider();
-		resetCurrentEventCollection();
+		eventCollections.add(upcomingEvents);
 	}
 	
 	
@@ -89,20 +90,20 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	
 	
 	/**
-	 * Sets the current event collection to {@link #getUpcomingEvents()}.
+	 * Removes the event collection at the top of the eventCollections stack and returns it.
 	 * 
-	 * @return the replaced event collection
+	 * @return the removed event collection
 	 */
 	protected Collection<JPhyloIOEvent> resetCurrentEventCollection() {
-		return setCurrentEventCollection(upcomingEvents);
+		return eventCollections.pop();
 	}
 	
 	
 	/**
-	 * Sets a new current event collection.
+	 * Adds a new current event collection to the stack.
 	 * 
 	 * @param newCollection the new collection to take up new events from now on 
-	 * @return the replaced event collection
+	 * @return the event collection that was previously at the top of the stack
 	 * @throws NullPointerException if {@code newCollection} is {@code null}
 	 */
 	protected Collection<JPhyloIOEvent> setCurrentEventCollection(Collection<JPhyloIOEvent> newCollection) {
@@ -110,8 +111,8 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 			throw new NullPointerException("The current event collection must not be null.");
 		}
 		else {
-			Collection<JPhyloIOEvent> previous = currentEventCollection;
-			currentEventCollection = newCollection;
+			Collection<JPhyloIOEvent> previous = eventCollections.peek();
+			eventCollections.add(newCollection);
 			return previous;
 		}
 	}
@@ -123,7 +124,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	 * @return the current event collection
 	 */
 	protected Collection<JPhyloIOEvent> getCurrentEventCollection() {
-		return currentEventCollection;
+		return eventCollections.peek();
 	}
 	
 	
@@ -134,7 +135,7 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	 *         or {@code true} otherwise
 	 */
 	protected boolean hasSpecialEventCollection() {
-		return upcomingEvents != currentEventCollection;  // equals() does not make sense here, because 
+		return upcomingEvents != eventCollections.peek();  // equals() does not make sense here, because //TODO why?
 	}
 	
 	

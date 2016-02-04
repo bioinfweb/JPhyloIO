@@ -50,6 +50,7 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -244,6 +245,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	  		
 	  		List<String> currentConstitituents = new ArrayList<String>();		
 				streamDataProvider.setConstituents(currentConstitituents);
+				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 			}
 		};
 		
@@ -263,10 +265,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					meaning = CharacterStateMeaning.CHARACTER_STATE;
 				}
 				
-				//TODO reset current event collection
+				Collection<JPhyloIOEvent> currentEventCollection = streamDataProvider.resetCurrentEventCollection();
 				streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(symbol, meaning, streamDataProvider.getConstituents()));
-  			//TODO Add meta and comment events from current event collection
-				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END)); //TODO probably give end event some place else, so meta events can be given in between
+  			Iterator<JPhyloIOEvent> subEventIterator = currentEventCollection.iterator();
+  			while (subEventIterator.hasNext()) {
+  				streamDataProvider.getCurrentEventCollection().add(subEventIterator.next());
+  			}
+				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END));
+				//TODO welche liste soll hier gecleared werden?
 			}
 		};
 		
@@ -543,7 +549,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
 				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 				String charIDs = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
-				System.out.println("Direct: " + id);
+				
 				String[] charIDArray = charIDs.split(" "); //IDs are not allowed to contain spaces
 				streamDataProvider.getDirectCharSetIDs().add(id);
 						
@@ -553,7 +559,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 				for (String charID: charIDArray) {
 					indexList.add(streamDataProvider.getCharIDs().indexOf(charID));
 				}
-				Collections.sort(indexList); //TODO eventuell hier boolean Feld verwenden statt Liste zu sortieren
+				Collections.sort(indexList); //TODO use field of boolean instead of sorting a list to reduce runtime
 				
 				if ((indexList.get(indexList.size() - 1) - indexList.get(0)) == (indexList.size() - 1)) {
 					streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(indexList.get(0), indexList.get(indexList.size() - 1)));
