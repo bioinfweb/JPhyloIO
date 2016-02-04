@@ -34,11 +34,11 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	
 	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
 	
-	private String currentTokenSetID = null;
-	private String currentTokenSetType = null;
-	private CharacterStateType currentCharacterSetType;
+	private String tokenSetID = null;
+	private CharacterStateType characterSetType;
+	private boolean allowLongTokens;
 	
-	private String currentSymbol = null;
+	private String symbol = null;
 	private Map<String, String> tokenDefinitionIDToSymbolMap;
 	private Collection<String> constituents;
 	
@@ -47,7 +47,9 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	
 	private Map<String, String[]> directCharSets;
 	
-	private String currentBranchLengthsFormat = null;	
+	private String lastToken = null;
+	
+	private String branchLengthsFormat = null;	
 	
 	
 	public NeXMLStreamDataProvider(NeXMLEventReader nexmlEventReader) {
@@ -81,44 +83,43 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	}
 
 
-	public String getCurrentTokenSetID() {
-		return currentTokenSetID;
+	public String getTokenSetID() {
+		return tokenSetID;
 	}
 
 
-	public void setCurrentTokenSetID(String currentTokenSetID) {
-		this.currentTokenSetID = currentTokenSetID;
+	public void setTokenSetID(String tokenSetID) {
+		this.tokenSetID = tokenSetID;
 	}
 
 
-	public String getCurrentTokenSetType() {
-		return currentTokenSetType;
+	public CharacterStateType getCharacterSetType() {
+		return characterSetType;
 	}
 
 
-	public void setCurrentTokenSetType(String currentTokenSetType) {
-		this.currentTokenSetType = currentTokenSetType;
+	public void setCharacterSetType(CharacterStateType characterSetType) {
+		this.characterSetType = characterSetType;
 	}
 
 
-	public CharacterStateType getCurrentCharacterSetType() {
-		return currentCharacterSetType;
+	public boolean isAllowLongTokens() {
+		return allowLongTokens;
 	}
 
 
-	public void setCurrentCharacterSetType(
-			CharacterStateType currentCharacterSetType) {
-		this.currentCharacterSetType = currentCharacterSetType;
+	public void setAllowLongTokens(boolean allowLongTokens) {
+		this.allowLongTokens = allowLongTokens;
 	}
 
 
-	public String getCurrentSymbol() {
-		return currentSymbol;
+	public String getSymbol() {
+		return symbol;
 	}
 
 
-	public void setCurrentSymbol(String currentSymbol) {
-		this.currentSymbol = currentSymbol;
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 
 
@@ -173,12 +174,22 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	}
 
 
-	public String getCurrentBranchLengthsFormat() {
-		return currentBranchLengthsFormat;
+	public String getLastToken() {
+		return lastToken;
 	}
 
 
-	public void setCurrentBranchLengthsFormat(String currentBranchLengthsFormat) {
-		this.currentBranchLengthsFormat = currentBranchLengthsFormat;
+	public void setLastToken(String lastToken) {
+		this.lastToken = lastToken;
+	}
+
+
+	public String getBranchLengthsFormat() {
+		return branchLengthsFormat;
+	}
+
+
+	public void setBranchLengthsFormat(String branchLengthsFormat) {
+		this.branchLengthsFormat = branchLengthsFormat;
 	}
 }

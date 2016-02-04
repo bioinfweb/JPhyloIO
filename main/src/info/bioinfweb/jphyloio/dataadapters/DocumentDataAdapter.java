@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 
 public interface DocumentDataAdapter extends AnnotatedDataAdapter {
-	public Iterator<AnnotatedObjectListDataAdapter> getOTULists();  //TODO Can OTU lists be empty, of a matrix or tree is present? (In this case, writer would have to reconstruct the OTUs from the sequences and nodes.)
+	public Iterator<AnnotatedObjectListDataAdapter> getOTULists();  //TODO Can OTU lists be empty, if a matrix or tree is present? (In this case, writer would have to reconstruct the OTUs from the sequences and nodes.)
 
 	/**
 	 * Returns an iterator providing access to all matrices contained in the document
