@@ -47,7 +47,7 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	
 	private Map<String, String[]> directCharSets;
 	
-	private String lastToken = null;
+	private String incompleteToken = null;
 	
 	private String branchLengthsFormat = null;	
 	
@@ -174,13 +174,13 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	}
 
 
-	public String getLastToken() {
-		return lastToken;
+	public String getIncompleteToken() {
+		return incompleteToken;
 	}
 
 
-	public void setLastToken(String lastToken) {
-		this.lastToken = lastToken;
+	public void setIncompleteToken(String incompleteToken) {
+		this.incompleteToken = incompleteToken;
 	}
 
 

@@ -25,6 +25,7 @@ import java.util.List;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.io.XMLUtils;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -48,52 +49,56 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 	
 	protected List<String> readSequence(NeXMLStreamDataProvider streamDataProvider, String sequence, TranslateTokens translateTokens) {		
 		List<String> tokenList = new ArrayList<String>();
-		String previousToken = "";
+		String lastToken = "";
    	String currentToken = "";
 		Character currentChar;
 		
-		if (streamDataProvider.isAllowLongTokens()) {
-			if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.CONTINUOUS)) { //continuous data
-				for (String token: sequence.split("\\s+")) {
-					if (!token.isEmpty()) {
-						tokenList.add(token);
-						previousToken = token;
+		if (streamDataProvider.isAllowLongTokens()) { //continuous and standard data
+			if (streamDataProvider.getIncompleteToken() != null) {
+				currentToken = streamDataProvider.getIncompleteToken();
+				streamDataProvider.setIncompleteToken(null);
+			}
+			
+			for (int i = 0; i < sequence.length(); i++) {
+	 			currentChar = sequence.charAt(i);	 			
+	 			if (!Character.isWhitespace(currentChar)) {
+	 				currentToken += currentChar;
+	 			}
+	 			else {
+	 				if (!currentToken.isEmpty()) {
+	 					tokenList.add(currentToken);
+					}		 				
+	 				currentToken = "";
+	 			}	   		
+	 		}
+			lastToken = currentToken;
+			
+			if (!Character.isWhitespace(sequence.charAt(sequence.length() - 1))) {				
+				try {
+					XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();
+					if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
+						String nextSequence = nextEvent.asCharacters().getData();
+						if (!Character.isWhitespace(nextSequence.charAt(0))) {
+							streamDataProvider.setIncompleteToken(lastToken);
+						}
+					}
+					else if (!currentToken.isEmpty()) {
+						tokenList.add(currentToken);
 					}
 				}
-			}
-			else if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.DISCRETE)) { //standard data
-				for (int i = 0; i < sequence.length(); i++) {
-		 			currentChar = sequence.charAt(i);	 			
-		 			if (!Character.isWhitespace(currentChar)) {
-		 				currentToken += currentChar;
-		 			}
-		 			else {
-		 				if (!currentToken.isEmpty()) {
-		 					tokenList.add(currentToken);
-		 					previousToken = currentToken;
-						}		 				
-		 				currentToken = "";
-		 			}	   		
-		 		}
-				if (!currentToken.isEmpty()) {
- 					tokenList.add(currentToken);
- 					previousToken = currentToken;
+				catch (Exception e) {
+					e.printStackTrace();
 				}
-		 		if (!translateTokens.equals(TranslateTokens.NEVER)) {
-		 			for (int i = 0; i < tokenList.size(); i++) {
-		 				String currentStates = "standardstateset1";
-//		 				String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
-		 	 			tokenList.set(i, streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(tokenList.get(i)));
-					} 			   			
-		 		}
-			}
-			try {
-//				System.out.println("Type: " + streamDataProvider.getEventReader().getXMLReader().peek().getEventType() + " Token: " + previousToken);				
-			}
-			catch (Exception e) {
-				e.printStackTrace();
+			}			
+
+			if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.DISCRETE) && !translateTokens.equals(TranslateTokens.NEVER)) { //standard data
+	 			for (int i = 0; i < tokenList.size(); i++) {	 				
+		 			String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
+	 	 			tokenList.set(i, streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(tokenList.get(i)));
+				}		 		
 			}
 		}
+		
 		else { //DNA, RNA, AA & restriction data
 			for (int i = 0; i < sequence.length(); i++) {
 				currentChar = sequence.charAt(i);
@@ -102,6 +107,7 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 				}
 	 		}
 		}
+		
    	return tokenList;
 	}
 	
