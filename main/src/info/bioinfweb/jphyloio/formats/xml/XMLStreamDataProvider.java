@@ -30,5 +30,5 @@ public class XMLStreamDataProvider extends StreamDataProvider {
 	}
 	
 	
-	//TODO Move some properties from NeXMLStramDataProvider here
+	//TODO Move some properties from NeXMLStreamDataProvider here
 }

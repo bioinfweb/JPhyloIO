@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 
@@ -45,7 +46,7 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	private List<String> charIDs;
 	private Map<String, String> charIDToStatesMap;
 	
-	private Map<String, String[]> directCharSets;
+	private Set<String> directCharSetIDs;
 	
 	private String incompleteToken = null;
 	
@@ -164,13 +165,13 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
 	}
 
 
-	public Map<String, String[]> getDirectCharSets() {
-		return directCharSets;
+	public Set<String> getDirectCharSetIDs() {
+		return directCharSetIDs;
 	}
 
 
-	public void setDirectCharSets(Map<String, String[]> directCharSets) {
-		this.directCharSets = directCharSets;
+	public void setDirectCharSetIDs(Set<String> directCharSets) {
+		this.directCharSetIDs = directCharSets;
 	}
 
 

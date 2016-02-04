@@ -56,7 +56,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -261,8 +263,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					meaning = CharacterStateMeaning.CHARACTER_STATE;
 				}
 				
+				//TODO reset current event collection
 				streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(symbol, meaning, streamDataProvider.getConstituents()));
-  			
+  			//TODO Add meta and comment events from current event collection
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END)); //TODO probably give end event some place else, so meta events can be given in between
 			}
 		};
@@ -456,55 +459,17 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				List<String> charIDs = new ArrayList<String>();
 				Map<String, String> charIDToStatesMap = new HashMap<String, String>();
-				Map<String, String[]> directCharSets = new HashMap<String, String[]>();
+				Set<String> directCharSetIDs = new TreeSet<String>();
 				
 				streamDataProvider.setCharIDs(charIDs);
 				streamDataProvider.setCharIDToStatesMap(charIDToStatesMap);
-				streamDataProvider.setDirectCharSets(directCharSets);				
+				streamDataProvider.setDirectCharSetIDs(directCharSetIDs);				
 			}
 		});
 		
 		map.put(new XMLElementReaderKey(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {				
-				//Direct char sets
-				if (!streamDataProvider.getDirectCharSets().isEmpty()) {
-					Iterator<String> directCharSetIterator = streamDataProvider.getDirectCharSets().keySet().iterator();
-					while (directCharSetIterator.hasNext()) {
-						String directCharSetID = directCharSetIterator.next();
-						String[] charIDs = streamDataProvider.getDirectCharSets().get(directCharSetID);
-						
-						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, directCharSetID, null)); //TODO maybe get label?
-						
-						List<Integer> indexList = new ArrayList<Integer>();
-						for (String charID: charIDs) {
-							indexList.add(streamDataProvider.getCharIDs().indexOf(charID));
-						}
-						Collections.sort(indexList);
-						
-						if ((indexList.get(indexList.size() - 1) - indexList.get(0)) == (indexList.size() - 1)) {
-							streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(indexList.get(0), indexList.get(indexList.size() - 1)));
-						}
-						else {
-							int currentIndex = -1;
-							int previousIndex = -1;
-							int startIndex = indexList.get(0);
-							
-							for (int index: indexList) {						
-								previousIndex = currentIndex;
-								currentIndex = index;
-								if (((previousIndex != -1) && (currentIndex != (previousIndex + 1)))) {						
-									streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, previousIndex));
-									startIndex = currentIndex;
-								}
-							}
-							streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex));
-						}
-						
-						streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
-					}
-				}
-				
 				//Indirect char sets
 				if (!streamDataProvider.getTokenSets().isEmpty()) { //there are no token sets for continuous data and therefore no indirect char sets
 					if (streamDataProvider.getTokenSets().size() == 1) {
@@ -528,12 +493,16 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 								.add(new CharacterSetIntervalEvent(startChar, streamDataProvider.getCharIDs().size() - 1));
 					}
 								
-					Iterator<String> directTokenSetIDIterator = streamDataProvider.getTokenSets().keySet().iterator();
-					while (directTokenSetIDIterator.hasNext()) {
-						String tokenSetID = directTokenSetIDIterator.next();
+					Iterator<String> tokenSetIDIterator = streamDataProvider.getTokenSets().keySet().iterator();
+					while (tokenSetIDIterator.hasNext()) {
+						String tokenSetID = tokenSetIDIterator.next();
 						NeXMLTokenSetInformation info = streamDataProvider.getTokenSets().get(tokenSetID);
+						String charSetID;
 						if (!info.getCharSetIntervals().isEmpty()) {						
-							String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + streamDataProvider.getIDManager().createNewID(); //TODO make sure ID is really unique (direct char sets)
+							do {
+								charSetID = DEFAULT_CHAR_SET_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+							} 
+							while (!streamDataProvider.getDirectCharSetIDs().add(charSetID));
 							info.setCharacterSetID(charSetID);
 							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, charSetID, null));
 							
@@ -572,10 +541,45 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
 				String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
+				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 				String charIDs = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
+				System.out.println("Direct: " + id);
+				String[] charIDArray = charIDs.split(" "); //IDs are not allowed to contain spaces
+				streamDataProvider.getDirectCharSetIDs().add(id);
+						
+				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, id, label));
 				
-				String[] charIDArray = charIDs.split(" "); //IDs are not allowed to contain whitespaces
-				streamDataProvider.getDirectCharSets().put(id, charIDArray);
+				List<Integer> indexList = new ArrayList<Integer>();
+				for (String charID: charIDArray) {
+					indexList.add(streamDataProvider.getCharIDs().indexOf(charID));
+				}
+				Collections.sort(indexList); //TODO eventuell hier boolean Feld verwenden statt Liste zu sortieren
+				
+				if ((indexList.get(indexList.size() - 1) - indexList.get(0)) == (indexList.size() - 1)) {
+					streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(indexList.get(0), indexList.get(indexList.size() - 1)));
+				}
+				else {
+					int currentIndex = -1;
+					int previousIndex = -1;
+					int startIndex = indexList.get(0);
+					
+					for (int index: indexList) {						
+						previousIndex = currentIndex;
+						currentIndex = index;
+						if (((previousIndex != -1) && (currentIndex != (previousIndex + 1)))) {						
+							streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, previousIndex));
+							startIndex = currentIndex;
+						}
+					}
+					streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex));
+				}				
+			}				
+		});
+		
+		map.put(new XMLElementReaderKey(TAG_FORMAT, TAG_SET, XMLStreamConstants.END_ELEMENT), new NeXMLElementReader() {			
+			@Override
+			protected void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));				
 			}
 		});
 		
@@ -684,7 +688,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		map.put(new XMLElementReaderKey(TAG_SEQ, null, XMLStreamConstants.CHARACTERS), new NeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				String tokens = event.asCharacters().getData(); // TODO Influence read length of character events			
+				String tokens = event.asCharacters().getData(); // TODO Influence read length of character events		
 		   	streamDataProvider.getCurrentEventCollection().add(new SequenceTokensEvent(readSequence(streamDataProvider, tokens, streamDataProvider.getEventReader().getTranslateTokens())));				
 			}
 		});
