@@ -19,19 +19,14 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
+import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsMatrixDataAdapter;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.test.TestMatrixDataAdapter;
 
 import org.junit.* ;
 
@@ -43,66 +38,32 @@ import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 public class FASTAEventWriterTest {
 	private DocumentDataAdapter createTestDocument() {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
-		result.getMatrices().add(new NoSetsMatrixDataAdapter() {
-			@Override
-			public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
-					long endColumn) throws IllegalArgumentException {
-				
-				switch (sequenceID) {
-					case "id1":
-						//TODO Generate sequence events
-						break;
-					case "id2":
-						//TODO Generate sequence events
-						break;
-					default:
-						throw new IllegalArgumentException();
-				}
-			}
-			
-			@Override
-			public LinkedOTUEvent getSequenceStartEvent(String sequenceID) {
-				switch (sequenceID) {
-					case "id1":
-						return new LinkedOTUEvent(EventContentType.SEQUENCE, sequenceID, "Sequence A", null);
-					case "id2":
-						return new LinkedOTUEvent(EventContentType.SEQUENCE, sequenceID, "Sequence B", null);
-					default:
-						throw new IllegalArgumentException();
-				}
-			}
-			
-			@Override
-			public long getSequenceLength(String sequenceID) throws IllegalArgumentException {
-				return getColumnCount();
-			}
-			
-			@Override
-			public Iterator<String> getSequenceIDIterator() {
-				return Arrays.asList("id1", "id2").iterator();
-			}
-			
-			@Override
-			public long getSequenceCount() {
-				return 2;
-			}
-			
-			@Override
-			public long getColumnCount() {
-				return 8;
-			}
-			
-			@Override
-			public boolean containsLongTokens() {
-				return false;
-			}
-		});
+		result.getMatrices().add(TestMatrixDataAdapter.newSingleCharTokenInstance("ACTGC", "A-TCC"));
 		return result;
 	}
 	
 	
 	@Test
-	public void test_writeDocument() {
+	public void test_writeDocument() throws Exception {
+		File file = new File("data/testOutput/Test.fasta");
 		
+		// Write file:
+		DocumentDataAdapter document = createTestDocument();
+		FASTAEventWriter writer = new FASTAEventWriter();
+		writer.writeDocument(document, file, new EventWriterParameterMap());
+		
+		// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {
+			assertEquals(">Sequence id0", reader.readLine());
+			assertEquals("ACTGC", reader.readLine());
+			assertEquals(">Sequence id1", reader.readLine());
+			assertEquals("A-TCC", reader.readLine());
+			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
 	}
 }
