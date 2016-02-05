@@ -22,6 +22,8 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.commons.testing.TestTools;
+import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -185,7 +187,8 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
 			assertEventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.END, reader);
 			
-			ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
+			ParameterMap map = ((NexusStreamDataProvider)TestTools.getPrivateMethod(
+					AbstractEventReader.class, "getStreamDataProvider").invoke(reader)).getSharedInformationMap();
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
 			assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
@@ -218,7 +221,8 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
-			ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
+			ParameterMap map = ((NexusStreamDataProvider)TestTools.getPrivateMethod(
+					AbstractEventReader.class, "getStreamDataProvider").invoke(reader)).getSharedInformationMap();
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
 			assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
@@ -250,7 +254,8 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
-			ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
+			ParameterMap map = ((NexusStreamDataProvider)TestTools.getPrivateMethod(
+					AbstractEventReader.class, "getStreamDataProvider").invoke(reader)).getSharedInformationMap();
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
 			assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
@@ -736,7 +741,8 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("G", CharacterStateMeaning.CHARACTER_STATE, true, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 
-			ParameterMap map = reader.getStreamDataProvider().getSharedInformationMap();
+			ParameterMap map = ((NexusStreamDataProvider)TestTools.getPrivateMethod(
+					AbstractEventReader.class, "getStreamDataProvider").invoke(reader)).getSharedInformationMap();
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
 			assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false));
