@@ -23,9 +23,6 @@ import javax.xml.namespace.QName;
 public interface XTGConstants {
 	public static final String NAMESPACE_URI = "http://bioinfweb.info/xmlns/xtg";
 	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
-	public static final String NAMESPACE_BIOINFWEB = "http://bioinfweb.info/JPhyloIO/technical";
-	
-	public static final QName TAG_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
 	
 	public static final QName TAG_DOCUMENT = new QName(NAMESPACE_URI, "TreegraphDocument");
 	public static final QName TAG_TREE = new QName(NAMESPACE_URI, "Tree");

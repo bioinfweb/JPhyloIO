@@ -16,15 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.phyloxml;
+package info.bioinfweb.jphyloio.formats.xml;
 
-import javax.xml.namespace.QName;
 
-public interface PhyloXMLConstants {
-	public static final String NAMESPACE_URI = "http://www.phyloxml.org";
-	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
-	
-	public static final QName TAG_PHYLOXML = new QName(NAMESPACE_URI, "phyloxml");
-	public static final QName TAG_PHYLOGENY = new QName(NAMESPACE_URI, "phylogeny");
-	public static final QName TAG_CLADE = new QName(NAMESPACE_URI, "clade");
+import javax.xml.stream.events.XMLEvent;
+
+
+
+public interface XMLElementReader {
+	public void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
 }

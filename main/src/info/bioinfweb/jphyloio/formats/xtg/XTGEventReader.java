@@ -48,10 +48,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class XTGEventReader extends AbstractXMLEventReader implements XTGConstants {
-	private static final Map<XMLElementReaderKey, AbstractXTGElementReader> ELEMENT_READER_MAP = createMap();
-	
-	
+public class XTGEventReader extends AbstractXMLEventReader implements XTGConstants {	
 	public XTGEventReader(File file) throws IOException, XMLStreamException {
 		super(true, file);
 	}
@@ -77,7 +74,8 @@ public class XTGEventReader extends AbstractXMLEventReader implements XTGConstan
 	}
 	
 	
-	private static Map<XMLElementReaderKey, AbstractXTGElementReader> createMap() {
+	@Override
+	private Map<XMLElementReaderKey, AbstractXTGElementReader> createMap() {
 		Map<XMLElementReaderKey, AbstractXTGElementReader> map = new HashMap<XMLElementReaderKey, AbstractXTGElementReader>();
 		
 		AbstractXTGElementReader nodeStartReader = new AbstractXTGElementReader() {			
@@ -163,78 +161,7 @@ public class XTGEventReader extends AbstractXMLEventReader implements XTGConstan
 	protected XMLEventReader getXMLReader() {
 		return super.getXMLReader();
 	}
-	
-	
-	@Override
-	protected XMLStreamDataProvider createStreamDataProvider() {
-		return new XMLStreamDataProvider(this);
-	}
-
-
-	@Override
-	protected XMLStreamDataProvider getStreamDataProvider() {
-		return (XMLStreamDataProvider)super.getStreamDataProvider();
-	}
-	
-	
-	@Override
-	protected void readNextEvent() throws Exception {
-		while (getXMLReader().hasNext() && getUpcomingEvents().isEmpty()) {
-			XMLEvent xmlEvent = getXMLReader().nextEvent();
-			QName parentTag = null;			
-			QName elementTag = null;
-			
-			switch (xmlEvent.getEventType()) {
-				case XMLStreamConstants.START_DOCUMENT:
-					elementTag = null;
-					break;
-				case XMLStreamConstants.END_DOCUMENT:
-					elementTag = null;
-					break;
-				case XMLStreamConstants.START_ELEMENT:
-					elementTag = xmlEvent.asStartElement().getName();
-					break;
-				case XMLStreamConstants.END_ELEMENT:
-					getEncounteredTags().pop();
-					elementTag = xmlEvent.asEndElement().getName();
-					break;
-				default: 
-					break;  // Nothing to do.
-			}
-
-			if (!getEncounteredTags().isEmpty()) {
-				parentTag = getEncounteredTags().peek();
-			}
-			else {
-				parentTag = TAG_ROOT;
-			}		
-			
-			if (xmlEvent.isStartElement()) {
-				getEncounteredTags().push(xmlEvent.asStartElement().getName());
-			}
-
-			AbstractXTGElementReader elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
-			if (elementReader != null) {
-				elementReader.readEvent(getStreamDataProvider(), xmlEvent);
-			}			
-		}		
-	}
-	
-	
-	protected AbstractXTGElementReader getElementReader(QName parentTag, QName elementTag, int eventType) {
-		AbstractXTGElementReader result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(parentTag, elementTag, eventType));
-		if (result == null) {
-			result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(null, elementTag, eventType));
-			if (result == null) {
-				result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(parentTag, null, eventType));
-				if (result == null) {
-					result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(null, null, eventType));
-				}
-			}
-		}
-		return result;
-	}
-	
+		
 	
 	@Override
 	public void close() throws Exception {

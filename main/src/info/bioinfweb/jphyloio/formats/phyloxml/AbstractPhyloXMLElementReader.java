@@ -19,12 +19,14 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 import javax.xml.stream.events.XMLEvent;
 
 
 
-public abstract class AbstractPhyloXMLElementReader implements PhyloXMLConstants {
-	protected abstract void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
+public abstract class AbstractPhyloXMLElementReader extends AbstractXMLElementReader implements PhyloXMLConstants {
+	@Override
+	public abstract void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;	
 }

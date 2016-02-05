@@ -68,7 +68,6 @@ import javax.xml.stream.events.XMLEvent;
 
 
 public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLConstants {
-	private static final Map<XMLElementReaderKey, AbstractNeXMLElementReader> ELEMENT_READER_MAP = createMap(); //TODO Move this to abstractXMLReader somehow?
 	private TranslateTokens translateTokens;
 
 	
@@ -96,7 +95,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	}
 
 	
-	private static Map<XMLElementReaderKey, AbstractNeXMLElementReader> createMap() {
+	@Override
+	private Map<XMLElementReaderKey, AbstractNeXMLElementReader> createMap() {
 		Map<XMLElementReaderKey, AbstractNeXMLElementReader> map = new HashMap<XMLElementReaderKey, AbstractNeXMLElementReader>();
 		
 		AbstractNeXMLElementReader readMetaStart = new AbstractNeXMLElementReader() {
@@ -790,65 +790,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	
 	protected XMLEventReader getXMLReader() { //TODO why can't these properties be accessed directly?
 		return super.getXMLReader();
-	}
-
-
-	@Override
-	protected void readNextEvent() throws Exception {
-		while (getXMLReader().hasNext() && getUpcomingEvents().isEmpty()) {
-			XMLEvent xmlEvent = getXMLReader().nextEvent();
-			QName parentTag = null;
-			
-			QName elementTag = null;
-			switch (xmlEvent.getEventType()) {
-				case XMLStreamConstants.START_DOCUMENT:
-					elementTag = null;
-					break;
-				case XMLStreamConstants.END_DOCUMENT:
-					elementTag = null;
-					break;
-				case XMLStreamConstants.START_ELEMENT:
-					elementTag = xmlEvent.asStartElement().getName();
-					break;
-				case XMLStreamConstants.END_ELEMENT:
-					getEncounteredTags().pop();
-					elementTag = xmlEvent.asEndElement().getName();
-					break;
-				default: 
-					break;  // Nothing to do.
-			}
-
-			if (!getEncounteredTags().isEmpty()) {
-				parentTag = getEncounteredTags().peek();
-			}
-			else {
-				parentTag = TAG_ROOT;
-			}		
-			
-			if (xmlEvent.isStartElement()) {
-				getEncounteredTags().push(xmlEvent.asStartElement().getName());
-			}
-
-			AbstractNeXMLElementReader elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
-			if (elementReader != null) {
-				elementReader.readEvent(getStreamDataProvider(), xmlEvent);
-			}			
-		}
-	}
-	
-	
-	protected AbstractNeXMLElementReader getElementReader(QName parentTag, QName elementTag, int eventType) {
-		AbstractNeXMLElementReader result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(parentTag, elementTag, eventType));
-		if (result == null) {
-			result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(null, elementTag, eventType));
-			if (result == null) {
-				result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(parentTag, null, eventType));
-				if (result == null) {
-					result = ELEMENT_READER_MAP.get(new XMLElementReaderKey(null, null, eventType));
-				}
-			}
-		}
-		return result;
 	}
 	
 	

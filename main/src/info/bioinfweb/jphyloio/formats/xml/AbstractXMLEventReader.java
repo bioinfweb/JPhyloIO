@@ -26,14 +26,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.AbstractEventReader;
+import info.bioinfweb.jphyloio.StreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexml.AbstractNeXMLElementReader;
 
 
 
@@ -43,6 +48,10 @@ import info.bioinfweb.jphyloio.AbstractEventReader;
  * @author Ben St&ouml;ver
  */
 public abstract class AbstractXMLEventReader extends AbstractEventReader {	
+	public static final String NAMESPACE_BIOINFWEB = "http://bioinfweb.info/JPhyloIO/technical";	
+	public static final QName TAG_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
+	
+	private Map<XMLElementReaderKey, XMLElementReader> elementReaderMap = createMap();
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	
@@ -77,6 +86,67 @@ public abstract class AbstractXMLEventReader extends AbstractEventReader {
 		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);		
 	}
 	
+	protected abstract Map<XMLElementReaderKey, XMLElementReader> createMap();
+	
+	
+	@Override
+	protected void readNextEvent() throws Exception {
+		while (getXMLReader().hasNext() && getUpcomingEvents().isEmpty()) {
+			XMLEvent xmlEvent = getXMLReader().nextEvent();
+			QName parentTag = null;
+			
+			QName elementTag = null;
+			switch (xmlEvent.getEventType()) {
+				case XMLStreamConstants.START_DOCUMENT:
+					elementTag = null;
+					break;
+				case XMLStreamConstants.END_DOCUMENT:
+					elementTag = null;
+					break;
+				case XMLStreamConstants.START_ELEMENT:
+					elementTag = xmlEvent.asStartElement().getName();
+					break;
+				case XMLStreamConstants.END_ELEMENT:
+					getEncounteredTags().pop();
+					elementTag = xmlEvent.asEndElement().getName();
+					break;
+				default: 
+					break;  // Nothing to do.
+			}
+
+			if (!getEncounteredTags().isEmpty()) {
+				parentTag = getEncounteredTags().peek();
+			}
+			else {
+				parentTag = TAG_ROOT;
+			}		
+			
+			if (xmlEvent.isStartElement()) {
+				getEncounteredTags().push(xmlEvent.asStartElement().getName());
+			}
+
+			XMLElementReader elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
+			if (elementReader != null) {
+				elementReader.readEvent(getStreamDataProvider(), xmlEvent);
+			}			
+		}
+	}
+	
+	
+	protected XMLElementReader getElementReader(QName parentTag, QName elementTag, int eventType) {
+		XMLElementReader result = elementReaderMap.get(new XMLElementReaderKey(parentTag, elementTag, eventType));
+		if (result == null) {
+			result = elementReaderMap.get(new XMLElementReaderKey(null, elementTag, eventType));
+			if (result == null) {
+				result = elementReaderMap.get(new XMLElementReaderKey(parentTag, null, eventType));
+				if (result == null) {
+					result = elementReaderMap.get(new XMLElementReaderKey(null, null, eventType));
+				}
+			}
+		}
+		return result;
+	}
+	
 	
 	@Override
 	protected XMLStreamDataProvider createStreamDataProvider() {
@@ -84,6 +154,12 @@ public abstract class AbstractXMLEventReader extends AbstractEventReader {
 	}
 	
 	
+	@Override
+	protected XMLStreamDataProvider getStreamDataProvider() {
+		return (XMLStreamDataProvider)super.getStreamDataProvider(); //TODO can I do that like this?
+	}
+
+
 	protected XMLEventReader getXMLReader() {
 		return xmlReader;
 	}

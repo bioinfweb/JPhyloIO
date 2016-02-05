@@ -19,12 +19,14 @@
 package info.bioinfweb.jphyloio.formats.xtg;
 
 
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 import javax.xml.stream.events.XMLEvent;
 
 
 
-public abstract class AbstractXTGElementReader implements XTGConstants {
-	public abstract void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
+public abstract class AbstractXTGElementReader extends AbstractXMLElementReader implements XTGConstants {
+	@Override
+	public abstract void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;	
 }
