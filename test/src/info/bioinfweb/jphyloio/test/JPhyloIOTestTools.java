@@ -22,6 +22,8 @@ package info.bioinfweb.jphyloio.test;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -42,6 +44,13 @@ import static org.junit.Assert.*;
 
 
 public class JPhyloIOTestTools {
+	public static DocumentDataAdapter createTestDocument(String... sequences) {
+		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
+		result.getMatrices().add(TestMatrixDataAdapter.newSingleCharTokenInstance(sequences));
+		return result;
+	}
+	
+	
 	public static void assertEventType(EventContentType expectedContentType, 
 			EventTopologyType expectedTopologyType, JPhyloIOEvent event) throws Exception {
 		
