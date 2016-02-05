@@ -16,43 +16,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.test;
+package info.bioinfweb.jphyloio.test.tests;
 
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 
 
-public class XMLLongAttribiteTest {
+public class XMLStreamExceptionTest {
 	public static void main(String[] args) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
-		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader("data/XML/LongAttribute.xml"));
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader("data/XML/Invalid.xml"));
 		try {
-			XMLEvent event = reader.nextEvent();
-			while ((event.getEventType() != XMLStreamConstants.START_ELEMENT) || !event.asStartElement().getName().getLocalPart().equals("test2")) {
+			XMLEvent event = (XMLEvent)reader.next();
+			while (reader.hasNext()) {
 				if (event.getEventType() == XMLStreamConstants.CHARACTERS) {
 					System.out.println(event.asCharacters().getData().length());
 				}
 				else {
 					System.out.println(event);
 				}
-				event = reader.nextEvent();
+				event = (XMLEvent)reader.next();
 			}
-			
-			StartElement startElement = event.asStartElement();
-			System.out.println(startElement.getAttributeByName(new QName("attr")).getValue().length());
 		}
 		finally {
 			reader.close();
 		}
+		// => The next() method throws all XMLStreamExceptions as NoSuchElementExceptions.
 	}
 }

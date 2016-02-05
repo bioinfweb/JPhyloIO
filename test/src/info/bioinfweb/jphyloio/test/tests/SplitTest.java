@@ -16,14 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.test;
+package info.bioinfweb.jphyloio.test.tests;
 
 
 
-public class WhiteSpaceTest {
+public class SplitTest {
 	public static void main(String[] args) {
-		System.out.println(Integer.MAX_VALUE);
-		System.out.println(Character.isWhitespace('\n'));
-		System.out.println(Character.isWhitespace('\r'));
+		String[] parts = "  \t 18  20.2\t ".trim().split("\\s+");
+		for (int i = 0; i < parts.length; i++) {
+			System.out.println("'" + parts[i] + "'");
+		}
 	}
 }

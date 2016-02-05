@@ -28,16 +28,16 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 
 
 public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter {
-	private Map<String, List<String>> matrix = new HashMap<>();
+	private SortedMap<String, List<String>> matrix = new TreeMap<>();
 	private long columnCount;
 	private boolean longTokens;
 
@@ -62,7 +62,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter {
 	}
 	
 	
-	public Map<String, List<String>> getMatrix() {
+	public SortedMap<String, List<String>> getMatrix() {
 		return matrix;
 	}
 	

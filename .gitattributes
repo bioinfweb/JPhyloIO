@@ -209,8 +209,8 @@ test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReaderTest.java -text
 test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phyloXML/PhyloXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/test/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/TestMatrixDataAdapter.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/test/WhiteSpaceTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/test/XMLLongAttribiteTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/test/XMLStreamExceptionTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/WhiteSpaceTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/XMLLongAttribiteTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/XMLStreamExceptionTest.java -text svneol=unset#text/plain

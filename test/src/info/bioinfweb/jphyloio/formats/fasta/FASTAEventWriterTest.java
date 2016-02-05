@@ -60,11 +60,35 @@ public class FASTAEventWriterTest {
 	
 	
 	@Test
+	public void test_writeDocument_emptySequence() throws Exception {
+		File file = new File("data/testOutput/Test.fasta");
+		
+		// Write file:
+		DocumentDataAdapter document = createTestDocument("", "A-TCC");
+		FASTAEventWriter writer = new FASTAEventWriter();
+		writer.writeDocument(document, file, new EventWriterParameterMap());
+		
+		// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {
+			assertEquals(">Sequence id0", reader.readLine());
+			assertEquals(">Sequence id1", reader.readLine());
+			assertEquals("A-TCC", reader.readLine());
+			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
 	public void test_writeDocument_lineBreak() throws Exception {
 		File file = new File("data/testOutput/TestLineBreak.fasta");
 		
 		// Write file:
-		DocumentDataAdapter document = createTestDocument("ACTGC", "A-TCC");
+		DocumentDataAdapter document = createTestDocument("ACTGC", "ACT", "A-TCC");
 		FASTAEventWriter writer = new FASTAEventWriter();
 		EventWriterParameterMap map = new EventWriterParameterMap();
 		map.put(EventWriterParameterMap.KEY_LINE_LENGTH, 3);
@@ -77,6 +101,8 @@ public class FASTAEventWriterTest {
 			assertEquals("ACT", reader.readLine());
 			assertEquals("GC", reader.readLine());
 			assertEquals(">Sequence id1", reader.readLine());
+			assertEquals("ACT", reader.readLine());
+			assertEquals(">Sequence id2", reader.readLine());
 			assertEquals("A-T", reader.readLine());
 			assertEquals("CC", reader.readLine());
 			assertEquals(-1, reader.read());
