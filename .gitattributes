@@ -211,7 +211,7 @@ test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReaderTest.java -text s
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/formats/phyloXML/PhyloXMLEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/TestMatrixDataAdapter.java -text svneol=unset#text/plain
