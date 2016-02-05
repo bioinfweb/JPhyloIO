@@ -40,30 +40,24 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.Stack;
 import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Comment;
@@ -73,39 +67,33 @@ import javax.xml.stream.events.XMLEvent;
 
 
 public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLConstants {
-	private static final Map<XMLElementReaderKey, AbstractNeXMLElementReader> ELEMENT_READER_MAP = createMap();
-	
-	private XMLEventReader xmlReader;
-	private Stack<QName> encounteredTags = new Stack<QName>();
+	private static final Map<XMLElementReaderKey, AbstractNeXMLElementReader> ELEMENT_READER_MAP = createMap(); //TODO Move this to abstractXMLReader somehow?
 	private TranslateTokens translateTokens;
 
 	
 	public NeXMLEventReader(File file, TranslateTokens translateTokens) throws IOException, XMLStreamException {
-		this(new FileReader(file), translateTokens);
+		super(true, file);
+		this.translateTokens = translateTokens;
 	}
-
+	
 	
 	public NeXMLEventReader(InputStream stream, TranslateTokens translateTokens) throws IOException, XMLStreamException {
-		this(new InputStreamReader(stream), translateTokens);
+		super(true, stream);
+		this.translateTokens = translateTokens;
 	}
 
 	
 	public NeXMLEventReader(XMLEventReader reader, TranslateTokens translateTokens) {
-		super(true);
-		this.xmlReader = reader;
+		super(true, reader);
 		this.translateTokens = translateTokens;
 	}
 
 	
 	public NeXMLEventReader(Reader reader, TranslateTokens translateTokens) throws IOException, XMLStreamException {
-		super(true);
-		if (!(reader instanceof BufferedReader)) {
-			reader = new BufferedReader(reader);
-		}
-		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);
+		super(true, reader);
 		this.translateTokens = translateTokens;
 	}
-	
+
 	
 	private static Map<XMLElementReaderKey, AbstractNeXMLElementReader> createMap() {
 		Map<XMLElementReaderKey, AbstractNeXMLElementReader> map = new HashMap<XMLElementReaderKey, AbstractNeXMLElementReader>();
@@ -779,15 +767,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	}
 
 
-	protected XMLEventReader getXMLReader() {
-		return xmlReader;
-	}
-
-	protected Stack<QName> getEncounteredTags() {
-		return encounteredTags;
-	}
-
-
 	public TranslateTokens getTranslateTokens() {
 		return translateTokens;
 	}
@@ -803,14 +782,19 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	public void setMaxCommentLength(int maxCommentLength) {}
 	
 	
-	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
+	protected Queue<JPhyloIOEvent> getUpcomingEvents() { //TODO why can't these properties be accessed directly?
 		return super.getUpcomingEvents();
+	}
+	
+	
+	protected XMLEventReader getXMLReader() { //TODO why can't these properties be accessed directly?
+		return super.getXMLReader();
 	}
 
 
 	@Override
 	protected void readNextEvent() throws Exception {
-		while (xmlReader.hasNext() && getUpcomingEvents().isEmpty()) {
+		while (getXMLReader().hasNext() && getUpcomingEvents().isEmpty()) {
 			XMLEvent xmlEvent = getXMLReader().nextEvent();
 			QName parentTag = null;
 			
@@ -826,22 +810,22 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 					elementTag = xmlEvent.asStartElement().getName();
 					break;
 				case XMLStreamConstants.END_ELEMENT:
-					encounteredTags.pop();
+					getEncounteredTags().pop();
 					elementTag = xmlEvent.asEndElement().getName();
 					break;
 				default: 
 					break;  // Nothing to do.
 			}
 
-			if (!encounteredTags.isEmpty()) {
-				parentTag = encounteredTags.peek();
+			if (!getEncounteredTags().isEmpty()) {
+				parentTag = getEncounteredTags().peek();
 			}
 			else {
 				parentTag = TAG_ROOT;
 			}		
 			
 			if (xmlEvent.isStartElement()) {
-				encounteredTags.push(xmlEvent.asStartElement().getName());
+				getEncounteredTags().push(xmlEvent.asStartElement().getName());
 			}
 
 			AbstractNeXMLElementReader elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
@@ -870,6 +854,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 	@Override
 	public void close() throws Exception {
 		super.close();
-		xmlReader.close();
+		getXMLReader().close();
 	}	
 }

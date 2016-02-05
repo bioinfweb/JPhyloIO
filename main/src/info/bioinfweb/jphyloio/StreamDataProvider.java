@@ -33,7 +33,7 @@ import java.util.Queue;
  * Stream data providers are objects used by helper classes of JPhyloIO event readers (e.g. command readers for Nexus,
  * {@link NewickStringReader} or element readers for XML formats). They have two major functions:
  * <ol>
- *   <li>Delegate protected properties of their associated event reader to allow accessing to them by helper classes
+ *   <li>Delegate protected properties of their associated event reader to allow accessing them by helper classes
  *       in other packages.</li>
  *   <li>Act as a repository for data that shall be shared among different helper classes of a reader.</li>
  * </ol>

@@ -30,5 +30,10 @@ public class XMLStreamDataProvider extends StreamDataProvider {
 	}
 	
 	
+	@Override
+	public AbstractXMLEventReader getEventReader() {
+		return (AbstractXMLEventReader)super.getEventReader();
+	}
+	
 	//TODO Move some properties from NeXMLStreamDataProvider here
 }

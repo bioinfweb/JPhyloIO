@@ -19,8 +19,21 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Stack;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+
 import info.bioinfweb.jphyloio.AbstractEventReader;
-import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 
 
@@ -29,14 +42,39 @@ import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractXMLEventReader extends AbstractEventReader {
-	public AbstractXMLEventReader(boolean translateMatchToken, int maxTokensToRead) {
-		super(translateMatchToken, maxTokensToRead);
+public abstract class AbstractXMLEventReader extends AbstractEventReader {	
+	private XMLEventReader xmlReader;
+	private Stack<QName> encounteredTags = new Stack<QName>();
+	
+	
+	public AbstractXMLEventReader(boolean translateMatchToken, File file) throws IOException, XMLStreamException {
+		this(translateMatchToken, new FileReader(file));
 	}
 
 	
-	public AbstractXMLEventReader(boolean translateMatchToken) {
+	public AbstractXMLEventReader(boolean translateMatchToken, InputStream stream) throws IOException, XMLStreamException {
+		this(translateMatchToken, new InputStreamReader(stream));
+	}
+
+	
+	public AbstractXMLEventReader(boolean translateMatchToken, XMLEventReader xmlReader) {
 		super(translateMatchToken);
+		this.xmlReader = xmlReader;
+	}
+	
+	
+	public AbstractXMLEventReader(boolean translateMatchToken, int maxTokensToRead, XMLEventReader xmlReader) {
+		super(translateMatchToken, maxTokensToRead);
+		this.xmlReader = xmlReader;
+	}
+
+	
+	public AbstractXMLEventReader(boolean translateMatchToken, Reader reader) throws IOException, XMLStreamException {
+		super(translateMatchToken);
+		if (!(reader instanceof BufferedReader)) {
+			reader = new BufferedReader(reader);
+		}
+		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);		
 	}
 	
 	
@@ -44,7 +82,14 @@ public abstract class AbstractXMLEventReader extends AbstractEventReader {
 	protected XMLStreamDataProvider createStreamDataProvider() {
 		return new XMLStreamDataProvider(this);
 	}
+	
+	
+	protected XMLEventReader getXMLReader() {
+		return xmlReader;
+	}
+	
 
-
-	//TODO Move according functionality from NeXMLEventReader here
+	protected Stack<QName> getEncounteredTags() {
+		return encounteredTags;
+	}
 }
