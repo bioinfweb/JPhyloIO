@@ -63,19 +63,19 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter impl
 		super();
 		
 		if (otuLists == null) {
-			otuLists = new ArrayList<OTUListDataAdapter>();
+			this.otuLists = new ArrayList<OTUListDataAdapter>();
 		}
 		else {
 			this.otuLists = otuLists;
 		}
 		if (matrices == null) {
-			matrices = new ArrayList<MatrixDataAdapter>();
+			this.matrices = new ArrayList<MatrixDataAdapter>();
 		}
 		else {
 			this.matrices = matrices;
 		}
 		if (treesNetworks == null) {
-			treesNetworks = new ArrayList<TreeNetworkDataAdapter>();
+			this.treesNetworks = new ArrayList<TreeNetworkDataAdapter>();
 		}
 		else {
 			this.treesNetworks = treesNetworks;
