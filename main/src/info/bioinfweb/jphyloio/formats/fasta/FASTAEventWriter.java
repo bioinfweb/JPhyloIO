@@ -27,15 +27,13 @@ import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 
 
 
 public class FASTAEventWriter extends AbstractEventWriter implements FASTAConstants {
-	public void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver) throws IOException {
+	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver) throws IOException {
 		if (receiver.getCharsPerLineWritten() > 0) {
 			receiver.writeNewLine(writer);
 		}

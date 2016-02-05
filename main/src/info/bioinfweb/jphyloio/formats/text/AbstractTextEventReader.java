@@ -19,18 +19,14 @@
 package info.bioinfweb.jphyloio.formats.text;
 
 
-import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
-import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -42,7 +38,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.regex.Pattern;
 
 
