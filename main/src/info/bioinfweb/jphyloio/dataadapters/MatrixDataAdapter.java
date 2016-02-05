@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 
 import java.io.IOException;
@@ -28,10 +29,25 @@ import java.util.Iterator;
 
 
 
+/**
+ * Adapter interface used to provide any type of character matrix data to instances of 
+ * {@link JPhyloIOEventWriter}, including token and character set definitions related to this 
+ * matrix.
+ * <p>
+ * This interface also allows to provide unaligned data (e.g. for the UNALIGNED block in Nexus).
+ * In such cases implementations need to return an according value in {@link #getColumnCount()}.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public interface MatrixDataAdapter extends AnnotatedDataAdapter {
 	//TODO Allow exceptions from write methods?
   //TODO If token and character sets are modeled in here, does this cause problems when writing to a single SETS block in Nexus?
 	
+	/**
+	 * Returns the number of sequences contained in this matrix.
+	 * 
+	 * @return the number of sequences that will be returned by {@link #getSequenceIDIterator()}
+	 */
 	public long getSequenceCount();
 	
 	/**
@@ -109,6 +125,14 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter {
 	 * Implementing classes must write a sequence of events here, that describe the sequence tokens present in
 	 * the specified column range. A valid event sequence corresponds to the grammar node 
 	 * {@code SequencePartContent} in the documentation of {@link JPhyloIOEventReader}.
+	 * <p>
+	 * Note that (according to the grammar definition) metadata related to the sequence as a whole can also be
+	 * provided to the {@code receiver} in this method. In most cases it makes sense to provide the according
+	 * metaevents at the beginning of this sequences, i.e. if this method is called with {@code startColumn} = 0
+	 * the first events written should be the metaevents for the whole sequence. (Note that the grammar in principle 
+	 * allows such metaevents also between sequence token events, but not all formats (not all writers) support
+	 * metadata at such a position.) The same applies to comment events. (See the documentation if the single 
+	 * writers for further details on supported data.)
 	 * <p>
 	 * Note that column indices in <i>JPhyloIO</i> start with 0.   
 	 * 

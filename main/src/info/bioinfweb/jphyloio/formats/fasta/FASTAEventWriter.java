@@ -28,10 +28,30 @@ import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 
 
 
+/**
+ * Event based writer for the FASTA format.
+ * <p>
+ * This write is able to write sequence data to FASTA formatted streams. It will ignore any data for phylogenetic
+ * trees and networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator()}, because the FASTA 
+ * format does not support such data. 
+ * <p>
+ * Since FASTA does not support OTU or taxon lists as well, such a list (if provided by 
+ * {@link DocumentDataAdapter#getOTUListIterator()}) will also not be written. OTU definition will though be used, 
+ * if a sequence with a linked OTU ID but without a label is specified. In such cases 
+ * {@link OTUListDataAdapter#getOTUStartEvent(String)} will be used to determine the according OTU label. If that OTU
+ * label is also {@code null}, the sequence ID will be used as the sequence name in FASTA.
+ * <p>
+ * Comments and metadata nested in any of the supported elements will be ignored, with the only exception of comments
+ * before the first token of a sequence. Such comments will be included in FASTA, since this is only valid position
+ * for comments in the format. 
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class FASTAEventWriter extends AbstractEventWriter implements FASTAConstants {
 	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver) throws IOException {
 		if (receiver.getCharsPerLineWritten() > 0) {
