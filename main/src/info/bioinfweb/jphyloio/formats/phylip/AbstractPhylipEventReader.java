@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
+import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 
 
@@ -40,7 +41,9 @@ import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractPhylipEventReader extends AbstractTextEventReader {
+public abstract class AbstractPhylipEventReader<P extends TextStreamDataProvider<? extends AbstractPhylipEventReader<P>>>
+		extends AbstractTextEventReader<P> {
+	
 	public static final int DEFAULT_NAME_LENGTH = 10;
 	public static final String PREMATURE_NAME_END_CHARACTER = "\t";
 	public static final Pattern RELAXED_PHYLIP_NAME_PATTERN = Pattern.compile(".+\\s+");

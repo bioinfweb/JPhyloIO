@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -63,7 +63,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	}
 	
 	
-	private TextStreamDataProvider streamDataProvider;
+	private TextStreamDataProvider<?> streamDataProvider;
 	private String treeLabel;
 	private NewickNodeLabelProcessor nodeLabelProcessor;
 	private NewickScanner scanner;
@@ -83,7 +83,9 @@ public class NewickStringReader implements ReadWriteConstants {
 	 * @param nodeLabelProcessor the node label processor to be used to possibly translate node labels in Newick strings
 	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
-	public NewickStringReader(TextStreamDataProvider streamDataProvider, String treeLabel, NewickNodeLabelProcessor nodeLabelProcessor) {
+	public NewickStringReader(TextStreamDataProvider<?> streamDataProvider, String treeLabel, 
+			NewickNodeLabelProcessor nodeLabelProcessor) {
+		
 		super();
 		
 		if (streamDataProvider == null) {

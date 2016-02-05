@@ -37,8 +37,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.AbstractEventReader;
-import info.bioinfweb.jphyloio.StreamDataProvider;
-import info.bioinfweb.jphyloio.formats.nexml.AbstractNeXMLElementReader;
 
 
 
@@ -47,11 +45,13 @@ import info.bioinfweb.jphyloio.formats.nexml.AbstractNeXMLElementReader;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractXMLEventReader extends AbstractEventReader {	
+public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? extends AbstractXMLEventReader<P>>>
+		extends AbstractEventReader<P> {
+	
 	public static final String NAMESPACE_BIOINFWEB = "http://bioinfweb.info/JPhyloIO/technical";	
 	public static final QName TAG_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
 	
-	private Map<XMLElementReaderKey, XMLElementReader> elementReaderMap = createMap();
+	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = createMap();
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	
@@ -86,7 +86,7 @@ public abstract class AbstractXMLEventReader extends AbstractEventReader {
 		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);		
 	}
 	
-	protected abstract Map<XMLElementReaderKey, XMLElementReader> createMap();
+	protected abstract Map<XMLElementReaderKey, XMLElementReader<P>> createMap();
 	
 	
 	@Override
@@ -125,7 +125,7 @@ public abstract class AbstractXMLEventReader extends AbstractEventReader {
 				getEncounteredTags().push(xmlEvent.asStartElement().getName());
 			}
 
-			XMLElementReader elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
+			XMLElementReader<P> elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
 			if (elementReader != null) {
 				elementReader.readEvent(getStreamDataProvider(), xmlEvent);
 			}			
@@ -133,8 +133,8 @@ public abstract class AbstractXMLEventReader extends AbstractEventReader {
 	}
 	
 	
-	protected XMLElementReader getElementReader(QName parentTag, QName elementTag, int eventType) {
-		XMLElementReader result = elementReaderMap.get(new XMLElementReaderKey(parentTag, elementTag, eventType));
+	protected XMLElementReader<P> getElementReader(QName parentTag, QName elementTag, int eventType) {
+		XMLElementReader<P> result = elementReaderMap.get(new XMLElementReaderKey(parentTag, elementTag, eventType));
 		if (result == null) {
 			result = elementReaderMap.get(new XMLElementReaderKey(null, elementTag, eventType));
 			if (result == null) {
@@ -149,14 +149,14 @@ public abstract class AbstractXMLEventReader extends AbstractEventReader {
 	
 	
 	@Override
-	protected XMLStreamDataProvider createStreamDataProvider() {
-		return new XMLStreamDataProvider(this);
+	protected P createStreamDataProvider() {
+		return (P)new XMLStreamDataProvider(this);
 	}
 	
 	
 	@Override
-	protected XMLStreamDataProvider getStreamDataProvider() {
-		return (XMLStreamDataProvider)super.getStreamDataProvider(); //TODO can I do that like this?
+	protected P getStreamDataProvider() {
+		return (P)super.getStreamDataProvider();
 	}
 
 

@@ -27,6 +27,7 @@ import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,7 +50,7 @@ import java.io.Reader;
  * @author Ben St&ouml;ver
  * @see PhylipEventReader
  */
-public class SequentialPhylipEventReader extends AbstractPhylipEventReader {
+public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextStreamDataProvider<SequentialPhylipEventReader>> {
 	private int charactersRead = Integer.MAX_VALUE;
 	
 	

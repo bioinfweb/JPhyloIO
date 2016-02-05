@@ -39,6 +39,7 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 
 import java.io.File;
@@ -57,7 +58,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -67,7 +67,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLConstants {
+public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProvider> implements NeXMLConstants {
 	private TranslateTokens translateTokens;
 
 	
@@ -96,8 +96,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 
 	
 	@Override
-	private Map<XMLElementReaderKey, AbstractNeXMLElementReader> createMap() {
-		Map<XMLElementReaderKey, AbstractNeXMLElementReader> map = new HashMap<XMLElementReaderKey, AbstractNeXMLElementReader>();
+	protected Map<XMLElementReaderKey, XMLElementReader<NeXMLStreamDataProvider>> createMap() {
+		Map<XMLElementReaderKey, XMLElementReader<NeXMLStreamDataProvider>> map = 
+				new HashMap<XMLElementReaderKey, XMLElementReader<NeXMLStreamDataProvider>>();
 		
 		AbstractNeXMLElementReader readMetaStart = new AbstractNeXMLElementReader() {
 			@Override

@@ -23,6 +23,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
@@ -49,7 +50,9 @@ import java.util.regex.Pattern;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractTextEventReader extends AbstractEventReader {
+public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<? extends AbstractTextEventReader<P>>> 
+		extends AbstractEventReader<P> {
+	
 	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
 	
 	public static class KeyValueInformation {
@@ -145,8 +148,8 @@ public abstract class AbstractTextEventReader extends AbstractEventReader {
 
 
 	@Override
-	protected TextStreamDataProvider createStreamDataProvider() {
-		return new TextStreamDataProvider(this);
+	protected P createStreamDataProvider() {
+		return (P)new TextStreamDataProvider(this);
 	}
 
 
@@ -173,12 +176,6 @@ public abstract class AbstractTextEventReader extends AbstractEventReader {
 	}
 	
 	
-	@Override
-	protected TextStreamDataProvider getStreamDataProvider() {
-		return (TextStreamDataProvider)super.getStreamDataProvider();
-	}
-
-
 	protected List<String> createTokenList(CharSequence sequence) {
 		List<String> result = new ArrayList<String>(sequence.length());
 		for (int i = 0; i < sequence.length(); i++) {

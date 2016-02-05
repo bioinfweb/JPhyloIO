@@ -39,7 +39,7 @@ import java.util.Map;
  * 
  * @author Ben St&ouml;ver
  */
-public class NexusStreamDataProvider extends TextStreamDataProvider {
+public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventReader> {
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaidmap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";

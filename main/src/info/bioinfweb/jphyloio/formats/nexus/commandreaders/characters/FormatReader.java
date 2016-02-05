@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
-import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;

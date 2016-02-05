@@ -40,11 +40,13 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWriteConstants {
+public abstract class AbstractEventReader<P extends StreamDataProvider<? extends AbstractEventReader<P>>> 
+		implements JPhyloIOEventReader, ReadWriteConstants {
+	
 	private JPhyloIOEvent next = null;
 	private JPhyloIOEvent previous = null;
 	private JPhyloIOEvent lastNonComment = null;
-	private StreamDataProvider streamDataProvider;  // Must not be set to anything here.
+	private P streamDataProvider;  // Must not be set to anything here.
 	private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
 	private Stack<Collection<JPhyloIOEvent>> eventCollections = new Stack<Collection<JPhyloIOEvent>>();
 	private boolean beforeFirstAccess = true;
@@ -79,12 +81,12 @@ public abstract class AbstractEventReader implements JPhyloIOEventReader, ReadWr
 	 * 
 	 * @return the stream data provider to be used with this instance
 	 */
-	protected StreamDataProvider createStreamDataProvider() {
-		return new StreamDataProvider(this);
+	protected P createStreamDataProvider() {
+		return (P)new StreamDataProvider(this);  // Cannot be created generic, since this implementation is used by different inherited classes.
 	}
 
 	
-	protected StreamDataProvider getStreamDataProvider() {
+	protected P getStreamDataProvider() {
 		return streamDataProvider;
 	}
 	

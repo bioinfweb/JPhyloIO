@@ -30,7 +30,7 @@ import java.util.TreeMap;
 
 
 
-public class NeXMLStreamDataProvider extends XMLStreamDataProvider {
+public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventReader> {
 	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
 	
 	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	

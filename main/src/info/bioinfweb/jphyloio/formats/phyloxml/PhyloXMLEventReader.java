@@ -25,9 +25,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -36,17 +34,19 @@ import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 
 
-public class PhyloXMLEventReader extends AbstractXMLEventReader implements PhyloXMLConstants {	
+public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataProvider<PhyloXMLEventReader>> 
+		implements PhyloXMLConstants {
+	
 	public PhyloXMLEventReader(File file) throws IOException, XMLStreamException {
 		super(true, file);
 	}
@@ -72,53 +72,60 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader implements Phylo
 	}
 	
 	
-	private Map<XMLElementReaderKey, AbstractPhyloXMLElementReader> createMap() {
-		Map<XMLElementReaderKey, AbstractPhyloXMLElementReader> map = new HashMap<XMLElementReaderKey, AbstractPhyloXMLElementReader>();
+	protected Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>> createMap() {
+		Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>> map = 
+				new HashMap<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>>();
 		
-		AbstractPhyloXMLElementReader cladeStartReader = new AbstractPhyloXMLElementReader() {
-			@Override
-			protected void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				String id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
-				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, id, null));
-			//TODO probably read name/label and node_id from according subtags
-			}
-		};
+		XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>> cladeStartReader = 
+				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
+					@Override
+					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
+						String id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, id, null));
+						//TODO probably read name/label and node_id from according subtags
+					}
+				};
 		
-		AbstractPhyloXMLElementReader cladeEndReader = new AbstractPhyloXMLElementReader() {
-			@Override
-			protected void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
-			}
-		};
+		XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>> cladeEndReader = 
+				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
+					@Override
+					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
+						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+					}
+				};
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new AbstractPhyloXMLElementReader() {
-			@Override
-			protected void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-			}
-		});
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
+				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
+					@Override
+					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
+						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+					}
+				});
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), new AbstractPhyloXMLElementReader() {
-			@Override
-			protected void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
-			}
-		});
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), 
+				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
+					@Override
+					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
+						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+					}
+				});
 				
-		map.put(new XMLElementReaderKey(TAG_PHYLOXML, TAG_PHYLOGENY, XMLStreamConstants.START_ELEMENT), new AbstractPhyloXMLElementReader() {
-			@Override
-			protected void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				String id = DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
-				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, id, null));
-				//TODO probably read name/label and id from according subtags
-			}
-		});
+		map.put(new XMLElementReaderKey(TAG_PHYLOXML, TAG_PHYLOGENY, XMLStreamConstants.START_ELEMENT), 
+				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
+					@Override
+					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
+						String id = DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, id, null));
+						//TODO probably read name/label and id from according subtags
+					}
+				});
 		
-		map.put(new XMLElementReaderKey(TAG_PHYLOXML, TAG_PHYLOGENY, XMLStreamConstants.END_ELEMENT), new AbstractPhyloXMLElementReader() {
-			@Override
-			protected void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));			}
-		});
+		map.put(new XMLElementReaderKey(TAG_PHYLOXML, TAG_PHYLOGENY, XMLStreamConstants.END_ELEMENT), 
+				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
+					@Override
+					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
+						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));			}
+				});
 		
 		map.put(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CLADE, XMLStreamConstants.START_ELEMENT), cladeStartReader);
 		
@@ -128,13 +135,14 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader implements Phylo
 		
 		map.put(new XMLElementReaderKey(TAG_CLADE, TAG_CLADE, XMLStreamConstants.END_ELEMENT), cladeEndReader);
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new AbstractPhyloXMLElementReader() {			
-			@Override
-			protected void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				String comment = ((Comment)event).getText();
-				streamDataProvider.getCurrentEventCollection().add(new CommentEvent(comment, false));
-			}
-		});
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), 
+				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {			
+					@Override
+					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
+						String comment = ((Comment)event).getText();
+						streamDataProvider.getCurrentEventCollection().add(new CommentEvent(comment, false));
+					}
+				});
 		
 		return map;
 	}

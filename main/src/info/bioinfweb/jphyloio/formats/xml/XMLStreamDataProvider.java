@@ -19,21 +19,17 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
-import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.StreamDataProvider;
 
 
 
-public class XMLStreamDataProvider extends StreamDataProvider {
-	public XMLStreamDataProvider(AbstractEventReader eventReader) {
+public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLStreamDataProvider<R>>>
+		extends StreamDataProvider<R> {
+	
+	public XMLStreamDataProvider(R eventReader) {
 		super(eventReader);
 	}
 	
 	
-	@Override
-	public AbstractXMLEventReader getEventReader() {
-		return (AbstractXMLEventReader)super.getEventReader();
-	}
-	
-	//TODO Move some properties from NeXMLStreamDataProvider here
+	//TODO Move some properties from NeXMLStreamDataProvider here or remove this class
 }

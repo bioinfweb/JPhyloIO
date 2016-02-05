@@ -23,26 +23,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
-import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.jphyloio.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
+import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 
 
@@ -71,7 +58,9 @@ import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
  * 
  * @author Ben St&ouml;ver
  */
-public class NewickEventReader extends AbstractTextEventReader implements NewickConstants {
+public class NewickEventReader extends AbstractTextEventReader<TextStreamDataProvider<NewickEventReader>> 
+		implements NewickConstants {
+	
 	private static enum State {
 		START,
 		IN_DOCUMENT,

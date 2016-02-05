@@ -109,7 +109,6 @@ main/src/info/bioinfweb/jphyloio/formats/phylip/AbstractPhylipEventReader.java -
 main/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/package-info.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/phyloxml/AbstractPhyloXMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/AbstractTextEventReader.java -text svneol=unset#text/plain
@@ -120,7 +119,6 @@ main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLEventReader.java -text svneo
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLElementReaderKey.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLStreamDataProvider.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/xtg/AbstractXTGElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xtg/XTGConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/model/AnnotatedElement.java -text svneol=unset#text/plain

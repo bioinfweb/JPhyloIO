@@ -25,6 +25,7 @@ import java.util.List;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.events.StartElement;
@@ -37,7 +38,9 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * @author Sarah Wiechers
  */
-public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReader implements NeXMLConstants {
+public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReader<NeXMLStreamDataProvider> 
+		implements XMLElementReader<NeXMLStreamDataProvider>, NeXMLConstants {
+	
 	protected static class LabeledIDEventInformation {
 		public String id;
 		public String label;

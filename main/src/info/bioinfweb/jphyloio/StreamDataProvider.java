@@ -42,17 +42,17 @@ import java.util.Queue;
  * @see AbstractEventReader#getStreamDataProvider()
  * @see AbstractEventReader#createStreamDataProvider()
  */
-public class StreamDataProvider {
-	private AbstractEventReader eventReader;
+public class StreamDataProvider<R extends AbstractEventReader<? extends StreamDataProvider<R>>> {
+	private R eventReader;
 	
 	
-	public StreamDataProvider(AbstractEventReader eventReader) {
+	public StreamDataProvider(R eventReader) {
 		super();
 		this.eventReader = eventReader;
 	}
 
 
-	public AbstractEventReader getEventReader() {
+	public R getEventReader() {
 		return eventReader;
 	}
 	

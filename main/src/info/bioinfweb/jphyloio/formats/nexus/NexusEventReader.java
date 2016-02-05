@@ -53,7 +53,7 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
  * 
  * @author Ben St&ouml;ver
  */
-public class NexusEventReader extends AbstractTextEventReader implements NexusConstants {
+public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataProvider> implements NexusConstants {
 	private NexusBlockHandlerMap blockHandlerMap;
 	private NexusCommandReaderFactory factory;
 	private boolean createUnknownCommandEvents = false;
@@ -241,21 +241,6 @@ public class NexusEventReader extends AbstractTextEventReader implements NexusCo
 	}
 
 
-	/**
-	 * Returns the stream and data provider used by this reader to share information between the different
-	 * underlying implementations if {@link NexusCommandEventReader}.
-	 * <p>
-	 * The returned object should only be used by the underlying command readers. Do not read data from the provided
-	 * streams directly to avoid unexpected behavior. 
-	 * 
-	 * @return the shared stream and data provider
-	 */
-	@Override
-	public NexusStreamDataProvider getStreamDataProvider() {
-		return (NexusStreamDataProvider)super.getStreamDataProvider();
-	}
-
-	
 	@Override
 	protected LongIDManager getIDManager() {  // Enable package visibility
 		return super.getIDManager();

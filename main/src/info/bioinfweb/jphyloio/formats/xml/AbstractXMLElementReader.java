@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -18,9 +18,10 @@
  */
 package info.bioinfweb.jphyloio.formats.xml;
 
-import javax.xml.stream.events.XMLEvent;
 
-public abstract class AbstractXMLElementReader implements XMLElementReader {
-	@Override
-	public abstract void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
+
+public abstract class AbstractXMLElementReader<P extends XMLStreamDataProvider<? extends AbstractXMLEventReader<P>>>
+		implements XMLElementReader<P> {
+	
+	//TODO Move shared functionality here
 }

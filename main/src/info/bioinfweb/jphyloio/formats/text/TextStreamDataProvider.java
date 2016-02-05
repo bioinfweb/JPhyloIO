@@ -24,15 +24,11 @@ import info.bioinfweb.jphyloio.StreamDataProvider;
 
 
 
-public class TextStreamDataProvider extends StreamDataProvider {
-	public TextStreamDataProvider(AbstractTextEventReader eventReader) {
+public class TextStreamDataProvider<R extends AbstractTextEventReader<? extends TextStreamDataProvider<R>>> 
+		extends StreamDataProvider<R> {
+	
+	public TextStreamDataProvider(R eventReader) {
 		super(eventReader);
-	}
-
-
-	@Override
-	public AbstractTextEventReader getEventReader() {
-		return (AbstractTextEventReader)super.getEventReader();
 	}
 
 
