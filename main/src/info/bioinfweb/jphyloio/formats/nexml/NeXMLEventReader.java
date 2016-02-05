@@ -39,6 +39,7 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 
 import java.io.File;
 import java.io.IOException;
@@ -568,7 +569,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		
 		map.put(new XMLElementReaderKey(TAG_FORMAT, TAG_SET, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
-			protected void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));				
 			}
 		});
@@ -745,7 +746,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader implements NeXMLCon
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new AbstractNeXMLElementReader() {			
 			@Override
-			protected void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				String comment = ((Comment)event).getText();
 				streamDataProvider.getCurrentEventCollection().add(new CommentEvent(comment, false));
 			}

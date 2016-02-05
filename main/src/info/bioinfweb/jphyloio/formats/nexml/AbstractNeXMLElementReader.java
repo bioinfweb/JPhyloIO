@@ -46,10 +46,10 @@ public abstract class AbstractNeXMLElementReader implements NeXMLConstants {
 	protected static class OTUEventInformation extends LabeledIDEventInformation {
 		public String otuID;
 	}
-	
-	
-	protected abstract void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
 
+	
+	public abstract void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception;
+	
 	
 	protected List<String> readSequence(NeXMLStreamDataProvider streamDataProvider, String sequence, TranslateTokens translateTokens) {		
 		List<String> tokenList = new ArrayList<String>();

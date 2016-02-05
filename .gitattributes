@@ -80,7 +80,6 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReader.java -text svneo
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTokenSetInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/TranslateTokens.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/nexml/XMLElementReaderKey.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusStreamDataProvider.java -text svneol=unset#text/plain
@@ -117,7 +116,11 @@ main/src/info/bioinfweb/jphyloio/formats/text/AbstractTextEventReader.java -text
 main/src/info/bioinfweb/jphyloio/formats/text/TextStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/XMLElementReaderKey.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLStreamDataProvider.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xtg/AbstractXTGElementReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xtg/XTGConstants.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/model/AnnotatedElement.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/model/CharacterData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/model/ElementCollection.java -text svneol=unset#text/plain
