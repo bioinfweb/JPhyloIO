@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 
@@ -32,9 +33,9 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 public abstract class AbstractEventWriter implements JPhyloIOEventWriter {
 	@Override
 	public void writeDocument(DocumentDataAdapter document, File file, EventWriterParameterMap parameters) throws Exception {
-		FileWriter writer = new FileWriter(file);
+		Writer writer = new BufferedWriter(new FileWriter(file));
 		try {
-			writeDocument(document, new BufferedWriter(writer), parameters);	
+			writeDocument(document, writer, parameters);	
 		}
 		finally {
 			writer.close();
