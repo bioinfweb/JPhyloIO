@@ -51,6 +51,15 @@ public class JPhyloIOTestTools {
 	}
 	
 	
+	public static DocumentDataAdapter createTestDocumentWithLabels(String... labelsAndSequences) {
+		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
+		TestMatrixDataAdapter matrixAdapter = TestMatrixDataAdapter.newSingleCharTokenInstanceWithLabels(labelsAndSequences);
+		result.getOtuLists().add(matrixAdapter.createAccordingOTUList(0));
+		result.getMatrices().add(matrixAdapter);
+		return result;
+	}
+	
+	
 	public static void assertEventType(EventContentType expectedContentType, 
 			EventTopologyType expectedTopologyType, JPhyloIOEvent event) throws Exception {
 		

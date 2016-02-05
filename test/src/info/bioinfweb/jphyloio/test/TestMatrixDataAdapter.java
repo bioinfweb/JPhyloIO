@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.test;
 
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsMatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
@@ -30,14 +31,25 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 
 
-public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter {
-	private SortedMap<String, List<String>> matrix = new TreeMap<>();
+public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements ReadWriteConstants {
+	private static class SequenceData {
+		public String label;
+		public List<String> tokens;
+		
+		public SequenceData(String label, List<String> tokens) {
+			super();
+			this.label = label;
+			this.tokens = tokens;
+		}
+	}
+	
+	
+	private SortedMap<String, SequenceData> matrix = new TreeMap<>();
 	private long columnCount;
 	private boolean longTokens;
 
@@ -53,7 +65,9 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter {
 		result.longTokens = false;
 		result.columnCount = sequences[0].length();  // Specifying an empty array leads to an exception.
 		for (int i = 0; i < sequences.length; i++) {
-			result.getMatrix().put("id" + idManager.createNewID(), StringUtils.charSequenceToStringList(sequences[i]));
+			long id = idManager.createNewID();
+			result.getMatrix().put(DEFAULT_SEQUENCE_ID_PREFIX + id, new SequenceData("Sequence " + id, 
+					StringUtils.charSequenceToStringList(sequences[i])));
 			if ((result.columnCount != -1) && (sequences[i].length() != result.columnCount)) {
 				result.columnCount = -1;
 			}
@@ -62,15 +76,47 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter {
 	}
 	
 	
-	public SortedMap<String, List<String>> getMatrix() {
+	public static TestMatrixDataAdapter newSingleCharTokenInstanceWithLabels(String... labelsAndSequences) {
+		if (labelsAndSequences.length % 2 != 0) {
+			throw new IllegalArgumentException("There must be the same number of labels and sequences.");
+		}
+		else {
+			LongIDManager idManager = new LongIDManager();
+			TestMatrixDataAdapter result = new TestMatrixDataAdapter();
+			result.longTokens = false;
+			result.columnCount = labelsAndSequences[1].length();  // Specifying an empty array leads to an exception.
+			for (int i = 0; i < labelsAndSequences.length; i += 2) {
+				result.getMatrix().put(DEFAULT_SEQUENCE_ID_PREFIX + idManager.createNewID(), new SequenceData(labelsAndSequences[i], 
+						StringUtils.charSequenceToStringList(labelsAndSequences[i + 1])));
+				if ((result.columnCount != -1) && (labelsAndSequences[i + 1].length() != result.columnCount)) {
+					result.columnCount = -1;
+				}
+			}
+			return result;
+		}
+	}
+	
+	
+	public SortedMap<String, SequenceData> getMatrix() {
 		return matrix;
 	}
 	
 	
-	private List<String> getSequence(String sequenceID) throws IllegalArgumentException {
-		List<String> sequence = getMatrix().get(sequenceID);
-		if (sequence != null) {
-			return sequence;
+	public TestOTUListDataAdapter createAccordingOTUList(int indexOfList) {
+		String[] otuIDs = new String[getMatrix().size()];
+		int index = 0;
+		for (String sequenceID : getMatrix().keySet()) {
+			otuIDs[index] = sequenceID.replace(DEFAULT_SEQUENCE_ID_PREFIX, DEFAULT_OTU_ID_PREFIX);
+			index++;
+		}
+		return new TestOTUListDataAdapter(indexOfList, otuIDs);
+	}
+	
+	
+	private SequenceData getSequence(String sequenceID) throws IllegalArgumentException {
+		SequenceData result = getMatrix().get(sequenceID);
+		if (result != null) {
+			return result;
 		}
 		else {
 			throw new IllegalArgumentException("No sequence with the ID " + sequenceID + " present.");
@@ -82,24 +128,20 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter {
 	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
 			long endColumn) throws IllegalArgumentException, IOException {
 		
-		receiver.add(new SequenceTokensEvent(getSequence(sequenceID).subList((int)startColumn, (int)endColumn)));
+		receiver.add(new SequenceTokensEvent(getSequence(sequenceID).tokens.subList((int)startColumn, (int)endColumn)));
 	}
 	
 	
 	@Override
 	public LinkedOTUEvent getSequenceStartEvent(String sequenceID) {
-		if (getMatrix().containsKey(sequenceID)) {
-			return new LinkedOTUEvent(EventContentType.SEQUENCE, sequenceID, "Sequence " + sequenceID, null);
-		}
-		else {
-			throw new IllegalArgumentException("No sequence with the ID " + sequenceID + " present.");
-		}
+		return new LinkedOTUEvent(EventContentType.SEQUENCE, sequenceID, getSequence(sequenceID).label, 
+				sequenceID.replace(DEFAULT_SEQUENCE_ID_PREFIX, DEFAULT_OTU_ID_PREFIX));
 	}
 	
 	
 	@Override
 	public long getSequenceLength(String sequenceID) throws IllegalArgumentException {
-		return getSequence(sequenceID).size();
+		return getSequence(sequenceID).tokens.size();
 	}
 	
 	

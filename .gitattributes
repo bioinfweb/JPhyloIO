@@ -215,6 +215,7 @@ test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReaderTest.java -
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/TestMatrixDataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/TestOTUListDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/WhiteSpaceTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/XMLLongAttribiteTest.java -text svneol=unset#text/plain

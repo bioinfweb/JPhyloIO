@@ -24,7 +24,11 @@ import java.io.File;
 import java.io.FileReader;
 
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.test.TestOTUListDataAdapter;
 
 import org.junit.* ;
 
@@ -33,7 +37,7 @@ import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 
 
 
-public class FASTAEventWriterTest {
+public class FASTAEventWriterTest implements ReadWriteConstants {
 	@Test
 	public void test_writeDocument() throws Exception {
 		File file = new File("data/testOutput/Test.fasta");
@@ -46,9 +50,9 @@ public class FASTAEventWriterTest {
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			assertEquals(">Sequence id0", reader.readLine());
+			assertEquals(">Sequence 0", reader.readLine());
 			assertEquals("ACTGC", reader.readLine());
-			assertEquals(">Sequence id1", reader.readLine());
+			assertEquals(">Sequence 1", reader.readLine());
 			assertEquals("A-TCC", reader.readLine());
 			assertEquals(-1, reader.read());
 		}
@@ -61,7 +65,7 @@ public class FASTAEventWriterTest {
 	
 	@Test
 	public void test_writeDocument_emptySequence() throws Exception {
-		File file = new File("data/testOutput/Test.fasta");
+		File file = new File("data/testOutput/TestEmptySequence.fasta");
 		
 		// Write file:
 		DocumentDataAdapter document = createTestDocument("", "A-TCC");
@@ -71,8 +75,8 @@ public class FASTAEventWriterTest {
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			assertEquals(">Sequence id0", reader.readLine());
-			assertEquals(">Sequence id1", reader.readLine());
+			assertEquals(">Sequence 0", reader.readLine());
+			assertEquals(">Sequence 1", reader.readLine());
 			assertEquals("A-TCC", reader.readLine());
 			assertEquals(-1, reader.read());
 		}
@@ -97,14 +101,45 @@ public class FASTAEventWriterTest {
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			assertEquals(">Sequence id0", reader.readLine());
+			assertEquals(">Sequence 0", reader.readLine());
 			assertEquals("ACT", reader.readLine());
 			assertEquals("GC", reader.readLine());
-			assertEquals(">Sequence id1", reader.readLine());
+			assertEquals(">Sequence 1", reader.readLine());
 			assertEquals("ACT", reader.readLine());
-			assertEquals(">Sequence id2", reader.readLine());
+			assertEquals(">Sequence 2", reader.readLine());
 			assertEquals("A-T", reader.readLine());
 			assertEquals("CC", reader.readLine());
+			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void test_writeDocument_labelSources() throws Exception {
+		File file = new File("data/testOutput/TestLabelSources.fasta");
+		
+		// Write file:
+		DocumentDataAdapter document = createTestDocumentWithLabels("Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
+		TestOTUListDataAdapter otuList = (TestOTUListDataAdapter)document.getOTUListIterator().next();
+		String otuID = DEFAULT_OTU_ID_PREFIX + "2";
+		otuList.getOtus().put(otuID, new LabeledIDEvent(EventContentType.OTU, otuID, null));  // Set last OTU label to null
+		
+		FASTAEventWriter writer = new FASTAEventWriter();
+		writer.writeDocument(document, file, new EventWriterParameterMap());
+		
+		// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {
+			assertEquals(">Label 1", reader.readLine());  // Label from sequence
+			assertEquals("ACTGC", reader.readLine());
+			assertEquals(">OTU " + DEFAULT_OTU_ID_PREFIX + "1", reader.readLine());  // Label from OTU
+			assertEquals("A-TCC", reader.readLine());
+			assertEquals(">" + DEFAULT_SEQUENCE_ID_PREFIX + "2", reader.readLine());  // Sequence ID
+			assertEquals("ACTTC", reader.readLine());
 			assertEquals(-1, reader.read());
 		}
 		finally {
