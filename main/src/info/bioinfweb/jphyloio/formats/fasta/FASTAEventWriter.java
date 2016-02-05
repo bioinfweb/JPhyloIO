@@ -61,11 +61,30 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 	}
 	
 	
+	private String getSequenceName(LinkedOTUEvent sequenceEvent, OTUListDataAdapter otuList) {
+		String result = sequenceEvent.getLabel();
+		if (result == null) {
+			if (sequenceEvent.isOTULinked() && (otuList != null)) {
+				result = otuList.getOTUStartEvent(sequenceEvent.getOTUID()).getLabel();
+			}
+			if (result == null) {
+				result = sequenceEvent.getID();
+			}
+		}
+		return result;
+	}
+	
+	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer,
 			EventWriterParameterMap parameters) throws Exception {
 		
 		//TODO Create possible OTU map
+		OTUListDataAdapter firstOTUList = null; 
+		Iterator<OTUListDataAdapter> otuListIterator = document.getOTUListIterator();
+		if (otuListIterator.hasNext()) {
+			firstOTUList = otuListIterator.next();
+		}
 		
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
 		if (matrixIterator.hasNext()) {
@@ -78,7 +97,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				while (sequenceIDIterator.hasNext()) {
 					String id = sequenceIDIterator.next();
 					LinkedOTUEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
-					writeSequenceName(sequenceEvent.getLabel(), writer, eventReceiver);  //TODO Use OTU label or ID, if label is null.
+					writeSequenceName(getSequenceName(sequenceEvent, firstOTUList), writer, eventReceiver);
 					//TODO Possibly write sequence comments
 					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));
 				}

@@ -20,7 +20,10 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import java.io.IOException;
+import java.io.Writer;
 
+import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
@@ -44,6 +47,13 @@ public interface JPhyloIOEventReceiver {
 	 * <p>
 	 * Conversely, a return value of {@code true} does not necessarily mean that more events are expected
 	 * in order to complete the expected information.
+	 * <p>
+	 * Exceptions thrown by this instance should not be caught within any of the {@code write*()} methods
+	 * in application implementations of any data adapter (e.g. 
+	 * {@link MatrixDataAdapter#writeSequencePartContentData(JPhyloIOEventReceiver, String, long, long)}. 
+	 * They will be forwarded by the calling writer and can be handled by the application when 
+	 * {@link JPhyloIOEventWriter#writeDocument(DocumentDataAdapter, Writer, EventWriterParameterMap)}
+	 * (or one of the other overloaded versions) are called. 
 	 * 
 	 * @param event the event to be added
 	 * @return {@code true} if more events can be written to this acceptor or {@code false} if writing should
