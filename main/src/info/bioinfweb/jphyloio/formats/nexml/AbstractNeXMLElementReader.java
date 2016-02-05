@@ -36,10 +36,14 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * @author Sarah Wiechers
  */
-public abstract class NeXMLElementReader implements NeXMLConstants {
-	protected static class OTUEventInformation {
+public abstract class AbstractNeXMLElementReader implements NeXMLConstants {
+	protected static class LabeledIDEventInformation {
 		public String id;
-		public String label;	
+		public String label;
+	}
+	
+	
+	protected static class OTUEventInformation extends LabeledIDEventInformation {
 		public String otuID;
 	}
 	
@@ -112,17 +116,31 @@ public abstract class NeXMLElementReader implements NeXMLConstants {
 	}
 	
 	
+	protected LabeledIDEventInformation getLabeledIDEventInformation(NeXMLStreamDataProvider streamDataProvider, 
+			StartElement element) {
+		LabeledIDEventInformation labeledIDEventInformation = new LabeledIDEventInformation();
+		labeledIDEventInformation.id = XMLUtils.readStringAttr(element, ATTR_ID, null);
+		labeledIDEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
+		
+		return labeledIDEventInformation;
+	}
+	
+	
 	protected OTUEventInformation getOTUEventInformation(NeXMLStreamDataProvider streamDataProvider, StartElement element) {
+		LabeledIDEventInformation labeledIDEventInformation = getLabeledIDEventInformation(streamDataProvider, element);
 		OTUEventInformation otuEventInformation = new OTUEventInformation();
-		otuEventInformation.id = XMLUtils.readStringAttr(element, ATTR_ID, null);
-		otuEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
+		
+		otuEventInformation.id = labeledIDEventInformation.id;
+		otuEventInformation.label = labeledIDEventInformation.label;
 		otuEventInformation.otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
+		
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuID != null)) {
 			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuID);
+			if (otuEventInformation.label == null) {
+				otuEventInformation.label = otuEventInformation.id;	
+			}
 		}
-		if (otuEventInformation.label == null) {
-			otuEventInformation.label = otuEventInformation.id;	
-		}
+		
 		return otuEventInformation;
 	}
 }
