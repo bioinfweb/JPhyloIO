@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import java.io.IOException;
 import java.util.Iterator;
 
 
@@ -56,5 +57,5 @@ public interface ObjectListDataAdapter {
 	 * @param nodeID the ID of the requested node
 	 * @throws IllegalArgumentException if an unknown ID was specified
 	 */
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException;
+	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException, IOException;
 }

@@ -19,11 +19,14 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import java.io.IOException;
 import java.util.Iterator;
 
 
 
 public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter {
+	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition.
+	
 	/**
 	 * Determines whether this instance represents a phylogenetic tree or a phylogenetic network.
 	 * (Not all formats accept networks.)
@@ -47,7 +50,7 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter {
 	 * @param nodeID the ID of the requested node
 	 * @throws IllegalArgumentException if an unknown node ID was specified
 	 */
-	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
 	
 	/**
 	 * Returns an iterator returning the IDs of all edges starting at the specified node. This includes 
@@ -60,5 +63,5 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter {
 	 */
 	public Iterator<String> getEdgeIDsFromNode(String nodeID) throws IllegalArgumentException;  //TODO Using this pattern may include circular references in networks.
 
-	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
 }
