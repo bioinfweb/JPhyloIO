@@ -92,4 +92,11 @@ public abstract class AbstractXMLEventReader extends AbstractEventReader {
 	protected Stack<QName> getEncounteredTags() {
 		return encounteredTags;
 	}
+	
+	
+	@Override
+	public void close() throws Exception {
+		super.close();
+		getXMLReader().close();
+	}	
 }

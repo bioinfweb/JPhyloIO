@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -153,16 +153,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader implements Phylo
 	public void setMaxCommentLength(int maxCommentLength) {}
 
 	
-	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
-		return super.getUpcomingEvents();
-	}
-	
-	
-	protected XMLEventReader getXMLReader() {
-		return super.getXMLReader();
-	}
-	
-	
 	@Override
 	protected XMLStreamDataProvider createStreamDataProvider() {
 		return new XMLStreamDataProvider(this);
@@ -232,11 +222,4 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader implements Phylo
 		}
 		return result;
 	}
-	
-	
-	@Override
-	public void close() throws Exception {
-		super.close();
-		getXMLReader().close();
-	}	
 }
