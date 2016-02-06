@@ -21,8 +21,8 @@ package info.bioinfweb.jphyloio.test;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.SortedMap;
-import java.util.TreeMap;
+
+import org.apache.commons.collections4.map.ListOrderedMap;
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
@@ -36,7 +36,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements OTUListDataAdapter {
 	private int indexOfList;
-	private SortedMap<String, LabeledIDEvent> otus = new TreeMap<String, LabeledIDEvent>();
+	private ListOrderedMap<String, LabeledIDEvent> otus = new ListOrderedMap<String, LabeledIDEvent>();
 	
 	
 	public TestOTUListDataAdapter(int indexOfList, LabeledIDEvent... otus) {
@@ -57,7 +57,7 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements
 	}
 	
 
-	public SortedMap<String, LabeledIDEvent> getOtus() {
+	public ListOrderedMap<String, LabeledIDEvent> getOtus() {
 		return otus;
 	}
 
