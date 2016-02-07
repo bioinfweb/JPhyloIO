@@ -56,11 +56,17 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	
 	protected TestMatrixDataAdapter(boolean containsLabels, String... sequencesOrLabelsAndSequences) {
 		super();
-		if (containsLabels) {
-			createSingleCharTokenInstanceWithLabels(sequencesOrLabelsAndSequences);
+		if (sequencesOrLabelsAndSequences.length == 0) {
+			longTokens = true;
+			columnCount = 0;
 		}
 		else {
-			createSingleCharTokenInstance(sequencesOrLabelsAndSequences);
+			if (containsLabels) {
+				createSingleCharTokenInstanceWithLabels(sequencesOrLabelsAndSequences);
+			}
+			else {
+				createSingleCharTokenInstance(sequencesOrLabelsAndSequences);
+			}
 		}
 	}
 	

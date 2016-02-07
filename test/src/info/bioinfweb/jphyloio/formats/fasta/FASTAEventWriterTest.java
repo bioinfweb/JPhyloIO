@@ -23,6 +23,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import info.bioinfweb.commons.log.ApplicationLoggerMessage;
+import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
@@ -168,6 +170,32 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 			assertEquals(">Sequence 1", reader.readLine());
 			assertEquals("A-TCC", reader.readLine());
 			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
+		
+	
+	@Test
+	public void test_writeDocument_logEmptyMatrix() throws Exception {
+		File file = new File("data/testOutput/TestLogEmptyMatrix.fasta");
+		
+		// Write file:
+		DocumentDataAdapter document = createTestDocument();
+		MessageListApplicationLogger logger = new MessageListApplicationLogger();
+		FASTAEventWriter writer = new FASTAEventWriter(logger);
+		writer.writeDocument(document, file, new EventWriterParameterMap());
+		
+		// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {
+			assertEquals(-1, reader.read());
+			
+			assertEquals(1, logger.getMessageList().size());
+			assertEquals("An empty FASTA file was written since the first matrix model adapter did not provide any sequences.", 
+					logger.getMessageList().get(0).getMessage());
 		}
 		finally {
 			reader.close();
