@@ -60,24 +60,27 @@ class FASTASequenceEventReceiver implements JPhyloIOEventReceiver {
 	}
 	
 	
+	private void writeToken(String token) throws IOException {
+		if (matrixDataAdapter.containsLongTokens()) {
+			token += " "; 
+		}
+		else if (token.length() > 1) {
+			throw new IllegalArgumentException("The specified string representation of one or more of token(s) is longer "
+					+ "than one character, although this reader is set to not allow longer tokens.");
+		}
+		if (charsPerLineWritten + token.length() > lineLength) {
+			writeNewLine(writer);
+		}
+		writer.write(token);
+		charsPerLineWritten += token.length();
+	}
+	
+	
 	private void writeTokens(Collection<String> tokens) throws IOException {
 		Iterator<String> tokenIterator = tokens.iterator();
 		while (tokenIterator.hasNext()) {
-			String token = tokenIterator.next();
-			if (matrixDataAdapter.containsLongTokens()) {
-				token += " "; 
-			}
-			else if (token.length() > 1) {
-				throw new IllegalArgumentException("The specified string representation of one or more of token(s) is longer "
-						+ "than one character, although this reader is set to not allow longer tokens.");
-			}
-			if (charsPerLineWritten + token.length() > lineLength) {
-				writeNewLine(writer);
-			}
-			writer.write(token);
-			charsPerLineWritten += token.length();
+			writeToken(tokenIterator.next());
 		}
-
 	}
 	
 	
@@ -85,12 +88,11 @@ class FASTASequenceEventReceiver implements JPhyloIOEventReceiver {
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
 		switch (event.getType().getContentType()) {
 			case SEQUENCE_TOKENS:
-				SequenceTokensEvent sequenceTokensEvent = event.asSequenceTokensEvent();
 				writeTokens(event.asSequenceTokensEvent().getCharacterValues());
 				break;
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					SingleSequenceTokenEvent singleSequenceTokenEvent = event.asSingleSequenceTokenEvent();
+					writeToken(event.asSingleSequenceTokenEvent().getToken());
 				}  // End events can be ignored.
 				break;
 			case META_INFORMATION:
