@@ -176,33 +176,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 			file.delete();
 		}
 	}
-		
 	
-	@Test
-	public void test_writeDocument_logEmptyMatrix() throws Exception {
-		File file = new File("data/testOutput/TestLogEmptyMatrix.fasta");
-		
-		// Write file:
-		DocumentDataAdapter document = createTestDocument();
-		MessageListApplicationLogger logger = new MessageListApplicationLogger();
-		FASTAEventWriter writer = new FASTAEventWriter(logger);
-		writer.writeDocument(document, file, new EventWriterParameterMap());
-		
-		// Validate file:
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		try {
-			assertEquals(-1, reader.read());
-			
-			assertEquals(1, logger.getMessageList().size());
-			assertEquals("An empty FASTA file was written since the first matrix model adapter did not provide any sequences.", 
-					logger.getMessageList().get(0).getMessage());
-		}
-		finally {
-			reader.close();
-			file.delete();
-		}
-	}
-		
 	
 	public static void main(String[] args) throws Exception {
 		SingleTokenTestMatrixDataAdapter adapter = new SingleTokenTestMatrixDataAdapter(false, "ACGT-CT");
