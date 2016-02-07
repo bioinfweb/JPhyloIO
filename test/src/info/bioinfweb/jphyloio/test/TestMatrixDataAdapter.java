@@ -54,7 +54,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	private boolean longTokens;
 
 	
-	protected TestMatrixDataAdapter(boolean containsLabels, String... sequencesOrLabelsAndSequences) {
+	public TestMatrixDataAdapter(boolean containsLabels, String... sequencesOrLabelsAndSequences) {
 		super();
 		if (sequencesOrLabelsAndSequences.length == 0) {
 			longTokens = true;

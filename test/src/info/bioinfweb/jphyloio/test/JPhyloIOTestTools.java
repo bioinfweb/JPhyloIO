@@ -44,14 +44,14 @@ import static org.junit.Assert.*;
 
 
 public class JPhyloIOTestTools {
-	public static DocumentDataAdapter createTestDocument(String... sequences) {
+	public static ListBasedDocumentDataAdapter createTestDocument(String... sequences) {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
 		result.getMatrices().add(new TestMatrixDataAdapter(false, sequences));
 		return result;
 	}
 	
 	
-	public static DocumentDataAdapter createTestDocumentWithLabels(String... labelsAndSequences) {
+	public static ListBasedDocumentDataAdapter createTestDocumentWithLabels(String... labelsAndSequences) {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
 		TestMatrixDataAdapter matrixAdapter = new TestMatrixDataAdapter(true, labelsAndSequences);
 		result.getOtuLists().add(matrixAdapter.createAccordingOTUList(0));
@@ -60,7 +60,7 @@ public class JPhyloIOTestTools {
 	}
 	
 	
-	public static DocumentDataAdapter createSingleTokenTestDocument(String... sequences) {
+	public static ListBasedDocumentDataAdapter createSingleTokenTestDocument(String... sequences) {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
 		result.getMatrices().add(new SingleTokenTestMatrixDataAdapter(false, sequences));
 		return result;

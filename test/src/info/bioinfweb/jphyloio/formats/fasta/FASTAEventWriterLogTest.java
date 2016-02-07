@@ -23,11 +23,13 @@ import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.createTestDocument;
 import static org.junit.Assert.assertEquals;
 
 
+import static org.junit.Assert.assertNotEquals;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.test.TestMatrixDataAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,7 +40,7 @@ import org.junit.Test;
 
 
 public class FASTAEventWriterLogTest {
-	private void testLogMessage(DocumentDataAdapter document, ApplicationLoggerMessageType expectedType, String expectedMessage) 
+	private void testLogMessage(DocumentDataAdapter document, boolean testEmpty, ApplicationLoggerMessageType expectedType, String expectedMessage) 
 			throws Exception {
 		
 		File file = new File("data/testOutput/TestLogMessage.fasta");
@@ -51,7 +53,12 @@ public class FASTAEventWriterLogTest {
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			assertEquals(-1, reader.read());
+			if (testEmpty) {
+				assertEquals(-1, reader.read());
+			}
+			else {
+				assertNotEquals(-1, reader.read());
+			}
 			
 			assertEquals(1, logger.getMessageList().size());
 			assertEquals(expectedType, logger.getMessageList().get(0).getType());
@@ -66,14 +73,24 @@ public class FASTAEventWriterLogTest {
 	
 	@Test
 	public void test_writeDocument_logEmptyMatrix() throws Exception {
-		testLogMessage(createTestDocument(),	ApplicationLoggerMessageType.WARNING, 
+		testLogMessage(createTestDocument(), true, ApplicationLoggerMessageType.WARNING, 
 				"An empty FASTA file was written since the first matrix model adapter did not provide any sequences.");
 	}
 	
 	
 	@Test
 	public void test_writeDocument_logNoMatrix() throws Exception {
-		testLogMessage(new ListBasedDocumentDataAdapter(),	ApplicationLoggerMessageType.WARNING, 
+		testLogMessage(new ListBasedDocumentDataAdapter(), true, ApplicationLoggerMessageType.WARNING, 
 				"An empty FASTA file was written since the specified document adapter contained contained no matrices.");
+	}
+	
+	
+	@Test
+	public void test_writeDocument_logSecondMatrix() throws Exception {
+		ListBasedDocumentDataAdapter document = createTestDocument("ATG", "CGT");
+		document.getMatrices().add(new TestMatrixDataAdapter(false, "AAA", "ATA"));
+		testLogMessage(document, false, ApplicationLoggerMessageType.WARNING, 
+				"The specified document adapter contained more than one character matrix adapter. Since the FASTA "
+						+ "format does not support multiple alignments in one file, only the first matrix was written.");
 	}
 }
