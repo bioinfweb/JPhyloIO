@@ -54,45 +54,47 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	private boolean longTokens;
 
 	
-	private TestMatrixDataAdapter() {
+	protected TestMatrixDataAdapter(boolean containsLabels, String... sequencesOrLabelsAndSequences) {
 		super();
+		if (containsLabels) {
+			createSingleCharTokenInstanceWithLabels(sequencesOrLabelsAndSequences);
+		}
+		else {
+			createSingleCharTokenInstance(sequencesOrLabelsAndSequences);
+		}
 	}
 	
 	
-	public static TestMatrixDataAdapter newSingleCharTokenInstance(String... sequences) {
+	private void createSingleCharTokenInstance(String... sequences) {
 		LongIDManager idManager = new LongIDManager();
-		TestMatrixDataAdapter result = new TestMatrixDataAdapter();
-		result.longTokens = false;
-		result.columnCount = sequences[0].length();  // Specifying an empty array leads to an exception.
+		longTokens = false;
+		columnCount = sequences[0].length();  // Specifying an empty array leads to an exception.
 		for (int i = 0; i < sequences.length; i++) {
 			long id = idManager.createNewID();
-			result.getMatrix().put(DEFAULT_SEQUENCE_ID_PREFIX + id, new SequenceData("Sequence " + id, 
+			getMatrix().put(DEFAULT_SEQUENCE_ID_PREFIX + id, new SequenceData("Sequence " + id, 
 					StringUtils.charSequenceToStringList(sequences[i])));
-			if ((result.columnCount != -1) && (sequences[i].length() != result.columnCount)) {
-				result.columnCount = -1;
+			if ((columnCount != -1) && (sequences[i].length() != columnCount)) {
+				columnCount = -1;
 			}
 		}
-		return result;
 	}
 	
 	
-	public static TestMatrixDataAdapter newSingleCharTokenInstanceWithLabels(String... labelsAndSequences) {
+	public void createSingleCharTokenInstanceWithLabels(String... labelsAndSequences) {
 		if (labelsAndSequences.length % 2 != 0) {
 			throw new IllegalArgumentException("There must be the same number of labels and sequences.");
 		}
 		else {
 			LongIDManager idManager = new LongIDManager();
-			TestMatrixDataAdapter result = new TestMatrixDataAdapter();
-			result.longTokens = false;
-			result.columnCount = labelsAndSequences[1].length();  // Specifying an empty array leads to an exception.
+			longTokens = false;
+			columnCount = labelsAndSequences[1].length();  // Specifying an empty array leads to an exception.
 			for (int i = 0; i < labelsAndSequences.length; i += 2) {
-				result.getMatrix().put(DEFAULT_SEQUENCE_ID_PREFIX + idManager.createNewID(), new SequenceData(labelsAndSequences[i], 
+				getMatrix().put(DEFAULT_SEQUENCE_ID_PREFIX + idManager.createNewID(), new SequenceData(labelsAndSequences[i], 
 						StringUtils.charSequenceToStringList(labelsAndSequences[i + 1])));
-				if ((result.columnCount != -1) && (labelsAndSequences[i + 1].length() != result.columnCount)) {
-					result.columnCount = -1;
+				if ((columnCount != -1) && (labelsAndSequences[i + 1].length() != columnCount)) {
+					columnCount = -1;
 				}
 			}
-			return result;
 		}
 	}
 	
