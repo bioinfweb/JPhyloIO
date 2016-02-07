@@ -27,6 +27,7 @@ import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,11 +38,12 @@ import org.junit.Test;
 
 
 public class FASTAEventWriterLogTest {
-	private void testLogMessage(ApplicationLoggerMessageType expectedType, String expectedMessage) throws Exception {
+	private void testLogMessage(DocumentDataAdapter document, ApplicationLoggerMessageType expectedType, String expectedMessage) 
+			throws Exception {
+		
 		File file = new File("data/testOutput/TestLogMessage.fasta");
 		
 		// Write file:
-		DocumentDataAdapter document = createTestDocument();
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		FASTAEventWriter writer = new FASTAEventWriter(logger);
 		writer.writeDocument(document, file, new EventWriterParameterMap());
@@ -64,7 +66,14 @@ public class FASTAEventWriterLogTest {
 	
 	@Test
 	public void test_writeDocument_logEmptyMatrix() throws Exception {
-		testLogMessage(ApplicationLoggerMessageType.WARNING, 
+		testLogMessage(createTestDocument(),	ApplicationLoggerMessageType.WARNING, 
 				"An empty FASTA file was written since the first matrix model adapter did not provide any sequences.");
+	}
+	
+	
+	@Test
+	public void test_writeDocument_logNoMatrix() throws Exception {
+		testLogMessage(new ListBasedDocumentDataAdapter(),	ApplicationLoggerMessageType.WARNING, 
+				"An empty FASTA file was written since the specified document adapter contained contained no matrices.");
 	}
 }
