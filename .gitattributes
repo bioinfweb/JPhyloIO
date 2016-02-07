@@ -215,6 +215,8 @@ test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/SingleTokenTestMatrixDataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/SystemOutEventReceiver.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/TestMatrixDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/TestOTUListDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain

@@ -37,7 +37,7 @@ import java.util.TreeMap;
 
 
 public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements ReadWriteConstants {
-	private static class SequenceData {
+	protected static class SequenceData {
 		public String label;
 		public List<String> tokens;
 		

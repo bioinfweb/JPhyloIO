@@ -28,6 +28,8 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.test.SingleTokenTestMatrixDataAdapter;
+import info.bioinfweb.jphyloio.test.SystemOutEventReceiver;
 import info.bioinfweb.jphyloio.test.TestOTUListDataAdapter;
 
 import org.junit.* ;
@@ -146,5 +148,36 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 			reader.close();
 			file.delete();
 		}
+	}
+	
+	
+	@Test
+	public void test_writeDocument_singleToken() throws Exception {
+		File file = new File("data/testOutput/TestSingleToken.fasta");
+		
+		// Write file:
+		DocumentDataAdapter document = createSingleTokenTestDocument("ACTGC", "A-TCC");
+		FASTAEventWriter writer = new FASTAEventWriter();
+		writer.writeDocument(document, file, new EventWriterParameterMap());
+		
+		// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {
+			assertEquals(">Sequence 0", reader.readLine());
+			assertEquals("ACTGC", reader.readLine());
+			assertEquals(">Sequence 1", reader.readLine());
+			assertEquals("A-TCC", reader.readLine());
+			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
+		
+	
+	public static void main(String[] args) throws Exception {
+		SingleTokenTestMatrixDataAdapter adapter = new SingleTokenTestMatrixDataAdapter(false, "ACGT-CT");
+		adapter.writeSequencePartContentData(new SystemOutEventReceiver(), DEFAULT_SEQUENCE_ID_PREFIX + "0", 0, 7);
 	}
 }

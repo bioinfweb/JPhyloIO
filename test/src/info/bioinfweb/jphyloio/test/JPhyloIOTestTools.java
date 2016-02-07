@@ -60,6 +60,13 @@ public class JPhyloIOTestTools {
 	}
 	
 	
+	public static DocumentDataAdapter createSingleTokenTestDocument(String... sequences) {
+		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
+		result.getMatrices().add(new SingleTokenTestMatrixDataAdapter(false, sequences));
+		return result;
+	}
+	
+	
 	public static void assertEventType(EventContentType expectedContentType, 
 			EventTopologyType expectedTopologyType, JPhyloIOEvent event) throws Exception {
 		
