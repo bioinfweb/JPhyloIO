@@ -23,8 +23,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import info.bioinfweb.commons.log.ApplicationLoggerMessage;
-import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;

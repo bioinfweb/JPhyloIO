@@ -51,9 +51,11 @@ public class FASTAEventWriterLogTest {
 		File file = new File("data/testOutput/TestLogMessage.fasta");
 		
 		// Write file:
+		FASTAEventWriter writer = new FASTAEventWriter();
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
-		FASTAEventWriter writer = new FASTAEventWriter(logger);
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		EventWriterParameterMap map = new EventWriterParameterMap();
+		map.put(EventWriterParameterMap.KEY_LOGGER, logger);
+		writer.writeDocument(document, file, map);
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
