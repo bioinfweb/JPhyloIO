@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.createTestDocument;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.assertEquals;
 
 
@@ -28,20 +28,25 @@ import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.test.TestMatrixDataAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
 
 import org.junit.Test;
 
 
 
 public class FASTAEventWriterLogTest {
-	private void testLogMessage(DocumentDataAdapter document, boolean testEmpty, ApplicationLoggerMessageType expectedType, String expectedMessage) 
-			throws Exception {
+	private void testLogMessage(DocumentDataAdapter document, boolean testEmpty, ApplicationLoggerMessageType expectedType, 
+			String expectedMessage)	throws Exception {
 		
 		File file = new File("data/testOutput/TestLogMessage.fasta");
 		
@@ -92,5 +97,47 @@ public class FASTAEventWriterLogTest {
 		testLogMessage(document, false, ApplicationLoggerMessageType.WARNING, 
 				"The specified document adapter contained more than one character matrix adapter. Since the FASTA "
 						+ "format does not support multiple alignments in one file, only the first matrix was written.");
+	}
+	
+	
+	@Test
+	public void test_writeDocument_logOTUWarning() throws Exception {
+		ListBasedDocumentDataAdapter document = createTestDocumentWithLabels("S1", "ATG", "S2", "CGT");
+		testLogMessage(document, false, ApplicationLoggerMessageType.WARNING, 
+				"The specified OTU list(s) will not be written, since the FASTA format does not support this. "
+						+ "The first list will though be used to try to label sequences that do not carry a label themselves.");
+	}
+	
+	
+	@Test
+	public void test_writeDocument_logTreeNetworkWarning() throws Exception {
+		ListBasedDocumentDataAdapter document = createTestDocument("ATG", "CGT");
+		document.getTreesNetworks().add(new TreeNetworkDataAdapter() {
+			@Override
+			public void writeMetadata(JPhyloIOEventReceiver writer) {}
+			
+			@Override
+			public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {}
+			
+			@Override
+			public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException {}
+			
+			@Override
+			public boolean isTree() {
+				return false;
+			}
+			
+			@Override
+			public Iterator<String> getRootEdgeIDs() {
+				return Collections.emptyIterator();
+			}
+			
+			@Override
+			public Iterator<String> getEdgeIDsFromNode(String nodeID)	throws IllegalArgumentException {
+				return Collections.emptyIterator();
+			}
+		});
+		testLogMessage(document, false, ApplicationLoggerMessageType.WARNING, 
+				"The specified tree or network definitions(s) will not be written, since the FASTA format does not support this.");
 	}
 }
