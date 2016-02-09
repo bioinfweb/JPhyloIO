@@ -22,14 +22,19 @@ package info.bioinfweb.jphyloio.formats.fasta;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.List;
 
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.test.SystemOutEventReceiver;
 import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
@@ -186,9 +191,12 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		ListBasedDocumentDataAdapter document = createTestDocument("ACTGC", "A-TCC");
 		TestMatrixDataAdapter matrix = (TestMatrixDataAdapter)document.getMatrices().get(0);
-		matrix.getMatrix().get("seq0").leadingEvents.add(new CommentEvent("com", true));
-		matrix.getMatrix().get("seq0").leadingEvents.add(new CommentEvent("ment 1", false));
-		matrix.getMatrix().get("seq0").leadingEvents.add(new CommentEvent("comment 2", false));
+		List<JPhyloIOEvent> leadingEvents = matrix.getMatrix().get("seq0").leadingEvents;
+		leadingEvents.add(new CommentEvent("com", true));
+		leadingEvents.add(new CommentEvent("ment 1", false));
+		leadingEvents.add(new MetaInformationEvent("someKey", "somyType", "someValue"));
+		leadingEvents.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+		leadingEvents.add(new CommentEvent("comment 2", false));
 		matrix.getMatrix().get("seq1").leadingEvents.add(new CommentEvent("comment 3", false));
 		FASTAEventWriter writer = new FASTAEventWriter();
 		writer.writeDocument(document, file, new EventWriterParameterMap());
