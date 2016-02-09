@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
@@ -75,8 +76,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 	
 	
 	@Override
-	protected Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<XTGEventReader>>> createMap() {
-		Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<XTGEventReader>>> map = new HashMap<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<XTGEventReader>>>();
+	protected void fillMap() {
+		Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<XTGEventReader>>> map = getElementReaderMap();
 		
 		XMLElementReader<XMLStreamDataProvider<XTGEventReader>> nodeStartReader = new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
 			@Override
@@ -138,8 +139,6 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				streamDataProvider.getCurrentEventCollection().add(new CommentEvent(comment, false));
 			}
 		});
-		
-		return map;
 	}
 
 	

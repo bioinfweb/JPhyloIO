@@ -37,6 +37,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
@@ -72,9 +73,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 	}
 	
 	
-	protected Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>> createMap() {
-		Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>> map = 
-				new HashMap<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>>();
+	protected void fillMap() {
+		Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>> map = getElementReaderMap();
 		
 		XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>> cladeStartReader = 
 				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
@@ -143,8 +143,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 						streamDataProvider.getCurrentEventCollection().add(new CommentEvent(comment, false));
 					}
 				});
-		
-		return map;
 	}
 
 	

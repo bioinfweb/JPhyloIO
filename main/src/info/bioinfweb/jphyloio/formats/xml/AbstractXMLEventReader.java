@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -51,7 +52,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	public static final String NAMESPACE_BIOINFWEB = "http://bioinfweb.info/JPhyloIO/technical";	
 	public static final QName TAG_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
 	
-	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = createMap();
+	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = new TreeMap<XMLElementReaderKey, XMLElementReader<P>>();
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	
@@ -69,12 +70,14 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	public AbstractXMLEventReader(boolean translateMatchToken, XMLEventReader xmlReader) {
 		super(translateMatchToken);
 		this.xmlReader = xmlReader;
+		fillMap();
 	}
 	
 	
 	public AbstractXMLEventReader(boolean translateMatchToken, int maxTokensToRead, XMLEventReader xmlReader) {
 		super(translateMatchToken, maxTokensToRead);
 		this.xmlReader = xmlReader;
+		fillMap();
 	}
 
 	
@@ -83,10 +86,12 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 		if (!(reader instanceof BufferedReader)) {
 			reader = new BufferedReader(reader);
 		}
-		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);		
+		this.xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);
+		fillMap();
 	}
 	
-	protected abstract Map<XMLElementReaderKey, XMLElementReader<P>> createMap();
+	
+	protected abstract void fillMap();
 	
 	
 	@Override
@@ -154,12 +159,6 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	}
 	
 	
-	@Override
-	protected P getStreamDataProvider() {
-		return (P)super.getStreamDataProvider();
-	}
-
-
 	protected XMLEventReader getXMLReader() {
 		return xmlReader;
 	}
@@ -170,6 +169,11 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	}
 	
 	
+	protected Map<XMLElementReaderKey, XMLElementReader<P>> getElementReaderMap() {
+		return elementReaderMap;
+	}
+
+
 	@Override
 	public void close() throws Exception {
 		super.close();

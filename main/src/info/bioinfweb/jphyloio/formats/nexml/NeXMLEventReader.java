@@ -41,6 +41,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
+import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,9 +97,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 
 	
 	@Override
-	protected Map<XMLElementReaderKey, XMLElementReader<NeXMLStreamDataProvider>> createMap() {
-		Map<XMLElementReaderKey, XMLElementReader<NeXMLStreamDataProvider>> map = 
-				new HashMap<XMLElementReaderKey, XMLElementReader<NeXMLStreamDataProvider>>();
+	protected void fillMap() {
+		Map<XMLElementReaderKey, XMLElementReader<NeXMLStreamDataProvider>> map = getElementReaderMap();
 		
 		AbstractNeXMLElementReader readMetaStart = new AbstractNeXMLElementReader() {
 			@Override
@@ -752,8 +752,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 				streamDataProvider.getCurrentEventCollection().add(new CommentEvent(comment, false));
 			}
 		});
-		
-		return map; 
 	}
 	
 
