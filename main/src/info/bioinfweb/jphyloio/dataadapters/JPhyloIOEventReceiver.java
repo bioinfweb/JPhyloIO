@@ -25,6 +25,7 @@ import java.io.Writer;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
@@ -60,7 +61,9 @@ public interface JPhyloIOEventReceiver {
 	 *         be aborted
 	 * @throws IllegalArgumentException if the specified event is illegal in this acceptor in general or at
 	 *         the current position in the sequence
+	 * @throws ClassCastException if an event object was specified that is not an instance of a class associated 
+	 *         with its type as document in {@link EventContentType}
 	 * @throws IOException if an I/O error occurs when writing to the underlying stream
 	 */
-	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException;  //TODO Possibly throw other/additional exceptions.
+	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, ClassCastException, IOException;  //TODO Possibly throw other/additional exceptions.
 }

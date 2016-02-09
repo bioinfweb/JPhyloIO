@@ -25,7 +25,6 @@ import java.util.Iterator;
 
 import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.commons.log.VoidApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
