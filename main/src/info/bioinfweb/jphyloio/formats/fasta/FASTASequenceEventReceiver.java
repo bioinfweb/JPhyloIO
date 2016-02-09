@@ -32,11 +32,12 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-class FASTASequenceEventReceiver implements JPhyloIOEventReceiver {
+class FASTASequenceEventReceiver implements JPhyloIOEventReceiver, FASTAConstants {
 	private int charsPerLineWritten = 0;
 	private Writer writer;
 	private MatrixDataAdapter matrixDataAdapter;
 	private long lineLength;
+	private boolean allowCommentsBeforeTokens = false;
 	
 	
 	public FASTASequenceEventReceiver(Writer writer, MatrixDataAdapter matrixDataAdapter, long lineLength) {
@@ -49,6 +50,16 @@ class FASTASequenceEventReceiver implements JPhyloIOEventReceiver {
 
 	public int getCharsPerLineWritten() {
 		return charsPerLineWritten;
+	}
+
+
+	public boolean isAllowCommentsBeforeTokens() {
+		return allowCommentsBeforeTokens;
+	}
+
+
+	public void setAllowCommentsBeforeTokens(boolean allowCommentsBeforeTokens) {
+		this.allowCommentsBeforeTokens = allowCommentsBeforeTokens;
 	}
 
 
@@ -82,9 +93,24 @@ class FASTASequenceEventReceiver implements JPhyloIOEventReceiver {
 	}
 	
 	
+	private void writeComment(String comment) throws IOException {
+		writer.write(COMMENT_START_CHAR);
+		writer.write(comment);
+		writeNewLine(writer);
+	}
+	
+	
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
 		switch (event.getType().getContentType()) {
+			case COMMENT:
+				if (isAllowCommentsBeforeTokens()) {
+					writeComment(event.asCommentEvent().getContent());
+				}
+				else {
+					
+				}
+				break;
 			case SEQUENCE_TOKENS:
 				writeTokens(event.asSequenceTokensEvent().getCharacterValues());
 				break;

@@ -55,22 +55,6 @@ import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
  * @author Ben St&ouml;ver
  */
 public class FASTAEventWriter extends AbstractEventWriter implements FASTAConstants {
-	/**
-	 * Creates a new instance of this class using the specified logger.
-	 */
-	public FASTAEventWriter() {
-		super();
-	}
-
-
-	/**
-	 * Creates a new instance of this class with an {@link VoidApplicationLogger}.
-	 */
-	public FASTAEventWriter(ApplicationLogger logger) {
-		super(logger);
-	}
-
-
 	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver) throws IOException {
 		if (receiver.getCharsPerLineWritten() > 0) {
 			receiver.writeNewLine(writer);
@@ -97,7 +81,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 	public void writeDocument(DocumentDataAdapter document, Writer writer,
 			EventWriterParameterMap parameters) throws Exception {
 		
-		//TODO Log ignored OTU document metadata, lists, trees and networks
+		ApplicationLogger logger = parameters.getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
 		
 		OTUListDataAdapter firstOTUList = null; 
 		Iterator<OTUListDataAdapter> otuListIterator = document.getOTUListIterator();
@@ -106,7 +90,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 		}
 		
 		if (firstOTUList != null) {
-			getLogger().addWarning("The specified OTU list(s) will not be written, since the FASTA format does not support this. "
+			logger.addWarning("The specified OTU list(s) will not be written, since the FASTA format does not support this. "
 					+ "The first list will though be used to try to label sequences that do not carry a label themselves."); 
 		}
 		
@@ -127,20 +111,20 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				}
 			}
 			else {
-				getLogger().addWarning("An empty FASTA file was written since the first matrix model adapter did not provide any sequences.");
+				logger.addWarning("An empty FASTA file was written since the first matrix model adapter did not provide any sequences.");
 			}
 			
 			if (matrixIterator.hasNext()) {
-				getLogger().addWarning("The specified document adapter contained more than one character matrix adapter. Since the FASTA "
+				logger.addWarning("The specified document adapter contained more than one character matrix adapter. Since the FASTA "
 						+ "format does not support multiple alignments in one file, only the first matrix was written.");
 			}
 		}
 		else {
-			getLogger().addWarning("An empty FASTA file was written since the specified document adapter contained contained no matrices.");
+			logger.addWarning("An empty FASTA file was written since the specified document adapter contained contained no matrices.");
 		}
 		
 		if (document.getTreeNetworkIterator().hasNext()) {
-			getLogger().addWarning(
+			logger.addWarning(
 					"The specified tree or network definitions(s) will not be written, since the FASTA format does not support this."); 
 		}
 	}

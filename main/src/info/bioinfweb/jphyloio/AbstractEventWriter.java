@@ -26,8 +26,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.commons.log.VoidApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 
 
@@ -37,33 +35,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractEventWriter implements JPhyloIOEventWriter {
-	private ApplicationLogger logger;
-	
-	
-	/**
-	 * Creates a new instance of this class using the specified logger.
-	 */
-	protected AbstractEventWriter(ApplicationLogger logger) {
-		super();
-		this.logger = logger;
-	}
-
-
-	/**
-	 * Creates a new instance of this class with an {@link VoidApplicationLogger}.
-	 */
-	protected AbstractEventWriter() {
-		super();
-		this.logger = new VoidApplicationLogger();
-	}
-
-
-	protected ApplicationLogger getLogger() {
-		return logger;
-	}
-
-
+public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	@Override
 	public void writeDocument(DocumentDataAdapter document, File file, EventWriterParameterMap parameters) throws Exception {
 		Writer writer = new BufferedWriter(new FileWriter(file));
