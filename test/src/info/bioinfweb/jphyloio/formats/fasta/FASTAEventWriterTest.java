@@ -26,11 +26,14 @@ import java.io.FileReader;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.test.SingleTokenTestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.SystemOutEventReceiver;
-import info.bioinfweb.jphyloio.test.TestOTUListDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 
 import org.junit.* ;
 
@@ -166,6 +169,39 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 			assertEquals(">Sequence 0", reader.readLine());
 			assertEquals("ACTGC", reader.readLine());
 			assertEquals(">Sequence 1", reader.readLine());
+			assertEquals("A-TCC", reader.readLine());
+			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void test_writeDocument_comments() throws Exception {
+		File file = new File("data/testOutput/TestComments.fasta");
+		
+		// Write file:
+		ListBasedDocumentDataAdapter document = createTestDocument("ACTGC", "A-TCC");
+		TestMatrixDataAdapter matrix = (TestMatrixDataAdapter)document.getMatrices().get(0);
+		matrix.getMatrix().get("seq0").leadingEvents.add(new CommentEvent("com", true));
+		matrix.getMatrix().get("seq0").leadingEvents.add(new CommentEvent("ment 1", false));
+		matrix.getMatrix().get("seq0").leadingEvents.add(new CommentEvent("comment 2", false));
+		matrix.getMatrix().get("seq1").leadingEvents.add(new CommentEvent("comment 3", false));
+		FASTAEventWriter writer = new FASTAEventWriter();
+		writer.writeDocument(document, file, new EventWriterParameterMap());
+		
+		// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {
+			assertEquals(">Sequence 0", reader.readLine());
+			assertEquals(";comment 1", reader.readLine());
+			assertEquals(";comment 2", reader.readLine());
+			assertEquals("ACTGC", reader.readLine());
+			assertEquals(">Sequence 1", reader.readLine());
+			assertEquals(";comment 3", reader.readLine());
 			assertEquals("A-TCC", reader.readLine());
 			assertEquals(-1, reader.read());
 		}

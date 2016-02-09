@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.test;
+package info.bioinfweb.jphyloio.test.dataadapters;
 
 
 import info.bioinfweb.commons.LongIDManager;
@@ -24,11 +24,14 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsMatrixDataAdapter;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedMap;
@@ -37,13 +40,15 @@ import java.util.TreeMap;
 
 
 public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements ReadWriteConstants {
-	protected static class SequenceData {
+	public static class SequenceData {
 		public String label;
+		public List<JPhyloIOEvent> leadingEvents;
 		public List<String> tokens;
 		
 		public SequenceData(String label, List<String> tokens) {
 			super();
 			this.label = label;
+			this.leadingEvents = new ArrayList<JPhyloIOEvent>();
 			this.tokens = tokens;
 		}
 	}
@@ -74,7 +79,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	private void createSingleCharTokenInstance(String... sequences) {
 		LongIDManager idManager = new LongIDManager();
 		longTokens = false;
-		columnCount = sequences[0].length();  // Specifying an empty array leads to an exception.
+		columnCount = sequences[0].length();
 		for (int i = 0; i < sequences.length; i++) {
 			long id = idManager.createNewID();
 			getMatrix().put(DEFAULT_SEQUENCE_ID_PREFIX + id, new SequenceData("Sequence " + id, 
@@ -93,7 +98,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 		else {
 			LongIDManager idManager = new LongIDManager();
 			longTokens = false;
-			columnCount = labelsAndSequences[1].length();  // Specifying an empty array leads to an exception.
+			columnCount = labelsAndSequences[1].length();
 			for (int i = 0; i < labelsAndSequences.length; i += 2) {
 				getMatrix().put(DEFAULT_SEQUENCE_ID_PREFIX + idManager.createNewID(), new SequenceData(labelsAndSequences[i], 
 						StringUtils.charSequenceToStringList(labelsAndSequences[i + 1])));
@@ -136,7 +141,13 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
 			long endColumn) throws IllegalArgumentException, IOException {
 		
-		receiver.add(new SequenceTokensEvent(getSequence(sequenceID).tokens.subList((int)startColumn, (int)endColumn)));
+		SequenceData data = getSequence(sequenceID);
+		if (startColumn == 0) {  // Write leading events.
+			for (JPhyloIOEvent event : data.leadingEvents) {
+				receiver.add(event);
+			}
+		}
+		receiver.add(new SequenceTokensEvent(data.tokens.subList((int)startColumn, (int)endColumn)));
 	}
 	
 	

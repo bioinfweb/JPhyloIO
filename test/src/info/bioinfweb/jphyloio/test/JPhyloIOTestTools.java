@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.test;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
-import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -39,6 +38,8 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
 
+import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import static org.junit.Assert.*;
 
 

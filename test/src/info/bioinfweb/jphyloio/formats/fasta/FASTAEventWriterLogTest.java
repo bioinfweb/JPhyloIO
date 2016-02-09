@@ -31,7 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
-import info.bioinfweb.jphyloio.test.TestMatrixDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
