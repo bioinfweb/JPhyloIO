@@ -61,12 +61,12 @@ public class CommentEvent extends ConcreteJPhyloIOEvent {
 
 
 	/**
-	 * Returns whether this event only contains a part of a very long comment and the next event(s) will contain
+	 * Returns whether this event only contains a part of a long comment and the next event(s) will contain
 	 * additional characters from the current comment. (The final event of a split comment returns {@code true} here.)
 	 * 
-	 * @return {@code true} if this event includes the final characters of the current comment (always true for
-	 *         comments that are not split between events) and {@code false} if future events will contain the
-	 *         remaining characters from the current comment. 
+	 * @return {@code false} if this event includes the final characters of the current comment (always the case for
+	 *         comments that are not split between events) and {@code true} if future events will contain the
+	 *         remaining characters from the current comment.
 	 */
 	public boolean isContinuedInNextEvent() {
 		return continuedInNextEvent;

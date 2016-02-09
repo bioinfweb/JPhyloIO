@@ -29,8 +29,10 @@ import info.bioinfweb.jphyloio.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
@@ -40,6 +42,7 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhylo
 	private MatrixDataAdapter matrixDataAdapter;
 	private long lineLength;
 	private boolean allowCommentsBeforeTokens = false;
+	private boolean continuedCommentExpected = false;
 	
 	
 	public FASTASequenceEventReceiver(Writer writer, EventWriterParameterMap parameterMap, 
@@ -96,20 +99,30 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhylo
 	}
 	
 	
-	private void writeComment(String comment) throws IOException {
-		getWriter().write(COMMENT_START_CHAR);
-		getWriter().write(comment);
-		writeNewLine(getWriter());
+	private void writeComment(CommentEvent commentEvent) throws IOException {
+		if (!continuedCommentExpected) {  // Writing starts in the previous comment line
+			getWriter().write(COMMENT_START_CHAR);
+		}
+		getWriter().write(commentEvent.getContent());
+		continuedCommentExpected = commentEvent.isContinuedInNextEvent();
+		if (!continuedCommentExpected) {
+			writeNewLine(getWriter());
+		}
 	}
 	
 	
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
+		if (continuedCommentExpected && !EventContentType.COMMENT.equals(event.getType().getContentType())) {
+			throw new IllegalArgumentException("The previous event was a comment event indicating that it would be continued in this "
+					+ "event, but this event was of type " + event.getType());
+		}
+		
 		boolean tokenWritten = false;
 		switch (event.getType().getContentType()) {
 			case COMMENT:
 				if (isAllowCommentsBeforeTokens()) {
-					writeComment(event.asCommentEvent().getContent());
+					writeComment(event.asCommentEvent());
 				}
 				else {
 					addIgnoredComments(1);
@@ -139,7 +152,7 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhylo
 						" are not allowed in a sequence content subsequence.");
 		}
 		
-		if (!tokenWritten) {  // Allow comments only at the beginning of a sequence. (If writeSequencePartContentData() was called with a start index > 0, allowCommentsBeforeTokens should have been false before this receiver was passed.
+		if (tokenWritten) {  // Allow comments only at the beginning of a sequence. (If writeSequencePartContentData() was called with a start index > 0, allowCommentsBeforeTokens should have been false before this receiver was passed.
 			setAllowCommentsBeforeTokens(false);
 		}
 		return true;
