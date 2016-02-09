@@ -105,6 +105,11 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 			firstOTUList = otuListIterator.next();
 		}
 		
+		if (firstOTUList != null) {
+			getLogger().addWarning("The specified OTU list(s) will not be written, since the FASTA format does not support this. "
+					+ "The first list will though be used to try to label sequences that do not carry a label themselves."); 
+		}
+		
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
 		if (matrixIterator.hasNext()) {
 			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
@@ -132,6 +137,11 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 		}
 		else {
 			getLogger().addWarning("An empty FASTA file was written since the specified document adapter contained contained no matrices.");
+		}
+		
+		if (document.getTreeNetworkIterator().hasNext()) {
+			getLogger().addWarning(
+					"The specified tree or network definitions(s) will not be written, since the FASTA format does not support this."); 
 		}
 	}
 }
