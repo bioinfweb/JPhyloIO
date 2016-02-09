@@ -25,24 +25,27 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import info.bioinfweb.commons.SystemUtils;
+import info.bioinfweb.jphyloio.AbstractEventReceiver;
+import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-class FASTASequenceEventReceiver implements JPhyloIOEventReceiver, FASTAConstants {
+class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhyloIOEventReceiver, FASTAConstants {
 	private int charsPerLineWritten = 0;
-	private Writer writer;
 	private MatrixDataAdapter matrixDataAdapter;
 	private long lineLength;
 	private boolean allowCommentsBeforeTokens = false;
 	
 	
-	public FASTASequenceEventReceiver(Writer writer, MatrixDataAdapter matrixDataAdapter, long lineLength) {
-		super();
-		this.writer = writer;
+	public FASTASequenceEventReceiver(Writer writer, EventWriterParameterMap parameterMap, 
+			MatrixDataAdapter matrixDataAdapter, long lineLength) {
+		
+		super(writer, parameterMap);
 		this.matrixDataAdapter = matrixDataAdapter;
 		this.lineLength = lineLength;
 	}
@@ -78,9 +81,9 @@ class FASTASequenceEventReceiver implements JPhyloIOEventReceiver, FASTAConstant
 					+ "than one character, although this reader is set to not allow longer tokens.");
 		}
 		if (charsPerLineWritten + token.length() > lineLength) {
-			writeNewLine(writer);
+			writeNewLine(getWriter());
 		}
-		writer.write(token);
+		getWriter().write(token);
 		charsPerLineWritten += token.length();
 	}
 	
@@ -94,38 +97,50 @@ class FASTASequenceEventReceiver implements JPhyloIOEventReceiver, FASTAConstant
 	
 	
 	private void writeComment(String comment) throws IOException {
-		writer.write(COMMENT_START_CHAR);
-		writer.write(comment);
-		writeNewLine(writer);
+		getWriter().write(COMMENT_START_CHAR);
+		getWriter().write(comment);
+		writeNewLine(getWriter());
 	}
 	
 	
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
+		boolean tokenWritten = false;
 		switch (event.getType().getContentType()) {
 			case COMMENT:
 				if (isAllowCommentsBeforeTokens()) {
 					writeComment(event.asCommentEvent().getContent());
 				}
 				else {
-					
+					addIgnoredComments(1);
 				}
 				break;
 			case SEQUENCE_TOKENS:
-				writeTokens(event.asSequenceTokensEvent().getCharacterValues());
+				SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
+				if (!tokensEvent.getCharacterValues().isEmpty()) {
+					writeTokens(event.asSequenceTokensEvent().getCharacterValues());
+					tokenWritten = true;
+				}
 				break;
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					writeToken(event.asSingleSequenceTokenEvent().getToken());
+					tokenWritten = true;
 				}  // End events can be ignored.
 				break;
 			case META_INFORMATION:
 			case META_XML_CONTENT:
-				//TODO Log that these event have been ignored.
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					addIgnoredMetadata(1);  // This way nested metadata will be counted as well. XML content events will not be counted, since they are SOLE.
+				}
 				break;
 			default:
 				throw new IllegalArgumentException("Events of the type " + event.getType().getContentType() + 
 						" are not allowed in a sequence content subsequence.");
+		}
+		
+		if (!tokenWritten) {  // Allow comments only at the beginning of a sequence. (If writeSequencePartContentData() was called with a start index > 0, allowCommentsBeforeTokens should have been false before this receiver was passed.
+			setAllowCommentsBeforeTokens(false);
 		}
 		return true;
 	}

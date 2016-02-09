@@ -97,17 +97,26 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
 		if (matrixIterator.hasNext()) {
 			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
-			FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, matrixDataAdapter, 
-					parameters.getLong(EventWriterParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
-			
 			Iterator<String> sequenceIDIterator = matrixDataAdapter.getSequenceIDIterator();
 			if (sequenceIDIterator.hasNext()) {
+				FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrixDataAdapter, 
+						parameters.getLong(EventWriterParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
+				
 				while (sequenceIDIterator.hasNext()) {
 					String id = sequenceIDIterator.next();
 					LinkedOTUEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
 					writeSequenceName(getSequenceName(sequenceEvent, firstOTUList), writer, eventReceiver);
-					//TODO Possibly write sequence comments
+					eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));
+				}
+				
+				if (eventReceiver.didIgnoreComments()) {
+					logger.addWarning(eventReceiver.getIgnoredComments() + " comment events inside the matrix could not be written, "
+							+ "because FASTA supports only comments at the beginning of sequences.");
+				}
+				if (eventReceiver.didIgnoreMetadata()) {
+					logger.addWarning(eventReceiver.getIgnoredMetadata() + " metadata events inside the matrix could not be written, "
+							+ "because FASTA does not support metadata.");
 				}
 			}
 			else {

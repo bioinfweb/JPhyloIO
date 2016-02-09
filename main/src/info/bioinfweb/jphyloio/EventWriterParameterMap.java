@@ -27,4 +27,5 @@ public class EventWriterParameterMap extends ParameterMap {
 	public static final String KEY_LOGGER = "logger";
 	public static final String KEY_LINE_LENGTH = "lineLength";
 	public static final String KEY_EXTEND_SEQUENCE_WITH_GAPS = "extendSequenceWithGaps";
+	public static final String KEY_IGNORE_COMMENTS = "ignoreComments";
 }
