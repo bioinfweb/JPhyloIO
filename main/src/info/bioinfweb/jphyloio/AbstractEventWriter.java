@@ -25,8 +25,12 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Iterator;
 
+import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 
 
 
@@ -36,6 +40,37 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
  * @author Ben St&ouml;ver
  */
 public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
+	protected OTUListDataAdapter getFirstOTUList(DocumentDataAdapter document, ApplicationLogger logger, String formatName,
+			String labeledElements) {
+		OTUListDataAdapter result = null;
+		Iterator<OTUListDataAdapter> otuListIterator = document.getOTUListIterator();
+		if (otuListIterator.hasNext()) {
+			result = otuListIterator.next();
+		}
+		
+		if (result != null) {
+			logger.addWarning("The specified OTU list(s) will not be written, since the " + formatName
+					+	" format does not support this. The first list will though be used to try to label " + labeledElements
+					+ " that do not carry a label themselves."); 
+		}
+		return result;
+	}
+	
+	
+	public static String getLinkedOTUName(LinkedOTUEvent linkedOTUEvent, OTUListDataAdapter otuList) {
+		String result = linkedOTUEvent.getLabel();
+		if (result == null) {
+			if (linkedOTUEvent.isOTULinked() && (otuList != null)) {
+				result = otuList.getOTUStartEvent(linkedOTUEvent.getOTUID()).getLabel();
+			}
+			if (result == null) {
+				result = linkedOTUEvent.getID();
+			}
+		}
+		return result;
+	}
+	
+	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, File file, EventWriterParameterMap parameters) throws Exception {
 		Writer writer = new BufferedWriter(new FileWriter(file));

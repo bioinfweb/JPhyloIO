@@ -62,37 +62,12 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 	}
 	
 	
-	private String getSequenceName(LinkedOTUEvent sequenceEvent, OTUListDataAdapter otuList) {
-		String result = sequenceEvent.getLabel();
-		if (result == null) {
-			if (sequenceEvent.isOTULinked() && (otuList != null)) {
-				result = otuList.getOTUStartEvent(sequenceEvent.getOTUID()).getLabel();
-			}
-			if (result == null) {
-				result = sequenceEvent.getID();
-			}
-		}
-		return result;
-	}
-	
-	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer,
 			EventWriterParameterMap parameters) throws Exception {
 		
 		ApplicationLogger logger = parameters.getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
-		
-		OTUListDataAdapter firstOTUList = null; 
-		Iterator<OTUListDataAdapter> otuListIterator = document.getOTUListIterator();
-		if (otuListIterator.hasNext()) {
-			firstOTUList = otuListIterator.next();
-		}
-		
-		if (firstOTUList != null) {
-			logger.addWarning("The specified OTU list(s) will not be written, since the FASTA format does not support this. "
-					+ "The first list will though be used to try to label sequences that do not carry a label themselves."); 
-		}
-		
+		OTUListDataAdapter firstOTUList = getFirstOTUList(document, logger, "FASTA", "sequences");
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
 		if (matrixIterator.hasNext()) {
 			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
@@ -104,7 +79,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				while (sequenceIDIterator.hasNext()) {
 					String id = sequenceIDIterator.next();
 					LinkedOTUEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
-					writeSequenceName(getSequenceName(sequenceEvent, firstOTUList), writer, eventReceiver);
+					writeSequenceName(getLinkedOTUName(sequenceEvent, firstOTUList), writer, eventReceiver);
 					eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));
 				}

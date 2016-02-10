@@ -23,21 +23,67 @@ import java.io.IOException;
 import java.io.Writer;
 
 import info.bioinfweb.jphyloio.AbstractEventReceiver;
+import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 
 public class NodeDataEventReceiver extends AbstractEventReceiver implements JPhyloIOEventReceiver {
-	public NodeDataEventReceiver(Writer writer,	EventWriterParameterMap parameterMap) {
-		super(writer, parameterMap);
+	private static enum Status {
+		BEFORE_START,
+		IN_NODE,
+		END;
 	}
-
+	
+	
+	private Status status = Status.BEFORE_START;
+	//private long metaLevel
+	private OTUListDataAdapter firstOTUList;
+	
+	
+	public NodeDataEventReceiver(Writer writer,	EventWriterParameterMap parameterMap, OTUListDataAdapter firstOTUList) {
+		super(writer, parameterMap);
+		this.firstOTUList = firstOTUList;
+	}
+	
 	
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, ClassCastException, IOException {
-		//TODO Implement
+		switch (status) {
+			case BEFORE_START:
+				EventType nodeStart = new EventType(EventContentType.NODE, EventTopologyType.START);
+				if (event.getType().equals(nodeStart)) {
+					getWriter().write(AbstractEventWriter.getLinkedOTUName(event.asLinkedOTUEvent(), firstOTUList));
+				}
+				else {
+					throw new IllegalArgumentException(nodeStart + 
+							" expected as the first event in the sequence in writeNodeData(), but was "	+ event.getType());
+				}
+				break;
+			case IN_NODE:
+				switch (event.getType().getContentType()) {
+					case META_INFORMATION:
+						break;
+					case META_XML_CONTENT:
+						break;
+					case COMMENT:
+						break;
+					case NODE:
+						break;
+					default:
+						
+				}
+				//TODO Write metadata
+				break;
+			case END:
+				throw new IllegalArgumentException("No more events expected after ");
+		}
 		return true;
 	}
 }
