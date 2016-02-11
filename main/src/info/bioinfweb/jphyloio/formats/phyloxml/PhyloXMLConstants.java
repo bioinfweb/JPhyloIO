@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -21,10 +21,23 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 import javax.xml.namespace.QName;
 
 public interface PhyloXMLConstants {
+	public static final String PHYLO_XML = "phyloXML";
+	
 	public static final String NAMESPACE_URI = "http://www.phyloxml.org";
 	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	
 	public static final QName TAG_PHYLOXML = new QName(NAMESPACE_URI, "phyloxml");
 	public static final QName TAG_PHYLOGENY = new QName(NAMESPACE_URI, "phylogeny");
 	public static final QName TAG_CLADE = new QName(NAMESPACE_URI, "clade");
+	
+	public static final QName TAG_TAXONOMY = new QName(NAMESPACE_URI, "taxonomy");
+	public static final QName TAG_SEQUENCE = new QName(NAMESPACE_URI, "sequence");
+	
+	public static final QName TAG_NAME = new QName(NAMESPACE_URI, "name");
+	public static final QName TAG_ID = new QName(NAMESPACE_URI, "id");
+	public static final QName TAG_SCI_NAME = new QName(NAMESPACE_URI, "scientific_name");
+	public static final QName TAG_COMMON_NAME = new QName(NAMESPACE_URI, "common_name");
+	public static final QName TAG_BRANCH_LENGTH = new QName(NAMESPACE_URI, "branch_length");
+	
+	public static final QName ATTR_BRANCH_LENGTH = new QName(NAMESPACE_URI, "branch_length");
 }

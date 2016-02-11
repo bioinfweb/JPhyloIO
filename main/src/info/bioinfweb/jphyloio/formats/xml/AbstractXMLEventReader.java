@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import java.util.TreeMap;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -52,7 +52,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	public static final String NAMESPACE_BIOINFWEB = "http://bioinfweb.info/JPhyloIO/technical";	
 	public static final QName TAG_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
 	
-	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = new TreeMap<XMLElementReaderKey, XMLElementReader<P>>();
+	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = new HashMap<XMLElementReaderKey, XMLElementReader<P>>();
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	
@@ -127,9 +127,12 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 			}		
 			
 			if (xmlEvent.isStartElement()) {
-				getEncounteredTags().push(xmlEvent.asStartElement().getName());
+				QName elementName = xmlEvent.asStartElement().getName();
+				getEncounteredTags().push(elementName);
+				getStreamDataProvider().setParentName(parentTag.getLocalPart());
+				getStreamDataProvider().setElementName(elementName.getLocalPart());
 			}
-
+			
 			XMLElementReader<P> elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
 			if (elementReader != null) {
 				elementReader.readEvent(getStreamDataProvider(), xmlEvent);

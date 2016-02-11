@@ -39,9 +39,9 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
-import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,6 +96,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void fillMap() {
 		Map<XMLElementReaderKey, XMLElementReader<NeXMLStreamDataProvider>> map = getElementReaderMap();
@@ -745,13 +746,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 		
 		map.put(new XMLElementReaderKey(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new AbstractNeXMLElementReader() {			
-			@Override
-			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				String comment = ((Comment)event).getText();
-				streamDataProvider.getCurrentEventCollection().add(new CommentEvent(comment, false));
-			}
-		});
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
 	}
 	
 

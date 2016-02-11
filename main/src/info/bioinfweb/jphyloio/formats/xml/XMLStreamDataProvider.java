@@ -19,17 +19,100 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import java.util.Queue;
+import java.util.Stack;
+
+import javax.xml.stream.events.StartElement;
+
 import info.bioinfweb.jphyloio.StreamDataProvider;
+import info.bioinfweb.jphyloio.formats.NodeInfo;
 
 
 
 public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLStreamDataProvider<R>>>
 		extends StreamDataProvider<R> {
+	private String parentName;
+	private String elementName;
+	
+	private String treeID;
+	private String treeLabel;
+	
+	private Stack<Queue<NodeInfo>> passedSubnodes;
+	private StartElement metaWithAttributes;
+	private NodeInfo currentNodeInfo;
+	
 	
 	public XMLStreamDataProvider(R eventReader) {
 		super(eventReader);
 	}
-	
-	
-	//TODO Move some properties from NeXMLStreamDataProvider here or remove this class
+
+
+	public String getParentName() {
+		return parentName;
+	}
+
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
+
+	public String getElementName() {
+		return elementName;
+	}
+
+
+	public void setElementName(String elementName) {
+		this.elementName = elementName;
+	}
+
+
+	public String getTreeID() {
+		return treeID;
+	}
+
+
+	public void setTreeID(String treeID) {
+		this.treeID = treeID;
+	}
+
+
+	public String getTreeLabel() {
+		return treeLabel;
+	}
+
+
+	public void setTreeLabel(String treeLabel) {
+		this.treeLabel = treeLabel;
+	}
+
+
+	public Stack<Queue<NodeInfo>> getPassedSubnodes() {
+		return passedSubnodes;
+	}
+
+
+	public void setPassedSubnodes(Stack<Queue<NodeInfo>> passedSubnodes) {
+		this.passedSubnodes = passedSubnodes;
+	}
+
+
+	public StartElement getMetaWithAttributes() {
+		return metaWithAttributes;
+	}
+
+
+	public void setMetaWithAttributes(StartElement metaWithAttributes) {
+		this.metaWithAttributes = metaWithAttributes;
+	}
+
+
+	public NodeInfo getCurrentNodeInfo() {
+		return currentNodeInfo;
+	}
+
+
+	public void setCurrentNodeInfo(NodeInfo currentNodeInfo) {
+		this.currentNodeInfo = currentNodeInfo;
+	}	
 }

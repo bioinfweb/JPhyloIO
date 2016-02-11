@@ -58,6 +58,7 @@ main/src/info/bioinfweb/jphyloio/events/package-info.java -text svneol=unset#tex
 main/src/info/bioinfweb/jphyloio/events/type/EventContentType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/EventTopologyType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/EventType.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/NodeInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriter.java -text svneol=unset#text/plain
@@ -119,6 +120,7 @@ main/src/info/bioinfweb/jphyloio/formats/text/AbstractTextEventReader.java -text
 main/src/info/bioinfweb/jphyloio/formats/text/TextStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/CommentElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLElementReaderKey.java -text svneol=unset#text/plain

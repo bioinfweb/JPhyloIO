@@ -26,8 +26,8 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
@@ -75,6 +74,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void fillMap() {
 		Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<XTGEventReader>>> map = getElementReaderMap();
@@ -132,13 +132,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 //			}
 //		});
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
-			@Override
-			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
-				String comment = ((Comment)event).getText();
-				streamDataProvider.getCurrentEventCollection().add(new CommentEvent(comment, false));
-			}
-		});
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
 	}
 
 	
