@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -21,6 +21,9 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 import static org.junit.Assert.fail;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.io.File;
 
@@ -30,13 +33,22 @@ import org.junit.Test;
 
 public class PhyloXMLEventReaderTest {
 	@Test
-	public void testOutputNeXML() {
+	public void testPhyloXML() {
 		try {
 			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/PhyloXMLDocument.xml"));
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
+//					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
+					if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
+//						System.out.println("Key: " + event.asMetaInformationEvent().getKey());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.TREE, EventTopologyType.START))) {
+//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
+//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+					}
 				}
 			}
 			finally {

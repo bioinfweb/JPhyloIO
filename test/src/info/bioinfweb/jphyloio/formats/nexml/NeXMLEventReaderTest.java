@@ -37,7 +37,7 @@ public class NeXMLEventReaderTest {
 	@Test
 	public void testOutputNeXML() {
 		try {
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/UnknownTag.xml"), TranslateTokens.SYMBOL_TO_LABEL);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MultipleCharactersTags.xml"), TranslateTokens.SYMBOL_TO_LABEL);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
