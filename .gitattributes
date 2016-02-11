@@ -162,6 +162,7 @@ test/data/Newick/InternalsTerminalsLength.nwk -text
 test/data/Newick/LeafNodesNamed.nwk -text
 test/data/Newick/Metadata.nwk -text
 test/data/Newick/MultipleTrees.nwk -text
+test/data/Newick/NHX2.nwk -text
 test/data/Newick/NoNamedNodes.nwk -text
 test/data/Newick/NoTrees.nwk -text
 test/data/Newick/OnlyBranchLengths.nwk -text
