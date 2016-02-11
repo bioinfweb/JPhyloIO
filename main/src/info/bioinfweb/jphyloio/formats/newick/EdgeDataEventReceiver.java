@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -50,8 +51,27 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * @author Ben St&ouml;ver
  */
 public class EdgeDataEventReceiver extends AbstractEventReceiver implements JPhyloIOEventReceiver {
+	private static class Metadata {
+		public String key;
+		public List<String> values;
+		
+		public Metadata(String key) {
+			super();
+			this.key = key;
+			this.values = new ArrayList<String>();
+		}
+		
+		public Metadata(String key, String firstValue) {
+			this(key);
+			values.add(firstValue);
+		}
+	}
+	
+	
 	private EdgeEvent edgeEvent = null;
-	private List<JPhyloIOEvent> metadataComments = new ArrayList<JPhyloIOEvent>();
+	private List<Metadata> metadataList = new ArrayList<Metadata>();
+	private List<JPhyloIOEvent> metadataEvents = new ArrayList<JPhyloIOEvent>();
+	private List<JPhyloIOEvent> commentEvents = new ArrayList<JPhyloIOEvent>();
 	private boolean ignoredXMLMetadata = false;
 	private boolean ignoredNestedMetadata = false;
 	private int metadataLevel = 0;
@@ -67,8 +87,13 @@ public class EdgeDataEventReceiver extends AbstractEventReceiver implements JPhy
 	}
 
 
-	public List<JPhyloIOEvent> getMetadataComments() {
-		return metadataComments;
+	public List<JPhyloIOEvent> getMetadataEvents() {
+		return metadataEvents;
+	}
+
+
+	public List<JPhyloIOEvent> getCommentEvents() {
+		return commentEvents;
 	}
 
 
@@ -84,13 +109,14 @@ public class EdgeDataEventReceiver extends AbstractEventReceiver implements JPhy
 	
 	public void clear() {
 		edgeEvent = null;
-		metadataComments.clear();
+		metadataEvents.clear();
+		commentEvents.clear();
 		ignoredNestedMetadata = false;
 		ignoredXMLMetadata = false;
 		metadataLevel = 0;
 	}
-
-
+	
+	
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
 		if (edgeEvent == null) {
@@ -114,7 +140,7 @@ public class EdgeDataEventReceiver extends AbstractEventReceiver implements JPhy
 					throw new IllegalArgumentException("Multiple edge start events are not allowed in a tree/network edge subsequence.");
 				}
 			case COMMENT:
-				metadataComments.add(event);
+				commentEvents.add(event);
 				break;
 			case META_INFORMATION:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
@@ -124,11 +150,25 @@ public class EdgeDataEventReceiver extends AbstractEventReceiver implements JPhy
 					metadataLevel--;
 				}
 				
+				MetaInformationEvent metaevent = event.asMetaInformationEvent();
+				switch (metadataLevel) {
+					case 0:
+						Metadata metadata = new Metadata(metaevent.getKey());
+						if (metaevent.hasValue()) {
+							metadata.values.add(metaevent.getStringValue());
+						}
+						break;
+					case 1:
+						
+						break;
+					default:
+						ignoredNestedMetadata = true;
+						break;
+				}
 				if (metadataLevel <= 2) {  // Do not store events that are deeper nested
-					metadataComments.add(event);
+					metadataEvents.add(event);
 				}
 				else {
-					ignoredNestedMetadata = true;
 				}
 				break;
 			case META_XML_CONTENT:
@@ -139,5 +179,10 @@ public class EdgeDataEventReceiver extends AbstractEventReceiver implements JPhy
 						" are not allowed in a tree/network edge subsequence.");
 		}
 		return true;
-	}	
+	}
+	
+	
+	public void writeMetadataAndComments() {
+		
+	}
 }

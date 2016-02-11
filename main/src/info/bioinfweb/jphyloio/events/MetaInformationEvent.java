@@ -73,7 +73,8 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	/**
 	 * Returns the string value of the meta information.
 	 * 
-	 * @return the string representation of the meta information (Will never be {@code null}.)
+	 * @return the string representation of the meta information or {@code null} if this metaevent carries no value (e.g.
+	 *         when nested metaevent will follow)
 	 */
 	public String getStringValue() {
 		return stringValue;
@@ -82,6 +83,11 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 
 	public Object getObjectValue() {
 		return objectValue;
+	}
+	
+	
+	public boolean hasValue() {
+		return getStringValue() != null;
 	}
 
 
