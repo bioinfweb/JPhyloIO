@@ -33,4 +33,25 @@ public interface NewickConstants {
 	
 	public static final String ROOTED_HOT_COMMENT = "&r";
 	public static final String UNROOTED_HOT_COMMENT = "&u";
+	
+	
+	// Hot comment constants:
+	
+	public static final char HOT_COMMENT_START_SYMBOL = '&';
+	public static final char ALLOCATION_SEPARATOR_SYMBOL = ',';
+	public static final char ALLOCATION_SYMBOL = '=';
+	public static final char FIELD_START_SYMBOL = '{';
+  public static final char FIELD_END_SYMBOL = '}';
+	public static final char FIELD_VALUE_SEPARATOR_SYMBOL = ',';
+	public static final char STRING_DELIMITER = '"';
+	
+	public static final char INDEX_START_SYMBOL = '[';
+	public static final char INDEX_END_SYMBOL = ']';
+
+	public static final char NHX_VALUE_SEPARATOR_SYMBOL = ':';
+	public static final String NHX_START = "&&NHX" + NHX_VALUE_SEPARATOR_SYMBOL;
+	public static final String NHX_KEY_PREFIX = "NHX:";
+	
+//	public static final String UNNAMED_EDGE_DATA_NAME = "unnamedEdgeHotComment";  //TODO Specify URL or similar ID here?
+//	public static final String UNNAMED_NODE_DATA_NAME = "unnamedNodeHotComment";  //TODO Specify URL or similar ID here?
 }

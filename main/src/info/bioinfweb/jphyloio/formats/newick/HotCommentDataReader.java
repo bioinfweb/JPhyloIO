@@ -35,26 +35,7 @@ import java.util.LinkedList;
  * 
  * @author Ben St&ouml;ver
  */
-public class HotCommentDataReader {
-	public static final char START_SYMBOL = '&';
-	public static final char ALLOCATION_SEPARATOR_SYMBOL = ',';
-	public static final char ALLOCATION_SYMBOL = '=';
-	public static final char FIELD_START_SYMBOL = '{';
-  public static final char FIELD_END_SYMBOL = '}';
-	public static final char VALUE_SEPARATOR_SYMBOL = ',';
-	public static final char STRING_DELIMITER = '"';
-	
-	public static final char INDEX_START_SYMBOL = '[';
-	public static final char INDEX_END_SYMBOL = ']';
-
-	public static final char NHX_VALUE_SEPARATOR_SYMBOL = ':';
-	public static final String NHX_START = "&&NHX" + NHX_VALUE_SEPARATOR_SYMBOL;
-	public static final String NHX_KEY_PREFIX = "NHX:";
-	
-//	public static final String UNNAMED_EDGE_DATA_NAME = "unnamedEdgeHotComment";  //TODO Specify URL or similar ID here?
-//	public static final String UNNAMED_NODE_DATA_NAME = "unnamedNodeHotComment";  //TODO Specify URL or similar ID here?
-	
-	
+public class HotCommentDataReader implements NewickConstants {
 	private static class Value {
 		public String stringValue;
 		public Object objectValue;
@@ -151,7 +132,7 @@ public class HotCommentDataReader {
 				if (parts[1].startsWith("" + FIELD_START_SYMBOL)) {
 					if (parts[1].endsWith("" + FIELD_END_SYMBOL)) {
 						String[] values = parts[1].substring(1, parts[1].length() - 1).split(
-								"" + VALUE_SEPARATOR_SYMBOL);
+								"" + FIELD_VALUE_SEPARATOR_SYMBOL);
 						addMetaInformation(parts[0], new Value(null), eventQueue, false);
 						for (int j = 0; j < values.length; j++) {
 							addMetaInformation(parts[0] + INDEX_START_SYMBOL + j + INDEX_END_SYMBOL,  //TODO Use different key here? 
@@ -211,7 +192,7 @@ public class HotCommentDataReader {
 		if (comment.startsWith(NHX_START)) {  // Needs to be checked first.
 			processNHX(comment, eventQueue);
 		}
-		else if (comment.startsWith("" + START_SYMBOL)) {
+		else if (comment.startsWith("" + HOT_COMMENT_START_SYMBOL)) {
 			processMetacomments(comment, eventQueue);
 		}
 		// The following case is currently unused, because JPhyloIO creates comment events from unnamed hot comments 

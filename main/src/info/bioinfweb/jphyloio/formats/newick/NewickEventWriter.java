@@ -29,6 +29,9 @@ import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
@@ -39,15 +42,13 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 	private OTUListDataAdapter firstOTUList;
 	
 	
-	//TODO Add writeMetadataComment() method and also use it in NodeDataEventReceiver if possible (One gets its events from a receiver, one from a list.)
-	
-	
 	private void writeSubtree(String rootEdgeID) 
-			throws IllegalArgumentException, IOException {  //TODO Use instance variables for writer, tree and parameters to save stack memory?
+			throws IllegalArgumentException, IOException {
 		
-		EdgeDataEventReceiver edgeReceiver = new EdgeDataEventReceiver(writer, parameters);
-		tree.writeEdgeData(edgeReceiver, rootEdgeID);
-		String nodeID = edgeReceiver.getEdgeEvent().getTargetID();
+		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = 
+				new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters, EventContentType.EDGE);
+		tree.writeEdgeData(edgeReceiver, rootEdgeID);  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
+		String nodeID = edgeReceiver.getStartEvent().getTargetID();
 		Iterator<String> childEdgeIDIterator = tree.getEdgeIDsFromNode(nodeID);
 		if (childEdgeIDIterator.hasNext()) {
 			writer.write(SUBTREE_START);
@@ -59,8 +60,22 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 			writer.write(SUBTREE_END);
 		}
 		
-		tree.writeNodeData(new NodeDataEventReceiver(writer, parameters, firstOTUList), nodeID);  //TODO The metadata of this receiver can be written directly.
-		//TODO Write leaf or internal branch length and metadata
+		NewickNodeEdgeEventReceiver<LinkedOTUEvent> nodeReceiver = 
+				new NewickNodeEdgeEventReceiver<LinkedOTUEvent>(writer, parameters, EventContentType.NODE);
+		tree.writeNodeData(nodeReceiver, nodeID);
+		
+		// Write node data:
+		writer.write(getLinkedOTUName(nodeReceiver.getStartEvent(), firstOTUList));
+		nodeReceiver.writeMetadata();
+		nodeReceiver.writeComments();
+		
+		// Write edge data:
+		if (edgeReceiver.getStartEvent().hasLength()) {
+			writer.write(LENGTH_SEPERATOR);
+			writer.write(Double.toString(edgeReceiver.getStartEvent().getLength()));
+		}
+		edgeReceiver.writeMetadata();
+		edgeReceiver.writeComments();
 	}
 	
 	
