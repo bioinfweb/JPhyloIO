@@ -61,28 +61,30 @@ public class NewickScanner implements NewickConstants {
 
 
 	public static boolean isCharAfterLength(char c) {
-		return Character.isWhitespace(c) || (c == ELEMENT_SEPERATOR) || (c == SUBTREE_END) || (c == COMMENT_START) || (c == TERMINAL_SYMBOL);
+		return Character.isWhitespace(c) || (c == ELEMENT_SEPERATOR) || (c == SUBTREE_END) || (c == COMMENT_START)
+				|| (c == TERMINAL_SYMBOL);
 	}
 	
 	
 	public static boolean isFreeNameChar(char c) {
-		return (c != SUBTREE_END) && (c != LENGTH_SEPERATOR) && (c != ELEMENT_SEPERATOR) && (c != COMMENT_START) && (c != TERMINAL_SYMBOL) && !Character.isWhitespace(c); 
+		return (c != SUBTREE_END) && (c != LENGTH_SEPERATOR) && (c != ELEMENT_SEPERATOR) && (c != COMMENT_START) 
+				&& (c != TERMINAL_SYMBOL) && (c != NAME_DELIMITER) && (c != ALTERNATIVE_NAME_DELIMITER) && !Character.isWhitespace(c); 
 	}
 	
 	
-	private NewickToken readDelimitedName() throws IOException {
+	private NewickToken readDelimitedName(char delimiter) throws IOException {
 		reader.read();  // skip NAME_DELIMITER.
 		StringBuilder result = new StringBuilder();
 		do {
-			while ((reader.peek() != -1) && (reader.peekChar() != NAME_DELIMITER)) {
+			while ((reader.peek() != -1) && (reader.peekChar() != delimiter)) {
 				result.append(reader.readChar());
 			}
-			if ((reader.peek(1) != -1) && (reader.peekChar(1) == NAME_DELIMITER)) {
-				result.append(NAME_DELIMITER);  // Allow 'abc'''
+			if ((reader.peek(1) != -1) && (reader.peekChar(1) == delimiter)) {
+				result.append(delimiter);  // Allow 'abc'''
 				reader.read();
 				reader.read();
 			}
-		} while ((reader.peek() != -1) && (reader.peekChar() != NAME_DELIMITER));
+		} while ((reader.peek() != -1) && (reader.peekChar() != delimiter));
 		
 		if (reader.peek() == -1) {
 			throw new JPhyloIOReaderException("Unterminated Newick token.", reader);
@@ -206,7 +208,8 @@ public class NewickScanner implements NewickConstants {
 			  	reader.read(); // skip LENGTH_SEPERATOR
 			  	return readBranchLength();
 			  case NAME_DELIMITER:
-			  	return readDelimitedName();
+			  case ALTERNATIVE_NAME_DELIMITER:
+			  	return readDelimitedName(reader.peekChar());
 			  case TERMINAL_SYMBOL:
 			  	reader.read();
 			  	return new NewickToken(NewickTokenType.TERMNINAL_SYMBOL, reader);

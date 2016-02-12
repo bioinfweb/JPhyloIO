@@ -53,7 +53,10 @@ public class HotCommentDataReader implements NewickConstants {
 	
 	
 	private Value readTextElementData(String text) {
-		if (text.startsWith(Character.toString(STRING_DELIMITER)) && text.endsWith(Character.toString(STRING_DELIMITER))) {
+		if ((text.startsWith(Character.toString(NAME_DELIMITER)) && text.endsWith(Character.toString(NAME_DELIMITER)))
+				|| (text.startsWith(Character.toString(ALTERNATIVE_NAME_DELIMITER)) 
+						&& text.endsWith(Character.toString(ALTERNATIVE_NAME_DELIMITER)))) {
+			
 			return new Value(text.substring(1, text.length() - 1));  // Values like "100" should also be read as a string.
 		}
 		else {

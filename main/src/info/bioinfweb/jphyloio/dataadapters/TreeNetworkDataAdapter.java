@@ -36,6 +36,15 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter {
 	public boolean isTree();
 	
 	/**
+	 * Defines whether the represented tree or network shall be considered as rooted (at the specified root edge(s))
+	 * or if it shall be considered as an unrooted network (where the specified root edge(s) just specify the position
+	 * to start drawing the network or unrooted tree. 
+	 * 
+	 * @return {@code true} if the tree or network shall be considered rooted or {@code false} otherwise
+	 */
+	public boolean considerRooted();
+	
+	/**
 	 * Returns an iterator returning the IDs of all root edges of the represented phylogenetic
 	 * tree or network.
 	 * 
@@ -63,5 +72,12 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter {
 	 */
 	public Iterator<String> getEdgeIDsFromNode(String nodeID) throws IllegalArgumentException;  //TODO Using this pattern may include circular references in networks.
 
+	/**
+	 * Writes the events describing the specified edge and possible nested metadata.
+	 * 
+	 * @param receiver the receiver for the events
+	 * @param edgeID the ID of the requested edge
+	 * @throws IllegalArgumentException if an unknown edge ID was specified
+	 */
 	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
 }

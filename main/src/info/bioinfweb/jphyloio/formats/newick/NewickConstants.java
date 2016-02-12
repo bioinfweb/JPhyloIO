@@ -24,6 +24,7 @@ public interface NewickConstants {
 	public static final char SUBTREE_START = '(';
 	public static final char SUBTREE_END = ')';
 	public static final char NAME_DELIMITER = '\'';
+	public static final char ALTERNATIVE_NAME_DELIMITER = '"';
 	public static final char LENGTH_SEPERATOR = ':'; 
 	public static final char ELEMENT_SEPERATOR = ','; 
 	public static final char TERMINAL_SYMBOL = ';';
@@ -43,7 +44,6 @@ public interface NewickConstants {
 	public static final char FIELD_START_SYMBOL = '{';
   public static final char FIELD_END_SYMBOL = '}';
 	public static final char FIELD_VALUE_SEPARATOR_SYMBOL = ',';
-	public static final char STRING_DELIMITER = '"';
 	
 	public static final char INDEX_START_SYMBOL = '[';
 	public static final char INDEX_END_SYMBOL = ']';

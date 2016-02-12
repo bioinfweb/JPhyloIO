@@ -108,9 +108,8 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 			return event.getStringValue();  // Do not enclose numbers in string delimiters.
 		}
 		else {
-			return HotCommentDataReader.STRING_DELIMITER + 
-					event.getStringValue().replace(HotCommentDataReader.STRING_DELIMITER, STRING_DELEMITER_REPLACEMENT) + 
-					HotCommentDataReader.STRING_DELIMITER;
+			return NAME_DELIMITER + 
+					event.getStringValue().replaceAll("\\" + NAME_DELIMITER, "" + NAME_DELIMITER + NAME_DELIMITER) + NAME_DELIMITER;
 		}
 	}
 	
@@ -128,8 +127,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 						new EventType(startEventType, EventTopologyType.START) + " but was of the type of type " + event.getType());
 			}
 		}
-		
-		if (startEventType.equals(event.getType().getContentType())) {  // Needs to be handled here, because switch only allows constants
+		else if (startEventType.equals(event.getType().getContentType())) {  // Needs to be handled here, because switch only allows constants
 			if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
 				return false;  // No more events to come.
 			}
@@ -152,6 +150,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 							if (metaevent.hasValue()) {
 								metadata.values.add(createValue(metaevent));
 							}
+							metadataList.add(metadata);
 						}  //TODO Implement adding array values, when concept is clear.
 						else {
 							ignoredNestedMetadata = true;
@@ -193,6 +192,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 							getWriter().write(valuesIterator.next());
 							if (valuesIterator.hasNext()) {
 								getWriter().write(FIELD_VALUE_SEPARATOR_SYMBOL);
+								getWriter().write(' ');
 							}
 						}
 						getWriter().write(FIELD_END_SYMBOL);
@@ -200,6 +200,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 				}
 				if (iterator.hasNext()) {
 					getWriter().write(ALLOCATION_SEPARATOR_SYMBOL);
+					getWriter().write(' ');
 				}
 			}
 			getWriter().write(COMMENT_END);

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
+import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
@@ -40,6 +41,48 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 	private TreeNetworkDataAdapter tree;
 	private EventWriterParameterMap parameters;
 	private OTUListDataAdapter firstOTUList;
+	
+	
+	private static boolean isFreeName(String name) {
+		if (name.length() == 0) {
+			return true;
+		}
+		else {
+			for (int i = 0; i < name.length(); i++) {
+				if (!NewickScanner.isFreeNameChar(name.charAt(i))) {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	
+	
+	public static String formatToken(String token, char delimiter) {
+		boolean containsUnderscores = token.contains("" + FREE_NAME_BLANK);
+		if (!containsUnderscores && isFreeName(token)) {  // Do not write strings as free names, which contain underscores, because they would become spaces when they are read again.
+			return token;
+		}
+		else {
+			if (!containsUnderscores) {
+				String editedName = token.replace(' ', FREE_NAME_BLANK);
+				if (isFreeName(editedName)) { 
+					return editedName;  // Replace spaces by underscores, if no underscore was present in the original name.
+				}
+			}
+			
+			StringBuffer result = new StringBuffer(token.length() * 2);
+			result.append(delimiter);
+			for (int i = 0; i < token.length(); i++) {
+				if (token.charAt(i) == delimiter) {
+					result.append(delimiter);  // Second time 
+				}
+				result.append(token.charAt(i));
+			}
+			result.append(delimiter);
+			return result.toString();
+		}
+	}
 	
 	
 	private void writeSubtree(String rootEdgeID) 
@@ -65,7 +108,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 		tree.writeNodeData(nodeReceiver, nodeID);
 		
 		// Write node data:
-		writer.write(getLinkedOTUName(nodeReceiver.getStartEvent(), firstOTUList));
+		writer.write(formatToken(getLinkedOTUName(nodeReceiver.getStartEvent(), firstOTUList), NAME_DELIMITER));
 		nodeReceiver.writeMetadata();
 		nodeReceiver.writeComments();
 		
@@ -76,6 +119,19 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 		}
 		edgeReceiver.writeMetadata();
 		edgeReceiver.writeComments();
+	}
+	
+	
+	private void writeRootedInformation() throws IOException {
+		writer.write(COMMENT_START);
+		if (tree.considerRooted()) {
+			writer.write(ROOTED_HOT_COMMENT.toUpperCase());
+		}
+		else {
+			writer.write(UNROOTED_HOT_COMMENT.toUpperCase());
+		}
+		writer.write(COMMENT_END);
+		writer.write(" ");
 	}
 	
 	
@@ -104,7 +160,9 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 									+ "by the Newick/NHX format. Only the first root edge will be considered.");
 						}
 						this.tree = treeNetwork;
+						writeRootedInformation();
 						writeSubtree(rootEdgeID);
+						writer.write(SystemUtils.LINE_SEPARATOR);
 					}
 					else {
 						throw new IllegalArgumentException("A specified tree does not specify any root edge. (Event unrooted trees need a "
