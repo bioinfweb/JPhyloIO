@@ -68,7 +68,7 @@ public class NewickScanner implements NewickConstants {
 	
 	public static boolean isFreeNameChar(char c) {
 		return (c != SUBTREE_END) && (c != LENGTH_SEPERATOR) && (c != ELEMENT_SEPERATOR) && (c != COMMENT_START) 
-				&& (c != TERMINAL_SYMBOL) && (c != NAME_DELIMITER) && (c != ALTERNATIVE_NAME_DELIMITER) && !Character.isWhitespace(c); 
+				&& (c != TERMINAL_SYMBOL) && !Character.isWhitespace(c); 
 	}
 	
 	

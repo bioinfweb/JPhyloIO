@@ -43,13 +43,18 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 	private OTUListDataAdapter firstOTUList;
 	
 	
+	public static boolean isFreeNameCharForWriting(char c) {
+		return NewickScanner.isFreeNameChar(c) && (c != NAME_DELIMITER) && (c != ALTERNATIVE_NAME_DELIMITER);
+	}
+	
+	
 	private static boolean isFreeName(String name) {
 		if (name.length() == 0) {
 			return true;
 		}
 		else {
 			for (int i = 0; i < name.length(); i++) {
-				if (!NewickScanner.isFreeNameChar(name.charAt(i))) {
+				if (!isFreeNameCharForWriting(name.charAt(i))) {
 					return false;
 				}
 			}
