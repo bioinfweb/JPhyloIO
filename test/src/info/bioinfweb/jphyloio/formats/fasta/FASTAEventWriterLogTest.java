@@ -130,6 +130,11 @@ public class FASTAEventWriterLogTest {
 			}
 			
 			@Override
+			public boolean considerRooted() {
+				return false;
+			}
+
+			@Override
 			public Iterator<String> getRootEdgeIDs() {
 				return Collections.emptyIterator();
 			}

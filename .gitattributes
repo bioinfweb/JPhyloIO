@@ -215,6 +215,7 @@ test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriterLogTest.java -tex
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/newick/NewickEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickScannerTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReaderTest.java -text svneol=unset#text/plain
@@ -227,6 +228,7 @@ test/src/info/bioinfweb/jphyloio/test/SystemOutEventReceiver.java -text svneol=u
 test/src/info/bioinfweb/jphyloio/test/dataadapters/SingleTokenTestMatrixDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestMatrixDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestOTUListDataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/dataadapters/TestTreeDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/WhiteSpaceTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/XMLLongAttribiteTest.java -text svneol=unset#text/plain
