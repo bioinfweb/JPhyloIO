@@ -19,11 +19,6 @@
 package info.bioinfweb.jphyloio.formats;
 
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-
-import java.util.Collection;
-
-
 
 public class NodeInfo {
 		private String id;
