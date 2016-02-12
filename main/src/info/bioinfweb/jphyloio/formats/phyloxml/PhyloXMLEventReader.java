@@ -92,36 +92,32 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 			new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
 				@Override
 				public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
-					System.out.println(streamDataProvider.getCurrentEventCollection().size());
-					Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
+					NodeInfo info = streamDataProvider.getCurrentNodeInfo();
 					
-//					Queue<NodeInfo> currentCollection = streamDataProvider.getPassedSubnodes().pop();		
-////					Collection<JPhyloIOEvent> nestedEvents = new ArrayList<JPhyloIOEvent>();
-//					
-//					if (currentCollection.isEmpty()) {
-//						streamDataProvider.getPassedSubnodes().peek().add(streamDataProvider.getCurrentNodeInfo());
-//						streamDataProvider.setCurrentNodeInfo(null);
-//					}
-								
-//					System.out.println("Child nodes: " + currentCollection.size());
-					
-//					for (NodeInfo info : currentCollection) {						
-//						String id = info.getID();
-//						if (id.equals("") || (id == null)) {
-//							id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
-//						}
-////						System.out.println("Child ID:" + id);
+					if (info != null) { //node has no children
+						Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 						
-//						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel()));#
-						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, "id", "label"));
+						streamDataProvider.getPassedSubnodes().peek().add(streamDataProvider.getCurrentNodeInfo());
+						streamDataProvider.setCurrentNodeInfo(null);
 						
-//						System.out.println("Nested number: " + nestedEvents.size());
+						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel()));
+						System.out.println("ID: " + info.getID() + " Meta: " + nestedEvents.size());
 						for (JPhyloIOEvent nextEvent : nestedEvents) {
 							streamDataProvider.getCurrentEventCollection().add(nextEvent);
 						}						
 						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
-//					}
-					//TODO create according edge events
+					}
+					else {						
+						Queue<NodeInfo> currentCollection = streamDataProvider.getPassedSubnodes().pop();	
+						
+						for (NodeInfo childInfo : currentCollection) {						
+							String id = childInfo.getID();
+							if (id.equals("") || (id == null)) {
+								id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+							}
+						//TODO create according edge events
+						}						
+					}
 				}
 			};
 		
@@ -157,7 +153,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 			new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
 				@Override
 				public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
-					streamDataProvider.setPassedSubnodes(new Stack<Queue<NodeInfo>>());					
+					streamDataProvider.setPassedSubnodes(new Stack<Queue<NodeInfo>>());
 				}
 		});
 		
@@ -179,12 +175,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 						treeID = DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(); 
 					}					
 					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, treeID, treeLabel));		
-					
+
 					
 					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
-					System.out.println("First: " + streamDataProvider.getCurrentEventCollection().size());
 					
-//					streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for top level.
+					streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for top level.
 					
 					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);					
 					streamDataProvider.setCurrentNodeInfo(new NodeInfo("", branchLength));										
@@ -196,15 +191,24 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 					@Override
 					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
 						streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
-						System.out.println("Next: " + streamDataProvider.getCurrentEventCollection().size());
-//						if (streamDataProvider.getCurrentNodeInfo() != null) {
-//							streamDataProvider.getPassedSubnodes().peek().add(streamDataProvider.getCurrentNodeInfo()); // Add previous NodeInfo to the current queue.
-//						}
-//						
+						NodeInfo info = streamDataProvider.getCurrentNodeInfo();
+						
+						if (info != null) { //node has children
+							Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
+							
+							streamDataProvider.getPassedSubnodes().peek().add(streamDataProvider.getCurrentNodeInfo()); // Add previous NodeInfo to the current queue.
+							streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for new level.
+							
+							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel()));
+							System.out.println("ID: " + info.getID() + " Meta: " + nestedEvents.size());
+							for (JPhyloIOEvent nextEvent : nestedEvents) {
+								streamDataProvider.getCurrentEventCollection().add(nextEvent);
+							}							
+							streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+						}						
+					
 						double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);			
-						streamDataProvider.setCurrentNodeInfo(new NodeInfo("", branchLength));
-//						
-//						streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for new level.						
+						streamDataProvider.setCurrentNodeInfo(new NodeInfo("", branchLength));												
 					}
 				});
 		
