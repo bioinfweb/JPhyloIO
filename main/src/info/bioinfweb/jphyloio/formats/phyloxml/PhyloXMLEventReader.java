@@ -97,26 +97,22 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 					if (info != null) { //node has no children
 						Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 						
-						streamDataProvider.getPassedSubnodes().peek().add(streamDataProvider.getCurrentNodeInfo());
+						info.setID(getID(info.getID())); //make sure node has valid ID
+						streamDataProvider.getPassedSubnodes().peek().add(info);
 						streamDataProvider.setCurrentNodeInfo(null);
 						
 						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel()));
-						System.out.println("ID: " + info.getID() + " Meta: " + nestedEvents.size());
 						for (JPhyloIOEvent nextEvent : nestedEvents) {
 							streamDataProvider.getCurrentEventCollection().add(nextEvent);
 						}						
 						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 					}
-					else {						
-						Queue<NodeInfo> currentCollection = streamDataProvider.getPassedSubnodes().pop();	
-						
-						for (NodeInfo childInfo : currentCollection) {						
-							String id = childInfo.getID();
-							if (id.equals("") || (id == null)) {
-								id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
-							}
-						//TODO create according edge events
-						}						
+					else { //TODO create according edge events						
+//						Queue<NodeInfo> currentCollection = streamDataProvider.getPassedSubnodes().pop();	
+//						
+//						for (NodeInfo childInfo : currentCollection) {							
+//							String id = getID(childInfo.getID());						
+//						}						
 					}
 				}
 			};
@@ -190,23 +186,24 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 				new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
 					@Override
 					public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
-						streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 						NodeInfo info = streamDataProvider.getCurrentNodeInfo();
 						
 						if (info != null) { //node has children
 							Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 							
-							streamDataProvider.getPassedSubnodes().peek().add(streamDataProvider.getCurrentNodeInfo()); // Add previous NodeInfo to the current queue.
+							info.setID(getID(info.getID())); //make sure node has valid ID
+							streamDataProvider.getPassedSubnodes().peek().add(info); // Add previous NodeInfo to the current queue.
 							streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for new level.
 							
 							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel()));
-							System.out.println("ID: " + info.getID() + " Meta: " + nestedEvents.size());
 							for (JPhyloIOEvent nextEvent : nestedEvents) {
 								streamDataProvider.getCurrentEventCollection().add(nextEvent);
 							}							
 							streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 						}						
-					
+						
+						streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
+						
 						double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);			
 						streamDataProvider.setCurrentNodeInfo(new NodeInfo("", branchLength));												
 					}
@@ -318,6 +315,15 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 			});
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
+	}
+	
+	
+	private String getID(String id) {
+		String result = id;
+		if (result.equals("") || (result == null)) {
+			result = DEFAULT_NODE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+		}
+		return result;
 	}
 
 	
