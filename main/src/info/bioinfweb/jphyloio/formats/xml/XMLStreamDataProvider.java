@@ -36,10 +36,12 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	
 	private String treeID;
 	private String treeLabel;
+	private boolean rooted;
 	
 	private Stack<Queue<NodeInfo>> passedSubnodes;
 	private StartElement metaWithAttributes;
 	private NodeInfo currentNodeInfo;
+	private String currentParentNodeID;
 	
 	
 	public XMLStreamDataProvider(R eventReader) {
@@ -87,6 +89,16 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 
 
+	public boolean isRooted() {
+		return rooted;
+	}
+
+
+	public void setRooted(boolean rooted) {
+		this.rooted = rooted;
+	}
+
+
 	public Stack<Queue<NodeInfo>> getPassedSubnodes() {
 		return passedSubnodes;
 	}
@@ -114,5 +126,15 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 
 	public void setCurrentNodeInfo(NodeInfo currentNodeInfo) {
 		this.currentNodeInfo = currentNodeInfo;
+	}
+
+
+	public String getCurrentParentNodeID() {
+		return currentParentNodeID;
+	}
+
+
+	public void setCurrentParentNodeID(String currentParentNodeID) {
+		this.currentParentNodeID = currentParentNodeID;
 	}	
 }

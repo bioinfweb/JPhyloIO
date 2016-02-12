@@ -41,6 +41,7 @@ import javax.xml.stream.events.Attribute;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -97,22 +98,15 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 					if (info != null) { //node has no children
 						Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 						
-						info.setID(getID(info.getID())); //make sure node has valid ID
+						info.setID(getID(info.getID(), EventContentType.NODE)); //make sure node has valid ID
 						streamDataProvider.getPassedSubnodes().peek().add(info);
 						streamDataProvider.setCurrentNodeInfo(null);
 						
-						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel()));
-						for (JPhyloIOEvent nextEvent : nestedEvents) {
-							streamDataProvider.getCurrentEventCollection().add(nextEvent);
-						}						
-						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+						createNodeEvents(info, nestedEvents);
+						createEdgeEvents(info, streamDataProvider.getCurrentParentNodeID());
 					}
-					else { //TODO create according edge events						
-//						Queue<NodeInfo> currentCollection = streamDataProvider.getPassedSubnodes().pop();	
-//						
-//						for (NodeInfo childInfo : currentCollection) {							
-//							String id = getID(childInfo.getID());						
-//						}						
+					else {				
+						streamDataProvider.getPassedSubnodes().pop();
 					}
 				}
 			};
@@ -149,6 +143,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 			new XMLElementReader<XMLStreamDataProvider<PhyloXMLEventReader>>() {
 				@Override
 				public void readEvent(XMLStreamDataProvider<PhyloXMLEventReader> streamDataProvider, XMLEvent event) throws Exception {
+					boolean rooted = XMLUtils.readBooleanAttr(event.asStartElement(), ATTR_ROOTED, false);
+					streamDataProvider.setRooted(rooted);
+					
 					streamDataProvider.setPassedSubnodes(new Stack<Queue<NodeInfo>>());
 				}
 		});
@@ -190,16 +187,15 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 						
 						if (info != null) { //node has children
 							Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
+							String parentNodeID = streamDataProvider.getCurrentParentNodeID();
 							
-							info.setID(getID(info.getID())); //make sure node has valid ID
+							info.setID(getID(info.getID(), EventContentType.NODE)); //make sure node has valid ID
+							streamDataProvider.setCurrentParentNodeID(info.getID());
 							streamDataProvider.getPassedSubnodes().peek().add(info); // Add previous NodeInfo to the current queue.
 							streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for new level.
 							
-							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel()));
-							for (JPhyloIOEvent nextEvent : nestedEvents) {
-								streamDataProvider.getCurrentEventCollection().add(nextEvent);
-							}							
-							streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+							createNodeEvents(info, nestedEvents);							
+							createEdgeEvents(info, parentNodeID);
 						}						
 						
 						streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
@@ -318,14 +314,42 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<XMLStreamDataPro
 	}
 	
 	
-	private String getID(String id) {
+	private String getID(String id, EventContentType type) {
 		String result = id;
-		if (result.equals("") || (result == null)) {
-			result = DEFAULT_NODE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+		if ((result == null) || result.equals("")) {
+			if (type.equals(EventContentType.NODE)) {
+				result = DEFAULT_NODE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+			}
+			else if (type.equals(EventContentType.EDGE)) {
+				result = DEFAULT_EDGE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+			}
 		}
 		return result;
 	}
-
+	
+	
+	private void createNodeEvents(NodeInfo info, Collection<JPhyloIOEvent> nestedEvents) {
+		getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel()));
+		for (JPhyloIOEvent nextEvent : nestedEvents) {
+			getStreamDataProvider().getCurrentEventCollection().add(nextEvent);
+		}							
+		getStreamDataProvider().getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+	}
+	
+	
+	private void createEdgeEvents(NodeInfo info, String parentNodeID) {
+		if (parentNodeID == null) {
+			if (getStreamDataProvider().isRooted()) {
+				parentNodeID = TAG_ROOT.getLocalPart();									
+			}
+		}
+		if (parentNodeID != null) {
+			getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(getID(null, EventContentType.EDGE), null, 
+					parentNodeID, info.getID(), info.getLength()));
+			getStreamDataProvider().getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+		}
+	}
+	
 	
 	@Override
 	public int getMaxCommentLength() {
