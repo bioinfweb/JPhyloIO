@@ -117,6 +117,7 @@ main/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReader.java
 main/src/info/bioinfweb/jphyloio/formats/phylip/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/AbstractTextEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/TextStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLElementReader.java -text svneol=unset#text/plain

@@ -38,6 +38,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.AbstractEventReader;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
@@ -150,6 +151,23 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 				if (result == null) {
 					result = elementReaderMap.get(new XMLElementReaderKey(null, null, eventType));
 				}
+			}
+		}
+		return result;
+	}
+	
+	
+	protected String getID(String id, EventContentType type) {
+		String result = id;
+		if ((result == null) || result.equals("")) {
+			if (type.equals(EventContentType.NODE)) {
+				result = DEFAULT_NODE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+			}
+			else if (type.equals(EventContentType.EDGE)) {
+				result = DEFAULT_EDGE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+			}
+			else if (type.equals(EventContentType.TREE)) {
+				result = DEFAULT_TREE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
 			}
 		}
 		return result;
