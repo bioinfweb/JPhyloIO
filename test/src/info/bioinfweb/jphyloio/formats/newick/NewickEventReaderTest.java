@@ -497,4 +497,88 @@ public class NewickEventReaderTest {
 			reader.close();
 		}
 	}
+
+	
+	@Test
+	public void test_readNextEvent_NHX2() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NHX2.nwk"));
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String idADH2 = assertLinkedOTUEvent(EventContentType.NODE, null, "ADH2", null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idADH1 = assertLinkedOTUEvent(EventContentType.NODE, null, "ADH1", null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idN1 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			assertEdgeEvent(idN1, idADH2, 0.1, reader);
+			assertMetaEvent("NHX:S", "human", null, "human", true, true, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idN1, idADH1, 0.11, reader);
+			assertMetaEvent("NHX:S", "human", null, "human", true, true, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			String idADHX = assertLinkedOTUEvent(EventContentType.NODE, null, "ADHX", null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idN2 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+
+			assertEdgeEvent(idN2, idN1, 0.05, reader);
+			assertMetaEvent("NHX:S", "primates", null, "primates", true, true, reader);
+			assertMetaEvent("NHX:D", "Y", null, "Y", true, true, reader);
+			assertMetaEvent("NHX:B", "100", null, new Double(100), true, true, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idN2, idADHX, 0.12, reader);
+			assertCommentEvent("&&NHX:=insect", reader);  // Not a valid NHX hot comment.
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			String idADH3 = assertLinkedOTUEvent(EventContentType.NODE, null, "ADH3", null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idN3 = assertLinkedOTUEvent(EventContentType.NODE, null, null, null, reader);
+			assertMetaEvent("NHX:D", "N", null, "N", true, true, reader);  // This metadata should theoretically be associated with the root branch, since NHX does not offer attaching data to nodes instead of branches.
+			assertEndEvent(EventContentType.NODE, reader);
+
+			assertEdgeEvent(idN3, idN2, 0.1, reader);
+			assertMetaEvent("NHX:S", "metazoa", null, "metazoa", true, true, reader);
+			assertMetaEvent("NHX:D", "N", null, "N", true, true, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idN3, idADH3, 0.1, reader);
+			assertMetaEvent("NHX:S", "Fungi", null, "Fungi", true, true, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEdgeEvent(null, idN3, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertNotEquals(idADH2, idADH1);
+			assertNotEquals(idADH2, idN1);
+			assertNotEquals(idADH2, idADHX);
+			assertNotEquals(idADH2, idN2);
+			assertNotEquals(idADH2, idADH3);
+			assertNotEquals(idADH2, idN3);
+			assertNotEquals(idADH1, idN1);
+			assertNotEquals(idADH1, idADHX);
+			assertNotEquals(idADH1, idN2);
+			assertNotEquals(idADH1, idADH3);
+			assertNotEquals(idADH1, idN3);
+			assertNotEquals(idN1, idADHX);
+			assertNotEquals(idN1, idN2);
+			assertNotEquals(idN1, idADH3);
+			assertNotEquals(idN1, idN3);
+			assertNotEquals(idADHX, idN2);
+			assertNotEquals(idADHX, idADH3);
+			assertNotEquals(idADHX, idN3);
+			assertNotEquals(idADHX, idADH3);
+			assertNotEquals(idADHX, idN3);
+			assertNotEquals(idADH3, idN3);
+			
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }
