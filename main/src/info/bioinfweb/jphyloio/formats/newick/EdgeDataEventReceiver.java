@@ -145,30 +145,20 @@ public class EdgeDataEventReceiver extends AbstractEventReceiver implements JPhy
 			case META_INFORMATION:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					metadataLevel++;
-				}
-				else {
-					metadataLevel--;
-				}
-				
-				MetaInformationEvent metaevent = event.asMetaInformationEvent();
-				switch (metadataLevel) {
-					case 0:
+					
+					if (metadataLevel == 1) {  // Ignore nested events.
+						MetaInformationEvent metaevent = event.asMetaInformationEvent();
 						Metadata metadata = new Metadata(metaevent.getKey());
 						if (metaevent.hasValue()) {
 							metadata.values.add(metaevent.getStringValue());
 						}
-						break;
-					case 1:
-						
-						break;
-					default:
+					}
+					else {
 						ignoredNestedMetadata = true;
-						break;
-				}
-				if (metadataLevel <= 2) {  // Do not store events that are deeper nested
-					metadataEvents.add(event);
+					}
 				}
 				else {
+					metadataLevel--;
 				}
 				break;
 			case META_XML_CONTENT:
