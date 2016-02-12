@@ -112,8 +112,13 @@ public class NewickStringReader implements ReadWriteConstants {
 	private Collection<JPhyloIOEvent> createMetaAndCommentEvents(List<NewickToken> tokens, boolean isOnNode) throws IOException {
 		Collection<JPhyloIOEvent> result = new ArrayList<JPhyloIOEvent>();
 		for (NewickToken token : tokens) {
-			if (token.getText().trim().startsWith("" + HotCommentDataReader.START_SYMBOL)) {
-				hotCommentDataReader.read(token.getText(), result, isOnNode);
+			if (token.getText().trim().startsWith("" + HotCommentDataReader.START_SYMBOL)) {  // Condition works for both the TreeAnnotator and the NHX format.
+				try {
+					hotCommentDataReader.read(token.getText(), result, isOnNode);
+				}
+				catch (IllegalArgumentException e) {  // Add as comment, if it could not be parsed.
+					result.add(new CommentEvent(token.getText(), false));  //TODO Log warning, when logger is available.
+				}
 			}
 			else {
 				result.add(new CommentEvent(token.getText(), false));

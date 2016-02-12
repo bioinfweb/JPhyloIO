@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 
 
@@ -45,6 +46,10 @@ public class HotCommentDataReader {
 	
 	public static final char INDEX_START_SYMBOL = '[';
 	public static final char INDEX_END_SYMBOL = ']';
+
+	public static final char NHX_VALUE_SEPARATOR_SYMBOL = ':';
+	public static final String NHX_START = "&&NHX" + NHX_VALUE_SEPARATOR_SYMBOL;
+	public static final String NHX_KEY_PREFIX = "NHX:";
 	
 //	public static final String UNNAMED_EDGE_DATA_NAME = "unnamedEdgeHotComment";  //TODO Specify URL or similar ID here?
 //	public static final String UNNAMED_NODE_DATA_NAME = "unnamedNodeHotComment";  //TODO Specify URL or similar ID here?
@@ -127,6 +132,70 @@ public class HotCommentDataReader {
 	
 	
 	/**
+	 * Processed comments according to 
+	 * <a href="https://code.google.com/archive/p/beast-mcmc/wikis/NexusMetacommentFormat.wiki">this</a> definition.
+	 * 
+	 * @param comment
+	 * @param eventQueue
+	 */
+	private void processMetacomments(final String comment, Collection<JPhyloIOEvent> eventQueue) {
+		int start = 1;
+		int end = findAllocationEnd(comment, start);  //TODO Is this still necessary? (Comes from TG implementation.)
+		while (end != -1) {
+			String[] parts = comment.substring(start, end).split("" + ALLOCATION_SYMBOL);
+			if (parts.length == 2) {
+				for (int j = 0; j < parts.length; j++) {
+					parts[j] = parts[j].trim();
+				}
+				
+				if (parts[1].startsWith("" + FIELD_START_SYMBOL)) {
+					if (parts[1].endsWith("" + FIELD_END_SYMBOL)) {
+						String[] values = parts[1].substring(1, parts[1].length() - 1).split(
+								"" + VALUE_SEPARATOR_SYMBOL);
+						addMetaInformation(parts[0], new Value(null), eventQueue, false);
+						for (int j = 0; j < values.length; j++) {
+							addMetaInformation(parts[0] + INDEX_START_SYMBOL + j + INDEX_END_SYMBOL,  //TODO Use different key here? 
+									readTextElementData(values[j].trim()), eventQueue, true);
+						}
+						eventQueue.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+					}
+				}
+				else {
+					addMetaInformation(parts[0], readTextElementData(parts[1]), eventQueue, true);
+				}
+			}
+			
+			start = end + 1;
+			end = findAllocationEnd(comment, start);
+		}
+	}
+	
+	
+	/**
+	 * Processed comments according to 
+	 * <a href="https://sites.google.com/site/cmzmasek/home/software/forester/nhx">this</a> definition.
+	 * 
+	 * @param comment
+	 * @param eventQueue
+	 */
+	private void processNHX(final String comment, Collection<JPhyloIOEvent> eventQueue) {
+		Collection<JPhyloIOEvent> newEvents = new LinkedList<JPhyloIOEvent>();
+		String[] parts = comment.substring(NHX_START.length()).split("" + NHX_VALUE_SEPARATOR_SYMBOL);
+		for (int i = 0; i < parts.length; i++) {
+			int splitPos = parts[i].indexOf(ALLOCATION_SYMBOL);
+			if (splitPos > 0) {
+				addMetaInformation(NHX_KEY_PREFIX + parts[i].substring(0, splitPos), 
+						readTextElementData(parts[i].substring(splitPos + 1, parts[i].length())), newEvents, true);  //TODO Modify key, e.g. using the analog from phyloXML?
+			}
+			else {  // If the part starts with '=' or there is no '='.
+				throw new IllegalArgumentException("\"" + parts[i] + "\" is not a legal NHX metadata definition.");
+			}
+		}
+		eventQueue.addAll(newEvents);
+	}
+	
+	
+	/**
 	 * Reads metadata from the specified hot comment and adds according {@link MetaInformationEvent}s
 	 * to the queue.
 	 * <p>
@@ -136,38 +205,14 @@ public class HotCommentDataReader {
 	 * @param eventQueue the event queue to add generated metaevents to
 	 * @param isOnNode Specifies {@code true} here, if the hot comment was attached to a node or
 	 *        {@code false} if it was attached to an edge
+	 * @throws IllegalArgumentException if the specified comment cannot be parsed in the TreeAnnotator or the NHX format.
 	 */
-	public void read(String comment, Collection<JPhyloIOEvent> eventQueue, boolean isOnNode) {
-		if (comment.startsWith("" + START_SYMBOL)) {
-			int start = 1;
-			int end = findAllocationEnd(comment, start);
-			while (end != -1) {
-				String[] parts = comment.substring(start, end).split("" + ALLOCATION_SYMBOL);
-				if (parts.length == 2) {
-					for (int j = 0; j < parts.length; j++) {
-						parts[j] = parts[j].trim();
-					}
-					
-					if (parts[1].startsWith("" + FIELD_START_SYMBOL)) {
-						if (parts[1].endsWith("" + FIELD_END_SYMBOL)) {
-							String[] values = parts[1].substring(1, parts[1].length() - 1).split(
-									"" + VALUE_SEPARATOR_SYMBOL);
-							addMetaInformation(parts[0], new Value(null), eventQueue, false);
-							for (int j = 0; j < values.length; j++) {
-								addMetaInformation(parts[0] + INDEX_START_SYMBOL + j + INDEX_END_SYMBOL,  //TODO Use different key here? 
-										readTextElementData(values[j].trim()), eventQueue, true);
-							}
-							eventQueue.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-						}
-					}
-					else {
-						addMetaInformation(parts[0], readTextElementData(parts[1]), eventQueue, true);
-					}
-				}
-				
-				start = end + 1;
-				end = findAllocationEnd(comment, start);
-			}
+	public void read(String comment, Collection<JPhyloIOEvent> eventQueue, boolean isOnNode) throws IllegalArgumentException {
+		if (comment.startsWith(NHX_START)) {  // Needs to be checked first.
+			processNHX(comment, eventQueue);
+		}
+		else if (comment.startsWith("" + START_SYMBOL)) {
+			processMetacomments(comment, eventQueue);
 		}
 		// The following case is currently unused, because JPhyloIO creates comment events from unnamed hot comments 
 		// and its up to the application, whether these shall be interpreted as metainformation or not.
