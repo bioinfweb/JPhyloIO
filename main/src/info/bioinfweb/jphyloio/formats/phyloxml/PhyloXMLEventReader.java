@@ -23,13 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
@@ -48,6 +45,7 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.NodeInfo;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
@@ -99,15 +97,15 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 						Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 						
 						info.setID(getID(info.getID(), EventContentType.NODE)); //make sure node has valid ID
-						streamDataProvider.getPassedSubnodes().peek().add(info);
+//						streamDataProvider.getPassedSubnodes().peek().add(info);
 						streamDataProvider.setCurrentNodeInfo(null);
 						
 						createNodeEvents(info, nestedEvents);
 						createEdgeEvents(info, streamDataProvider.getCurrentParentNodeID());
 					}
-					else {				
-						streamDataProvider.getPassedSubnodes().pop();
-					}
+//					else {				
+//						streamDataProvider.getPassedSubnodes().pop();
+//					}
 				}
 			};
 		
@@ -146,7 +144,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 					boolean rooted = XMLUtils.readBooleanAttr(event.asStartElement(), ATTR_ROOTED, false);
 					streamDataProvider.setRooted(rooted);
 					
-					streamDataProvider.setPassedSubnodes(new Stack<Queue<NodeInfo>>());
+//					streamDataProvider.setPassedSubnodes(new Stack<Queue<NodeInfo>>());
 				}
 		});
 		
@@ -169,7 +167,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 					
 					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 					
-					streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for top level.
+//					streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for top level.
 					
 					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);					
 					streamDataProvider.setCurrentNodeInfo(new NodeInfo("", branchLength));										
@@ -188,8 +186,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 							
 							info.setID(getID(info.getID(), EventContentType.NODE)); //make sure node has valid ID
 							streamDataProvider.setCurrentParentNodeID(info.getID());
-							streamDataProvider.getPassedSubnodes().peek().add(info); // Add previous NodeInfo to the current queue.
-							streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for new level.
+//							streamDataProvider.getPassedSubnodes().peek().add(info); // Add previous NodeInfo to the current queue.
+//							streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for new level.
 							
 							createNodeEvents(info, nestedEvents);							
 							createEdgeEvents(info, parentNodeID);
@@ -331,6 +329,12 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 					parentNodeID, info.getID(), info.getLength()));
 			getStreamDataProvider().getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 		}
+	}
+	
+	
+	@Override
+	protected PhyloXMLStreamDataProvider createStreamDataProvider() {
+		return new PhyloXMLStreamDataProvider(this);
 	}
 	
 	

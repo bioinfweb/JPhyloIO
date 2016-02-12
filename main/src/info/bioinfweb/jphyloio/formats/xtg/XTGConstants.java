@@ -21,6 +21,8 @@ package info.bioinfweb.jphyloio.formats.xtg;
 import javax.xml.namespace.QName;
 
 public interface XTGConstants {
+	public static final String XTG = "xtg";
+	
 	public static final String NAMESPACE_URI = "http://bioinfweb.info/xmlns/xtg";
 	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	
@@ -29,5 +31,6 @@ public interface XTGConstants {
 	public static final QName TAG_NODE = new QName(NAMESPACE_URI, "Node");
 	public static final QName TAG_BRANCH = new QName(NAMESPACE_URI, "Branch");
 	
+	public static final QName ATTR_UNIQUE_NAME = new QName("UniqueName");
 	public static final QName ATTR_TEXT = new QName("Text");
 }

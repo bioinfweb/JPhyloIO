@@ -34,7 +34,7 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	private String parentName;
 	private String elementName;
 	
-	private Stack<Queue<NodeInfo>> passedSubnodes;
+//	private Stack<Queue<NodeInfo>> passedSubnodes;
 	private StartElement metaWithAttributes;
 	private NodeInfo currentNodeInfo;
 	private String currentParentNodeID;
@@ -65,14 +65,14 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 
 
-	public Stack<Queue<NodeInfo>> getPassedSubnodes() {
-		return passedSubnodes;
-	}
-
-
-	public void setPassedSubnodes(Stack<Queue<NodeInfo>> passedSubnodes) {
-		this.passedSubnodes = passedSubnodes;
-	}
+//	public Stack<Queue<NodeInfo>> getPassedSubnodes() {
+//		return passedSubnodes;
+//	}
+//
+//
+//	public void setPassedSubnodes(Stack<Queue<NodeInfo>> passedSubnodes) {
+//		this.passedSubnodes = passedSubnodes;
+//	}
 
 
 	public StartElement getMetaWithAttributes() {

@@ -754,12 +754,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	}
 
 
-	@Override
-	protected NeXMLStreamDataProvider getStreamDataProvider() {
-		return (NeXMLStreamDataProvider)super.getStreamDataProvider();
-	}
-
-
 	public TranslateTokens getTranslateTokens() {
 		return translateTokens;
 	}
@@ -775,12 +769,12 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	public void setMaxCommentLength(int maxCommentLength) {}
 	
 	
-	protected Queue<JPhyloIOEvent> getUpcomingEvents() { //TODO why can't these properties be accessed directly?
+	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
 		return super.getUpcomingEvents();
 	}
 	
 	
-	protected XMLEventReader getXMLReader() { //TODO why can't these properties be accessed directly?
+	protected XMLEventReader getXMLReader() {
 		return super.getXMLReader();
 	}
 	
