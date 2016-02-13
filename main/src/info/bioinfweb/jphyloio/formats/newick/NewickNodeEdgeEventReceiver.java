@@ -103,6 +103,10 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Certai
 	
 	
 	@Override
+	protected void processStartEvent(E startEvent) throws IOException {}  // Nothing to do.
+
+
+	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IllegalArgumentException,	IOException {
 		switch (event.getType().getContentType()) {
 			case COMMENT:

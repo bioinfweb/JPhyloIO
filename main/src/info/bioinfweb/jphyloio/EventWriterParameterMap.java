@@ -38,6 +38,14 @@ public class EventWriterParameterMap extends ParameterMap {
 	public static final String KEY_LOGGER = "logger";
 	
 	/** 
+	 * Identifies a comment describing the application generating the output, which shall be added at the beginning
+	 * of formats that support this.
+	 * <p>
+	 * The value should be a {@link String}.
+	 */
+	public static final String KEY_APPLICATION_COMMENT = "applicationComment";
+	
+	/** 
 	 * If a line separator different from that of the current operating system shall be used by a writer, it can be 
 	 * specified using this key. (Note that writers for XML formats will not necessarily make use of this parameter.)
 	 * <p>

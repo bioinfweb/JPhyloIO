@@ -70,6 +70,9 @@ public abstract class CertainStartEventReceiver<E extends JPhyloIOEvent> extends
 	protected abstract boolean doAdd(JPhyloIOEvent event) throws IllegalArgumentException, IOException;
 	
 	
+	protected abstract void processStartEvent(E startEvent) throws IOException;
+	
+	
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
 		if (startEvent == null) {
@@ -77,6 +80,7 @@ public abstract class CertainStartEventReceiver<E extends JPhyloIOEvent> extends
 					event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				
 				startEvent = (E)event;  // May throw a class cast exception later, if an invalid object with this type was specified.
+				processStartEvent(startEvent);
 				return true;
 			}
 			else {
