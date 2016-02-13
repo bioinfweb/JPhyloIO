@@ -43,7 +43,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
  * @author Ben St&ouml;ver
  */
 public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
-	private String indention;
+	private String indention = "";
 	
 	
 	/**
@@ -124,7 +124,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	
 	protected void decreaseIndention() {
-		if (indention.length() > 1) {
+		if (indention.length() > 0) {
 			indention = indention.substring(1);
 		}
 	}

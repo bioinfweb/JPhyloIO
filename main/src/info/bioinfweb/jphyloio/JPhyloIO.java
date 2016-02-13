@@ -71,7 +71,7 @@ public class JPhyloIO {
 	
 	
 	public String getLibraryNameAndVersion() {
-		return getLibraryName() + getVersion().toString();
+		return getLibraryName() + " " + getVersion().toString();
 	}
 	
 	

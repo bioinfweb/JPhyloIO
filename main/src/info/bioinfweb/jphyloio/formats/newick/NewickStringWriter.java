@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
-import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;

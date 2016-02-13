@@ -140,6 +140,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	 * @return a list of the events
 	 * @throws IOException 
 	 */
+	@SuppressWarnings("unchecked")
 	private List<NewickToken>[] collectNodeEdgeTokens() throws IOException {
 		List<NewickToken> nodeTokens = new ArrayList<NewickToken>();
 		List<NewickToken> edgeTokens = new ArrayList<NewickToken>();

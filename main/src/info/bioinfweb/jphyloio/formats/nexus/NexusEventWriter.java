@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
+import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 
 
 
@@ -60,6 +61,11 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			logger.addWarning(objectName + 
 					" is annotated directly with metadata, which have been ignored, since the Nexus format does not support this.");
 		}
+	}
+	
+	
+	private String formatToken(String token) {
+		return NewickStringWriter.formatToken(token, WORD_DELIMITER);
 	}
 	
 	
@@ -106,11 +112,16 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			Iterator<String> iterator = otuList.getIDIterator();
 			while (iterator.hasNext()) {
 				String id = iterator.next();
-				writeLineStart(writer, getLabeledIDName(otuList.getOTUStartEvent(id)));
+				writeLineStart(writer, formatToken(getLabeledIDName(otuList.getOTUStartEvent(id))));
+				if (iterator.hasNext()) {
+					writeLineBreak(writer, parameters);
+				}
+				else {
+					writeCommandEnd();
+				}
 				otuList.writeData(receiver, id);
 				receiver.reset();
 			}
-			writeCommandEnd();
 			decreaseIndention();
 			decreaseIndention();
 			
@@ -130,10 +141,10 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			if (otusIterator.hasNext()) {
 				logger.addWarning("This document contains more than one OTU list. Therefore multiple TAXA blocks have been written "
 						+ "into the Nexus output. Not all programs may be able to process Nexus files with multiple TAXA blocks.");
+				do {
+					writeTaxaBlock(otusIterator.next());
+				}	while (otusIterator.hasNext());
 			}
-			do {
-				writeTaxaBlock(otusIterator.next());
-			}	while (otusIterator.hasNext());
 		}
 		else {
 			logger.addWarning("This document contains no OTU list. Therefore no TAXA block can be written to the Nexus document. "
