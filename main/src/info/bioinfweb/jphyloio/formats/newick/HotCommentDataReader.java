@@ -53,11 +53,17 @@ public class HotCommentDataReader implements NewickConstants {
 	
 	
 	private Value readTextElementData(String text) {
-		if ((text.startsWith(Character.toString(NAME_DELIMITER)) && text.endsWith(Character.toString(NAME_DELIMITER)))
-				|| (text.startsWith(Character.toString(ALTERNATIVE_NAME_DELIMITER)) 
-						&& text.endsWith(Character.toString(ALTERNATIVE_NAME_DELIMITER)))) {
-			
-			return new Value(text.substring(1, text.length() - 1));  // Values like "100" should also be read as a string.
+		char nameDelimiter = ' ';
+		if (text.startsWith(Character.toString(NAME_DELIMITER)) && text.endsWith(Character.toString(NAME_DELIMITER))) {
+			nameDelimiter = NAME_DELIMITER;
+		}
+		else if (text.startsWith(Character.toString(ALTERNATIVE_NAME_DELIMITER)) 
+				&& text.endsWith(Character.toString(ALTERNATIVE_NAME_DELIMITER))) {
+			nameDelimiter = ALTERNATIVE_NAME_DELIMITER;
+		}
+		if (nameDelimiter != ' ') {  // The implementation would also be able to read single delimiters inside strings. Since there is no complete formal definition for metacomments, it is not clear if and how delimiters should actually be masked inside a string. 
+			return new Value(text.substring(1, text.length() - 1).replaceAll(  // Values like "100" should also be read as a string.
+					"\\" + nameDelimiter + "\\" + nameDelimiter, "" + nameDelimiter));  // Replace e.g. 'A''B'.
 		}
 		else {
 			try {  //TODO Should parsing a long be tried before?
