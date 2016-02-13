@@ -119,6 +119,11 @@ public class FASTAEventWriterLogTest {
 			public void writeMetadata(JPhyloIOEventReceiver writer) {}
 			
 			@Override
+			public String getLinkedOTUListID() {
+				return null;
+			}
+
+			@Override
 			public boolean hasMetadata() {
 				return false;
 			}

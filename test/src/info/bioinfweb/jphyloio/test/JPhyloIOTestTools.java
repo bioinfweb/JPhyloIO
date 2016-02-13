@@ -40,6 +40,7 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
 import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 import static org.junit.Assert.*;
 
 
@@ -55,7 +56,8 @@ public class JPhyloIOTestTools {
 	public static ListBasedDocumentDataAdapter createTestDocumentWithLabels(String... labelsAndSequences) {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
 		TestMatrixDataAdapter matrixAdapter = new TestMatrixDataAdapter(true, labelsAndSequences);
-		result.getOtuLists().add(matrixAdapter.createAccordingOTUList(0));
+		TestOTUListDataAdapter otuListAdapter = matrixAdapter.createAccordingOTUList(0); 
+		result.getOtuListsMap().put(otuListAdapter.getID(), otuListAdapter);
 		result.getMatrices().add(matrixAdapter);
 		return result;
 	}

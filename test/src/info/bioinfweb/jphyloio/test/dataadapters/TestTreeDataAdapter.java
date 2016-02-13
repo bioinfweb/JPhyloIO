@@ -37,6 +37,20 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter {
+	private String linkedOTUsID = null;
+	
+	
+	public void setLinkedOTUsID(String linkedOTUsID) {
+		this.linkedOTUsID = linkedOTUsID;
+	}
+
+
+	@Override
+	public String getLinkedOTUListID() {
+		return linkedOTUsID;
+	}
+	
+	
 	@Override
 	public boolean isTree() {
 		return true;

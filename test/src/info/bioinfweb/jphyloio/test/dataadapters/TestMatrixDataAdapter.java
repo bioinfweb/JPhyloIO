@@ -23,6 +23,7 @@ import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsMatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
@@ -53,7 +54,10 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	}
 	
 	
+	private String linkedOTUsID = null;
 	private ListOrderedMap<String, SequenceData> matrix = new ListOrderedMap<>();
+	private ObjectListDataAdapter tokenSets = null;
+	private ObjectListDataAdapter characterSets = null;
 	private long columnCount;
 	private boolean longTokens;
 
@@ -136,6 +140,17 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	}
 	
 
+	public void setLinkedOTUsID(String linkedOTUsID) {
+		this.linkedOTUsID = linkedOTUsID;
+	}
+
+
+	@Override
+	public String getLinkedOTUListID() {
+		return linkedOTUsID;
+	}
+
+
 	@Override
 	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
 			long endColumn) throws IllegalArgumentException, IOException {
@@ -184,5 +199,37 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	@Override
 	public boolean containsLongTokens() {
 		return longTokens;
+	}
+
+
+	@Override
+	public ObjectListDataAdapter getTokenSets() {
+		if (tokenSets == null) {
+			return super.getTokenSets();
+		}
+		else {
+			return tokenSets;
+		}
+	}
+
+
+	public void setTokenSets(ObjectListDataAdapter tokenSets) {
+		this.tokenSets = tokenSets;
+	}
+
+
+	@Override
+	public ObjectListDataAdapter getCharacterSets() {
+		if (characterSets == null) {
+			return super.getTokenSets();
+		}
+		else {
+			return characterSets;
+		}
+	}
+
+	
+	public void setCharacterSets(ObjectListDataAdapter characterSets) {
+		this.characterSets = characterSets;
 	}
 }

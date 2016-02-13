@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import org.apache.commons.collections4.map.ListOrderedMap;
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
@@ -59,6 +60,12 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements
 
 	public ListOrderedMap<String, LabeledIDEvent> getOtus() {
 		return otus;
+	}
+
+
+	@Override
+	public String getID() {
+		return ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + indexOfList;
 	}
 
 
