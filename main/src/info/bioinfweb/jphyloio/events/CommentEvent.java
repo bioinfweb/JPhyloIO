@@ -51,6 +51,16 @@ public class CommentEvent extends ConcreteJPhyloIOEvent {
 
 
 	/**
+	 * Creates a new instance of this class that is not contunied in the next event.
+	 * 
+	 * @param content the content of the represented comment
+	 */
+	public CommentEvent(String content) {
+		this(content, false);
+	}
+	
+	
+	/**
 	 * Returns the content of the comment.
 	 * 
 	 * @return the content of the comment
