@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -35,21 +36,34 @@ import java.util.Iterator;
 
 
 
+/**
+ * Implementation to write Newick tree definitions to be used by {@link NewickEventWriter} and {@link NexusEventWriter}.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class NewickStringWriter implements NewickConstants {
 	private Writer writer;
 	private TreeNetworkDataAdapter tree;
 	private EventWriterParameterMap parameters;
-	private OTUListDataAdapter firstOTUList;
+	private OTUListDataAdapter otuList;
 	
 	
-	public NewickStringWriter(Writer writer, TreeNetworkDataAdapter tree,	OTUListDataAdapter firstOTUList, 
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param writer the writer to write the Newick string to
+	 * @param tree the tree data adapter providing the tree data to be written
+	 * @param otuList the list of OTU definitions to be used to label unlabeled tree nodes (Maybe {@code null}.)
+	 * @param parameters the write parameter map specified to the calling reader
+	 */
+	public NewickStringWriter(Writer writer, TreeNetworkDataAdapter tree,	OTUListDataAdapter otuList, 
 			EventWriterParameterMap parameters) {
 		
 		super();
 		this.writer = writer;
 		this.tree = tree;
 		this.parameters = parameters;
-		this.firstOTUList = firstOTUList;
+		this.otuList = otuList;
 	}
 	
 	
@@ -123,7 +137,7 @@ public class NewickStringWriter implements NewickConstants {
 		tree.writeNodeData(nodeReceiver, nodeID);
 		
 		// Write node data:
-		writer.write(formatToken(AbstractEventWriter.getLinkedOTUName(nodeReceiver.getStartEvent(), firstOTUList), NAME_DELIMITER));
+		writer.write(formatToken(AbstractEventWriter.getLinkedOTUName(nodeReceiver.getStartEvent(), otuList), NAME_DELIMITER));
 		nodeReceiver.writeMetadata();
 		nodeReceiver.writeComments();
 		
@@ -150,28 +164,46 @@ public class NewickStringWriter implements NewickConstants {
 	}
 
 	
+	/**
+	 * Writes the tree data specified in the constructor to the specified stream.
+	 * <p>
+	 * If the specified tree/network data adapter models a phylogenetic network and not a tree,
+	 * nothing is written and an according warning is logged. Additionally warnings are logged,
+	 * if the tree adapter provides metadata or if multiple root edges are available.
+	 * <p>
+	 * If an empty tree definition (with no root edge) is specified, the written Newick string
+	 * only consists of the terminal symbol {@code ';'}.
+	 * 
+	 * @throws IOException if an I/O error occurs while writing to specified writer
+	 */
 	public void write() throws IOException {
 		ApplicationLogger logger = parameters.getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
-		if (tree.hasMetadata()) {
-			logger.addWarning(
-					"A tree definition contains tree metadata, which cannot be written to Newick/NHX and is therefore ignored.");
-		}
-		
-		Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs();
-		if (rootEdgeIterator.hasNext()) {
-			String rootEdgeID = rootEdgeIterator.next();
-			if (rootEdgeIterator.hasNext()) {
-				logger.addWarning("A tree definition contains more than one root edge, which is not supported "
-						+ "by the Newick/NHX format. Only the first root edge will be considered.");
+		if (tree.isTree()) {
+			if (tree.hasMetadata()) {
+				logger.addWarning(
+						"A tree definition contains tree metadata, which cannot be written to Newick/NHX and is therefore ignored.");
 			}
-			writeRootedInformation();
-			writeSubtree(rootEdgeID);
+			
+			Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs();
+			if (rootEdgeIterator.hasNext()) {
+				String rootEdgeID = rootEdgeIterator.next();
+				if (rootEdgeIterator.hasNext()) {
+					logger.addWarning("A tree definition contains more than one root edge, which is not supported "
+							+ "by the Newick/NHX format. Only the first root edge will be considered.");
+				}
+				writeRootedInformation();
+				writeSubtree(rootEdgeID);
+			}
+			else {
+				logger.addWarning("A specified tree does not specify any root edge. (Event unrooted trees need a "
+						+ "root edge definition defining the edge to start writing tree to the Newick/NHX format.) No "
+						+ "Newick string was written.");
+			}
 			writer.write(TERMINAL_SYMBOL);
 			writer.write(SystemUtils.LINE_SEPARATOR);
 		}
 		else {
-			throw new IllegalArgumentException("A specified tree does not specify any root edge. (Event unrooted trees need a "
-					+ "root edge definition defining the edge to start writing tree to the Newick/NHX format.)");
+			logger.addWarning("A provided network definition was ignored, because the Newick/NHX format only supports trees.");  //TODO Reference network label or ID of the network, when available.
 		}
 	}
 }

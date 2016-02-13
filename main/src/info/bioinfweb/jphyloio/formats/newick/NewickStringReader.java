@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.TreeReader;
 import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 import java.io.IOException;
@@ -43,6 +44,11 @@ import java.util.regex.Pattern;
 
 
 
+/**
+ * Implementation to read Newick tree definitions to be used by {@link NewickEventReader} and {@link TreeReader}.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class NewickStringReader implements ReadWriteConstants {
 	private static final Pattern HOT_COMMENT_PATTERN = Pattern.compile("\\s*\\&.*");
 	private static final int NO_HOT_COMMENT_READ = -2;

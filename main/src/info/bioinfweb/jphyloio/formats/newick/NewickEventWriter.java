@@ -46,12 +46,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 		if (treeNetworkIterator.hasNext()) {
 			while (treeNetworkIterator.hasNext()) {
 				TreeNetworkDataAdapter treeNetwork = treeNetworkIterator.next();
-				if (treeNetwork.isTree()) {
-					new NewickStringWriter(writer, treeNetwork, firstOTUList, parameters).write();
-				}
-				else {
-					logger.addWarning("A provided network definition was ignored, because the Newick/NHX format only supports trees.");  //TODO Reference network label or ID of the network, when available.
-				}
+				new NewickStringWriter(writer, treeNetwork, firstOTUList, parameters).write();
 			}
 		}
 		else {
