@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.test.dataadapters;
 
 import info.bioinfweb.commons.Math2;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
@@ -54,6 +55,8 @@ public class SingleTokenTestMatrixDataAdapter extends TestMatrixDataAdapter {
 			receiver.add(new MetaInformationEvent("someKey", "someType", "someValue"));
 			receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			receiver.add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, EventTopologyType.END));
+			
+			receiver.add(new CommentEvent("comment ]1"));
 			
 			if (SINGLE_TOKEN_INDEX < endColumn) {
 				super.writeSequencePartContentData(receiver, sequenceID, SINGLE_TOKEN_INDEX + 1, endColumn);

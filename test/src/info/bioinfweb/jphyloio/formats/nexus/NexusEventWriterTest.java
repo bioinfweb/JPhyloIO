@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestSingleTokenSetAdapter;
@@ -45,13 +46,16 @@ public class NexusEventWriterTest implements NexusConstants {
 		File file = new File("data/testOutput/Test.nex");
 		
 		// Write file:
-		ListBasedDocumentDataAdapter document = createTestDocumentWithLabels("Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
+		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
+		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter(true, 
+				"Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
+		TestOTUListDataAdapter otuList = matrix.createAccordingOTUList(0); 
+		document.getOtuListsMap().put(otuList.getID(), otuList);
+		document.getMatrices().add(matrix);
 		
-		TestOTUListDataAdapter otuList = (TestOTUListDataAdapter)document.getOTUListIterator().next();
 		String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + "2";
 		otuList.getOtus().put(otuID, new LabeledIDEvent(EventContentType.OTU, otuID, null));  // Set last OTU label to null
 		
-		TestMatrixDataAdapter matrix = (TestMatrixDataAdapter)document.getMatrices().get(0);
 		matrix.setLinkedOTUsID("otus0");
 		matrix.setTokenSets(new TestSingleTokenSetAdapter());
 		
@@ -85,7 +89,7 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\tDIMENSIONS NTAX=3 NCHAR=5;", reader.readLine());
 			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. TOKENS=\"A T C G\";", reader.readLine());
 			assertEquals("\tMATRIX", reader.readLine());
-			assertEquals("\t\t\tLabel_1 ACTGC", reader.readLine());
+			assertEquals("\t\t\tLabel_1 ACT[comment 1]GC", reader.readLine());
 			assertEquals("\t\t\tOTU_otu1 A-TCC", reader.readLine());
 			assertEquals("\t\t\tseq2 ACTTC;", reader.readLine());
 			assertEquals("END;", reader.readLine());
