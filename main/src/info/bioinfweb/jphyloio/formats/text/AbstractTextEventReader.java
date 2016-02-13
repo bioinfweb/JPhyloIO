@@ -321,7 +321,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	
 	
 	protected KeyValueInformation readKeyValueInformation(String keyPrefix, char commandEnd, char commentStart, 
-			char commentEnd, char keyValueSeparator, char valueDelimiter) throws IOException {
+			char commentEnd, char keyValueSeparator) throws IOException {
 		
 		PeekReader reader = getReader();
 		
@@ -335,7 +335,16 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 			reader.skip(1);  // Consume '='.
 			consumeWhiteSpaceAndComments(commentStart, commentEnd);
 			
-			if (reader.peekChar() == valueDelimiter) {
+			char c = reader.peekChar();
+			char valueDelimiter = ' ';
+			if (c == '\'') {
+				valueDelimiter = '\'';
+			}
+			else if (c == '"') {
+				valueDelimiter = '"';
+			}
+			
+			if (valueDelimiter != ' ') {
 				reader.skip(1);  // Consume '"'.
 				value = reader.readUntil(Character.toString(valueDelimiter)).getSequence().toString();
 			}

@@ -151,7 +151,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 			
 			boolean eventAdded = false;
 			while (getReader().peekChar() != COMMAND_END) {
-				KeyValueInformation info = readKeyValueInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=', '"');
+				KeyValueInformation info = readKeyValueInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=');
 				processFormatSubcommand(info.getKey(), info.getValue());
 				getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
 				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));

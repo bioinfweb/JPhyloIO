@@ -37,7 +37,6 @@ public interface NexusConstants {
 	public static final char COMMENT_START = '[';
 	public static final char COMMENT_END = ']';
 	public static final char KEY_VALUE_SEPARATOR = '=';
-	public static final char VALUE_DELIMITER = '"';
 	public static final char WORD_DELIMITER = '\'';
 	public static final char CHAR_SET_TO = '-';
 	public static final char ELEMENT_SEPARATOR = ',';
