@@ -31,11 +31,10 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+
+import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
@@ -54,7 +53,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	}
 	
 	
-	private SortedMap<String, SequenceData> matrix = new TreeMap<>();
+	private ListOrderedMap<String, SequenceData> matrix = new ListOrderedMap<>();
 	private long columnCount;
 	private boolean longTokens;
 
@@ -110,7 +109,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	}
 	
 	
-	public SortedMap<String, SequenceData> getMatrix() {
+	public ListOrderedMap<String, SequenceData> getMatrix() {
 		return matrix;
 	}
 	
