@@ -59,7 +59,7 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {
 		switch (nodeID) {
 			case "n1":
-				receiver.add(new LinkedOTUEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null));  //TODO Link some OTUs later.
+				receiver.add(new LinkedOTUEvent(EventContentType.NODE, nodeID, "Node '_1", null));  //TODO Link some OTUs later.
 				receiver.add(new MetaInformationEvent("a1", null, "100", new Integer(100)));
 				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 				receiver.add(new MetaInformationEvent("a2", null, "ab 'c", "ab 'c"));

@@ -49,8 +49,8 @@ public class NewickEventWriterTest {
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			assertEquals("[&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)Node_n1[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
-			assertEquals("[&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)Node_n1[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("[&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("[&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
 			assertEquals(-1, reader.read());
 		}
 		finally {
