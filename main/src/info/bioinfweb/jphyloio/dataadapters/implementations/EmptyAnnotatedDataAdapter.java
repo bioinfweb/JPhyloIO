@@ -38,4 +38,16 @@ public class EmptyAnnotatedDataAdapter implements AnnotatedDataAdapter {
 	 */
 	@Override
 	public void writeMetadata(JPhyloIOEventReceiver writer) {}
+
+	
+	/**
+	 * This default implementation always returns {@code false}. It must be overwritten to return {@code true} by 
+	 * inherited classes, if {@link #writeMetadata(JPhyloIOEventReceiver)} is implemented. 
+	 * 
+	 * @see info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter#hasMetadata()
+	 */
+	@Override
+	public boolean hasMetadata() {
+		return false;
+	}
 }

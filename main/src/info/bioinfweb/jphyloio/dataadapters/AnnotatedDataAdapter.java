@@ -20,11 +20,24 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 
+/**
+ * Superinterface for all data adapters providing metadata to the object they model.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public interface AnnotatedDataAdapter {
 	/**
 	 * Writes events describing the metadata associates with the object represented by this instance.
 	 * 
-	 * @param writer the writer accepting the events
+	 * @param receiver the writer accepting the events
 	 */
-	public void writeMetadata(JPhyloIOEventReceiver writer);
+	public void writeMetadata(JPhyloIOEventReceiver receiver);
+	
+	/**
+	 * Indicates whether this data adapter provides metadata via {@link #writeMetadata(JPhyloIOEventReceiver)}.
+	 * 
+	 * @return {@code true} if metadata will be written in calls of {@link #writeMetadata(JPhyloIOEventReceiver)}
+	 *         or {@code false} otherwise
+	 */
+	public boolean hasMetadata();
 }

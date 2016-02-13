@@ -157,14 +157,19 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 			while (treeNetworkIterator.hasNext()) {
 				TreeNetworkDataAdapter treeNetwork = treeNetworkIterator.next();
 				if (treeNetwork.isTree()) {
-					Iterator<String> rootEdgeIterator = treeNetwork.getRootEdgeIDs();
+					this.tree = treeNetwork;
+					if (tree.hasMetadata()) {
+						logger.addWarning(
+								"A tree definition contains tree metadata, which cannot be written to Newick/NHX and is therefore ignored.");
+					}
+					
+					Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs();
 					if (rootEdgeIterator.hasNext()) {
 						String rootEdgeID = rootEdgeIterator.next();
 						if (rootEdgeIterator.hasNext()) {
-							logger.addWarning("One of the specified tree definitions contains more than one root edge, which is not supported "
+							logger.addWarning("A tree definition contains more than one root edge, which is not supported "
 									+ "by the Newick/NHX format. Only the first root edge will be considered.");
 						}
-						this.tree = treeNetwork;
 						writeRootedInformation();
 						writeSubtree(rootEdgeID);
 						writer.write(SystemUtils.LINE_SEPARATOR);
