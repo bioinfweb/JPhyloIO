@@ -119,6 +119,11 @@ public class FASTAEventWriterLogTest {
 			public void writeMetadata(JPhyloIOEventReceiver writer) {}
 			
 			@Override
+			public boolean hasMetadata() {
+				return false;
+			}
+
+			@Override
 			public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {}
 			
 			@Override

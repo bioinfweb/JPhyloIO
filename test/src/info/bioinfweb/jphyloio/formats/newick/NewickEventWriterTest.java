@@ -58,6 +58,4 @@ public class NewickEventWriterTest {
 			file.delete();
 		}
 	}
-	
-	
 }
