@@ -22,11 +22,13 @@ package info.bioinfweb.jphyloio;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
+import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
@@ -40,6 +42,19 @@ import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
  * @author Ben St&ouml;ver
  */
 public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
+	/**
+	 * Writes the line separator, as it is specified in the parameter map or the line separator
+	 * of the current operating system, if the map contains no according entry. 
+	 * 
+	 * @param writer the writer to write the line break to
+	 * @param parameters the parameter map possibly containing a line separator definition
+	 * @throws IOException if an I/O error occurs while writing to the specified writer
+	 */
+	public static void writeLineBreak(Writer writer, EventWriterParameterMap parameters) throws IOException {
+		writer.write(parameters.getString(EventWriterParameterMap.KEY_LINE_SEPARATOR, SystemUtils.LINE_SEPARATOR));
+	}
+	
+	
 	protected OTUListDataAdapter getFirstOTUList(DocumentDataAdapter document, ApplicationLogger logger, String formatName,
 			String labeledElements) {
 		OTUListDataAdapter result = null;

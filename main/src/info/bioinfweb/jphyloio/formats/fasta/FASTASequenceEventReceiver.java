@@ -24,8 +24,8 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 
-import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.jphyloio.AbstractEventReceiver;
+import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -70,7 +70,7 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhylo
 
 
 	protected void writeNewLine(Writer writer) throws IOException {
-		writer.write(SystemUtils.LINE_SEPARATOR);
+		AbstractEventWriter.writeLineBreak(writer, getParameterMap());
 		charsPerLineWritten = 0;
 	}
 	

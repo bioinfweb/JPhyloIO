@@ -200,7 +200,7 @@ public class NewickStringWriter implements NewickConstants {
 						+ "Newick string was written.");
 			}
 			writer.write(TERMINAL_SYMBOL);
-			writer.write(SystemUtils.LINE_SEPARATOR);
+			AbstractEventWriter.writeLineBreak(writer, parameters);
 		}
 		else {
 			logger.addWarning("A provided network definition was ignored, because the Newick/NHX format only supports trees.");  //TODO Reference network label or ID of the network, when available.

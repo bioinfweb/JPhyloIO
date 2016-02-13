@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
-import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
@@ -54,11 +53,15 @@ import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
  * @author Ben St&ouml;ver
  */
 public class FASTAEventWriter extends AbstractEventWriter implements FASTAConstants {
-	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver) throws IOException {
+	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver,
+			EventWriterParameterMap parameters) throws IOException {
+		
 		if (receiver.getCharsPerLineWritten() > 0) {
 			receiver.writeNewLine(writer);
 		}
-		writer.write(NAME_START_CHAR + sequenceName + SystemUtils.LINE_SEPARATOR);
+		writer.write(NAME_START_CHAR);
+		writer.write(sequenceName);
+		writeLineBreak(writer, parameters);
 	}
 	
 	
@@ -79,7 +82,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				while (sequenceIDIterator.hasNext()) {
 					String id = sequenceIDIterator.next();
 					LinkedOTUEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
-					writeSequenceName(getLinkedOTUName(sequenceEvent, firstOTUList), writer, eventReceiver);
+					writeSequenceName(getLinkedOTUName(sequenceEvent, firstOTUList), writer, eventReceiver, parameters);
 					eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));
 				}
