@@ -69,7 +69,13 @@ public class SequenceContentReceiver extends AbstractEventReceiver {
 				break;
 			case COMMENT:
 				getWriter().write(commentStart);
-				getWriter().write(event.asCommentEvent().getContent().replaceAll(Pattern.quote(commentStart), ""));
+				String content = event.asCommentEvent().getContent();
+				String editedContent = content.replaceAll(Pattern.quote(commentEnd), "");
+				getWriter().write(editedContent);
+				if (!content.equals(editedContent)) {
+					getLogger().addWarning("A comment inside a sequence contained one or more comment end symbols used by the target "
+							+ "format. The according parts were removed from the comment.");
+				}
 				getWriter().write(commentEnd);
 				break;
 			case META_INFORMATION:  //TODO Filter comments nested in metadata by counting metadata level. (Possibly use superclass shared with NewickNodeEdgeEventReceiver.)

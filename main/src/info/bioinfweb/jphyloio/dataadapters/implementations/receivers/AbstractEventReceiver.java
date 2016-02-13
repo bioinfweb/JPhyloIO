@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 import java.io.Writer;
 
+import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 
@@ -47,6 +48,11 @@ public abstract class AbstractEventReceiver implements JPhyloIOEventReceiver {
 
 	protected EventWriterParameterMap getParameterMap() {
 		return parameterMap;
+	}
+	
+	
+	protected ApplicationLogger getLogger() {
+		return getParameterMap().getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
 	}
 
 
