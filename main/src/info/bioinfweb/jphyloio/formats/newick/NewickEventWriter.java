@@ -172,6 +172,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 						}
 						writeRootedInformation();
 						writeSubtree(rootEdgeID);
+						writer.write(TERMINAL_SYMBOL);
 						writer.write(SystemUtils.LINE_SEPARATOR);
 					}
 					else {
