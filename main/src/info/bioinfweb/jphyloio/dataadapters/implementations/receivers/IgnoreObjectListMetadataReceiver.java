@@ -101,7 +101,7 @@ public class IgnoreObjectListMetadataReceiver implements JPhyloIOEventReceiver {
 		if (event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
 			if (!ignoredMetadata && (logger != null)) {
 				logger.addWarning("Metadata attached to " + objectName + " was ignored, since the " + formatName + 
-						" does not support this.");
+						" format does not support this.");
 			}
 			ignoredMetadata = true;
 		}

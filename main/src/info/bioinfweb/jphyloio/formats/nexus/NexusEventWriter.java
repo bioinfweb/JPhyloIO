@@ -102,7 +102,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeLineBreak(writer, parameters);
 			increaseIndention();
 			increaseIndention();
-			IgnoreObjectListMetadataReceiver receiver = new IgnoreObjectListMetadataReceiver(logger, "an OTU", "Nexus format");
+			IgnoreObjectListMetadataReceiver receiver = new IgnoreObjectListMetadataReceiver(logger, "an OTU", "Nexus");
 			Iterator<String> iterator = otuList.getIDIterator();
 			while (iterator.hasNext()) {
 				String id = iterator.next();
