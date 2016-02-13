@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -57,7 +58,9 @@ public class SequenceContentReceiver extends AbstractEventReceiver {
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, ClassCastException, IOException {
 		switch (event.getType().getContentType()) {
 			case SINGLE_SEQUENCE_TOKEN:
-				writeToken(event.asSingleSequenceTokenEvent().getToken());
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					writeToken(event.asSingleSequenceTokenEvent().getToken());
+				}  // End events can be ignored.
 				break;
 			case SEQUENCE_TOKENS:
 				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
