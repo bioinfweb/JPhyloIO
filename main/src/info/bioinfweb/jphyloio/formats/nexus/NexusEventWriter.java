@@ -226,12 +226,17 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			if (otuListID != null) {
 				otuList = document.getOTUList(otuListID);
 			}
-			writeLineStart(writer, formatToken(getLinkedOTUName(matrix.getSequenceStartEvent(id), otuList)));
+			String sequenceName = getLinkedOTUName(matrix.getSequenceStartEvent(id), otuList);
+			writeLineStart(writer, formatToken(sequenceName));
 			writer.write(' ');
 			
 			SequenceContentReceiver receiver = new SequenceContentReceiver(
 					writer, parameters, "" + COMMENT_START, "" + COMMENT_END, matrix.containsLongTokens());
 			matrix.writeSequencePartContentData(receiver, id, 0, matrix.getSequenceLength(id));
+			if (receiver.didIgnoreMetadata()) {
+				logger.addWarning(receiver.getIgnoredMetadata() + " metadata events nested inside the sequence \"" + sequenceName + 
+						"\" have been ignored, since the Nexus format does not supprt such data.");
+			}
 			
 			if (iterator.hasNext()) {
 				if (unaligned) {
