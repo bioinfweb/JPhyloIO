@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 
 
-public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter {
+public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataAdapter {
 	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition.
 	
 	/**

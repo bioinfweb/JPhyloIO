@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.map.ListOrderedMap;
+
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -43,7 +45,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
  * @author Ben St&ouml;ver
  */
 public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter implements DocumentDataAdapter {
-	private List<OTUListDataAdapter> otuLists;
+	private ListOrderedMap<String, OTUListDataAdapter> otuListsMap;
 	private List<MatrixDataAdapter> matrices;
 	private List<TreeNetworkDataAdapter> treesNetworks;
 	
@@ -52,21 +54,21 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter impl
 	 * Creates a new instance of this class using the specified lists. If {@code null} is specified for a
 	 * list an empty array list will be created internally for this property.
 	 * 
-	 * @param otuLists the list of OTU lists to be used in this instance (or {@code null} to create a new empty list)
+	 * @param otuLists the ordered map of OTU lists to be used in this instance (or {@code null} to create a new empty list)
 	 * @param matrices the list of matrices to be used in this instance (or {@code null} to create a new empty list)
 	 * @param treesNetworks the list of trees or networks to be used in this instance (or {@code null} to create a 
 	 *        new empty list)
 	 */
-	public ListBasedDocumentDataAdapter(List<OTUListDataAdapter> otuLists, List<MatrixDataAdapter> matrices,
+	public ListBasedDocumentDataAdapter(ListOrderedMap<String, OTUListDataAdapter> otusMap, List<MatrixDataAdapter> matrices,
 			List<TreeNetworkDataAdapter> treesNetworks) {
 		
 		super();
 		
-		if (otuLists == null) {
-			this.otuLists = new ArrayList<OTUListDataAdapter>();
+		if (otusMap == null) {
+			this.otuListsMap = new ListOrderedMap<String, OTUListDataAdapter>();
 		}
 		else {
-			this.otuLists = otuLists;
+			this.otuListsMap = otusMap;
 		}
 		if (matrices == null) {
 			this.matrices = new ArrayList<MatrixDataAdapter>();
@@ -94,8 +96,8 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter impl
 	}
 	
 	
-	public List<OTUListDataAdapter> getOtuLists() {
-		return otuLists;
+	public ListOrderedMap<String, OTUListDataAdapter> getOtuListsMap() {
+		return otuListsMap;
 	}
 
 
@@ -111,10 +113,16 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter impl
 
 	@Override
 	public Iterator<OTUListDataAdapter> getOTUListIterator() {
-		return otuLists.iterator();
+		return otuListsMap.valueList().iterator();
 	}
 
 	
+	@Override
+	public OTUListDataAdapter getOTUList(String id)	throws IllegalArgumentException {
+		return otuListsMap.get(id);
+	}
+
+
 	@Override
 	public Iterator<MatrixDataAdapter> getMatrixIterator() {
 		return matrices.iterator();

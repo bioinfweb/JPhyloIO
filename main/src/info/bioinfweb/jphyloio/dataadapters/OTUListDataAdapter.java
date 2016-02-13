@@ -33,6 +33,17 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
  */
 public interface OTUListDataAdapter extends ObjectListDataAdapter, AnnotatedDataAdapter {
 	/**
+	 * Returns the ID of this OTU list.
+	 * <p>
+	 * Note that different adapter instances with the same underlying application model object
+	 * should return the same ID here.
+	 * 
+	 * @return a string ID not containing any whitespace and never {@code null}
+	 * @see LinkedOTUsDataAdapter#getLinkedOTUListID()
+	 */
+	public String getID();
+	
+	/**
 	 * Returns an event describing the OTU list modeled by this instance. This event allows
 	 * to specify a label and an ID, which will be used by some writers.
 	 * 

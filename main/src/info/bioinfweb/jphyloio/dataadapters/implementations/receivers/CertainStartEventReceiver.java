@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 import java.io.IOException;
 import java.io.Writer;
 
-import info.bioinfweb.jphyloio.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;

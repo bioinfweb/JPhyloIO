@@ -39,7 +39,7 @@ import java.util.Iterator;
  * 
  * @author Ben St&ouml;ver
  */
-public interface MatrixDataAdapter extends AnnotatedDataAdapter {
+public interface MatrixDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataAdapter {
 	//TODO Allow exceptions from write methods?
   //TODO If token and character sets are modeled in here, does this cause problems when writing to a single SETS block in Nexus?
 	

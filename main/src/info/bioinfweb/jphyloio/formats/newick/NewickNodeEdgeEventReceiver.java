@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import info.bioinfweb.jphyloio.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.CertainStartEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -112,7 +112,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Certai
 			case COMMENT:
 				commentEvents.add(event.asCommentEvent());
 				break;
-			case META_INFORMATION:
+			case META_INFORMATION:  //TODO Filter comments nested in metadata possibly by a superclass shared with SequenceContentReceiver.
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					metadataLevel++;
 					

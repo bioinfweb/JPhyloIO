@@ -33,6 +33,7 @@ import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 
 
@@ -119,9 +120,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	public static void writeKeyValueExpression(Writer writer, String key, String value) throws IOException {
 		writer.write(key);
-		writer.write(' ');
 		writer.write(KEY_VALUE_SEPARATOR);
-		writer.write(' ');
 		writer.write(value);
 	}
 	
@@ -194,6 +193,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				tokenSets.writeData(receiver, iterator.next());
 				
 				if (receiver.getSingleTokens() != null) {
+					writer.write(' ');
 					writeKeyValueExpression(FORMAT_SUBCOMMAND_TOKENS, VALUE_DELIMITER + receiver.getSingleTokens() + VALUE_DELIMITER);
 				}
 				if (receiver.getIgnoredMetadata() > 0) {
@@ -209,6 +209,46 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, boolean unaligned) 
+				throws IOException {
+		
+		writeLineStart(writer, COMMAND_NAME_MATRIX);
+		writeLineBreak(writer, parameters);
+		
+		increaseIndention();
+		increaseIndention();
+		Iterator<String> iterator = matrix.getSequenceIDIterator();
+		while (iterator.hasNext()) {
+			String id = iterator.next();
+			
+			OTUListDataAdapter otuList = null;
+			String otuListID = matrix.getLinkedOTUListID();
+			if (otuListID != null) {
+				otuList = document.getOTUList(otuListID);
+			}
+			writeLineStart(writer, formatToken(getLinkedOTUName(matrix.getSequenceStartEvent(id), otuList)));
+			writer.write(' ');
+			
+			SequenceContentReceiver receiver = new SequenceContentReceiver(
+					writer, parameters, "" + COMMENT_START, "" + COMMENT_END, matrix.containsLongTokens());
+			matrix.writeSequencePartContentData(receiver, id, 0, matrix.getSequenceLength(id));
+			
+			if (iterator.hasNext()) {
+				if (unaligned) {
+					writer.write(ELEMENT_SEPARATOR);
+				}
+				writeLineBreak(writer, parameters);
+			}
+			else {
+				writeCommandEnd();
+			}
+		}
+		
+		decreaseIndention();
+		decreaseIndention();
+	}
+	
+	
 	/**
 	 * Writes a Nexus {@code CHARACTERS} or {@code UNALIGNED} block. 
 	 * 
@@ -216,7 +256,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	 * @return a value indicating if and which Nexus block was written
 	 * @throws IOException
 	 */
-	private MatrixWriteResult writeCharactersUnalignedBlock(MatrixDataAdapter matrix) throws IOException {
+	private MatrixWriteResult writeCharactersUnalignedBlock(DocumentDataAdapter document, MatrixDataAdapter matrix) throws IOException {
 		logIgnoredMetadata(matrix, "A character matrix");
 		if (matrix.getSequenceCount() > 0) {
 			long columnCount = matrix.getColumnCount();
@@ -248,7 +288,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			}
 			writeCommandEnd();
 			
-			writeFormatCommand(matrix.getTokenSets());
+			writeFormatCommand(matrix.getTokenSets());  //TODO Write "newTokens" if necessary.
+			writeMatrixCommand(document, matrix, columnCount == -1);
 			
 			decreaseIndention();
 			writeBlockEnd();
@@ -268,7 +309,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
 		while (matrixIterator.hasNext()) {
-			switch (writeCharactersUnalignedBlock(matrixIterator.next())) {
+			switch (writeCharactersUnalignedBlock(document, matrixIterator.next())) {
 				case CHARACTERS:
 					charactersWritten = true;
 					break;
