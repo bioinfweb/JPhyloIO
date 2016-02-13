@@ -45,6 +45,19 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 		super();
 		this.type = new EventType(contentType, topologyType);
 	}
+	
+	
+	/**
+	 * Creates a new instance of this class with the topology type {@link EventTopologyType#END}-
+	 * 
+	 * @param contentType the content type of the event
+	 * @throws NullPointerException if {@code contentType} is {@code null}
+	 * @return the new event instance
+	 * @see PartEndEvent
+	 */
+	public static ConcreteJPhyloIOEvent createEndEvent(EventContentType contentType) {
+		return new ConcreteJPhyloIOEvent(contentType, EventTopologyType.END);
+	}
 
 
 	@Override
