@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
 
 
 
@@ -101,10 +102,13 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeLineBreak(writer, parameters);
 			increaseIndention();
 			increaseIndention();
+			IgnoreObjectListMetadataReceiver receiver = new IgnoreObjectListMetadataReceiver(logger, "an OTU", "Nexus format");
 			Iterator<String> iterator = otuList.getIDIterator();
 			while (iterator.hasNext()) {
-				writeLineStart(writer, getLabeledIDName(otuList.getOTUStartEvent(iterator.next())));
-				//TODO Log warning for ignored metadata
+				String id = iterator.next();
+				writeLineStart(writer, getLabeledIDName(otuList.getOTUStartEvent(id)));
+				otuList.writeData(receiver, id);
+				receiver.reset();
 			}
 			writeCommandEnd();
 			decreaseIndention();

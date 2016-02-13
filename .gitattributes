@@ -40,6 +40,7 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/EmptyAnnotatedData
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/EmptyObjectListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/ListBasedDocumentDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/NoSetsMatrixDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/IgnoreObjectListMetadataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/CharacterSetIntervalEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/CommentEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/ConcreteJPhyloIOEvent.java -text svneol=unset#text/plain
