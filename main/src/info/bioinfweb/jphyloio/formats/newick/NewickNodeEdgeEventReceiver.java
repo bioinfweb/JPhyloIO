@@ -27,6 +27,7 @@ import java.util.List;
 
 import info.bioinfweb.jphyloio.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.CertainStartEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
@@ -36,7 +37,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 
-public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends AbstractEventReceiver 
+public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends CertainStartEventReceiver<E> 
 		implements NewickConstants {
 	
 	public static final char STRING_DELEMITER_REPLACEMENT = '\'';
@@ -59,8 +60,6 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 	}
 	
 	
-	private EventContentType startEventType;
-	private E startEvent = null;
 	private List<Metadata> metadataList = new ArrayList<Metadata>();
 	private List<CommentEvent> commentEvents = new ArrayList<CommentEvent>();
 	private boolean ignoredXMLMetadata = false;
@@ -69,21 +68,10 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 	
 	
 	public NewickNodeEdgeEventReceiver(Writer writer,	EventWriterParameterMap parameterMap, EventContentType startEventType) {
-		super(writer, parameterMap);
-		this.startEventType = startEventType;
+		super(writer, parameterMap, startEventType);
 	}
 
 	
-	public EventContentType getStartEventType() {
-		return startEventType;
-	}
-
-
-	public E getStartEvent() {
-		return startEvent;
-	}
-
-
 	public boolean isIgnoredXMLMetadata() {
 		return ignoredXMLMetadata;
 	}
@@ -95,7 +83,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 	
 	
 	public void clear() {
-		startEvent = null;
+		super.clear();
 		commentEvents.clear();
 		ignoredNestedMetadata = false;
 		ignoredXMLMetadata = false;
@@ -115,63 +103,42 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 	
 	
 	@Override
-	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
-		if (startEvent == null) {
-			if (event.getType().getContentType().equals(startEventType) && 
-					event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				
-				startEvent = (E)event;  // May throw a class cast exception later, if an invalid object with this type was specified.
-			}
-			else {
-				throw new IllegalArgumentException("The first event in this subsequence is expected to have the type " + 
-						new EventType(startEventType, EventTopologyType.START) + " but was of the type of type " + event.getType());
-			}
-		}
-		else if (startEventType.equals(event.getType().getContentType())) {  // Needs to be handled here, because switch only allows constants
-			if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
-				return false;  // No more events to come.
-			}
-			else {
-				throw new IllegalArgumentException("Multiple edge start events are not allowed in a tree/network edge subsequence.");
-			}
-		}
-		else {
-			switch (event.getType().getContentType()) {
-				case COMMENT:
-					commentEvents.add(event.asCommentEvent());
-					break;
-				case META_INFORMATION:
-					if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-						metadataLevel++;
-						
-						if (metadataLevel == 1) {  // Ignore nested events.
-							MetaInformationEvent metaevent = event.asMetaInformationEvent();
-							Metadata metadata = new Metadata(metaevent.getKey());
-							if (metaevent.hasValue()) {
-								metadata.values.add(createValue(metaevent));
-							}
-							metadataList.add(metadata);
-						}  //TODO Implement adding array values, when concept is clear.
-						else {
-							ignoredNestedMetadata = true;
+	protected boolean doAdd(JPhyloIOEvent event) throws IllegalArgumentException,	IOException {
+		switch (event.getType().getContentType()) {
+			case COMMENT:
+				commentEvents.add(event.asCommentEvent());
+				break;
+			case META_INFORMATION:
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					metadataLevel++;
+					
+					if (metadataLevel == 1) {  // Ignore nested events.
+						MetaInformationEvent metaevent = event.asMetaInformationEvent();
+						Metadata metadata = new Metadata(metaevent.getKey());
+						if (metaevent.hasValue()) {
+							metadata.values.add(createValue(metaevent));
 						}
-					}
+						metadataList.add(metadata);
+					}  //TODO Implement adding array values, when concept is clear.
 					else {
-						metadataLevel--;
+						ignoredNestedMetadata = true;
 					}
-					break;
-				case META_XML_CONTENT:
-					ignoredXMLMetadata = true;
-					break;
-				default:
-					throw new IllegalArgumentException("Events of the type " + event.getType().getContentType() + 
-							" are not allowed in a tree/network edge subsequence.");
-			}
+				}
+				else {
+					metadataLevel--;
+				}
+				break;
+			case META_XML_CONTENT:
+				ignoredXMLMetadata = true;
+				break;
+			default:
+				throw new IllegalArgumentException("Events of the type " + event.getType().getContentType() + 
+						" are not allowed in a tree/network edge subsequence.");
 		}
 		return true;
 	}
-	
-	
+
+
 	public void writeMetadata() throws IOException {
 		if (!metadataList.isEmpty()) {
 			getWriter().write(COMMENT_START);
