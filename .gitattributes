@@ -22,6 +22,7 @@ main/src/info/bioinfweb/jphyloio/AbstractEventReceiver.java -text svneol=unset#t
 main/src/info/bioinfweb/jphyloio/AbstractEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/EventForwarder.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/EventWriterParameterMap.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/JPhyloIO.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventWriter.java -text svneol=unset#text/plain
@@ -87,6 +88,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTokenSetInformation.java -te
 main/src/info/bioinfweb/jphyloio/formats/nexml/TranslateTokens.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/AbstractNexusBlockHandler.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/CharactersDataUnalignedBlockHandler.java -text svneol=unset#text/plain

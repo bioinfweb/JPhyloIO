@@ -177,7 +177,7 @@ public class NewickStringWriter implements NewickConstants {
 	 * @throws IOException if an I/O error occurs while writing to specified writer
 	 */
 	public void write() throws IOException {
-		ApplicationLogger logger = parameters.getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
+		ApplicationLogger logger = AbstractEventWriter.getLogger(parameters);
 		if (tree.isTree()) {
 			if (tree.hasMetadata()) {
 				logger.addWarning(

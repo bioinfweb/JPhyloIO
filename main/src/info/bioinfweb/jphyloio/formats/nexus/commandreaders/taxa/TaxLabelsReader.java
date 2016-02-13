@@ -39,7 +39,7 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 	
 	
 	public TaxLabelsReader(NexusStreamDataProvider nexusDocument) {
-		super("TaxLabels", new String[]{BLOCK_NAME_TAXA}, nexusDocument);
+		super(COMMAND_NAME_TAX_LABELS, new String[]{BLOCK_NAME_TAXA}, nexusDocument);
 	}
 
 	

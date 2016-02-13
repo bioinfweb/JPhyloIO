@@ -52,7 +52,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 	
 	
 	public MatrixReader(NexusStreamDataProvider nexusDocument) {
-		super("Matrix", new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument);
+		super(COMMAND_NAME_MATRIX, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument);
 	}
 
 	

@@ -32,7 +32,7 @@ import java.io.EOFException;
 
 public class TranslateReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
 	public TranslateReader(NexusStreamDataProvider nexusDocument) {
-		super("Translate", new String[]{BLOCK_NAME_TREES}, nexusDocument);
+		super(COMMAND_NAME_TRANSLATE, new String[]{BLOCK_NAME_TREES}, nexusDocument);
 	}
 
 	

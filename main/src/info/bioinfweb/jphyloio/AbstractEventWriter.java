@@ -32,6 +32,7 @@ import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
 
 
@@ -42,6 +43,9 @@ import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
  * @author Ben St&ouml;ver
  */
 public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
+	private String indention;
+	
+	
 	/**
 	 * Writes the line separator, as it is specified in the parameter map or the line separator
 	 * of the current operating system, if the map contains no according entry. 
@@ -55,8 +59,9 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected OTUListDataAdapter getFirstOTUList(DocumentDataAdapter document, ApplicationLogger logger, String formatName,
+	public static OTUListDataAdapter getFirstOTUList(DocumentDataAdapter document, ApplicationLogger logger, String formatName,
 			String labeledElements) {
+		
 		OTUListDataAdapter result = null;
 		Iterator<OTUListDataAdapter> otuListIterator = document.getOTUListIterator();
 		if (otuListIterator.hasNext()) {
@@ -67,6 +72,15 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			logger.addWarning("The specified OTU list(s) will not be written, since the " + formatName
 					+	" format does not support this. The first list will though be used to try to label " + labeledElements
 					+ " that do not carry a label themselves."); 
+		}
+		return result;
+	}
+	
+	
+	public static String getLabeledIDName(LabeledIDEvent event) {
+		String result = event.getLabel();
+		if (result == null) {
+			result = event.getID();
 		}
 		return result;
 	}
@@ -85,6 +99,36 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		return result;
 	}
 	
+	
+	public static ApplicationLogger getLogger(EventWriterParameterMap parameters) {
+		return parameters.getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
+	}
+	
+	
+	protected String getIndention() {
+		return indention;
+	}
+	
+	
+	protected void writeLineStart(Writer writer, String text) throws IOException {
+		if (indention.length() > 0) {
+			writer.write(indention);
+		}
+		writer.write(text);
+	}
+	
+	
+	protected void increaseIndention() {
+		indention += "\t";
+	}
+	
+	
+	protected void decreaseIndention() {
+		if (indention.length() > 1) {
+			indention = indention.substring(1);
+		}
+	}
+
 	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, File file, EventWriterParameterMap parameters) throws Exception {

@@ -54,7 +54,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	 * @param streamDataProvider the provider of shared Nexus data and streams
 	 */
 	public CharSetReader(NexusStreamDataProvider streamDataProvider) {
-		super("CharSet", new String[]{BLOCK_NAME_SETS}, streamDataProvider);
+		super(COMMAND_NAME_CHAR_SET, new String[]{BLOCK_NAME_SETS}, streamDataProvider);
 	}
 
 	

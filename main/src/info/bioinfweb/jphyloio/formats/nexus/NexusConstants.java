@@ -48,6 +48,14 @@ public interface NexusConstants {
 	public static final String BLOCK_NAME_SETS = "SETS";
 	public static final String BLOCK_NAME_TREES = "TREES";
 	
+	public static final String COMMAND_NAME_TAX_LABELS = "TAXLABELS";
+	public static final String COMMAND_NAME_DIMENSIONS = "DIMENSIONS";
+	public static final String COMMAND_NAME_FORMAT = "FORMAT";
+	public static final String COMMAND_NAME_MATRIX = "MATRIX";
+	public static final String COMMAND_NAME_TRANSLATE = "TRANSLATE";
+	public static final String COMMAND_NAME_TREE = "TREE";
+	public static final String COMMAND_NAME_CHAR_SET = "CHARSET";
+	
 	public static final String DIMENSIONS_SUBCOMMAND_NTAX = "NTAX";
 	public static final String DIMENSIONS_SUBCOMMAND_NCHAR = "NCHAR";
 	

@@ -37,6 +37,11 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
+/**
+ * Used internally by {@link FASTAEventWriter} to write sequence tokens.
+ * 
+ * @author Ben St&ouml;ver
+ */
 class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhyloIOEventReceiver, FASTAConstants {
 	private int charsPerLineWritten = 0;
 	private MatrixDataAdapter matrixDataAdapter;

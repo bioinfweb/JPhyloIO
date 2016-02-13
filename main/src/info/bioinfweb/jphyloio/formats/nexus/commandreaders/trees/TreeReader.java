@@ -36,7 +36,7 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 	
 	
 	public TreeReader(NexusStreamDataProvider nexusDocument) {
-		super("Tree", new String[]{BLOCK_NAME_TREES}, nexusDocument);
+		super(COMMAND_NAME_TREE, new String[]{BLOCK_NAME_TREES}, nexusDocument);
 	}
 
 	
