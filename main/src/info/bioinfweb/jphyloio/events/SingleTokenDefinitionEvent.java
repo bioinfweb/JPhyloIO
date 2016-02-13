@@ -49,6 +49,8 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @param tokenName the string representation of the new token
 	 * @param meaning the meaning of the new token
+	 * @param constituents if this token is an ambiguity or uncertain token, a list of constituents can be specified here
+	 *        (Maybe {@code null}.)
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
 	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning, Collection<String> constituents) {
@@ -71,6 +73,18 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	}
 
 
+	/**
+	 * Creates a new instance of this class without a constituents collection.
+	 * 
+	 * @param tokenName the string representation of the new token
+	 * @param meaning the meaning of the new token
+	 * @throws NullPointerException if {@code null} is specified for any of the arguments
+	 */
+	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning) {
+		this(tokenName, meaning, null);
+	}
+	
+	
 	/**
 	 * Returns the string representation of the new token.
 	 * 
