@@ -107,7 +107,7 @@ public class FASTAEventWriterLogTest {
 		ListBasedDocumentDataAdapter document = createTestDocumentWithLabels("S1", "ATG", "S2", "CGT");
 		testLogMessage(document, false, ApplicationLoggerMessageType.WARNING, 
 				"The specified OTU list(s) will not be written, since the FASTA format does not support this. "
-						+ "The first list will though be used to try to label sequences that do not carry a label themselves.");
+						+ "Referenced lists will though be used to try to label sequences if necessary.");
 	}
 	
 	
