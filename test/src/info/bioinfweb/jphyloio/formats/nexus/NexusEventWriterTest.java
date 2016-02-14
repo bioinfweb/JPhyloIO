@@ -84,15 +84,21 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\t\t\totu2;", reader.readLine());  // No label present.
 			assertEquals("END;", reader.readLine());
 			assertEquals("", reader.readLine());
+			//TODO Taxa need to have unique names. (Two labels must not be identical and a label and an ID must not be identical.)
 			
 			assertEquals("BEGIN CHARACTERS;", reader.readLine());
 			assertEquals("\tDIMENSIONS NTAX=3 NCHAR=5;", reader.readLine());
-			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. TOKENS=\"A T C G\";", reader.readLine());
+			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. SYMBOLS=\"A T C G\";", reader.readLine());
 			assertEquals("\tMATRIX", reader.readLine());
-			assertEquals("\t\t\tLabel_1 ACT[comment 1]GC", reader.readLine());
+			assertEquals("\t\t\tOTU_otu0 ACT[comment 1]GC", reader.readLine());  // Currently the sequence label "Label_1" will be used.
 			assertEquals("\t\t\tOTU_otu1 A-TCC", reader.readLine());
-			assertEquals("\t\t\tseq2 ACTTC;", reader.readLine());
+			assertEquals("\t\t\totu2 ACTTC;", reader.readLine());  // Using the OTU ID here is currently not implemented. (Currently the sequence ID will be used.)
 			assertEquals("END;", reader.readLine());
+			//TODO Taxon names and sequence names must match. The sequence label must not be used, if an OTU is linked.
+			//     In practice OTU and sequence labels should be identical.
+			//     => Should the JPhyloIO model be changed to solve such problems (e.g. by removing some properties or forcing some of them to be equal)?
+			//        -> Probably not, because writing different sequence and OTU labels into NeXML should be possible.
+			//TODO If sequences without linked OTUs are written, the according format subcommand must be specified. Therefore JPhyloIO needs to know that before the sequences are written. => Probably an additional adapter method
 
 			assertEquals(-1, reader.read());
 		}
