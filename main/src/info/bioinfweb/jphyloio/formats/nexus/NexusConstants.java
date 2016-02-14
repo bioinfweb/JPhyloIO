@@ -65,6 +65,7 @@ public interface NexusConstants {
 
 	public static final String FORMAT_SUBCOMMAND_DATA_TYPE = "DATATYPE";
 	public static final String FORMAT_SUBCOMMAND_TOKENS = "TOKENS";
+	public static final String FORMAT_SUBCOMMAND_NOTOKENS = "NOTOKENS";
 	public static final String FORMAT_SUBCOMMAND_INTERLEAVE = "INTERLEAVE";
 	public static final String FORMAT_SUBCOMMAND_TRANSPOSE = "TRANSPOSE";
 	public static final String FORMAT_SUBCOMMAND_NO_LABELS = "NOLABELS";

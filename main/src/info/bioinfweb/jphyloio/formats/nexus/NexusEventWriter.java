@@ -184,7 +184,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeFormatCommand(ObjectListDataAdapter tokenSets) throws IOException {
+	private void writeFormatCommand(MatrixDataAdapter matrix) throws IOException {
+		ObjectListDataAdapter tokenSets = matrix.getTokenSets();
 		if (tokenSets.getCount() > 0) {
 			writeLineStart(writer, COMMAND_NAME_FORMAT);
 			Iterator<String> iterator = tokenSets.getIDIterator();
@@ -199,6 +200,14 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				if (receiver.getIgnoredMetadata() > 0) {
 					logger.addWarning("A token definition of a character matrix contained metadata which has been ignored, "
 							+ "since the Nexus format does not support writing such data.");
+				}
+				
+				writer.write(' ');
+				if (matrix.containsLongTokens()) {
+					writer.write(FORMAT_SUBCOMMAND_TOKENS);
+				}
+				else {
+					writer.write(FORMAT_SUBCOMMAND_NOTOKENS);
 				}
 			}
 			else {  // MrBayes extension (or exception if according parameter is set?)
@@ -293,7 +302,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			}
 			writeCommandEnd();
 			
-			writeFormatCommand(matrix.getTokenSets());  //TODO Write "newTokens" if necessary.
+			writeFormatCommand(matrix);  //TODO Write "newTokens" if necessary.
 			writeMatrixCommand(document, matrix, columnCount == -1);
 			
 			decreaseIndention();
