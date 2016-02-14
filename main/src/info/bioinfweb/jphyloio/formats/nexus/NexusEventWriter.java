@@ -194,7 +194,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				
 				if (receiver.getSingleTokens() != null) {
 					writer.write(' ');
-					writeKeyValueExpression(FORMAT_SUBCOMMAND_TOKENS, VALUE_DELIMITER + receiver.getSingleTokens() + VALUE_DELIMITER);
+					writeKeyValueExpression(FORMAT_SUBCOMMAND_SYMBOLS, VALUE_DELIMITER + receiver.getSingleTokens() + VALUE_DELIMITER);
 				}
 				if (receiver.getIgnoredMetadata() > 0) {
 					logger.addWarning("A token definition of a character matrix contained metadata which has been ignored, "
