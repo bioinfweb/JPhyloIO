@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.test;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -56,7 +57,8 @@ public class JPhyloIOTestTools {
 	public static ListBasedDocumentDataAdapter createTestDocumentWithLabels(String... labelsAndSequences) {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
 		TestMatrixDataAdapter matrixAdapter = new TestMatrixDataAdapter(true, labelsAndSequences);
-		TestOTUListDataAdapter otuListAdapter = matrixAdapter.createAccordingOTUList(0); 
+		TestOTUListDataAdapter otuListAdapter = matrixAdapter.createAccordingOTUList(0);
+		matrixAdapter.setLinkedOTUsID(ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + 0);
 		result.getOtuListsMap().put(otuListAdapter.getID(), otuListAdapter);
 		result.getMatrices().add(matrixAdapter);
 		return result;
