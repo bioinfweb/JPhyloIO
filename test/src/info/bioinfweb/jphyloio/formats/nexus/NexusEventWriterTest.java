@@ -88,7 +88,7 @@ public class NexusEventWriterTest implements NexusConstants {
 			
 			assertEquals("BEGIN CHARACTERS;", reader.readLine());
 			assertEquals("\tDIMENSIONS NTAX=3 NCHAR=5;", reader.readLine());
-			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. SYMBOLS=\"A T C G\";", reader.readLine());
+			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. SYMBOLS=\"A T C G\" NOTOKENS;", reader.readLine());
 			assertEquals("\tMATRIX", reader.readLine());
 			assertEquals("\t\t\tOTU_otu0 ACT[comment 1]GC", reader.readLine());  // Currently the sequence label "Label_1" will be used.
 			assertEquals("\t\t\tOTU_otu1 A-TCC", reader.readLine());
