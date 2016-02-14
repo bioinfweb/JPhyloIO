@@ -229,13 +229,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		Iterator<String> iterator = matrix.getSequenceIDIterator();
 		while (iterator.hasNext()) {
 			String id = iterator.next();
-			
-			OTUListDataAdapter otuList = null;
-			String otuListID = matrix.getLinkedOTUListID();
-			if (otuListID != null) {
-				otuList = document.getOTUList(otuListID);
-			}
-			String sequenceName = getLinkedOTUName(matrix.getSequenceStartEvent(id), otuList);
+			String sequenceName = getLinkedOTUName(matrix.getSequenceStartEvent(id), getReferencedOTUList(document, matrix));
 			writeLineStart(writer, formatToken(sequenceName));
 			writer.write(' ');
 			

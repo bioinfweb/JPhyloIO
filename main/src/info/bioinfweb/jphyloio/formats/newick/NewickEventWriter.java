@@ -26,7 +26,6 @@ import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 
 
@@ -36,7 +35,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception {
 		ApplicationLogger logger = getLogger(parameters);
 		
-		OTUListDataAdapter firstOTUList = getFirstOTUList(document, logger, "Newick/NHX", "tree nodes"); 
+		logIngnoredOTULists(document, logger, "Newick/NHX", "tree nodes"); 
 		if (document.getMatrixIterator().hasNext()) {
 			logger.addWarning(
 					"The specified matrix (matrices) will not be written, since the Newick/NHX format does not support such data."); 
@@ -46,7 +45,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 		if (treeNetworkIterator.hasNext()) {
 			while (treeNetworkIterator.hasNext()) {
 				TreeNetworkDataAdapter treeNetwork = treeNetworkIterator.next();
-				new NewickStringWriter(writer, treeNetwork, firstOTUList, parameters).write();
+				new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), parameters).write();
 			}
 		}
 		else {

@@ -31,6 +31,8 @@ import java.util.Iterator;
 import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
@@ -59,21 +61,14 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	public static OTUListDataAdapter getFirstOTUList(DocumentDataAdapter document, ApplicationLogger logger, String formatName,
+	public static void logIngnoredOTULists(DocumentDataAdapter document, ApplicationLogger logger, String formatName,
 			String labeledElements) {
 		
-		OTUListDataAdapter result = null;
-		Iterator<OTUListDataAdapter> otuListIterator = document.getOTUListIterator();
-		if (otuListIterator.hasNext()) {
-			result = otuListIterator.next();
-		}
-		
-		if (result != null) {
+		if (document.getOTUListIterator().hasNext()) {
 			logger.addWarning("The specified OTU list(s) will not be written, since the " + formatName
-					+	" format does not support this. The first list will though be used to try to label " + labeledElements
-					+ " that do not carry a label themselves."); 
+					+	" format does not support this. Referenced lists will though be used to try to label " + labeledElements
+					+ " if necessary."); 
 		}
-		return result;
 	}
 	
 	
@@ -95,6 +90,16 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			if (result == null) {
 				result = linkedOTUEvent.getID();
 			}
+		}
+		return result;
+	}
+	
+	
+	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, LinkedOTUsDataAdapter source) {
+		OTUListDataAdapter result = null;
+		String otuListID = source.getLinkedOTUListID();
+		if (otuListID != null) {
+			result = document.getOTUList(otuListID);
 		}
 		return result;
 	}

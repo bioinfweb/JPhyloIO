@@ -70,10 +70,12 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 			EventWriterParameterMap parameters) throws Exception {
 		
 		ApplicationLogger logger = getLogger(parameters);
-		OTUListDataAdapter firstOTUList = getFirstOTUList(document, logger, "FASTA", "sequences");
+		logIngnoredOTULists(document, logger, "FASTA", "sequences");
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
 		if (matrixIterator.hasNext()) {
 			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
+			
+			OTUListDataAdapter otuList = getReferencedOTUList(document, matrixDataAdapter);
 			Iterator<String> sequenceIDIterator = matrixDataAdapter.getSequenceIDIterator();
 			if (sequenceIDIterator.hasNext()) {
 				FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrixDataAdapter, 
@@ -82,7 +84,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				while (sequenceIDIterator.hasNext()) {
 					String id = sequenceIDIterator.next();
 					LinkedOTUEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
-					writeSequenceName(getLinkedOTUName(sequenceEvent, firstOTUList), writer, eventReceiver, parameters);
+					writeSequenceName(getLinkedOTUName(sequenceEvent, otuList), writer, eventReceiver, parameters);
 					eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));
 				}
