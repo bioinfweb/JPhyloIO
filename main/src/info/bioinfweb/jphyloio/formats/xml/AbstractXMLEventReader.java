@@ -44,7 +44,6 @@ import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -185,7 +184,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 		while (attributes.hasNext()) {
 			Attribute attribute = attributes.next();
 			getCurrentEventCollection().add(new MetaInformationEvent(key + "." + attribute.getName(), "String", attribute.getValue()));
-			getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+			getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
 		}
 	}
 	
