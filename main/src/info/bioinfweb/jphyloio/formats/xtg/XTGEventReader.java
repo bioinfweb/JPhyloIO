@@ -125,6 +125,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+				streamDataProvider.setFormat(XTG);
 			}
 		});
 		
