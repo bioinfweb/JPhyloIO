@@ -1,0 +1,38 @@
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+    <phylogeny rooted="true">
+        <name>Tree 1</name>
+        <clade>	
+			<node_id>1</node_id>			
+            <clade>
+                <node_id>A</node_id>
+            </clade>
+            <clade>
+				<node_id>2</node_id>
+                <clade>                    
+					<node_id>B</node_id>
+                </clade>
+                <clade>   
+					<node_id>C</node_id>
+                </clade>
+            </clade>
+        </clade>
+    </phylogeny>
+	<phylogeny rooted="false">
+        <name>Tree 2</name>
+        <clade>	
+			<node_id>1</node_id>			
+            <clade>
+                <node_id>2</node_id>
+				<clade>                    
+					<node_id>A</node_id>
+				</clade>
+				<clade>                    
+					<node_id>B</node_id>
+				</clade>
+            </clade>			
+            <clade>
+				<node_id>C</node_id>                
+            </clade>
+        </clade>
+    </phylogeny>
+</phyloxml>

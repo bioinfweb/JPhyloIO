@@ -1,0 +1,33 @@
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+    <phylogeny rooted="true">
+        <name>Test Tree</name>
+        <clade>
+			<node_id>internal1</node_id>
+			<name>internalNode1</name>
+            <clade>
+            	<node_id>N1</node_id>
+                <taxonomy>
+                    <id>taxonomy ID</id>
+					<scientific_name>AA bb</scientific_name>
+					<common_name>common name</common_name>
+                </taxonomy>
+            </clade>
+            <clade>
+				<taxonomy>
+                    <id>N2</id>
+                    <common_name>internal2</common_name>
+                </taxonomy>
+                <sequence>                        
+                	<name>sequence name</name>
+                </sequence>
+                <clade>                    
+                    <sequence>                        
+                        <name>BB cc</name>
+                    </sequence>
+                </clade>
+                <clade>                    
+                </clade>
+            </clade>
+        </clade>
+    </phylogeny>
+</phyloxml>

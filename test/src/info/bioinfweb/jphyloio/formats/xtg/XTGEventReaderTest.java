@@ -20,6 +20,9 @@ package info.bioinfweb.jphyloio.formats.xtg;
 
 import static org.junit.Assert.fail;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.io.File;
 
@@ -29,11 +32,21 @@ public class XTGEventReaderTest {
 	@Test
 	public void testOutputNeXML() {
 		try {
-			XTGEventReader reader = new XTGEventReader(new File("data/XTG/ExampleTGDocument.xml"));
+			XTGEventReader reader = new XTGEventReader(new File("data/XTG/ExampleXTGDocument.xml"));
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
 					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
+					
+					if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
+//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
+//						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
+						System.out.println("Key: " + event.asMetaInformationEvent().getKey());
+					}
 				}
 			}
 			finally {

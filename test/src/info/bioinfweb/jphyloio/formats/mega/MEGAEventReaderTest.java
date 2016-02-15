@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 import java.io.File;
 
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;

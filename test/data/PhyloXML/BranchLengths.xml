@@ -1,0 +1,22 @@
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+    <phylogeny rooted="true">
+        <name>Test Tree</name>
+        <clade>	
+			<node_id>1</node_id>
+			<branch_length>0.5</branch_length>
+            <clade branch_length="0.3">
+                <node_id>A</node_id>
+            </clade>
+            <clade>
+				<node_id>2</node_id>
+				<branch_length>0.7</branch_length>
+                <clade branch_length="0.9">                    
+					<node_id>B</node_id>
+                </clade>
+                <clade branch_length="0.6">   
+					<node_id>C</node_id>
+                </clade>
+            </clade>
+        </clade>
+    </phylogeny>
+</phyloxml>
