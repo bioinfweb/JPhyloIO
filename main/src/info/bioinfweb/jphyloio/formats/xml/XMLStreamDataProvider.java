@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.xml;
 
 import java.util.Stack;
 
+import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.StartElement;
 
 import info.bioinfweb.jphyloio.StreamDataProvider;
@@ -34,8 +35,6 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	
 	private String parentName;
 	private String elementName;	
-
-	private boolean rooted;
 	
 	private StartElement metaWithAttributes;
 	
@@ -46,6 +45,16 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	
 	public XMLStreamDataProvider(R eventReader) {
 		super(eventReader);
+	}
+	
+	
+	public XMLEventReader getXMLReader() {
+		return getEventReader().getXMLReader();
+	}
+	
+	
+	public void readAttributes(StartElement element, String key) {
+		getEventReader().readAttributes(element, key);
 	}
 
 
@@ -76,16 +85,6 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 
 	public void setElementName(String elementName) {
 		this.elementName = elementName;
-	}
-
-
-	public boolean isRooted() {
-		return rooted;
-	}
-
-
-	public void setRooted(boolean rooted) {
-		this.rooted = rooted;
 	}
 
 

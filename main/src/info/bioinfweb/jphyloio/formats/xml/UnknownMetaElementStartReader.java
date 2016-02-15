@@ -34,7 +34,7 @@ public class UnknownMetaElementStartReader extends AbstractXMLElementReader {
 	public void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 		StartElement element = event.asStartElement();
 		String elementName = element.getName().getLocalPart();
-		XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();
+		XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
 		String value = null;
 				
 		if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {

@@ -27,6 +27,8 @@ public class PhyloXMLStreamDataProvider extends XMLStreamDataProvider<PhyloXMLEv
 	private String treeID;
 	private String treeLabel;
 	
+	private boolean rooted;
+	
 
 	public PhyloXMLStreamDataProvider(PhyloXMLEventReader eventReader) {
 		super(eventReader);
@@ -50,5 +52,15 @@ public class PhyloXMLStreamDataProvider extends XMLStreamDataProvider<PhyloXMLEv
 
 	public void setTreeLabel(String treeLabel) {
 		this.treeLabel = treeLabel;
+	}
+
+
+	public boolean isRooted() {
+		return rooted;
+	}
+
+
+	public void setRooted(boolean rooted) {
+		this.rooted = rooted;
 	}
 }

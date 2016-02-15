@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.xml;
 
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.xtg.XTGEventReader;
 
 import javax.xml.stream.events.XMLEvent;
 
@@ -33,7 +32,7 @@ public class UnknownMetaElementEndReader extends AbstractXMLElementReader {
 	@Override
 	public void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 		String attributeKey = streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() + "." + streamDataProvider.getMetaWithAttributes().getName().getLocalPart();
-		streamDataProvider.getEventReader().readAttributes(streamDataProvider.getMetaWithAttributes(), attributeKey);
+		streamDataProvider.readAttributes(streamDataProvider.getMetaWithAttributes(), attributeKey);
 		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
 	}
 }

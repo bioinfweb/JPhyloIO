@@ -46,6 +46,8 @@ import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
+import info.bioinfweb.jphyloio.formats.xml.UnknownMetaElementEndReader;
+import info.bioinfweb.jphyloio.formats.xml.UnknownMetaElementStartReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 
@@ -257,38 +259,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		
 		map.put(new XMLElementReaderKey(TAG_CLADE, TAG_CLADE, XMLStreamConstants.END_ELEMENT), cladeEndReader);
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), 
-				new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {			
-					@Override
-					public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-						StartElement element = event.asStartElement();
-						String elementName = element.getName().getLocalPart();
-						XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();
-						String value = null;
-								
-						if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
-							String characterData = nextEvent.asCharacters().getData();
-							if (!characterData.matches("\\s+")) {
-								value = characterData;
-							}
-						}
-						
-						streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(PHYLO_XML + "." + streamDataProvider.getParentName() + "." + elementName, "String", value));
-						
-						streamDataProvider.setMetaWithAttributes(element);
-					}
-			});
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new UnknownMetaElementStartReader());
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), 
-				new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {			
-					@Override
-					public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-						String attributeKey = PHYLO_XML + "." + streamDataProvider.getParentName() + "." + streamDataProvider.getMetaWithAttributes().getName().getLocalPart();
-						readAttributes(streamDataProvider.getMetaWithAttributes(), attributeKey);
-						
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
-					}
-			});
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), new UnknownMetaElementEndReader());
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
 	}
