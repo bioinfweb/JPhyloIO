@@ -27,7 +27,7 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.NodeInfo;
+import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
@@ -91,7 +91,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
 				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, id, label));
-				streamDataProvider.setCurrentNodeEdgeInfo(new NodeInfo(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), Double.NaN));
+				streamDataProvider.setCurrentNodeEdgeInfo(new NodeEdgeInfo(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), Double.NaN));
 				if (!streamDataProvider.getSourceNode().isEmpty()) {
 					streamDataProvider.getCurrentNodeEdgeInfo().setSource(streamDataProvider.getSourceNode().peek());
 				}
@@ -200,7 +200,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
 				Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
-				NodeInfo info = streamDataProvider.getCurrentNodeEdgeInfo();
+				NodeEdgeInfo info = streamDataProvider.getCurrentNodeEdgeInfo();
 				
 				if (!(info.getSource() == null && !streamDataProvider.isRooted())) { //only create edge event for root edge when 'showRooted = true'
 					streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(info.getID(), info.getLabel(), info.getSource(), 

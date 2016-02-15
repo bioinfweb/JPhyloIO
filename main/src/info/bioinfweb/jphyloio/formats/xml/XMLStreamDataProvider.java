@@ -25,7 +25,7 @@ import java.util.Stack;
 import javax.xml.stream.events.StartElement;
 
 import info.bioinfweb.jphyloio.StreamDataProvider;
-import info.bioinfweb.jphyloio.formats.NodeInfo;
+import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 
 
 
@@ -40,7 +40,7 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	private StartElement metaWithAttributes;
 	
 	private Stack<String> sourceNode;
-	private NodeInfo currentNodeEdgeInfo;
+	private NodeEdgeInfo currentNodeEdgeInfo;
 	private String currentParentNodeID;
 	
 	
@@ -109,12 +109,12 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 
 
-	public NodeInfo getCurrentNodeEdgeInfo() {
+	public NodeEdgeInfo getCurrentNodeEdgeInfo() {
 		return currentNodeEdgeInfo;
 	}
 
 
-	public void setCurrentNodeEdgeInfo(NodeInfo currentNodeInfo) {
+	public void setCurrentNodeEdgeInfo(NodeEdgeInfo currentNodeInfo) {
 		this.currentNodeEdgeInfo = currentNodeInfo;
 	}
 

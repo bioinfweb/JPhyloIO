@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formats;
 
 
 
-public class NodeInfo {
+public class NodeEdgeInfo {
 		private String id;
 		private String label;
 		
@@ -29,7 +29,7 @@ public class NodeInfo {
 		private double length;		
 
 		
-		public NodeInfo(String id, double length) {
+		public NodeEdgeInfo(String id, double length) {
 			super();
 			this.id = id;
 			this.length = length;
