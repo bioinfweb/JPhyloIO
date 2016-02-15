@@ -179,7 +179,8 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	}
 	
 	
-	protected void readAttributes(StartElement element, String key) {
+	protected void readAttributes(StartElement element) {
+		String key = getStreamDataProvider().getFormat() + "." + getStreamDataProvider().getParentName() + "." + element.getName().getLocalPart();
 		Iterator<Attribute> attributes = element.getAttributes();
 		while (attributes.hasNext()) {
 			Attribute attribute = attributes.next();

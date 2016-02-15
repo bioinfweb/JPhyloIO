@@ -31,8 +31,7 @@ public class UnknownMetaElementEndReader extends AbstractXMLElementReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-		String attributeKey = streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() + "." + streamDataProvider.getMetaWithAttributes().getName().getLocalPart();
-		streamDataProvider.readAttributes(streamDataProvider.getMetaWithAttributes(), attributeKey);
+		streamDataProvider.readAttributes(streamDataProvider.getMetaWithAttributes());
 		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
 	}
 }

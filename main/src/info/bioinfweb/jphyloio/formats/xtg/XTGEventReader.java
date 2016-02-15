@@ -103,7 +103,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				streamDataProvider.getCurrentNodeEdgeInfo().setTarget(id);
 				streamDataProvider.getSourceNode().add(id);
 				
-				readAttributes(element, XTG + "." + streamDataProvider.getParentName() + "." + element.getName().getLocalPart());
+				readAttributes(element);
 			}
 		};
 		
@@ -179,7 +179,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				streamDataProvider.getCurrentNodeEdgeInfo().setLength(length);
 				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 				
-				readAttributes(element, XTG + "." + streamDataProvider.getParentName() + "." + element.getName().getLocalPart());
+				readAttributes(element);
 			}
 		});
 		

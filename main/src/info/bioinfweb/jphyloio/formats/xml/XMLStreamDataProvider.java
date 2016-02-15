@@ -53,8 +53,8 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 	
 	
-	public void readAttributes(StartElement element, String key) {
-		getEventReader().readAttributes(element, key);
+	public void readAttributes(StartElement element) {
+		getEventReader().readAttributes(element);
 	}
 
 

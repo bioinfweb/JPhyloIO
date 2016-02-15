@@ -35,6 +35,7 @@ public interface PhyloXMLConstants {
 	
 	public static final QName TAG_NAME = new QName(NAMESPACE_URI, "name");
 	public static final QName TAG_ID = new QName(NAMESPACE_URI, "id");
+	public static final QName TAG_NODE_ID = new QName(NAMESPACE_URI, "node_id");
 	public static final QName TAG_SCI_NAME = new QName(NAMESPACE_URI, "scientific_name");
 	public static final QName TAG_COMMON_NAME = new QName(NAMESPACE_URI, "common_name");
 	public static final QName TAG_BRANCH_LENGTH = new QName(NAMESPACE_URI, "branch_length");
