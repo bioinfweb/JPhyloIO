@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
@@ -35,10 +36,15 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.AbstractEventReader;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -171,6 +177,16 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 			}
 		}
 		return result;
+	}
+	
+	
+	protected void readAttributes(StartElement element, String key) {
+		Iterator<Attribute> attributes = element.getAttributes();
+		while (attributes.hasNext()) {
+			Attribute attribute = attributes.next();
+			getCurrentEventCollection().add(new MetaInformationEvent(key + "." + attribute.getName(), "String", attribute.getValue()));
+			getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+		}
 	}
 	
 	

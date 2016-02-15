@@ -32,11 +32,15 @@ import info.bioinfweb.jphyloio.formats.NodeInfo;
 public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLStreamDataProvider<R>>>
 		extends StreamDataProvider<R> {
 	private String parentName;
-	private String elementName;
+	private String elementName;	
+
+	private boolean rooted;
 	
 //	private Stack<Queue<NodeInfo>> passedSubnodes;
 	private StartElement metaWithAttributes;
-	private NodeInfo currentNodeInfo;
+	
+	private Stack<String> sourceNode;
+	private NodeInfo currentNodeEdgeInfo;
 	private String currentParentNodeID;
 	
 	
@@ -65,6 +69,16 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 
 
+	public boolean isRooted() {
+		return rooted;
+	}
+
+
+	public void setRooted(boolean rooted) {
+		this.rooted = rooted;
+	}
+
+
 //	public Stack<Queue<NodeInfo>> getPassedSubnodes() {
 //		return passedSubnodes;
 //	}
@@ -85,13 +99,23 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 
 
-	public NodeInfo getCurrentNodeInfo() {
-		return currentNodeInfo;
+	public Stack<String> getSourceNode() {
+		return sourceNode;
 	}
 
 
-	public void setCurrentNodeInfo(NodeInfo currentNodeInfo) {
-		this.currentNodeInfo = currentNodeInfo;
+	public void setSourceNode(Stack<String> sourceNode) {
+		this.sourceNode = sourceNode;
+	}
+
+
+	public NodeInfo getCurrentNodeEdgeInfo() {
+		return currentNodeEdgeInfo;
+	}
+
+
+	public void setCurrentNodeEdgeInfo(NodeInfo currentNodeInfo) {
+		this.currentNodeEdgeInfo = currentNodeInfo;
 	}
 
 

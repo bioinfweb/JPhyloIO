@@ -21,11 +21,13 @@ package info.bioinfweb.jphyloio.formats.xtg;
 
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.NodeInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
@@ -36,14 +38,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -86,24 +89,37 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				StartElement element = event.asStartElement();
 				String id = getID(XMLUtils.readStringAttr(element, ATTR_UNIQUE_NAME, null), EventContentType.NODE);
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
-				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, id, label));
 				
-				Iterator<Attribute> attributes = element.getAttributes();
-				while (attributes.hasNext()) {
-					Attribute attribute = attributes.next();
-					streamDataProvider.getCurrentEventCollection().add(
-							new MetaInformationEvent(element.getName().getLocalPart() + "." + attribute.getName(), "String", attribute.getValue()));
-					streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, id, label));
+				streamDataProvider.setCurrentNodeEdgeInfo(new NodeInfo(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), Double.NaN));
+				if (!streamDataProvider.getSourceNode().isEmpty()) {
+					streamDataProvider.getCurrentNodeEdgeInfo().setSource(streamDataProvider.getSourceNode().peek());
 				}
+				else {
+					streamDataProvider.getCurrentNodeEdgeInfo().setSource(null);
+				}
+				streamDataProvider.getCurrentNodeEdgeInfo().setTarget(id);
+				streamDataProvider.getSourceNode().add(id);
+				
+				readAttributes(element, XTG + "." + streamDataProvider.getParentName() + "." + element.getName().getLocalPart());
 			}
 		};
 		
 		XMLElementReader<XMLStreamDataProvider<XTGEventReader>> nodeEndReader = new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
+				streamDataProvider.getSourceNode().pop();
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 			}
 		};
+		
+		XMLElementReader<XMLStreamDataProvider<XTGEventReader>> createMetaEnd = new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
+			@Override
+			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
+				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+			}
+		};
+
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {
 			@Override
@@ -129,9 +145,24 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {}
 		});
 		
+		map.put(new XMLElementReaderKey(TAG_DOCUMENT, TAG_GLOBAL_FORMATS, XMLStreamConstants.START_ELEMENT), new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
+			@Override
+			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
+				StartElement element = event.asStartElement();
+				boolean rooted = XMLUtils.readBooleanAttr(element, ATTR_SHOW_ROOTED, false);
+				streamDataProvider.setRooted(rooted);
+				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(XTG + "." + streamDataProvider.getParentName() 
+						+ "." + element.getName().getLocalPart(), "String", null));
+				readAttributes(element, XTG + "." + streamDataProvider.getParentName() + "." + element.getName().getLocalPart());
+			}
+		});
+		
+		map.put(new XMLElementReaderKey(TAG_DOCUMENT, TAG_GLOBAL_FORMATS, XMLStreamConstants.END_ELEMENT), createMetaEnd);
+		
 		map.put(new XMLElementReaderKey(TAG_DOCUMENT, TAG_TREE, XMLStreamConstants.START_ELEMENT), new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
+				streamDataProvider.setSourceNode(new Stack<String>());
 				String treeID = getID(null, EventContentType.TREE);							
 				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, treeID, null));		
 			}
@@ -155,16 +186,46 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 		map.put(new XMLElementReaderKey(TAG_NODE, TAG_BRANCH, XMLStreamConstants.START_ELEMENT), new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
-				System.out.println("Branch start");
+				StartElement element = event.asStartElement();				
+				double length = XMLUtils.readDoubleAttr(element, ATTR_BRANCH_LENGTH, Double.NaN);
+				
+				streamDataProvider.getCurrentNodeEdgeInfo().setLength(length);
+				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
+				
+				readAttributes(element, XTG + "." + streamDataProvider.getParentName() + "." + element.getName().getLocalPart());
 			}
 		});
 		
 		map.put(new XMLElementReaderKey(TAG_NODE, TAG_BRANCH, XMLStreamConstants.END_ELEMENT), new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
-				System.out.println("Branch end");
+				Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
+				NodeInfo info = streamDataProvider.getCurrentNodeEdgeInfo();
+				
+				if (!(info.getSource() == null && !streamDataProvider.isRooted())) { //only create edge event for root edge when 'showRooted = true'
+					streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(info.getID(), info.getLabel(), info.getSource(), 
+							info.getTarget(), info.getLength()));
+					for (JPhyloIOEvent nextEvent : nestedEvents) {
+						streamDataProvider.getCurrentEventCollection().add(nextEvent);
+					}
+					streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+				}
 			}
 		});
+		
+		map.put(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.START_ELEMENT), new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
+			@Override
+			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
+				StartElement element = event.asStartElement();
+				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
+				streamDataProvider.getCurrentNodeEdgeInfo().setLabel(label);
+				
+				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(XTG + "." + streamDataProvider.getParentName() 
+						+ "." + element.getName().getLocalPart(), "String", null));
+			}
+		});
+		
+		map.put(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.END_ELEMENT), createMetaEnd);
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), 
 				new XMLElementReader<XMLStreamDataProvider<XTGEventReader>>() { //TODO move this functionality to a class
@@ -193,11 +254,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 					@Override
 					public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
 						String attributeKey = XTG + "." + streamDataProvider.getParentName() + "." + streamDataProvider.getMetaWithAttributes().getName().getLocalPart();
-						Iterator<Attribute> attributes = streamDataProvider.getMetaWithAttributes().getAttributes();
-						while (attributes.hasNext()) {
-							streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(attributeKey, "String", attributes.next().getValue()));
-							streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-						}
+						readAttributes(streamDataProvider.getMetaWithAttributes(), attributeKey);
 						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 					}
 			});
