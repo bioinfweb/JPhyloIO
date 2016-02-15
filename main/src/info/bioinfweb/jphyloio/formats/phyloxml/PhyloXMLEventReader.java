@@ -94,15 +94,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 						Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 						
 						info.setID(getID(info.getID(), EventContentType.NODE)); //make sure node has valid ID
-//						streamDataProvider.getPassedSubnodes().peek().add(info);
 						streamDataProvider.setCurrentNodeEdgeInfo(null);
 						
 						createNodeEvents(info, nestedEvents);
 						createEdgeEvents(info, streamDataProvider.getCurrentParentNodeID());
 					}
-//					else {				
-//						streamDataProvider.getPassedSubnodes().pop();
-//					}
 				}
 			};
 		
@@ -141,8 +137,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					boolean rooted = XMLUtils.readBooleanAttr(event.asStartElement(), ATTR_ROOTED, false);
 					streamDataProvider.setRooted(rooted);
-					
-//					streamDataProvider.setPassedSubnodes(new Stack<Queue<NodeInfo>>());
 				}
 		});
 		
@@ -165,8 +159,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 					
 					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 					
-//					streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for top level.
-					
 					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);					
 					streamDataProvider.setCurrentNodeEdgeInfo(new NodeEdgeInfo("", branchLength));										
 				}
@@ -184,8 +176,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 							
 							info.setID(getID(info.getID(), EventContentType.NODE)); //make sure node has valid ID
 							streamDataProvider.setCurrentParentNodeID(info.getID());
-//							streamDataProvider.getPassedSubnodes().peek().add(info); // Add previous NodeInfo to the current queue.
-//							streamDataProvider.getPassedSubnodes().add(new ArrayDeque<NodeInfo>()); // Add queue for new level.
 							
 							createNodeEvents(info, nestedEvents);							
 							createEdgeEvents(info, parentNodeID);

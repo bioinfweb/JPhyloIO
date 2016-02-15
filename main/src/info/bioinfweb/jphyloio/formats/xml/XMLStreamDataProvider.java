@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
-import java.util.Queue;
 import java.util.Stack;
 
 import javax.xml.stream.events.StartElement;
@@ -38,7 +37,6 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 
 	private boolean rooted;
 	
-//	private Stack<Queue<NodeInfo>> passedSubnodes;
 	private StartElement metaWithAttributes;
 	
 	private Stack<String> sourceNode;
@@ -89,16 +87,6 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	public void setRooted(boolean rooted) {
 		this.rooted = rooted;
 	}
-
-
-//	public Stack<Queue<NodeInfo>> getPassedSubnodes() {
-//		return passedSubnodes;
-//	}
-//
-//
-//	public void setPassedSubnodes(Stack<Queue<NodeInfo>> passedSubnodes) {
-//		this.passedSubnodes = passedSubnodes;
-//	}
 
 
 	public StartElement getMetaWithAttributes() {
