@@ -18,6 +18,10 @@
  */
 package info.bioinfweb.jphyloio.formats;
 
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+
+import java.util.Collection;
+
 
 
 public class NodeEdgeInfo {
@@ -26,13 +30,16 @@ public class NodeEdgeInfo {
 		
 		private String source;
 		private String target;
-		private double length;		
+		private double length;
+		
+		public Collection<JPhyloIOEvent> nestedEdgeEvents;
 
 		
-		public NodeEdgeInfo(String id, double length) {
+		public NodeEdgeInfo(String id, double length, Collection<JPhyloIOEvent> nestedEdgeEvents) {
 			super();
 			this.id = id;
 			this.length = length;
+			this.nestedEdgeEvents = nestedEdgeEvents;
 		}
 		
 
@@ -84,4 +91,14 @@ public class NodeEdgeInfo {
 		public void setLength(double length) {
 			this.length = length;
 		}
+
+
+		public Collection<JPhyloIOEvent> getNestedEdgeEvents() {
+			return nestedEdgeEvents;
+		}
+
+
+		public void setNestedEdgeEvents(Collection<JPhyloIOEvent> nestedEdgeEvents) {
+			this.nestedEdgeEvents = nestedEdgeEvents;
+		}		
 }

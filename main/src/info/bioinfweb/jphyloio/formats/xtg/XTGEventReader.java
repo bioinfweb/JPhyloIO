@@ -93,7 +93,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
 				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, id, label));
-				streamDataProvider.setCurrentNodeEdgeInfo(new NodeEdgeInfo(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), Double.NaN));
+				streamDataProvider.setCurrentNodeEdgeInfo(new NodeEdgeInfo(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), Double.NaN, null));
 				if (!streamDataProvider.getSourceNode().isEmpty()) {
 					streamDataProvider.getCurrentNodeEdgeInfo().setSource(streamDataProvider.getSourceNode().peek());
 				}
