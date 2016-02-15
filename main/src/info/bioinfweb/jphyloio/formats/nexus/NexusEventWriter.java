@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
@@ -338,6 +339,49 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	private void writeTreesBlock(DocumentDataAdapter document) throws IOException {
+		long skippedNetworks = 0;
+		boolean treeWritten = false;
+		Iterator<TreeNetworkDataAdapter> iterator = document.getTreeNetworkIterator();
+		while (iterator.hasNext()) {
+			TreeNetworkDataAdapter treeNetwork = iterator.next();
+			if (treeNetwork.isTree()) {
+				if (!treeWritten) {
+					writeBlockStart(BLOCK_NAME_TREES);
+					increaseIndention();
+					
+					boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_TRANSLATION_TABLE, true);
+					if (translate) {
+						//TODO Write translate command (Determine necessary taxa.)
+					}
+				}
+				
+				writeLineStart(writer, COMMAND_NAME_TREE);
+				writer.write(' ');
+				writer.write("someTree");  //TODO Replace by tree name read from adapter, when according event getter is available.
+				writer.write(' ');
+				writer.write(KEY_VALUE_SEPARATOR);
+				writer.write(' ');
+				new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), parameters).write();
+				writeLineBreak(writer, parameters);
+				
+				treeWritten = true;
+			}
+			else {
+				skippedNetworks += 1;
+			}
+		}
+		
+		if (skippedNetworks > 0) {
+			//TODO Log warning
+		}
+		if (treeWritten) {
+			decreaseIndention();
+			writeBlockEnd();
+		}
+	}
+	
+	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception {
 		this.writer = writer;
@@ -348,7 +392,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		logIgnoredMetadata(document, "The document");
 		writeTaxaBlocks(document);
 		writeCharactersUnalignedBlocks(document);
-		//TODO Write TREES
+		writeTreesBlock(document);
 		//TODO Write SETS
 	}
 }

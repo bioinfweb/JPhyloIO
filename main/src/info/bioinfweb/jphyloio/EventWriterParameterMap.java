@@ -79,4 +79,14 @@ public class EventWriterParameterMap extends ParameterMap {
 	 * written to the output at all supported positions.
 	 */
 	public static final String KEY_IGNORE_COMMENTS = "ignoreComments";
+	
+	/**
+	 * This parameter can be used to specify whether a {@code TRANSLATE} command should be included in the {@code TREES}
+	 * block of a Nexus document.
+	 * <p>
+	 * The value should have the type {@link Boolean}. If {@code true} or no value is specified, a {@code TRANSLATE} 
+	 * command will be written and references to will be used as node labels in the following tree(s). If {@code false} is 
+	 * specified, the full node labels will included in the tree(s).
+	 */
+	public static final String KEY_GENERATE_TRANSLATION_TABLE = "generateTranslationTable";
 }
