@@ -83,7 +83,7 @@ public interface JPhyloIOEvent {
 	 * @return a reference to this event as a basic OTU event
 	 * @throws ClassCastException if this event is not an instance of {@link LinkedOTUOrOTUsEvent}
 	 */
-	public LinkedOTUOrOTUsEvent asLinkedOTUEvent() throws ClassCastException;
+	public LinkedOTUOrOTUsEvent asLinkedOTUOrOTUsEvent() throws ClassCastException;
 	
 	/**
 	 * Casts this event to a tokens event.
