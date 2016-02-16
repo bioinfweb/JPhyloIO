@@ -5,12 +5,29 @@ begin taxa;
  title [comment 2]'taxon list 1';
  [comment 3]
  dimensions ntax=3;
- taxlabels A B C;
+ taxlabels D E F;
  [comment 4]
 end;
 
+begin taxa;
+ title 'taxon list 2';
+ dimensions ntax=3;
+ taxlabels A B C;
+end;
+
+BEGIN CHARACTERS;
+  TITLE someMatrix;
+  LINK TAXA='taxon list 2';
+  DIMENSIONS NTAX=3 NCHAR=5;
+  Format DataType = DNA Missing=? Gap= - NoLabels;
+  MATRIX
+    ACTGT
+    AC-GT
+    AC-CT;
+END;
+
 begin trees;
   title someTrees;
-  link taxa = 'taxon list 1';
-  tree someTree = (A, (B ,C));
+  link taxa = 'taxon list 2';
+  tree someTree = (1, (2, 3));
  end;  

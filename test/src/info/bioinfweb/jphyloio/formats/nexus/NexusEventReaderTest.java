@@ -1346,26 +1346,102 @@ public class NexusEventReaderTest {
 
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
+			// TAXA:
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, "taxon list 1", reader);
-			
 			assertCommentEvent("comment 1", reader);
 			assertCommentEvent("comment 2", reader);
 			assertCommentEvent("comment 3", reader);
-			String idA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+			String idD = assertLabeledIDEvent(EventContentType.OTU, null, "D", reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
-			String idB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+			String idE = assertLabeledIDEvent(EventContentType.OTU, null, "E", reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
-			String idC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
+			String idF = assertLabeledIDEvent(EventContentType.OTU, null, "F", reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
 			assertCommentEvent("comment 4", reader);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
 			
-			assertNotEquals(idA, idB);
-			assertNotEquals(idA, idC);
-			assertNotEquals(idB, idC);
-//			assertEndEvent(EventContentType.OTU_LIST, reader);
-//						
-//			assertEndEvent(EventContentType.DOCUMENT, reader);
-//			assertFalse(reader.hasNextEvent());
+			String otusID = assertLabeledIDEvent(EventContentType.OTU_LIST, null, "taxon list 2", reader).getID();
+			String otuIDA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
+			assertNotEquals(otuIDA, otuIDB);
+			assertNotEquals(otuIDA, otuIDC);
+			assertNotEquals(otuIDA, idD);
+			assertNotEquals(otuIDA, idE);
+			assertNotEquals(otuIDA, idF);
+			assertNotEquals(otuIDB, otuIDC);
+			assertNotEquals(otuIDB, idD);
+			assertNotEquals(otuIDB, idE);
+			assertNotEquals(otuIDB, idF);
+			assertNotEquals(otuIDC, idD);
+			assertNotEquals(otuIDC, idE);
+			assertNotEquals(otuIDC, idF);
+			assertNotEquals(idD, idE);
+			assertNotEquals(idD, idF);
+			assertNotEquals(idE, idF);
+			
+			// CHARACTERS:
+			assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, null, "someMatrix", otusID, reader);
+			
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "5", null, new Long(5), true, true, reader);
+			
+			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", true, true, reader);
+			assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", reader);
+			assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, true, reader);
+			assertSingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP, true, reader);
+			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
+			assertCharactersEvent("ACTGT", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
+			assertCharactersEvent("AC-GT", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
+			assertCharactersEvent("AC-CT", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertEndEvent(EventContentType.ALIGNMENT, reader);
+			
+			// TREES:
+			assertLinkedOTUOrOTUsEvent(EventContentType.TREE, null, "someTree", otusID, reader);
+			
+			String nodeIDA = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, "A", otuIDA, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String nodeIDB = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, "B", otuIDB, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String nodeIDC = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, "C", otuIDC, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String nodeIDN1 = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, null, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			assertEdgeEvent(nodeIDN1, nodeIDB, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(nodeIDN1, nodeIDC, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+
+			String nodeIDN2 = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, null, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			
+			assertEdgeEvent(nodeIDN2, nodeIDA, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(nodeIDN2, nodeIDN1, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(null, nodeIDN2, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEndEvent(EventContentType.TREE, reader);
+
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
 		}
 		finally {
 			reader.close();
