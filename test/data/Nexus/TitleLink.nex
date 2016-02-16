@@ -1,9 +1,12 @@
 #nexus
 
 begin taxa;
- title 'taxon list 1';
+ [comment 1]
+ title [comment 2]'taxon list 1';
+ [comment 3]
  dimensions ntax=3;
  taxlabels A B C;
+ [comment 4]
 end;
 
 begin trees;

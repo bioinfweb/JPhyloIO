@@ -886,9 +886,9 @@ public class NexusEventReaderTest {
 
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
+			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
 			assertCommentEvent("comment 1", reader);
 			assertCommentEvent("comment 2", reader);
-			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
 			
 			String idA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
@@ -1348,12 +1348,16 @@ public class NexusEventReaderTest {
 			
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, "taxon list 1", reader);
 			
+			assertCommentEvent("comment 1", reader);
+			assertCommentEvent("comment 2", reader);
+			assertCommentEvent("comment 3", reader);
 			String idA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
 			String idB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
 			String idC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
+			assertCommentEvent("comment 4", reader);
 			
 			assertNotEquals(idA, idB);
 			assertNotEquals(idA, idC);
