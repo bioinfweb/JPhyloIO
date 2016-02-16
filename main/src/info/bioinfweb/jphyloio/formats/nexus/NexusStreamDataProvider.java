@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 
@@ -40,6 +41,9 @@ import java.util.Map;
  * @author Ben St&ouml;ver
  */
 public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventReader> {
+	public static final String INFO_KEY_BLOCK_START_EVENT_FIRED = "info.bioinfweb.jphyloio.nexus.blockStartEventFired";
+	public static final String INFO_KEY_BLOCK_TITLE = "info.bioinfweb.jphyloio.nexus.blockTitle";
+	public static final String INFO_KEY_BLOCK_LINKS = "info.bioinfweb.jphyloio.nexus.blockLinks";
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaidmap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
@@ -87,6 +91,23 @@ public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventRe
 	 */
 	public ParameterMap getSharedInformationMap() {
 		return sharedInformationMap;
+	}
+	
+	
+	public Map<String, String> getBlockLinks() {
+		@SuppressWarnings("unchecked")
+		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(INFO_KEY_BLOCK_LINKS);  // Casting null is possible.
+		if (result == null) {
+			result = new TreeMap<String, String>();
+			getSharedInformationMap().put(INFO_KEY_BLOCK_LINKS, result);
+		}
+		return result;
+	}
+	
+	
+	public void clearBlockInformation() {
+		getSharedInformationMap().remove(INFO_KEY_BLOCK_TITLE);
+		getSharedInformationMap().remove(INFO_KEY_BLOCK_LINKS);
 	}
 	
 	

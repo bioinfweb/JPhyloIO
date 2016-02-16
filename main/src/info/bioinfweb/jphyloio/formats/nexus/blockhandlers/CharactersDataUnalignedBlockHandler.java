@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 
 
+import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
@@ -26,6 +27,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
 
 
@@ -38,13 +40,27 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 
 
 	@Override
-	public void handleBegin(NexusStreamDataProvider streamDataProvider) {
-		streamDataProvider.getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
-				DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, null));  //TODO Link first OTU list here.
-	}
+	public void handleBegin(NexusStreamDataProvider streamDataProvider) {}
 
+	
 	@Override
 	public void handleEnd(NexusStreamDataProvider streamDataProvider) {
 		streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+	}
+
+
+	@Override
+	public void beforeCommand(NexusStreamDataProvider streamDataProvider,	String commandName, NexusCommandEventReader commandReader) {
+		ParameterMap map = streamDataProvider.getSharedInformationMap();
+		if (!map.getBoolean(NexusStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, false) 
+				&& (commandName.equals(COMMAND_NAME_DIMENSIONS) || commandName.equals(COMMAND_NAME_FORMAT) 
+						|| commandName.equals(COMMAND_NAME_MATRIX))) {  // Fire start event, as soon as one of these commands is encountered.
+			
+			streamDataProvider.getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+					DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+					map.getString(NexusStreamDataProvider.INFO_KEY_BLOCK_TITLE),
+					streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));
+			map.put(NexusStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
+		}
 	}
 }

@@ -106,6 +106,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/AbstractNexusComma
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/DefaultCommandReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/NexusCommandEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/NexusCommandReaderFactory.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/TitleReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/DimensionsReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/FormatReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/MatrixReader.java -text svneol=unset#text/plain

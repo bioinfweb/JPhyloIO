@@ -295,7 +295,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 			return result.toString();
 		}
 		catch (EOFException e) {
-			throw new JPhyloIOReaderException("Unexpected end of file inside a Nexus name.", getReader(), e);
+			throw new JPhyloIOReaderException("Unexpected end of file inside a Nexus word.", getReader(), e);
 		}
 	}
 	
@@ -399,6 +399,10 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 			}
 			else {
 				currentCommandReader = factory.createReader(currentBlockName, commandName, getStreamDataProvider());
+				NexusBlockHandler handler = blockHandlerMap.getHandler(currentBlockName);
+				if (handler != null) {
+					handler.beforeCommand(getStreamDataProvider(), commandName, currentCommandReader);
+				}
 				if (currentCommandReader == null) {
 					if (getCreateUnknownCommandEvents()) {  // Create unknown command event from command content.
 						currentCommandReader = new DefaultCommandReader(commandName, getStreamDataProvider());
@@ -435,12 +439,12 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 				}
 				else {
 					eventCreated = currentCommandReader.readNextEvent();
-					if (!eventCreated) {
-						do {
-							eventCreated = readNextCommand();
-							consumeWhiteSpaceAndComments();
-						} while (!eventCreated && (getReader().peek() != -1));
-					}
+				}
+				if (!eventCreated) {
+					do {
+						eventCreated = readNextCommand();
+						consumeWhiteSpaceAndComments();
+					} while (!eventCreated && (getReader().peek() != -1));
 				}
 				if (!eventCreated) {
 					documentEndReached = true;

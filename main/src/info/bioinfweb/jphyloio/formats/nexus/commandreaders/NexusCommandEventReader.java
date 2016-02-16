@@ -49,6 +49,8 @@ public interface NexusCommandEventReader {
 	/**
 	 * Returns a collection with the names of the Nexus blocks the command parsed by the implementing 
 	 * class may be contained in.
+	 * <p>
+	 * An empty collection returned here indicates that this reader is valid in all Nexus blocks.
 	 * 
 	 * @return a collection with the block names
 	 */
@@ -58,7 +60,7 @@ public interface NexusCommandEventReader {
 	 * Adds at least one additional event (generated from the current Nexus command) to the event queue.
 	 * 
 	 * @return {@code true} if at least one additional event was added or {@code false} if the underlying Nexus
-	 *         command was already completely processed an not more events can generated from it
+	 *         command was already completely processed an no more events can generated from it
 	 */
 	public boolean readNextEvent() throws Exception;
 }

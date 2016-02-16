@@ -50,7 +50,8 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 			if (beforeStart) {
 				beforeStart = false;
 				getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU_LIST, 
-						DEFAULT_OTU_LIST_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), null));
+						DEFAULT_OTU_LIST_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
+						getStreamDataProvider().getSharedInformationMap().getString(NexusStreamDataProvider.INFO_KEY_BLOCK_TITLE)));
 				return true;
 			}
 			else {

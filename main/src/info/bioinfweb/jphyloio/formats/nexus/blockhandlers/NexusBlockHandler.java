@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
 
 
@@ -63,4 +64,16 @@ public interface NexusBlockHandler {
 	 * @see NexusEventReader#getStreamDataProvider()
 	 */
 	public void handleEnd(NexusStreamDataProvider streamDataProvider);
+	
+	/**
+	 * This method is called before a command found in a block handled by this handler is processed,
+	 * by calling the according command reader. 
+	 * 
+	 * @param streamDataProvider the stream data provider of the calling {@link NexusEventReader}
+	 * @param commandName the name of the Nexus command, that will be processed next
+	 * @param commandReader the reader that will be used to process this command or {@code null} if
+	 *        no according reader was found
+	 * @see NexusEventReader#getStreamDataProvider()
+	 */
+	public void beforeCommand(NexusStreamDataProvider streamDataProvider, String commandName, NexusCommandEventReader commandReader);
 }

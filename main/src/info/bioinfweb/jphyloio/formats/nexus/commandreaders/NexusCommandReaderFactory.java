@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.all.TitleReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.MatrixReader;
@@ -50,7 +51,9 @@ import java.util.TreeMap;
  * @author Ben St&ouml;ver
  */
 public class NexusCommandReaderFactory {
+	public static final String ALL_BLOCKS_IDENTIFIER = "ALL BLOCKS";  // A space will not be included in any other Nexus block name.
 	public static final char BLOCK_COMMAND_CONNECTOR = '.';
+
 	
 	private Map<String, Class<? extends NexusCommandEventReader>> readers = 
 			new TreeMap<String, Class<? extends NexusCommandEventReader>>();
@@ -84,6 +87,7 @@ public class NexusCommandReaderFactory {
 	 * Adds all Nexus command readers available in JPhyloIO to this instance.
 	 */
 	public void addJPhyloIOReaders() {
+		addReaderClass(TitleReader.class);
 		addReaderClass(TaxLabelsReader.class);
 		addReaderClass(DimensionsReader.class);
 		addReaderClass(FormatReader.class);
@@ -117,8 +121,13 @@ public class NexusCommandReaderFactory {
 	 */
 	public void addReaderClass(Class<? extends NexusCommandEventReader> readerClass) throws IllegalArgumentException {
 		NexusCommandEventReader reader = createReaderInstance(readerClass, null);
-		for (String blockName : reader.getValidBlocks()) {
-			readers.put(blockName.toUpperCase() + BLOCK_COMMAND_CONNECTOR + reader.getCommandName().toUpperCase(), readerClass);
+		if (reader.getValidBlocks().isEmpty()) {  // Valid in all blocks.
+			readers.put(ALL_BLOCKS_IDENTIFIER + BLOCK_COMMAND_CONNECTOR + reader.getCommandName().toUpperCase(), readerClass);
+		}
+		else {
+			for (String blockName : reader.getValidBlocks()) {
+				readers.put(blockName.toUpperCase() + BLOCK_COMMAND_CONNECTOR + reader.getCommandName().toUpperCase(), readerClass);
+			}
 		}
 	}
 	
@@ -135,6 +144,10 @@ public class NexusCommandReaderFactory {
 	public NexusCommandEventReader createReader(String blockName, String commandName, NexusStreamDataProvider streamDataProvider) {
 		Class<? extends NexusCommandEventReader> readerClass = readers.get(blockName.toUpperCase() + BLOCK_COMMAND_CONNECTOR + 
 				commandName.toUpperCase());
+		
+		if (readerClass == null) {  // Try to get a reader valid in all blocks.
+			readerClass = readers.get(ALL_BLOCKS_IDENTIFIER + BLOCK_COMMAND_CONNECTOR +	commandName.toUpperCase());
+		}
 		
 		if (readerClass == null) {
 			return null;
