@@ -1,5 +1,5 @@
 /**
- * Contains classes for reading from and writing files in Phylip format.
+ * Contains classes for reading from and writing to streams/files in Phylip format.
  * 
  * @author Ben St&ouml;ver
  */

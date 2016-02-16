@@ -1,5 +1,5 @@
 /**
- * Contains classes for reading from and writing to FASTA files.
+ * Contains classes for reading from and writing to streams/files in FASTA format.
  * 
  * @author Ben St&ouml;ver
  */
