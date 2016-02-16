@@ -337,6 +337,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 	
 	
 	private void processBlockStartEnd(EventTopologyType topologyType) {
+		getStreamDataProvider().clearBlockInformation();
 		NexusBlockHandler handler = blockHandlerMap.getHandler(currentBlockName);
 		if (handler != null) {
 			if (EventTopologyType.START.equals(topologyType)) {

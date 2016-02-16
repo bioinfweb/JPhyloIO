@@ -78,6 +78,7 @@ public class NexusBlockHandlerMap {
 	 * Adds all handlers that are available in <i>JPhyloIO</i> to this instance.
 	 */
 	public void addJPhyloIOHandlers() {
+		addHandler(new TaxaBlockHandler());
 		addHandler(new CharactersDataUnalignedBlockHandler());
 		addHandler(new TreesBlockHandler());
 		// add new classes here

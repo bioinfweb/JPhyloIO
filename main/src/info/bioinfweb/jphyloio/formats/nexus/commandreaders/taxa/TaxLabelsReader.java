@@ -58,8 +58,6 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
 				char c = reader.peekChar();
 				if (c == COMMAND_END) {
-					getStreamDataProvider().getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
-					
 					reader.skip(1);  // Consume ';'.
 					setAllDataProcessed(true);
 					return false;

@@ -100,6 +100,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/AbstractNexusBlockH
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/CharactersDataUnalignedBlockHandler.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/NexusBlockHandler.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/NexusBlockHandlerMap.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/TaxaBlockHandler.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/TreesBlockHandler.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/AbstractKeyValueCommandReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/AbstractNexusCommandEventReader.java -text svneol=unset#text/plain
