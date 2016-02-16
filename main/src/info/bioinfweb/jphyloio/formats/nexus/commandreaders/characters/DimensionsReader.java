@@ -41,7 +41,8 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 	
 	
 	public DimensionsReader(NexusStreamDataProvider nexusDocument) {
-		super(COMMAND_NAME_DIMENSIONS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument, KEY_PREFIX);
+		super(COMMAND_NAME_DIMENSIONS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, 
+				nexusDocument, KEY_PREFIX);
 		//TODO In the UNALIGNED block NCHAR is invalid.
 	}
 

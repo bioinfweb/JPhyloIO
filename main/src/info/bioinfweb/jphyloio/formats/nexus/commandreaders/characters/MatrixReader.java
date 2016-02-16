@@ -101,7 +101,8 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 	protected boolean doReadNextEvent() throws Exception {
 		ParameterMap map = getStreamDataProvider().getSharedInformationMap();
 		if (map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false)) {
-			throw new InternalError("Transposed Nexus matrices are currently not supported by JPhyloIO.");
+			throw new JPhyloIOReaderException("Transposed Nexus matrices are currently not supported by JPhyloIO.", 
+					getStreamDataProvider().getDataReader());
 		}
 		else {
 			boolean longTokens = map.getBoolean(FormatReader.INFO_KEY_TOKENS_FORMAT, false);
@@ -124,14 +125,20 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							return true;  // Immediately return comment in front of sequence name, if it was not added to the final event list.
 						}
 						
+						String linkedOTUsID = getStreamDataProvider().getCurrentLinkedOTUsID();
 						if (noLabels) {
-							if (currentSequenceIndex >= getStreamDataProvider().getTaxaList().size()) {
+							if (linkedOTUsID == null) {
+								throw new JPhyloIOReaderException("A MATRIX command with the NOLABELS option was found, but no preceding TAXA "
+										+ "block is present", getStreamDataProvider().getDataReader());  //TODO Can NOLABELS also be used, if NEWTAXA is used?
+							}
+							
+							if (currentSequenceIndex >= getStreamDataProvider().getTaxaList(linkedOTUsID).size()) {
 								throw new JPhyloIOReaderException("A MATRIX command contains more sequences than defined in the TAXA block. "
 										+ "This is invalid, if NOLABELS was specified. An alternative cause could be an invalid sequence "
 										+ "length definition.", getStreamDataProvider().getDataReader());
 							}
 							else {
-								currentSequenceLabel = getStreamDataProvider().getTaxaList().get(currentSequenceIndex);
+								currentSequenceLabel = getStreamDataProvider().getTaxaList(linkedOTUsID).get(currentSequenceIndex);
 							}
 						}
 						else {
@@ -139,9 +146,12 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						}
 						currentSequenceIndex++;
 						
+						String otuID = null;
+						if (linkedOTUsID != null) {
+							otuID = getStreamDataProvider().getTaxaToIDMap(linkedOTUsID).get(currentSequenceLabel);  // Returns the OTU ID or null, if it is not found in the map.
+						}
 						getStreamDataProvider().getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
-								idToNameManager.getID(currentSequenceLabel), currentSequenceLabel, 
-								getStreamDataProvider().getTaxaToIDMap().get(currentSequenceLabel)));  // Returns the OTU ID or null, if it is not found in the map.
+								idToNameManager.getID(currentSequenceLabel), currentSequenceLabel, otuID));
 						currentSequencePosition = 0;  // getStreamDataProvider().getSequenceTokensEventManager().getCurrentBlockStartPosition() does not work here, because it does not return the updated value for the first sequence of the second and following blocks, since the event is processed after this command.
 					}
 					

@@ -31,13 +31,16 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
 
 
 /**
- * Reads the {@code TITLE} command of a Nexus block and stored the title in the shared information map of the
+ * Reads the {@code TITLE} command of a Nexus block and stores the title in the shared information map of the
  * stream data provider under the key {@link NexusStreamDataProvider#INFO_KEY_BLOCK_TITLE}.
  * <p>
  * Note that the {@code TITLE} command is not part of the initial Nexus definition, but was used by Mesquite
  * as a custom command to allow references between blocks using the {@code LINK} command.
  * <p>
- * This reader is valid for all blocks, therefore {@link #getValidBlocks()} returns an empty collection.  
+ * This reader is valid for all blocks, therefore {@link #getValidBlocks()} returns an empty collection.
+ * <p>
+ * See the documentation of {@link LinkReader} for a usage example the the {@code TITLE} and {@code LINK}
+ * commands.  
  * 
  * @author Ben St&ouml;ver
  * @see LinkReader

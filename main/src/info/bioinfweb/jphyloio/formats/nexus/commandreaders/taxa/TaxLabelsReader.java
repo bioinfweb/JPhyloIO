@@ -38,6 +38,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
 
 public class TaxLabelsReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
 	private boolean beforeStart = true;
+	private String currentListID;
 	
 	
 	public TaxLabelsReader(NexusStreamDataProvider nexusDocument) {
@@ -51,10 +52,20 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 		try {
 			if (beforeStart) {
 				beforeStart = false;
+				
+				currentListID = DEFAULT_OTU_LIST_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+				String label = getStreamDataProvider().getSharedInformationMap().getString(NexusStreamDataProvider.INFO_KEY_BLOCK_TITLE);
+				if (!getStreamDataProvider().getSharedInformationMap().containsKey(NexusStreamDataProvider.INFO_KEY_DEFAULT_OTU_LIST_ID)) {
+					getStreamDataProvider().getSharedInformationMap().put(
+							NexusStreamDataProvider.INFO_KEY_DEFAULT_OTU_LIST_ID, currentListID);  // Set first OTU list as the default.
+				}
+				if (label != null) {
+					getStreamDataProvider().getOTUsLabelToIDMap().put(label, currentListID);
+				}
+				
 				Collection<JPhyloIOEvent> leadingComments = getStreamDataProvider().resetCurrentEventCollection();
 				getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU_LIST, 
-						DEFAULT_OTU_LIST_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
-						getStreamDataProvider().getSharedInformationMap().getString(NexusStreamDataProvider.INFO_KEY_BLOCK_TITLE)));
+						currentListID, label));
 				getStreamDataProvider().getCurrentEventCollection().addAll(leadingComments);
 				return true;
 			}
@@ -70,8 +81,8 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 					String taxon = getStreamDataProvider().readNexusWord();
 					String id = DEFAULT_OTU_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
 					
-					getStreamDataProvider().getTaxaList().add(taxon);
-					getStreamDataProvider().getTaxaToIDMap().put(taxon, id);
+					getStreamDataProvider().getTaxaList(currentListID).add(taxon);
+					getStreamDataProvider().getTaxaToIDMap(currentListID).put(taxon, id);
 					
 					getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, id, taxon));
 					getStreamDataProvider().getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));

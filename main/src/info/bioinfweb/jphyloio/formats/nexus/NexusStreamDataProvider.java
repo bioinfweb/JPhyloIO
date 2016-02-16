@@ -40,12 +40,14 @@ import java.util.TreeMap;
  * 
  * @author Ben St&ouml;ver
  */
-public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventReader> {
+public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventReader> implements NexusConstants {
 	public static final String INFO_KEY_BLOCK_START_EVENT_FIRED = "info.bioinfweb.jphyloio.nexus.blockStartEventFired";
 	public static final String INFO_KEY_BLOCK_TITLE = "info.bioinfweb.jphyloio.nexus.blockTitle";
 	public static final String INFO_KEY_BLOCK_LINKS = "info.bioinfweb.jphyloio.nexus.blockLinks";
+	public static final String INFO_KEY_DEFAULT_OTU_LIST_ID = "info.bioinfweb.jphyloio.nexus.taxa.defaultOTUListID";
+	public static final String INFO_KEY_OTU_LIST_ID_MAP = "info.bioinfweb.jphyloio.nexus.taxa.otuListIDMap";
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
-	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaidmap";
+	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaIDMap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
 	
 	
@@ -111,25 +113,54 @@ public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventRe
 	}
 	
 	
-	public List<String> getTaxaList() {
+	private Map<String, String> getMap(String key) {
 		@SuppressWarnings("unchecked")
-		List<String> result = (List<String>)getSharedInformationMap().get(INFO_KEY_TAXA_LIST);  // Casting null is possible.
+		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(key);  // Casting null is possible.
 		if (result == null) {
-			result = new ArrayList<String>();
-			getSharedInformationMap().put(INFO_KEY_TAXA_LIST, result);
+			result = new HashMap<String, String>();
+			getSharedInformationMap().put(key, result);
 		}
 		return result;
 	}
 	
 	
-	public Map<String, String> getTaxaToIDMap() {
-		@SuppressWarnings("unchecked")
-		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(INFO_KEY_TAXA_MAP);  // Casting null is possible.
+	public Map<String, String> getOTUsLabelToIDMap() {
+		return getMap(INFO_KEY_OTU_LIST_ID_MAP);
+	}
+	
+	
+	public String getCurrentLinkedOTUsID() {
+		String result = getBlockLinks().get(BLOCK_NAME_TAXA);
 		if (result == null) {
-			result = new HashMap<String, String>();
-			getSharedInformationMap().put(INFO_KEY_TAXA_MAP, result);
+			result = getSharedInformationMap().getString(NexusStreamDataProvider.INFO_KEY_DEFAULT_OTU_LIST_ID);
 		}
 		return result;
+	}
+	
+	
+	public List<String> getTaxaList(String listID) {
+		if (listID == null) {
+			throw new NullPointerException("The specified listID must not be null.");
+		}
+		else {
+			@SuppressWarnings("unchecked")
+			List<String> result = (List<String>)getSharedInformationMap().get(INFO_KEY_TAXA_LIST + "." + listID);  // Casting null is possible.
+			if (result == null) {
+				result = new ArrayList<String>();
+				getSharedInformationMap().put(INFO_KEY_TAXA_LIST + "." + listID, result);
+			}
+			return result;
+		}
+	}
+	
+	
+	public Map<String, String> getTaxaToIDMap(String listID) {
+		if (listID == null) {
+			throw new NullPointerException("The specified listID must not be null.");
+		}
+		else {
+			return getMap(INFO_KEY_TAXA_MAP + "." + listID);
+		}
 	}
 	
 	

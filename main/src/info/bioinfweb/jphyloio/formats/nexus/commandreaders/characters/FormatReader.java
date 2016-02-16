@@ -74,7 +74,8 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	
 	
 	public FormatReader(NexusStreamDataProvider nexusDocument) {
-		super(COMMAND_NAME_FORMAT, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument, KEY_PREFIX);
+		super(COMMAND_NAME_FORMAT, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, 
+				nexusDocument, KEY_PREFIX);
 	}
 	
 	

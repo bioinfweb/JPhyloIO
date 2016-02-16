@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.all.LinkReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.all.TitleReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
@@ -88,6 +89,7 @@ public class NexusCommandReaderFactory {
 	 */
 	public void addJPhyloIOReaders() {
 		addReaderClass(TitleReader.class);
+		addReaderClass(LinkReader.class);
 		addReaderClass(TaxLabelsReader.class);
 		addReaderClass(DimensionsReader.class);
 		addReaderClass(FormatReader.class);

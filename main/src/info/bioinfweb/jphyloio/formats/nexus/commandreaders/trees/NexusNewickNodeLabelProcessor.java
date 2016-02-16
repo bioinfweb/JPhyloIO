@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees;
 
 
+import java.util.Collections;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.formats.newick.NewickNodeLabelProcessor;
@@ -43,7 +44,15 @@ public class NexusNewickNodeLabelProcessor implements NewickNodeLabelProcessor {
 		}
 		else {
 			NexusTranslationTable table = streamDataProvider.getTreesTranslationTable();
-			List<String> taxaList = streamDataProvider.getTaxaList();
+			String linkedOTUsID = streamDataProvider.getCurrentLinkedOTUsID();
+			List<String> taxaList;
+			if (linkedOTUsID == null) {
+				taxaList = Collections.emptyList();
+			}
+			else {
+				taxaList = streamDataProvider.getTaxaList(linkedOTUsID);
+			}
+			
 			String result = table.get(originalLabel);
 			if (result == null) {
 				try {
@@ -72,7 +81,13 @@ public class NexusNewickNodeLabelProcessor implements NewickNodeLabelProcessor {
 			return null;
 		}
 		else {
-			return streamDataProvider.getTaxaToIDMap().get(processedLabel);
+			String linkedOTUsID = streamDataProvider.getCurrentLinkedOTUsID();
+			if (linkedOTUsID == null) {
+				return null;
+			}
+			else {
+				return streamDataProvider.getTaxaToIDMap(linkedOTUsID).get(processedLabel);
+			}
 		}
 	}
 }
