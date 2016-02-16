@@ -113,7 +113,7 @@ public class JPhyloIOTestTools {
 	public static String assertLinkedOTUOrOTUsEvent(EventContentType expectedType, String expectedID, String expectedLabel, 
 			String expectedOTUOrOTUsID,	JPhyloIOEventReader reader) throws Exception {
 		
-		LinkedOTUOrOTUsEvent otuEvent = assertLabeledIDEvent(expectedType, expectedID, expectedLabel, reader).asLinkedOTUEvent();
+		LinkedOTUOrOTUsEvent otuEvent = assertLabeledIDEvent(expectedType, expectedID, expectedLabel, reader).asLinkedOTUOrOTUsEvent();
 		if (expectedOTUOrOTUsID == null) {
 			assertNull(otuEvent.getOTUOrOTUsID());
 		}
