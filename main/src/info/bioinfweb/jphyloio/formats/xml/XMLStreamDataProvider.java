@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 
 public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLStreamDataProvider<R>>>
 		extends StreamDataProvider<R> {
+	
 	private String format;
 	
 	private String parentName;

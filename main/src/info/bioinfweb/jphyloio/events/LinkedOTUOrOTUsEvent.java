@@ -24,13 +24,17 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 /**
- * Instances of this or inherited classes model data elements with an ID and an optional label 
- * that link an OTU ID.
+ * Instances of this or inherited classes model data elements with an ID and an optional label, 
+ * that link a single OTU or an OTU list by their ID.
+ * <p>
+ * If a single OTU or an whole OTU list is linked, depends on the modeled object (the content type of this 
+ * instance). Matrices, trees or networks links OTU lists, while sequences or tree/network nodes link single
+ * OTUs.
  * 
  * @author Ben St&ouml;ver
  */
-public class LinkedOTUEvent extends LabeledIDEvent {
-	private String linkedOTUID;
+public class LinkedOTUOrOTUsEvent extends LabeledIDEvent {
+	private String linkedOTUOrOTUsID;
 
 	
 	/**
@@ -43,32 +47,37 @@ public class LinkedOTUEvent extends LabeledIDEvent {
 	 * @throws NullPointerException if {@code contentType} is {@code null}
 	 * @throws IllegalArgumentException if {@code id} or {@code otuID} are an empty string or contain whitespace
 	 */
-	public LinkedOTUEvent(EventContentType contentType, String id, String label, String otuID) {
+	public LinkedOTUOrOTUsEvent(EventContentType contentType, String id, String label, String otuID) {
 		super(contentType, id, label);
 		
 		if (otuID != null) {
 			checkID(otuID, "linked OTU ID");
 		}
-		this.linkedOTUID = otuID;
+		this.linkedOTUOrOTUsID = otuID;
 	}
 
 
 	/**
-	 * Returns the OTU ID linked to the data element, which is modeled by this event.
+	 * Returns the ID of a single OTU or an OTU list linked to the data element, which is modeled by this event.
+	 * <p>
+	 * If a single OTU or an whole OTU list is linked, depends on the modeled object (the content type of this 
+	 * instance). Matrices, trees or networks links OTU lists, while sequences or tree/network nodes link single
+	 * OTUs.
 	 * 
-	 * @return the linked OTU ID or {@code null} if this object does not have an associated OTU
+	 * @return the linked OTU or OTU list ID or {@code null} if this object does not have an associated OTU or
+	 *         OTU list
 	 */
-	public String getOTUID() {
-		return linkedOTUID;
+	public String getOTUOrOTUsID() {
+		return linkedOTUOrOTUsID;
 	}
 	
 	
 	/**
-	 * Indicates whether this event links an OTU ID.
+	 * Indicates whether this event links an OTU or OTU list ID.
 	 * 
 	 * @return {@code true} if an ID is present, {@code false} otherwise
 	 */
-	public boolean isOTULinked() {
-		return getOTUID() != null;
+	public boolean isOTUOrOTUsLinked() {
+		return getOTUOrOTUsID() != null;
 	}
 }

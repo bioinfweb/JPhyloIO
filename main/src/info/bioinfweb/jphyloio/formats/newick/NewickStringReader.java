@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -192,7 +192,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	}
 	
 	
-	private LinkedOTUEvent readNode() throws IOException {
+	private LinkedOTUOrOTUsEvent readNode() throws IOException {
 		NewickToken token;
 		if (scanner.hasMoreTokens()) {
 			token = scanner.peek();
@@ -231,7 +231,7 @@ public class NewickStringReader implements ReadWriteConstants {
 			// Generate node information:
 			passedSubnodes.peek().add(new NodeEdgeInfo(nodeID, length, nestedEdgeEvents));
 			String processedLabel = nodeLabelProcessor.processLabel(label);
-			LinkedOTUEvent result = new LinkedOTUEvent(EventContentType.NODE, nodeID, processedLabel,
+			LinkedOTUOrOTUsEvent result = new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, processedLabel,
 					nodeLabelProcessor.getLinkedOTUID(processedLabel));
 			streamDataProvider.getUpcomingEvents().add(result);
 			streamDataProvider.getUpcomingEvents().addAll(nestedNodeEvents);
@@ -291,7 +291,7 @@ public class NewickStringReader implements ReadWriteConstants {
 						}
 						else {
 							Queue<NodeEdgeInfo> levelInfo = passedSubnodes.pop();
-							LinkedOTUEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
+							LinkedOTUOrOTUsEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
 							String sourceID = nodeEvent.getID();
 							addEdgeEvents(sourceID, levelInfo);
 						}

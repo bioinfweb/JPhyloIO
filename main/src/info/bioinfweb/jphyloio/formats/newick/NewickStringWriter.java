@@ -25,7 +25,7 @@ import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
 
@@ -131,8 +131,8 @@ public class NewickStringWriter implements NewickConstants {
 			writer.write(SUBTREE_END);
 		}
 		
-		NewickNodeEdgeEventReceiver<LinkedOTUEvent> nodeReceiver = 
-				new NewickNodeEdgeEventReceiver<LinkedOTUEvent>(writer, parameters, EventContentType.NODE);
+		NewickNodeEdgeEventReceiver<LinkedOTUOrOTUsEvent> nodeReceiver = 
+				new NewickNodeEdgeEventReceiver<LinkedOTUOrOTUsEvent>(writer, parameters, EventContentType.NODE);
 		tree.writeNodeData(nodeReceiver, nodeID);
 		
 		// Write node data:

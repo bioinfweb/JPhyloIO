@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
@@ -108,7 +108,7 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataA
 	 * @param sequenceID the ID of the sequence to be described
 	 * @return an linked OTU event describing the specified sequence
 	 */
-	public LinkedOTUEvent getSequenceStartEvent(String sequenceID);
+	public LinkedOTUOrOTUsEvent getSequenceStartEvent(String sequenceID);
 	
 	/**
 	 * Returns the length for the specified sequence. If {@link #getColumnCount()} returns does not return -1,

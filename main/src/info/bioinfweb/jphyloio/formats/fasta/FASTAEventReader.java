@@ -23,7 +23,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -137,7 +137,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
 			  //TODO Optionally an additional OTU event with an ID could be generated here.
-				getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
+				getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
 						DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(),	currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
 				while (getReader().peekChar() == COMMENT_START_CHAR) {
 					getReader().read();  // Consume ';'.

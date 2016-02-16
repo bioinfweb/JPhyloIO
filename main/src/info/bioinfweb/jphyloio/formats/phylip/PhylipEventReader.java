@@ -29,7 +29,7 @@ import java.util.List;
 
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
@@ -221,7 +221,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextStreamDataP
 							break;
 						}
 						else {
-							getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
+							getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
 									sequenceIDToNameManager.getID(currentSequenceName), currentSequenceName, null));
 						}
 					}

@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -310,7 +310,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 		else if (firstSequenceName.equals(currentSequenceName)) {
 			currentLabelPos = Math.max(currentLabelPos, charactersRead);  // Label command can be omitted in interleaved format.
 		}
-		getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE,
+		getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE,
 				sequenceIDToNameManager.getID(currentSequenceName), currentSequenceName, null));
 	}
 	

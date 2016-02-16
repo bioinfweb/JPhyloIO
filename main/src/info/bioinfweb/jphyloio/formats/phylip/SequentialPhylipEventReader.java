@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
@@ -164,7 +164,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextS
 										getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
 							}
 							if (getReader().peek() != -1) {  // Do not start a new sequence, if the end of the alignment was reached.
-								getUpcomingEvents().add(new LinkedOTUEvent(EventContentType.SEQUENCE, 
+								getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
 										DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(), currentSequenceName, null));  // Saving IDs to names in not necessary, since sequential Phylip cannot be interleaved.
 							}
 						}

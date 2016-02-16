@@ -29,7 +29,7 @@ import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 
 
 
@@ -83,7 +83,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				
 				while (sequenceIDIterator.hasNext()) {
 					String id = sequenceIDIterator.next();
-					LinkedOTUEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
+					LinkedOTUOrOTUsEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
 					writeSequenceName(getLinkedOTUName(sequenceEvent, otuList), writer, eventReceiver, parameters);
 					eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));

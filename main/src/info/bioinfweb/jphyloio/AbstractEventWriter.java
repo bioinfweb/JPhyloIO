@@ -35,7 +35,7 @@ import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 
 
 
@@ -81,11 +81,11 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	public static String getLinkedOTUName(LinkedOTUEvent linkedOTUEvent, OTUListDataAdapter otuList) {
+	public static String getLinkedOTUName(LinkedOTUOrOTUsEvent linkedOTUEvent, OTUListDataAdapter otuList) {
 		String result = linkedOTUEvent.getLabel();
 		if (result == null) {
-			if (linkedOTUEvent.isOTULinked() && (otuList != null)) {
-				result = otuList.getOTUStartEvent(linkedOTUEvent.getOTUID()).getLabel();
+			if (linkedOTUEvent.isOTUOrOTUsLinked() && (otuList != null)) {
+				result = otuList.getOTUStartEvent(linkedOTUEvent.getOTUOrOTUsID()).getLabel();
 			}
 			if (result == null) {
 				result = linkedOTUEvent.getID();
