@@ -236,9 +236,9 @@ public class NewickStringReader implements ReadWriteConstants {
 			String processedLabel = nodeLabelProcessor.processLabel(label);
 			LinkedOTUOrOTUsEvent result = new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, processedLabel,
 					nodeLabelProcessor.getLinkedOTUID(processedLabel));
-			streamDataProvider.getUpcomingEvents().add(result);
-			streamDataProvider.getUpcomingEvents().addAll(nestedNodeEvents);
-			streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+			streamDataProvider.getCurrentEventCollection().add(result);
+			streamDataProvider.getCurrentEventCollection().addAll(nestedNodeEvents);
+			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 			
 			return result;
 		}		
@@ -248,17 +248,17 @@ public class NewickStringReader implements ReadWriteConstants {
 	private void addEdgeEvents(String sourceID, Queue<NodeEdgeInfo> nodeInfos) {
 		while (!nodeInfos.isEmpty()) {
 			NodeEdgeInfo nodeInfo = nodeInfos.poll();
-			streamDataProvider.getUpcomingEvents().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + 
+			streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + 
 					streamDataProvider.getIDManager().createNewID(), null, sourceID, nodeInfo.getID(), nodeInfo.getLength()));
-			streamDataProvider.getUpcomingEvents().addAll(nodeInfo.nestedEdgeEvents);
-			streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+			streamDataProvider.getCurrentEventCollection().addAll(nodeInfo.nestedEdgeEvents);
+			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 		}		
 	}
 	
 	
 	private void endTree() {
 		addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
-		streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
+		streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
 		isInTree = false;
 	}
 
@@ -270,7 +270,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	 * @throws IOException
 	 */
 	public void processTree() throws IOException {
-		while (streamDataProvider.getUpcomingEvents().isEmpty()) {
+		while (streamDataProvider.getCurrentEventCollection().isEmpty()) {
 			if (!scanner.hasMoreTokens()) {
 				if (passedSubnodes.size() == 1) {
 					endTree();
@@ -303,7 +303,7 @@ public class NewickStringReader implements ReadWriteConstants {
 						endTree();
 						break;
 					case COMMENT:
-						streamDataProvider.getUpcomingEvents().add(new CommentEvent(token.getText(), false));
+						streamDataProvider.getCurrentEventCollection().add(new CommentEvent(token.getText(), false));
 						break;
 					default:
 						throw new JPhyloIOReaderException("Unexpected Newick token \"" + token.getType() + "\"", token.getLocation());
@@ -327,17 +327,17 @@ public class NewickStringReader implements ReadWriteConstants {
 			if (readMoreTokens) {
 				NewickTokenType type = scanner.peek().getType();
 				if (NewickTokenType.COMMENT.equals(type)) {  // Comments before a tree
-					streamDataProvider.getUpcomingEvents().add(new CommentEvent(scanner.nextToken().getText(), false));
+					streamDataProvider.getCurrentEventCollection().add(new CommentEvent(scanner.nextToken().getText(), false));
 				}
 				else {
-					streamDataProvider.getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, 
+					streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, 
 							DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), treeLabel, linkedOTUsID));
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 						boolean currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 						scanner.nextToken();  // Skip rooted token.
-						streamDataProvider.getUpcomingEvents().add(new MetaInformationEvent(META_KEY_DISPLAY_TREE_ROOTED, null, 
+						streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(META_KEY_DISPLAY_TREE_ROOTED, null, 
 								Boolean.toString(currentTreeRooted), new Boolean(currentTreeRooted)));
-						streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 					}
 					passedSubnodes.add(new ArrayDeque<NodeEdgeInfo>());  // Add queue for top level.
 					isInTree = true;

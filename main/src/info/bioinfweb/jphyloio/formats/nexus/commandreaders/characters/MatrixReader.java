@@ -120,8 +120,8 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					// Read name:
 					if (currentSequenceLabel == null) {
 						getStreamDataProvider().consumeWhiteSpaceAndComments();
-						if (!getStreamDataProvider().getUpcomingEvents().isEmpty()) {
-							return true;  // Immediately return comment in front of sequence name.
+						if (getStreamDataProvider().eventsUpcoming()) {
+							return true;  // Immediately return comment in front of sequence name, if it was not added to the final event list.
 						}
 						
 						if (noLabels) {
@@ -139,7 +139,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						}
 						currentSequenceIndex++;
 						
-						getStreamDataProvider().getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+						getStreamDataProvider().getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
 								idToNameManager.getID(currentSequenceLabel), currentSequenceLabel, 
 								getStreamDataProvider().getTaxaToIDMap().get(currentSequenceLabel)));  // Returns the OTU ID or null, if it is not found in the map.
 						currentSequencePosition = 0;  // getStreamDataProvider().getSequenceTokensEventManager().getCurrentBlockStartPosition() does not work here, because it does not return the updated value for the first sequence of the second and following blocks, since the event is processed after this command.
@@ -161,18 +161,18 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							}
 							reader.consumeNewLine();
 							if (!tokens.isEmpty()) {  //TODO What about events for empty sequences?
-								getStreamDataProvider().getUpcomingEvents().add(
+								getStreamDataProvider().getCurrentEventCollection().add(
 										getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
 								result = true;
 							}
 							currentSequenceLabel = null;  // Read new label next time.
 							tokenListComplete = true;
-							getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, !interleaved || 
+							getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, !interleaved || 
 									(getStreamDataProvider().getSequenceTokensEventManager().getCurrentPosition() >= alignmentLength)));  // Since the event has already been added, the position should be valid here.
 						}
 						else if (c == COMMENT_START) {
 							if (!tokens.isEmpty()) {
-								getStreamDataProvider().getUpcomingEvents().add(  // Make sure to add token event before comment event.
+								getStreamDataProvider().getCurrentEventCollection().add(  // Make sure to add token event before comment event.
 										getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
 							}
 							
@@ -195,14 +195,14 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					
 					// Return event:
 					if (!tokens.isEmpty() && (currentSequenceLabel != null)) {  // Max number of tokens was reached.
-						getStreamDataProvider().getUpcomingEvents().add(
+						getStreamDataProvider().getCurrentEventCollection().add(
 								getStreamDataProvider().getSequenceTokensEventManager().createEvent(currentSequenceLabel, tokens));
 						result = true;
 					}
 					if (c == COMMAND_END) {
 						setAllDataProcessed(true);
 						reader.skip(1);  // Consume ';'.
-						getStreamDataProvider().getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+						getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 					}
 					return result;
 				}

@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
@@ -127,7 +128,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 				return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
 			}
 		}
-		getStreamDataProvider().getUpcomingEvents().addAll(charSetEvents);  // Events are added to the queue when its sure that there was no parsing error.
+		getStreamDataProvider().getCurrentEventCollection().addAll(charSetEvents);  // Events are added to the queue when its sure that there was no parsing error.
 		tokenSetDefinitionEvents.addAll(tokenSetEvents);  // Save to nest single token symbol definitions later.
 		return true;
 	}
@@ -212,8 +213,8 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 		}
 		
 		if (!eventCreated) {
-			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
-			getStreamDataProvider().getUpcomingEvents().add(
+			getStreamDataProvider().getCurrentEventCollection().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
+			getStreamDataProvider().getCurrentEventCollection().add(
 					new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			eventAddedToQueue = true;
 		}
@@ -248,7 +249,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	protected boolean addStoredEvents() {
 		boolean result = !tokenSetDefinitionEvents.isEmpty();
 		if (result) {
-			Queue<JPhyloIOEvent> queue = getStreamDataProvider().getUpcomingEvents();
+			Collection<JPhyloIOEvent> queue = getStreamDataProvider().getCurrentEventCollection();
 			if (tokenSetDefinitionEvents.size() > 1) {  // DATATYPE = MIXED
 				removeWaitingCharacterStateEvents();  // Possibly such events would not fit to all token sets.
 			}

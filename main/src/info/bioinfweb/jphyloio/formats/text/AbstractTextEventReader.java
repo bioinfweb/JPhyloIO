@@ -23,7 +23,6 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
@@ -229,14 +228,14 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 				length++;
 				if (length >= getMaxCommentLength()) {
 					c = getReader().peekChar();
-					getUpcomingEvents().add(new CommentEvent(content.toString(), (c == -1) || (c != commentEnd)));
+					getCurrentEventCollection().add(new CommentEvent(content.toString(), (c == -1) || (c != commentEnd)));
 					content.delete(0, content.length());
 					length = 0;
 				}
 				c = getReader().readChar();
 			}
 			if (content.length() > 0) {
-				getUpcomingEvents().add(new CommentEvent(content.toString(), false));
+				getCurrentEventCollection().add(new CommentEvent(content.toString(), false));
 			}
 		}
 		catch (EOFException e) {
@@ -280,7 +279,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 		
 		JPhyloIOEvent result = eventFromCharacters(currentSequenceName, StringUtils.cutEnd(readResult.getSequence(), 1));
 		if (result != null) {
-			getUpcomingEvents().add(result);
+			getCurrentEventCollection().add(result);
 		}
 		if (lastChar == commentStart) {
 			readComment(commentStart, commentEnd);
@@ -292,7 +291,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 				getReader().skip(1);
 			}
 			lineConsumed = true;
-			getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, false));
+			getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, false));
 		}
 		else {  // Maximum length was reached.
 			lineConsumed = false;

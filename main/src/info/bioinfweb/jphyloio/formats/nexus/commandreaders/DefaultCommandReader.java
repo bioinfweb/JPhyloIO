@@ -62,7 +62,7 @@ public class DefaultCommandReader extends AbstractNexusCommandEventReader implem
 				getStreamDataProvider().readComment();  //TODO Long comments should be fully read within this method (see #85).
 			}
 		} while (!StringUtils.endsWith(sequence, COMMAND_END));
-		getStreamDataProvider().getUpcomingEvents().add(new UnknownCommandEvent(getCommandName(), result.toString()));
+		getStreamDataProvider().getCurrentEventCollection().add(new UnknownCommandEvent(getCommandName(), result.toString()));
 		//TODO This event should be added to queue before the comment events generated above. 
 		return true;
 	}

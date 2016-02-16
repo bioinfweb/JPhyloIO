@@ -153,15 +153,15 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 			while (getReader().peekChar() != COMMAND_END) {
 				KeyValueInformation info = readKeyValueInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=');
 				processFormatSubcommand(info.getKey(), info.getValue());
-				getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
-				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				getCurrentEventCollection().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
+				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 				eventAdded = true;
 			}
 			
 			getReader().skip(1); // Consume ';'.
 			if (!eventAdded) {  // No content found.
-				getUpcomingEvents().add(new MetaInformationEvent(COMMAND_NAME_FORMAT, null, ""));
-				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				getCurrentEventCollection().add(new MetaInformationEvent(COMMAND_NAME_FORMAT, null, ""));
+				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 		}
 		catch (EOFException e) {
@@ -189,7 +189,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 		long start = -1;
 		char currentName = DEFAULT_LABEL_CHAR;
 		char c = getReader().readChar();
-		getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, 
+		getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, 
 				Character.toString(DEFAULT_LABEL_CHAR)));
 		while (c != COMMAND_END) {
 			if (!Character.isWhitespace(c)) {
@@ -200,7 +200,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 			    //     start of new character set                                      || end of current set
 					if (((currentName == DEFAULT_LABEL_CHAR) && (c != DEFAULT_LABEL_CHAR)) || (c != currentName)) {
 						if ((c != currentName) && (currentName != DEFAULT_LABEL_CHAR)) {  // end current set
-							getUpcomingEvents().add(new CharacterSetIntervalEvent(start, pos));
+							getCurrentEventCollection().add(new CharacterSetIntervalEvent(start, pos));
 							result = true;
 						}
 						start = pos;
@@ -212,11 +212,11 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 			c = getReader().readChar();
 		}
 		if (currentName != DEFAULT_LABEL_CHAR) {
-			getUpcomingEvents().add(new CharacterSetIntervalEvent(start, pos));
+			getCurrentEventCollection().add(new CharacterSetIntervalEvent(start, pos));
 			result = true;
 		}
 		currentLabelPos = pos;
-		getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, false));
+		getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, false));
 		return result;
 	}
 	
@@ -239,10 +239,10 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 	
 	
 	private void createGeneOrDomainCharSetEvents() {
-		getUpcomingEvents().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
+		getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
 				extractGeneOrDomainID(currentGeneOrDomainName), currentGeneOrDomainName));  // Throws NullPointerException if no ID can be extracted.
-		getUpcomingEvents().add(new CharacterSetIntervalEvent(currentGeneOrDomainStart, charactersRead));
-		getUpcomingEvents().add(new PartEndEvent(EventContentType.CHARACTER_SET, false));  // For simplification, it is not tested whether gene or domain character sets are extended later on, because they usually consist of only one part. 
+		getCurrentEventCollection().add(new CharacterSetIntervalEvent(currentGeneOrDomainStart, charactersRead));
+		getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, false));  // For simplification, it is not tested whether gene or domain character sets are extended later on, because they usually consist of only one part. 
 	}
 	
 	
@@ -291,8 +291,8 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 					currentGeneOrDomainStart = charactersRead;
 				}
 				else {
-					getUpcomingEvents().add(createMetaInformationEventFromCommand(content));
-					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+					getCurrentEventCollection().add(createMetaInformationEventFromCommand(content));
+					getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 					result = true;
 				}
 			}
@@ -310,7 +310,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 		else if (firstSequenceName.equals(currentSequenceName)) {
 			currentLabelPos = Math.max(currentLabelPos, charactersRead);  // Label command can be omitted in interleaved format.
 		}
-		getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE,
+		getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE,
 				sequenceIDToNameManager.getID(currentSequenceName), currentSequenceName, null));
 	}
 	
@@ -330,7 +330,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 		if (isBeforeFirstAccess()) {
 			checkStart();
 			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
-			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+			getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 		}
 		else {
 			JPhyloIOEvent event;
@@ -338,14 +338,14 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 			switch (getLastNonCommentEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+						getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
 								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 					}
 					break;
 					
 				case ALIGNMENT:
 					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.END)) {
-						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+						getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 						break;
 					}  // fall through in else case
 				case SEQUENCE:
@@ -356,7 +356,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 					// Read commands:
 					readCommand();
 					consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
-					if (getUpcomingEvents().isEmpty()) {
+					if (getCurrentEventCollection().isEmpty()) {
 						int c = getReader().peek();
 						if (c == -1) {
 							if (currentGeneOrDomainName != null) {
@@ -364,7 +364,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 								currentGeneOrDomainName = null;  // Avoid multiple firing of this event
 							}
 							else {
-								getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+								getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 							}
 							break;
 						}

@@ -137,14 +137,14 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
 			  //TODO Optionally an additional OTU event with an ID could be generated here.
-				getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+				getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
 						DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(),	currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
 				while (getReader().peekChar() == COMMENT_START_CHAR) {
 					getReader().read();  // Consume ';'.
 					ReadResult readResult;
 					do {
 						readResult = getReader().readLine(getMaxCommentLength());
-						getUpcomingEvents().add(new CommentEvent(readResult.getSequence().toString(), !readResult.isCompletelyRead()));
+						getCurrentEventCollection().add(new CommentEvent(readResult.getSequence().toString(), !readResult.isCompletelyRead()));
 					} while (!readResult.isCompletelyRead());
 				}
 				return null;
@@ -183,7 +183,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 	@Override
 	protected void readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
-			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+			getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 		}
 		else {
 			JPhyloIOEvent alignmentEndEvent;
@@ -191,7 +191,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+						getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
 								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 						break;
 					}
@@ -203,7 +203,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
 						alignmentEndEvent = readSequenceStart("FASTA file does not start with a \"" + NAME_START_CHAR + "\".");
 						if (alignmentEndEvent != null) {
-							getUpcomingEvents().add(alignmentEndEvent);
+							getCurrentEventCollection().add(alignmentEndEvent);
 							break;
 						}
 						else {
@@ -211,7 +211,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 						}
 					}
 					else {
-						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+						getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 						break;
 					}
 					// fall through for if case
@@ -221,11 +221,11 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 					// Check if new name needs to be read:
 					int c = getReader().peek();
 					if ((c == -1) || (lineConsumed && (c == (int)NAME_START_CHAR))) {
-						getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+						getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 						alignmentEndEvent = readSequenceStart(
 								"Inconsistent stream. (The cause might be code outside this class reading from the same stream.)");
 						if (alignmentEndEvent != null) {
-							getUpcomingEvents().add(alignmentEndEvent);
+							getCurrentEventCollection().add(alignmentEndEvent);
 						}
 						if (!getUpcomingEvents().isEmpty()) {
 							break;  // Return token or sequence end event from above or waiting comment event from readSequenceStart(). 
@@ -235,8 +235,8 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 					// Read new tokens:
 					if (lineConsumed) {
 						if (!consumeTokenIndex()) {  // The last line of the file contained only white spaces or token indices.
-							getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, true));
-							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+							getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+							getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 							break;
 						}
 					}
@@ -246,7 +246,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
 					}
 					lineConsumed = lineResult.isCompletelyRead();
-					getUpcomingEvents().add(getSequenceTokensEventManager().createEvent(currentSequenceName, tokenList));
+					getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(currentSequenceName, tokenList));
 					break;
 					
 				default:  // includes META_INFORMATION

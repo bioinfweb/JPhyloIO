@@ -58,9 +58,9 @@ public class StreamDataProvider<R extends AbstractEventReader<? extends StreamDa
 	
 	
 	/**
-	 * Sets the current event collection to {@link #getUpcomingEvents()}.
+	 * Removes the event collection at the top of the eventCollections stack and returns it.
 	 * 
-	 * @return the replaced event collection
+	 * @return the removed event collection
 	 */
 	public Collection<JPhyloIOEvent> resetCurrentEventCollection() {
 		return getEventReader().resetCurrentEventCollection();
@@ -68,10 +68,10 @@ public class StreamDataProvider<R extends AbstractEventReader<? extends StreamDa
 	
 	
 	/**
-	 * Sets a new current event collection.
+	 * Adds a new current event collection to the stack.
 	 * 
 	 * @param newCollection the new collection to take up new events from now on 
-	 * @return the replaced event collection
+	 * @return the event collection that was previously at the top of the stack
 	 * @throws NullPointerException if {@code newCollection} is {@code null}
 	 */
 	public Collection<JPhyloIOEvent> setCurrentEventCollection(Collection<JPhyloIOEvent> newCollection) {
@@ -99,14 +99,17 @@ public class StreamDataProvider<R extends AbstractEventReader<? extends StreamDa
 		return getEventReader().hasSpecialEventCollection(); 
 	}
 	
-	
-	public Queue<JPhyloIOEvent> getUpcomingEvents() {
-		return getEventReader().getUpcomingEvents();
-	}
-	
-	
-	public LongIDManager getIdManager() {
-		return getEventReader().getIDManager();
+
+	/**
+	 * Checks whether events are waiting the event queue of the associated event reader.
+	 * <p>
+	 * Note that this event queue maybe different from the {@link #getCurrentEventCollection()}. Therefore
+	 * this method may return {@code false}, even if an event has just been added.
+	 * 
+	 * @return {@code true} if at least one event is wainting, {@code false} otherwise
+	 */
+	public boolean eventsUpcoming() {
+		return !getEventReader().getUpcomingEvents().isEmpty();
 	}
 	
 	

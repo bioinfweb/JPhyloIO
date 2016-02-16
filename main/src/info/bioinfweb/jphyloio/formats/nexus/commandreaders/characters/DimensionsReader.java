@@ -63,16 +63,16 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 				getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_CHAR, longValue);
 			}
 			
-			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue(), longValue));  //TODO Does a type need to specified, if an object value is provided?
+			getStreamDataProvider().getCurrentEventCollection().add(new MetaInformationEvent(info.getKey(), null, info.getValue(), longValue));  //TODO Does a type need to specified, if an object value is provided?
 		}
 		else if (DIMENSIONS_SUBCOMMAND_NTAX.equals(key) || DIMENSIONS_SUBCOMMAND_NCHAR.equals(key)) {
 			throw new JPhyloIOReaderException("\"" + info.getValue() + "\" is not a valid positive integer. Only positive integer "
 					+ "values are valid for NTAX or NCHAR in the Nexus DIMENSIONS command.", getStreamDataProvider().getDataReader());  //TODO Is the position of the reader too far behind?
 		}
 		else {  // Possible unknown subcommand
-			getStreamDataProvider().getUpcomingEvents().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
+			getStreamDataProvider().getCurrentEventCollection().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
 		}
-		getStreamDataProvider().getUpcomingEvents().add(
+		getStreamDataProvider().getCurrentEventCollection().add(
 				new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 		
 		return true;  // An event is added to the queue in every case.

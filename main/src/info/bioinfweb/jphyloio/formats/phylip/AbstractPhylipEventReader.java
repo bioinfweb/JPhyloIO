@@ -110,8 +110,8 @@ public abstract class AbstractPhylipEventReader<P extends TextStreamDataProvider
 					throw new JPhyloIOReaderException("Invalid integer value \"" + parts[0] + "\" found for the Phylip sequence count.", 
 							getReader(), e);
 				}
-				getUpcomingEvents().add(new MetaInformationEvent(META_KEY_SEQUENCE_COUNT, null, parts[0], sequenceCount));
-				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				getCurrentEventCollection().add(new MetaInformationEvent(META_KEY_SEQUENCE_COUNT, null, parts[0], sequenceCount));
+				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 
 				try {
 					characterCount = Long.parseLong(parts[1]);
@@ -120,8 +120,8 @@ public abstract class AbstractPhylipEventReader<P extends TextStreamDataProvider
 					throw new JPhyloIOReaderException("Invalid integer value \"" + parts[1] + "\" found for the Phylip character count.", 
 							getReader(), e);
 				}
-				getUpcomingEvents().add(new MetaInformationEvent(META_KEY_CHARACTER_COUNT, null, parts[1], characterCount));
-				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				getCurrentEventCollection().add(new MetaInformationEvent(META_KEY_CHARACTER_COUNT, null, parts[1], characterCount));
+				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 			else {
 				throw new JPhyloIOReaderException("The first line of a Phylip file needs to contain exactly two integer values "

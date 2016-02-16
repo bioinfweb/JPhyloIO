@@ -769,11 +769,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	public void setMaxCommentLength(int maxCommentLength) {}
 	
 	
-	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
-		return super.getUpcomingEvents();
-	}
-	
-	
 	protected XMLEventReader getXMLReader() {
 		return super.getXMLReader();
 	}

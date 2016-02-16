@@ -316,19 +316,6 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 	}
 	
 	
-	/**
-	 * Returns the queue of upcoming events to be used by implementations of {@link NexusCommandEventReader}.
-	 * <p>
-	 * This reimplementation just delegates to the superclass method. It is made to make this method visible 
-	 * inside this package.
-	 * 
-	 * @return the queue of upcoming events
-	 */
-	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
-		return super.getUpcomingEvents();
-	}
-	
-	
 	private void checkStart() throws IOException {
 		if (!FIRST_LINE.equals(getReader().readString(FIRST_LINE.length()).toUpperCase())) { 
 			throw new JPhyloIOReaderException("All Nexus files must start with \"" + FIRST_LINE + "\".", 0, 0, 0);
@@ -395,8 +382,8 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 			}
 			else if (lastChar == COMMAND_END) {
 				//TODO Fire according event. (else case should be used here, but reader would have to be moved backwards to make ';' available again.)
-				getUpcomingEvents().add(new MetaInformationEvent(commandName, null, ""));
-				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				getCurrentEventCollection().add(new MetaInformationEvent(commandName, null, ""));
+				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 			else {
 				currentCommandReader = factory.createReader(currentBlockName, commandName, getStreamDataProvider());
@@ -430,7 +417,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 		if (!documentEndReached) { 
 			if (isBeforeFirstAccess()) {
 				checkStart();
-				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 				consumeWhiteSpaceAndComments();
 			}
 			else {
@@ -449,7 +436,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 				}
 				if (!eventCreated) {
 					documentEndReached = true;
-					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+					getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 				}
 			}
 		}

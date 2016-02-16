@@ -108,12 +108,12 @@ public class NewickEventReader extends AbstractTextEventReader<TextStreamDataPro
 		switch (state) {
 			case START:
 				state = State.IN_DOCUMENT;
-				getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 				break;
 			case IN_DOCUMENT:
 				if (!newickStringReader.addNextEvents()) {
 					state = State.END;
-					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+					getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 				}
 				break;
 			case END:

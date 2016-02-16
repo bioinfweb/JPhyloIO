@@ -19,7 +19,10 @@
 package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 
 
+import java.util.ArrayList;
+
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
@@ -35,12 +38,14 @@ public class TaxaBlockHandler extends AbstractNexusBlockHandler implements Nexus
 
 	
 	@Override
-	public void handleBegin(NexusStreamDataProvider streamDataProvider) {}
+	public void handleBegin(NexusStreamDataProvider streamDataProvider) {
+		streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());  // Collect leading comment events until ORU list start event is fired in TaxLabelsReader.
+	}
 
 	
 	@Override
 	public void handleEnd(NexusStreamDataProvider streamDataProvider) {
-		streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
+		streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.OTU_LIST, EventTopologyType.END));
 	}
 
 	

@@ -20,11 +20,13 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.taxa;
 
 
 import java.io.EOFException;
+import java.util.Collection;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -49,9 +51,11 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 		try {
 			if (beforeStart) {
 				beforeStart = false;
-				getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU_LIST, 
+				Collection<JPhyloIOEvent> leadingComments = getStreamDataProvider().resetCurrentEventCollection();
+				getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU_LIST, 
 						DEFAULT_OTU_LIST_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
 						getStreamDataProvider().getSharedInformationMap().getString(NexusStreamDataProvider.INFO_KEY_BLOCK_TITLE)));
+				getStreamDataProvider().getCurrentEventCollection().addAll(leadingComments);
 				return true;
 			}
 			else {
@@ -69,8 +73,8 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 					getStreamDataProvider().getTaxaList().add(taxon);
 					getStreamDataProvider().getTaxaToIDMap().put(taxon, id);
 					
-					getStreamDataProvider().getUpcomingEvents().add(new LabeledIDEvent(EventContentType.OTU, id, taxon));
-					getStreamDataProvider().getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
+					getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, id, taxon));
+					getStreamDataProvider().getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
 					return true;
 				}
 			}

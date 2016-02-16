@@ -242,11 +242,6 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 	public void setMaxCommentLength(int maxCommentLength) {}
 
 	
-	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
-		return super.getUpcomingEvents();
-	}
-	
-	
 	protected XMLEventReader getXMLReader() {
 		return super.getXMLReader();
 	}

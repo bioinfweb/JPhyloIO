@@ -45,7 +45,7 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 	
 	@Override
 	public void handleEnd(NexusStreamDataProvider streamDataProvider) {
-		streamDataProvider.getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+		streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 	}
 
 
@@ -56,7 +56,7 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 				&& (commandName.equals(COMMAND_NAME_DIMENSIONS) || commandName.equals(COMMAND_NAME_FORMAT) 
 						|| commandName.equals(COMMAND_NAME_MATRIX))) {  // Fire start event, as soon as one of these commands is encountered.
 			
-			streamDataProvider.getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+			streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
 					DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
 					map.getString(NexusStreamDataProvider.INFO_KEY_BLOCK_TITLE),
 					streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));

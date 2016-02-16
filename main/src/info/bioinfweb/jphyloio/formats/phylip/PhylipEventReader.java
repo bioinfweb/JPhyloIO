@@ -169,24 +169,24 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextStreamDataP
 	@Override
 	protected void readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {
-			getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
+			getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 		}
 		else {
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+						getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
 								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 						readMatrixDimensions();  // Adds metaevents to the queue.
 					}  // Calling method will throw a NoSuchElementException for the else case. //TODO Check if this is still true after refactoring in r164.
 					break;
 					
 				case ALIGNMENT:  // Only for the END case. START cannot happen, because it is directly followed by metaevents.
-					getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
+					getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 					break;
 				case META_INFORMATION:  //TODO This case needs to be handled differently, if additional metaevents will be fired in the future.
 					if (getSequenceCount() == 0) {  // Empty alignment:
-						getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+						getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 						break;
 					}  // fall through
 				case SEQUENCE:
@@ -210,24 +210,24 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextStreamDataP
 							}
 						}
 						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-							getUpcomingEvents().add(new PartEndEvent(EventContentType.SEQUENCE, 
+							getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, 
 									getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
 						}
 						increaseSequenceIndex();
 						
 						if (getReader().peek() == -1) {  // End of file was reached
 							// if (currentSequenceIndex < sequenceCount) {}  //TODO Should an exception be thrown here, if the specified number of sequences has not been found yet? => Probably not, because reading files with a wrong number of specified sequences would still make sense, unless this is not a accidental stream break.
-							getUpcomingEvents().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
+							getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 							break;
 						}
 						else {
-							getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+							getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
 									sequenceIDToNameManager.getID(currentSequenceName), currentSequenceName, null));
 						}
 					}
 					JPhyloIOEvent event = readCharacters(currentSequenceName);
 					if (event != null) {
-						getUpcomingEvents().add(event);
+						getCurrentEventCollection().add(event);
 					}
 					else {
 						readNextEvent();  // Make sure to add an event to the list.
