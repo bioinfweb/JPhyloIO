@@ -70,13 +70,13 @@ public class MEGAEventReaderTest implements MEGAConstants {
 			assertCommentEvent("[Nested] comment", reader);
 			
 			assertCommentEvent("in command statement", reader);
-			String id1 = assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A-2301", null, reader);
+			String id1 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "A-2301", null, reader);
 			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCTCC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			String id2 = assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A-2501", null, reader);
+			String id2 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "A-2501", null, reader);
 			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCTAC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			String id3 = assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A-3301", null, reader);
+			String id3 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "A-3301", null, reader);
 			assertCharactersEvent("GGCTCCCACTCCATGAGGTATTTCACC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
@@ -90,24 +90,24 @@ public class MEGAEventReaderTest implements MEGAConstants {
 			assertCharacterSetEvent(24, 27, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
 			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
 			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
 			assertCharactersEvent("GTGGACGACACGCAGTTCGTGCGGTTC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
 			assertCommentEvent("comment 1 in characters", reader);
 			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACGAGGAG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
 			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
 			assertCharactersEvent("GAGGGGCCGGAGTATTGGGACCGGAAC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
@@ -120,15 +120,15 @@ public class MEGAEventReaderTest implements MEGAConstants {
 			assertCharacterSetEvent(0, 81, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
 			assertCharactersEvent("GGTTCTCACACCCTCCAGATGATGTTT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
 			assertCharactersEvent("GGTTCTCACACCATC", reader);
 			assertCommentEvent("comment 2 in characters", reader);
 			assertCharactersEvent("CAGAGGATGTAT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
 			assertCharactersEvent("GGTTCTCACACCATCCAGATGATGTAT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
@@ -139,13 +139,13 @@ public class MEGAEventReaderTest implements MEGAConstants {
 			assertCharacterSetEvent(105, 108, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
 			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
 			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
 			assertCharactersEvent("CTGGAGAACGGGAAG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
@@ -157,13 +157,13 @@ public class MEGAEventReaderTest implements MEGAConstants {
 			assertCharacterSetEvent(81, 123, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
 			assertCharactersEvent("GACCCCCCCAAGACACAT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id2, "A-2501", null, reader);
 			assertCharactersEvent("GACGCCCCCAAGACGCAT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-			assertLinkedOTUEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
 			assertCharactersEvent("GACCCCCCCAGGACGCAT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
@@ -202,23 +202,23 @@ public class MEGAEventReaderTest implements MEGAConstants {
 				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", true, false, reader);
 				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", true, false, reader);
 				
-				assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A", null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "A", null, reader);
 				assertCharactersEvent("TATTTCTCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-				assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "B", null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "B", null, reader);
 				assertCharactersEvent("TATTTCTAC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-				assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "C", null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "C", null, reader);
 				assertCharactersEvent("TATTTCACC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "A", null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "A", null, reader);
 				assertCharactersEvent("CGCTAGTTA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-				assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "B", null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "B", null, reader);
 				assertCharactersEvent("CGCTAGTAA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-				assertLinkedOTUEvent(EventContentType.SEQUENCE, null, "C", null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "C", null, reader);
 				assertCharactersEvent("CGCTAGATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				

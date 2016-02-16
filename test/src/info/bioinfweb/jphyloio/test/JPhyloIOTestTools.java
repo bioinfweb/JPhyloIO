@@ -31,7 +31,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
@@ -110,15 +110,15 @@ public class JPhyloIOTestTools {
 	}
 		
 	
-	public static String assertLinkedOTUEvent(EventContentType expectedType, String expectedID, String expectedLabel, 
-			String expectedOTUID,	JPhyloIOEventReader reader) throws Exception {
+	public static String assertLinkedOTUOrOTUsEvent(EventContentType expectedType, String expectedID, String expectedLabel, 
+			String expectedOTUOrOTUsID,	JPhyloIOEventReader reader) throws Exception {
 		
-		LinkedOTUEvent otuEvent = assertLabeledIDEvent(expectedType, expectedID, expectedLabel, reader).asLinkedOTUEvent();
-		if (expectedOTUID == null) {
-			assertNull(otuEvent.getOTUID());
+		LinkedOTUOrOTUsEvent otuEvent = assertLabeledIDEvent(expectedType, expectedID, expectedLabel, reader).asLinkedOTUEvent();
+		if (expectedOTUOrOTUsID == null) {
+			assertNull(otuEvent.getOTUOrOTUsID());
 		}
 		else {
-			assertEquals(expectedOTUID, otuEvent.getOTUID());
+			assertEquals(expectedOTUOrOTUsID, otuEvent.getOTUOrOTUsID());
 		}
 		return otuEvent.getID();
 	}

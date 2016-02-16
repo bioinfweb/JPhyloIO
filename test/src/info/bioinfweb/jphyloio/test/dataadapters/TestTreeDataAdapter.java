@@ -29,7 +29,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -73,7 +73,7 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {
 		switch (nodeID) {
 			case "n1":
-				receiver.add(new LinkedOTUEvent(EventContentType.NODE, nodeID, "Node '_1", null));  //TODO Link some OTUs later.
+				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node '_1", null));  //TODO Link some OTUs later.
 				receiver.add(new MetaInformationEvent("a1", null, "100", new Integer(100)));
 				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 				receiver.add(new MetaInformationEvent("a2", null, "ab 'c", "ab 'c"));
@@ -83,7 +83,7 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 			case "nA":
 			case "nB":
 			case "nC":
-				receiver.add(new LinkedOTUEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null));
+				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null));
 				break;
 			default:
 				throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");

@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsMatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
@@ -166,8 +166,8 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	
 	
 	@Override
-	public LinkedOTUEvent getSequenceStartEvent(String sequenceID) {
-		return new LinkedOTUEvent(EventContentType.SEQUENCE, sequenceID, getSequence(sequenceID).label, 
+	public LinkedOTUOrOTUsEvent getSequenceStartEvent(String sequenceID) {
+		return new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, sequenceID, getSequence(sequenceID).label, 
 				sequenceID.replace(DEFAULT_SEQUENCE_ID_PREFIX, DEFAULT_OTU_ID_PREFIX));
 	}
 	
