@@ -303,7 +303,7 @@ public class NexusEventReaderTest {
 			assertNotEquals(idDE, idF);			
 			assertEndEvent(EventContentType.OTU_LIST, reader);
 			
-			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+			assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, null, "someMatrix", null, reader);  //TODO Check linkes OTU ID
 			
 			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
 			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
@@ -762,9 +762,9 @@ public class NexusEventReaderTest {
 	public void testReadingFormatSymbols() throws Exception {
 		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuousSymbols.nex"), false);
 		try {
-			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-			
 			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				assertTokenSetDefinitionEvent(CharacterStateType.CONTINUOUS, "Continuous", reader);
 				assertSingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING, true, reader);  // Parsing is one event ahead
@@ -1331,6 +1331,37 @@ public class NexusEventReaderTest {
 
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void testTitleLink() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TitleLink.nex"), false);
+		try {
+			reader.setCreateUnknownCommandEvents(false);
+
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			assertLabeledIDEvent(EventContentType.OTU_LIST, null, "taxon list 1", reader);
+			
+			String idA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			
+			assertNotEquals(idA, idB);
+			assertNotEquals(idA, idC);
+			assertNotEquals(idB, idC);
+//			assertEndEvent(EventContentType.OTU_LIST, reader);
+//						
+//			assertEndEvent(EventContentType.DOCUMENT, reader);
+//			assertFalse(reader.hasNextEvent());
 		}
 		finally {
 			reader.close();

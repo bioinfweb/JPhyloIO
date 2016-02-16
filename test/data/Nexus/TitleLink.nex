@@ -1,0 +1,13 @@
+#nexus
+
+begin taxa;
+ title 'taxon list 1';
+ dimensions ntax=3;
+ taxlabels A B C;
+end;
+
+begin trees;
+  title someTrees;
+  link taxa = 'taxon list 1';
+  tree someTree = (A, (B ,C));
+ end;  
