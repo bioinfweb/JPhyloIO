@@ -1,5 +1,5 @@
 /**
- * Contains classes for reading Nexus commands in a {@code Sets} block. 
+ * Contains classes for reading Nexus commands in a {@code SETS} block. 
  * 
  * @author Ben St&ouml;ver
  */

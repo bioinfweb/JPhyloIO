@@ -66,14 +66,29 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 			this.value = value;
 		}
 		
+		/**
+		 * Returns the lower case version of the key.
+		 * 
+		 * @return the lower case key
+		 */
 		public String getKey() {
 			return key;
 		}
 
+		/**
+		 * Returns the key as it was written from the source stream (file).
+		 * 
+		 * @return the original key
+		 */
 		public String getOriginalKey() {
 			return originalKey;
 		}
 
+		/**
+		 * Returns the value as it was written from the source stream (file).
+		 * 
+		 * @return the value
+		 */
 		public String getValue() {
 			return value;
 		}

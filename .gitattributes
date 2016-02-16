@@ -102,12 +102,14 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/NexusBlockHandler.j
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/NexusBlockHandlerMap.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/TaxaBlockHandler.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/TreesBlockHandler.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/AbstractKeyValueCommandReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/AbstractNexusCommandEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/DefaultCommandReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/NexusCommandEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/NexusCommandReaderFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/TitleReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/DimensionsReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/FormatReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/MatrixReader.java -text svneol=unset#text/plain
@@ -115,6 +117,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/package
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/sets/CharSetReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/sets/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/taxa/TaxLabelsReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/taxa/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/NexusNewickNodeLabelProcessor.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/NexusTranslationTable.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/TranslateReader.java -text svneol=unset#text/plain
