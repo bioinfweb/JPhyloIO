@@ -338,8 +338,8 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 			switch (getLastNonCommentEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getUpcomingEvents().add(new LabeledIDEvent(EventContentType.ALIGNMENT, 
-								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null));
+						getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 					}
 					break;
 					

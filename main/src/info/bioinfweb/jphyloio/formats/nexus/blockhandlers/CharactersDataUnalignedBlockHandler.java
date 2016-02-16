@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
@@ -39,8 +39,8 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 
 	@Override
 	public void handleBegin(NexusStreamDataProvider streamDataProvider) {
-		streamDataProvider.getUpcomingEvents().add(new LabeledIDEvent(EventContentType.ALIGNMENT, 
-				DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null));
+		streamDataProvider.getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+				DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, null));  //TODO Link first OTU list here.
 	}
 
 	@Override

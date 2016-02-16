@@ -135,8 +135,8 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextS
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getUpcomingEvents().add(new LabeledIDEvent(EventContentType.ALIGNMENT, 
-								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null));
+						getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 						readMatrixDimensions();
 					}  // Calling method will throw a NoSuchElementException for the else case. //TODO Check if this is still true after refactoring in r164.
 					break;

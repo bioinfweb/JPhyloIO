@@ -51,7 +51,7 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
 				if (reader.peekChar() == KEY_VALUE_SEPARATOR) {
 					reader.read();  // Skip KEY_VALUE_SEPARATOR.
-					newickStringReader = new NewickStringReader(getStreamDataProvider(), label, 
+					newickStringReader = new NewickStringReader(getStreamDataProvider(), label, null, //TODO Link first OTU list here.
 							new NexusNewickNodeLabelProcessor(getStreamDataProvider()));
 				}
 				else {

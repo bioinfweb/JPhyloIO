@@ -191,8 +191,8 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getUpcomingEvents().add(new LabeledIDEvent(EventContentType.ALIGNMENT, 
-								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null));
+						getUpcomingEvents().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 						break;
 					}
 					else {
