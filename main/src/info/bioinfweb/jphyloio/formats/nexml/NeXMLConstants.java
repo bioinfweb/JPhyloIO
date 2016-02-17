@@ -57,7 +57,8 @@ public interface NeXMLConstants {
 	public static final QName ATTR_ID = new QName("id");
 	public static final QName ATTR_LABEL = new QName("label");
 	public static final QName ATTR_ABOUT = new QName("about");	
-	public static final QName ATTR_OTU = new QName("otu");	
+	public static final QName ATTR_OTU = new QName("otu");
+	public static final QName ATTR_OTUS = new QName("otus");
 	public static final QName ATTR_SYMBOL = new QName("symbol");
 	public static final QName ATTR_STATE = new QName("state");
 	public static final QName ATTR_STATES = new QName("states");

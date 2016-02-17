@@ -47,8 +47,8 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected static class OTUEventInformation extends LabeledIDEventInformation {
-		public String otuID;
+	protected static class OTUorOTUSEventInformation extends LabeledIDEventInformation {
+		public String otuOrOtusID;
 	}
 	
 	
@@ -127,16 +127,19 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected OTUEventInformation getOTUEventInformation(NeXMLStreamDataProvider streamDataProvider, StartElement element) {
+	protected OTUorOTUSEventInformation getOTUorOTUSEventInformation(NeXMLStreamDataProvider streamDataProvider, StartElement element) {
 		LabeledIDEventInformation labeledIDEventInformation = getLabeledIDEventInformation(streamDataProvider, element);
-		OTUEventInformation otuEventInformation = new OTUEventInformation();
+		OTUorOTUSEventInformation otuEventInformation = new OTUorOTUSEventInformation();
 		
 		otuEventInformation.id = labeledIDEventInformation.id;
 		otuEventInformation.label = labeledIDEventInformation.label;
-		otuEventInformation.otuID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
+		otuEventInformation.otuOrOtusID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
+		if (otuEventInformation.otuOrOtusID == null) {
+			otuEventInformation.otuOrOtusID = XMLUtils.readStringAttr(element, ATTR_OTUS, null);
+		}
 		
-		if ((otuEventInformation.label == null) && (otuEventInformation.otuID != null)) {
-			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuID);
+		if ((otuEventInformation.label == null) && (otuEventInformation.otuOrOtusID != null)) {
+			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuOrOtusID);
 			if (otuEventInformation.label == null) {
 				otuEventInformation.label = otuEventInformation.id;	
 			}
