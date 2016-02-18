@@ -28,6 +28,6 @@ END;
 
 begin trees;
   title someTrees;
-  link CHARACTERS = someMatrix taxa = 'taxon list 2';
+  link CHARACTERS = someMatrix taxa = taxon_list_2;
   tree someTree = (1, (2, 3));
  end;  
