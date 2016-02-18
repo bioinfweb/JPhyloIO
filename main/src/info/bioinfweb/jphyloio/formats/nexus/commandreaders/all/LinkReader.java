@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.all;
 import java.io.IOException;
 
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
@@ -72,13 +73,16 @@ public class LinkReader extends AbstractKeyValueCommandReader implements NexusCo
 	public LinkReader(NexusStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_LINK, new String[0], nexusDocument, "");
 	}
-
+	
 	
 	@Override
 	protected boolean processSubcommand(KeyValueInformation info)	throws IOException {
 		String value = info.getValue();
+		if (!info.wasValueDelimited()) {
+			value = value.replace(NewickConstants.FREE_NAME_BLANK, ' ');
+		}
 		if (info.getKey().toUpperCase().equals(BLOCK_NAME_TAXA.toUpperCase())) {
-			value = getStreamDataProvider().getOTUsLabelToIDMap().get(info.getValue());
+			value = getStreamDataProvider().getOTUsLabelToIDMap().get(value);
 			if (value == null) {
 				throw new JPhyloIOReaderException("The linked Nexus TAXA block with the label \"" + info.getValue() + 
 						"\" was not previously declared unsing a TITLE command.", getStreamDataProvider().getDataReader());
@@ -87,7 +91,7 @@ public class LinkReader extends AbstractKeyValueCommandReader implements NexusCo
 		getStreamDataProvider().getBlockLinks().put(info.getKey().toUpperCase(), value);
 		return false;
 	}
-
+	
 	
 	@Override
 	protected boolean addStoredEvents() {
