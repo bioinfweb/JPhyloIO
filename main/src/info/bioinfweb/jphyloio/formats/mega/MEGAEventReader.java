@@ -41,6 +41,7 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
+import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 import info.bioinfweb.jphyloio.tools.IDToNameManager;
 

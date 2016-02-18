@@ -44,6 +44,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventRea
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
+import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 

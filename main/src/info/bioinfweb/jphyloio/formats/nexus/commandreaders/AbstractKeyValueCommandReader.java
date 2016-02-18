@@ -23,7 +23,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader.KeyValueInformation;
+import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 
 import java.io.EOFException;
 import java.io.IOException;

@@ -54,47 +54,6 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	
 	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
 	
-	public static class KeyValueInformation {
-		private String key;
-		private String originalKey;
-		private String value;
-		
-		public KeyValueInformation(String prefix, String key, String value) {
-			super();
-			this.key = prefix + key;
-			this.originalKey = key;
-			this.value = value;
-		}
-		
-		/**
-		 * Returns the lower case version of the key.
-		 * 
-		 * @return the lower case key
-		 */
-		public String getKey() {
-			return key;
-		}
-
-		/**
-		 * Returns the key as it was written from the source stream (file).
-		 * 
-		 * @return the original key
-		 */
-		public String getOriginalKey() {
-			return originalKey;
-		}
-
-		/**
-		 * Returns the value as it was written from the source stream (file).
-		 * 
-		 * @return the value
-		 */
-		public String getValue() {
-			return value;
-		}
-	}
-	
-	
 	private int maxCommentLength = DEFAULT_MAX_COMMENT_LENGTH;
 	private PeekReader reader;
 	protected boolean lineConsumed = true;
@@ -345,12 +304,12 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 		
 		// Read value:
 		String value = "";
+		char valueDelimiter = ' ';
 		if (reader.peekChar() == keyValueSeparator) {
 			reader.skip(1);  // Consume '='.
 			consumeWhiteSpaceAndComments(commentStart, commentEnd);
 			
 			char c = reader.peekChar();
-			char valueDelimiter = ' ';
 			if (c == '\'') {
 				valueDelimiter = '\'';
 			}
@@ -367,7 +326,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 			}
 			consumeWhiteSpaceAndComments(commentStart, commentEnd);
 		}
-		return new KeyValueInformation(keyPrefix, key, value);
+		return new KeyValueInformation(keyPrefix, key, value, valueDelimiter);
 	}
 	
 	

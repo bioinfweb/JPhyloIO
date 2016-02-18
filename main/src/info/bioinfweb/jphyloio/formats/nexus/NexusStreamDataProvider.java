@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.NexusTranslationTable;
-import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader.KeyValueInformation;
+import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 import java.io.IOException;
