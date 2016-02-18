@@ -24,19 +24,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Queue;
 
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandlerMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader;
@@ -50,6 +50,18 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 /**
  * Event based reader for Nexus files.
+ * <p>
+ * This reader as able to read data from the Nexus {@code TAXA}, {@code CHARACTERS}, {@code UNALIGNED}, {@code DATA}, 
+ * {@code TREES} and {@code SETS} blocks, although not all commands of the {@code SETS} block are currently supported.
+ * In addition to the core Nexus standards, this reader also supports the {@code TITLE} and {@code LINK} commands
+ * introduced by <a href="http://http://mesquiteproject.org/">Mesquite</a> to assign {@code TAXA} blocks to character 
+ * or tree data, if more than one {@code TAXA} block is present. Furthermore it can read metadata provided in hot 
+ * comments in trees as described in the documentation of {@link NewickStringReader}.
+ * <p>
+ * It will also output Nexus comments as comment events and optionally unknown commands as {@link UnknownCommandEvent}s.
+ * <p>
+ * It is possible to extend the functionality of this reader by adding custom implementations of {@link NexusBlockHandler}
+ * or {@link NexusCommandEventReader}.
  * 
  * @author Ben St&ouml;ver
  */

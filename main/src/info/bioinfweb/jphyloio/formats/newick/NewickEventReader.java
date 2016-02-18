@@ -38,25 +38,8 @@ import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
  * which are separated by {@code ';'}. Any whitespace, as well as comments contained in {@code '['} and {@code ']'} 
  * is allowed between all tokens.
  * <p>
- * Additionally this reader is able to parse hot comments associated with nodes or edges as metadata as they are used 
- * in the output of <a href="http://beast.bio.ed.ac.uk/treeannotator">TreeAnnotator</a> or 
- * <a href="http://mrbayes.sourceforge.net/">MrBayes</a>. (See 
- * <a href="https://code.google.com/archive/p/beast-mcmc/wikis/NexusMetacommentFormat.wiki">here</a> for a definition.)
- * The following format of hot comments is recognized by this reader:
- * <pre>
- * [&numericValue1=1.05, numericValue2 = 2.76e-5, stringValue1="12", stringValue2=ABC, arrayValue={18, "AB C"}]
- * </pre>
- * Each hot comment needs to start with an {@code '&'} and can contain one or more key/value pairs separated by 
- * {@code ','}. Each value can either be a numeric value, a string value or an array value. Arrays are indicated
- * by braces and array elements are separated by {@code ','}, as shown in the example above. Array elements maybe
- * any numeric or string value in any combination. Whitespace between tokens of a hot comment is allowed but not
- * necessary.
- * <p>
- * Hot comments following a node name or a subtree are considered a metadata attached to a node and hot comments 
- * following a branch length definition are considered to be attached to an edge (branch). Subsequent hot comments
- * are combined, with the exception that a branch length definition is omitted. In such a case, the first hot 
- * comment is considered to attached to the node and all subsequent hot comments are considered to be attached to
- * the edge.
+ * Additionally this reader is able to parse hot comments associated with nodes or edges as described in the 
+ * documentation of {@link NewickStringReader}.
  * 
  * @author Ben St&ouml;ver
  */

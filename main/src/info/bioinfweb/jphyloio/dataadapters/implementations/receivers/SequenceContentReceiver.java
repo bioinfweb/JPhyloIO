@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 
 
-
 public class SequenceContentReceiver extends AbstractEventReceiver {
 	private String commentStart;
 	private String commentEnd;

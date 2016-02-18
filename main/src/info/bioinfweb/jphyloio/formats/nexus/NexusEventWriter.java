@@ -39,6 +39,27 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 
 
 
+/**
+ * Event based writer for the Nexus format.
+ * <p>
+ * This write is able to write OTU, sequence and tree data to Nexus formatted streams. It will ignore any data for 
+ * phylogenetic networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator()}, because the Nexus 
+ * format only supports trees. 
+ * <p>
+ * Comments nested in any of the supported elements will usually be written. Metadata is only supported nested in
+ * tree node or edge definitions and is written into hot comments as they are supported by {@link NewickStringWriter}.
+ * Metadata nested into other elements will be ignored.
+ * <p>
+ * <b>Recognized parameters:</b>
+ * <ul>
+ *   <li>{@link EventWriterParameterMap#KEY_APPLICATION_COMMENT}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_EXTEND_SEQUENCE_WITH_GAPS}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_GENERATE_TRANSLATION_TABLE}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
+ * </ul>
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class NexusEventWriter extends AbstractEventWriter implements NexusConstants {
 	private static enum MatrixWriteResult {
 		CHARACTERS,	UNALIGNED, NONE;

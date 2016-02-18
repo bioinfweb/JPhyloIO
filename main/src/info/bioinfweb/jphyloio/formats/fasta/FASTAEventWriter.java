@@ -49,6 +49,12 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
  * Comments and metadata nested in any of the supported elements will be ignored, with the only exception of comments
  * before the first token of a sequence. Such comments will be included in FASTA, since this is only valid position
  * for comments in the format. 
+ * <p>
+ * <b>Recognized parameters:</b>
+ * <ul>
+ *   <li>{@link EventWriterParameterMap#KEY_EXTEND_SEQUENCE_WITH_GAPS}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
+ * </ul>
  * 
  * @author Ben St&ouml;ver
  */
