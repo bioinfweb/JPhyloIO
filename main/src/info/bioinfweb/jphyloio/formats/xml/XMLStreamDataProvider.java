@@ -35,9 +35,7 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	private String format;
 	
 	private String parentName;
-	private String elementName;	
-	
-	private StartElement metaWithAttributes;
+	private String elementName;
 	
 	private Stack<String> sourceNode;
 	private NodeEdgeInfo currentNodeEdgeInfo;
@@ -86,16 +84,6 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 
 	public void setElementName(String elementName) {
 		this.elementName = elementName;
-	}
-
-
-	public StartElement getMetaWithAttributes() {
-		return metaWithAttributes;
-	}
-
-
-	public void setMetaWithAttributes(StartElement metaWithAttributes) {
-		this.metaWithAttributes = metaWithAttributes;
 	}
 
 
