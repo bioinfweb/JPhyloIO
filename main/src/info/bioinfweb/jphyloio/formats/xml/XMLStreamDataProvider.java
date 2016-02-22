@@ -37,7 +37,7 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	private String parentName;
 	private String elementName;
 	
-	private Stack<String> sourceNode;
+	private Stack<NodeEdgeInfo> sourceNode;
 	private NodeEdgeInfo currentNodeEdgeInfo;
 	private String currentParentNodeID;
 	
@@ -87,12 +87,12 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 
 
-	public Stack<String> getSourceNode() {
+	public Stack<NodeEdgeInfo> getSourceNode() {
 		return sourceNode;
 	}
 
 
-	public void setSourceNode(Stack<String> sourceNode) {
+	public void setSourceNode(Stack<NodeEdgeInfo> sourceNode) {
 		this.sourceNode = sourceNode;
 	}
 
