@@ -54,7 +54,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -143,7 +142,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	   		
 	   		String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
 	  		if (id != null) {
-	  			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent("id", "string", id));
+	  			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent("id", null, id));
 	  			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
 	  		}
 			}

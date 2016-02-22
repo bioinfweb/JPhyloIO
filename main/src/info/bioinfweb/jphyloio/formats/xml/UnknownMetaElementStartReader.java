@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ public class UnknownMetaElementStartReader extends AbstractXMLElementReader {
 		}
 		
 		streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(streamDataProvider.getFormat() 
-				+ "." + streamDataProvider.getParentName() + "." + elementName, "String", value));
+				+ "." + streamDataProvider.getParentName() + "." + elementName, null, value));
 		
-		streamDataProvider.setMetaWithAttributes(element);
+		streamDataProvider.readAttributes(streamDataProvider.getMetaWithAttributes());
 	}
 }

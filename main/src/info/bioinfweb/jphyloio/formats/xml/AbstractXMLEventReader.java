@@ -184,7 +184,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 		Iterator<Attribute> attributes = element.getAttributes();
 		while (attributes.hasNext()) {
 			Attribute attribute = attributes.next();
-			getCurrentEventCollection().add(new MetaInformationEvent(key + "." + attribute.getName(), "String", attribute.getValue()));
+			getCurrentEventCollection().add(new MetaInformationEvent(key + "." + attribute.getName(), null, attribute.getValue()));
 			getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
 		}
 	}

@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ public interface XTGConstants {
 	public static final QName TAG_SCALE_BAR = new QName(NAMESPACE_URI, "ScaleBar");
 	public static final QName TAG_LEGEND = new QName(NAMESPACE_URI, "Legend");
 	public static final QName TAG_LEGEND_MARGIN = new QName(NAMESPACE_URI, "LegendMargin ");
+	public static final QName TAG_INVISIBLE_DATA = new QName(NAMESPACE_URI, "InvisibleData");
 	
 	public static final QName ATTR_UNIQUE_NAME = new QName("UniqueName");
 	public static final QName ATTR_TEXT = new QName("Text");

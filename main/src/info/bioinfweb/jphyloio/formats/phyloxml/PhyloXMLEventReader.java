@@ -46,7 +46,6 @@ import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
-import info.bioinfweb.jphyloio.formats.xml.UnknownMetaElementEndReader;
 import info.bioinfweb.jphyloio.formats.xml.UnknownMetaElementStartReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
@@ -195,8 +194,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 						double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);			
 						streamDataProvider.setCurrentNodeEdgeInfo(new NodeEdgeInfo("", branchLength, new ArrayList<JPhyloIOEvent>()));												
 					}
-				});
-		
+				});		
  
 		map.put(new XMLElementReaderKey(TAG_CLADE, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT),
 				new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
@@ -215,7 +213,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 						}
 						streamDataProvider.setCurrentEventCollection(streamDataProvider.getCurrentNodeEdgeInfo().getNestedEdgeEvents());
 						
-						streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key, "String", value));
+						streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key, null, value));
 						streamDataProvider.getEventReader().readAttributes(element);						
 					}
 			});
@@ -300,7 +298,13 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new UnknownMetaElementStartReader());
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), new UnknownMetaElementEndReader());
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), 
+				new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+					@Override
+					public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {						
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));			
+					}
+			});
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
 	}
