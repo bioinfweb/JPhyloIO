@@ -38,6 +38,21 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter {
 	private String linkedOTUsID = null;
+	private String[] linkedOTUs;
+	
+	
+	public TestTreeDataAdapter(String[] linkedOTUs) {
+		super();
+		if (linkedOTUs.length != 3) {
+			throw new IllegalArgumentException("Invalid number of linked OTUs (" + linkedOTUs.length + ").");
+		}
+		this.linkedOTUs = linkedOTUs;
+	}
+
+
+	public TestTreeDataAdapter() {
+		this(new String[]{null, null, null});
+	}
 	
 	
 	public void setLinkedOTUsID(String linkedOTUsID) {
@@ -73,17 +88,23 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {
 		switch (nodeID) {
 			case "n1":
-				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node '_1", null));  //TODO Link some OTUs later.
+				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node '_1", null));
 				receiver.add(new MetaInformationEvent("a1", null, "100", new Integer(100)));
 				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 				receiver.add(new MetaInformationEvent("a2", null, "ab 'c", "ab 'c"));
 				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 				break;
 			case "nRoot":  
-			case "nA":
-			case "nB":
-			case "nC":
 				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null));
+				break;
+			case "nA":
+				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[0]));
+				break;
+			case "nB":
+				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[1]));
+				break;
+			case "nC":
+				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[2]));
 				break;
 			default:
 				throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");

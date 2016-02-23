@@ -59,7 +59,9 @@ public class NexusEventWriterTest implements NexusConstants {
 		matrix.setLinkedOTUsID("otus0");
 		matrix.setTokenSets(new TestSingleTokenSetAdapter());
 		
-		document.getTreesNetworks().add(new TestTreeDataAdapter());
+		TestTreeDataAdapter tree = new TestTreeDataAdapter(new String[]{"otu0", "otu1", "otu2"});
+		tree.setLinkedOTUsID("otus0");
+		document.getTreesNetworks().add(tree);
 		document.getTreesNetworks().add(new TestTreeDataAdapter());
 		
 		NexusEventWriter writer = new NexusEventWriter();
@@ -90,16 +92,17 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\tDIMENSIONS NTAX=3 NCHAR=5;", reader.readLine());
 			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. SYMBOLS=\"A T C G\" NOTOKENS;", reader.readLine());
 			assertEquals("\tMATRIX", reader.readLine());
-			assertEquals("\t\t\tOTU_otu0 ACT[comment 1]GC", reader.readLine());  // Currently the sequence label "Label_1" will be used.
+			assertEquals("\t\t\tOTU_otu0 ACT[comment 1]GC", reader.readLine());
 			assertEquals("\t\t\tOTU_otu1 A-TCC", reader.readLine());
-			assertEquals("\t\t\totu2 ACTTC;", reader.readLine());  // Using the OTU ID here is currently not implemented. (Currently the sequence ID will be used.)
+			assertEquals("\t\t\totu2 ACTTC;", reader.readLine());
 			assertEquals("END;", reader.readLine());
-			//TODO Taxon names and sequence names must match. The sequence label must not be used, if an OTU is linked.
-			//     In practice OTU and sequence labels should be identical.
-			//     => Should the JPhyloIO model be changed to solve such problems (e.g. by removing some properties or forcing some of them to be equal)?
-			//        -> Probably not, because writing different sequence and OTU labels into NeXML should be possible.
-			//TODO If sequences without linked OTUs are written, the according format subcommand must be specified. Therefore JPhyloIO needs to know that before the sequences are written. => Probably an additional adapter method
+			assertEquals("", reader.readLine());
 
+			assertEquals("BEGIN TREES;", reader.readLine());
+			assertEquals("\tTREE someTree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE someTree = [&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("END;", reader.readLine());
+			
 			assertEquals(-1, reader.read());
 		}
 		finally {
