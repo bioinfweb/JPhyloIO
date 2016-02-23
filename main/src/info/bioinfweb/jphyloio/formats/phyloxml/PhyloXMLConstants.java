@@ -40,6 +40,8 @@ public interface PhyloXMLConstants {
 	public static final QName TAG_COMMON_NAME = new QName(NAMESPACE_URI, "common_name");
 	public static final QName TAG_BRANCH_LENGTH = new QName(NAMESPACE_URI, "branch_length");
 	public static final QName TAG_CONFIDENCE = new QName(NAMESPACE_URI, "confidence");
+	public static final QName TAG_BRANCH_WIDTH = new QName(NAMESPACE_URI, "width");
+	public static final QName TAG_BRANCH_COLOR = new QName(NAMESPACE_URI, "color");	
 	
 	public static final QName ATTR_BRANCH_LENGTH = new QName("branch_length");
 	public static final QName ATTR_ROOTED = new QName("rooted");
