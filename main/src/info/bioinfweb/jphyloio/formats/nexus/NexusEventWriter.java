@@ -251,7 +251,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		Iterator<String> iterator = matrix.getSequenceIDIterator();
 		while (iterator.hasNext()) {
 			String id = iterator.next();
-			String sequenceName = getLinkedOTUName(matrix.getSequenceStartEvent(id), getReferencedOTUList(document, matrix));
+			String sequenceName = getLinkedOTUNameOTUFirst(matrix.getSequenceStartEvent(id), getReferencedOTUList(document, matrix));
 			writeLineStart(writer, formatToken(sequenceName));
 			writer.write(' ');
 			
@@ -320,6 +320,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			
 			writeFormatCommand(matrix);  //TODO Write "newTokens" if necessary.
 			writeMatrixCommand(document, matrix, columnCount == -1);
+			//TODO Write TAXLABELS if necessary (e.g. if sequences without linked OTUs are present).
 			
 			decreaseIndention();
 			writeBlockEnd();
@@ -371,6 +372,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					writeBlockStart(BLOCK_NAME_TREES);
 					increaseIndention();
 					
+					//TODO Write NEWTAXA and TAXLABELS if necessary (e.g. if nodes without linked OTUs are present).
 					boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_TRANSLATION_TABLE, true);
 					if (translate) {
 						//TODO Write translate command (Determine necessary taxa.)
@@ -383,8 +385,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				writer.write(' ');
 				writer.write(KEY_VALUE_SEPARATOR);
 				writer.write(' ');
-				new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), parameters).write();
-				writeLineBreak(writer, parameters);
+				new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), true, parameters).write();  // Also writes line break.
 				
 				treeWritten = true;
 			}

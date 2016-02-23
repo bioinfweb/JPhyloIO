@@ -73,15 +73,30 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	
 	public static String getLabeledIDName(LabeledIDEvent event) {
-		String result = event.getLabel();
-		if (result == null) {
-			result = event.getID();
+		if (event.hasLabel()) {
+			return event.getLabel();
 		}
-		return result;
+		else {
+			return event.getID();
+		}
 	}
 	
 	
-	public static String getLinkedOTUName(LinkedOTUOrOTUsEvent linkedOTUEvent, OTUListDataAdapter otuList) {
+	/**
+	 * Determines the name (label) to be used for the specified event when writing its data to a file. The name is
+	 * tried to be set by the following properties in decreasing priority:
+	 * <ol>
+	 *   <li>the label of {@code linkedOTUEvent} if present</li>
+	 *   <li>the label of the linked OTU event, if any is linked and carries a label</li>
+	 *   <li>the ID of {@code linkedOTUEvent}</li>
+	 * </ol>
+	 * 
+	 * @param linkedOTUEvent the event defining the name
+	 * @param otuList the data adapter providing the OTU data
+	 * @return a string representing the specified event as described
+	 * @see #getLinkedOTUNameOTUFirst(LinkedOTUOrOTUsEvent, OTUListDataAdapter)
+	 */
+	public static String getLinkedOTUNameOwnFirst(LinkedOTUOrOTUsEvent linkedOTUEvent, OTUListDataAdapter otuList) {
 		String result = linkedOTUEvent.getLabel();
 		if (result == null) {
 			if (linkedOTUEvent.isOTUOrOTUsLinked() && (otuList != null)) {
@@ -92,6 +107,31 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			}
 		}
 		return result;
+	}
+	
+	
+	/**
+	 * Determines the name (label) to be used for the specified event when writing its data to a file. The name is
+	 * tried to be set by the following properties in decreasing priority:
+	 * <ol>
+	 *   <li>the label of the linked OTU event, if any is linked and carries a label</li>
+	 *   <li>the ID of the linked OTU event, if any is linked</li>
+	 *   <li>the label of {@code linkedOTUEvent} if present</li>
+	 *   <li>the ID of {@code linkedOTUEvent}</li>
+	 * </ol>
+	 * 
+	 * @param linkedOTUEvent the event defining the name
+	 * @param otuList the data adapter providing the OTU data
+	 * @return a string representing the specified event as described
+	 * @see #getLinkedOTUNameOwnFirst(LinkedOTUOrOTUsEvent, OTUListDataAdapter)
+	 */
+	public static String getLinkedOTUNameOTUFirst(LinkedOTUOrOTUsEvent linkedOTUEvent, OTUListDataAdapter otuList) {
+		if (linkedOTUEvent.isOTUOrOTUsLinked() && (otuList != null)) {
+			return getLabeledIDName(otuList.getOTUStartEvent(linkedOTUEvent.getOTUOrOTUsID()));
+		}
+		else {
+			return getLabeledIDName(linkedOTUEvent);
+		}
 	}
 	
 	

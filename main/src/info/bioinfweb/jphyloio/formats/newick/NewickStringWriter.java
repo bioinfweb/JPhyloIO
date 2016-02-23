@@ -43,8 +43,9 @@ import java.util.Iterator;
 public class NewickStringWriter implements NewickConstants {
 	private Writer writer;
 	private TreeNetworkDataAdapter tree;
-	private EventWriterParameterMap parameters;
 	private OTUListDataAdapter otuList;
+	boolean useOTUFirst;
+	private EventWriterParameterMap parameters;
 	
 	
 	/**
@@ -53,16 +54,22 @@ public class NewickStringWriter implements NewickConstants {
 	 * @param writer the writer to write the Newick string to
 	 * @param tree the tree data adapter providing the tree data to be written
 	 * @param otuList the list of OTU definitions to be used to label unlabeled tree nodes (Maybe {@code null}.)
+	 * @param useOTUFirst Specify {@code true} here, if 
+	 *        {@link AbstractEventWriter#getLinkedOTUNameOTUFirst(LinkedOTUOrOTUsEvent, OTUListDataAdapter)}
+	 *        shall be used to determine node names (e.g. for writing Nexus) or {@code false} if
+	 *        {@link AbstractEventWriter#getLinkedOTUNameOwnFirst(LinkedOTUOrOTUsEvent, OTUListDataAdapter)}
+	 *        should be used instead (e.g. for writing Newick).
 	 * @param parameters the write parameter map specified to the calling reader
 	 */
 	public NewickStringWriter(Writer writer, TreeNetworkDataAdapter tree,	OTUListDataAdapter otuList, 
-			EventWriterParameterMap parameters) {
+			boolean useOTUFirst, EventWriterParameterMap parameters) {
 		
 		super();
 		this.writer = writer;
 		this.tree = tree;
-		this.parameters = parameters;
 		this.otuList = otuList;
+		this.useOTUFirst = useOTUFirst;
+		this.parameters = parameters;
 	}
 	
 	
@@ -136,7 +143,14 @@ public class NewickStringWriter implements NewickConstants {
 		tree.writeNodeData(nodeReceiver, nodeID);
 		
 		// Write node data:
-		writer.write(formatToken(AbstractEventWriter.getLinkedOTUName(nodeReceiver.getStartEvent(), otuList), NAME_DELIMITER));
+		String nodeName;
+		if (useOTUFirst) {
+			nodeName = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeReceiver.getStartEvent(), otuList);
+		}
+		else {
+			nodeName = AbstractEventWriter.getLinkedOTUNameOwnFirst(nodeReceiver.getStartEvent(), otuList);
+		}
+		writer.write(formatToken(nodeName, NAME_DELIMITER));
 		nodeReceiver.writeMetadata();
 		nodeReceiver.writeComments();
 		

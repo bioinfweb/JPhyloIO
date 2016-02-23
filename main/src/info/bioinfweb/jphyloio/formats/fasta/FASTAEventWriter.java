@@ -90,7 +90,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 				while (sequenceIDIterator.hasNext()) {
 					String id = sequenceIDIterator.next();
 					LinkedOTUOrOTUsEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
-					writeSequenceName(getLinkedOTUName(sequenceEvent, otuList), writer, eventReceiver, parameters);
+					writeSequenceName(getLinkedOTUNameOwnFirst(sequenceEvent, otuList), writer, eventReceiver, parameters);
 					eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));
 				}
