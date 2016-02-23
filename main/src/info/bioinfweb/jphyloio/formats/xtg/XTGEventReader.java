@@ -23,7 +23,7 @@ import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -41,7 +41,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
@@ -91,7 +90,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				String id = getID(XMLUtils.readStringAttr(element, ATTR_UNIQUE_NAME, null), EventContentType.NODE);
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
-				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NODE, id, label));
+				streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, id, label, null));
 				NodeEdgeInfo branchInfo = new NodeEdgeInfo(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), Double.NaN, null);
 
 				if (!streamDataProvider.getSourceNode().isEmpty()) {
@@ -164,7 +163,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.setSourceNode(new Stack<NodeEdgeInfo>());
 				String treeID = getID(null, EventContentType.TREE);							
-				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, treeID, null));		
+				streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, treeID, null, null));		
 			}
 		});
 		
