@@ -4,29 +4,9 @@
     xmlns:foo="http://bioinfweb.info/xmlns/example/freeNames" >
     
   <otus id="otus1" label="Taxon list">
-    <otu id="otu1" label="Taxon 1" />
+    <otu id="otu1" label="Taxon 1">
+      <!-- Does not validate, because of the spaces in the CURIE. -->
+      <meta datatype="xsd:integer" id="meta1" property="foo:my support value" content="95" xsi:type="nex:LiteralMeta" />
+    </otu>
   </otus>
-  <characters id="characters1" otus="otus1" xsi:type="nex:DnaSeqs">
-    <format>
-      <states id="states1">
-        <state id="state384" symbol="A" />
-        <state id="state385" symbol="C" />
-        <state id="state386" symbol="G" />
-        <state id="state387" symbol="T" />
-        <uncertain_state_set id="uncertain_state_set400" symbol="-"/>
-      </states>
-      <char id="char1" states="states1" />
-      <char id="char2" states="states1" />
-      <char id="char3" states="states1" />
-      <char id="char4" states="states1" />
-      <char id="char5" states="states1" />
-    </format>
-    <matrix>
-      <row id="seq1" otu="otu1" label="annotated sequence">
-        <!-- Does not validate, because of the spaces in the CURIE. -->
-        <meta datatype="xsd:integer" id="meta1" property="foo:my support value" content="95" xsi:type="nex:LiteralMeta" />
-        <seq>AGTTC</seq>
-      </row>
-    </matrix>
-  </characters>
 </nex:nexml>
