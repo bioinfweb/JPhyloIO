@@ -19,13 +19,24 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 
+
+
+/**
+ * All data adapters possibly linking an OTU list should implement this interface.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public interface LinkedOTUsDataAdapter {
 	/**
-	 * Returns the ID of the OTU list, that is associated with the represented character matrix data.
+	 * Returns the start event of this data element (usually a matrix, tree or network). The returned
+	 * event can be used to determine the label and ID of the modeled data element and an otionally linked
+	 * OTU list. 
 	 * 
-	 * @return  the ID or {@code null} if no OTU list is associated
-	 * @see OTUListDataAdapter#getID()
+	 * @return the start event of this data element
+	 * @see OTUListDataAdapter#getListStartEvent()
 	 */
-	public String getLinkedOTUListID();
+	public LinkedOTUOrOTUsEvent getStartEvent();
 }

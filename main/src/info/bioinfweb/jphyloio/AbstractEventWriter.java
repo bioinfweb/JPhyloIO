@@ -136,7 +136,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, LinkedOTUsDataAdapter source) {
 		OTUListDataAdapter result = null;
-		String otuListID = source.getLinkedOTUListID();
+		String otuListID = source.getStartEvent().getOTUOrOTUsID();
 		if (otuListID != null) {
 			result = document.getOTUList(otuListID);
 		}
