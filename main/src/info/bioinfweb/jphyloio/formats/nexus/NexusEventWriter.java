@@ -184,6 +184,21 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	private void writeLinkTaxaCommand(LinkedOTUOrOTUsEvent startEvent) throws IOException {
+		if (startEvent.isOTUOrOTUsLinked()) {
+			writeLineStart(writer, COMMAND_NAME_LINK);
+			writer.write(' ');
+			writer.write(BLOCK_NAME_TAXA);
+			writer.write(' ');
+			writer.write(KEY_VALUE_SEPARATOR);
+			writer.write(' ');
+			writer.write(formatToken(parameters.getLabelEditingReporter().getEditedLabel(
+					EventContentType.OTU_LIST, startEvent.getOTUOrOTUsID())));
+			writeCommandEnd();
+		}
+	}
+	
+	
 	private void writeTaxaBlock(OTUListDataAdapter otuList) throws IOException {
 		logIgnoredMetadata(otuList, "Metadata attached to an OTU list have been ignored.");
 		if (otuList.getCount() > 0) {
@@ -310,27 +325,31 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeMatrixTaxLabelsCommand(MatrixDataAdapter matrix) throws IOException {
-//		writeLineStart(writer, COMMAND_NAME_TAX_LABELS);
-//		writeLineBreak(writer, parameters);
-//		increaseIndention();
-//		increaseIndention();
-//		//TODO Get taxon label set generated when writing the according (linked) TAXA block.
-//		Set<String> taxonLabels = new HashSet<String>();
-//		Iterator<String> iterator = otuList.getIDIterator();
-//		while (iterator.hasNext()) {
-//			String id = iterator.next();
-//			writeLineStart(writer, formatToken(createOTULabel(otuList.getOTUStartEvent(id), taxonLabels)));
-//			if (iterator.hasNext()) {
-//				writeLineBreak(writer, parameters);
-//			}
-//			else {
-//				writeCommandEnd();
-//			}
-//			otuList.writeData(receiver, id);
-//			receiver.reset();
-//		}
-//		decreaseIndention();
-//		decreaseIndention();
+		Iterator<String> iterator = matrix.getSequenceIDIterator();
+		boolean beforeFirst = true;
+		boolean anyWritten = false;
+		while (iterator.hasNext()) {
+			LinkedOTUOrOTUsEvent event = matrix.getSequenceStartEvent(iterator.next());
+			if (!event.isOTUOrOTUsLinked()) {
+				if (beforeFirst) {
+					writeLineStart(writer, COMMAND_NAME_TAX_LABELS);
+					writeLineBreak(writer, parameters);
+					increaseIndention();
+					increaseIndention();
+					anyWritten = true;
+				}
+				else {
+					writeLineBreak(writer, parameters);
+					beforeFirst = false;
+				}
+				writeLineStart(writer, formatToken(createUniqueLabel(parameters, event)));
+			}
+		}
+		if (anyWritten) {
+			writeCommandEnd();
+			decreaseIndention();
+			decreaseIndention();
+		}
 	}
 
 	
@@ -414,7 +433,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			}
 			increaseIndention();
 			
-			writeTitleCommand(matrix.getStartEvent());
+			LinkedOTUOrOTUsEvent startEvent = matrix.getStartEvent();
+			writeTitleCommand(startEvent);
+			writeLinkTaxaCommand(startEvent);
 			
 			boolean writeTaxLabels = writeMatrixDimensionsCommand(matrix, columnCount);
 			writeFormatCommand(matrix);
@@ -423,7 +444,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				writeMatrixTaxLabelsCommand(matrix);
 			}
 			writeMatrixCommand(document, matrix, columnCount == -1);
-			//TODO Write TAXLABELS if necessary (e.g. if sequences without linked OTUs are present).
 			
 			decreaseIndention();
 			writeBlockEnd();
