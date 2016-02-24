@@ -88,11 +88,10 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\t\t\totu2;", reader.readLine());  // No label present.
 			assertEquals("END;", reader.readLine());
 			assertEquals("", reader.readLine());
-			//TODO Taxa need to have unique names. (Two labels must not be identical and a label and an ID must not be identical.)
 			
 			assertEquals("BEGIN CHARACTERS;", reader.readLine());
 			assertEquals("\tTITLE a_matrix;", reader.readLine());
-			assertEquals("\tLINK TAXA = OTU_list_0;", reader.readLine());
+			assertEquals("\tLINK TAXA=OTU_list_0;", reader.readLine());
 			assertEquals("\tDIMENSIONS NTAX=3 NCHAR=5;", reader.readLine());
 			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. SYMBOLS=\"A T C G\" NOTOKENS;", reader.readLine());
 			assertEquals("\tMATRIX", reader.readLine());
@@ -134,6 +133,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
 		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter("matrix0", "a matrix", false, 
 				"ACGT", "ACCT", "AC-T", "AGGT", "AG-T", "TCGT", "CCGT", "GCGT");
+		matrix.setLinkedOTUsID("otus0");
 		document.getMatrices().add(matrix);
 		
 		NexusEventWriter writer = new NexusEventWriter();
@@ -174,6 +174,23 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu7_3", EventContentType.OTU, "otu7", reporter);
 			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.NOT_FOUND, null, EventContentType.OTU, "otherID", reporter);
 			assertTrue(reporter.anyLabelEdited(EventContentType.OTU));
+
+			assertEquals("BEGIN CHARACTERS;", reader.readLine());
+			assertEquals("\tTITLE a_matrix;", reader.readLine());
+			assertEquals("\tLINK TAXA=OTU_list_0;", reader.readLine());
+			assertEquals("\tDIMENSIONS NTAX=8 NCHAR=4;", reader.readLine());
+			//TODO Some format information should be written. Writer should maybe throw an exception, if according data is missing. 
+			//assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. SYMBOLS=\"A T C G\" NOTOKENS;", reader.readLine());
+			assertEquals("\tMATRIX", reader.readLine());
+			assertEquals("\t\t\tlabel1 ACGT", reader.readLine());
+			assertEquals("\t\t\totu1 ACCT", reader.readLine());
+			assertEquals("\t\t\totu0 AC-T", reader.readLine());
+			assertEquals("\t\t\t'otu3_otu0' AGGT", reader.readLine());
+			assertEquals("\t\t\t'otu4_otu3_otu0' AG-T", reader.readLine());
+			assertEquals("\t\t\totu7 TCGT", reader.readLine());
+			assertEquals("\t\t\t'otu7_2' CCGT", reader.readLine());
+			assertEquals("\t\t\t'otu7_3' GCGT;", reader.readLine());
+			assertEquals("END;", reader.readLine());
 
 			assertEquals(-1, reader.read());
 		}
