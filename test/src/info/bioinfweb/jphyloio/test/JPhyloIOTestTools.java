@@ -60,7 +60,7 @@ public class JPhyloIOTestTools {
 		TestMatrixDataAdapter matrixAdapter = new TestMatrixDataAdapter(true, labelsAndSequences);
 		TestOTUListDataAdapter otuListAdapter = matrixAdapter.createAccordingOTUList(0);
 		matrixAdapter.setLinkedOTUsID(ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + 0);
-		result.getOtuListsMap().put(otuListAdapter.getID(), otuListAdapter);
+		result.getOTUListsMap().put(otuListAdapter.getID(), otuListAdapter);
 		result.getMatrices().add(matrixAdapter);
 		return result;
 	}

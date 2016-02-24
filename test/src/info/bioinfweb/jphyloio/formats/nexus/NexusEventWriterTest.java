@@ -51,7 +51,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter(true, 
 				"Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
 		TestOTUListDataAdapter otuList = matrix.createAccordingOTUList(0); 
-		document.getOtuListsMap().put(otuList.getID(), otuList);
+		document.getOTUListsMap().put(otuList.getID(), otuList);
 		document.getMatrices().add(matrix);
 		
 		String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + "2";
@@ -120,15 +120,18 @@ public class NexusEventWriterTest implements NexusConstants {
 		// Write file:
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
 		TestOTUListDataAdapter otuList = new TestOTUListDataAdapter(0, 
-				new LabeledIDEvent(EventContentType.OTU, "id1", "label1"),
-				new LabeledIDEvent(EventContentType.OTU, "id2", null),
-				new LabeledIDEvent(EventContentType.OTU, "id3", "id1"),
-				new LabeledIDEvent(EventContentType.OTU, "id4", "id1"),
-				new LabeledIDEvent(EventContentType.OTU, "id5", "id4_id1"),
-				new LabeledIDEvent(EventContentType.OTU, "id6", "id8"),
-				new LabeledIDEvent(EventContentType.OTU, "id7", "id8_2"),
-				new LabeledIDEvent(EventContentType.OTU, "id8", null)); 
-		document.getOtuListsMap().put(otuList.getID(), otuList);
+				new LabeledIDEvent(EventContentType.OTU, "otu0", "label1"),
+				new LabeledIDEvent(EventContentType.OTU, "otu1", null),
+				new LabeledIDEvent(EventContentType.OTU, "otu2", "otu0"),
+				new LabeledIDEvent(EventContentType.OTU, "otu3", "otu0"),
+				new LabeledIDEvent(EventContentType.OTU, "otu4", "otu3_otu0"),
+				new LabeledIDEvent(EventContentType.OTU, "otu5", "otu7"),
+				new LabeledIDEvent(EventContentType.OTU, "otu6", "otu7_2"),
+				new LabeledIDEvent(EventContentType.OTU, "otu7", null)); 
+		document.getOTUListsMap().put(otuList.getID(), otuList);
+		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter(false, 
+				"ACGT", "ACCT", "AC-T", "AGGT", "AG-T", "TCGT", "CCGT", "GCGT");
+		document.getMatrices().add(matrix);
 		
 		NexusEventWriter writer = new NexusEventWriter();
 		EventWriterParameterMap parameters = new EventWriterParameterMap();
@@ -146,26 +149,28 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\tDIMENSIONS NTAX=8;", reader.readLine());
 			assertEquals("\tTAXLABELS", reader.readLine());
 			assertEquals("\t\t\tlabel1", reader.readLine());
-			assertEquals("\t\t\tid2", reader.readLine());
-			assertEquals("\t\t\tid1", reader.readLine());
-			assertEquals("\t\t\t'id4_id1'", reader.readLine());
-			assertEquals("\t\t\t'id5_id4_id1'", reader.readLine());
-			assertEquals("\t\t\tid8", reader.readLine());
-			assertEquals("\t\t\t'id8_2'", reader.readLine());
-			assertEquals("\t\t\t'id8_3';", reader.readLine());
+			assertEquals("\t\t\totu1", reader.readLine());
+			assertEquals("\t\t\totu0", reader.readLine());
+			assertEquals("\t\t\t'otu3_otu0'", reader.readLine());
+			assertEquals("\t\t\t'otu4_otu3_otu0'", reader.readLine());
+			assertEquals("\t\t\totu7", reader.readLine());
+			assertEquals("\t\t\t'otu7_2'", reader.readLine());
+			assertEquals("\t\t\t'otu7_3';", reader.readLine());
 			assertEquals("END;", reader.readLine());
-			assertEquals(-1, reader.read());
+			assertEquals("", reader.readLine());
 			
-			LabelEditingReporter reporter = parameters.getGeneratedLabelsMap();
-			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "label1", EventContentType.OTU, "id1", reporter);
-			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "id2", EventContentType.OTU, "id2", reporter);
-			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "id1", EventContentType.OTU, "id3", reporter);
-			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "id4_id1", EventContentType.OTU, "id4", reporter);
-			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "id5_id4_id1", EventContentType.OTU, "id5", reporter);
-			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "id8", EventContentType.OTU, "id6", reporter);
-			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "id8_2", EventContentType.OTU, "id7", reporter);
-			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "id8_3", EventContentType.OTU, "id8", reporter);
+			LabelEditingReporter reporter = parameters.getLabelEditingReporter();
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "label1", EventContentType.OTU, "otu0", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu1", EventContentType.OTU, "otu1", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "otu0", EventContentType.OTU, "otu2", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu3_otu0", EventContentType.OTU, "otu3", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu4_otu3_otu0", EventContentType.OTU, "otu4", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "otu7", EventContentType.OTU, "otu5", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "otu7_2", EventContentType.OTU, "otu6", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu7_3", EventContentType.OTU, "otu7", reporter);
 			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.NOT_FOUND, null, EventContentType.OTU, "otherID", reporter);
+
+			assertEquals(-1, reader.read());
 		}
 		finally {
 			reader.close();
