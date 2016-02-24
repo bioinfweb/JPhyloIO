@@ -105,7 +105,7 @@ public class EventWriterParameterMap extends ParameterMap {
 	 * key will create a new one and put it in their parameter map. If a reporter is specified, its previous contents 
 	 * will be cleared by the writer. If an object of another type is specified using this key, it will be replaced.
 	 * 
-	 * @see #getGeneratedLabelsMap()
+	 * @see #getLabelEditingReporter()
 	 */
 	public static final String KEY_LABEL_EDITING_REPORTER = "labelEditingReporter";
 	
@@ -117,7 +117,7 @@ public class EventWriterParameterMap extends ParameterMap {
 	 * 
 	 * @return the map instance
 	 */
-	public LabelEditingReporter getGeneratedLabelsMap() {
+	public LabelEditingReporter getLabelEditingReporter() {
 		Object result = get(KEY_LABEL_EDITING_REPORTER);
 		if (!(result instanceof LabelEditingReporter)) {  // Also checks for null.
 			result = new LabelEditingReporter();

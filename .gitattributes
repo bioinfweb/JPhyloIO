@@ -22,6 +22,7 @@ main/src/info/bioinfweb/jphyloio/AbstractEventReader.java -text svneol=unset#tex
 main/src/info/bioinfweb/jphyloio/AbstractEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/EventForwarder.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/EventWriterParameterMap.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/InconsistentAdapterDataException.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIO.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventReader.java -text svneol=unset#text/plain

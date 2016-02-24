@@ -96,7 +96,7 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter impl
 	}
 	
 	
-	public ListOrderedMap<String, OTUListDataAdapter> getOtuListsMap() {
+	public ListOrderedMap<String, OTUListDataAdapter> getOTUListsMap() {
 		return otuListsMap;
 	}
 
