@@ -21,7 +21,10 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
@@ -35,6 +38,7 @@ import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 
 
@@ -61,6 +65,9 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
  * @author Ben St&ouml;ver
  */
 public class NexusEventWriter extends AbstractEventWriter implements NexusConstants {
+	public static final String EDITED_LABEL_SEPARATOR = "_";
+	
+	
 	private static enum MatrixWriteResult {
 		CHARACTERS,	UNALIGNED, NONE;
 	}
@@ -147,8 +154,30 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	private String createOTULabel(LabeledIDEvent otuEvent, Set<String> taxonLabels) {
+		String result = getLabeledIDName(otuEvent);
+		if (taxonLabels.contains(result)) {
+			if (otuEvent.hasLabel()) {
+				result = otuEvent.getID() + EDITED_LABEL_SEPARATOR + otuEvent.getLabel();
+			}
+			
+			if (taxonLabels.contains(result)) {
+				int suffix = 2;
+				String editedResult;
+				do {
+					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
+				}	while (taxonLabels.contains(editedResult));
+				result = editedResult;
+			}
+		}
+		
+		taxonLabels.add(result);
+		return result;
+	}
+	
+	
 	private void writeTaxaBlock(OTUListDataAdapter otuList) throws IOException {
-		logIgnoredMetadata(otuList, "An OTU list");
+		logIgnoredMetadata(otuList, "Metadata attached to an OTU list have been ignored.");
 		if (otuList.getCount() > 0) {
 			writeBlockStart(BLOCK_NAME_TAXA);
 			increaseIndention();
@@ -163,10 +192,11 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			increaseIndention();
 			increaseIndention();
 			IgnoreObjectListMetadataReceiver receiver = new IgnoreObjectListMetadataReceiver(logger, "an OTU", "Nexus");
+			Set<String> taxonLabels = new HashSet<String>();
 			Iterator<String> iterator = otuList.getIDIterator();
 			while (iterator.hasNext()) {
 				String id = iterator.next();
-				writeLineStart(writer, formatToken(getLabeledIDName(otuList.getOTUStartEvent(id))));
+				writeLineStart(writer, formatToken(createOTULabel(otuList.getOTUStartEvent(id), taxonLabels)));
 				if (iterator.hasNext()) {
 					writeLineBreak(writer, parameters);
 				}
