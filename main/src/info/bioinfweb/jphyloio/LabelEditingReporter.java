@@ -24,7 +24,9 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 
@@ -38,6 +40,12 @@ import java.util.Map;
  * @since 0.0.0
  */
 public class LabelEditingReporter {
+	private static class ContentTypeEntry {
+		public Map<String, LabelMapping> labelMappings = new HashMap<String, LabelMapping>();
+		public Set<String> usedLabels = new HashSet<String>();
+	}
+	
+	
 	private static class LabelMapping {
 		public String label;
 		public boolean edited;
@@ -76,18 +84,18 @@ public class LabelEditingReporter {
 	}
 	
 	
-	private Map<EventContentType, Map<String, LabelMapping>> translations = 
-			new EnumMap<EventContentType, Map<String, LabelMapping>>(EventContentType.class);
+	private Map<EventContentType, ContentTypeEntry> translations = 
+			new EnumMap<EventContentType, ContentTypeEntry>(EventContentType.class);
 	
 	
-	private Map<String, LabelMapping> getLabelMap(EventContentType contentType) {
+	private ContentTypeEntry getContentTypeEntry(EventContentType contentType) {
 		if (contentType == null) {
 			throw new NullPointerException("The content type must not be null.");
 		}
 		else {
-			Map<String, LabelMapping> result = translations.get(contentType);
+			ContentTypeEntry result = translations.get(contentType);
 			if (result == null) {
-				result = new HashMap<String, LabelMapping>();
+				result = new ContentTypeEntry();
 				translations.put(contentType, result);
 			}
 			return result;
@@ -96,7 +104,7 @@ public class LabelEditingReporter {
 	
 	
 	private LabelMapping getMapping(EventContentType contentType, String id) {
-		return getLabelMap(contentType).get(id);
+		return getContentTypeEntry(contentType).labelMappings.get(id);
 	}
 	
 	
@@ -115,7 +123,9 @@ public class LabelEditingReporter {
 			throw new NullPointerException("The specified ID must not be null.");
 		}
 		else {
-			getLabelMap(contentType).put(id, new LabelMapping(label, edited));
+			ContentTypeEntry entry = getContentTypeEntry(contentType);
+			entry.labelMappings.put(id, new LabelMapping(label, edited));
+			entry.usedLabels.add(label);
 		}
 	}
 	
@@ -128,8 +138,7 @@ public class LabelEditingReporter {
 	 * @throws NullPointerException if {@code event} is {@code null}
 	 */
 	public void addEdit(LabeledIDEvent event, String label) {
-		getLabelMap(event.getType().getContentType()).put(event.getID(), new LabelMapping(label, 
-				(label == null) || !label.equals(event.getLabel())));
+		addEdit(event.getType().getContentType(), event.getID(), label, (label == null) || !label.equals(event.getLabel()));
 	}
 	
 	
@@ -180,7 +189,7 @@ public class LabelEditingReporter {
 	 * @return the label status associated with the specified data element
 	 */
 	public LabelStatus getLabelStatus(EventContentType contentType, String id) {
-		LabelMapping mapping = getLabelMap(contentType).get(id);
+		LabelMapping mapping = getContentTypeEntry(contentType).labelMappings.get(id);
 		if (mapping == null) {
 			return LabelStatus.NOT_FOUND;
 		}
@@ -204,5 +213,19 @@ public class LabelEditingReporter {
 	 */
 	public LabelStatus getLabelStatus(LabeledIDEvent event) {
 		return getLabelStatus(event.getType().getContentType(), event.getID());
+	}
+	
+	
+	/**
+	 * Checks whether the specified label was already used for the specified content type.
+	 * This method is intended for internal use by implementations of {@link JPhyloIOEventWriter}
+	 * and will usually not be of much use for application developers.
+	 * 
+	 * @param contentType the content type for which the label could have been used
+	 * @param label the label to search for
+	 * @return {@code true} if the specified label was already used until now or {@code false} otherwise
+	 */
+	public boolean isLabelUsed(EventContentType contentType, String label) {
+		return getContentTypeEntry(contentType).usedLabels.contains(label);
 	}
 }

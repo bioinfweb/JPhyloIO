@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Map;
 
 import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
@@ -35,6 +34,7 @@ import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
@@ -44,6 +44,9 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
  * @author Ben St&ouml;ver
  */
 public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
+	public static final String EDITED_LABEL_SEPARATOR = "_";
+	
+	
 	private String indention = "";
 	
 	
@@ -171,6 +174,31 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		if (indention.length() > 0) {
 			indention = indention.substring(1);
 		}
+	}
+	
+	
+	protected String createUniqueLabel(EventWriterParameterMap parameters, LabeledIDEvent otuEvent) {
+		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
+		
+		String result = getLabeledIDName(otuEvent);
+		if (reporter.isLabelUsed(EventContentType.OTU, result)) {
+			if (otuEvent.hasLabel()) {
+				result = otuEvent.getID() + EDITED_LABEL_SEPARATOR + otuEvent.getLabel();
+			}
+			
+			if (reporter.isLabelUsed(EventContentType.OTU, result)) {
+				long suffix = 2;
+				String editedResult;
+				do {
+					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
+					suffix++;
+				}	while (reporter.isLabelUsed(EventContentType.OTU, editedResult));
+				result = editedResult;
+			}
+		}
+		
+		parameters.getLabelEditingReporter().addEdit(otuEvent, result);
+		return result;
 	}
 	
 	
