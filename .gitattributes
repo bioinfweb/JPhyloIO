@@ -184,14 +184,17 @@ test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
 test/data/MEGA/MatchToken.meg -text
 test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
-test/data/NeXML/FreeAnnotations.xml -text svneol=unset#text/plain
-test/data/NeXML/FreeAnnotationsAlternative.xml -text svneol=unset#text/plain
-test/data/NeXML/FreeAnnotationsInvalid.xml -text svneol=unset#text/plain
 test/data/NeXML/LargeSequences.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
 test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
 test/data/NeXML/Paralogues.xml -text
 test/data/NeXML/UnknownTag.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnoations/EditedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnoations/MaskedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnoations/NameAsCURIEPredicate.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnoations/NameAsPredicate.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnoations/NestedNameAndValue.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnoations/ValueNestedInName.xml -text svneol=unset#text/plain
 test/data/Newick/Comments.nwk -text
 test/data/Newick/InternalsTerminalsLength.nwk -text
 test/data/Newick/LeafNodesNamed.nwk -text

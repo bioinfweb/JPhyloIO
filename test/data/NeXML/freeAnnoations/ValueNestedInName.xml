@@ -23,6 +23,7 @@
     </format>
     <matrix>
       <row id="seq1" otu="otu1" label="annotated sequence">
+        <!-- Does validate and allows any user defined name. -->
         <meta id="meta1" rel="foo:freeAnnotation" xsi:type="nex:ResourceMeta" content="my support value">
           <meta datatype="xsd:integer" id="meta3" property="foo:isValue" content="95" xsi:type="nex:LiteralMeta" />
         </meta>
