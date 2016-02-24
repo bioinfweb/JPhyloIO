@@ -172,6 +172,7 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "otu7_2", EventContentType.OTU, "otu6", reporter);
 			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu7_3", EventContentType.OTU, "otu7", reporter);
 			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.NOT_FOUND, null, EventContentType.OTU, "otherID", reporter);
+			assertTrue(reporter.anyLabelEdited(EventContentType.OTU));
 
 			assertEquals(-1, reader.read());
 		}
