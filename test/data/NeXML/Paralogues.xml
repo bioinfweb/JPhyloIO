@@ -13,70 +13,7 @@
         <state id="state385" symbol="C"/>
         <state id="state386" symbol="G"/>
         <state id="state387" symbol="T"/>
-        <uncertain_state_set id="uncertain_state_set388" symbol="K">
-          <member state="state386"/>
-          <member state="state387"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set389" symbol="M">
-          <member state="state385"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set390" symbol="R">
-          <member state="state386"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set391" symbol="S">
-          <member state="state386"/>
-          <member state="state385"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set392" symbol="W">
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set393" symbol="Y">
-          <member state="state385"/>
-          <member state="state387"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set394" symbol="B">
-          <member state="state386"/>
-          <member state="state387"/>
-          <member state="state385"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set395" symbol="D">
-          <member state="state386"/>
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set396" symbol="H">
-          <member state="state386"/>
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set397" symbol="V">
-          <member state="state386"/>
-          <member state="state385"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set398" symbol="N">
-          <member state="state386"/>
-          <member state="state385"/>
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
-        <uncertain_state_set id="uncertain_state_set399" symbol="X">
-          <member state="state386"/>
-          <member state="state385"/>
-          <member state="state387"/>
-          <member state="state384"/>
-        </uncertain_state_set>
         <uncertain_state_set id="uncertain_state_set400" symbol="-"/>
-        <uncertain_state_set id="uncertain_state_set401" symbol="?">
-          <member state="uncertain_state_set400"/>
-          <member state="state386"/>
-          <member state="state384"/>
-          <member state="state387"/>
-          <member state="state385"/>
-        </uncertain_state_set>
       </states>
       <char id="char1" states="states1"/>
       <char id="char2" states="states1"/>
