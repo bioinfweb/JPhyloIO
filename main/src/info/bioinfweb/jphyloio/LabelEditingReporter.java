@@ -228,4 +228,23 @@ public class LabelEditingReporter {
 	public boolean isLabelUsed(EventContentType contentType, String label) {
 		return getContentTypeEntry(contentType).usedLabels.contains(label);
 	}
+	
+	
+	/**
+	 * Determines whether any label of data elements of the specified content type was edited. This method
+	 * is useful, e.g. if applications want to check whether they shall inform the user about label editing
+	 * after an instance of {@link JPhyloIOEventWriter} has been used to write a document.
+	 * 
+	 * @param contentType the content type of the labeled data element
+	 * @return {@code true}
+	 */
+	public boolean anyLabelEdited(EventContentType contentType) {
+		Map<String, LabelMapping> labelMappings = getContentTypeEntry(contentType).labelMappings; 
+		for (String id : labelMappings.keySet()) {
+			if (labelMappings.get(id).edited) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
