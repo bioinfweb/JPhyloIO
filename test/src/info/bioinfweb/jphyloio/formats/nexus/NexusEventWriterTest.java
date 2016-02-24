@@ -80,6 +80,7 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("", reader.readLine());
 			
 			assertEquals("BEGIN TAXA;", reader.readLine());
+			assertEquals("\tTITLE OTU_list_0;", reader.readLine());
 			assertEquals("\tDIMENSIONS NTAX=3;", reader.readLine());
 			assertEquals("\tTAXLABELS", reader.readLine());
 			assertEquals("\t\t\tOTU_otu0", reader.readLine());
@@ -146,6 +147,7 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("", reader.readLine());
 			
 			assertEquals("BEGIN TAXA;", reader.readLine());
+			assertEquals("\tTITLE OTU_list_0;", reader.readLine());
 			assertEquals("\tDIMENSIONS NTAX=8;", reader.readLine());
 			assertEquals("\tTAXLABELS", reader.readLine());
 			assertEquals("\t\t\tlabel1", reader.readLine());
