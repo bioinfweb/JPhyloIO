@@ -91,6 +91,7 @@ public class NexusEventWriterTest implements NexusConstants {
 			//TODO Taxa need to have unique names. (Two labels must not be identical and a label and an ID must not be identical.)
 			
 			assertEquals("BEGIN CHARACTERS;", reader.readLine());
+			assertEquals("\tTITLE a_matrix;", reader.readLine());
 			assertEquals("\tDIMENSIONS NTAX=3 NCHAR=5;", reader.readLine());
 			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. SYMBOLS=\"A T C G\" NOTOKENS;", reader.readLine());
 			assertEquals("\tMATRIX", reader.readLine());
@@ -101,8 +102,8 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("", reader.readLine());
 
 			assertEquals("BEGIN TREES;", reader.readLine());
-			assertEquals("\tTREE someTree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_nRoot:1.5;", reader.readLine());
-			assertEquals("\tTREE someTree = [&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE first_tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE second_tree = [&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			
 			assertEquals(-1, reader.read());
