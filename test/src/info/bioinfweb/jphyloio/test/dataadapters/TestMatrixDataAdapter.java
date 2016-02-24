@@ -54,6 +54,8 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	}
 	
 	
+	private String id = null;
+	private String label = null;
 	private String linkedOTUsID = null;
 	private ListOrderedMap<String, SequenceData> matrix = new ListOrderedMap<>();
 	private ObjectListDataAdapter tokenSets = null;
@@ -62,8 +64,10 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	private boolean longTokens;
 
 	
-	public TestMatrixDataAdapter(boolean containsLabels, String... sequencesOrLabelsAndSequences) {
+	public TestMatrixDataAdapter(String id, String label, boolean containsLabels, String... sequencesOrLabelsAndSequences) {
 		super();
+		this.id = id;
+		this.label = label;
 		if (sequencesOrLabelsAndSequences.length == 0) {
 			longTokens = true;
 			columnCount = 0;
@@ -113,6 +117,16 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	}
 	
 	
+	public void setID(String id) {
+		this.id = id;
+	}
+
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+
 	public ListOrderedMap<String, SequenceData> getMatrix() {
 		return matrix;
 	}
@@ -146,8 +160,8 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 
 
 	@Override
-	public String getLinkedOTUListID() {
-		return linkedOTUsID;
+	public LinkedOTUOrOTUsEvent getStartEvent() {
+		return new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, id, label, linkedOTUsID);
 	}
 
 

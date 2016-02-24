@@ -48,10 +48,10 @@ public class NexusEventWriterTest implements NexusConstants {
 		
 		// Write file:
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
-		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter(true, 
+		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter("matrix0", "a matrix", true, 
 				"Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
 		TestOTUListDataAdapter otuList = matrix.createAccordingOTUList(0); 
-		document.getOTUListsMap().put(otuList.getID(), otuList);
+		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
 		document.getMatrices().add(matrix);
 		
 		String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + "2";
@@ -60,10 +60,10 @@ public class NexusEventWriterTest implements NexusConstants {
 		matrix.setLinkedOTUsID("otus0");
 		matrix.setTokenSets(new TestSingleTokenSetAdapter());
 		
-		TestTreeDataAdapter tree = new TestTreeDataAdapter(new String[]{"otu0", "otu1", "otu2"});
+		TestTreeDataAdapter tree = new TestTreeDataAdapter("tree0", "first tree", new String[]{"otu0", "otu1", "otu2"});
 		tree.setLinkedOTUsID("otus0");
 		document.getTreesNetworks().add(tree);
-		document.getTreesNetworks().add(new TestTreeDataAdapter());
+		document.getTreesNetworks().add(new TestTreeDataAdapter("tree1", "second tree"));
 		
 		NexusEventWriter writer = new NexusEventWriter();
 		EventWriterParameterMap parameterMap = new EventWriterParameterMap();
@@ -128,8 +128,8 @@ public class NexusEventWriterTest implements NexusConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu5", "otu7"),
 				new LabeledIDEvent(EventContentType.OTU, "otu6", "otu7_2"),
 				new LabeledIDEvent(EventContentType.OTU, "otu7", null)); 
-		document.getOTUListsMap().put(otuList.getID(), otuList);
-		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter(false, 
+		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
+		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter("matrix0", "a matrix", false, 
 				"ACGT", "ACCT", "AC-T", "AGGT", "AG-T", "TCGT", "CCGT", "GCGT");
 		document.getMatrices().add(matrix);
 		

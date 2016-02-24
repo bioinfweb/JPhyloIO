@@ -64,12 +64,6 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements
 
 
 	@Override
-	public String getID() {
-		return ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + indexOfList;
-	}
-
-
-	@Override
 	public long getCount() {
 		return otus.size();
 	}
@@ -90,7 +84,8 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements
 	
 	@Override
 	public LabeledIDEvent getListStartEvent() {
-		return new LabeledIDEvent(EventContentType.OTU_LIST, "otus" + indexOfList, "OTU list " + indexOfList);
+		return new LabeledIDEvent(EventContentType.OTU_LIST, ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + indexOfList, 
+				"OTU list " + indexOfList);
 	}
 
 	

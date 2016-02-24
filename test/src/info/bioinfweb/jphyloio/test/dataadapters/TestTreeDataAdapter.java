@@ -37,12 +37,16 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter {
+	private String id = null;
+	private String label = null;
 	private String linkedOTUsID = null;
 	private String[] linkedOTUs;
 	
 	
-	public TestTreeDataAdapter(String[] linkedOTUs) {
+	public TestTreeDataAdapter(String id, String label, String[] linkedOTUs) {
 		super();
+		this.id = id;
+		this.label = label;
 		if (linkedOTUs.length != 3) {
 			throw new IllegalArgumentException("Invalid number of linked OTUs (" + linkedOTUs.length + ").");
 		}
@@ -50,8 +54,8 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	}
 
 
-	public TestTreeDataAdapter() {
-		this(new String[]{null, null, null});
+	public TestTreeDataAdapter(String id, String label) {
+		this(id, label, new String[]{null, null, null});
 	}
 	
 	
@@ -61,11 +65,11 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 
 
 	@Override
-	public String getLinkedOTUListID() {
-		return linkedOTUsID;
+	public LinkedOTUOrOTUsEvent getStartEvent() {
+		return new LinkedOTUOrOTUsEvent(EventContentType.TREE, id, label, linkedOTUsID);
 	}
-	
-	
+
+
 	@Override
 	public boolean isTree() {
 		return true;

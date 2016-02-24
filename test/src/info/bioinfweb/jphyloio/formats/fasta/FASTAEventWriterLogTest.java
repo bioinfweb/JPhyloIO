@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 
 import java.io.BufferedReader;
@@ -95,7 +96,7 @@ public class FASTAEventWriterLogTest {
 	@Test
 	public void test_writeDocument_logSecondMatrix() throws Exception {
 		ListBasedDocumentDataAdapter document = createTestDocument("ATG", "CGT");
-		document.getMatrices().add(new TestMatrixDataAdapter(false, "AAA", "ATA"));
+		document.getMatrices().add(new TestMatrixDataAdapter("matrix1", "A matrix", false, "AAA", "ATA"));
 		testLogMessage(document, false, ApplicationLoggerMessageType.WARNING, 
 				"The specified document adapter contained more than one character matrix adapter. Since the FASTA "
 						+ "format does not support multiple alignments in one file, only the first matrix was written.");
@@ -119,7 +120,7 @@ public class FASTAEventWriterLogTest {
 			public void writeMetadata(JPhyloIOEventReceiver writer) {}
 			
 			@Override
-			public String getLinkedOTUListID() {
+			public LinkedOTUOrOTUsEvent getStartEvent() {
 				return null;
 			}
 

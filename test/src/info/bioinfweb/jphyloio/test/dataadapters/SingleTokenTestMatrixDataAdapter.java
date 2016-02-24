@@ -36,8 +36,10 @@ public class SingleTokenTestMatrixDataAdapter extends TestMatrixDataAdapter {
 	public static final int SINGLE_TOKEN_INDEX = 2;
 	
 	
-	public SingleTokenTestMatrixDataAdapter(boolean containsLabels,	String... sequencesOrLabelsAndSequences) {
-		super(containsLabels, sequencesOrLabelsAndSequences);
+	public SingleTokenTestMatrixDataAdapter(String id, String label, boolean containsLabels,
+			String... sequencesOrLabelsAndSequences) {
+		
+		super(id, label, containsLabels, sequencesOrLabelsAndSequences);
 	}
 
 	

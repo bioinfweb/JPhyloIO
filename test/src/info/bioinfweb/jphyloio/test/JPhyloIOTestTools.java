@@ -50,17 +50,17 @@ import static org.junit.Assert.*;
 public class JPhyloIOTestTools {
 	public static ListBasedDocumentDataAdapter createTestDocument(String... sequences) {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
-		result.getMatrices().add(new TestMatrixDataAdapter(false, sequences));
+		result.getMatrices().add(new TestMatrixDataAdapter("matrix1", "A matrix", false, sequences));
 		return result;
 	}
 	
 	
 	public static ListBasedDocumentDataAdapter createTestDocumentWithLabels(String... labelsAndSequences) {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
-		TestMatrixDataAdapter matrixAdapter = new TestMatrixDataAdapter(true, labelsAndSequences);
+		TestMatrixDataAdapter matrixAdapter = new TestMatrixDataAdapter("matrix1", "A matrix", true, labelsAndSequences);
 		TestOTUListDataAdapter otuListAdapter = matrixAdapter.createAccordingOTUList(0);
 		matrixAdapter.setLinkedOTUsID(ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + 0);
-		result.getOTUListsMap().put(otuListAdapter.getID(), otuListAdapter);
+		result.getOTUListsMap().put(otuListAdapter.getListStartEvent().getID(), otuListAdapter);
 		result.getMatrices().add(matrixAdapter);
 		return result;
 	}
@@ -68,7 +68,7 @@ public class JPhyloIOTestTools {
 	
 	public static ListBasedDocumentDataAdapter createSingleTokenTestDocument(String... sequences) {
 		ListBasedDocumentDataAdapter result = new ListBasedDocumentDataAdapter();
-		result.getMatrices().add(new SingleTokenTestMatrixDataAdapter(false, sequences));
+		result.getMatrices().add(new SingleTokenTestMatrixDataAdapter("matrix1", "A matrix", false, sequences));
 		return result;
 	}
 	

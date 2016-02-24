@@ -41,8 +41,8 @@ public class NewickEventWriterTest {
 		
 		// Write file:
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
-		document.getTreesNetworks().add(new TestTreeDataAdapter());
-		document.getTreesNetworks().add(new TestTreeDataAdapter());
+		document.getTreesNetworks().add(new TestTreeDataAdapter("tree0", "first tree"));
+		document.getTreesNetworks().add(new TestTreeDataAdapter("tree1", "second tree"));
 		NewickEventWriter writer = new NewickEventWriter();
 		writer.writeDocument(document, file, new EventWriterParameterMap());
 		

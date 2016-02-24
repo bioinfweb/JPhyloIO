@@ -221,7 +221,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 	
 	
 	public static void main(String[] args) throws Exception {
-		SingleTokenTestMatrixDataAdapter adapter = new SingleTokenTestMatrixDataAdapter(false, "ACGT-CT");
+		SingleTokenTestMatrixDataAdapter adapter = new SingleTokenTestMatrixDataAdapter("matrixID", "a matrix", false, "ACGT-CT");
 		adapter.writeSequencePartContentData(new SystemOutEventReceiver(), DEFAULT_SEQUENCE_ID_PREFIX + "0", 0, 7);
 	}
 }
