@@ -27,6 +27,7 @@ main/src/info/bioinfweb/jphyloio/JPhyloIOEventListener.java -text svneol=unset#t
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOReaderException.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/LabelEditingReporter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/ReadWriteConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/StreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/AnnotatedDataAdapter.java -text svneol=unset#text/plain

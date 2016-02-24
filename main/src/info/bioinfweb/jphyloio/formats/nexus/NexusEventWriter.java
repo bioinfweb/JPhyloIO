@@ -196,9 +196,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		}
 		
 		taxonLabels.add(result);
-		if (!result.equals(otuEvent.getLabel())) {  //TODO Also add unchanged labels as mappings from their IDs?
-			parameters.getGeneratedLabelsMap().put(otuEvent.getID(), result);
-		}
+		parameters.getGeneratedLabelsMap().addEdit(otuEvent, result);
 		return result;
 	}
 	
@@ -246,9 +244,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeTaxaBlocks(DocumentDataAdapter document) throws IOException {
-		parameters.getGeneratedLabelsMap().clear();
-		parameters.put(EventWriterParameterMap.KEY_GENERATED_LABELS_MAP_ID_TYPE, EventContentType.OTU);
-		
 		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
 		if (otusIterator.hasNext()) {
 			writeTaxaBlock(otusIterator.next());
@@ -470,6 +465,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		this.parameters = parameters;
 		logger = getLogger(parameters);
 		
+		parameters.getGeneratedLabelsMap().clear();
 		writeInitialLines();
 		logIgnoredMetadata(document, "The document");
 		writeTaxaBlocks(document);

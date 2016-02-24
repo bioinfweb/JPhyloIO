@@ -98,46 +98,31 @@ public class EventWriterParameterMap extends ParameterMap {
 	
 	/**
 	 * Writers may have to edit names of OTUs, sequences or tree/network nodes according to the limitations of a specific
-	 * format. In such cases, the generated names used in the output will be added to a map as values with the OTU or 
-	 * sequence or node IDs as keys. Such a map will be stored in the parameter map under this key.
+	 * format. In such cases, the generated names used in the output will be registered in an information object, which 
+	 * will be stored in the parameter map under this key.
 	 * <p>
-	 * The value should have the type {@link Map}{@code <String, String>}. If no map is specified, writers supporting this
-	 * key will create a new map instance and put it in their parameter map. If a map is specified, its previous contents 
-	 * will be cleared by the writer. If an object of another type is specified using this key, it will be replaced by a
-	 * new map instance.
-	 * <p>
-	 * The type of keys used in the output name map is defined by the value for {@link #KEY_GENERATED_LABELS_MAP_ID_TYPE}.
+	 * The value will have the type {@link LabelEditingReporter}. If no instance is specified, writers supporting this
+	 * key will create a new one and put it in their parameter map. If a reporter is specified, its previous contents 
+	 * will be cleared by the writer. If an object of another type is specified using this key, it will be replaced.
 	 * 
 	 * @see #getGeneratedLabelsMap()
 	 */
-	public static final String KEY_GENERATED_LABELS_MAP = "generatedLabelsMap";
-	
-	/**
-	 * This parameter is used by writers to specify which type of IDs are used as keys for the map stored under 
-	 * {@link #KEY_GENERATED_LABELS_MAP}.
-	 * <p>
-	 * The value provided by the writers that support this feature will be one of {@link EventContentType#OTU},
-	 * {@link EventContentType#SEQUENCE} or {@link EventContentType#NODE}. Previously present values in the map
-	 * will be replaced.  
-	 */
-	public static final String KEY_GENERATED_LABELS_MAP_ID_TYPE = "generatedLabelsMapKeyType";
+	public static final String KEY_LABEL_EDITING_REPORTER = "labelEditingReporter";
 	
 	
 	/**
-	 * Returns a map to map generated labels to according event IDs, as described in the documentation of 
-	 * {@link #KEY_GENERATED_LABELS_MAP}. If no object for this key is present in this instance, a new 
-	 * {@link HashMap} is created, added to this instance and returned. The same is done, if an object
-	 * not implementing {@link Map} is found for this key. 
+	 * Returns the label editing reporter of this map stored under {@link #KEY_LABEL_EDITING_REPORTER}. If no object for 
+	 * this key is present in this instance, a new one is created, added to this instance and returned. The same is done, 
+	 * if an object which is not an instance of {@link LabelEditingReporter} is found for this key. 
 	 * 
 	 * @return the map instance
 	 */
-	@SuppressWarnings("unchecked")
-	public Map<String, String> getGeneratedLabelsMap() {
-		Object result = get(KEY_GENERATED_LABELS_MAP);
-		if (!(result instanceof Map<?, ?>)) {  // Also checks for null.
-			result = new HashedMap<String, String>();
-			put(KEY_GENERATED_LABELS_MAP, result);
+	public LabelEditingReporter getGeneratedLabelsMap() {
+		Object result = get(KEY_LABEL_EDITING_REPORTER);
+		if (!(result instanceof LabelEditingReporter)) {  // Also checks for null.
+			result = new LabelEditingReporter();
+			put(KEY_LABEL_EDITING_REPORTER, result);
 		}
-		return (Map<String, String>)result;
+		return (LabelEditingReporter)result;
 	}
 }
