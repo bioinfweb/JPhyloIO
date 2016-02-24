@@ -189,9 +189,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeLineStart(writer, COMMAND_NAME_LINK);
 			writer.write(' ');
 			writer.write(BLOCK_NAME_TAXA);
-			writer.write(' ');
 			writer.write(KEY_VALUE_SEPARATOR);
-			writer.write(' ');
 			writer.write(formatToken(parameters.getLabelEditingReporter().getEditedLabel(
 					EventContentType.OTU_LIST, startEvent.getOTUOrOTUsID())));
 			writeCommandEnd();
