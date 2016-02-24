@@ -177,13 +177,13 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected String createUniqueLabel(EventWriterParameterMap parameters, LabeledIDEvent otuEvent) {
+	protected String createUniqueLabel(EventWriterParameterMap parameters, LabeledIDEvent event) {
 		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
 		
-		String result = getLabeledIDName(otuEvent);
+		String result = getLabeledIDName(event);
 		if (reporter.isLabelUsed(EventContentType.OTU, result)) {
-			if (otuEvent.hasLabel()) {
-				result = otuEvent.getID() + EDITED_LABEL_SEPARATOR + otuEvent.getLabel();
+			if (event.hasLabel()) {
+				result = event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel();
 			}
 			
 			if (reporter.isLabelUsed(EventContentType.OTU, result)) {
@@ -197,7 +197,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			}
 		}
 		
-		parameters.getLabelEditingReporter().addEdit(otuEvent, result);
+		parameters.getLabelEditingReporter().addEdit(event, result);
 		return result;
 	}
 	

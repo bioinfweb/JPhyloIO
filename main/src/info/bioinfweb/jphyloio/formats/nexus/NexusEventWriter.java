@@ -36,6 +36,7 @@ import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
@@ -173,18 +174,23 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	private void writeTitleCommand(LabeledIDEvent startEvent) throws IOException {
+		writeLineStart(writer, COMMAND_NAME_TITLE);
+		writer.write(' ');
+		String label = createUniqueLabel(parameters, startEvent);
+		writer.write(formatToken(label));
+		writeCommandEnd();
+		parameters.getLabelEditingReporter().addEdit(startEvent, label);
+	}
+	
+	
 	private void writeTaxaBlock(OTUListDataAdapter otuList) throws IOException {
 		logIgnoredMetadata(otuList, "Metadata attached to an OTU list have been ignored.");
 		if (otuList.getCount() > 0) {
 			writeBlockStart(BLOCK_NAME_TAXA);
 			increaseIndention();
 			
-			writeLineStart(writer, COMMAND_NAME_TITLE);
-			writer.write(' ');
-			String label = getLabeledIDName(otuList.getListStartEvent());  //TODO Check for name collisions and resolve them.
-			writer.write(formatToken(label));
-			writeCommandEnd();
-			parameters.getLabelEditingReporter().addEdit(otuList.getListStartEvent(), label);
+			writeTitleCommand(otuList.getListStartEvent());
 			
 			writeLineStart(writer, COMMAND_NAME_DIMENSIONS);
 			writer.write(' ');
@@ -408,11 +414,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			}
 			increaseIndention();
 			
-//		writeLineStart(writer, COMMAND_NAME_TITLE);
-//		writer.write(' ');
-//		//TODO Write title and register it in LabelEditingReporter, when according event are available in MatrixDataAdapter.
-//		writeCommandEnd();
-		
+			writeTitleCommand(matrix.getStartEvent());
+			
 			boolean writeTaxLabels = writeMatrixDimensionsCommand(matrix, columnCount);
 			writeFormatCommand(matrix);
 			writeMatrixTaxLabelsCommand(matrix);
@@ -481,7 +484,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				
 				writeLineStart(writer, COMMAND_NAME_TREE);
 				writer.write(' ');
-				writer.write("someTree");  //TODO Replace by tree name read from adapter, when according event getter is available.
+				writer.write(formatToken(createUniqueLabel(parameters, treeNetwork.getStartEvent())));
 				writer.write(' ');
 				writer.write(KEY_VALUE_SEPARATOR);
 				writer.write(' ');
