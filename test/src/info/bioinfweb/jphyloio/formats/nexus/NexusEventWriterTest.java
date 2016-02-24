@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.*;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -130,7 +131,8 @@ public class NexusEventWriterTest implements NexusConstants {
 		document.getOtuListsMap().put(otuList.getID(), otuList);
 		
 		NexusEventWriter writer = new NexusEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		EventWriterParameterMap parameters = new EventWriterParameterMap();
+		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -153,6 +155,17 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\t\t\t'id8_3';", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			assertEquals(-1, reader.read());
+			
+			LabelEditingReporter reporter = parameters.getGeneratedLabelsMap();
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "label1", EventContentType.OTU, "id1", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "id2", EventContentType.OTU, "id2", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "id1", EventContentType.OTU, "id3", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "id4_id1", EventContentType.OTU, "id4", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "id5_id4_id1", EventContentType.OTU, "id5", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "id8", EventContentType.OTU, "id6", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "id8_2", EventContentType.OTU, "id7", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "id8_3", EventContentType.OTU, "id8", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.NOT_FOUND, null, EventContentType.OTU, "otherID", reporter);
 		}
 		finally {
 			reader.close();

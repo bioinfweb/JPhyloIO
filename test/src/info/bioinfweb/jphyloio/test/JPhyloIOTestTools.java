@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.test;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -284,6 +285,21 @@ public class JPhyloIOTestTools {
 		}
 		else {
 			assertEquals(expectedLength, edgeEvent.getLength(), 0.0000001);
+		}
+  }
+  
+  
+  public static void assertEditedLabelMapping(LabelEditingReporter.LabelStatus expectedLabelStatus, String expectedLabel, 
+  		EventContentType contentType,	String id, LabelEditingReporter reporter) {
+  	
+		assertEquals(expectedLabelStatus, reporter.getLabelStatus(contentType, id));
+		if (expectedLabelStatus.equals(LabelEditingReporter.LabelStatus.EDITED) ||
+				expectedLabelStatus.equals(LabelEditingReporter.LabelStatus.UNCHANGED)) {
+			
+			assertEquals(expectedLabel, reporter.getEditedLabel(contentType, id));
+		}
+		else {
+			assertNull(reporter.getEditedLabel(contentType, id));
 		}
   }
 }
