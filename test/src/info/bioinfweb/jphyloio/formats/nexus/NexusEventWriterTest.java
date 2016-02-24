@@ -124,8 +124,9 @@ public class NexusEventWriterTest implements NexusConstants {
 				new LabeledIDEvent(EventContentType.OTU, "id3", "id1"),
 				new LabeledIDEvent(EventContentType.OTU, "id4", "id1"),
 				new LabeledIDEvent(EventContentType.OTU, "id5", "id4_id1"),
-				new LabeledIDEvent(EventContentType.OTU, "id6", "id7"),
-				new LabeledIDEvent(EventContentType.OTU, "id7", null)); 
+				new LabeledIDEvent(EventContentType.OTU, "id6", "id8"),
+				new LabeledIDEvent(EventContentType.OTU, "id7", "id8_2"),
+				new LabeledIDEvent(EventContentType.OTU, "id8", null)); 
 		document.getOtuListsMap().put(otuList.getID(), otuList);
 		
 		NexusEventWriter writer = new NexusEventWriter();
@@ -140,15 +141,16 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("", reader.readLine());
 			
 			assertEquals("BEGIN TAXA;", reader.readLine());
-			assertEquals("\tDIMENSIONS NTAX=7;", reader.readLine());
+			assertEquals("\tDIMENSIONS NTAX=8;", reader.readLine());
 			assertEquals("\tTAXLABELS", reader.readLine());
 			assertEquals("\t\t\tlabel1", reader.readLine());
 			assertEquals("\t\t\tid2", reader.readLine());
 			assertEquals("\t\t\tid1", reader.readLine());
 			assertEquals("\t\t\t'id4_id1'", reader.readLine());
 			assertEquals("\t\t\t'id5_id4_id1'", reader.readLine());
-			assertEquals("\t\t\tid7", reader.readLine());
-			assertEquals("\t\t\t'id7_2';", reader.readLine());
+			assertEquals("\t\t\tid8", reader.readLine());
+			assertEquals("\t\t\t'id8_2'", reader.readLine());
+			assertEquals("\t\t\t'id8_3';", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			assertEquals(-1, reader.read());
 		}
