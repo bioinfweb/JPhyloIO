@@ -162,10 +162,11 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			}
 			
 			if (taxonLabels.contains(result)) {
-				int suffix = 2;
+				long suffix = 2;
 				String editedResult;
 				do {
 					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
+					suffix++;
 				}	while (taxonLabels.contains(editedResult));
 				result = editedResult;
 			}
