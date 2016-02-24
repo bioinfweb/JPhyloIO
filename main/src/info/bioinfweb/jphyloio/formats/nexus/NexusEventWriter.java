@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -39,6 +38,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 
 
@@ -48,18 +48,41 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
  * <p>
  * This write is able to write OTU, sequence and tree data to Nexus formatted streams. It will ignore any data for 
  * phylogenetic networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator()}, because the Nexus 
- * format only supports trees. 
+ * format only supports trees.
+ * 
+ * <h3><a name="commentsMeta"></a>Comments and metadata</h3> 
  * <p>
  * Comments nested in any of the supported elements will usually be written. Metadata is only supported nested in
  * tree node or edge definitions and is written into hot comments as they are supported by {@link NewickStringWriter}.
  * Metadata nested into other elements will be ignored.
+ * 
+ * <h3><a name="labelsIDs"></a>Labels and IDs</h3> 
  * <p>
- * <b>Recognized parameters:</b>
+ * Note that the Nexus format does not differentiate between labels and IDs and because of this, labels of OTUs and 
+ * labels of sequences or nodes linked to them must have identical names in Nexus. Therefore this writer will always use
+ * the OTU label of the linked OTU, also for writing sequences and nodes. Labels of sequences and nodes will be ignored
+ * (which does not make a difference, of they are identical with the labels of their linked OTUs).
+ * <p>
+ * Sequence labels will though be used, if no OTU is linked. In such cases the {@code NEWTAXA} subcommand will be specified
+ * in the {@code DIMENSIONS} command.
+ * <p>
+ * If an OTU event without a defined label is provided by the data adapter, this writer will use the OTU ID as the taxon
+ * name in Nexus instead. If two OTUs with identical labels are provided, the Nexus name of the second will be a combination 
+ * of the ID and the label, while the first will be represented as the unchanged label as usual. If additional conflicts 
+ * occur (e.g. if an ID of an OTU without a label is equal to the label of a previous OTU) an index will be added to the end 
+ * of the label, until it is unique labels. The elements (ID, label, index) of edited Nexus names will be separated by
+ * {@link #EDITED_LABEL_SEPARATOR}.
+ * <p>
+ * The Nexus names that have actually be used in the output can be obtained from 
+ *  
+ * <h3><a name="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link EventWriterParameterMap#KEY_APPLICATION_COMMENT}</li>
  *   <li>{@link EventWriterParameterMap#KEY_EXTEND_SEQUENCE_WITH_GAPS}</li>
  *   <li>{@link EventWriterParameterMap#KEY_GENERATE_TRANSLATION_TABLE}</li>
  *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_GENERATED_LABELS_MAP}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_GENERATED_LABELS_MAP_ID_TYPE}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver
@@ -173,6 +196,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		}
 		
 		taxonLabels.add(result);
+		if (!result.equals(otuEvent.getLabel())) {  //TODO Also add unchanged labels as mappings from their IDs?
+			parameters.getGeneratedLabelsMap().put(otuEvent.getID(), result);
+		}
 		return result;
 	}
 	
@@ -220,6 +246,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeTaxaBlocks(DocumentDataAdapter document) throws IOException {
+		parameters.getGeneratedLabelsMap().clear();
+		parameters.put(EventWriterParameterMap.KEY_GENERATED_LABELS_MAP_ID_TYPE, EventContentType.OTU);
+		
 		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
 		if (otusIterator.hasNext()) {
 			writeTaxaBlock(otusIterator.next());

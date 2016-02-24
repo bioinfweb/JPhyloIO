@@ -19,8 +19,14 @@
 package info.bioinfweb.jphyloio;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.collections4.map.HashedMap;
+
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.log.ApplicationLogger;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
@@ -89,4 +95,49 @@ public class EventWriterParameterMap extends ParameterMap {
 	 * specified, the full node labels will included in the tree(s).
 	 */
 	public static final String KEY_GENERATE_TRANSLATION_TABLE = "generateTranslationTable";
+	
+	/**
+	 * Writers may have to edit names of OTUs, sequences or tree/network nodes according to the limitations of a specific
+	 * format. In such cases, the generated names used in the output will be added to a map as values with the OTU or 
+	 * sequence or node IDs as keys. Such a map will be stored in the parameter map under this key.
+	 * <p>
+	 * The value should have the type {@link Map}{@code <String, String>}. If no map is specified, writers supporting this
+	 * key will create a new map instance and put it in their parameter map. If a map is specified, its previous contents 
+	 * will be cleared by the writer. If an object of another type is specified using this key, it will be replaced by a
+	 * new map instance.
+	 * <p>
+	 * The type of keys used in the output name map is defined by the value for {@link #KEY_GENERATED_LABELS_MAP_ID_TYPE}.
+	 * 
+	 * @see #getGeneratedLabelsMap()
+	 */
+	public static final String KEY_GENERATED_LABELS_MAP = "generatedLabelsMap";
+	
+	/**
+	 * This parameter is used by writers to specify which type of IDs are used as keys for the map stored under 
+	 * {@link #KEY_GENERATED_LABELS_MAP}.
+	 * <p>
+	 * The value provided by the writers that support this feature will be one of {@link EventContentType#OTU},
+	 * {@link EventContentType#SEQUENCE} or {@link EventContentType#NODE}. Previously present values in the map
+	 * will be replaced.  
+	 */
+	public static final String KEY_GENERATED_LABELS_MAP_ID_TYPE = "generatedLabelsMapKeyType";
+	
+	
+	/**
+	 * Returns a map to map generated labels to according event IDs, as described in the documentation of 
+	 * {@link #KEY_GENERATED_LABELS_MAP}. If no object for this key is present in this instance, a new 
+	 * {@link HashMap} is created, added to this instance and returned. The same is done, if an object
+	 * not implementing {@link Map} is found for this key. 
+	 * 
+	 * @return the map instance
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, String> getGeneratedLabelsMap() {
+		Object result = get(KEY_GENERATED_LABELS_MAP);
+		if (!(result instanceof Map<?, ?>)) {  // Also checks for null.
+			result = new HashedMap<String, String>();
+			put(KEY_GENERATED_LABELS_MAP, result);
+		}
+		return (Map<String, String>)result;
+	}
 }
