@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.JPhyloIO;
+import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -73,7 +74,8 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
  * of the label, until it is unique labels. The elements (ID, label, index) of edited Nexus names will be separated by
  * {@link #EDITED_LABEL_SEPARATOR}.
  * <p>
- * The Nexus names that have actually be used in the output can be obtained from 
+ * The Nexus names that have actually be used in the output can be obtained from the {@link LabelEditingReporter} added
+ * to the parameter map.
  *  
  * <h3><a name="parameters"></a>Recognized parameters</h3> 
  * <ul>
