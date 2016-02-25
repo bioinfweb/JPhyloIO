@@ -19,14 +19,8 @@
 package info.bioinfweb.jphyloio;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.collections4.map.HashedMap;
-
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
@@ -90,11 +84,20 @@ public class EventWriterParameterMap extends ParameterMap {
 	 * This parameter can be used to specify whether a {@code TRANSLATE} command should be included in the {@code TREES}
 	 * block of a Nexus document.
 	 * <p>
-	 * The value should have the type {@link Boolean}. If {@code true} or no value is specified, a {@code TRANSLATE} 
-	 * command will be written and references to will be used as node labels in the following tree(s). If {@code false} is 
+	 * The value should have the type {@link Boolean}. If {@code true} is specified, a {@code TRANSLATE} command will be 
+	 * written and references to will be used as node labels in the following tree(s). If {@code false} or no value is 
 	 * specified, the full node labels will included in the tree(s).
 	 */
-	public static final String KEY_GENERATE_TRANSLATION_TABLE = "generateTranslationTable";
+	public static final String KEY_GENERATE_NEXUS_TRANSLATION_TABLE = "generateTranslationTable";
+	
+	/**
+	 * This parameter can be used to specify whether a nodes in a Nexus TREE command should always be written as full 
+	 * labels of if their index in the associated TAXA block should be used, when possible.
+	 * <p>
+	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, labels will be replaced
+	 * by indices, whenever possible. If {@code true} is specified, the full labels will always be used.
+	 */
+	public static final String KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS = "alwaysWriteNexusNodeLabels";
 	
 	/**
 	 * Writers may have to edit names of OTUs, sequences or tree/network nodes according to the limitations of a specific

@@ -21,8 +21,10 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
@@ -83,7 +85,8 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
  * <ul>
  *   <li>{@link EventWriterParameterMap#KEY_APPLICATION_COMMENT}</li>
  *   <li>{@link EventWriterParameterMap#KEY_EXTEND_SEQUENCE_WITH_GAPS}</li>
- *   <li>{@link EventWriterParameterMap#KEY_GENERATE_TRANSLATION_TABLE}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_GENERATE_NEXUS_TRANSLATION_TABLE}</li>
  *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
  *   <li>{@link EventWriterParameterMap#KEY_GENERATED_LABELS_MAP}</li>
  *   <li>{@link EventWriterParameterMap#KEY_GENERATED_LABELS_MAP_ID_TYPE}</li>
@@ -528,12 +531,55 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	private Map<String, Long> createOTUIndexMap(OTUListDataAdapter otus) {
+		Map<String, Long> result = new HashMap<String, Long>();
+		long index = 0;
+		Iterator<String> iterator = otus.getIDIterator();
+		while (iterator.hasNext()) {
+			result.put(iterator.next(), index);
+		}
+		return result;
+	}
+	
+	
+	private void writeTranslateCommand(Map<String, Long> indexMap) throws IOException {
+		if (!indexMap.isEmpty()) {
+			LabelEditingReporter reporter = parameters.getLabelEditingReporter();
+			writeLineStart(writer, COMMAND_NAME_TRANSLATE);
+			writeLineBreak(writer, parameters);
+			increaseIndention();
+			increaseIndention();
+			Iterator<String> iterator = indexMap.keySet().iterator();
+			while (iterator.hasNext()) {
+				String id = iterator.next();
+				writer.write(indexMap.get(id).toString());
+				writer.write(' ');
+				String label = reporter.getEditedLabel(EventContentType.OTU, id);
+				if (label == null) {
+					throw new InternalError("No label definition found for OTU ID " + id + ".");  // Should not happen.
+				}
+				writer.write(label);
+				if (iterator.hasNext()) {
+					writer.write(ELEMENT_SEPARATOR);
+				}
+				else {
+					writeCommandEnd();					
+				}
+				writeLineBreak(writer, parameters);
+			}
+			decreaseIndention();
+			decreaseIndention();
+		}
+	}
+	
+	
 	private void writeTreesBlocks(DocumentDataAdapter document) throws IOException {
 		Set<String> processedOTUsIDs = new HashSet<String>();
 		boolean treeWritten;
 		long skippedNetworks;
 		do {
 			String currentOTUsID = null;
+			OTUListDataAdapter currentOTUList = null;
 			treeWritten = false;
 			skippedNetworks = 0;
 			Set<String> usedLabels = new HashSet<String>();
@@ -546,13 +592,17 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					// The following code ensures that trees referencing different TAXA blocks are written in separate TREES blocks:
 					if (currentOTUsID == null) {
 						currentOTUsID = getOTUsIDForTree(startEvent);
-						if (UNDEFINED_OTUS_ID.equals(currentOTUsID) && (document.getOTUListCount() > 1)) {
+						if (!UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
+							currentOTUList = document.getOTUList(currentOTUsID);
+						}
+						else if (document.getOTUListCount() > 1) {
 							getLogger(parameters).addWarning("One or more trees were written to the Nexus document, which do not reference "
 									+ "any TAXA block. Since the created Nexus document contains more than one TAXA block, this file may not be "
 									+ "readable by some applications.");
 						}
 						if (processedOTUsIDs.contains(currentOTUsID)) {
 							currentOTUsID = null;
+							currentOTUList = null;
 						}
 						else {
 							processedOTUsIDs.add(currentOTUsID);
@@ -560,6 +610,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					}
 					
 					if ((currentOTUsID != null) && (currentOTUsID.equals(getOTUsIDForTree(startEvent)))) {
+						Map<String, Long> indexMap = null;
 						if (!treeWritten) {
 							writeBlockStart(BLOCK_NAME_TREES);
 							increaseIndention();
@@ -573,10 +624,16 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 							}
 							writeLinkTaxaCommand(startEvent);  // Writes only if a block is linked.
 							
-							//TODO Write NEWTAXA and TAXLABELS if necessary (e.g. if nodes without linked OTUs are present).
-							boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_TRANSLATION_TABLE, true);
-							if (translate) {
-								//TODO Write translate command (Determine necessary taxa.)
+							boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, false);
+							boolean alwaysUseLabels = parameters.getBoolean(EventWriterParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, false);
+							if (translate || alwaysUseLabels) {
+								indexMap = createOTUIndexMap(currentOTUList);
+							}
+							if (translate && (currentOTUList != null)) {  //TODO If no user defined translation labels are possible, the TRANSLATE command is unnecessary, since using the indices of the TAXA block is anyway possible.
+								writeTranslateCommand(indexMap);  // Always writes translation table for all taxa, event if they are not contained in the trees of this block.
+							}
+							if (alwaysUseLabels) {
+								indexMap = null;  // Delete possibly generated index map again.
 							}
 						}
 						
@@ -586,7 +643,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 						writer.write(' ');
 						writer.write(KEY_VALUE_SEPARATOR);
 						writer.write(' ');
-						new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), true, parameters).write();  // Also writes line break.
+						new NewickStringWriter(writer, treeNetwork, currentOTUList, true, indexMap, parameters).write();  // Also writes line break. indexMap may be null.
 						
 						treeWritten = true;
 					}

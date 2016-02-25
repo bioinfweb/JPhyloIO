@@ -45,7 +45,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 		if (treeNetworkIterator.hasNext()) {
 			while (treeNetworkIterator.hasNext()) {
 				TreeNetworkDataAdapter treeNetwork = treeNetworkIterator.next();
-				new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), false, parameters).write();
+				new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), false, null, parameters).write();
 			}
 		}
 		else {

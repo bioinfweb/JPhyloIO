@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.newick;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -32,6 +33,7 @@ import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.Map;
 
 
 
@@ -44,7 +46,8 @@ public class NewickStringWriter implements NewickConstants {
 	private Writer writer;
 	private TreeNetworkDataAdapter tree;
 	private OTUListDataAdapter otuList;
-	boolean useOTUFirst;
+	private boolean useOTUFirst;
+	private Map<String, Long> indexMap;
 	private EventWriterParameterMap parameters;
 	
 	
@@ -62,13 +65,14 @@ public class NewickStringWriter implements NewickConstants {
 	 * @param parameters the write parameter map specified to the calling reader
 	 */
 	public NewickStringWriter(Writer writer, TreeNetworkDataAdapter tree,	OTUListDataAdapter otuList, 
-			boolean useOTUFirst, EventWriterParameterMap parameters) {
+			boolean useOTUFirst, Map<String, Long> indexMap, EventWriterParameterMap parameters) {
 		
 		super();
 		this.writer = writer;
 		this.tree = tree;
 		this.otuList = otuList;
 		this.useOTUFirst = useOTUFirst;
+		this.indexMap = indexMap;
 		this.parameters = parameters;
 	}
 	
@@ -120,6 +124,31 @@ public class NewickStringWriter implements NewickConstants {
 	}
 	
 	
+	private String getNodeName(LinkedOTUOrOTUsEvent nodeEvent) {
+		String result;
+		if ((indexMap != null) && nodeEvent.isOTUOrOTUsLinked()) {
+			Long index = indexMap.get(nodeEvent.getID());
+			if (index == null) {
+				throw new InconsistentAdapterDataException("Error when writing tree: The node with the ID " + nodeEvent.getID() + 
+						" references an OTU with the ID " + nodeEvent.getOTUOrOTUsID() + 
+						", which could not be found in the OTU list associated with this tree.");
+			}
+			else {
+				result = index.toString();
+			}
+		}
+		else {
+			if (useOTUFirst) {
+				result = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeEvent, otuList);
+			}
+			else {
+				result = AbstractEventWriter.getLinkedOTUNameOwnFirst(nodeEvent, otuList);
+			}
+		}
+		return result;
+	}
+	
+	
 	private void writeSubtree(String rootEdgeID) 
 			throws IllegalArgumentException, IOException {
 		
@@ -143,14 +172,7 @@ public class NewickStringWriter implements NewickConstants {
 		tree.writeNodeData(nodeReceiver, nodeID);
 		
 		// Write node data:
-		String nodeName;
-		if (useOTUFirst) {
-			nodeName = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeReceiver.getStartEvent(), otuList);
-		}
-		else {
-			nodeName = AbstractEventWriter.getLinkedOTUNameOwnFirst(nodeReceiver.getStartEvent(), otuList);
-		}
-		writer.write(formatToken(nodeName, NAME_DELIMITER));
+		writer.write(formatToken(getNodeName(nodeReceiver.getStartEvent()), NAME_DELIMITER));
 		nodeReceiver.writeMetadata();
 		nodeReceiver.writeComments();
 		
