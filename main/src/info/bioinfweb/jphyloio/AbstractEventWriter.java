@@ -181,18 +181,18 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
 		
 		String result = getLabeledIDName(event);
-		if (reporter.isLabelUsed(EventContentType.OTU, result)) {
+		if (reporter.isLabelUsed(event.getType().getContentType(), result)) {
 			if (event.hasLabel()) {
 				result = event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel();
 			}
 			
-			if (reporter.isLabelUsed(EventContentType.OTU, result)) {
+			if (reporter.isLabelUsed(event.getType().getContentType(), result)) {
 				long suffix = 2;
 				String editedResult;
 				do {
 					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
 					suffix++;
-				}	while (reporter.isLabelUsed(EventContentType.OTU, editedResult));
+				}	while (reporter.isLabelUsed(event.getType().getContentType(), editedResult));
 				result = editedResult;
 			}
 		}
