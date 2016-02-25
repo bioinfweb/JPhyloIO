@@ -60,11 +60,11 @@ public class NexusEventWriterTest implements NexusConstants {
 		matrix.setLinkedOTUsID("otus0");
 		matrix.setTokenSets(new TestSingleTokenSetAdapter());
 		
-		document.getTreesNetworks().add(new TestTreeDataAdapter("tree0", "first tree"));
-		TestTreeDataAdapter tree = new TestTreeDataAdapter("tree1", "second tree", new String[]{"otu0", "otu1", "otu2"});
+		document.getTreesNetworks().add(new TestTreeDataAdapter("tree0", "tree"));
+		TestTreeDataAdapter tree = new TestTreeDataAdapter("tree1", "tree", new String[]{"otu0", "otu1", "otu2"});
 		tree.setLinkedOTUsID("otus0");
 		document.getTreesNetworks().add(tree);
-		document.getTreesNetworks().add(new TestTreeDataAdapter("tree3", "third tree"));
+		document.getTreesNetworks().add(new TestTreeDataAdapter("tree2", "tree"));
 		
 		NexusEventWriter writer = new NexusEventWriter();
 		EventWriterParameterMap parameterMap = new EventWriterParameterMap();
@@ -104,15 +104,15 @@ public class NexusEventWriterTest implements NexusConstants {
 
 			assertEquals("BEGIN TREES;", reader.readLine());
 			assertEquals("\tTITLE Trees_linked_to_no_TAXA_block;", reader.readLine());
-			assertEquals("\tTREE first_tree = [&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
-			assertEquals("\tTREE third_tree = [&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE tree = [&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE 'tree2_tree' = [&R] ((Node_nA:1.1[&annotation=100], Node_nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_nC:2.0)Node_nRoot:1.5;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			assertEquals("", reader.readLine());
 			
 			assertEquals("BEGIN TREES;", reader.readLine());
 			assertEquals("\tTITLE Trees_linked_to_OTU_list_0;", reader.readLine());
 			assertEquals("\tLINK TAXA=OTU_list_0;", reader.readLine());
-			assertEquals("\tTREE second_tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_nRoot:1.5;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			
 			assertEquals(-1, reader.read());
