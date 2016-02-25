@@ -21,7 +21,9 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
@@ -90,6 +92,9 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
  * @author Ben St&ouml;ver
  */
 public class NexusEventWriter extends AbstractEventWriter implements NexusConstants {
+	private static final String UNDEFINED_OTUS_ID = "\n";  // Should not occur as a real ID;
+	
+	
 	private static enum MatrixWriteResult {
 		CHARACTERS,	UNALIGNED, NONE;
 	}
@@ -176,12 +181,17 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeTitleCommand(LabeledIDEvent startEvent) throws IOException {
+	private void writeTitleCommand(String label) throws IOException {
 		writeLineStart(writer, COMMAND_NAME_TITLE);
 		writer.write(' ');
-		String label = createUniqueLabel(parameters, startEvent);
 		writer.write(formatToken(label));
 		writeCommandEnd();
+	}
+	
+	
+	private void writeTitleCommand(LabeledIDEvent startEvent) throws IOException {
+		String label = createUniqueLabel(parameters, startEvent);
+		writeTitleCommand(label);
 		parameters.getLabelEditingReporter().addEdit(startEvent, label);
 	}
 	
@@ -484,45 +494,91 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	private String getOTUsIDForTree(LinkedOTUOrOTUsEvent event) {
+		if (event.isOTUOrOTUsLinked()) {
+			return event.getOTUOrOTUsID();
+		}
+		else {
+			return UNDEFINED_OTUS_ID;
+		}
+	}
+	
+	
 	private void writeTreesBlock(DocumentDataAdapter document) throws IOException {
-		long skippedNetworks = 0;
-		boolean treeWritten = false;
-		Iterator<TreeNetworkDataAdapter> iterator = document.getTreeNetworkIterator();
-		while (iterator.hasNext()) {
-			TreeNetworkDataAdapter treeNetwork = iterator.next();
-			if (treeNetwork.isTree()) {
-				if (!treeWritten) {
-					writeBlockStart(BLOCK_NAME_TREES);
-					increaseIndention();
+		Set<String> processedOTUsIDs = new HashSet<String>();
+		boolean treeWritten;
+		long skippedNetworks;
+		do {
+			String currentOTUsID = null;
+			treeWritten = false;
+			skippedNetworks = 0;
+			Iterator<TreeNetworkDataAdapter> iterator = document.getTreeNetworkIterator();
+			while (iterator.hasNext()) {
+				TreeNetworkDataAdapter treeNetwork = iterator.next();
+				if (treeNetwork.isTree()) {
+					LinkedOTUOrOTUsEvent startEvent = treeNetwork.getStartEvent();
+				
+					// The following code ensures that trees referencing different TAXA blocks are written in separate TREES blocks:
+					if (currentOTUsID == null) {
+						currentOTUsID = getOTUsIDForTree(startEvent);
+						if (UNDEFINED_OTUS_ID.equals(currentOTUsID) && (document.getOTUListCount() > 1)) {
+							getLogger(parameters).addWarning("One or more trees were written to the Nexus document, which do not reference "
+									+ "any TAXA block. Since the created Nexus document contains more than one TAXA block, this file may not be "
+									+ "readable by some applications.");
+						}
+						if (processedOTUsIDs.contains(currentOTUsID)) {
+							currentOTUsID = null;
+						}
+						else {
+							processedOTUsIDs.add(currentOTUsID);
+						}
+					}
 					
-					//TODO Write NEWTAXA and TAXLABELS if necessary (e.g. if nodes without linked OTUs are present).
-					boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_TRANSLATION_TABLE, true);
-					if (translate) {
-						//TODO Write translate command (Determine necessary taxa.)
+					if ((currentOTUsID != null) && (currentOTUsID.equals(getOTUsIDForTree(startEvent)))) {
+						if (!treeWritten) {
+							writeBlockStart(BLOCK_NAME_TREES);
+							increaseIndention();
+							
+							if (UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
+								writeTitleCommand("Trees linked to no TAXA block");
+							}
+							else {
+								writeTitleCommand("Trees linked to " + parameters.getLabelEditingReporter().getEditedLabel(
+										EventContentType.OTU_LIST, startEvent.getOTUOrOTUsID()));
+							}
+							writeLinkTaxaCommand(startEvent);  // Writes only if a block is linked.
+							
+							//TODO Write NEWTAXA and TAXLABELS if necessary (e.g. if nodes without linked OTUs are present).
+							boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_TRANSLATION_TABLE, true);
+							if (translate) {
+								//TODO Write translate command (Determine necessary taxa.)
+							}
+						}
+						
+						writeLineStart(writer, COMMAND_NAME_TREE);
+						writer.write(' ');
+						writer.write(formatToken(createUniqueLabel(parameters, startEvent)));
+						writer.write(' ');
+						writer.write(KEY_VALUE_SEPARATOR);
+						writer.write(' ');
+						new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), true, parameters).write();  // Also writes line break.
+						
+						treeWritten = true;
 					}
 				}
-				
-				writeLineStart(writer, COMMAND_NAME_TREE);
-				writer.write(' ');
-				writer.write(formatToken(createUniqueLabel(parameters, treeNetwork.getStartEvent())));
-				writer.write(' ');
-				writer.write(KEY_VALUE_SEPARATOR);
-				writer.write(' ');
-				new NewickStringWriter(writer, treeNetwork, getReferencedOTUList(document, treeNetwork), true, parameters).write();  // Also writes line break.
-				
-				treeWritten = true;
+				else {
+					skippedNetworks += 1;
+				}
 			}
-			else {
-				skippedNetworks += 1;
+			
+			if (treeWritten) {
+				decreaseIndention();
+				writeBlockEnd();
 			}
-		}
+		} while (treeWritten);
 		
-		if (skippedNetworks > 0) {
+		if (skippedNetworks > 0)  {
 			//TODO Log warning
-		}
-		if (treeWritten) {
-			decreaseIndention();
-			writeBlockEnd();
 		}
 	}
 	

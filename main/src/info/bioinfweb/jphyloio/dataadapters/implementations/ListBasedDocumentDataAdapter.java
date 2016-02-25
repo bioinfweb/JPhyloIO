@@ -118,6 +118,12 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter impl
 
 	
 	@Override
+	public long getOTUListCount() {
+		return otuListsMap.size();
+	}
+
+
+	@Override
 	public OTUListDataAdapter getOTUList(String id)	throws IllegalArgumentException {
 		return otuListsMap.get(id);
 	}

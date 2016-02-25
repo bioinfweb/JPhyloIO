@@ -48,7 +48,14 @@ public interface DocumentDataAdapter extends AnnotatedDataAdapter {
 	 * 
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
-	public Iterator<OTUListDataAdapter> getOTUListIterator();  //TODO Can OTU lists be empty, of a matrix or tree is present? (In this case, writer would have to reconstruct the OTUs from the sequences and nodes.)
+	public Iterator<OTUListDataAdapter> getOTUListIterator();
+	
+	/**
+	 * Returns the number of OTU lists provided by this document adapter.
+	 * 
+	 * @return the number of OTU lists, that will be returned by {@link #getOTUListIterator()}
+	 */
+	public long getOTUListCount();
 	
 	/**
 	 * Returns the OTU list referenced by the specified ID.
