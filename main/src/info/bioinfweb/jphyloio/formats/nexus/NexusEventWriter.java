@@ -355,7 +355,17 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					writeLineBreak(writer, parameters);
 					beforeFirst = false;
 				}
-				writeLineStart(writer, formatToken(createUniqueLabel(parameters, event)));
+				final LabelEditingReporter reporter = parameters.getLabelEditingReporter(); 
+				writeLineStart(writer, formatToken(createUniqueLabel(
+						parameters, 
+						new UniqueLabelTester() {
+							@Override
+							public boolean isUnique(String label) {
+								return !reporter.isLabelUsed(EventContentType.OTU, label) && 
+										!reporter.isLabelUsed(EventContentType.SEQUENCE, label);
+							}
+						},
+						event)));
 			}
 		}
 		if (anyWritten) {
@@ -363,6 +373,27 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			decreaseIndention();
 			decreaseIndention();
 		}
+	}
+	
+	
+	private String getSequenceName(LinkedOTUOrOTUsEvent sequenceEvent) {
+		final LabelEditingReporter reporter = parameters.getLabelEditingReporter(); 
+		String result;
+		if (sequenceEvent.isOTUOrOTUsLinked()) {
+			result = reporter.getEditedLabel(EventContentType.OTU, sequenceEvent.getOTUOrOTUsID());
+			if (result == null) {
+				throw new InconsistentAdapterDataException("The sequence with the ID " + sequenceEvent.getID() + 
+						" is referencing an OTU with the ID " + sequenceEvent.getOTUOrOTUsID() + " which could not be found.");
+			}
+			reporter.addEdit(sequenceEvent, result);  // Register edited OTU label also for sequence.
+		}
+		else {
+			result = reporter.getEditedLabel(EventContentType.SEQUENCE, sequenceEvent.getID());;  // Should have been defined when the TAXALABELS command was written.
+			if (result == null) {
+				throw new InternalError("Writing TAXLABELS and MATRIX command is not consistent.");
+			}
+		}
+		return result;
 	}
 
 	
@@ -377,18 +408,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		Iterator<String> iterator = matrix.getSequenceIDIterator();
 		while (iterator.hasNext()) {
 			String id = iterator.next();
-			LinkedOTUOrOTUsEvent sequenceStartEvent = matrix.getSequenceStartEvent(id);
-			String sequenceName;
-			if (sequenceStartEvent.isOTUOrOTUsLinked()) {
-				sequenceName = parameters.getLabelEditingReporter().getEditedLabel(EventContentType.OTU, sequenceStartEvent.getOTUOrOTUsID());
-				if (sequenceName == null) {
-					throw new InconsistentAdapterDataException("The sequence with the ID " + sequenceStartEvent.getID() + 
-							" is referencing an OTU with the ID " + sequenceStartEvent.getOTUOrOTUsID() + " which could not be found.");
-				}
-			}
-			else {
-				sequenceName = getLabeledIDName(sequenceStartEvent);  //TODO Check for collisions with OTU names. (This functionality will probably be moved towards the beginning to write the NEWTAXA subcommand.)
-			}
+			String sequenceName = getSequenceName(matrix.getSequenceStartEvent(id));
+			
 			writeLineStart(writer, formatToken(sequenceName));
 			writer.write(' ');
 			
@@ -507,26 +528,17 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private String createUniqueTreeLabel(LinkedOTUOrOTUsEvent event, Set<String> usedLabels) {
-		String result = getLabeledIDName(event);
-		if (usedLabels.contains(result)) {
-			if (event.hasLabel()) {
-				result = event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel();
-			}
-			
-			if (usedLabels.contains(result)) {
-				long suffix = 2;
-				String editedResult;
-				do {
-					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
-					suffix++;
-				}	while (usedLabels.contains(editedResult));
-				result = editedResult;
-			}
-		}
-		
+	private String createUniqueTreeLabel(LinkedOTUOrOTUsEvent event, final Set<String> usedLabels) {
+		String result = createUniqueLabel(
+				parameters, 
+				new UniqueLabelTester() {
+					@Override
+					public boolean isUnique(String label) {
+						return !usedLabels.contains(label);
+					}
+				}, 
+				event);
 		usedLabels.add(result);
-		parameters.getLabelEditingReporter().addEdit(event, result);
 		return result;
 	}
 	

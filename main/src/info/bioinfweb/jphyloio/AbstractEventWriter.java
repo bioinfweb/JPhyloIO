@@ -34,7 +34,6 @@ import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
@@ -45,6 +44,11 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  */
 public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	public static final String EDITED_LABEL_SEPARATOR = "_";
+
+	
+	protected static interface UniqueLabelTester {
+		public boolean isUnique(String label);
+	}
 	
 	
 	private String indention = "";
@@ -177,29 +181,63 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected String createUniqueLabel(EventWriterParameterMap parameters, LabeledIDEvent event) {
-		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
-		
+	protected String createUniqueLabel(EventWriterParameterMap parameters, UniqueLabelTester tester, LabeledIDEvent event) {
 		String result = getLabeledIDName(event);
-		if (reporter.isLabelUsed(event.getType().getContentType(), result)) {
+		if (!tester.isUnique(result)) {
 			if (event.hasLabel()) {
 				result = event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel();
 			}
 			
-			if (reporter.isLabelUsed(event.getType().getContentType(), result)) {
+			if (!tester.isUnique(result)) {
 				long suffix = 2;
 				String editedResult;
 				do {
 					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
 					suffix++;
-				}	while (reporter.isLabelUsed(event.getType().getContentType(), editedResult));
+				}	while (!tester.isUnique(editedResult));
 				result = editedResult;
 			}
 		}
 		
-		reporter.addEdit(event, result);
+		parameters.getLabelEditingReporter().addEdit(event, result);
 		return result;
 	}
+	
+	
+	protected String createUniqueLabel(final EventWriterParameterMap parameters, final LabeledIDEvent event) {
+		return createUniqueLabel(parameters, new UniqueLabelTester() {
+					@Override
+					public boolean isUnique(String label) {
+						return !parameters.getLabelEditingReporter().isLabelUsed(event.getType().getContentType(), label);
+					}
+				}, 
+				event);
+	}
+	
+	
+//	protected String createUniqueLabel(EventWriterParameterMap parameters, LabeledIDEvent event) {
+//		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
+//		
+//		String result = getLabeledIDName(event);
+//		if (reporter.isLabelUsed(event.getType().getContentType(), result)) {
+//			if (event.hasLabel()) {
+//				result = event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel();
+//			}
+//			
+//			if (reporter.isLabelUsed(event.getType().getContentType(), result)) {
+//				long suffix = 2;
+//				String editedResult;
+//				do {
+//					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
+//					suffix++;
+//				}	while (reporter.isLabelUsed(event.getType().getContentType(), editedResult));
+//				result = editedResult;
+//			}
+//		}
+//		
+//		reporter.addEdit(event, result);
+//		return result;
+//	}
 	
 	
 	@Override
