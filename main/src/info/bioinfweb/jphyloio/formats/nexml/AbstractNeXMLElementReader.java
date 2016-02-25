@@ -80,7 +80,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			
 			if (!Character.isWhitespace(sequence.charAt(sequence.length() - 1))) {				
 				try {
-					XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();
+					XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
 					if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
 						String nextSequence = nextEvent.asCharacters().getData();
 						if (!Character.isWhitespace(nextSequence.charAt(0))) {
