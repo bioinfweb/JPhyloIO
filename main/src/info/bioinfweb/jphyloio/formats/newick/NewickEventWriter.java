@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 public class NewickEventWriter extends AbstractEventWriter implements NewickConstants {
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception {
-		ApplicationLogger logger = getLogger(parameters);
+		ApplicationLogger logger = parameters.getLogger();
 		
 		logIngnoredOTULists(document, logger, "Newick/NHX", "tree nodes"); 
 		if (document.getMatrixIterator().hasNext()) {

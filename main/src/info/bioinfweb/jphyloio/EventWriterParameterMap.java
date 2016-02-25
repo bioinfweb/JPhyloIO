@@ -113,6 +113,11 @@ public class EventWriterParameterMap extends ParameterMap {
 	public static final String KEY_LABEL_EDITING_REPORTER = "labelEditingReporter";
 	
 	
+	public ApplicationLogger getLogger() {
+		return getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
+	}
+	
+	
 	/**
 	 * Returns the label editing reporter of this map stored under {@link #KEY_LABEL_EDITING_REPORTER}. If no object for 
 	 * this key is present in this instance, a new one is created, added to this instance and returned. The same is done, 

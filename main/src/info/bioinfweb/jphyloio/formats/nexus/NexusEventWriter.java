@@ -608,7 +608,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 							currentOTUList = document.getOTUList(currentOTUsID);
 						}
 						else if (document.getOTUListCount() > 1) {
-							getLogger(parameters).addWarning("One or more trees were written to the Nexus document, which do not reference "
+							parameters.getLogger().addWarning("One or more trees were written to the Nexus document, which do not reference "
 									+ "any TAXA block. Since the created Nexus document contains more than one TAXA block, this file may not be "
 									+ "readable by some applications.");
 						}
@@ -672,7 +672,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		} while (treeWritten);
 		
 		if (skippedNetworks > 0)  {
-			//TODO Log warning
+			parameters.getLogger().addWarning("The document data contained " + skippedNetworks + 
+					" phylogenetic network definitions, which have not been written to the Nexus document, since it only supports trees.");
 		}
 	}
 	
@@ -681,7 +682,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception {
 		this.writer = writer;
 		this.parameters = parameters;
-		logger = getLogger(parameters);
+		logger = parameters.getLogger();
 		
 		parameters.getLabelEditingReporter().clear();
 		writeInitialLines();

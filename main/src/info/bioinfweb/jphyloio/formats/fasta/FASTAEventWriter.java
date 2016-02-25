@@ -75,7 +75,7 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 	public void writeDocument(DocumentDataAdapter document, Writer writer,
 			EventWriterParameterMap parameters) throws Exception {
 		
-		ApplicationLogger logger = getLogger(parameters);
+		ApplicationLogger logger = parameters.getLogger();
 		logIngnoredOTULists(document, logger, "FASTA", "sequences");
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
 		if (matrixIterator.hasNext()) {

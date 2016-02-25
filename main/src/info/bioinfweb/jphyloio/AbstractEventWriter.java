@@ -151,11 +151,6 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	public static ApplicationLogger getLogger(EventWriterParameterMap parameters) {
-		return parameters.getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
-	}
-	
-	
 	protected String getIndention() {
 		return indention;
 	}
