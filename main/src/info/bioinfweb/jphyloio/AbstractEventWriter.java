@@ -197,7 +197,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			}
 		}
 		
-		parameters.getLabelEditingReporter().addEdit(event, result);
+		reporter.addEdit(event, result);
 		return result;
 	}
 	

@@ -504,7 +504,31 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeTreesBlock(DocumentDataAdapter document) throws IOException {
+	private String createUniqueTreeLabel(LinkedOTUOrOTUsEvent event, Set<String> usedLabels) {
+		String result = getLabeledIDName(event);
+		if (usedLabels.contains(result)) {
+			if (event.hasLabel()) {
+				result = event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel();
+			}
+			
+			if (usedLabels.contains(result)) {
+				long suffix = 2;
+				String editedResult;
+				do {
+					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
+					suffix++;
+				}	while (usedLabels.contains(editedResult));
+				result = editedResult;
+			}
+		}
+		
+		usedLabels.add(result);
+		parameters.getLabelEditingReporter().addEdit(event, result);
+		return result;
+	}
+	
+	
+	private void writeTreesBlocks(DocumentDataAdapter document) throws IOException {
 		Set<String> processedOTUsIDs = new HashSet<String>();
 		boolean treeWritten;
 		long skippedNetworks;
@@ -512,6 +536,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			String currentOTUsID = null;
 			treeWritten = false;
 			skippedNetworks = 0;
+			Set<String> usedLabels = new HashSet<String>();
 			Iterator<TreeNetworkDataAdapter> iterator = document.getTreeNetworkIterator();
 			while (iterator.hasNext()) {
 				TreeNetworkDataAdapter treeNetwork = iterator.next();
@@ -557,7 +582,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 						
 						writeLineStart(writer, COMMAND_NAME_TREE);
 						writer.write(' ');
-						writer.write(formatToken(createUniqueLabel(parameters, startEvent)));
+						writer.write(formatToken(createUniqueTreeLabel(startEvent, usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
 						writer.write(' ');
 						writer.write(KEY_VALUE_SEPARATOR);
 						writer.write(' ');
@@ -594,7 +619,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		logIgnoredMetadata(document, "The document");
 		writeTaxaBlocks(document);
 		writeCharactersUnalignedBlocks(document);
-		writeTreesBlock(document);
+		writeTreesBlocks(document);
 		//TODO Write SETS
 	}
 }
