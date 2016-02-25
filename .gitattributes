@@ -134,6 +134,10 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/TreeReader.j
 main/src/info/bioinfweb/jphyloio/formats/nexus/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/pde/PDEConstants.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/pde/PDEEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/pde/PDEMetaColumnDefintion.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/pde/PDEMetaColumnType.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/pde/PDEStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/pde/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/AbstractPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReader.java -text svneol=unset#text/plain
