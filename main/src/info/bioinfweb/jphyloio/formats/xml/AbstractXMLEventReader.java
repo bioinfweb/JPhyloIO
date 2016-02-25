@@ -215,5 +215,18 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	public void close() throws Exception {
 		super.close();
 		getXMLReader().close();
+	}
+
+
+	@Override
+	public int getMaxCommentLength() {
+		// TODO How should this be implemented? Should it be removed and become a method of AbstractTextEventReader?
+		return 0;
+	}
+
+
+	@Override
+	public void setMaxCommentLength(int maxCommentLength) {
+		// TODO How should this be implemented? Should it be removed and become a method of AbstractTextEventReader?
 	}	
 }

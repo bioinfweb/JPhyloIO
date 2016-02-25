@@ -244,26 +244,4 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
 	}
-
-	
-	@Override
-	public int getMaxCommentLength() {
-		return 0;
-	}
-	
-
-	@Override
-	public void setMaxCommentLength(int maxCommentLength) {}
-
-	
-	protected XMLEventReader getXMLReader() {
-		return super.getXMLReader();
-	}
-		
-	
-	@Override
-	public void close() throws Exception {
-		super.close();
-		getXMLReader().close();
-	}
 }

@@ -350,14 +350,4 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 	protected PhyloXMLStreamDataProvider createStreamDataProvider() {
 		return new PhyloXMLStreamDataProvider(this);
 	}
-	
-	
-	@Override
-	public int getMaxCommentLength() {
-		return 0;
-	}
-	
-
-	@Override
-	public void setMaxCommentLength(int maxCommentLength) {}
 }

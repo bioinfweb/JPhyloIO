@@ -756,26 +756,4 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	public TranslateTokens getTranslateTokens() {
 		return translateTokens;
 	}
-
-
-	@Override
-	public int getMaxCommentLength() {
-		return 0;
-	}
-
-
-	@Override
-	public void setMaxCommentLength(int maxCommentLength) {}
-	
-	
-	protected XMLEventReader getXMLReader() {
-		return super.getXMLReader();
-	}
-	
-	
-	@Override
-	public void close() throws Exception {
-		super.close();
-		getXMLReader().close();
-	}	
 }
