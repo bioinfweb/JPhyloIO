@@ -545,10 +545,11 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	private Map<String, Long> createOTUIndexMap(OTUListDataAdapter otus) {
 		Map<String, Long> result = new HashMap<String, Long>();
-		long index = 0;
+		long index = 1;  // Nexus taxon indices start with 1.
 		Iterator<String> iterator = otus.getIDIterator();
 		while (iterator.hasNext()) {
 			result.put(iterator.next(), index);
+			index++;
 		}
 		return result;
 	}
@@ -636,16 +637,18 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 							}
 							writeLinkTaxaCommand(startEvent);  // Writes only if a block is linked.
 							
-							boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, false);
-							boolean alwaysUseLabels = parameters.getBoolean(EventWriterParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, false);
-							if (translate || alwaysUseLabels) {
-								indexMap = createOTUIndexMap(currentOTUList);
-							}
-							if (translate && (currentOTUList != null)) {  //TODO If no user defined translation labels are possible, the TRANSLATE command is unnecessary, since using the indices of the TAXA block is anyway possible.
-								writeTranslateCommand(indexMap);  // Always writes translation table for all taxa, event if they are not contained in the trees of this block.
-							}
-							if (alwaysUseLabels) {
-								indexMap = null;  // Delete possibly generated index map again.
+							if (currentOTUList != null) {
+								boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, false);
+								boolean alwaysUseLabels = parameters.getBoolean(EventWriterParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, false);
+								if (translate || !alwaysUseLabels) {
+									indexMap = createOTUIndexMap(currentOTUList);
+								}
+								if (translate) {  //TODO If no user defined translation labels are possible, the TRANSLATE command is unnecessary, since using the indices of the TAXA block is anyway possible.
+									writeTranslateCommand(indexMap);  // Always writes translation table for all taxa, event if they are not contained in the trees of this block.
+								}
+								if (alwaysUseLabels) {
+									indexMap = null;  // Delete possibly generated index map again.
+								}
 							}
 						}
 						

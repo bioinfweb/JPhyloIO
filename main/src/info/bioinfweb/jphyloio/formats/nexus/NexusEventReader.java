@@ -29,7 +29,6 @@ import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;

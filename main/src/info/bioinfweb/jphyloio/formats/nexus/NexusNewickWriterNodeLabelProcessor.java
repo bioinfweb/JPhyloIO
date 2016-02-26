@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.newick.DefaultNewickWriterNodeLabelProcessor;
 
 
@@ -48,7 +49,7 @@ public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNode
 	public String createNodeName(LinkedOTUOrOTUsEvent nodeEvent) {
 		String result;
 		if ((indexMap != null) && nodeEvent.isOTUOrOTUsLinked()) {
-			Long index = indexMap.get(nodeEvent.getID());
+			Long index = indexMap.get(nodeEvent.getOTUOrOTUsID());
 			if (index == null) {
 				throw new InconsistentAdapterDataException("Error when writing tree: The node with the ID " + nodeEvent.getID() + 
 						" references an OTU with the ID " + nodeEvent.getOTUOrOTUsID() + 
@@ -56,12 +57,13 @@ public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNode
 			}
 			else {
 				result = index.toString();
+				reporter.addEdit(nodeEvent, reporter.getEditedLabel(EventContentType.OTU, nodeEvent.getOTUOrOTUsID()));
 			}
 		}
 		else {
 			result = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeEvent, getOTUList());
+			reporter.addEdit(nodeEvent, result);  // Collisions between labels of nodes that do not reference an OTU are legal.
 		}
-		reporter.addEdit(nodeEvent, result);  // Collisions between labels of nodes that do not reference an OTU are legal.
 		return result;
 	}
 }
