@@ -18,10 +18,28 @@
  */
 package info.bioinfweb.jphyloio.formats.xml;
 
+import info.bioinfweb.jphyloio.StreamDataProvider;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+
+import java.util.Iterator;
+
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.StartElement;
+
 
 
 public abstract class AbstractXMLElementReader<P extends XMLStreamDataProvider<? extends AbstractXMLEventReader<P>>>
 		implements XMLElementReader<P> {
 	
-	//TODO Move shared functionality here
+	protected void readAttributes(P streamDataProvider, StartElement element) {
+		String key = streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() + "." + element.getName().getLocalPart();
+		Iterator<Attribute> attributes = element.getAttributes();
+		while (attributes.hasNext()) {
+			Attribute attribute = attributes.next();
+			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key + "." + attribute.getName(), null, attribute.getValue()));
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
+		}
+	}
 }

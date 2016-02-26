@@ -47,6 +47,6 @@ public class UnknownMetaElementStartReader extends AbstractXMLElementReader {
 		streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(streamDataProvider.getFormat() 
 				+ "." + streamDataProvider.getParentName() + "." + elementName, null, value));
 		
-		streamDataProvider.readAttributes(element);
+		readAttributes(streamDataProvider, element);
 	}
 }

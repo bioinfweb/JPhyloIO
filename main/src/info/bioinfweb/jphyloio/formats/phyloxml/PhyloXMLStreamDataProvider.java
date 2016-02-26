@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -19,48 +19,39 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import java.util.Stack;
+
+import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 
 
 public class PhyloXMLStreamDataProvider extends XMLStreamDataProvider<PhyloXMLEventReader>  {
-	private String treeID;
-	private String treeLabel;
-	
-	private boolean rooted;
+	private NodeEdgeInfo treeInfo;
+	private Stack<NodeEdgeInfo> edges;
 	
 
 	public PhyloXMLStreamDataProvider(PhyloXMLEventReader eventReader) {
 		super(eventReader);
 	}
-	
-	
-	public String getTreeID() {
-		return treeID;
+
+
+	public NodeEdgeInfo getTreeInfo() {
+		return treeInfo;
 	}
 
 
-	public void setTreeID(String treeID) {
-		this.treeID = treeID;
+	public void setTreeInfo(NodeEdgeInfo treeInfo) {
+		this.treeInfo = treeInfo;
 	}
 
 
-	public String getTreeLabel() {
-		return treeLabel;
+	public Stack<NodeEdgeInfo> getEdges() {
+		return edges;
 	}
 
 
-	public void setTreeLabel(String treeLabel) {
-		this.treeLabel = treeLabel;
-	}
-
-
-	public boolean isRooted() {
-		return rooted;
-	}
-
-
-	public void setRooted(boolean rooted) {
-		this.rooted = rooted;
+	public void setEdges(Stack<NodeEdgeInfo> edges) {
+		this.edges = edges;
 	}
 }

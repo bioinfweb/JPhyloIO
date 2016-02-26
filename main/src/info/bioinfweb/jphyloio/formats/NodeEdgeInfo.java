@@ -32,14 +32,14 @@ public class NodeEdgeInfo {
 		private String target;
 		private double length;
 		
-		public Collection<JPhyloIOEvent> nestedEdgeEvents;
+		public Collection<JPhyloIOEvent> nestedEvents;
 
 		
-		public NodeEdgeInfo(String id, double length, Collection<JPhyloIOEvent> nestedEdgeEvents) {
+		public NodeEdgeInfo(String id, double length, Collection<JPhyloIOEvent> nestedEvents) {
 			super();
 			this.id = id;
 			this.length = length;
-			this.nestedEdgeEvents = nestedEdgeEvents;
+			this.nestedEvents = nestedEvents;
 		}
 		
 
@@ -93,12 +93,12 @@ public class NodeEdgeInfo {
 		}
 
 
-		public Collection<JPhyloIOEvent> getNestedEdgeEvents() {
-			return nestedEdgeEvents;
+		public Collection<JPhyloIOEvent> getNestedEvents() {
+			return nestedEvents;
 		}
 
 
-		public void setNestedEdgeEvents(Collection<JPhyloIOEvent> nestedEdgeEvents) {
-			this.nestedEdgeEvents = nestedEdgeEvents;
+		public void setNestedEvents(Collection<JPhyloIOEvent> nestedEvents) {
+			this.nestedEvents = nestedEvents;
 		}		
 }
