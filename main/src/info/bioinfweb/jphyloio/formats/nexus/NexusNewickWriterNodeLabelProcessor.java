@@ -23,6 +23,7 @@ import java.util.Map;
 
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.InconsistentAdapterDataException;
+import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.formats.newick.DefaultNewickWriterNodeLabelProcessor;
@@ -31,11 +32,15 @@ import info.bioinfweb.jphyloio.formats.newick.DefaultNewickWriterNodeLabelProces
 
 public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNodeLabelProcessor {
 	private Map<String, Long> indexMap;
+	private LabelEditingReporter reporter;
 	
 	
-	public NexusNewickWriterNodeLabelProcessor(OTUListDataAdapter otuList, Map<String, Long> indexMap) {
+	public NexusNewickWriterNodeLabelProcessor(OTUListDataAdapter otuList, Map<String, Long> indexMap, 
+			LabelEditingReporter reporter) {
+		
 		super(otuList);
 		this.indexMap = indexMap;
+		this.reporter = reporter;
 	}
 
 
@@ -56,6 +61,7 @@ public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNode
 		else {
 			result = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeEvent, getOTUList());
 		}
+		reporter.addEdit(nodeEvent, result);  // Collisions between labels of nodes that do not reference an OTU are legal.
 		return result;
 	}
 }
