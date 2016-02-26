@@ -42,6 +42,20 @@ import org.junit.Test;
 
 
 public class NexusEventWriterTest implements NexusConstants {
+	private void testNodeLabelMappings(LabelEditingReporter reporter, String idPrefix) {
+		assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "Node '_1", EventContentType.NODE, idPrefix + "n1", 
+				reporter);
+		assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "Node " + idPrefix + "nRoot", EventContentType.NODE, 
+				idPrefix + "nRoot", reporter);
+		assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "Node " + idPrefix + "nA", EventContentType.NODE, 
+				idPrefix + "nA", reporter);
+		assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "Node " + idPrefix + "nB", EventContentType.NODE, 
+				idPrefix + "nB", reporter);
+		assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "Node " + idPrefix + "nC", EventContentType.NODE, 
+				idPrefix + "nC", reporter);
+	}
+	
+	
 	@Test
 	public void test_writeDocument() throws Exception {
 		File file = new File("data/testOutput/Test.nex");
@@ -115,6 +129,22 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\tTREE tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_t1nRoot:1.5;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			
+			LabelEditingReporter reporter = parameters.getLabelEditingReporter();
+			testNodeLabelMappings(reporter, "t0");
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "Node '_1", EventContentType.NODE, "t1n1", 
+					reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.UNCHANGED, "Node t1nRoot", EventContentType.NODE, 
+					"t1nRoot", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "OTU otu0", EventContentType.NODE, 
+					"t1nA", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "OTU otu1", EventContentType.NODE, 
+					"t1nB", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu2", EventContentType.NODE, 
+					"t1nC", reporter);
+			testNodeLabelMappings(reporter, "t2");
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.NOT_FOUND, null, EventContentType.OTU, "otherID", reporter);
+			assertTrue(reporter.anyLabelEdited(EventContentType.OTU));
+
 			assertEquals(-1, reader.read());
 		}
 		finally {
