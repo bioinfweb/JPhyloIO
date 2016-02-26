@@ -40,27 +40,34 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	private String id = null;
 	private String label = null;
 	private String linkedOTUsID = null;
+	private String nodeEdgeIDPrefix = "";
 	private String[] linkedOTUs;
 	
 	
-	public TestTreeDataAdapter(String id, String label, String[] linkedOTUs) {
+	public TestTreeDataAdapter(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
 		super();
 		this.id = id;
 		this.label = label;
 		if (linkedOTUs.length != 3) {
 			throw new IllegalArgumentException("Invalid number of linked OTUs (" + linkedOTUs.length + ").");
 		}
+		this.nodeEdgeIDPrefix = nodeEdgeIDPrefix;
 		this.linkedOTUs = linkedOTUs;
 	}
 
 
-	public TestTreeDataAdapter(String id, String label) {
-		this(id, label, new String[]{null, null, null});
+	public TestTreeDataAdapter(String id, String label, String nodeEdgeIDPrefix) {
+		this(id, label, nodeEdgeIDPrefix, new String[]{null, null, null});
 	}
 	
 	
 	public void setLinkedOTUsID(String linkedOTUsID) {
 		this.linkedOTUsID = linkedOTUsID;
+	}
+
+
+	public String getNodeEdgeIDPrefix() {
+		return nodeEdgeIDPrefix;
 	}
 
 
@@ -84,79 +91,91 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 
 	@Override
 	public Iterator<String> getRootEdgeIDs() {
-		return Arrays.asList(new String[]{"eRoot"}).iterator();
+		return Arrays.asList(new String[]{nodeEdgeIDPrefix + "eRoot"}).iterator();
 	}
 
 	
 	@Override
 	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {
-		switch (nodeID) {
-			case "n1":
-				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node '_1", null));
-				receiver.add(new MetaInformationEvent("a1", null, "100", new Integer(100)));
-				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-				receiver.add(new MetaInformationEvent("a2", null, "ab 'c", "ab 'c"));
-				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-				break;
-			case "nRoot":  
-				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null));
-				break;
-			case "nA":
-				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[0]));
-				break;
-			case "nB":
-				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[1]));
-				break;
-			case "nC":
-				receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[2]));
-				break;
-			default:
-				throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
+		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
+			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
+				case "n1":
+					receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node '_1", null));
+					receiver.add(new MetaInformationEvent("a1", null, "100", new Integer(100)));
+					receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+					receiver.add(new MetaInformationEvent("a2", null, "ab 'c", "ab 'c"));
+					receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+					break;
+				case "nRoot":  
+					receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null));
+					break;
+				case "nA":
+					receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[0]));
+					break;
+				case "nB":
+					receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[1]));
+					break;
+				case "nC":
+					receiver.add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[2]));
+					break;
+				default:
+					throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
+			}
+			receiver.add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 		}
-		receiver.add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+		else {
+			throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
+		}
 	}
 
 	
 	@Override
 	public Iterator<String> getEdgeIDsFromNode(String nodeID)	throws IllegalArgumentException {
-		switch (nodeID) {
-			case "nRoot":
-				return Arrays.asList(new String[]{"e1", "eC"}).iterator();
-			case "n1":
-				return Arrays.asList(new String[]{"eA", "eB"}).iterator();
-			case "nA":
-			case "nB":
-			case "nC":
-				return Collections.emptyIterator();
-			default:
-				throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
+		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
+			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
+				case "nRoot":
+					return Arrays.asList(new String[]{nodeEdgeIDPrefix + "e1", nodeEdgeIDPrefix + "eC"}).iterator();
+				case "n1":
+					return Arrays.asList(new String[]{nodeEdgeIDPrefix + "eA", nodeEdgeIDPrefix + "eB"}).iterator();
+				case "nA":
+				case "nB":
+				case "nC":
+					return Collections.emptyIterator();
+				default:  // fall through to exception below
+			}
 		}
+		throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
 	}
 
 	
 	@Override
 	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException {
-		switch (edgeID) {
-			case "eRoot":
-				receiver.add(new EdgeEvent(edgeID, "Root edge", null, "nRoot", 1.5));
-				break;
-			case "e1":
-				receiver.add(new EdgeEvent(edgeID, "Internal edge", "nRoot", "n1", 1.0));
-				break;
-			case "eA":
-				receiver.add(new EdgeEvent(edgeID, "Leaf edge A", "n1", "nA", 1.1));
-				receiver.add(new MetaInformationEvent("annotation", null, "100", new Integer(100)));
-				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-				break;
-			case "eB":
-				receiver.add(new EdgeEvent(edgeID, "Leaf edge B", "n1", "nB", 0.9));
-				break;
-			case "eC":
-				receiver.add(new EdgeEvent(edgeID, "Leaf edge C", "nRoot", "nC", 2.0));
-				break;
-			default:
-				throw new IllegalArgumentException("No edge with the ID \"" + edgeID + "\" available.");
+		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
+			switch (edgeID.substring(nodeEdgeIDPrefix.length())) {
+				case "eRoot":
+					receiver.add(new EdgeEvent(edgeID, "Root edge", null, nodeEdgeIDPrefix + "nRoot", 1.5));
+					break;
+				case "e1":
+					receiver.add(new EdgeEvent(edgeID, "Internal edge", nodeEdgeIDPrefix + "nRoot", nodeEdgeIDPrefix + "n1", 1.0));
+					break;
+				case "eA":
+					receiver.add(new EdgeEvent(edgeID, "Leaf edge A", nodeEdgeIDPrefix + "n1", nodeEdgeIDPrefix + "nA", 1.1));
+					receiver.add(new MetaInformationEvent("annotation", null, "100", new Integer(100)));
+					receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+					break;
+				case "eB":
+					receiver.add(new EdgeEvent(edgeID, "Leaf edge B", nodeEdgeIDPrefix + "n1", nodeEdgeIDPrefix + "nB", 0.9));
+					break;
+				case "eC":
+					receiver.add(new EdgeEvent(edgeID, "Leaf edge C", nodeEdgeIDPrefix + "nRoot", nodeEdgeIDPrefix + "nC", 2.0));
+					break;
+				default:
+					throw new IllegalArgumentException("No edge with the ID \"" + edgeID + "\" available.");
+			}
+			receiver.add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
 		}
-		receiver.add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+		else {
+			throw new IllegalArgumentException("No edge with the ID \"" + edgeID + "\" available.");
+		}
 	}
 }
