@@ -565,20 +565,20 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			Iterator<String> iterator = indexMap.keySet().iterator();
 			while (iterator.hasNext()) {
 				String id = iterator.next();
-				writer.write(indexMap.get(id).toString());
+				writeLineStart(writer, indexMap.get(id).toString());
 				writer.write(' ');
 				String label = reporter.getEditedLabel(EventContentType.OTU, id);
 				if (label == null) {
 					throw new InternalError("No label definition found for OTU ID " + id + ".");  // Should not happen.
 				}
-				writer.write(label);
+				writer.write(formatToken(label));
 				if (iterator.hasNext()) {
 					writer.write(ELEMENT_SEPARATOR);
+					writeLineBreak(writer, parameters);
 				}
 				else {
 					writeCommandEnd();					
 				}
-				writeLineBreak(writer, parameters);
 			}
 			decreaseIndention();
 			decreaseIndention();
