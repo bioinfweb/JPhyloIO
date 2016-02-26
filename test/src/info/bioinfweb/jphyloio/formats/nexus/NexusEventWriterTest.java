@@ -67,9 +67,9 @@ public class NexusEventWriterTest implements NexusConstants {
 		document.getTreesNetworks().add(new TestTreeDataAdapter("tree2", "tree"));
 		
 		NexusEventWriter writer = new NexusEventWriter();
-		EventWriterParameterMap parameterMap = new EventWriterParameterMap();
-		parameterMap.put(EventWriterParameterMap.KEY_APPLICATION_COMMENT, "Some application comment.");
-		writer.writeDocument(document, file, parameterMap);
+		EventWriterParameterMap parameters = new EventWriterParameterMap();
+		parameters.put(EventWriterParameterMap.KEY_APPLICATION_COMMENT, "Some application comment.");
+		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -200,6 +200,17 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\t\t\t'otu7_2' CCGT", reader.readLine());
 			assertEquals("\t\t\t'otu7_3' GCGT;", reader.readLine());
 			assertEquals("END;", reader.readLine());
+
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "label1", EventContentType.SEQUENCE, "seq0", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu1", EventContentType.SEQUENCE, "seq1", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu0", EventContentType.SEQUENCE, "seq2", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu3_otu0", EventContentType.SEQUENCE, "seq3", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu4_otu3_otu0", EventContentType.SEQUENCE, "seq4", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu7", EventContentType.SEQUENCE, "seq5", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu7_2", EventContentType.SEQUENCE, "seq6", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.EDITED, "otu7_3", EventContentType.SEQUENCE, "seq7", reporter);
+			assertEditedLabelMapping(LabelEditingReporter.LabelStatus.NOT_FOUND, null, EventContentType.SEQUENCE, "otherID", reporter);
+			assertTrue(reporter.anyLabelEdited(EventContentType.SEQUENCE));
 
 			assertEquals(-1, reader.read());
 		}
