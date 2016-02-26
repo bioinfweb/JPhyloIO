@@ -57,8 +57,19 @@ public class NexusEventWriterTest implements NexusConstants {
 	
 	
 	@Test
-	public void test_writeDocument() throws Exception {
-		File file = new File("data/testOutput/Test.nex");
+	public void test_writeDocument_indicesAsNodeLabels() throws Exception {
+		testwriteDocument(false, true);
+	}
+
+	
+	@Test
+	public void test_writeDocument_alwaysNodeLabels() throws Exception {
+		testwriteDocument(true, false);
+	}
+
+	
+	public void testwriteDocument(boolean writeNodeLabels, boolean generateTranslationTable) throws Exception {
+		File file = new File("data/testOutput/Test_" + writeNodeLabels + "_" + generateTranslationTable + ".nex");
 		
 		// Write file:
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
@@ -83,6 +94,8 @@ public class NexusEventWriterTest implements NexusConstants {
 		NexusEventWriter writer = new NexusEventWriter();
 		EventWriterParameterMap parameters = new EventWriterParameterMap();
 		parameters.put(EventWriterParameterMap.KEY_APPLICATION_COMMENT, "Some application comment.");
+		parameters.put(EventWriterParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, writeNodeLabels);
+		parameters.put(EventWriterParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, generateTranslationTable);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -126,8 +139,18 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("BEGIN TREES;", reader.readLine());
 			assertEquals("\tTITLE Trees_linked_to_OTU_list_0;", reader.readLine());
 			assertEquals("\tLINK TAXA=OTU_list_0;", reader.readLine());
-			assertEquals("\tTREE tree = [&R] ((1:1.1[&annotation=100], 2:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, 3:2.0)Node_t1nRoot:1.5;", reader.readLine());
-			//assertEquals("\tTREE tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_t1nRoot:1.5;", reader.readLine());
+			if (generateTranslationTable) {
+				assertEquals("\tTRANSLATE", reader.readLine());
+				assertEquals("\t\t\t1 OTU_otu0,", reader.readLine());
+				assertEquals("\t\t\t2 OTU_otu1,", reader.readLine());
+				assertEquals("\t\t\t3 otu2;", reader.readLine());
+			}
+			if (writeNodeLabels) {
+				assertEquals("\tTREE tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_t1nRoot:1.5;", reader.readLine());
+			}
+			else {
+				assertEquals("\tTREE tree = [&R] ((1:1.1[&annotation=100], 2:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, 3:2.0)Node_t1nRoot:1.5;", reader.readLine());
+			}
 			assertEquals("END;", reader.readLine());
 			
 			LabelEditingReporter reporter = parameters.getLabelEditingReporter();
