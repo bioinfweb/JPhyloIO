@@ -126,7 +126,8 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("BEGIN TREES;", reader.readLine());
 			assertEquals("\tTITLE Trees_linked_to_OTU_list_0;", reader.readLine());
 			assertEquals("\tLINK TAXA=OTU_list_0;", reader.readLine());
-			assertEquals("\tTREE tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_t1nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE tree = [&R] ((1:1.1[&annotation=100], 2:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, 3:2.0)Node_t1nRoot:1.5;", reader.readLine());
+			//assertEquals("\tTREE tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_t1nRoot:1.5;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			
 			LabelEditingReporter reporter = parameters.getLabelEditingReporter();
