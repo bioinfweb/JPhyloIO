@@ -22,16 +22,16 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees;
 import java.util.Collections;
 import java.util.List;
 
-import info.bioinfweb.jphyloio.formats.newick.NewickNodeLabelProcessor;
+import info.bioinfweb.jphyloio.formats.newick.NewickReaderNodeLabelProcessor;
 import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
 
 
 
-public class NexusNewickNodeLabelProcessor implements NewickNodeLabelProcessor {
+public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabelProcessor {
 	private NexusStreamDataProvider streamDataProvider;
 	
 	
-	public NexusNewickNodeLabelProcessor(NexusStreamDataProvider streamDataProvider) {
+	public NexusNewickReaderNodeLabelProcessor(NexusStreamDataProvider streamDataProvider) {
 		super();
 		this.streamDataProvider = streamDataProvider;
 	}

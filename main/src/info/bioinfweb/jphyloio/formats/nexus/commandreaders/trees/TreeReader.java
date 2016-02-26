@@ -53,7 +53,7 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 					reader.read();  // Skip KEY_VALUE_SEPARATOR.
 					newickStringReader = new NewickStringReader(getStreamDataProvider(), label, 
 							getStreamDataProvider().getBlockLinks().get(BLOCK_NAME_TAXA),
-							new NexusNewickNodeLabelProcessor(getStreamDataProvider()));
+							new NexusNewickReaderNodeLabelProcessor(getStreamDataProvider()));
 				}
 				else {
 					throw new JPhyloIOReaderException("Expected \"" + KEY_VALUE_SEPARATOR + 

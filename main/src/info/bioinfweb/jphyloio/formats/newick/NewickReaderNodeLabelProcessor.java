@@ -26,7 +26,7 @@ package info.bioinfweb.jphyloio.formats.newick;
  * 
  * @author Ben St&ouml;ver
  */
-public interface NewickNodeLabelProcessor {
+public interface NewickReaderNodeLabelProcessor {
 	/**
 	 * Processes a label according to the format modeled by this implementation.
 	 * 

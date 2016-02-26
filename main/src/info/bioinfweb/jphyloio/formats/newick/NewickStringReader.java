@@ -78,7 +78,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	private TextStreamDataProvider<?> streamDataProvider;
 	private String treeLabel;
 	private String linkedOTUsID;
-	private NewickNodeLabelProcessor nodeLabelProcessor;
+	private NewickReaderNodeLabelProcessor nodeLabelProcessor;
 	private NewickScanner scanner;
 	private Stack<Queue<NodeEdgeInfo>> passedSubnodes;
 	private HotCommentDataReader hotCommentDataReader = new HotCommentDataReader();
@@ -99,7 +99,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
 	public NewickStringReader(TextStreamDataProvider<?> streamDataProvider, String treeLabel, String linkedOTUsID,
-			NewickNodeLabelProcessor nodeLabelProcessor) {
+			NewickReaderNodeLabelProcessor nodeLabelProcessor) {
 		
 		super();
 		

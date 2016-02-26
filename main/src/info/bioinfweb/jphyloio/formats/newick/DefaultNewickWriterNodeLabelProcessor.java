@@ -19,21 +19,29 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
+import info.bioinfweb.jphyloio.AbstractEventWriter;
+import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 
-/**
- * Default implementation of {@link NewickNodeLabelProcessor} that returns the original name unchanged.
- * 
- * @author Ben St&ouml;ver
- */
-public class DefaultNewickNodeLabelProcessor implements NewickNodeLabelProcessor {
-	@Override
-	public String processLabel(String originalLabel) {
-		return originalLabel;
+
+
+public class DefaultNewickWriterNodeLabelProcessor implements NewickWriterNodeLabelProcessor {
+	private OTUListDataAdapter otuList;
+	
+	
+	public DefaultNewickWriterNodeLabelProcessor(OTUListDataAdapter otuList) {
+		super();
+		this.otuList = otuList;
 	}
 
-	
+
+	public OTUListDataAdapter getOTUList() {
+		return otuList;
+	}
+
+
 	@Override
-	public String getLinkedOTUID(String processedLabel) {
-		return null;
+	public String createNodeName(LinkedOTUOrOTUsEvent nodeEvent) {
+		return AbstractEventWriter.getLinkedOTUNameOwnFirst(nodeEvent, getOTUList());
 	}
 }
