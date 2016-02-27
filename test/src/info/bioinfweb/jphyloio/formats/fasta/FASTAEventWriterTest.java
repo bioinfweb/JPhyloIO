@@ -220,6 +220,33 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 	}
 	
 	
+	@Test
+	public void test_writeDocument_extendSequences() throws Exception {
+		File file = new File("data/testOutput/TestExtendSequences.fasta");
+		
+		// Write file:
+		DocumentDataAdapter document = createTestDocument("ACTGCTG", "A-TCC");
+		FASTAEventWriter writer = new FASTAEventWriter();
+		EventWriterParameterMap parameters = new EventWriterParameterMap();
+		parameters.put(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN, "?");
+		writer.writeDocument(document, file, parameters);
+		
+		// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {
+			assertEquals(">Sequence 0", reader.readLine());
+			assertEquals("ACTGCTG", reader.readLine());
+			assertEquals(">Sequence 1", reader.readLine());
+			assertEquals("A-TCC??", reader.readLine());
+			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
 	public static void main(String[] args) throws Exception {
 		SingleTokenTestMatrixDataAdapter adapter = new SingleTokenTestMatrixDataAdapter("matrixID", "a matrix", false, "ACGT-CT");
 		adapter.writeSequencePartContentData(new SystemOutEventReceiver(), DEFAULT_SEQUENCE_ID_PREFIX + "0", 0, 7);
