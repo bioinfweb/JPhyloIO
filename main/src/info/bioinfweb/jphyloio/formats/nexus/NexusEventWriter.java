@@ -84,7 +84,7 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
  * <h3><a name="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link EventWriterParameterMap#KEY_APPLICATION_COMMENT}</li>
- *   <li>{@link EventWriterParameterMap#KEY_EXTEND_SEQUENCE_WITH_GAPS}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
  *   <li>{@link EventWriterParameterMap#KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS}</li>
  *   <li>{@link EventWriterParameterMap#KEY_GENERATE_NEXUS_TRANSLATION_TABLE}</li>
  *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
@@ -419,29 +419,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private String getSequenceName(LinkedOTUOrOTUsEvent sequenceEvent) {
-		final LabelEditingReporter reporter = parameters.getLabelEditingReporter(); 
-		String result;
-		if (sequenceEvent.isOTUOrOTUsLinked()) {
-			result = reporter.getEditedLabel(EventContentType.OTU, sequenceEvent.getOTUOrOTUsID());
-			if (result == null) {
-				throw new InconsistentAdapterDataException("The sequence with the ID " + sequenceEvent.getID() + 
-						" is referencing an OTU with the ID " + sequenceEvent.getOTUOrOTUsID() + " which could not be found.");
-			}
-			reporter.addEdit(sequenceEvent, result);  // Register edited OTU label also for sequence.
-		}
-		else {
-			result = reporter.getEditedLabel(EventContentType.SEQUENCE, sequenceEvent.getID());;  // Should have been defined when the TAXALABELS command was written.
-			if (result == null) {
-				throw new InternalError("Writing TAXLABELS and MATRIX command is not consistent.");
-			}
-		}
-		return result;
-	}
-
-	
-	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, boolean unaligned) 
-				throws IOException {
+	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, long alignmentLength, 
+			String extendToken)	throws IOException {
 		
 		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
 		writeLineStart(writer, COMMAND_NAME_MATRIX);
@@ -467,9 +446,18 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				logger.addWarning(receiver.getIgnoredMetadata() + " metadata events nested inside the sequence \"" + sequenceName + 
 						"\" have been ignored, since the Nexus format does not supprt such data.");
 			}
+			if (extendToken != null) {
+				long additionalTokens = alignmentLength - matrix.getSequenceLength(id);
+				for (int i = 0; i < additionalTokens; i++) {
+					if (matrix.containsLongTokens()) {
+						writer.write(' ');
+					}
+					writer.write(extendToken);
+				}
+			}
 			
 			if (iterator.hasNext()) {
-				if (unaligned) {
+				if (alignmentLength == -1) {
 					writer.write(ELEMENT_SEPARATOR);
 				}
 				writeLineBreak(writer, parameters);
@@ -495,7 +483,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		logIgnoredMetadata(matrix, "A character matrix");
 		if (matrix.getSequenceCount() > 0) {
 			long columnCount = matrix.getColumnCount();
-			if ((columnCount == -1) && parameters.getBoolean(EventWriterParameterMap.KEY_EXTEND_SEQUENCE_WITH_GAPS, false)) {
+			String extendToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
+			if ((columnCount == -1) && (extendToken != null)) {
 			  // Determine maximal sequence length:
 				Iterator<String> iterator = matrix.getSequenceIDIterator();
 				while (iterator.hasNext()) {  // columnCount will be set, since it was already checked, that at least one sequence is contained.
@@ -521,7 +510,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeMatrixDimensionsCommand(matrix, columnCount);
 			writeFormatCommand(matrix);
 			writeMatrixTaxLabelsCommand(matrix);
-			writeMatrixCommand(document, matrix, columnCount == -1);
+			writeMatrixCommand(document, matrix, columnCount, extendToken);
 			
 			decreaseIndention();
 			writeBlockEnd();

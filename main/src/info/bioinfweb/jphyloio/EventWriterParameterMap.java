@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio;
 
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.log.ApplicationLogger;
+import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 
 
 
@@ -61,14 +62,18 @@ public class EventWriterParameterMap extends ParameterMap {
 	public static final String KEY_LINE_LENGTH = "lineLength";
 	
 	/** 
-	 * This parameter can be used to specify sequences with unequal lengths (in character matrix data) shall be filled 
-	 * up with gap tokens, until all have an equal length.  
+	 * This parameter can be used to specify that sequences with unequal lengths (in character matrix data) shall be filled 
+	 * up with, until all have an equal length.  
 	 * <p>
-	 * The value should have the type {@link Boolean}. If {@code true} is specified, gaps will be added to the end of 
-	 * sequences, of necessary. If {@code false} is specified or this parameter is omitted, sequences with different 
-	 * lengths will be written (if the according format allows that).
+	 * The value should have the type {@link String} and define the token to be used to fill up sequences. If this parameter
+	 * is omitted or {@code null} is specified, sequences will not be filled up. Note that the specified string should only
+	 * be longer than one character, if it is only used with {@link MatrixDataAdapter}s that provide long tokens.
+	 * ({@link MatrixDataAdapter#containsLongTokens()} must return {@code true}.)
+	 * <p>
+	 * Note that this parameter is valid for all alignments. It is not possible to extend only a subset alignments of the 
+	 * same file using this parameter. 
 	 */
-	public static final String KEY_EXTEND_SEQUENCE_WITH_GAPS = "extendSequenceWithGaps";
+	public static final String KEY_SEQUENCE_EXTENSION_TOKEN = "sequenceExtensionToken";
 	
 	/**
 	 * This parameter can be used to specify whether comment events should be written to the output, at positions where 

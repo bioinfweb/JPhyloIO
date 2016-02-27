@@ -52,7 +52,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
  * <p>
  * <b>Recognized parameters:</b>
  * <ul>
- *   <li>{@link EventWriterParameterMap#KEY_EXTEND_SEQUENCE_WITH_GAPS}</li>
+ *   <li>{@link EventWriterParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
  *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
  * </ul>
  * 
