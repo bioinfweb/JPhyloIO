@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 
 
 
@@ -86,13 +87,26 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 			if (sequenceIDIterator.hasNext()) {
 				FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrixDataAdapter, 
 						parameters.getLong(EventWriterParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
+				String extensionToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
+				long maxSequenceLength = determineMaxSequenceLength(matrixDataAdapter);
 				
 				while (sequenceIDIterator.hasNext()) {
 					String id = sequenceIDIterator.next();
+					
+					// Write name and tokens:
 					LinkedOTUOrOTUsEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
 					writeSequenceName(getLinkedOTUNameOwnFirst(sequenceEvent, otuList), writer, eventReceiver, parameters);
 					eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));
+					
+					// Extend sequences:
+					if (extensionToken != null) {
+						long additionalLength = maxSequenceLength - matrixDataAdapter.getSequenceLength(id);
+						SingleSequenceTokenEvent event = new SingleSequenceTokenEvent(extensionToken);
+						for (long i = 0; i < additionalLength; i++) {
+							eventReceiver.add(event);  // Event receiver manages line length.
+						}
+					}
 				}
 				
 				if (eventReceiver.didIgnoreComments()) {

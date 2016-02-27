@@ -420,7 +420,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, long alignmentLength, 
-			String extendToken)	throws IOException {
+			String extensionToken)	throws IOException {
 		
 		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
 		writeLineStart(writer, COMMAND_NAME_MATRIX);
@@ -446,13 +446,13 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				logger.addWarning(receiver.getIgnoredMetadata() + " metadata events nested inside the sequence \"" + sequenceName + 
 						"\" have been ignored, since the Nexus format does not supprt such data.");
 			}
-			if (extendToken != null) {
+			if (extensionToken != null) {
 				long additionalTokens = alignmentLength - matrix.getSequenceLength(id);
-				for (int i = 0; i < additionalTokens; i++) {
+				for (long i = 0; i < additionalTokens; i++) {
 					if (matrix.containsLongTokens()) {
 						writer.write(' ');
 					}
-					writer.write(extendToken);
+					writer.write(extensionToken);
 				}
 			}
 			
@@ -483,13 +483,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		logIgnoredMetadata(matrix, "A character matrix");
 		if (matrix.getSequenceCount() > 0) {
 			long columnCount = matrix.getColumnCount();
-			String extendToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
-			if ((columnCount == -1) && (extendToken != null)) {
-			  // Determine maximal sequence length:
-				Iterator<String> iterator = matrix.getSequenceIDIterator();
-				while (iterator.hasNext()) {  // columnCount will be set, since it was already checked, that at least one sequence is contained.
-					columnCount = Math.max(columnCount, matrix.getSequenceLength(iterator.next()));
-				}
+			String extensionToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
+			if ((columnCount == -1) && (extensionToken != null)) {
+				columnCount = determineMaxSequenceLength(matrix);  // -1 will not be returned, since it was already checked, that at least one sequence is contained.
 			}
 			
 			MatrixWriteResult result;
@@ -510,7 +506,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeMatrixDimensionsCommand(matrix, columnCount);
 			writeFormatCommand(matrix);
 			writeMatrixTaxLabelsCommand(matrix);
-			writeMatrixCommand(document, matrix, columnCount, extendToken);
+			writeMatrixCommand(document, matrix, columnCount, extensionToken);
 			
 			decreaseIndention();
 			writeBlockEnd();

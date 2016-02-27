@@ -26,11 +26,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Iterator;
 
 import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
@@ -67,6 +69,16 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
+	/**
+	 * Outputs a warning message, if the specified document data adapter provides one or more OTU lists.
+	 * 
+	 * @param document the document data adapter to be checked for OTU lists
+	 * @param logger the logger to write the warning to
+	 * @param formatName the name of the format to which OTU lists cannot be written (will be included in the message)
+	 * @param labeledElements the name of data elements (e.g. sequences or nodes) that may reference the OTU lists
+	 *        (The warning message will use this name for a hint that the OTU lists may still be used to label this
+	 *        type of elements.)
+	 */
 	public static void logIngnoredOTULists(DocumentDataAdapter document, ApplicationLogger logger, String formatName,
 			String labeledElements) {
 		
@@ -78,6 +90,12 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
+	/**
+	 * Returns a name for the specified event.
+	 * 
+	 * @param event the event to get the name of
+	 * @return either the label of the event or its ID, if it does not carry a label
+	 */
 	public static String getLabeledIDName(LabeledIDEvent event) {
 		if (event.hasLabel()) {
 			return event.getLabel();
@@ -141,11 +159,38 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
+	/**
+	 * Returns the OTU list found in {@code document} which is referenced by the specified event.
+	 * 
+	 * @param document the document data adapter providing the OTU lists.
+	 * @param source the event referencing the OTU list
+	 * @return the referenced list or {@code null}, if the specified event does not reference any OTU
+	 * @throws IllegalArgumentException if no OTU list with the specified ID is available in {@code document}
+	 */
 	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, LinkedOTUsDataAdapter source) {
 		OTUListDataAdapter result = null;
 		String otuListID = source.getStartEvent().getOTUOrOTUsID();
 		if (otuListID != null) {
 			result = document.getOTUList(otuListID);
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Calculates the maximum sequence length in matrix with unequal lengths. This method iterates over all sequences
+	 * if {@link MatrixDataAdapter#getColumnCount()} returns -1, otherwise it will directly return the specified column count. 
+	 * 
+	 * @param matrix the matrix data adapter containing the sequences
+	 * @return the maximal sequence length or -1, if the specified matrix data adapter does not declare any sequences
+	 */
+	public static long determineMaxSequenceLength(MatrixDataAdapter matrix) {
+		long result = matrix.getColumnCount();
+		if (result == -1) {
+			Iterator<String> iterator = matrix.getSequenceIDIterator();
+			while (iterator.hasNext()) {
+				result = Math.max(result, matrix.getSequenceLength(iterator.next()));
+			}
 		}
 		return result;
 	}
