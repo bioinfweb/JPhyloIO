@@ -143,7 +143,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	}
 	
 	
-	private SequenceData getSequence(String sequenceID) throws IllegalArgumentException {
+	protected SequenceData getSequence(String sequenceID) throws IllegalArgumentException {
 		SequenceData result = getMatrix().get(sequenceID);
 		if (result != null) {
 			return result;
