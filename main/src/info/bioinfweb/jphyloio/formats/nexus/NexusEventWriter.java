@@ -273,10 +273,20 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private boolean containsUnlinkedSequences(MatrixDataAdapter matrix) {
+	private boolean containsInvalidOTULinks(MatrixDataAdapter matrix) {
+		Set<String> encounteredOTUs = new HashSet<String>();
 		Iterator<String> iterator = matrix.getSequenceIDIterator();
 		while (iterator.hasNext()) {
-			if (!matrix.getSequenceStartEvent(iterator.next()).isOTUOrOTUsLinked()) {
+			LinkedOTUOrOTUsEvent event = matrix.getSequenceStartEvent(iterator.next());
+			if (event.isOTUOrOTUsLinked()) {
+				if (encounteredOTUs.contains(event.getOTUOrOTUsID())) {
+					return true;
+				}
+				else {
+					encounteredOTUs.add(event.getOTUOrOTUsID());
+				}
+			}
+			else {
 				return true;
 			}
 		}
@@ -284,11 +294,10 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private boolean writeMatrixDimensionsCommand(MatrixDataAdapter matrix, long columnCount) throws IOException {
+	private void writeMatrixDimensionsCommand(MatrixDataAdapter matrix, long columnCount) throws IOException {
 		writeLineStart(writer, COMMAND_NAME_DIMENSIONS);
 		writer.write(' ');
-		boolean result = containsUnlinkedSequences(matrix);
-		if (result) {
+		if (containsInvalidOTULinks(matrix)) {
 			writer.write(DIMENSIONS_SUBCOMMAND_NEW_TAXA);
 			writer.write(' ');
 		}
@@ -298,7 +307,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NCHAR, Long.toString(columnCount));
 		}
 		writeCommandEnd();
-		return result;
 	}
 
 	
@@ -337,13 +345,37 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	/**
+	 * Writes the TAXLABELS command inside a CHARACTERS or UNALIGNED block. New taxa added here are created either for
+	 * sequences without a linked OTU or if more than one sequence is linked to the same OTU (which is valid in JPhyloIO
+	 * but not in Nexus). 
+	 * 
+	 * @param matrix the matrix to be writte
+	 * @throws IOException
+	 */
 	private void writeMatrixTaxLabelsCommand(MatrixDataAdapter matrix) throws IOException {
-		Iterator<String> iterator = matrix.getSequenceIDIterator();
+		final LabelEditingReporter reporter = parameters.getLabelEditingReporter(); 
 		boolean beforeFirst = true;
 		boolean anyWritten = false;
+		Set<String> encounteredOTUs = new HashSet<String>();
+		Iterator<String> iterator = matrix.getSequenceIDIterator();
 		while (iterator.hasNext()) {
 			LinkedOTUOrOTUsEvent event = matrix.getSequenceStartEvent(iterator.next());
-			if (!event.isOTUOrOTUsLinked()) {
+			boolean createNewLabel = false;
+			if (event.isOTUOrOTUsLinked()) {
+				if (encounteredOTUs.contains(event.getOTUOrOTUsID())) {
+					createNewLabel = true;
+				}
+				else {
+					encounteredOTUs.add(event.getOTUOrOTUsID());
+				}
+			}
+			else {
+				createNewLabel = true;
+			}
+			
+			String label;
+			if (createNewLabel) {
 				if (beforeFirst) {
 					writeLineStart(writer, COMMAND_NAME_TAX_LABELS);
 					writeLineBreak(writer, parameters);
@@ -355,8 +387,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					writeLineBreak(writer, parameters);
 					beforeFirst = false;
 				}
-				final LabelEditingReporter reporter = parameters.getLabelEditingReporter(); 
-				writeLineStart(writer, formatToken(createUniqueLabel(
+				label = createUniqueLabel(
 						parameters, 
 						new UniqueLabelTester() {
 							@Override
@@ -364,12 +395,24 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 								return !reporter.isLabelUsed(EventContentType.OTU, label) && 
 										!reporter.isLabelUsed(EventContentType.SEQUENCE, label);
 							}
-						},
-						event)));
+						}, event);
+				writeLineStart(writer, formatToken(label));
 			}
+			else {
+				label = reporter.getEditedLabel(EventContentType.OTU, event.getOTUOrOTUsID());
+				if (label == null) {
+					throw new InconsistentAdapterDataException("The sequence with the ID " + event.getID() + 
+							" is referencing an OTU with the ID " + event.getOTUOrOTUsID() + " which could not be found.");
+				}
+			}
+			reporter.addEdit(event, label);
 		}
 		if (anyWritten) {
 			writeCommandEnd();
+			writeLineStart(writer, "" + COMMENT_START);
+			writer.write("These additional taxon definitions were automatically added by JPhyloIO, because sequences without linked taxa had to be written or more than one sequence was linked to the same taxon (which is both invalid in Nexus).");
+			writer.write(COMMENT_END);
+			writeLineBreak(writer, parameters);
 			decreaseIndention();
 			decreaseIndention();
 		}
@@ -400,6 +443,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, boolean unaligned) 
 				throws IOException {
 		
+		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
 		writeLineStart(writer, COMMAND_NAME_MATRIX);
 		writeLineBreak(writer, parameters);
 		
@@ -408,7 +452,10 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		Iterator<String> iterator = matrix.getSequenceIDIterator();
 		while (iterator.hasNext()) {
 			String id = iterator.next();
-			String sequenceName = getSequenceName(matrix.getSequenceStartEvent(id));
+			String sequenceName = reporter.getEditedLabel(EventContentType.SEQUENCE, id);
+			if (sequenceName == null) {
+				throw new InternalError("Writing TAXLABELS and MATRIX command is not consistent.");
+			}
 			
 			writeLineStart(writer, formatToken(sequenceName));
 			writer.write(' ');
@@ -471,12 +518,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeTitleCommand(startEvent);
 			writeLinkTaxaCommand(startEvent);
 			
-			boolean writeTaxLabels = writeMatrixDimensionsCommand(matrix, columnCount);
+			writeMatrixDimensionsCommand(matrix, columnCount);
 			writeFormatCommand(matrix);
 			writeMatrixTaxLabelsCommand(matrix);
-			if (writeTaxLabels) {
-				writeMatrixTaxLabelsCommand(matrix);
-			}
 			writeMatrixCommand(document, matrix, columnCount == -1);
 			
 			decreaseIndention();
