@@ -47,7 +47,7 @@ public class PhylipEventWriterTest {
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			assertEquals(" 2 5", reader.readLine());
+			assertEquals("\t2\t5", reader.readLine());
 			assertEquals("Sequence 0ACTGC", reader.readLine());
 			assertEquals("Sequence 1A-TCC", reader.readLine());
 			assertEquals(-1, reader.read());
