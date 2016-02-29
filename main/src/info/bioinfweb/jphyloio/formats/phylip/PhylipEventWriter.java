@@ -97,7 +97,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 		int nameLength = parameters.getInteger(EventWriterParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
 		
 		// Write heading:
-    writer.write(" " + matrix.getSequenceCount() + " " + matrix.getColumnCount());  //TODO Handle sequences with unequal length
+    writer.write("\t" + matrix.getSequenceCount() + "\t" + matrix.getColumnCount());  //TODO Handle sequences with unequal length
     writeLineBreak(writer, parameters);
     
     while (sequenceIDIterator.hasNext()) {
