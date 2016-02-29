@@ -31,7 +31,7 @@ import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
-import info.bioinfweb.jphyloio.formats.xml.UnknownMetaElementStartReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLToMetaElementStartReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
@@ -239,7 +239,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 		
 		map.put(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND_MARGIN, XMLStreamConstants.END_ELEMENT), emptyReader);
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new UnknownMetaElementStartReader());
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new XMLToMetaElementStartReader());
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), createMetaEnd);
 		

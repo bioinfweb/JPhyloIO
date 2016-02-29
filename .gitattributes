@@ -159,10 +159,10 @@ main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLElementReader.java -text
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/CommentElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLEventReader.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/xml/UnknownMetaElementStartReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLElementReaderKey.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLStreamDataProvider.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/XMLToMetaElementStartReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xtg/XTGConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReader.java -text svneol=unset#text/plain

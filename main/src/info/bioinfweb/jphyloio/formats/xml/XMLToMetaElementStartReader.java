@@ -28,7 +28,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 @SuppressWarnings("rawtypes")
-public class UnknownMetaElementStartReader extends AbstractXMLElementReader {
+public class XMLToMetaElementStartReader extends AbstractXMLElementReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -36,6 +36,7 @@ public class UnknownMetaElementStartReader extends AbstractXMLElementReader {
 		String elementName = element.getName().getLocalPart();
 		XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
 		String value = null;
+		String originalType = null;
 				
 		if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
 			String characterData = nextEvent.asCharacters().getData();

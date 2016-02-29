@@ -47,7 +47,7 @@ import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
-import info.bioinfweb.jphyloio.formats.xml.UnknownMetaElementStartReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLToMetaElementStartReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 
@@ -308,7 +308,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		
 		map.put(new XMLElementReaderKey(TAG_CLADE, TAG_CLADE, XMLStreamConstants.END_ELEMENT), cladeEndReader);
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new UnknownMetaElementStartReader());
+		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new XMLToMetaElementStartReader());
 		
 		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), 
 				new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
