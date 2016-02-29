@@ -24,7 +24,7 @@ import java.io.Writer;
 import java.util.Iterator;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.AbstractEventWriter;
+import info.bioinfweb.jphyloio.AbstractSingleMatrixEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -59,7 +59,12 @@ import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public class FASTAEventWriter extends AbstractEventWriter implements FASTAConstants {
+public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements FASTAConstants {
+	public FASTAEventWriter() {
+		super("FASTA");
+	}
+
+
 	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver,
 			EventWriterParameterMap parameters) throws IOException {
 		
@@ -73,67 +78,42 @@ public class FASTAEventWriter extends AbstractEventWriter implements FASTAConsta
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer,
-			EventWriterParameterMap parameters) throws Exception {
+	protected void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
+			Iterator<String> sequenceIDIterator, Writer writer, EventWriterParameterMap parameters) throws Exception {
+		
+		FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrix, 
+				parameters.getLong(EventWriterParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
+		String extensionToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
+		long maxSequenceLength = determineMaxSequenceLength(matrix);
+		OTUListDataAdapter otuList = getReferencedOTUList(document, matrix);
+		
+		while (sequenceIDIterator.hasNext()) {
+			String id = sequenceIDIterator.next();
+			
+			// Write name and tokens:
+			LinkedOTUOrOTUsEvent sequenceEvent = matrix.getSequenceStartEvent(id);
+			writeSequenceName(getLinkedOTUNameOwnFirst(sequenceEvent, otuList), writer, eventReceiver, parameters);
+			eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
+			matrix.writeSequencePartContentData(eventReceiver, id, 0, matrix.getSequenceLength(id));
+			
+			// Extend sequences:
+			if (extensionToken != null) {
+				long additionalLength = maxSequenceLength - matrix.getSequenceLength(id);
+				SingleSequenceTokenEvent event = new SingleSequenceTokenEvent(extensionToken);
+				for (long i = 0; i < additionalLength; i++) {
+					eventReceiver.add(event);  // Event receiver manages line length.
+				}
+			}
+		}
 		
 		ApplicationLogger logger = parameters.getLogger();
-		logIngnoredOTULists(document, logger, "FASTA", "sequences");
-		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
-		if (matrixIterator.hasNext()) {
-			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
-			
-			OTUListDataAdapter otuList = getReferencedOTUList(document, matrixDataAdapter);
-			Iterator<String> sequenceIDIterator = matrixDataAdapter.getSequenceIDIterator();
-			if (sequenceIDIterator.hasNext()) {
-				FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrixDataAdapter, 
-						parameters.getLong(EventWriterParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
-				String extensionToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
-				long maxSequenceLength = determineMaxSequenceLength(matrixDataAdapter);
-				
-				while (sequenceIDIterator.hasNext()) {
-					String id = sequenceIDIterator.next();
-					
-					// Write name and tokens:
-					LinkedOTUOrOTUsEvent sequenceEvent = matrixDataAdapter.getSequenceStartEvent(id);
-					writeSequenceName(getLinkedOTUNameOwnFirst(sequenceEvent, otuList), writer, eventReceiver, parameters);
-					eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
-					matrixDataAdapter.writeSequencePartContentData(eventReceiver, id, 0, matrixDataAdapter.getSequenceLength(id));
-					
-					// Extend sequences:
-					if (extensionToken != null) {
-						long additionalLength = maxSequenceLength - matrixDataAdapter.getSequenceLength(id);
-						SingleSequenceTokenEvent event = new SingleSequenceTokenEvent(extensionToken);
-						for (long i = 0; i < additionalLength; i++) {
-							eventReceiver.add(event);  // Event receiver manages line length.
-						}
-					}
-				}
-				
-				if (eventReceiver.didIgnoreComments()) {
-					logger.addWarning(eventReceiver.getIgnoredComments() + " comment events inside the matrix could not be written, "
-							+ "because FASTA supports only comments at the beginning of sequences.");
-				}
-				if (eventReceiver.didIgnoreMetadata()) {
-					logger.addWarning(eventReceiver.getIgnoredMetadata() + " metadata events inside the matrix could not be written, "
-							+ "because FASTA does not support metadata.");
-				}
-			}
-			else {
-				logger.addWarning("An empty FASTA file was written since the first matrix model adapter did not provide any sequences.");
-			}
-			
-			if (matrixIterator.hasNext()) {
-				logger.addWarning("The specified document adapter contained more than one character matrix adapter. Since the FASTA "
-						+ "format does not support multiple alignments in one file, only the first matrix was written.");
-			}
+		if (eventReceiver.didIgnoreComments()) {
+			logger.addWarning(eventReceiver.getIgnoredComments() + " comment events inside the matrix could not be written, "
+					+ "because FASTA supports only comments at the beginning of sequences.");
 		}
-		else {
-			logger.addWarning("An empty FASTA file was written since the specified document adapter contained contained no matrices.");
-		}
-		
-		if (document.getTreeNetworkIterator().hasNext()) {
-			logger.addWarning(
-					"The specified tree or network definitions(s) will not be written, since the FASTA format does not support this."); 
+		if (eventReceiver.didIgnoreMetadata()) {
+			logger.addWarning(eventReceiver.getIgnoredMetadata() + " metadata events inside the matrix could not be written, "
+					+ "because FASTA does not support metadata.");
 		}
 	}
 }
