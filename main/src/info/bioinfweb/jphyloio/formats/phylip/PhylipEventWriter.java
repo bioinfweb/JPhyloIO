@@ -19,11 +19,9 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
-import info.bioinfweb.commons.text.UniqueNameMapParameters;
 import info.bioinfweb.jphyloio.AbstractSingleMatrixEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
@@ -85,7 +83,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 				new UniqueLabelTester() {
 					@Override
 					public boolean isUnique(String label) {
-						return parameters.getLabelEditingReporter().isLabelUsed(EventContentType.SEQUENCE, label);
+						return !parameters.getLabelEditingReporter().isLabelUsed(EventContentType.SEQUENCE, label);
 					}
 				}, 
 				event);  // Already considers possible maximum length.
@@ -97,7 +95,11 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 			Iterator<String> sequenceIDIterator, Writer writer, EventWriterParameterMap parameters) throws Exception {
 
 		int nameLength = parameters.getInteger(EventWriterParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
+		
+		// Write heading:
     writer.write(" " + matrix.getSequenceCount() + " " + matrix.getColumnCount());  //TODO Handle sequences with unequal length
+    writeLineBreak(writer, parameters);
+    
     while (sequenceIDIterator.hasNext()) {
     	String id = sequenceIDIterator.next();
     	
