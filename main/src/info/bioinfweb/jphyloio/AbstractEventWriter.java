@@ -221,18 +221,36 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
+	private String createLabel(String prefix, String suffix, int maxLength) {
+		if (suffix.length() > maxLength) {
+			throw new IllegalArgumentException("The label suffix \"" + suffix + 
+					"\" is longer than the specified maximum length (" + maxLength + ").");  //TODO Throw some kind of writer exception instead?
+		}
+		else {
+			int lengthDif = (prefix.length() + suffix.length()) - maxLength;
+			if (lengthDif > 0) {
+				return prefix.substring(0, prefix.length() - lengthDif) + suffix;
+			}
+			else {
+				return prefix + suffix;
+			}
+		}
+	}
+	
+	
 	protected String createUniqueLabel(EventWriterParameterMap parameters, UniqueLabelTester tester, LabeledIDEvent event) {
-		String result = getLabeledIDName(event);
+		int maxLength = parameters.getInteger(EventWriterParameterMap.KEY_MAXIMUM_NAME_LENGTH, Integer.MAX_VALUE);
+		String result = createLabel(getLabeledIDName(event), "", maxLength);
 		if (!tester.isUnique(result)) {
 			if (event.hasLabel()) {
-				result = event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel();
+				result = createLabel(event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel(), "", maxLength);
 			}
 			
 			if (!tester.isUnique(result)) {
 				long suffix = 2;
 				String editedResult;
 				do {
-					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
+					editedResult = createLabel(result, EDITED_LABEL_SEPARATOR + suffix, maxLength);
 					suffix++;
 				}	while (!tester.isUnique(editedResult));
 				result = editedResult;

@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;

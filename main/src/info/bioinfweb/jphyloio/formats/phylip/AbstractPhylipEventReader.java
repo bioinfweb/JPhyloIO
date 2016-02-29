@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
@@ -42,12 +41,7 @@ import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
  * @author Ben St&ouml;ver
  */
 public abstract class AbstractPhylipEventReader<P extends TextStreamDataProvider<? extends AbstractPhylipEventReader<P>>>
-		extends AbstractTextEventReader<P> {
-	
-	public static final int DEFAULT_NAME_LENGTH = 10;
-	public static final String PREMATURE_NAME_END_CHARACTER = "\t";
-	public static final Pattern RELAXED_PHYLIP_NAME_PATTERN = Pattern.compile(".+\\s+");
-	
+		extends AbstractTextEventReader<P> implements PhylipConstants {
 	
 	private boolean relaxedPhylip = false;
 	private long sequenceCount = -1;

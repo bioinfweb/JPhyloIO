@@ -57,7 +57,7 @@ public class EventWriterParameterMap extends ParameterMap {
 	/** 
 	 * Specifies the preferred line length for writers that support this.
 	 * <p> 
-	 * The value should have an integer type (e.g. {@link Integer}.
+	 * The value should have an integer type (e.g. {@link Integer}).
 	 */
 	public static final String KEY_LINE_LENGTH = "lineLength";
 	
@@ -84,6 +84,19 @@ public class EventWriterParameterMap extends ParameterMap {
 	 * written to the output at all supported positions.
 	 */
 	public static final String KEY_IGNORE_COMMENTS = "ignoreComments";
+	
+	/**
+	 * This parameter can be used to specify a custom maximum lengths for element names. An example would be the length
+	 * of sequence names in Phylip, which may be customized using this parameter.
+	 * <p>
+	 * The value should have an integer type (e.g. {@link Integer}). Writers that support this parameter will us a default
+	 * length if this parameter is omitted. Only writers for formats that impose length restrictions will make use of this
+	 * parameter. Note that some formats may define a fixed maximum length and specifying this parameter may lead to a
+	 * deviation from the standards of this format. Refer to the documentation of the according writer for details in that. 
+	 */
+	public static final String KEY_MAXIMUM_NAME_LENGTH = "maximumNameLength";
+	//TODO Should formats that can use any lengths and formats that usually impose a defined length be using separate parameters to avoid accidental deviation from format standards?
+	//     (Since currently Phylip should be the only relevant format here, only one parameter would currently be needed and that is more a question of which definition to use in the documentation.)
 	
 	/**
 	 * This parameter can be used to specify whether a {@code TRANSLATE} command should be included in the {@code TREES}

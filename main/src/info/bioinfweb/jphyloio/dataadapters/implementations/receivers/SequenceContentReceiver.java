@@ -29,12 +29,32 @@ import java.util.regex.Pattern;
 
 
 
+/**
+ * Receiver that writes all encountered sequence tokens and comments to the current line and ignores all metadata.
+ * Comments can also be ignored, of {@code null} is specified as the comment start token.
+ * <p>
+ * It will log an according warning, if comments need to be edited (e.g. because they contain character that are
+ * reserved in the target format).
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class SequenceContentReceiver extends AbstractEventReceiver {
 	private String commentStart;
 	private String commentEnd;
 	private boolean longTokens;
 	
 	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param writer the writer to write the sequence to
+	 * @param parameterMap the parameter map specified to the calling event writer
+	 * @param commentStart a comment start token or {@code null}, if this writer shall ignore comment events
+	 * @param commentEnd a comment end token or {@code null}, if this writer shall ignore comment events
+	 * @param longTokens Specify {@code true} here if sequence tokens shall be separated by spaces (if one token may
+	 *        be longer than one character) or {@code false} otherwise.
+	 */
 	public SequenceContentReceiver(Writer writer,	EventWriterParameterMap parameterMap, String commentStart,
 			String commentEnd, boolean longTokens) {
 		
@@ -67,15 +87,20 @@ public class SequenceContentReceiver extends AbstractEventReceiver {
 				}
 				break;
 			case COMMENT:
-				getWriter().write(commentStart);
-				String content = event.asCommentEvent().getContent();
-				String editedContent = content.replaceAll(Pattern.quote(commentEnd), "");
-				getWriter().write(editedContent);
-				if (!content.equals(editedContent)) {
-					getLogger().addWarning("A comment inside a sequence contained one or more comment end symbols used by the target "
-							+ "format. The according parts were removed from the comment.");
+				if (commentStart != null) {
+					getWriter().write(commentStart);
+					String content = event.asCommentEvent().getContent();
+					String editedContent = content.replaceAll(Pattern.quote(commentEnd), "");
+					getWriter().write(editedContent);
+					if (!content.equals(editedContent)) {
+						getLogger().addWarning("A comment inside a sequence contained one or more comment end symbols used by the target "
+								+ "format. The according parts were removed from the comment.");
+					}
+					getWriter().write(commentEnd);
 				}
-				getWriter().write(commentEnd);
+				else {
+					addIgnoredComments(1);
+				}
 				break;
 			case META_INFORMATION:  //TODO Filter comments nested in metadata by counting metadata level. (Possibly use superclass shared with NewickNodeEdgeEventReceiver.)
 				addIgnoredMetadata(1);
