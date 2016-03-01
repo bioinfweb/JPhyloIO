@@ -43,6 +43,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
@@ -82,6 +83,12 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 	}
 	
 	
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.PHYLOXML_FORMAT_ID;
+	}
+
+
 	@SuppressWarnings("unchecked")
 	protected void fillMap() {
 		Map<XMLElementReaderKey, XMLElementReader<PhyloXMLStreamDataProvider>> map = getElementReaderMap();

@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
@@ -131,6 +132,12 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 	}
 	
 	
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.FASTA_FORMAT_ID;
+	}
+
+
 	private JPhyloIOEvent readSequenceStart(String exceptionMessage) throws IOException {
 		try {
 			if (getReader().readChar() == NAME_START_CHAR) {

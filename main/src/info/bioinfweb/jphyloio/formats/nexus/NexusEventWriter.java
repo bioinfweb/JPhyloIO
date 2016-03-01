@@ -44,6 +44,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceCo
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 
 
@@ -108,6 +109,12 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	private ApplicationLogger logger;
 
 	
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.NEXUS_FORMAT_ID;
+	}
+
+
 	private void writeInitialLines() throws IOException {
 		writer.write(FIRST_LINE);
 		writeLineBreak(writer, parameters);

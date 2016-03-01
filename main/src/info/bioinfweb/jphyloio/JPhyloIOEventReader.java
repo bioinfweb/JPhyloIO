@@ -77,7 +77,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * @see EventContentType
  * @see JPhyloIOEventWriter
  */
-public interface JPhyloIOEventReader {
+public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	/**
 	 * Returns the maximum number of sequence tokens that shall be bundled into a single event.
 	 * Sequences might still be distributed among events containing a smaller number of tokens.

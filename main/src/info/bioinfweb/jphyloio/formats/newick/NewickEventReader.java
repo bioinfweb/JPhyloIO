@@ -28,6 +28,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
@@ -83,6 +84,12 @@ public class NewickEventReader extends AbstractTextEventReader<TextStreamDataPro
 	public NewickEventReader(Reader reader) throws IOException {
 		super(reader, true);
 		init();
+	}
+	
+	
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.NEWICK_FORMAT_ID;
 	}
 	
 	

@@ -37,6 +37,7 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
@@ -93,6 +94,12 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	}
 
 	
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.NEXML_FORMAT_ID;
+	}
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void fillMap() {

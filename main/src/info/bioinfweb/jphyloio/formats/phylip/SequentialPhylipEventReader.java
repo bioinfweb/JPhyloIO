@@ -27,6 +27,7 @@ import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 
 import java.io.BufferedReader;
@@ -126,6 +127,12 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextS
 	}
 	
 	
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.SEQUENTIAL_PHYLIP_FORMAT_ID;
+	}
+
+
 	@Override
 	protected void readNextEvent() throws Exception {
 		if (isBeforeFirstAccess()) {

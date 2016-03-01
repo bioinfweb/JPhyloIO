@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public interface JPhyloIOEventWriter {
+public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	/**
 	 * Writes the data provided by the data adapter to a document in the according format of the implementing class.
 	 * 

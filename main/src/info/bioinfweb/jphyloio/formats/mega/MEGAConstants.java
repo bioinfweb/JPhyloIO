@@ -21,6 +21,8 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 
 public interface MEGAConstants {
+	public static final String MEGA_FORMAT_NAME = "MEGA";
+	
 	public static final String FIRST_LINE = "#MEGA";
 	public static final char COMMAND_END = ';';
 	public static final char COMMAND_START = '!';

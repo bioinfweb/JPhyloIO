@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
 
@@ -73,7 +74,13 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 	 * the different {@code #writeDocument()} methods.)
 	 */
 	public PhylipEventWriter() {
-		super("Phylip");
+		super(PHYLIP_FORMAT_NAME);
+	}
+
+
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.PHYLIP_FORMAT_ID;
 	}
 
 

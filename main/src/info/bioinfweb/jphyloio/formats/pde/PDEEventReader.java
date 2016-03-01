@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
@@ -84,6 +85,12 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 		super(true, xmlReader);
 	}
 	
+
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.PDE_FORMAT_ID;
+	}
+
 
 	@Override
 	protected void fillMap() {

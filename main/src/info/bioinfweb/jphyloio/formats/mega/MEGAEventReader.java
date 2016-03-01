@@ -40,6 +40,7 @@ import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
@@ -131,6 +132,12 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 	}
 	
 	
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.MEGA_FORMAT_ID;
+	}
+
+
 	private void checkStart() throws IOException {
 		if (!FIRST_LINE.equals(getReader().readString(FIRST_LINE.length()).toUpperCase())) { 
 			throw new JPhyloIOReaderException("All MEGA files must start with \"" + FIRST_LINE + "\".", 0, 0, 0);

@@ -27,10 +27,23 @@ import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
 
+/**
+ * Event writer for the Newick format.
+ * 
+ * @author Ben St&ouml;ver
+ * @see 0.0.0
+ */
 public class NewickEventWriter extends AbstractEventWriter implements NewickConstants {
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.NEWICK_FORMAT_ID;
+	}
+	
+	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception {
 		ApplicationLogger logger = parameters.getLogger();

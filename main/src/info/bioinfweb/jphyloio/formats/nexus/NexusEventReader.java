@@ -35,6 +35,7 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandlerMap;
@@ -221,6 +222,12 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 		this(reader, translateMatchToken, NexusBlockHandlerMap.newJPhyloIOInstance(), NexusCommandReaderFactory.newJPhyloIOInstance());
 	}
 	
+
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.NEXUS_FORMAT_ID;
+	}
+
 
 	@Override
 	protected NexusStreamDataProvider createStreamDataProvider() {

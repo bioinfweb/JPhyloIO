@@ -24,6 +24,9 @@ import java.util.regex.Pattern;
 
 
 public interface PhylipConstants {
+	public static final String PHYLIP_FORMAT_NAME = "Phylip";
+	public static final String SEQUENTIAL_PHYLIP_FORMAT_NAME = "Sequential Phylip";
+	
 	public static final int DEFAULT_NAME_LENGTH = 10;
 	public static final String PREMATURE_NAME_END_CHARACTER = "\t";
 	public static final Pattern RELAXED_PHYLIP_NAME_PATTERN = Pattern.compile(".+\\s+");

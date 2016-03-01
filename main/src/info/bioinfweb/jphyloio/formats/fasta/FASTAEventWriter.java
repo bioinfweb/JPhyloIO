@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
-import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
 
@@ -61,9 +61,15 @@ import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
  */
 public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements FASTAConstants {
 	public FASTAEventWriter() {
-		super("FASTA");
+		super(FASTA_FORMAT_NAME);
 	}
 
+
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.FASTA_FORMAT_ID;
+	}
+	
 
 	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver,
 			EventWriterParameterMap parameters) throws IOException {

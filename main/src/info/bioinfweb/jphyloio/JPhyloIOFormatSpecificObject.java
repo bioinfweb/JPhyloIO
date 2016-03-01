@@ -16,20 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.fasta;
+package info.bioinfweb.jphyloio;
+
+
+import info.bioinfweb.jphyloio.formats.JPhyloIOReaderWriterFactory;
 
 
 
 /**
- * Contains format specific constants used by {@link FASTAEventReader} and {@link FASTAEventWriter}.
+ * Interface to be implemented by all format-specific classes (e.g. event readers and writers) that provide 
+ * information about their target format.
  * 
  * @author Ben St&ouml;ver
+ * @since 0.0.0
  */
-public interface FASTAConstants {
-	public static final String FASTA_FORMAT_NAME = "FASTA";
-	
-	public static final int DEFAULT_LINE_LENGTH = 80;	
-	
-	public static final char NAME_START_CHAR = '>';
-	public static final char COMMENT_START_CHAR = ';';
+public interface JPhyloIOFormatSpecificObject {
+	/**
+	 * Returns a string ID uniquely identifying the target format of this instance. Additional information on the
+	 * format can be retrieved by passing the returned ID to {@link JPhyloIOReaderWriterFactory#getFormatInfo(String)}.
+	 * 
+	 * @return the ID of the target format of this instance
+	 * @see JPhyloIOReaderWriterFactory#getFormatInfo(String)
+	 */
+	public String getFormatID();
 }

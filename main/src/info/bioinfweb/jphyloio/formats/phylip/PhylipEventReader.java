@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
@@ -157,6 +158,12 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextStreamDataP
 	}
 	
 	
+	@Override
+	public String getFormatID() {
+		return JPhyloIOFormatIDs.PHYLIP_FORMAT_ID;
+	}
+
+
 	private void increaseSequenceIndex() {
 		currentSequenceIndex++;
 		if (currentSequenceIndex >= getSequenceCount()) {
