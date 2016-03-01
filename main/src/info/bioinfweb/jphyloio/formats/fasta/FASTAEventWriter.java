@@ -96,14 +96,7 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 			eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 			matrix.writeSequencePartContentData(eventReceiver, id, 0, matrix.getSequenceLength(id));
 			
-			// Extend sequences:
-			if (extensionToken != null) {
-				long additionalLength = maxSequenceLength - matrix.getSequenceLength(id);
-				SingleSequenceTokenEvent event = new SingleSequenceTokenEvent(extensionToken);
-				for (long i = 0; i < additionalLength; i++) {
-					eventReceiver.add(event);  // Event receiver manages line length.
-				}
-			}
+			extendSequence(matrix, id, maxSequenceLength, extensionToken, eventReceiver);  // Event receiver manages line length.
 		}
 		
 		ApplicationLogger logger = parameters.getLogger();

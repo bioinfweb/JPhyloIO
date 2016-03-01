@@ -79,7 +79,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 
 	private String editSequenceLabel(LinkedOTUOrOTUsEvent event, final EventWriterParameterMap parameters) {
   	//TODO Are any characters invalid in Phylip?
-		return createUniqueLabel(parameters, 
+		return createUniqueLabel(parameters,  //TODO A method considering linked OTUs needs to be used here.
 				new UniqueLabelTester() {
 					@Override
 					public boolean isUnique(String label) {
@@ -95,10 +95,17 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 			Iterator<String> sequenceIDIterator, Writer writer, EventWriterParameterMap parameters) throws Exception {
 
 		int nameLength = parameters.getInteger(EventWriterParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
+		String extensionToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
+		long maxSequenceLength = determineMaxSequenceLength(matrix);
 		
 		// Write heading:
-    writer.write("\t" + matrix.getSequenceCount() + "\t" + matrix.getColumnCount());  //TODO Handle sequences with unequal length
+    writer.write("\t" + matrix.getSequenceCount() + "\t" + maxSequenceLength);
     writeLineBreak(writer, parameters);
+    if ((matrix.getColumnCount() == -1) && (extensionToken == null)) {
+    	parameters.getLogger().addWarning("The provided sequences have inequal lengths and filling up sequences was not "
+    			+ "specified. The column count written to the Phylip document is the length of the longest sequence. Some "
+    			+ "programs may not be able to parse Phylip files with unequal sequence lengths.");
+    }
     
     while (sequenceIDIterator.hasNext()) {
     	String id = sequenceIDIterator.next();
@@ -114,6 +121,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
     	SequenceContentReceiver receiver = new SequenceContentReceiver(writer, parameters, null, null, 
     			matrix.containsLongTokens());
     	matrix.writeSequencePartContentData(receiver, id, 0, matrix.getSequenceLength(id));
+    	extendSequence(matrix, id, maxSequenceLength, extensionToken, receiver);
     	
     	writeLineBreak(writer, parameters);
     }

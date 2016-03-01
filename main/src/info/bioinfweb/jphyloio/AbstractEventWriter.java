@@ -31,11 +31,13 @@ import java.util.Iterator;
 import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 
 
 
@@ -263,7 +265,8 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	
 	protected String createUniqueLabel(final EventWriterParameterMap parameters, final LabeledIDEvent event) {
-		return createUniqueLabel(parameters, new UniqueLabelTester() {
+		return createUniqueLabel(parameters, 
+				new UniqueLabelTester() {
 					@Override
 					public boolean isUnique(String label) {
 						return !parameters.getLabelEditingReporter().isLabelUsed(event.getType().getContentType(), label);
@@ -273,29 +276,18 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-//	protected String createUniqueLabel(EventWriterParameterMap parameters, LabeledIDEvent event) {
-//		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
-//		
-//		String result = getLabeledIDName(event);
-//		if (reporter.isLabelUsed(event.getType().getContentType(), result)) {
-//			if (event.hasLabel()) {
-//				result = event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel();
-//			}
-//			
-//			if (reporter.isLabelUsed(event.getType().getContentType(), result)) {
-//				long suffix = 2;
-//				String editedResult;
-//				do {
-//					editedResult = result + EDITED_LABEL_SEPARATOR + suffix;
-//					suffix++;
-//				}	while (reporter.isLabelUsed(event.getType().getContentType(), editedResult));
-//				result = editedResult;
-//			}
-//		}
-//		
-//		reporter.addEdit(event, result);
-//		return result;
-//	}
+	protected void extendSequence(MatrixDataAdapter matrix, String sequenceID, long targetLength, 
+			String extensionToken, JPhyloIOEventReceiver receiver) 
+			throws IllegalArgumentException, ClassCastException, IOException {
+		
+		if (extensionToken != null) {
+			long additionalLength = targetLength - matrix.getSequenceLength(sequenceID);
+			SingleSequenceTokenEvent event = new SingleSequenceTokenEvent(extensionToken);
+			for (long i = 0; i < additionalLength; i++) {
+				receiver.add(event);
+			}
+		}
+	}
 	
 	
 	@Override
