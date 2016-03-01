@@ -97,33 +97,33 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 	}
 	
 	
-//	@Test
-//	public void test_writeDocument_labelSources() throws Exception {
-//		File file = new File("data/testOutput/TestLabelSources.fasta");
-//		
-//		// Write file:
-//		DocumentDataAdapter document = createTestDocumentWithLabels("Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
-//		TestOTUListDataAdapter otuList = (TestOTUListDataAdapter)document.getOTUListIterator().next();
-//		String otuID = DEFAULT_OTU_ID_PREFIX + "2";
-//		otuList.getOtus().put(otuID, new LabeledIDEvent(EventContentType.OTU, otuID, null));  // Set last OTU label to null
-//		
-//		PhylipEventWriter writer = new PhylipEventWriter();
-//		writer.writeDocument(document, file, new EventWriterParameterMap());
-//		
-//		// Validate file:
-//		BufferedReader reader = new BufferedReader(new FileReader(file));
-//		try {
-//			assertEquals("\t3\t5", reader.readLine());
-//			assertEquals("Label 1   ACTGC", reader.readLine());
-//			assertEquals("OTU otu1  A-TCC", reader.readLine());
-//			assertEquals("OTU otu2  ACTTC", reader.readLine());
-//			assertEquals(-1, reader.read());
-//		}
-//		finally {
-//			reader.close();
-//			file.delete();
-//		}
-//	}
+	@Test
+	public void test_writeDocument_labelSources() throws Exception {
+		File file = new File("data/testOutput/TestLabelSources.fasta");
+		
+		// Write file:
+		DocumentDataAdapter document = createTestDocumentWithLabels("Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
+		TestOTUListDataAdapter otuList = (TestOTUListDataAdapter)document.getOTUListIterator().next();
+		String otuID = DEFAULT_OTU_ID_PREFIX + "2";
+		otuList.getOtus().put(otuID, new LabeledIDEvent(EventContentType.OTU, otuID, null));  // Set last OTU label to null
+		
+		PhylipEventWriter writer = new PhylipEventWriter();
+		writer.writeDocument(document, file, new EventWriterParameterMap());
+		
+		// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {
+			assertEquals("\t3\t5", reader.readLine());
+			assertEquals("Label 1   ACTGC", reader.readLine());
+			assertEquals("OTU otu1  A-TCC", reader.readLine());  //TODO Fix this. (Phylip reader behaves different here then FASTA reader.)
+			assertEquals("OTU otu2  ACTTC", reader.readLine());  //TODO see above
+			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
 	
 	
 	@Test
