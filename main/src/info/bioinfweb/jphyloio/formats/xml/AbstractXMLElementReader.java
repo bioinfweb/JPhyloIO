@@ -18,7 +18,6 @@
  */
 package info.bioinfweb.jphyloio.formats.xml;
 
-import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -35,6 +34,7 @@ public abstract class AbstractXMLElementReader<P extends XMLStreamDataProvider<?
 	
 	protected void readAttributes(P streamDataProvider, StartElement element) {
 		String key = streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() + "." + element.getName().getLocalPart();
+		@SuppressWarnings("unchecked")
 		Iterator<Attribute> attributes = element.getAttributes();
 		while (attributes.hasNext()) {
 			Attribute attribute = attributes.next();

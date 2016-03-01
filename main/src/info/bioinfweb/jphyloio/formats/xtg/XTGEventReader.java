@@ -220,7 +220,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				streamDataProvider.getCurrentNodeEdgeInfo().setLabel(label);
 				
-				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(XTG + "." + streamDataProvider.getParentName() 
+				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() 
 						+ "." + element.getName().getLocalPart(), null, null));
 			}
 		});

@@ -36,7 +36,6 @@ public class XMLToMetaElementStartReader extends AbstractXMLElementReader {
 		String elementName = element.getName().getLocalPart();
 		XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
 		String value = null;
-		String originalType = null;
 				
 		if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
 			String characterData = nextEvent.asCharacters().getData();
