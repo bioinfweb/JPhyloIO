@@ -78,7 +78,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 
 
 	private String editSequenceLabel(LinkedOTUOrOTUsEvent event, final EventWriterParameterMap parameters) {
-  	//TODO Are any characters invalid in Phylip?
+  	//TODO Mask, replace or remove invalid in Phylip characters: ("(" and ")"), square brackets ("[" and "]"), colon (":"), semicolon (";") and comma (",") 
 		return createUniqueLabel(parameters,  //TODO A method considering linked OTUs needs to be used here.
 				new UniqueLabelTester() {
 					@Override
