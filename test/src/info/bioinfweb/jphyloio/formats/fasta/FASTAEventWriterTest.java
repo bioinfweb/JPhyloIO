@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.List;
 
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
@@ -55,7 +55,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		DocumentDataAdapter document = createTestDocument("ACTGC", "A-TCC");
 		FASTAEventWriter writer = new FASTAEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -80,7 +80,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		DocumentDataAdapter document = createTestDocument("", "A-TCC");
 		FASTAEventWriter writer = new FASTAEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -104,8 +104,8 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		DocumentDataAdapter document = createTestDocument("ACTGC", "ACT", "A-TCC");
 		FASTAEventWriter writer = new FASTAEventWriter();
-		EventWriterParameterMap map = new EventWriterParameterMap();
-		map.put(EventWriterParameterMap.KEY_LINE_LENGTH, 3);
+		ReadWriteParameterMap map = new ReadWriteParameterMap();
+		map.put(ReadWriteParameterMap.KEY_LINE_LENGTH, 3);
 		writer.writeDocument(document, file, map);
 		
 		// Validate file:
@@ -139,7 +139,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		otuList.getOtus().put(otuID, new LabeledIDEvent(EventContentType.OTU, otuID, null));  // Set last OTU label to null
 		
 		FASTAEventWriter writer = new FASTAEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -166,7 +166,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		DocumentDataAdapter document = createSingleTokenTestDocument("ACTGC", "A-TCC");
 		FASTAEventWriter writer = new FASTAEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -199,7 +199,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		leadingEvents.add(new CommentEvent("comment 2", false));
 		matrix.getMatrix().get("seq1").leadingEvents.add(new CommentEvent("comment 3", false));
 		FASTAEventWriter writer = new FASTAEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -227,8 +227,8 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		DocumentDataAdapter document = createTestDocument("ACTGCTG", "A-TCC");
 		FASTAEventWriter writer = new FASTAEventWriter();
-		EventWriterParameterMap parameters = new EventWriterParameterMap();
-		parameters.put(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN, "?");
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN, "?");
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:

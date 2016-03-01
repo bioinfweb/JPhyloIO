@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -37,7 +38,9 @@ public class NeXMLEventReaderTest {
 	@Test
 	public void testOutputNeXML() {
 		try {
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MultipleCharactersTags.xml"), TranslateTokens.SYMBOL_TO_LABEL);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MultipleCharactersTags.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();

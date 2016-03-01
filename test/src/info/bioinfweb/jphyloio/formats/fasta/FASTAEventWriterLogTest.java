@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
@@ -54,8 +54,8 @@ public class FASTAEventWriterLogTest {
 		// Write file:
 		FASTAEventWriter writer = new FASTAEventWriter();
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
-		EventWriterParameterMap map = new EventWriterParameterMap();
-		map.put(EventWriterParameterMap.KEY_LOGGER, logger);
+		ReadWriteParameterMap map = new ReadWriteParameterMap();
+		map.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		writer.writeDocument(document, file, map);
 		
 		// Validate file:

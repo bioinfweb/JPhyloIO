@@ -26,6 +26,7 @@ import info.bioinfweb.commons.testing.TestTools;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
@@ -49,7 +50,7 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingCharSets() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSet.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSet.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertCommentEvent("comment 1", reader);
@@ -148,7 +149,7 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingCharSetsInvalidSymbol() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetInvalidVectorSymbol.nex"), false);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetInvalidVectorSymbol.nex"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				//assertCharacterSetEvent("set1", 2, 4, reader);  // The exception happens here already, because the parser is always one element ahead.
@@ -173,7 +174,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingFormatCommand() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Format.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Format.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -206,7 +207,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingFormatCommandTokens() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatTokens.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatTokens.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -240,7 +241,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingFormatCommandContinuous() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuous.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuous.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -273,10 +274,8 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrix() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-			
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
 			
@@ -345,8 +344,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixLongTokens() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokens.nex"), false);
-		reader.setCreateUnknownCommandEvents(false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokens.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -389,8 +387,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixLongContinuous() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixContinuous.nex"), false);
-		reader.setCreateUnknownCommandEvents(false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixContinuous.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -431,8 +428,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixDNAAlternatives() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixDNAAlternatives.nex"), false);
-		reader.setCreateUnknownCommandEvents(false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixDNAAlternatives.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -473,8 +469,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixLongTokensAlternatives() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokensAlternatives.nex"), false);
-		reader.setCreateUnknownCommandEvents(false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixLongTokensAlternatives.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -516,8 +511,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixInterleaved() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleaved.nex"), false);
-		reader.setCreateUnknownCommandEvents(false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleaved.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -570,11 +564,10 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixInterleavedMatchCharacterSplit() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), true);
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 4);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), parameters);
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-			reader.setMaxTokensToRead(4);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
@@ -633,10 +626,8 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingMatrixInterleavedMatchCharacter() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), true);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixInterleavedMatchCharacter.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
@@ -690,9 +681,9 @@ public class NexusEventReaderTest {
 	@Test
 	public void testReadingSplitComments() {
 		try {
-			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/SplitComments.nex"), false);
-			reader.setMaxCommentLength(13);
-			reader.setCreateUnknownCommandEvents(false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_COMMENT_LENGTH, 13);
+			NexusEventReader reader = new NexusEventReader(new File("data/Nexus/SplitComments.nex"), parameters);
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
@@ -719,7 +710,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingSymbols() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Symbols.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Symbols.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -760,7 +751,7 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingFormatSymbols() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuousSymbols.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/FormatContinuousSymbols.nex"), new ReadWriteParameterMap());
 		try {
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -799,7 +790,7 @@ public class NexusEventReaderTest {
 	
 	
 	private void testReadingMrBayesDataTypeExtension(String file, boolean testSingleDefs) throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File(file), false);
+		NexusEventReader reader = new NexusEventReader(new File(file), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -838,10 +829,8 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingMatrixUnaligned() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixUnaligned.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixUnaligned.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
@@ -880,10 +869,8 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingTaxaNoLabels() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabels.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabels.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
@@ -961,10 +948,8 @@ public class NexusEventReaderTest {
 
 	@Test(expected=IOException.class)
 	public void testReadingTaxaNoLabelsInvalid() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabelsInvalid.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxaNoLabelsInvalid.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
@@ -1052,10 +1037,8 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingTreesTranslate() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesTranslate.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesTranslate.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
@@ -1086,10 +1069,8 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingTreesNumericName() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesNumericName.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesNumericName.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
@@ -1139,10 +1120,8 @@ public class NexusEventReaderTest {
 
 	@Test
 	public void testReadingTreesMetadata() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesMetadata.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesMetadata.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
@@ -1273,10 +1252,8 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testReadingTreesMultipleBlocks() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MultipleTreesBlocks.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MultipleTreesBlocks.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
 			assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
@@ -1340,10 +1317,8 @@ public class NexusEventReaderTest {
 	
 	@Test
 	public void testTitleLink() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TitleLink.nex"), false);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TitleLink.nex"), new ReadWriteParameterMap());
 		try {
-			reader.setCreateUnknownCommandEvents(false);
-
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
 			// TAXA:

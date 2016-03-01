@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -38,10 +39,10 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingNonInterleavedExactLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), false, true, false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 10);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(10);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -87,10 +88,10 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingNonInterleavedLongerLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), false, true, false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 20);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(20);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -136,10 +137,10 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingNonInterleavedShorterLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), false, true, false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 6);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/NonInterleaved.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(6);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -189,7 +190,7 @@ public class PhylipEventReaderTest {
 	
 	private void testInvalidCount(String fileName, String errorMessage) {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/" + fileName), false, true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/" + fileName), new ReadWriteParameterMap());
 			try {
 				//assertEquals(EventType.DOCUMENT_START, reader.next().getEventType());  // To allow peek() the first two events are generated here already.
 				reader.next();
@@ -220,10 +221,10 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleavedExactLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 10);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(10);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -289,10 +290,10 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleavedLongerLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 20);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(20);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -358,10 +359,10 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleavedShorterLength() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 6);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(6);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -436,10 +437,10 @@ public class PhylipEventReaderTest {
 	
 	@Test
 	public void testReadingInterleavedHalfLength() throws Exception {
-		PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), false, true, false);
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 5);
+		PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved.phy"), parameters);
 		try {
-			reader.setMaxTokensToRead(5);
-			
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 
@@ -510,10 +511,10 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleaved3Blocks() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved3Blocks.phy"), false, true, false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 20);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/Interleaved3Blocks.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(20);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -599,10 +600,11 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingRelaxedInterleaved3Blocks() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/RelaxedInterleaved3Blocks.phy"), false, true, true);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 20);
+			parameters.put(ReadWriteParameterMap.KEY_RELAXED_PHYLIP, true);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/RelaxedInterleaved3Blocks.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(20);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -688,7 +690,7 @@ public class PhylipEventReaderTest {
 	@Test
 	public void testReadingInterleavedMatchCharacter() {
 		try {
-			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/InterleavedMatchCharacter.phy"), true, true, false);
+			PhylipEventReader reader = new PhylipEventReader(new File("data/Phylip/InterleavedMatchCharacter.phy"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);

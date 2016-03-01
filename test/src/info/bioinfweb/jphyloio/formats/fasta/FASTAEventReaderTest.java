@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
@@ -38,10 +39,10 @@ public class FASTAEventReaderTest {
 	@Test
 	public void testReadingFasta() {
 		try {
-			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Test.fasta"), false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 6);
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Test.fasta"), parameters);
 			try {
-				reader.setMaxTokensToRead(6);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -81,10 +82,10 @@ public class FASTAEventReaderTest {
 	@Test
 	public void testnextOfType() {
 		try {
-			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Test.fasta"), false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 20);
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Test.fasta"), parameters);
 			try {
-				reader.setMaxTokensToRead(20);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -110,7 +111,7 @@ public class FASTAEventReaderTest {
 	@Test
 	public void testReadingFastaMatchToken() {
 		try {
-			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/MatchToken.fasta"), true);
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/MatchToken.fasta"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -146,10 +147,10 @@ public class FASTAEventReaderTest {
 	@Test
 	public void testReadingFastaWithComments() {
 		try {
-			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Comment.fasta"), false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_COMMENT_LENGTH, 16);
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Comment.fasta"), parameters);
 			try {
-				reader.setMaxCommentLength(16);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -197,7 +198,7 @@ public class FASTAEventReaderTest {
 	@Test
 	public void testReadingFastaWithIndices() {
 		try {
-			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Indices.fasta"), false);
+			FASTAEventReader reader = new FASTAEventReader(new File("data/Fasta/Indices.fasta"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);

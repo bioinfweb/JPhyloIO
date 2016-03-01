@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 import static org.junit.Assert.fail;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -39,7 +40,7 @@ public class PhyloXMLEventReaderTest {
 	public void testOutputPhyloXML() {
 		try {
 //			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/PhyloXMLDocument.xml"));
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/MultipleTrees.xml"));
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/MultipleTrees.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
@@ -72,7 +73,7 @@ public class PhyloXMLEventReaderTest {
 	@Test
 	public void testReadingIDsAndLabels() {
 		try {
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/IDsAndLabels.xml"));
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/IDsAndLabels.xml"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
@@ -146,7 +147,7 @@ public class PhyloXMLEventReaderTest {
 	@Test
 	public void testReadingMultipleTrees() {
 		try {
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/MultipleTrees.xml"));
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/MultipleTrees.xml"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				

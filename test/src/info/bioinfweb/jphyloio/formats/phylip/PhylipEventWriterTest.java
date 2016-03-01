@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -48,7 +48,7 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		DocumentDataAdapter document = createTestDocument("ACTGC", "A-TCC");
 		PhylipEventWriter writer = new PhylipEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -73,8 +73,8 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 		DocumentDataAdapter document = createTestDocument("", "A-TCC");
 		PhylipEventWriter writer = new PhylipEventWriter();
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
-		EventWriterParameterMap map = new EventWriterParameterMap();
-		map.put(EventWriterParameterMap.KEY_LOGGER, logger);
+		ReadWriteParameterMap map = new ReadWriteParameterMap();
+		map.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		writer.writeDocument(document, file, map);
 		
 		// Validate file:
@@ -108,7 +108,7 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 		otuList.getOtus().put(otuID, new LabeledIDEvent(EventContentType.OTU, otuID, null));  // Set last OTU label to null
 		
 		PhylipEventWriter writer = new PhylipEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -133,7 +133,7 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		DocumentDataAdapter document = createSingleTokenTestDocument("ACTGC", "A-TCC");
 		PhylipEventWriter writer = new PhylipEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -157,8 +157,8 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 		// Write file:
 		DocumentDataAdapter document = createTestDocument("ACTGCTG", "A-TCC");
 		PhylipEventWriter writer = new PhylipEventWriter();
-		EventWriterParameterMap parameters = new EventWriterParameterMap();
-		parameters.put(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN, "?");
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN, "?");
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:

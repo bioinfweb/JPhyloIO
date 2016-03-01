@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -34,7 +35,8 @@ import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 public class NewickEventReaderTest {
 	@Test
 	public void test_readNextEvent_InternalsTerminalsLength() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/InternalsTerminalsLength.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/InternalsTerminalsLength.nwk"), 
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
@@ -92,7 +94,8 @@ public class NewickEventReaderTest {
 	
 	@Test
 	public void test_readNextEvent_NoNamedNodes() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NoNamedNodes.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NoNamedNodes.nwk"),
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
@@ -138,7 +141,8 @@ public class NewickEventReaderTest {
 	
 	@Test
 	public void test_readNextEvent_LeafNodesNamed() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/LeafNodesNamed.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/LeafNodesNamed.nwk"),
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
@@ -184,7 +188,8 @@ public class NewickEventReaderTest {
 	
 	@Test
 	public void test_readNextEvent_OnlyBranchLengths() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/OnlyBranchLengths.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/OnlyBranchLengths.nwk"),
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
@@ -230,7 +235,8 @@ public class NewickEventReaderTest {
 	
 	@Test
 	public void test_readNextEvent_NoTrees() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NoTrees.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NoTrees.nwk"),
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEndEvent(EventContentType.DOCUMENT, reader);
@@ -244,7 +250,8 @@ public class NewickEventReaderTest {
 	
 	@Test
 	public void test_readNextEvent_Metadata() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/Metadata.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/Metadata.nwk"),
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
@@ -363,7 +370,8 @@ public class NewickEventReaderTest {
 	
 	@Test
 	public void test_readNextEvent_ProblematicComments() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/ProblematicComments.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/ProblematicComments.nwk"),
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
@@ -413,7 +421,8 @@ public class NewickEventReaderTest {
 	
 	@Test
 	public void test_readNextEvent_MultipleTrees() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/MultipleTrees.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/MultipleTrees.nwk"),
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
@@ -501,7 +510,8 @@ public class NewickEventReaderTest {
 	
 	@Test
 	public void test_readNextEvent_NHX2() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NHX2.nwk"));
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NHX2.nwk"),
+				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);

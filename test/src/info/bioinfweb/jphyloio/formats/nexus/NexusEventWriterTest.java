@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.*;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
@@ -93,10 +93,10 @@ public class NexusEventWriterTest implements NexusConstants {
 		document.getTreesNetworks().add(new TestTreeDataAdapter("tree2", "tree", "t2"));
 		
 		NexusEventWriter writer = new NexusEventWriter();
-		EventWriterParameterMap parameters = new EventWriterParameterMap();
-		parameters.put(EventWriterParameterMap.KEY_APPLICATION_COMMENT, "Some application comment.");
-		parameters.put(EventWriterParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, writeNodeLabels);
-		parameters.put(EventWriterParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, generateTranslationTable);
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_COMMENT, "Some application comment.");
+		parameters.put(ReadWriteParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, writeNodeLabels);
+		parameters.put(ReadWriteParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, generateTranslationTable);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -201,7 +201,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		document.getMatrices().add(matrix);
 		
 		NexusEventWriter writer = new NexusEventWriter();
-		EventWriterParameterMap parameters = new EventWriterParameterMap();
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -291,7 +291,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		document.getMatrices().add(matrix);
 		
 		NexusEventWriter writer = new NexusEventWriter();
-		EventWriterParameterMap parameters = new EventWriterParameterMap();
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -363,8 +363,8 @@ public class NexusEventWriterTest implements NexusConstants {
 		// Write file:
 		ListBasedDocumentDataAdapter document = createUnequalLengthDocument();
 		NexusEventWriter writer = new NexusEventWriter();
-		EventWriterParameterMap parameters = new EventWriterParameterMap();
-		parameters.put(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN, "?");
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN, "?");
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -411,7 +411,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		// Write file:
 		ListBasedDocumentDataAdapter document = createUnequalLengthDocument();
 		NexusEventWriter writer = new NexusEventWriter();
-		EventWriterParameterMap parameters = new EventWriterParameterMap();
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:

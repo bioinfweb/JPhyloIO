@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -40,10 +41,10 @@ public class SequentialPhylipEventReaderTest {
 	@Test
 	public void testReadingLongerLength() {
 		try {
-			SequentialPhylipEventReader reader = new SequentialPhylipEventReader(new File("data/Phylip/Sequential.phy"), false, false);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 20);
+			SequentialPhylipEventReader reader = new SequentialPhylipEventReader(new File("data/Phylip/Sequential.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(20);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
@@ -94,10 +95,11 @@ public class SequentialPhylipEventReaderTest {
 	@Test
 	public void testReadingRelaxedLongerLength() {
 		try {
-			SequentialPhylipEventReader reader = new SequentialPhylipEventReader(new File("data/Phylip/RelaxedSequential.phy"), false, true);
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_MAXIMUM_TOKENS_TO_READ, 20);
+			parameters.put(ReadWriteParameterMap.KEY_RELAXED_PHYLIP, true);
+			SequentialPhylipEventReader reader = new SequentialPhylipEventReader(new File("data/Phylip/RelaxedSequential.phy"), parameters);
 			try {
-				reader.setMaxTokensToRead(20);
-				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				

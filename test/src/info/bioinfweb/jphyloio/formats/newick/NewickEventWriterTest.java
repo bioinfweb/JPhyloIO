@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.newick;
 import static org.junit.Assert.*;
 
 
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
 
@@ -44,7 +44,7 @@ public class NewickEventWriterTest {
 		document.getTreesNetworks().add(new TestTreeDataAdapter("tree0", "first tree", "t0"));
 		document.getTreesNetworks().add(new TestTreeDataAdapter("tree1", "second tree", "t1"));
 		NewickEventWriter writer = new NewickEventWriter();
-		writer.writeDocument(document, file, new EventWriterParameterMap());
+		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));

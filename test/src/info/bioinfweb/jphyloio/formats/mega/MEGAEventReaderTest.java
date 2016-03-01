@@ -21,9 +21,11 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 import java.io.File;
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;
+
 
 
 
@@ -47,7 +49,7 @@ public class MEGAEventReaderTest implements MEGAConstants {
   
   @Test
   public void testReadingMEGA() throws Exception {
-		MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/HLA-3Seq.meg"), false);
+		MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/HLA-3Seq.meg"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
@@ -186,7 +188,7 @@ public class MEGAEventReaderTest implements MEGAConstants {
   @Test
   public void testReadingMEGAMatchCharacter() {
 		try {
-			MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/MatchToken.meg"), true);
+			MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/MatchToken.meg"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
