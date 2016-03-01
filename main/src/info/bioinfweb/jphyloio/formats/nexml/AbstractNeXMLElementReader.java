@@ -52,7 +52,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected List<String> readSequence(NeXMLStreamDataProvider streamDataProvider, String sequence, TranslateTokens translateTokens) {		
+	protected List<String> readSequence(NeXMLStreamDataProvider streamDataProvider, String sequence, TokenTranslationStrategy translateTokens) {		
 		List<String> tokenList = new ArrayList<String>();
 		String lastToken = "";
    	String currentToken = "";
@@ -96,7 +96,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 				}
 			}			
 
-			if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.DISCRETE) && !translateTokens.equals(TranslateTokens.NEVER)) { //standard data
+			if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.DISCRETE) && !translateTokens.equals(TokenTranslationStrategy.NEVER)) { //standard data
 	 			for (int i = 0; i < tokenList.size(); i++) {	 				
 		 			String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
 	 	 			tokenList.set(i, streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(tokenList.get(i)));

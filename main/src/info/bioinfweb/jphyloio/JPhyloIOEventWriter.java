@@ -43,7 +43,7 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */
-	public void writeDocument(DocumentDataAdapter document, OutputStream stream, EventWriterParameterMap parameters) throws Exception;
+	public void writeDocument(DocumentDataAdapter document, OutputStream stream, ReadWriteParameterMap parameters) throws Exception;
 	
 	/**
 	 * Writes the data provided by the data adapter to a document in the according format of the implementing class.
@@ -54,7 +54,7 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */
-	public void writeDocument(DocumentDataAdapter document, File file, EventWriterParameterMap parameters) throws Exception;
+	public void writeDocument(DocumentDataAdapter document, File file, ReadWriteParameterMap parameters) throws Exception;
 	
 	/**
 	 * Writes the data provided by the data adapter to a document in the according format of the implementing class.
@@ -65,5 +65,5 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */
-	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception;
+	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws Exception;
 }

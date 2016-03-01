@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.xtg;
 
 
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -55,31 +56,26 @@ import javax.xml.stream.events.XMLEvent;
 
 
 public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider<XTGEventReader>> implements XTGConstants {	
-	public XTGEventReader(File file) throws IOException, XMLStreamException {
-		super(true, file);
+	public XTGEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(file, parameters);
 	}
 
-	
-	public XTGEventReader(InputStream stream) throws IOException, XMLStreamException {
-		super(true, stream);
-	}
-	
 
-	public XTGEventReader(int maxTokensToRead, XMLEventReader xmlReader) {
-		super(true, maxTokensToRead, xmlReader);
+	public XTGEventReader(InputStream stream, ReadWriteParameterMap parameters)	throws IOException, XMLStreamException {
+		super(stream, parameters);
 	}
-	
 
-	public XTGEventReader(Reader reader) throws IOException, XMLStreamException {
-		super(true, reader);
-	}
-	
 
-	public XTGEventReader(XMLEventReader xmlReader) {
-		super(true, xmlReader);
+	public XTGEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(reader, parameters);
 	}
-	
-	
+
+
+	public XTGEventReader(XMLEventReader xmlReader,	ReadWriteParameterMap parameters) {
+		super(xmlReader, parameters);
+	}
+
+
 	@Override
 	public String getFormatID() {
 		return JPhyloIOFormatIDs.XTG_FORMAT_ID;

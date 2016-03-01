@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
@@ -46,7 +46,7 @@ public class NewickStringWriter implements NewickConstants {
 	private Writer writer;
 	private TreeNetworkDataAdapter tree;
 	private NewickWriterNodeLabelProcessor nodeLabelProcessor;
-	private EventWriterParameterMap parameters;
+	private ReadWriteParameterMap parameters;
 	
 	
 	/**
@@ -63,7 +63,7 @@ public class NewickStringWriter implements NewickConstants {
 	 * @param parameters the write parameter map specified to the calling reader
 	 */
 	public NewickStringWriter(Writer writer, TreeNetworkDataAdapter tree,	NewickWriterNodeLabelProcessor nodeLabelProcessor, 
-			EventWriterParameterMap parameters) {
+			ReadWriteParameterMap parameters) {
 		
 		super();
 		this.writer = writer;

@@ -19,12 +19,14 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
 import info.bioinfweb.commons.io.PeekReader;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -63,26 +65,54 @@ public class NewickEventReader extends AbstractTextEventReader<TextStreamDataPro
 	}
 	
 	
-	public NewickEventReader(File file) throws IOException {
-		super(file, true);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param reader the reader providing the Newick data to be read 
+	 * @param parameters the parameter map for this reader instance 
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NewickEventReader(BufferedReader reader, ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters, parameters.getMatchToken());
 		init();
 	}
 
 	
-	public NewickEventReader(InputStream stream)	throws IOException {
-		super(stream, true);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param file the Newick file to be read 
+	 * @param parameters the parameter map for this reader instance 
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NewickEventReader(File file, ReadWriteParameterMap parameters) throws IOException {
+		super(file, parameters, parameters.getMatchToken());
 		init();
 	}
 
 	
-	public NewickEventReader(PeekReader reader) {
-		super(reader, true);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param stream the stream providing the Newick data to be read 
+	 * @param parameters the parameter map for this reader instance 
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NewickEventReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+		super(stream, parameters, parameters.getMatchToken());
 		init();
 	}
 
 	
-	public NewickEventReader(Reader reader) throws IOException {
-		super(reader, true);
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param reader the reader providing the Newick data to be read 
+	 * @param parameters the parameter map for this reader instance 
+	 * @throws IOException if an I/O exception occurs while parsing the first event
+	 */
+	public NewickEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters, parameters.getMatchToken());
 		init();
 	}
 	

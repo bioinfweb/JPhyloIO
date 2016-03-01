@@ -183,7 +183,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_TRANSPOSE, true);
 		}
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
-			getStreamDataProvider().getEventReader().setMatchToken(info.getValue());
+			getStreamDataProvider().getSequenceTokensEventManager().setMatchToken(info.getValue());
 			addSingleTokenDefinitionEvent(info.getValue(), CharacterStateMeaning.MATCH);
 			eventCreated = true;
 		}

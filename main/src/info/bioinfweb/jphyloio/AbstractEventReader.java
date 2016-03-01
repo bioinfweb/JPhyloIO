@@ -51,22 +51,16 @@ public abstract class AbstractEventReader<P extends StreamDataProvider<? extends
 	private Stack<Collection<JPhyloIOEvent>> eventCollections = new Stack<Collection<JPhyloIOEvent>>();
 	private boolean beforeFirstAccess = true;
 	private boolean dataSourceClosed = false;
-	private int maxTokensToRead;
-	private boolean translateMatchToken;
-	private String matchToken = ".";
+	private ReadWriteParameterMap parameters;
 	private LongIDManager idManager = new LongIDManager();
-	private SequenceTokensEventManager sequenceTokensEventManager = new SequenceTokensEventManager(this);
+	private SequenceTokensEventManager sequenceTokensEventManager;
 
 	
-	public AbstractEventReader(boolean translateMatchToken) {
-		this(translateMatchToken, DEFAULT_MAX_CHARS_TO_READ);
-	}
-
-
-	public AbstractEventReader(boolean translateMatchToken, int maxTokensToRead) {
+	public AbstractEventReader(ReadWriteParameterMap parameters, String matchToken) {
 		super();
-		this.maxTokensToRead = maxTokensToRead;
-		this.translateMatchToken = translateMatchToken;
+		this.parameters = parameters;
+		
+		sequenceTokensEventManager = new SequenceTokensEventManager(this, matchToken);
 		streamDataProvider = createStreamDataProvider();
 		eventCollections.add(upcomingEvents);
 	}
@@ -91,6 +85,11 @@ public abstract class AbstractEventReader<P extends StreamDataProvider<? extends
 	}
 	
 	
+	protected ReadWriteParameterMap getParameters() {
+		return parameters;
+	}
+
+
 	/**
 	 * Removes the event collection at the top of the eventCollections stack and returns it.
 	 * 
@@ -150,62 +149,6 @@ public abstract class AbstractEventReader<P extends StreamDataProvider<? extends
 	 */
 	protected Queue<JPhyloIOEvent> getUpcomingEvents() {
 		return upcomingEvents;
-	}
-
-
-	@Override
-	public int getMaxTokensToRead() {
-		return maxTokensToRead;
-	}
-
-
-	@Override
-	public void setMaxTokensToRead(int maxTokensToRead) {
-		this.maxTokensToRead = maxTokensToRead;
-	}
-
-
-	/**
-	 * Returns whether the match character or token (usually '.') shall automatically be replaced by the 
-	 * according token from the first sequence.
-	 * 
-	 * @return {@code true} if a match token will be replaced, {@code false} otherwise
-	 */
-	@Override
-	public boolean isTranslateMatchToken() {
-		return translateMatchToken;
-	}
-
-
-	/**
-	 * Returns the match token to be used for parsing.
-	 * <p>
-	 * The match token (usually '.') is a token that can be used in all sequences after the first to indicate that
-	 * its position is identical with the same position in the first sequence. 
-	 * 
-	 * @return the match token ('.' by default)
-	 */
-	@Override
-	public String getMatchToken() {
-		return matchToken;
-	}
-
-
-	/**
-	 * Allows to specify the match token to be used for parsing. This property should usually not be changed during the
-	 * parsing of an alignment.
-	 * <p>
-	 * The match token (usually '.') is a token that can be used in all sequences after the first to indicate that
-	 * its position is identical with the same position in the first sequence.
-	 * <p>
-	 * Note that this property is only relevant, if {@link #isTranslateMatchToken()} was set to {@code true} in the
-	 * constructor. 
-	 * 
-	 * @param matchToken the new match token to be used from now on
-	 */
-	@Override
-	public void setMatchToken(String matchToken) {
-		this.matchToken = matchToken;
 	}
 
 

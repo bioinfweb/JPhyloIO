@@ -23,6 +23,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
@@ -52,9 +53,6 @@ import java.util.regex.Pattern;
 public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<? extends AbstractTextEventReader<P>>> 
 		extends AbstractEventReader<P> {
 	
-	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
-	
-	private int maxCommentLength = DEFAULT_MAX_COMMENT_LENGTH;
 	private PeekReader reader;
 	protected boolean lineConsumed = true;
 	
@@ -62,14 +60,12 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param reader the reader providing the document data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param reader the reader providing the document data to be read
+	 * @param parameters the parameter map for this reader instance 
+	 * @param matchToken the match token to be replaced in sequences or {@code null} if no replacement shall be performed
 	 */
-	public AbstractTextEventReader(PeekReader reader, boolean translateMatchToken) {
-		super(translateMatchToken);
+	public AbstractTextEventReader(PeekReader reader, ReadWriteParameterMap parameters, String matchToken) {
+		super(parameters, matchToken);
 		this.reader = reader;
 	}
 	
@@ -78,13 +74,11 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the document data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
+	 * @param matchToken the match token to be replaced in sequences or {@code null} if no replacement shall be performed
 	 */
-	public AbstractTextEventReader(Reader reader, boolean translateMatchToken) throws IOException {
-		super(translateMatchToken);
+	public AbstractTextEventReader(Reader reader, ReadWriteParameterMap parameters, String matchToken) throws IOException {
+		super(parameters, matchToken);
 		if (!(reader instanceof BufferedReader)) {
 			reader = new BufferedReader(reader);
 		}
@@ -96,13 +90,11 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	 * Creates a new instance of this class.
 	 * 
 	 * @param stream the stream providing the document data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
+	 * @param matchToken the match token to be replaced in sequences or {@code null} if no replacement shall be performed
 	 */
-	public AbstractTextEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
-		this(new InputStreamReader(stream), translateMatchToken);
+	public AbstractTextEventReader(InputStream stream, ReadWriteParameterMap parameters, String matchToken) throws IOException {
+		this(new InputStreamReader(stream), parameters, matchToken);
 	}
 	
 	
@@ -110,13 +102,11 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	 * Creates a new instance of this class.
 	 * 
 	 * @param file the document file to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
+	 * @param matchToken the match token to be replaced in sequences or {@code null} if no replacement shall be performed
 	 */
-	public AbstractTextEventReader(File file, boolean translateMatchToken) throws IOException{
-		this(new FileReader(file), translateMatchToken);
+	public AbstractTextEventReader(File file, ReadWriteParameterMap parameters, String matchToken) throws IOException{
+		this(new FileReader(file), parameters, matchToken);
 	}
 
 
@@ -126,29 +116,6 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	}
 
 
-	/**
-	 * Returns the maximum length a comment may have, before it is split into separate events.
-	 * <p>
-	 * The default value is {@link #DEFAULT_MAX_COMMENT_LENGTH}.
-	 * 
-	 * @return the maximum allowed number of characters for a single comment
-	 */
-	public int getMaxCommentLength() {  //TODO Move to parent class?
-		return maxCommentLength;
-	}
-
-
-	/**
-	 * Allows the specify the maximum length a comment may have, before it is split into separate events.
-	 * 
-	 * @param maxCommentLength the maximum allowed number of characters for a single comment that shall be 
-	 *        used from now on
-	 */
-	public void setMaxCommentLength(int maxCommentLength) {
-		this.maxCommentLength = maxCommentLength;
-	}
-	
-	
 	protected List<String> createTokenList(CharSequence sequence) {
 		List<String> result = new ArrayList<String>(sequence.length());
 		for (int i = 0; i < sequence.length(); i++) {
@@ -191,6 +158,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 		try {
 			char c = getReader().readChar();
 			int length = 0;
+			int maxCommentLength = getParameters().getMaxCommentLength();
 			while (!((nestedComments == 0) && (c == commentEnd))) {
 				if (c == commentStart) {
 					nestedComments++;
@@ -200,7 +168,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 				}
 				content.append(c);
 				length++;
-				if (length >= getMaxCommentLength()) {
+				if (length >= maxCommentLength) {
 					c = getReader().peekChar();
 					getCurrentEventCollection().add(new CommentEvent(content.toString(), (c == -1) || (c != commentEnd)));
 					content.delete(0, content.length());
@@ -230,7 +198,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	
 	
 	protected JPhyloIOEvent readCharacters(String currentSequenceName) throws Exception {
-		PeekReader.ReadResult readResult = getReader().readLine(getMaxTokensToRead());
+		PeekReader.ReadResult readResult = getReader().readLine(getParameters().getMaxTokensToRead());
 		lineConsumed = readResult.isCompletelyRead();
 		return eventFromCharacters(currentSequenceName, readResult.getSequence());
 	}
@@ -248,7 +216,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 	 */
 	protected JPhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws Exception {
 		final Pattern pattern = Pattern.compile(".*(\\n|\\r|\\" + commentStart + ")");
-		PeekReader.ReadResult readResult = getReader().readRegExp(getMaxTokensToRead() /*- content.length()*/, pattern, false);  // In greedy mode the start of a nested comment could be consumed.
+		PeekReader.ReadResult readResult = getReader().readRegExp(getParameters().getMaxTokensToRead() /*- content.length()*/, pattern, false);  // In greedy mode the start of a nested comment could be consumed.
 		char lastChar = StringUtils.lastChar(readResult.getSequence());
 		
 		JPhyloIOEvent result = eventFromCharacters(currentSequenceName, StringUtils.cutEnd(readResult.getSequence(), 1));

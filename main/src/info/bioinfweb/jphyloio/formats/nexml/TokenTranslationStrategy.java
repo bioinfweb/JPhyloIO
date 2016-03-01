@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -18,11 +18,12 @@
  */
 package info.bioinfweb.jphyloio.formats.nexml;
 
+
+
 /** 
- * Gives information about the way a sequence stored in a NeXML characters block of type standard should be parsed.
+ * Gives information about the way a sequence stored in a NeXML characters block of type {@code standard} should be parsed.
  */
-public enum TranslateTokens {
-	
+public enum TokenTranslationStrategy {
 	/** 
 	 * Sequences consisting of symbols are parsed without change.
 	 */

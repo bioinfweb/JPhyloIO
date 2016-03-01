@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.AbstractEventWriter;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
@@ -50,7 +50,7 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhylo
 	private boolean continuedCommentExpected = false;
 	
 	
-	public FASTASequenceEventReceiver(Writer writer, EventWriterParameterMap parameterMap, 
+	public FASTASequenceEventReceiver(Writer writer, ReadWriteParameterMap parameterMap, 
 			MatrixDataAdapter matrixDataAdapter, long lineLength) {
 		
 		super(writer, parameterMap);

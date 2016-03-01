@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
@@ -80,13 +81,11 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the MEGA data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public MEGAEventReader(BufferedReader reader, boolean translateMatchToken) throws IOException {
-		super(reader, translateMatchToken);
+	public MEGAEventReader(BufferedReader reader, ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters, parameters.getMatchToken());
 	}
 
 	
@@ -94,13 +93,11 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 	 * Creates a new instance of this class.
 	 * 
 	 * @param file the MEGA file to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public MEGAEventReader(File file, boolean translateMatchToken) throws IOException {
-		super(file, translateMatchToken);
+	public MEGAEventReader(File file, ReadWriteParameterMap parameters) throws IOException {
+		super(file, parameters, parameters.getMatchToken());
 	}
 
 	
@@ -108,13 +105,11 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 	 * Creates a new instance of this class.
 	 * 
 	 * @param stream the stream providing the MEGA data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public MEGAEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
-		super(stream, translateMatchToken);
+	public MEGAEventReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+		super(stream, parameters, parameters.getMatchToken());
 	}
 
 	
@@ -122,13 +117,11 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the MEGA data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
+	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public MEGAEventReader(Reader reader, boolean translateMatchToken) throws IOException {
-		super(reader, translateMatchToken);
+	public MEGAEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters, parameters.getMatchToken());
 	}
 	
 	
@@ -147,7 +140,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvi
 	
 	private void processFormatSubcommand(String key, String value) {
 		if (key.substring(FORMAT_KEY_PREFIX.length()).toUpperCase().equals(FORMAT_SUBCOMMAND_IDENTICAL)) {
-			setMatchToken(value);  //TODO The generation of an according meta event could be suppressed, since match characters are anyway replaced by JPhyloIO (and the according event would be a SingleTokenDefinitionEvent).
+			getSequenceTokensEventManager().setMatchToken(value);  //TODO The generation of an according meta event could be suppressed, since match characters are anyway replaced by JPhyloIO (and the according event would be a SingleTokenDefinitionEvent).
 		}
 	}
 	

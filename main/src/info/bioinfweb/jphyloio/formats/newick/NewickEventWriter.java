@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
@@ -45,7 +45,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception {
+	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws Exception {
 		ApplicationLogger logger = parameters.getLogger();
 		
 		logIngnoredOTULists(document, logger, "Newick/NHX", "tree nodes"); 

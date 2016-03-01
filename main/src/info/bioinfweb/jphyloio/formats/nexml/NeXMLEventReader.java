@@ -23,6 +23,7 @@ import info.bioinfweb.commons.bio.CharacterStateMeaning;
 import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -66,37 +67,49 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * An event reader for the <a href="http://nexml.org/">NeXML format</a>.
+ * 
+ * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterMap#KEY_NEXML_TOKEN_TRANSLATION_STRATEGY}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ * </ul>
+ * 
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProvider> implements NeXMLConstants {
-	private TranslateTokens translateTokens;
-
-	
-	public NeXMLEventReader(File file, TranslateTokens translateTokens) throws IOException, XMLStreamException {
-		super(true, file);
-		this.translateTokens = translateTokens;
-	}
-	
-	
-	public NeXMLEventReader(InputStream stream, TranslateTokens translateTokens) throws IOException, XMLStreamException {
-		super(true, stream);
-		this.translateTokens = translateTokens;
+	public NeXMLEventReader(InputStream stream, ReadWriteParameterMap parameters)	throws IOException, XMLStreamException {
+		super(stream, parameters);
 	}
 
-	
-	public NeXMLEventReader(XMLEventReader reader, TranslateTokens translateTokens) {
-		super(true, reader);
-		this.translateTokens = translateTokens;
+
+	public NeXMLEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(reader, parameters);
 	}
 
-	
-	public NeXMLEventReader(Reader reader, TranslateTokens translateTokens) throws IOException, XMLStreamException {
-		super(true, reader);
-		this.translateTokens = translateTokens;
+
+	public NeXMLEventReader(XMLEventReader xmlReader,	ReadWriteParameterMap parameters) {
+		super(xmlReader, parameters);
 	}
 
+
+	public NeXMLEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(file, parameters);
+	}
+	
 	
 	@Override
 	public String getFormatID() {
 		return JPhyloIOFormatIDs.NEXML_FORMAT_ID;
+	}
+	
+	
+	public TokenTranslationStrategy getTranslateTokens() {
+		return getParameters().getObject(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, 
+				TokenTranslationStrategy.SYMBOL_TO_LABEL, TokenTranslationStrategy.class);
 	}
 
 
@@ -222,8 +235,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 				String symbol = XMLUtils.readStringAttr(element, ATTR_SYMBOL, null);
 				String translation = symbol;
 				
-				if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TranslateTokens.NEVER)) {
-	   			if (streamDataProvider.getEventReader().getTranslateTokens().equals(TranslateTokens.SYMBOL_TO_LABEL) 
+				if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
+	   			if (streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.SYMBOL_TO_LABEL) 
 	   					&& (info.label != null)) {
 	   				translation = info.label;
 	   			}
@@ -665,7 +678,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 				String token = XMLUtils.readStringAttr(element, ATTR_STATE, null);
 				String character = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
 				
-				if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.DISCRETE) && !streamDataProvider.getEventReader().getTranslateTokens().equals(TranslateTokens.NEVER)) {		 			
+				if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.DISCRETE) 
+						&& !streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
+					
 					String currentStates = streamDataProvider.getCharIDToStatesMap().get(character);
 		 	 		String translatedToken = streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(token);
 		 	 		if (translatedToken != null) {
@@ -757,10 +772,5 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	@Override
 	protected NeXMLStreamDataProvider createStreamDataProvider() {
 		return new NeXMLStreamDataProvider(this);
-	}
-
-
-	public TranslateTokens getTranslateTokens() {
-		return translateTokens;
 	}
 }

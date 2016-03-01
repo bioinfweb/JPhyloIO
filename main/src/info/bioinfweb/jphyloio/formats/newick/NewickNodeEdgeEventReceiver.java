@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.CertainStartEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -67,7 +67,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Certai
 	private int metadataLevel = 0;
 	
 	
-	public NewickNodeEdgeEventReceiver(Writer writer,	EventWriterParameterMap parameterMap, EventContentType startEventType) {
+	public NewickNodeEdgeEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap, EventContentType startEventType) {
 		super(writer, parameterMap, startEventType);
 	}
 

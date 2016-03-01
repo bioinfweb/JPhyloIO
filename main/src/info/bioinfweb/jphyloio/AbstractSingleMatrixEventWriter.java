@@ -33,7 +33,7 @@ import java.util.Iterator;
  * target format, because that format does not support additional data.
  * <p>
  * This abstract implementation will log according warnings for the other data that has not been written and than
- * calls {@link #writeSingleMatrix(DocumentDataAdapter, MatrixDataAdapter, Iterator, Writer, EventWriterParameterMap)}
+ * calls {@link #writeSingleMatrix(DocumentDataAdapter, MatrixDataAdapter, Iterator, Writer, ReadWriteParameterMap)}
  * which must be implemented by inherited classes accordingly.
  * 
  * @author Ben St&ouml;ver
@@ -66,12 +66,12 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 	 * @throws Exception if the implementing writer throws an exception
 	 */
 	protected abstract void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer,	EventWriterParameterMap parameters) throws Exception;
+			Iterator<String> sequenceIDIterator, Writer writer,	ReadWriteParameterMap parameters) throws Exception;
 
 
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer,
-			EventWriterParameterMap parameters) throws Exception {
+			ReadWriteParameterMap parameters) throws Exception {
 		
 		ApplicationLogger logger = parameters.getLogger();
 		logIngnoredOTULists(document, logger, formatName, "sequences");

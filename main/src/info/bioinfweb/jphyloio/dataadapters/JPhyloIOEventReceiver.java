@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 import java.io.IOException;
 import java.io.Writer;
 
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -53,7 +53,7 @@ public interface JPhyloIOEventReceiver {
 	 * in application implementations of any data adapter (e.g. 
 	 * {@link MatrixDataAdapter#writeSequencePartContentData(JPhyloIOEventReceiver, String, long, long)}. 
 	 * They will be forwarded by the calling writer and can be handled by the application when 
-	 * {@link JPhyloIOEventWriter#writeDocument(DocumentDataAdapter, Writer, EventWriterParameterMap)}
+	 * {@link JPhyloIOEventWriter#writeDocument(DocumentDataAdapter, Writer, ReadWriteParameterMap)}
 	 * (or one of the other overloaded versions) are called. 
 	 * 
 	 * @param event the event to be added

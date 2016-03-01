@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 import java.io.IOException;
 import java.io.Writer;
 
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -45,7 +45,7 @@ public abstract class CertainStartEventReceiver<E extends JPhyloIOEvent> extends
 	private E startEvent = null;
 
 	
-	public CertainStartEventReceiver(Writer writer,	EventWriterParameterMap parameterMap, EventContentType startEventType) {
+	public CertainStartEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap, EventContentType startEventType) {
 		super(writer, parameterMap);
 		this.startEventType = startEventType;
 	}

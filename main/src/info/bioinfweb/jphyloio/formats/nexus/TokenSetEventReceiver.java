@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.CertainStartEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -42,7 +42,7 @@ public class TokenSetEventReceiver extends CertainStartEventReceiver<TokenSetDef
 	private StringBuilder singleTokens = new StringBuilder();
 	
 	
-	public TokenSetEventReceiver(Writer writer,	EventWriterParameterMap parameterMap) {
+	public TokenSetEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
 		super(writer, parameterMap, EventContentType.TOKEN_SET_DEFINITION);
 	}
 

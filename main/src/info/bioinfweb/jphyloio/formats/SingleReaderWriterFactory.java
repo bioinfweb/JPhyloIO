@@ -19,13 +19,19 @@
 package info.bioinfweb.jphyloio.formats;
 
 
+import java.io.InputStream;
+import java.io.Reader;
+
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 
 
 
 public interface SingleReaderWriterFactory {
-  public JPhyloIOEventReader getReader();  //TODO Provide parameters (Are all alternatives necessary here?)
+  public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters);
+  
+  public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters);
   
   public JPhyloIOEventWriter getWriter();
   

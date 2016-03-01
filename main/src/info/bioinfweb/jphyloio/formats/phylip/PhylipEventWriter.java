@@ -23,7 +23,7 @@ import java.io.Writer;
 import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.AbstractSingleMatrixEventWriter;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -44,7 +44,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
  * <p>
  * Note that sequence names may have to be edited according to the (length) constrains the Phylip format imposes.
  * According edits can be obtained using the {@link LabelEditingReporter} which is returned via the parameters map
- * (using {@link EventWriterParameterMap#KEY_LABEL_EDITING_REPORTER}).
+ * (using {@link ReadWriteParameterMap#KEY_LABEL_EDITING_REPORTER}).
  * <p>
  * Since Phylip does not support OTU or taxon lists as well, such a list (if provided by 
  * {@link DocumentDataAdapter#getOTUListIterator()}) will also not be written. OTU definitions (if present) will though 
@@ -56,10 +56,10 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
  * <p>
  * <b>Recognized parameters:</b>
  * <ul>
- *   <li>{@link EventWriterParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
- *   <li>{@link EventWriterParameterMap#KEY_MAXIMUM_NAME_LENGTH}</li>
- *   <li>{@link EventWriterParameterMap#KEY_LABEL_EDITING_REPORTER}</li>
- *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_MAXIMUM_NAME_LENGTH}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LABEL_EDITING_REPORTER}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver
@@ -84,7 +84,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 	}
 
 
-	private String editSequenceLabel(LinkedOTUOrOTUsEvent event, final EventWriterParameterMap parameters) {
+	private String editSequenceLabel(LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters) {
   	//TODO Mask, replace or remove invalid in Phylip characters: ("(" and ")"), square brackets ("[" and "]"), colon (":"), semicolon (";") and comma (",") 
 		return createUniqueLabel(parameters,  //TODO A method considering linked OTUs needs to be used here.
 				new UniqueLabelTester() {
@@ -99,10 +99,10 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 	
 	@Override
 	protected void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer, EventWriterParameterMap parameters) throws Exception {
+			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws Exception {
 
-		int nameLength = parameters.getInteger(EventWriterParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
-		String extensionToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
+		int nameLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
+		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
 		long maxSequenceLength = determineMaxSequenceLength(matrix);
 		
 		// Write heading:

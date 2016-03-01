@@ -21,9 +21,11 @@ package info.bioinfweb.jphyloio.formats;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAFactory;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -73,13 +75,24 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	public JPhyloIOEventReader getReader(String formatID) {
+	public JPhyloIOEventReader getReader(String formatID, InputStream stream, ReadWriteParameterMap parameters) {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
 		if (factory == null) {
 			return null;
 		}
 		else {
-			return factory.getReader();
+			return factory.getReader(stream, parameters);
+		}
+	}
+	
+	
+	public JPhyloIOEventReader getReader(String formatID, Reader reader, ReadWriteParameterMap parameters) {
+		SingleReaderWriterFactory factory = formatMap.get(formatID);
+		if (factory == null) {
+			return null;
+		}
+		else {
+			return factory.getReader(reader, parameters);
 		}
 	}
 	

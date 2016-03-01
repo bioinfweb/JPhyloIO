@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
@@ -66,23 +67,23 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 //	}
 	
 	
-	public PDEEventReader(File file) throws IOException, XMLStreamException {
-		super(true, file);
+	public PDEEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(file, parameters);
 	}
 
 	
-	public PDEEventReader(InputStream stream) throws IOException, XMLStreamException {
-		super(true, stream);
+	public PDEEventReader(InputStream stream, ReadWriteParameterMap parameters)	throws IOException, XMLStreamException {
+		super(stream, parameters);
 	}
-	
 
-	public PDEEventReader(Reader reader) throws IOException, XMLStreamException {
-		super(true, reader);
+
+	public PDEEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(reader, parameters);
 	}
-	
 
-	public PDEEventReader(XMLEventReader xmlReader) {
-		super(true, xmlReader);
+
+	public PDEEventReader(XMLEventReader xmlReader,	ReadWriteParameterMap parameters) {
+		super(xmlReader, parameters);
 	}
 	
 

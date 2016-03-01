@@ -160,7 +160,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					c = reader.peekChar();
 					boolean result = false;
 					boolean tokenListComplete = false;
-					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getEventReader().getMaxTokensToRead()) && 
+					while ((c != COMMAND_END) && (tokens.size() < getStreamDataProvider().getParameters().getMaxTokensToRead()) && 
 							!tokenListComplete) {
 						
 						if ((c == ELEMENT_SEPARATOR) || (interleaved && StringUtils.isNewLineChar(c)) || 

@@ -36,6 +36,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -58,31 +59,26 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		implements PhyloXMLConstants {
 	
 	
-	public PhyloXMLEventReader(File file) throws IOException, XMLStreamException {
-		super(true, file);
+	public PhyloXMLEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(file, parameters);
 	}
 
-	
-	public PhyloXMLEventReader(InputStream stream) throws IOException, XMLStreamException {
-		super(true, stream);
-	}
-	
 
-	public PhyloXMLEventReader(int maxTokensToRead, XMLEventReader xmlReader) {
-		super(true, maxTokensToRead, xmlReader);
+	public PhyloXMLEventReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(stream, parameters);
 	}
-	
 
-	public PhyloXMLEventReader(Reader reader) throws IOException, XMLStreamException {
-		super(true, reader);
-	}
-	
 
-	public PhyloXMLEventReader(XMLEventReader xmlReader) {
-		super(true, xmlReader);
+	public PhyloXMLEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(reader, parameters);
 	}
-	
-	
+
+
+	public PhyloXMLEventReader(XMLEventReader xmlReader, ReadWriteParameterMap parameters) {
+		super(xmlReader, parameters);
+	}
+
+
 	@Override
 	public String getFormatID() {
 		return JPhyloIOFormatIDs.PHYLOXML_FORMAT_ID;

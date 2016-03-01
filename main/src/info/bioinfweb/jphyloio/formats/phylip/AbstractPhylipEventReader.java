@@ -26,6 +26,7 @@ import java.io.Reader;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -43,38 +44,33 @@ import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
 public abstract class AbstractPhylipEventReader<P extends TextStreamDataProvider<? extends AbstractPhylipEventReader<P>>>
 		extends AbstractTextEventReader<P> implements PhylipConstants {
 	
-	private boolean relaxedPhylip = false;
 	private long sequenceCount = -1;
 	private long characterCount = -1;
 	protected String currentSequenceName = null;
 
 
-	public AbstractPhylipEventReader(PeekReader reader,	boolean translateMatchToken, boolean relaxedPhylip) {
-		super(reader, translateMatchToken);
-		this.relaxedPhylip = relaxedPhylip;
+	public AbstractPhylipEventReader(PeekReader reader,	ReadWriteParameterMap parameters) {
+		super(reader, parameters, parameters.getMatchToken());
 	}
 
 
-	public AbstractPhylipEventReader(Reader reader,	boolean translateMatchToken, boolean relaxedPhylip) throws IOException {
-		super(reader, translateMatchToken);
-		this.relaxedPhylip = relaxedPhylip;
+	public AbstractPhylipEventReader(Reader reader,	ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters, parameters.getMatchToken());
 	}
 
 
-	public AbstractPhylipEventReader(InputStream stream, boolean translateMatchToken, boolean relaxedPhylip) throws IOException {
-		super(stream, translateMatchToken);
-		this.relaxedPhylip = relaxedPhylip;
+	public AbstractPhylipEventReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+		super(stream, parameters, parameters.getMatchToken());
 	}
 
 
-	public AbstractPhylipEventReader(File file, boolean translateMatchToken, boolean relaxedPhylip) 	throws IOException {
-		super(file, translateMatchToken);
-		this.relaxedPhylip = relaxedPhylip;
+	public AbstractPhylipEventReader(File file, ReadWriteParameterMap parameters) throws IOException {
+		super(file, parameters, parameters.getMatchToken());
 	}
 
 
 	public boolean isRelaxedPhylip() {
-		return relaxedPhylip;
+		return getParameters().getBoolean(ReadWriteParameterMap.KEY_RELAXED_PHYLIP, false);
 	}
 	
 	

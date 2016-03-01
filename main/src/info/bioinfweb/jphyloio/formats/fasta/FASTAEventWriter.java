@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractSingleMatrixEventWriter;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
@@ -53,8 +53,8 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
  * <p>
  * <b>Recognized parameters:</b>
  * <ul>
- *   <li>{@link EventWriterParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
- *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver
@@ -72,7 +72,7 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 	
 
 	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver,
-			EventWriterParameterMap parameters) throws IOException {
+			ReadWriteParameterMap parameters) throws IOException {
 		
 		if (receiver.getCharsPerLineWritten() > 0) {
 			receiver.writeNewLine(writer);
@@ -85,11 +85,11 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 	
 	@Override
 	protected void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer, EventWriterParameterMap parameters) throws Exception {
+			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws Exception {
 		
 		FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrix, 
-				parameters.getLong(EventWriterParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
-		String extensionToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
+				parameters.getLong(ReadWriteParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
+		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
 		long maxSequenceLength = determineMaxSequenceLength(matrix);
 		OTUListDataAdapter otuList = getReferencedOTUList(document, matrix);
 		

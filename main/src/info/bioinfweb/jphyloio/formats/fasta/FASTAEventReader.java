@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.fasta;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -76,14 +77,11 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the FASTA data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public FASTAEventReader(BufferedReader reader, boolean translateMatchToken) throws IOException {
-		super(reader, translateMatchToken);
+	public FASTAEventReader(BufferedReader reader, ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters, parameters.getMatchToken());
 	}
 
 	
@@ -91,14 +89,11 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 	 * Creates a new instance of this class.
 	 * 
 	 * @param file the FASTA file to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public FASTAEventReader(File file, boolean translateMatchToken) throws IOException {
-		super(file, translateMatchToken);
+	public FASTAEventReader(File file, ReadWriteParameterMap parameters) throws IOException {
+		super(file, parameters, parameters.getMatchToken());
 	}
 
 	
@@ -106,14 +101,11 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 	 * Creates a new instance of this class.
 	 * 
 	 * @param stream the stream providing the FASTA data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public FASTAEventReader(InputStream stream, boolean translateMatchToken) throws IOException {
-		super(stream, translateMatchToken);
+	public FASTAEventReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+		super(stream, parameters, parameters.getMatchToken());
 	}
 
 	
@@ -121,14 +113,11 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the FASTA data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
+	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public FASTAEventReader(Reader reader, boolean translateMatchToken) throws IOException {
-		super(reader, translateMatchToken);
+	public FASTAEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters, parameters.getMatchToken());
 	}
 	
 	
@@ -145,11 +134,12 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 			  //TODO Optionally an additional OTU event with an ID could be generated here.
 				getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
 						DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(),	currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
+				int maxCommentLength = getParameters().getMaxCommentLength();
 				while (getReader().peekChar() == COMMENT_START_CHAR) {
 					getReader().read();  // Consume ';'.
 					ReadResult readResult;
 					do {
-						readResult = getReader().readLine(getMaxCommentLength());
+						readResult = getReader().readLine(maxCommentLength);
 						getCurrentEventCollection().add(new CommentEvent(readResult.getSequence().toString(), !readResult.isCompletelyRead()));
 					} while (!readResult.isCompletelyRead());
 				}
@@ -246,7 +236,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProv
 							break;
 						}
 					}
-					PeekReader.ReadResult lineResult = getReader().readLine(getMaxTokensToRead());
+					PeekReader.ReadResult lineResult = getReader().readLine(getParameters().getMaxTokensToRead());
 					List<String> tokenList = new ArrayList<String>(lineResult.getSequence().length());
 					for (int i = 0; i < lineResult.getSequence().length(); i++) {
 						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));

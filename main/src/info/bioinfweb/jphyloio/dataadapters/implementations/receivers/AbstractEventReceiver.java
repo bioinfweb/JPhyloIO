@@ -22,19 +22,19 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 import java.io.Writer;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 
 
 
 public abstract class AbstractEventReceiver implements JPhyloIOEventReceiver {
 	private Writer writer;
-	private EventWriterParameterMap parameterMap;
+	private ReadWriteParameterMap parameterMap;
 	private long ignoredComments = 0;
 	private long ignoredMetadata = 0;
 	
 	
-	public AbstractEventReceiver(Writer writer, EventWriterParameterMap parameterMap) {
+	public AbstractEventReceiver(Writer writer, ReadWriteParameterMap parameterMap) {
 		super();
 		this.writer = writer;
 		this.parameterMap = parameterMap;
@@ -46,13 +46,13 @@ public abstract class AbstractEventReceiver implements JPhyloIOEventReceiver {
 	}
 
 
-	protected EventWriterParameterMap getParameterMap() {
+	protected ReadWriteParameterMap getParameterMap() {
 		return parameterMap;
 	}
 	
 	
 	protected ApplicationLogger getLogger() {
-		return getParameterMap().getApplicationLogger(EventWriterParameterMap.KEY_LOGGER);
+		return getParameterMap().getApplicationLogger(ReadWriteParameterMap.KEY_LOGGER);
 	}
 
 

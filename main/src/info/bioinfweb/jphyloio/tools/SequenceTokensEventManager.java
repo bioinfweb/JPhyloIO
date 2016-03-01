@@ -36,6 +36,7 @@ import java.util.List;
  */
 public class SequenceTokensEventManager {
 	private JPhyloIOEventReader owner;
+	private String matchToken;
 	private List<String> firstSequence;
 	private List<String> unmodifiableFirstSequence;
 	private long currentPosition = 0;  //TODO Does -1 need to be specified here? If so, this would be inconsistent with the initial block start.
@@ -48,16 +49,18 @@ public class SequenceTokensEventManager {
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param owner the PhyloIO event reader using the returned instance 
+	 * @param owner the PhyloIO event reader using the returned instance
+	 * @param matchToken the match token to be replaced in sequences or {@code null} if no replacement shall be performed
 	 * @throws NullPointerException if {@code owner} is set to {@code null}
 	 */
-	public SequenceTokensEventManager(JPhyloIOEventReader owner) {
+	public SequenceTokensEventManager(JPhyloIOEventReader owner, String matchToken) {
 		super();
 		if (owner == null) {
-			throw new NullPointerException("Owner cannot be null.");
+			throw new NullPointerException("owner cannot be null.");
 		}
 		else {
 			this.owner = owner;
+			this.matchToken = matchToken;
 			firstSequence = new ArrayList<String>();
 			unmodifiableFirstSequence = Collections.unmodifiableList(firstSequence);
 		}
@@ -74,6 +77,16 @@ public class SequenceTokensEventManager {
 	}
 	
 	
+	public String getMatchToken() {
+		return matchToken;
+	}
+
+
+	public void setMatchToken(String matchToken) {
+		this.matchToken = matchToken;
+	}
+
+
 	public long getCurrentPosition() {
 		return currentPosition;
 	}
@@ -105,7 +118,7 @@ public class SequenceTokensEventManager {
 
 
 	private String replaceMatchToken(String token) {
-		if (token.equals(getOwner().getMatchToken())) {
+		if (token.equals(matchToken)) {
 			if (currentPosition > Integer.MAX_VALUE) {
 				throw new IndexOutOfBoundsException("Sequences with more than " + Integer.MAX_VALUE + 
 						" characters are not supported if replacing match tokens is switched on."); 
@@ -166,7 +179,7 @@ public class SequenceTokensEventManager {
 				}
 				currentPosition += tokens.size();
 			}
-			else if (getOwner().isTranslateMatchToken()) {
+			else if (matchToken != null) {
 				for (int i = 0; i < tokens.size(); i++) {
 					tokens.set(i, replaceMatchToken(tokens.get(i)));
 					currentPosition++;

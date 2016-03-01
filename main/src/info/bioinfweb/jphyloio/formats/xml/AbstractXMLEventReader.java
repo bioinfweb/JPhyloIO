@@ -38,6 +38,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.AbstractEventReader;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
@@ -58,32 +59,27 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	private Stack<QName> encounteredTags = new Stack<QName>();
 	
 	
-	public AbstractXMLEventReader(boolean translateMatchToken, File file) throws IOException, XMLStreamException {
-		this(translateMatchToken, new FileReader(file));
+	public AbstractXMLEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		this(new FileReader(file), parameters);
 	}
 
 	
-	public AbstractXMLEventReader(boolean translateMatchToken, InputStream stream) throws IOException, XMLStreamException {
-		this(translateMatchToken, new InputStreamReader(stream));
+	public AbstractXMLEventReader(InputStream stream, ReadWriteParameterMap parameters) 
+			throws IOException, XMLStreamException {
+		
+		this(new InputStreamReader(stream), parameters);
 	}
 
 	
-	public AbstractXMLEventReader(boolean translateMatchToken, XMLEventReader xmlReader) {
-		super(translateMatchToken);
-		this.xmlReader = xmlReader;
-		fillMap();
-	}
-	
-	
-	public AbstractXMLEventReader(boolean translateMatchToken, int maxTokensToRead, XMLEventReader xmlReader) {
-		super(translateMatchToken, maxTokensToRead);
+	public AbstractXMLEventReader(XMLEventReader xmlReader, ReadWriteParameterMap parameters) {
+		super(parameters, parameters.getMatchToken());
 		this.xmlReader = xmlReader;
 		fillMap();
 	}
 
 	
-	public AbstractXMLEventReader(boolean translateMatchToken, Reader reader) throws IOException, XMLStreamException {
-		super(translateMatchToken);
+	public AbstractXMLEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
+		super(parameters, parameters.getMatchToken());
 		if (!(reader instanceof BufferedReader)) {
 			reader = new BufferedReader(reader);
 		}
@@ -174,6 +170,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	}
 	
 	
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Override
 	protected P createStreamDataProvider() {
 		return (P)new XMLStreamDataProvider(this);
@@ -200,17 +197,4 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 		super.close();
 		getXMLReader().close();
 	}
-
-
-	@Override
-	public int getMaxCommentLength() {
-		// TODO How should this be implemented? Should it be removed and become a method of AbstractTextEventReader?
-		return 0;
-	}
-
-
-	@Override
-	public void setMaxCommentLength(int maxCommentLength) {
-		// TODO How should this be implemented? Should it be removed and become a method of AbstractTextEventReader?
-	}	
 }

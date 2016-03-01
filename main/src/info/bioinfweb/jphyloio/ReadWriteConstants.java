@@ -26,7 +26,10 @@ package info.bioinfweb.jphyloio;
  * @author Ben St&ouml;ver
  */
 public interface ReadWriteConstants {
-	public static final int DEFAULT_MAX_CHARS_TO_READ = 2048;
+	public static final String DEFAULT_MATCH_TOKEN = ".";
+	public static final int DEFAULT_MAX_TOKENS_TO_READ = 2048;
+	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
+	
 	
 	public static final String META_KEY_SEQUENCE_COUNT = "info.bioinfweb.jphyloio.sequenceCount";
 	public static final String META_KEY_CHARACTER_COUNT = "info.bioinfweb.jphyloio.characterCount";

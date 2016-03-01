@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -55,7 +55,7 @@ public class SequenceContentReceiver extends AbstractEventReceiver {
 	 * @param longTokens Specify {@code true} here if sequence tokens shall be separated by spaces (if one token may
 	 *        be longer than one character) or {@code false} otherwise.
 	 */
-	public SequenceContentReceiver(Writer writer,	EventWriterParameterMap parameterMap, String commentStart,
+	public SequenceContentReceiver(Writer writer,	ReadWriteParameterMap parameterMap, String commentStart,
 			String commentEnd, boolean longTokens) {
 		
 		super(writer, parameterMap);

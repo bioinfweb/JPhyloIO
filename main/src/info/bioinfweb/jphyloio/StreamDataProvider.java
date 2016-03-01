@@ -112,21 +112,31 @@ public class StreamDataProvider<R extends AbstractEventReader<? extends StreamDa
 	}
 	
 	
+	/**
+	 * Returns the sequence tokens event manager of the associated reader.
+	 * 
+	 * @return the sequence tokens event manager
+	 */
 	public SequenceTokensEventManager getSequenceTokensEventManager() {
 		return getEventReader().getSequenceTokensEventManager();
 	}
 
-
-	public boolean isTranslateMatchToken() {
-		return getEventReader().isTranslateMatchToken();
-	}
-
-
-	public String getMatchToken() {
-		return getEventReader().getMatchToken();
+	
+	/**
+	 * Returns the parameter map that was specified when the constructor of the associated reader was called.
+	 * 
+	 * @return the parameter map of the associated reader
+	 */
+	public ReadWriteParameterMap getParameters() {
+		return getEventReader().getParameters();
 	}
 	
-	
+
+	/**
+	 * Returns the ID manager of the associated reader.
+	 * 
+	 * @return the ID manager to be used to create unique IDs for generated events
+	 */
 	public LongIDManager getIDManager() {
 		return getEventReader().getIDManager();
 	}

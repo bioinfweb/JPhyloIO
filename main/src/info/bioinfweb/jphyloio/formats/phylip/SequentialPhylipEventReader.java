@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -48,6 +49,13 @@ import java.io.Reader;
  * The extended Phylip format is supported according to this definition:
  * <a href="http://www.phylo.org/index.php/help/relaxed_phylip">http://www.phylo.org/index.php/help/relaxed_phylip</a>.
  * 
+ * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterMap#KEY_REPLACE_MATCH_TOKENS}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_RELAXED_PHYLIP}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ * </ul>
+ * 
  * @author Ben St&ouml;ver
  * @see PhylipEventReader
  */
@@ -59,17 +67,11 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextS
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the Phylip data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
-	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
-	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
-	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
+	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public SequentialPhylipEventReader(BufferedReader reader, boolean translateMatchToken, boolean relaxedPhylip) throws IOException {
-		super(reader, translateMatchToken, relaxedPhylip);
+	public SequentialPhylipEventReader(BufferedReader reader, ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters);
 	}
 
 	
@@ -77,17 +79,11 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextS
 	 * Creates a new instance of this class.
 	 * 
 	 * @param file the Phylip file to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
-	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
-	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
-	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
+	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public SequentialPhylipEventReader(File file, boolean translateMatchToken, boolean relaxedPhylip) throws IOException {
-		super(file, translateMatchToken, relaxedPhylip);
+	public SequentialPhylipEventReader(File file, ReadWriteParameterMap parameters) throws IOException {
+		super(file, parameters);
 	}
 
 	
@@ -95,17 +91,11 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextS
 	 * Creates a new instance of this class.
 	 * 
 	 * @param stream the stream providing the Phylip data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
-	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
-	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
-	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
+	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public SequentialPhylipEventReader(InputStream stream, boolean translateMatchToken, boolean relaxedPhylip) throws IOException {
-		super(stream, translateMatchToken, relaxedPhylip);
+	public SequentialPhylipEventReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+		super(stream, parameters);
 	}
 
 	
@@ -113,17 +103,11 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextS
 	 * Creates a new instance of this class.
 	 * 
 	 * @param reader the reader providing the Phylip data to be read 
-	 * @param translateMatchToken Specify {@code true} here to automatically replace the match character or token (usually '.') 
-	 *        by the according token from the first sequence or {@code false} if the match token shall remain in the returned
-	 *        sequences. (Note that the first sequence of an alignment needs to be stored in memory by this instance in order
-	 *        to replace the match token.)
-	 * @param relaxedPhylip Specify {@code true} here, if data in relaxed Phylip format (sequence names not limited to 10
-	 *        characters, no spaces in sequence names allowed, spaces between sequence names and sequence characters necessary)
-	 *        shall be parsed, or {@code false} if the expected data is in classic Phylip.
+	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
-	public SequentialPhylipEventReader(Reader reader, boolean translateMatchToken, boolean relaxedPhylip) throws IOException {
-		super(reader, translateMatchToken, relaxedPhylip);
+	public SequentialPhylipEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
+		super(reader, parameters);
 	}
 	
 	

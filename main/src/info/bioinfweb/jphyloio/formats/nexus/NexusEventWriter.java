@@ -29,7 +29,7 @@ import java.util.Set;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
-import info.bioinfweb.jphyloio.EventWriterParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
@@ -84,13 +84,13 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
  *  
  * <h3><a name="parameters"></a>Recognized parameters</h3> 
  * <ul>
- *   <li>{@link EventWriterParameterMap#KEY_APPLICATION_COMMENT}</li>
- *   <li>{@link EventWriterParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
- *   <li>{@link EventWriterParameterMap#KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS}</li>
- *   <li>{@link EventWriterParameterMap#KEY_GENERATE_NEXUS_TRANSLATION_TABLE}</li>
- *   <li>{@link EventWriterParameterMap#KEY_LOGGER}</li>
- *   <li>{@link EventWriterParameterMap#KEY_GENERATED_LABELS_MAP}</li>
- *   <li>{@link EventWriterParameterMap#KEY_GENERATED_LABELS_MAP_ID_TYPE}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_COMMENT}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_GENERATE_NEXUS_TRANSLATION_TABLE}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_GENERATED_LABELS_MAP}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_GENERATED_LABELS_MAP_ID_TYPE}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver
@@ -105,7 +105,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private Writer writer;
-	private EventWriterParameterMap parameters;
+	private ReadWriteParameterMap parameters;
 	private ApplicationLogger logger;
 
 	
@@ -119,7 +119,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		writer.write(FIRST_LINE);
 		writeLineBreak(writer, parameters);
 		
-		String applicationComment = parameters.getString(EventWriterParameterMap.KEY_APPLICATION_COMMENT);
+		String applicationComment = parameters.getString(ReadWriteParameterMap.KEY_APPLICATION_COMMENT);
 		if (applicationComment != null) {
 			writer.write(COMMENT_START);
 			writer.write(applicationComment);
@@ -490,7 +490,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		logIgnoredMetadata(matrix, "A character matrix");
 		if (matrix.getSequenceCount() > 0) {
 			long columnCount = matrix.getColumnCount();
-			String extensionToken = parameters.getString(EventWriterParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
+			String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
 			if ((columnCount == -1) && (extensionToken != null)) {
 				columnCount = determineMaxSequenceLength(matrix);  // -1 will not be returned, since it was already checked, that at least one sequence is contained.
 			}
@@ -674,8 +674,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 							writeLinkTaxaCommand(startEvent);  // Writes only if a block is linked.
 							
 							if (currentOTUList != null) {
-								boolean translate = parameters.getBoolean(EventWriterParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, false);
-								boolean alwaysUseLabels = parameters.getBoolean(EventWriterParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, false);
+								boolean translate = parameters.getBoolean(ReadWriteParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, false);
+								boolean alwaysUseLabels = parameters.getBoolean(ReadWriteParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, false);
 								if (translate || !alwaysUseLabels) {
 									indexMap = createOTUIndexMap(currentOTUList);
 								}
@@ -719,7 +719,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer, EventWriterParameterMap parameters) throws Exception {
+	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws Exception {
 		this.writer = writer;
 		this.parameters = parameters;
 		logger = parameters.getLogger();

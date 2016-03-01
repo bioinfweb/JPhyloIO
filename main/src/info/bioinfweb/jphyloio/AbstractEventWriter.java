@@ -66,8 +66,8 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 * @param parameters the parameter map possibly containing a line separator definition
 	 * @throws IOException if an I/O error occurs while writing to the specified writer
 	 */
-	public static void writeLineBreak(Writer writer, EventWriterParameterMap parameters) throws IOException {
-		writer.write(parameters.getString(EventWriterParameterMap.KEY_LINE_SEPARATOR, SystemUtils.LINE_SEPARATOR));
+	public static void writeLineBreak(Writer writer, ReadWriteParameterMap parameters) throws IOException {
+		writer.write(parameters.getString(ReadWriteParameterMap.KEY_LINE_SEPARATOR, SystemUtils.LINE_SEPARATOR));
 	}
 	
 	
@@ -240,8 +240,8 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected String createUniqueLabel(EventWriterParameterMap parameters, UniqueLabelTester tester, LabeledIDEvent event) {
-		int maxLength = parameters.getInteger(EventWriterParameterMap.KEY_MAXIMUM_NAME_LENGTH, Integer.MAX_VALUE);
+	protected String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelTester tester, LabeledIDEvent event) {
+		int maxLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, Integer.MAX_VALUE);
 		String result = createLabel(getLabeledIDName(event), "", maxLength);
 		if (!tester.isUnique(result)) {
 			if (event.hasLabel()) {
@@ -264,7 +264,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected String createUniqueLabel(final EventWriterParameterMap parameters, final LabeledIDEvent event) {
+	protected String createUniqueLabel(final ReadWriteParameterMap parameters, final LabeledIDEvent event) {
 		return createUniqueLabel(parameters, 
 				new UniqueLabelTester() {
 					@Override
@@ -291,7 +291,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, File file, EventWriterParameterMap parameters) throws Exception {
+	public void writeDocument(DocumentDataAdapter document, File file, ReadWriteParameterMap parameters) throws Exception {
 		Writer writer = new BufferedWriter(new FileWriter(file));
 		try {
 			writeDocument(document, writer, parameters);	
@@ -303,7 +303,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 
 	@Override
-	public void writeDocument(DocumentDataAdapter document, OutputStream stream, EventWriterParameterMap parameters) throws Exception {		
+	public void writeDocument(DocumentDataAdapter document, OutputStream stream, ReadWriteParameterMap parameters) throws Exception {		
 		writeDocument(document, new BufferedWriter(new OutputStreamWriter(stream)), parameters);		
 	}
 }
