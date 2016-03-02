@@ -83,6 +83,30 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 		return JPhyloIOFormatIDs.PHYLIP_FORMAT_ID;
 	}
 
+	
+	/**
+	 * Replaces characters that may not occur in Phylip labels according to 
+	 * <a href="http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles>">this defintion</a>.
+	 * <p>
+	 * The following replacements are performed:
+	 * <ul>
+	 *   <li>{@code '('} &rarr; {@code '<'}</li>
+	 *   <li>{@code ')'} &rarr; {@code '>'}</li>
+	 *   <li>{@code '['} &rarr; {@code '<'}</li>
+	 *   <li>{@code ']'} &rarr; {@code '>'}</li>
+	 *   <li>{@code ':'} &rarr; {@code '|'}</li>
+	 *   <li>{@code ';'} &rarr; {@code '|'}</li>
+	 *   <li>{@code ','} &rarr; {@code '|'}</li>
+	 * </ul>
+	 * 
+	 * @param label the label to be edited
+	 * @return the edited label (not containing any reserved characters anymore)
+	 */
+	public static String maskReservedLabelCharacters(String label) {
+		return label.replace('(', '<').replace(')', '>').replace('[', '<').replace(']', '>').
+				replace(':', '|').replace(';', '|').replace(',', '|');
+	}
+	
 
 	private String editSequenceLabel(LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters) {
   	//TODO Mask, replace or remove invalid in Phylip characters: ("(" and ")"), square brackets ("[" and "]"), colon (":"), semicolon (";") and comma (",") 
