@@ -396,7 +396,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				}
 				label = createUniqueLabel(
 						parameters, 
-						new UniqueLabelTester() {
+						new NoEditUniqueLabelHandler() {
 							@Override
 							public boolean isUnique(String label) {
 								return !reporter.isLabelUsed(EventContentType.OTU, label) && 
@@ -567,7 +567,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	private String createUniqueTreeLabel(LinkedOTUOrOTUsEvent event, final Set<String> usedLabels) {
 		String result = createUniqueLabel(
 				parameters, 
-				new UniqueLabelTester() {
+				new NoEditUniqueLabelHandler() {
 					@Override
 					public boolean isUnique(String label) {
 						return !usedLabels.contains(label);

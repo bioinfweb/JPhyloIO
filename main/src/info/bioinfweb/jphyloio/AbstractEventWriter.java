@@ -50,8 +50,18 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	public static final String EDITED_LABEL_SEPARATOR = "_";
 
 	
-	protected static interface UniqueLabelTester {
+	protected static interface UniqueLabelHandler {
 		public boolean isUnique(String label);
+		
+		public String editLabel(String label);
+	}
+	
+	
+	protected static abstract class NoEditUniqueLabelHandler implements UniqueLabelHandler {
+		@Override
+		public String editLabel(String label) {
+			return label;
+		}
 	}
 	
 	
@@ -223,7 +233,9 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	private String createLabel(String prefix, String suffix, int maxLength) {
+	private String createLabel(String prefix, String suffix, int maxLength, UniqueLabelHandler handler) {
+		prefix = handler.editLabel(prefix);
+		// Suffix is not edited, since it can only be "" or an integer value. (Problems would arise in formats which do not allow integers in names.) 
 		if (suffix.length() > maxLength) {
 			throw new IllegalArgumentException("The label suffix \"" + suffix + 
 					"\" is longer than the specified maximum length (" + maxLength + ").");  //TODO Throw some kind of writer exception instead?
@@ -240,36 +252,63 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelTester tester, LabeledIDEvent event) {
+	protected String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, String label1,
+			String id1, String label2, String id2) {
+		
 		int maxLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, Integer.MAX_VALUE);
-		String result = createLabel(getLabeledIDName(event), "", maxLength);  //TODO Consider OTU
-		if (!tester.isUnique(result)) {
-			if (event.hasLabel()) {
-				String alternative = createLabel(event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel(), "", maxLength);  //TODO Use OTU instead in some cases.
-				if (tester.isUnique(alternative)) {  // If the alternative is not unique, keep sole label as the basis for upcoming operations.
-					result = alternative;
+		String result;
+		if (label1 != null) {
+			result = createLabel(label1, "", maxLength, handler);
+		}
+		else if (label2 != null) {
+			result = createLabel(label2, "", maxLength, handler);
+		}
+		else {
+			result = id1;
+		}
+		String initialResult = result;
+		
+		if (!handler.isUnique(result)) {
+			if (label1 != null) {
+				if (label2 != null) {
+					result = label1 + EDITED_LABEL_SEPARATOR + label2;
 				}
-			}
-			
-			if (!tester.isUnique(result)) {
-				long suffix = 2;
-				String editedResult;
-				do {
-					editedResult = createLabel(result, EDITED_LABEL_SEPARATOR + suffix, maxLength);
-					suffix++;
-				}	while (!tester.isUnique(editedResult));
-				result = editedResult;
+
+				if (!handler.isUnique(result)) {
+					result = id1 + EDITED_LABEL_SEPARATOR + label1;
+				}
+				
+				if (!handler.isUnique(result) && (label2 != null)) {
+					result = id1 + EDITED_LABEL_SEPARATOR + label1 + EDITED_LABEL_SEPARATOR + label2;
+				}
 			}
 		}
 		
-		parameters.getLabelEditingReporter().addEdit(event, result);
+		if (!handler.isUnique(result)) {
+			result = initialResult;  // Do not append index on combined labels.
+			long suffix = 2;
+			String editedResult;
+			do {
+				editedResult = createLabel(result, EDITED_LABEL_SEPARATOR + suffix, maxLength, handler);
+				suffix++;
+			}	while (!handler.isUnique(editedResult));
+			result = editedResult;
+		}
+		
 		return result;
 	}
 	
 	
+	protected String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, LabeledIDEvent event) {
+		String result = createUniqueLabel(parameters, handler, event.getLabel(), event.getID(), null, null);
+		parameters.getLabelEditingReporter().addEdit(event, result);
+		return result;
+	}
+
+	
 	protected String createUniqueLabel(final ReadWriteParameterMap parameters, final LabeledIDEvent event) {
 		return createUniqueLabel(parameters, 
-				new UniqueLabelTester() {
+				new NoEditUniqueLabelHandler() {
 					@Override
 					public boolean isUnique(String label) {
 						return !parameters.getLabelEditingReporter().isLabelUsed(event.getType().getContentType(), label);
@@ -277,6 +316,62 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 				}, 
 				event);
 	}
+	
+	
+	protected String createUniqueLinkedOTULabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, 
+			LinkedOTUOrOTUsEvent event, OTUListDataAdapter otuList, boolean otuFirst) {
+		
+		if (event.isOTUOrOTUsLinked() && (otuList != null)) {
+			try {
+				String result;
+				if (otuFirst) {
+					result = createUniqueLabel(parameters, handler, otuList.getOTUStartEvent(event.getOTUOrOTUsID()).getLabel(), 
+							event.getOTUOrOTUsID(), event.getLabel(), event.getID()); 
+				}
+				else {
+					result = createUniqueLabel(parameters, handler, event.getLabel(), event.getID(), 
+							otuList.getOTUStartEvent(event.getOTUOrOTUsID()).getLabel(), event.getOTUOrOTUsID()); 
+				}
+				parameters.getLabelEditingReporter().addEdit(event, result);
+				return result;
+			}
+			catch (IllegalArgumentException e) {  // from otuList.getOTUStartEvent()
+				throw new InconsistentAdapterDataException("The OTU with the ID " + event.getOTUOrOTUsID() + 
+						" referenced by the data element with the ID " + event.getID() + 
+						" was not found in the OTU list with the ID " +	otuList.getListStartEvent().getID());
+			}
+		}
+		else {
+			return createUniqueLabel(parameters, handler, event);
+		}
+	}
+
+	
+//	protected String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelTester tester, LabeledIDEvent event) {
+//		int maxLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, Integer.MAX_VALUE);
+//		String result = createLabel(getLabeledIDName(event), "", maxLength);  //TODO Consider OTU
+//		if (!tester.isUnique(result)) {
+//			if (event.hasLabel()) {
+//				String alternative = createLabel(event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel(), "", maxLength);  //TODO Use OTU instead in some cases.
+//				if (tester.isUnique(alternative)) {  // If the alternative is not unique, keep sole label as the basis for upcoming operations.
+//					result = alternative;
+//				}
+//			}
+//			
+//			if (!tester.isUnique(result)) {
+//				long suffix = 2;
+//				String editedResult;
+//				do {
+//					editedResult = createLabel(result, EDITED_LABEL_SEPARATOR + suffix, maxLength);
+//					suffix++;
+//				}	while (!tester.isUnique(editedResult));
+//				result = editedResult;
+//			}
+//		}
+//		
+//		parameters.getLabelEditingReporter().addEdit(event, result);
+//		return result;
+//	}
 	
 	
 	protected void extendSequence(MatrixDataAdapter matrix, String sequenceID, long targetLength, 

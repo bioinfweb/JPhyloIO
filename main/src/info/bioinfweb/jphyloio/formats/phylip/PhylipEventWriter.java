@@ -67,7 +67,6 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
  */
 public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implements PhylipConstants {
 	//TODO Check if documentation is still valid, when implementation is finished (especially regarding label editing). (Do the same for the FASTA writer.)
-	//TODO Add support for KEY_SEQUENCE_EXTENSION_TOKEN
 
 	/**
 	 * Creates a new instance of this class. (Instances may be reused for different documents in subsequent calls of
@@ -86,7 +85,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 	
 	/**
 	 * Replaces characters that may not occur in Phylip labels according to 
-	 * <a href="http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles>">this defintion</a>.
+	 * <a href="http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles>">this definition</a>.
 	 * <p>
 	 * The following replacements are performed:
 	 * <ul>
@@ -108,16 +107,22 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 	}
 	
 
-	private String editSequenceLabel(LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters) {
-  	//TODO Mask, replace or remove invalid in Phylip characters: ("(" and ")"), square brackets ("[" and "]"), colon (":"), semicolon (";") and comma (",") 
-		return createUniqueLabel(parameters,  //TODO A method considering linked OTUs needs to be used here.
-				new UniqueLabelTester() {
+	private String editSequenceLabel(LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters, 
+			OTUListDataAdapter otuList) {
+		
+		return createUniqueLinkedOTULabel(parameters,
+				new UniqueLabelHandler() {
 					@Override
 					public boolean isUnique(String label) {
 						return !parameters.getLabelEditingReporter().isLabelUsed(EventContentType.SEQUENCE, label);
 					}
+
+					@Override
+					public String editLabel(String label) {
+						return maskReservedLabelCharacters(label);
+					}
 				}, 
-				event);  // Already considers possible maximum length.
+				event, otuList, false);  // Already considers possible maximum length.
 	}
 
 	
@@ -128,6 +133,18 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 		int nameLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
 		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
 		long maxSequenceLength = determineMaxSequenceLength(matrix);
+		OTUListDataAdapter otuList = null;
+		LinkedOTUOrOTUsEvent matrixStartEvent = matrix.getStartEvent();
+		if (matrixStartEvent.isOTUOrOTUsLinked()) {
+			otuList = document.getOTUList(matrixStartEvent.getOTUOrOTUsID());
+			if (otuList == null) {
+				parameters.getLogger().addWarning("The matrix with the ID " + matrixStartEvent.getID() 
+						+	" references an OTU list with the ID " + matrixStartEvent.getOTUOrOTUsID() 
+						+	", but the document data adapter does not provide an OTU list with this ID. "
+						+ "OTU references of writtes sequences will be ignored.");
+				//TODO Would it be better to throw an InconsistentDataException here?
+			}
+		}
 		
 		// Write heading:
     writer.write("\t" + matrix.getSequenceCount() + "\t" + maxSequenceLength);
@@ -142,7 +159,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
     	String id = sequenceIDIterator.next();
     	
     	// Write label:
-    	String label = editSequenceLabel(matrix.getSequenceStartEvent(id), parameters);
+    	String label = editSequenceLabel(matrix.getSequenceStartEvent(id), parameters, otuList);
     	writer.write(label);
     	for (int i = label.length(); i < nameLength; i++) {
 				writer.write(' ');
