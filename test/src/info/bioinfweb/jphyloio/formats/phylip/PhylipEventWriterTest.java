@@ -115,8 +115,8 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 		try {
 			assertEquals("\t3\t5", reader.readLine());
 			assertEquals("Label 1   ACTGC", reader.readLine());
-			assertEquals("OTU otu1  A-TCC", reader.readLine());  //TODO Fix this. (Phylip reader behaves different here then FASTA reader.)
-			assertEquals("OTU otu2  ACTTC", reader.readLine());  //TODO see above
+			assertEquals("OTU otu1  A-TCC", reader.readLine());
+			assertEquals("seq2      ACTTC", reader.readLine());  // The sequence label is chose as the first alternative, since there is no OTU label.
 			assertEquals(-1, reader.read());
 		}
 		finally {
