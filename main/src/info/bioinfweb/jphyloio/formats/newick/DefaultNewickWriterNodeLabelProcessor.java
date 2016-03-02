@@ -60,10 +60,10 @@ public class DefaultNewickWriterNodeLabelProcessor implements NewickWriterNodeLa
 							return !parameters.getLabelEditingReporter().isLabelUsed(EventContentType.NODE, label);
 						}
 					}, 
-					nodeEvent, otuList, true);  // Already considers possible maximum length.
+					nodeEvent, getOTUList(), true);  // Already considers possible maximum length.
 		}
 		else {
-			result = AbstractEventWriter.getLinkedOTUNameOwnFirst(nodeEvent, getOTUList());
+			result = AbstractEventWriter.getLabeledIDName(nodeEvent);
 		}
 		getParameters().getLabelEditingReporter().addEdit(nodeEvent, result);
 		return result;

@@ -144,6 +144,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		}
 		return result;
 	}
+	//TODO Remove this method, if it us not used in the future.
 	
 	
 	/**
