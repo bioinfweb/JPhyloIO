@@ -242,10 +242,13 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	protected String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelTester tester, LabeledIDEvent event) {
 		int maxLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, Integer.MAX_VALUE);
-		String result = createLabel(getLabeledIDName(event), "", maxLength);
+		String result = createLabel(getLabeledIDName(event), "", maxLength);  //TODO Consider OTU
 		if (!tester.isUnique(result)) {
 			if (event.hasLabel()) {
-				result = createLabel(event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel(), "", maxLength);
+				String alternative = createLabel(event.getID() + EDITED_LABEL_SEPARATOR + event.getLabel(), "", maxLength);  //TODO Use OTU instead in some cases.
+				if (tester.isUnique(alternative)) {  // If the alternative is not unique, keep sole label as the basis for upcoming operations.
+					result = alternative;
+				}
 			}
 			
 			if (!tester.isUnique(result)) {
