@@ -27,6 +27,12 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
+/**
+ * The node label processor used by {@link NewickEventWriter}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class DefaultNewickWriterNodeLabelProcessor implements NewickWriterNodeLabelProcessor {
 	private OTUListDataAdapter otuList;
 	private ReadWriteParameterMap parameters;
@@ -59,6 +65,7 @@ public class DefaultNewickWriterNodeLabelProcessor implements NewickWriterNodeLa
 						public boolean isUnique(String label) {
 							return !parameters.getLabelEditingReporter().isLabelUsed(EventContentType.NODE, label);
 						}
+						// editLabel() does not need to be implemented, because all characters are valid and are masked later by NewickStringWriter, if necessary.
 					}, 
 					nodeEvent, getOTUList(), true);  // Already considers possible maximum length.
 		}

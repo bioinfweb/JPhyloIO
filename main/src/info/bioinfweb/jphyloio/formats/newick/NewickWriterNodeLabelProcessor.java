@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
  * from its event.
  * 
  * @author Ben St&ouml;ver
+ * @since 0.0.0
  */
 public interface NewickWriterNodeLabelProcessor {
 	public String createNodeName(LinkedOTUOrOTUsEvent nodeEvent);

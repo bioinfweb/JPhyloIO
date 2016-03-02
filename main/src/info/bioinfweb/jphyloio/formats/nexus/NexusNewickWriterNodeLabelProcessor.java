@@ -32,6 +32,12 @@ import info.bioinfweb.jphyloio.formats.newick.DefaultNewickWriterNodeLabelProces
 
 
 
+/**
+ * The node label processor used by {@link NexusEventWriter}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNodeLabelProcessor {
 	private Map<String, Long> indexMap;
 	
