@@ -174,4 +174,10 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 			file.delete();
 		}
 	}
+	
+	
+	@Test
+	public void test_maskReservedLabelCharacters() {
+		assertEquals("A|B|C|D<1>|<2>", PhylipEventWriter.maskReservedLabelCharacters("A:B,C;D(1):[2]"));
+	}
 }

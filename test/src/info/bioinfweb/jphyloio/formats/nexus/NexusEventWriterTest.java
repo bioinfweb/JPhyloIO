@@ -195,7 +195,7 @@ public class NexusEventWriterTest implements NexusConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu6", "otu7_2"),
 				new LabeledIDEvent(EventContentType.OTU, "otu7", null),
 				new LabeledIDEvent(EventContentType.OTU, "otu8", "otu9_label1"),
-				new LabeledIDEvent(EventContentType.OTU, "otu9", "label1"));
+				new LabeledIDEvent(EventContentType.OTU, "otu9", "label1"));  // Test if ID is removed again, before index is appended.
 		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
 		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter("matrix0", "a matrix", false, 
 				"ACGT", "ACCT", "AC-T", "AGGT", "AG-T", "TCGT", "CCGT", "GCGT");
