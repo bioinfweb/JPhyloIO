@@ -30,7 +30,6 @@ import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -101,31 +100,18 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 	 * @param label the label to be edited
 	 * @return the edited label (not containing any reserved characters anymore)
 	 */
-	public static String maskReservedLabelCharacters(String label) {
+	public static String maskReservedPhylipLabelCharacters(String label) {
 		return label.replace('(', '<').replace(')', '>').replace('[', '<').replace(']', '>').
 				replace(':', '|').replace(';', '|').replace(',', '|');
 	}
 	
 
-	private String editSequenceLabel(LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters, 
-			OTUListDataAdapter otuList) {
-		
-		return createUniqueLinkedOTULabel(parameters,
-				new UniqueLabelHandler() {
-					@Override
-					public boolean isUnique(String label) {
-						return !parameters.getLabelEditingReporter().isLabelUsed(EventContentType.SEQUENCE, label);
-					}
-
-					@Override
-					public String editLabel(String label) {
-						return maskReservedLabelCharacters(label);
-					}
-				}, 
-				event, otuList, false);  // Already considers possible maximum length.
+	@Override
+	protected String maskReservedLabelCharacters(String label) {
+		return maskReservedPhylipLabelCharacters(label);
 	}
 
-	
+
 	@Override
 	protected void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
 			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws Exception {

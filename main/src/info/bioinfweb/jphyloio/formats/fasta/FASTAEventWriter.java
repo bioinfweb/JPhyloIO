@@ -29,7 +29,6 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -71,6 +70,12 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 	}
 	
 
+	@Override
+	protected String maskReservedLabelCharacters(String label) {
+		return label;
+	}
+
+
 	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver,
 			ReadWriteParameterMap parameters) throws IOException {
 		
@@ -97,8 +102,8 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 			String id = sequenceIDIterator.next();
 			
 			// Write name and tokens:
-			LinkedOTUOrOTUsEvent sequenceEvent = matrix.getSequenceStartEvent(id);
-			writeSequenceName(getLinkedOTUNameOwnFirst(sequenceEvent, otuList), writer, eventReceiver, parameters);
+			writeSequenceName(editSequenceLabel(matrix.getSequenceStartEvent(id), parameters, otuList), writer, 
+					eventReceiver, parameters);
 			eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 			matrix.writeSequencePartContentData(eventReceiver, id, 0, matrix.getSequenceLength(id));
 			
