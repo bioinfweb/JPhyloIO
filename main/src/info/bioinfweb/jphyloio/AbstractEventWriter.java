@@ -50,14 +50,14 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	public static final String EDITED_LABEL_SEPARATOR = "_";
 
 	
-	protected static interface UniqueLabelHandler {
+	public static interface UniqueLabelHandler {
 		public boolean isUnique(String label);
 		
 		public String editLabel(String label);
 	}
 	
 	
-	protected static abstract class NoEditUniqueLabelHandler implements UniqueLabelHandler {
+	public static abstract class NoEditUniqueLabelHandler implements UniqueLabelHandler {
 		@Override
 		public String editLabel(String label) {
 			return label;
@@ -233,7 +233,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	private String createLabel(String prefix, String suffix, int maxLength, UniqueLabelHandler handler) {
+	private static String createLabel(String prefix, String suffix, int maxLength, UniqueLabelHandler handler) {
 		prefix = handler.editLabel(prefix);
 		// Suffix is not edited, since it can only be "" or an integer value. (Problems would arise in formats which do not allow integers in names.) 
 		if (suffix.length() > maxLength) {
@@ -252,7 +252,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, String label1,
+	public static String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, String label1,
 			String id1, String label2, String id2) {
 		
 		int maxLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, Integer.MAX_VALUE);
@@ -299,14 +299,14 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, LabeledIDEvent event) {
+	public static String createUniqueLabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, LabeledIDEvent event) {
 		String result = createUniqueLabel(parameters, handler, event.getLabel(), event.getID(), null, null);
 		parameters.getLabelEditingReporter().addEdit(event, result);
 		return result;
 	}
 
 	
-	protected String createUniqueLabel(final ReadWriteParameterMap parameters, final LabeledIDEvent event) {
+	public static String createUniqueLabel(final ReadWriteParameterMap parameters, final LabeledIDEvent event) {
 		return createUniqueLabel(parameters, 
 				new NoEditUniqueLabelHandler() {
 					@Override
@@ -318,7 +318,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	}
 	
 	
-	protected String createUniqueLinkedOTULabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, 
+	public static String createUniqueLinkedOTULabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, 
 			LinkedOTUOrOTUsEvent event, OTUListDataAdapter otuList, boolean otuFirst) {
 		
 		if (event.isOTUOrOTUsLinked() && (otuList != null)) {

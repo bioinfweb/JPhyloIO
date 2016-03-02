@@ -20,12 +20,10 @@ package info.bioinfweb.jphyloio;
 
 
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.AbstractEventWriter.UniqueLabelHandler;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.Writer;
 import java.util.Iterator;
@@ -73,14 +71,14 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 			Iterator<String> sequenceIDIterator, Writer writer,	ReadWriteParameterMap parameters) throws Exception;
 
 
-	protected String editSequenceLabel(LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters, 
+	protected String editSequenceOrNodeLabel(final LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters, 
 			OTUListDataAdapter otuList) {
 		
 		return createUniqueLinkedOTULabel(parameters,
 				new UniqueLabelHandler() {
 					@Override
 					public boolean isUnique(String label) {
-						return !parameters.getLabelEditingReporter().isLabelUsed(EventContentType.SEQUENCE, label);
+						return !parameters.getLabelEditingReporter().isLabelUsed(event.getType().getContentType(), label);
 					}
 
 					@Override

@@ -695,7 +695,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 						writer.write(KEY_VALUE_SEPARATOR);
 						writer.write(' ');
 						new NewickStringWriter(writer, treeNetwork, new NexusNewickWriterNodeLabelProcessor(
-								currentOTUList, indexMap, parameters.getLabelEditingReporter()), parameters).write();  // Also writes line break. indexMap may be null.
+								currentOTUList, indexMap, parameters), parameters).write();  // Also writes line break. indexMap may be null.
 						
 						treeWritten = true;
 					}

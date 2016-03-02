@@ -20,18 +20,22 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 
 import info.bioinfweb.jphyloio.AbstractEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
 public class DefaultNewickWriterNodeLabelProcessor implements NewickWriterNodeLabelProcessor {
 	private OTUListDataAdapter otuList;
+	private ReadWriteParameterMap parameters;
 	
 	
-	public DefaultNewickWriterNodeLabelProcessor(OTUListDataAdapter otuList) {
+	public DefaultNewickWriterNodeLabelProcessor(OTUListDataAdapter otuList, ReadWriteParameterMap parameters) {
 		super();
 		this.otuList = otuList;
+		this.parameters = parameters;
 	}
 
 
@@ -40,8 +44,28 @@ public class DefaultNewickWriterNodeLabelProcessor implements NewickWriterNodeLa
 	}
 
 
+	public ReadWriteParameterMap getParameters() {
+		return parameters;
+	}
+
+
 	@Override
 	public String createNodeName(LinkedOTUOrOTUsEvent nodeEvent) {
-		return AbstractEventWriter.getLinkedOTUNameOwnFirst(nodeEvent, getOTUList());
+		String result;
+		if (nodeEvent.isOTUOrOTUsLinked()) {
+			result = AbstractEventWriter.createUniqueLinkedOTULabel(parameters,
+					new AbstractEventWriter.NoEditUniqueLabelHandler() {
+						@Override
+						public boolean isUnique(String label) {
+							return !parameters.getLabelEditingReporter().isLabelUsed(EventContentType.NODE, label);
+						}
+					}, 
+					nodeEvent, otuList, true);  // Already considers possible maximum length.
+		}
+		else {
+			result = AbstractEventWriter.getLinkedOTUNameOwnFirst(nodeEvent, getOTUList());
+		}
+		getParameters().getLabelEditingReporter().addEdit(nodeEvent, result);
+		return result;
 	}
 }

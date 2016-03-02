@@ -24,6 +24,7 @@ import java.util.Map;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -33,20 +34,19 @@ import info.bioinfweb.jphyloio.formats.newick.DefaultNewickWriterNodeLabelProces
 
 public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNodeLabelProcessor {
 	private Map<String, Long> indexMap;
-	private LabelEditingReporter reporter;
 	
 	
 	public NexusNewickWriterNodeLabelProcessor(OTUListDataAdapter otuList, Map<String, Long> indexMap, 
-			LabelEditingReporter reporter) {
+			ReadWriteParameterMap parameters) {
 		
-		super(otuList);
+		super(otuList, parameters);
 		this.indexMap = indexMap;
-		this.reporter = reporter;
 	}
 
 
 	@Override
 	public String createNodeName(LinkedOTUOrOTUsEvent nodeEvent) {
+		LabelEditingReporter reporter = getParameters().getLabelEditingReporter();
 		String result;
 		if ((indexMap != null) && nodeEvent.isOTUOrOTUsLinked()) {
 			Long index = indexMap.get(nodeEvent.getOTUOrOTUsID());
@@ -62,7 +62,7 @@ public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNode
 		}
 		else {
 			result = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeEvent, getOTUList());
-			reporter.addEdit(nodeEvent, result);  // Collisions between labels of nodes that do not reference an OTU are legal.
+			reporter.addEdit(nodeEvent, result);  // Collisions between labels of nodes that do not reference an OTU are legal. (Otherwise it would not be possible to write support values as internal node names.)
 		}
 		return result;
 	}
