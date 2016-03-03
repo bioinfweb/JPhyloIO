@@ -83,6 +83,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	private Stack<Queue<NodeEdgeInfo>> passedSubnodes;
 	private HotCommentDataReader hotCommentDataReader = new HotCommentDataReader();
 	private boolean isInTree = false;
+	private boolean afterTree = false;
 	
 	
 	/**
@@ -277,12 +278,17 @@ public class NewickStringReader implements ReadWriteConstants {
 	}
 	
 	
+	private void addCommentEvent(NewickToken token) {
+		streamDataProvider.getCurrentEventCollection().add(new CommentEvent(token.getText(), false));
+	}
+
+	
 	private void endTree() {
 		addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
 		streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
 		isInTree = false;
 	}
-
+	
 	
 	/**
 	 * Read the contents of a Newick string and generates JPhyloIO events from it.
@@ -323,8 +329,11 @@ public class NewickStringReader implements ReadWriteConstants {
 					case TERMNINAL_SYMBOL:
 						endTree();
 						break;
+					case ROOTED_COMMAND:
+						streamDataProvider.getParameters().getLogger().addWarning(
+								"More than one rooting hot comment was found. All but the first one are treated as ordinary comments.");
 					case COMMENT:
-						streamDataProvider.getCurrentEventCollection().add(new CommentEvent(token.getText(), false));
+						addCommentEvent(token);
 						break;
 					default:
 						throw new JPhyloIOReaderException("Unexpected Newick token \"" + token.getType() + "\"", token.getLocation());
@@ -342,13 +351,32 @@ public class NewickStringReader implements ReadWriteConstants {
 	 * @throws IOException
 	 */
 	public boolean addNextEvents() throws IOException {
-		if (!isInTree) {
-			boolean readMoreTokens = scanner.hasMoreTokens();
+		boolean readMoreTokens = scanner.hasMoreTokens();
+		if (afterTree) {  // This state cannot be handled elsewhere, since passedNodes is now empty.
+			if (scanner.hasMoreTokens()) {
+				NewickToken token = scanner.nextToken();
+				if (token.getType().equals(NewickTokenType.COMMENT)) {
+					addCommentEvent(token);
+				}
+				else if (token.getType().equals(NewickTokenType.TERMNINAL_SYMBOL)) {
+					afterTree = false;
+					endTree();
+				}
+				else {
+					throw new JPhyloIOReaderException("Tree end expected, but found " + token.getType() + " \"" + 
+							token.getText() + "\".", streamDataProvider.getDataReader());
+				}
+			}
+			else {
+				endTree();
+			}
+		}
+		else if (!isInTree) {
 			//TODO Does an unexpected EOF need to be checked here?
 			if (readMoreTokens) {
 				NewickTokenType type = scanner.peek().getType();
 				if (NewickTokenType.COMMENT.equals(type)) {  // Comments before a tree
-					streamDataProvider.getCurrentEventCollection().add(new CommentEvent(scanner.nextToken().getText(), false));
+					addCommentEvent(scanner.nextToken());
 				}
 				else {
 					streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, 
@@ -361,14 +389,27 @@ public class NewickStringReader implements ReadWriteConstants {
 						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 					}
 					passedSubnodes.add(new ArrayDeque<NodeEdgeInfo>());  // Add queue for top level.
+					
+					if (scanner.hasMoreTokens()) {
+						type = scanner.peek().getType();
+						if (type.equals(NewickTokenType.NAME) || type.equals(NewickTokenType.LENGTH)) {
+							readNode();  // Read tree that only consists of one node.
+							//addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
+							afterTree = true;
+							return true;
+						}
+						else if (type.equals(NewickTokenType.COMMENT)) {
+							return true;  // Read comment in next call.
+						}
+					}
 					isInTree = true;
 				}
 			}
-			return readMoreTokens;
 		}
 		else {
 			processTree();
 			return true;  // At least the tree end event is still to come.
 		}
+		return readMoreTokens;
 	}
 }

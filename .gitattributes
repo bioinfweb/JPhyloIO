@@ -97,6 +97,7 @@ main/src/info/bioinfweb/jphyloio/formats/newick/HotCommentDataReader.java -text 
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickEventWriter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/newick/NewickFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickNodeEdgeEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickReaderNodeLabelProcessor.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickScanner.java -text svneol=unset#text/plain

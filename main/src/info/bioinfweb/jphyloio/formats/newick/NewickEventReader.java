@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -47,7 +46,7 @@ import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
  * @author Ben St&ouml;ver
  */
 public class NewickEventReader extends AbstractTextEventReader<TextStreamDataProvider<NewickEventReader>> 
-		implements NewickConstants {  //TODO Add support for NHX as defined here? https://sites.google.com/site/cmzmasek/home/software/forester/nhx
+		implements NewickConstants {
 	
 	private static enum State {
 		START,

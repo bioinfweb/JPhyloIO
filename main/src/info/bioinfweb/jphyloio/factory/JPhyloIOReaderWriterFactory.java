@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAFactory;
 import info.bioinfweb.jphyloio.formats.mega.MEGAFactory;
+import info.bioinfweb.jphyloio.formats.newick.NewickFactory;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLFactory;
 import info.bioinfweb.jphyloio.formats.nexus.NexusFactory;
 import info.bioinfweb.jphyloio.formats.pde.PDEFactory;
@@ -91,8 +92,8 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 		addFactory(new FASTAFactory());
 		addFactory(new MEGAFactory());
 		addFactory(new PhylipFactory());
-		addFactory(new SequentialPhylipFactory());
-		//TODO Add Newick factory
+		addFactory(new NewickFactory());  // Should be tested in guess*() methods in the end, since the test is insecure.
+		addFactory(new SequentialPhylipFactory());  // Does not have to be tested by guess*() methods at all, since PhylipFactory would have returned true before.
 	}
 	
 	
@@ -132,6 +133,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 			readAheahLimitLock.writeLock().unlock();
 		}
 	}
+	//TODO Isn't setting an integer an atomic operation and synchronizing is unnecessary?
 
 
 	/**

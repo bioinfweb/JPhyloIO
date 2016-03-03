@@ -21,6 +21,8 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 
 public interface NewickConstants {
+	public static final String NEWICK_FORMAT_NAME = "Newick";	
+	
 	public static final char SUBTREE_START = '(';
 	public static final char SUBTREE_END = ')';
 	public static final char NAME_DELIMITER = '\'';
