@@ -394,7 +394,6 @@ public class NewickStringReader implements ReadWriteConstants {
 						type = scanner.peek().getType();
 						if (type.equals(NewickTokenType.NAME) || type.equals(NewickTokenType.LENGTH)) {
 							readNode();  // Read tree that only consists of one node.
-							//addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
 							afterTree = true;
 							return true;
 						}
