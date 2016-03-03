@@ -252,6 +252,9 @@ test/data/Nexus/TitleLink.nex -text
 test/data/Nexus/TreesMetadata.nex -text
 test/data/Nexus/TreesNumericName.nex -text
 test/data/Nexus/TreesTranslate.nex -text
+test/data/PDE/compressedPDE.pde.gz -text
+test/data/PDE/customMetadata.pde -text
+test/data/PDE/unzippedPDE.pde -text
 test/data/Phylip/Interleaved.phy -text
 test/data/Phylip/Interleaved3Blocks.phy -text
 test/data/Phylip/InterleavedMatchCharacter.phy -text
