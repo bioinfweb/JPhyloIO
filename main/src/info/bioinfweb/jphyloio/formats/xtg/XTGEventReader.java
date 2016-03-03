@@ -53,6 +53,20 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * Event reader for the <a href="http://bioinfweb.info/xmlns/xtg">extensible TreeGraph 2 format (XTG)</a> used by the 
+ * phylogenetic tree editor <a href="http://treegraph.bioinfweb.info/">TreeGraph 2</a>.
+ * 
+ * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ * </ul>
+ * 
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider<XTGEventReader>> implements XTGConstants {	
 	public XTGEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
 		super(file, parameters);

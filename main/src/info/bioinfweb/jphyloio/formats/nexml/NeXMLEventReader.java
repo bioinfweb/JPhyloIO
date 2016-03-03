@@ -71,6 +71,7 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * <h3><a name="parameters"></a>Recognized parameters</h3> 
  * <ul>
+ *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_NEXML_TOKEN_TRANSLATION_STRATEGY}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
  * </ul>

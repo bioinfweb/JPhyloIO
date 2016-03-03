@@ -64,6 +64,13 @@ import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 /**
  * Event reader for the PDE format used by the alignment editor <a href="http://phyde.de/">PhyDE</a>.
  * 
+ * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ * </ul>
+ * 
+ * @author Sarah Wiechers
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
