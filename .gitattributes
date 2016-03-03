@@ -293,6 +293,7 @@ test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLFactoryTest.java -text svneo
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusFactoryTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/pde/PDEEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/pde/PDEFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventWriterTest.java -text svneol=unset#text/plain

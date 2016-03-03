@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben St�ver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xtg;
+package info.bioinfweb.jphyloio.formats.pde;
 
 import static org.junit.Assert.fail;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -29,31 +29,33 @@ import java.io.File;
 
 import org.junit.Test;
 
-public class XTGEventReaderTest {
+public class PDEEventReaderTest {
 	@Test
-	public void testOutputNeXML() {
+	public void testOutputPDE() {
 		try {
-			XTGEventReader reader = new XTGEventReader(new File("data/XTG/ExampleXTGDocument.xml"), new ReadWriteParameterMap());
+//			PDEEventReader reader = new PDEEventReader(new File("data/PDE/CustomMetadata_extracted.pde.gz"));
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/unzippedPDE.pde"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					
 //					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
-					if (!event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-//						System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
-					}
-					
-					if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
+					if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
 //						System.out.println("Key: " + event.asMetaInformationEvent().getKey());
 					}
-					else if (!event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-//						System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
+					else if (event.getType().equals(new EventType(EventContentType.TREE, EventTopologyType.START))) {
+//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
+//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
+//						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.OTU, EventTopologyType.START))) {
+//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE))) {
+						System.out.println(event.asSequenceTokensEvent().getCharacterValues());
 					}
 				}
 			}
@@ -66,5 +68,4 @@ public class XTGEventReaderTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
-
 }
