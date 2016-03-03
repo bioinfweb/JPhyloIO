@@ -72,6 +72,7 @@ main/src/info/bioinfweb/jphyloio/events/type/EventContentType.java -text svneol=
 main/src/info/bioinfweb/jphyloio/events/type/EventTopologyType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/EventType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/AbstractStartStringSingleFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/DefaultFormatInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/JPhyloIOFormatIDs.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/JPhyloIOFormatInfo.java -text svneol=unset#text/plain

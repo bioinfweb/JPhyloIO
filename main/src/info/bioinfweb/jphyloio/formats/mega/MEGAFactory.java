@@ -21,13 +21,13 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 
 import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.formats.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
@@ -41,22 +41,11 @@ import info.bioinfweb.jphyloio.formats.SingleReaderWriterFactory;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class MEGAFactory implements SingleReaderWriterFactory, JPhyloIOFormatIDs, MEGAConstants {
-	@Override
-	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
-		return checkFormat(new InputStreamReader(stream), parameters);
-	}
-
-
-	@Override
-	public boolean checkFormat(Reader reader, ReadWriteParameterMap parameters) throws IOException {
-		for (int i = 0; i < FIRST_LINE.length(); i++) {
-			int c = reader.read();
-			if ((c == -1) || (Character.toUpperCase((char)c) != FIRST_LINE.charAt(i))) {
-				return false;
-			}
-		}
-		return true;
+public class MEGAFactory extends AbstractStartStringSingleFactory implements SingleReaderWriterFactory, JPhyloIOFormatIDs, 
+		MEGAConstants {
+	
+	public MEGAFactory() {
+		super(FIRST_LINE);
 	}
 
 

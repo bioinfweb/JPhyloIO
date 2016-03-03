@@ -27,6 +27,7 @@ import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.formats.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
@@ -34,32 +35,32 @@ import info.bioinfweb.jphyloio.formats.SingleReaderWriterFactory;
 
 
 
-public class FASTAFactory implements SingleReaderWriterFactory, JPhyloIOFormatIDs, FASTAConstants {
-	@Override
-	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	public boolean checkFormat(Reader reader, ReadWriteParameterMap parameters) throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+/**
+ * Reader and writer factory for the FASTA format.
+ * <p>
+ * The {@code checkFormat()} methods test, if the content starts with {@link FASTAConstants#NAME_START_CHAR}. They will
+ * therefore return {@code false} for empty files, which might anyway be FASTA files containing no sequences.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
+public class FASTAFactory extends AbstractStartStringSingleFactory implements SingleReaderWriterFactory, JPhyloIOFormatIDs, 
+		FASTAConstants {
+	
+	public FASTAFactory() {
+		super(Character.toString(NAME_START_CHAR));  // This is the only unique characteristic of a FASTA file.
 	}
 
 
 	@Override
 	public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return new FASTAEventReader(stream, parameters);
 	}
 
 
 	@Override
 	public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return new FASTAEventReader(reader, parameters);
 	}
 
 
