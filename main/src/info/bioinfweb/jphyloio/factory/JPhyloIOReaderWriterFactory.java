@@ -34,14 +34,18 @@ import info.bioinfweb.jphyloio.formats.phylip.SequentialPhylipFactory;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLFactory;
 import info.bioinfweb.jphyloio.formats.xtg.XTGFactory;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipException;
 
 
 
@@ -53,10 +57,14 @@ import java.util.TreeMap;
  * @since 0.0.0
  */
 public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
+	public static final int DEFAULT_READ_AHAED_LIMIT = 4 * 1024;  // XML files may contain long comments before the root tag.
+	
+	
 	private static JPhyloIOReaderWriterFactory firstInstance = null;
 	
 	
 	private Map<String, SingleReaderWriterFactory> formatMap = new TreeMap<String, SingleReaderWriterFactory>();
+	private int readAheahLimit = DEFAULT_READ_AHAED_LIMIT;
 	
 	
 	private JPhyloIOReaderWriterFactory() {
@@ -93,6 +101,30 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	
 	
 	/**
+	 * Returns the maximal number of bytes this factory will read to determine the format of an input in the 
+	 * {@code #guess*()} methods.
+	 * 
+	 * @return the current read ahead limit
+	 */
+	public int getReadAheahLimit() {
+		return readAheahLimit;
+	}
+
+
+	/**
+	 * Allows to specify the maximal number of bytes this factory will read to determine the format of an input
+	 * in the {@code #guess*()} methods. Note that changing this value will have an effect on classes using this
+	 * factory singleton.
+	 * 
+	 * @param readAheahLimit the new read ahead limit
+	 */
+	public void setReadAheahLimit(int readAheahLimit) {
+		this.readAheahLimit = readAheahLimit;
+	}
+	//TODO Should this class remain being a singleton, allowing to globally specify this value or should there be multiple instances?
+
+
+	/**
 	 * Tries to determine the format of the contents of the specified file by examining at its beginning (e.g. the root 
 	 * tag in XML formats). The format is determined by subsequent calls of 
 	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)} until a matching factory is found.
@@ -112,15 +144,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @see JPhyloIOFormatIDs
 	 */
 	public String guessFormat(File file, ReadWriteParameterMap parameters) throws Exception {
-		String result;
-		FileReader reader = new FileReader(file);
-		try {
-			result = guessFormat(reader, parameters);
-		}
-		finally {
-			reader.close();
-		}
-		return result;
+		return guessFormat(new FileReader(file), parameters);  // Stream must be closed, by calling close() of the returned reader.
 	}
 	
 	
@@ -260,6 +284,39 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
+	public JPhyloIOEventReader guessReader(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
+		// Buffer stream for testing:
+		BufferedInputStream bufferedStream = new BufferedInputStream(stream);
+		bufferedStream.mark(getReadAheahLimit());
+		
+	  // Try if the input is GZIPed:
+		try {
+			bufferedStream = new BufferedInputStream(new GZIPInputStream(bufferedStream));
+		}
+		catch (ZipException e) {
+			bufferedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, bufferedStream was not set in the try block.)
+		}
+		
+		// Determine format:
+		String format = guessFormat(bufferedStream);
+		bufferedStream.reset();  // Reset bytes that have been read by guessFormat().
+		
+		// Return reader:
+		if (format == null) {
+			return null;
+		}
+		else {
+			return getReader(format, bufferedStream, parameters);
+		}
+		//TODO Does the any of the created streams in here need to be closed, if the underlying stream is closed later in application code? (Usually the top-most stream would be closed, which is not known by the application.)
+	}
+	
+	
+	public JPhyloIOEventReader guessReader(File file, ReadWriteParameterMap parameters) throws Exception {
+		return guessReader(new FileInputStream(file), parameters);  // Stream must be closed, by calling close() of the returned reader.
+	}
+	
+	
 	public JPhyloIOEventReader getReader(String formatID, InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
 		if (factory == null) {
@@ -272,7 +329,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	
 	
 	public JPhyloIOEventReader getReader(String formatID, File file, ReadWriteParameterMap parameters) throws Exception {
-		return getReader(formatID, new FileReader(file), parameters);
+		return getReader(formatID, new FileReader(file), parameters);  // Stream must be closed, by calling close() of the returned reader.
 	}
 	
 	
