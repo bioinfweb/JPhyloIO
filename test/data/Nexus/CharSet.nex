@@ -1,4 +1,4 @@
-#NEXUS
+#nexus
 
 BEGIN Sets [comment 1];
 	CharSet set01 = 3 - 5 9 12-016;
