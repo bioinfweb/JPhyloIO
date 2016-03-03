@@ -221,12 +221,16 @@ test/data/NeXML/freeAnnoations/NestedNameAndValue.xml -text svneol=unset#text/pl
 test/data/NeXML/freeAnnoations/ValueNestedInName.xml -text svneol=unset#text/plain
 test/data/Newick/Comments.nwk -text
 test/data/Newick/InternalsTerminalsLength.nwk -text
+test/data/Newick/InvalidNewick.txt -text svneol=unset#text/plain
 test/data/Newick/LeafNodesNamed.nwk -text
 test/data/Newick/Metadata.nwk -text
 test/data/Newick/MultipleTrees.nwk -text
 test/data/Newick/NHX2.nwk -text
 test/data/Newick/NoNamedNodes.nwk -text
 test/data/Newick/NoTrees.nwk -text
+test/data/Newick/OneNodeLength.nwk -text
+test/data/Newick/OneNodeName.nwk -text
+test/data/Newick/OneNodeNone.nwk -text
 test/data/Newick/OnlyBranchLengths.nwk -text
 test/data/Newick/ProblematicComments.nwk -text
 test/data/Nexus/CharSet.nex -text
@@ -288,6 +292,7 @@ test/src/info/bioinfweb/jphyloio/formats/mega/MEGAEventReaderTest.java -text svn
 test/src/info/bioinfweb/jphyloio/formats/mega/MEGAFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickEventWriterTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/newick/NewickFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickScannerTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLFactoryTest.java -text svneol=unset#text/plain

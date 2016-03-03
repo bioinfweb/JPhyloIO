@@ -591,4 +591,76 @@ public class NewickEventReaderTest {
 			reader.close();
 		}
 	}
+	
+	
+	@Test
+	public void test_readNextEvent_OneNodeNone() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/OneNodeNone.nwk"),
+				new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+//			String idA = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, "A", null, reader);
+//			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+//
+//			assertEdgeEvent(null, idA, Double.NaN, reader);
+//			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_readNextEvent_OneNodeName() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/OneNodeName.nwk"),
+				new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String idA = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, "A", null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+
+			assertEdgeEvent(null, idA, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_readNextEvent_OneNodeLength() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/OneNodeLength.nwk"),
+				new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String idA = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, null, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+
+			assertEdgeEvent(null, idA, 2.0, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }
