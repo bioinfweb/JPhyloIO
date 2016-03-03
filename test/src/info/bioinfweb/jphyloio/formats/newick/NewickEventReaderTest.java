@@ -653,9 +653,35 @@ public class NewickEventReaderTest {
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, idA, 2.0, reader);
+			assertCommentEvent("comment", reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_readNextEvent_OneNodeNameAndLength() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/OneNodeNameAndLength.nwk"),
+				new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String idA = assertLinkedOTUOrOTUsEvent(EventContentType.NODE, null, "A", null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+
+			assertEdgeEvent(null, idA, 2.0, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertCommentEvent("comment", reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}

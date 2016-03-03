@@ -230,6 +230,7 @@ test/data/Newick/NoNamedNodes.nwk -text
 test/data/Newick/NoTrees.nwk -text
 test/data/Newick/OneNodeLength.nwk -text
 test/data/Newick/OneNodeName.nwk -text
+test/data/Newick/OneNodeNameAndLength.nwk -text
 test/data/Newick/OneNodeNone.nwk -text
 test/data/Newick/OnlyBranchLengths.nwk -text
 test/data/Newick/ProblematicComments.nwk -text
