@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio;
 
 
-import info.bioinfweb.jphyloio.formats.JPhyloIOReaderWriterFactory;
+import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 
 
 

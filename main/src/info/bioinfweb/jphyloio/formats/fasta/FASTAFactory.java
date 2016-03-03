@@ -27,11 +27,11 @@ import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formats.AbstractStartStringSingleFactory;
+import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
+import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
-import info.bioinfweb.jphyloio.formats.SingleReaderWriterFactory;
 
 
 
@@ -86,7 +86,7 @@ public class FASTAFactory extends AbstractStartStringSingleFactory implements Si
 	 * Returns the FASTA format info including a file filter that specifies the file extensions listed
 	 * <a href="https://en.wikipedia.org/wiki/FASTA_format#File_extension">here</a>.
 	 * 
-	 * @see info.bioinfweb.jphyloio.formats.SingleReaderWriterFactory#getFormatInfo()
+	 * @see info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory#getFormatInfo()
 	 */
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {

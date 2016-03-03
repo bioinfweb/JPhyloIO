@@ -21,9 +21,9 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formats.AbstractSingleReaderWriterFactory;
+import info.bioinfweb.jphyloio.factory.AbstractSingleReaderWriterFactory;
+import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
-import info.bioinfweb.jphyloio.formats.SingleReaderWriterFactory;
 
 import java.io.IOException;
 import java.io.Reader;
