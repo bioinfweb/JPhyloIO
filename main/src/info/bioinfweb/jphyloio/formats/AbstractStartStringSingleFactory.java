@@ -35,7 +35,9 @@ import java.io.Reader;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public abstract class AbstractStartStringSingleFactory implements SingleReaderWriterFactory {
+public abstract class AbstractStartStringSingleFactory extends AbstractSingleReaderWriterFactory 
+		implements SingleReaderWriterFactory {
+	
 	private String expectedStart;
 	
 
@@ -52,12 +54,6 @@ public abstract class AbstractStartStringSingleFactory implements SingleReaderWr
 
 	protected String getExpectedStart() {
 		return expectedStart;
-	}
-
-
-	@Override
-	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
-		return checkFormat(new InputStreamReader(stream), parameters);
 	}
 
 
