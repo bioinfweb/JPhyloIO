@@ -284,6 +284,7 @@ test/src/info/bioinfweb/jphyloio/formats/newick/NewickEventReaderTest.java -text
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickScannerTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusFactoryTest.java -text svneol=unset#text/plain
