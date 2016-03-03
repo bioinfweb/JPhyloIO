@@ -289,8 +289,9 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 							else {
 								if (sequence.size() != 0) {
 									System.out.println("Sequence: " + sequence.size());
-									streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
-									sequence.clear();
+									streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
+											streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+									sequence = new ArrayList<String>();
 								}
 								streamDataProvider.setCurrentSequenceIndex(streamDataProvider.getCurrentSequenceIndex() + 1);
 								i += 2;
