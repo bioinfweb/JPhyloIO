@@ -26,10 +26,6 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;
 
-
-
-
-
 import org.junit.* ;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
