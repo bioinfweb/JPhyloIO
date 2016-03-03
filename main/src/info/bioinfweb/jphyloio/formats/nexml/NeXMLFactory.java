@@ -44,7 +44,7 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
  */
 public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, JPhyloIOFormatIDs {
 	public NeXMLFactory() {
-		super(TAG_NEXML);
+		super(TAG_ROOT);
 	}
 
 

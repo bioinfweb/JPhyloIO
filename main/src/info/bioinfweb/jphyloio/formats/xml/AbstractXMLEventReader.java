@@ -52,7 +52,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 		extends AbstractEventReader<P> {
 	
 	public static final String NAMESPACE_BIOINFWEB = "http://bioinfweb.info/JPhyloIO/technical";	
-	public static final QName TAG_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
+	public static final QName TAG_PARENT_OF_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
 	
 	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = new HashMap<XMLElementReaderKey, XMLElementReader<P>>();
 	private XMLEventReader xmlReader;
@@ -120,7 +120,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 				parentTag = getEncounteredTags().peek();
 			}
 			else {
-				parentTag = TAG_ROOT;
+				parentTag = TAG_PARENT_OF_ROOT;
 			}		
 			
 			if (xmlEvent.isStartElement()) {
@@ -156,16 +156,23 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	protected String getID(String id, EventContentType type) {
 		String result = id;
 		if ((result == null) || result.equals("")) {
-			if (type.equals(EventContentType.NODE)) {
-				result = DEFAULT_NODE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+			if (type.equals(EventContentType.ALIGNMENT)) {
+				result = DEFAULT_MATRIX_ID_PREFIX;
+			}
+			else if (type.equals(EventContentType.TOKEN_SET_DEFINITION)) {
+				result = DEFAULT_TOKEN_SET_ID_PREFIX;
+			}
+			else if (type.equals(EventContentType.NODE)) {
+				result = DEFAULT_NODE_ID_PREFIX;
 			}
 			else if (type.equals(EventContentType.EDGE)) {
-				result = DEFAULT_EDGE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+				result = DEFAULT_EDGE_ID_PREFIX;
 			}
 			else if (type.equals(EventContentType.TREE)) {
-				result = DEFAULT_TREE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+				result = DEFAULT_TREE_ID_PREFIX;
 			}
 		}
+		result += getStreamDataProvider().getIDManager().createNewID();
 		return result;
 	}
 	

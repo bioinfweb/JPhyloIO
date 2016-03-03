@@ -296,9 +296,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 			}
 		};
 		
-		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		map.put(new XMLElementReaderKey(TAG_ROOT, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
-		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		map.put(new XMLElementReaderKey(TAG_ROOT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
 		map.put(new XMLElementReaderKey(TAG_META, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		
@@ -378,7 +378,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 			}
 		});
 		
-		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_OTUS, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_ROOT, TAG_OTUS, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -387,7 +387,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 			}
 		});
 		
-		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_OTUS, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
+		map.put(new XMLElementReaderKey(TAG_ROOT, TAG_OTUS, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.OTU_LIST));
@@ -412,7 +412,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 			}
 		});
 		
-		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {		
+		map.put(new XMLElementReaderKey(TAG_ROOT, TAG_CHARACTERS, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
@@ -461,7 +461,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 			}
 		});
 		
-		map.put(new XMLElementReaderKey(TAG_NEXML, TAG_CHARACTERS, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {		
+		map.put(new XMLElementReaderKey(TAG_ROOT, TAG_CHARACTERS, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.ALIGNMENT));

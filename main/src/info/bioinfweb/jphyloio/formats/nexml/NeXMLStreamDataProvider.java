@@ -30,14 +30,12 @@ import java.util.TreeMap;
 
 
 
-public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventReader> {
-	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
-	
+public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventReader> {	
 	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
-	
 	private String tokenSetID = null;
-	private CharacterStateType characterSetType;
+	
 	private boolean allowLongTokens;
+	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
 	
 	private String symbol = null;
 	private Map<String, String> tokenDefinitionIDToSymbolMap;
@@ -64,16 +62,6 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventRea
 	}
 
 
-	public Map<String, String> getOtuIDToLabelMap() {
-		return otuIDToLabelMap;
-	}
-
-
-	public void setOtuIDToLabelMap(Map<String, String> otuIDToLabelMap) {
-		this.otuIDToLabelMap = otuIDToLabelMap;
-	}
-
-
 	public Map<String, NeXMLTokenSetInformation> getTokenSets() {
 		return tokenSets;
 	}
@@ -94,16 +82,6 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventRea
 	}
 
 
-	public CharacterStateType getCharacterSetType() {
-		return characterSetType;
-	}
-
-
-	public void setCharacterSetType(CharacterStateType characterSetType) {
-		this.characterSetType = characterSetType;
-	}
-
-
 	public boolean isAllowLongTokens() {
 		return allowLongTokens;
 	}
@@ -111,6 +89,16 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventRea
 
 	public void setAllowLongTokens(boolean allowLongTokens) {
 		this.allowLongTokens = allowLongTokens;
+	}
+
+
+	public Map<String, String> getOtuIDToLabelMap() {
+		return otuIDToLabelMap;
+	}
+
+
+	public void setOtuIDToLabelMap(Map<String, String> otuIDToLabelMap) {
+		this.otuIDToLabelMap = otuIDToLabelMap;
 	}
 
 

@@ -44,7 +44,7 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
  */
 public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConstants, JPhyloIOFormatIDs {
 	public PhyloXMLFactory() {
-		super(TAG_PHYLOXML);
+		super(TAG_ROOT);
 	}
 
 

@@ -44,7 +44,7 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
  */
 public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhyloIOFormatIDs {
 	public XTGFactory() {
-		super(TAG_DOCUMENT);
+		super(TAG_ROOT);
 	}
 
 

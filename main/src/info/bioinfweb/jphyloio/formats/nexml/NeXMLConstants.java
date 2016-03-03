@@ -29,7 +29,7 @@ public interface NeXMLConstants {
 	public static final String NAMESPACE_URI = "http://www.nexml.org/2009";
 	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	
-	public static final QName TAG_NEXML = new QName(NAMESPACE_URI, "nexml");
+	public static final QName TAG_ROOT = new QName(NAMESPACE_URI, "nexml");
 	public static final QName TAG_META = new QName(NAMESPACE_URI, "meta");
 	public static final QName TAG_SET = new QName(NAMESPACE_URI, "set");
 	

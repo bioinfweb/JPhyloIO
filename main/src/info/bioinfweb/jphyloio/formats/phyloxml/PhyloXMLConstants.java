@@ -22,13 +22,12 @@ import javax.xml.namespace.QName;
 
 public interface PhyloXMLConstants {
 	public static final String PHYLOXML_FORMAT_NAME = "PhyloXML";
-
 	public static final String PHYLO_XML = "phyloXML";
 	
 	public static final String NAMESPACE_URI = "http://www.phyloxml.org";
 	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	
-	public static final QName TAG_PHYLOXML = new QName(NAMESPACE_URI, "phyloxml");
+	public static final QName TAG_ROOT = new QName(NAMESPACE_URI, "phyloxml");
 	public static final QName TAG_PHYLOGENY = new QName(NAMESPACE_URI, "phylogeny");
 	public static final QName TAG_CLADE = new QName(NAMESPACE_URI, "clade");
 	

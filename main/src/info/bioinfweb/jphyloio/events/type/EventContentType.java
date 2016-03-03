@@ -195,7 +195,7 @@ public enum EventContentType {
 	/** 
 	 * Indicates the start or end of a token set definition.
 	 * <p>
-	 * Start events of this type are instances of {@link LabeledIDEvent}, end events are
+	 * Start events of this type are instances of {@link TokenSetDefinitionEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
