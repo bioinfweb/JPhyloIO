@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.mega;
+package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import java.io.IOException;
@@ -31,39 +31,36 @@ import info.bioinfweb.jphyloio.formats.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
-import info.bioinfweb.jphyloio.formats.SingleReaderWriterFactory;
 
 
 
 /**
- * Reader and writer factory for the MEGA format.
+ * Reader and writer factory for the Nexus format.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class MEGAFactory extends AbstractStartStringSingleFactory implements SingleReaderWriterFactory, JPhyloIOFormatIDs, 
-		MEGAConstants {
-	
-	public MEGAFactory() {
+public class NexusFactory extends AbstractStartStringSingleFactory implements NexusConstants, JPhyloIOFormatIDs {
+	public NexusFactory() {
 		super(FIRST_LINE);
 	}
 
 
 	@Override
 	public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
-		return new MEGAEventReader(stream, parameters);
+		return new NexusEventReader(stream, parameters);
 	}
 
-
+	
 	@Override
-	public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
-		return new MEGAEventReader(reader, parameters);
+	public JPhyloIOEventReader getReader(Reader reader,	ReadWriteParameterMap parameters) throws IOException {
+		return new NexusEventReader(reader, parameters);
 	}
-
+	
 
 	@Override
 	public JPhyloIOEventWriter getWriter() {
-		return null;
+		return new NexusEventWriter();
 	}
 
 	
@@ -71,17 +68,18 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 	public boolean hasReader() {
 		return true;
 	}
+	
+
+	@Override
+	public boolean hasWriter() {
+		return true;
+	}
 
 	
 	@Override
-	public boolean hasWriter() {
-		return false;
-	}
-
-
-	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(MEGA_FORMAT_ID, MEGA_FORMAT_NAME, new ExtensionFileFilter(
-				"MEGA format", "meg", true, "mega"));
+		return new DefaultFormatInfo(NEXUS_FORMAT_ID, NEXUS_FORMAT_NAME, new ExtensionFileFilter(
+				"Nexus format", "nex", true, "nexus", "tre", "tree", "con"));  //TODO Should the tree extension better be removed?
+				//TODO Should a file filter be provided that also opens files (uses checkFormat())?
 	}
 }

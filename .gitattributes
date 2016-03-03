@@ -114,6 +114,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/package-info.java -text svneol=un
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventWriter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/NexusFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusNewickWriterNodeLabelProcessor.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/TokenSetEventReceiver.java -text svneol=unset#text/plain

@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
  * @author Ben St&ouml;ver
  */
 public interface NexusConstants {
+	public static final String NEXUS_FORMAT_NAME = "Nexus";
+	
 	public static final String FIRST_LINE = "#NEXUS";
 	public static final String BEGIN_COMMAND = "BEGIN";
 	public static final String END_COMMAND = "END";
