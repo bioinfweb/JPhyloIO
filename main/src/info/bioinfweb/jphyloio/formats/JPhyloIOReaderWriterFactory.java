@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	public JPhyloIOEventReader getReader(String formatID, InputStream stream, ReadWriteParameterMap parameters) {
+	public JPhyloIOEventReader getReader(String formatID, InputStream stream, ReadWriteParameterMap parameters) throws IOException {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
 		if (factory == null) {
 			return null;
@@ -86,7 +87,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	public JPhyloIOEventReader getReader(String formatID, Reader reader, ReadWriteParameterMap parameters) {
+	public JPhyloIOEventReader getReader(String formatID, Reader reader, ReadWriteParameterMap parameters) throws IOException {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
 		if (factory == null) {
 			return null;
@@ -97,7 +98,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	public JPhyloIOEventReader getReader(InputStream stream) {
+	public JPhyloIOEventReader getReader(InputStream stream) throws IOException {
 		//TODO Implement
 		return null;
 	}

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
@@ -35,14 +36,28 @@ import info.bioinfweb.jphyloio.formats.SingleReaderWriterFactory;
 
 public class FASTAFactory implements SingleReaderWriterFactory, JPhyloIOFormatIDs, FASTAConstants {
 	@Override
-	public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) {
+	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean checkFormat(Reader reader, ReadWriteParameterMap parameters) throws IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) {
+	public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}

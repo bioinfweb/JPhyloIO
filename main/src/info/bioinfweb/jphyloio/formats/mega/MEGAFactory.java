@@ -19,7 +19,9 @@
 package info.bioinfweb.jphyloio.formats.mega;
 
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 import info.bioinfweb.commons.io.ExtensionFileFilter;
@@ -33,18 +35,40 @@ import info.bioinfweb.jphyloio.formats.SingleReaderWriterFactory;
 
 
 
+/**
+ * Reader and writer factory for the MEGA format.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class MEGAFactory implements SingleReaderWriterFactory, JPhyloIOFormatIDs, MEGAConstants {
 	@Override
-	public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+		return checkFormat(new InputStreamReader(stream), parameters);
 	}
 
 
 	@Override
-	public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean checkFormat(Reader reader, ReadWriteParameterMap parameters) throws IOException {
+		for (int i = 0; i < FIRST_LINE.length(); i++) {
+			int c = reader.read();
+			if ((c == -1) || (Character.toUpperCase((char)c) != FIRST_LINE.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	@Override
+	public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+		return new MEGAEventReader(stream, parameters);
+	}
+
+
+	@Override
+	public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
+		return new MEGAEventReader(reader, parameters);
 	}
 
 
