@@ -203,6 +203,16 @@ public class ReadWriteParameterMap extends ParameterMap {
 	public static final String KEY_IGNORE_COMMENTS = KEY_PREFIX + "ignoreComments";
 	
 	/**
+	 * This parameter can be used to specify whether readers of XML formats shall also accept tags of their target format
+	 * without any namespace definition.
+	 * <p>
+	 * The value should have the type {@link Boolean}. If {@code true} or no value is specified, tags without the target format
+	 * namespace declaration will be supported, if their local part fits. If {@code false} is specified, the correct namespace
+	 * is required.
+	 */
+	public static final String KEY_ALLOW_DEFAULT_NAMESPACE = KEY_PREFIX + "allowDefaultNamespace";
+	
+	/**
 	 * This parameter can be used to specify a custom maximum lengths for element names. An example would be the length
 	 * of sequence names in Phylip, which may be customized using this parameter.
 	 * <p>

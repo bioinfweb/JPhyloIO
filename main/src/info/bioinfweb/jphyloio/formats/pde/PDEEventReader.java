@@ -59,7 +59,6 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
-import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
 
 
 
@@ -117,7 +116,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 	protected void fillMap() {
 		Map<XMLElementReaderKey, XMLElementReader<PDEStreamDataProvider>> map = getElementReaderMap();
 		
-		map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -126,7 +125,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 			
-			map.put(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), 
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -134,7 +133,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 		
-		map.put(new XMLElementReaderKey(TAG_ROOT, TAG_ALIGNMENT, XMLStreamConstants.START_ELEMENT), 
+		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_ALIGNMENT, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -158,7 +157,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 		
-		map.put(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_HEADER, XMLStreamConstants.START_ELEMENT), 
+		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_HEADER, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -168,7 +167,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 		
-		map.put(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_HEADER, XMLStreamConstants.END_ELEMENT), 
+		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_HEADER, XMLStreamConstants.END_ELEMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -176,7 +175,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 		
-		map.put(new XMLElementReaderKey(TAG_HEADER, TAG_META_TYPE_DEFINITIONS, XMLStreamConstants.CHARACTERS), 
+		putElementReader(new XMLElementReaderKey(TAG_HEADER, TAG_META_TYPE_DEFINITIONS, XMLStreamConstants.CHARACTERS), 
 			new AbstractXMLElementReader<PDEStreamDataProvider>() {
 				@Override
 				public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -210,7 +209,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 				}
 		});
 		
-		map.put(new XMLElementReaderKey(TAG_HEADER, TAG_SEQUENCE_INFORMATION, XMLStreamConstants.START_ELEMENT), 
+		putElementReader(new XMLElementReaderKey(TAG_HEADER, TAG_SEQUENCE_INFORMATION, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -219,7 +218,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 		
-		map.put(new XMLElementReaderKey(TAG_SEQUENCE_INFORMATION, TAG_SEQUENCE_META_INFORMATION, XMLStreamConstants.START_ELEMENT), 
+		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE_INFORMATION, TAG_SEQUENCE_META_INFORMATION, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -237,7 +236,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 		
-		map.put(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_MATRIX, XMLStreamConstants.START_ELEMENT), 
+		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_MATRIX, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -257,7 +256,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 		
-		map.put(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_MATRIX, XMLStreamConstants.END_ELEMENT), 
+		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_MATRIX, XMLStreamConstants.END_ELEMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
@@ -265,7 +264,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					}
 			});
 		
-		map.put(new XMLElementReaderKey(TAG_BLOCK, null, XMLStreamConstants.CHARACTERS), 
+		putElementReader(new XMLElementReaderKey(TAG_BLOCK, null, XMLStreamConstants.CHARACTERS), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {

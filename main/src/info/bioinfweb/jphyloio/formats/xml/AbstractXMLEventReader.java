@@ -54,6 +54,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	public static final String INTERNAL_USE_NAMESPACE = "http://bioinfweb.info/xmlns/JPhyloIO/internalUse";	
 	public static final QName TAG_PARENT_OF_ROOT = new QName(INTERNAL_USE_NAMESPACE, "root");
 	
+	
 	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = new HashMap<XMLElementReaderKey, XMLElementReader<P>>();
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
@@ -61,12 +62,11 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	
 	public AbstractXMLEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
 		this(new FileReader(file), parameters);
+		
 	}
 
 	
-	public AbstractXMLEventReader(InputStream stream, ReadWriteParameterMap parameters) 
-			throws IOException, XMLStreamException {
-		
+	public AbstractXMLEventReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
 		this(new InputStreamReader(stream), parameters);
 	}
 
@@ -88,6 +88,28 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	}
 	
 	
+	protected boolean isAllowDefaultNamespace() {
+		return getParameters().getBoolean(ReadWriteParameterMap.KEY_ALLOW_DEFAULT_NAMESPACE, true);
+	}
+	
+	
+	protected void putElementReader(XMLElementReaderKey key, XMLElementReader<P> reader) {
+		elementReaderMap.put(key, reader);
+		if (isAllowDefaultNamespace()) {
+			QName parentTag = null;
+			if (key.getParentTag() != null) {
+				parentTag = new QName(key.getParentTag().getLocalPart());
+			}
+			QName tag = null;
+			if (key.getTagName() != null) {
+				tag = new QName(key.getTagName().getLocalPart());
+			}
+			elementReaderMap.put(new XMLElementReaderKey(parentTag, 
+					tag, key.getXmlEventType()), reader);
+		}
+	}
+
+
 	protected abstract void fillMap();
 	
 	
