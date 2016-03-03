@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
@@ -87,8 +86,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 
 	@SuppressWarnings("unchecked")
 	protected void fillMap() {
-		Map<XMLElementReaderKey, XMLElementReader<PhyloXMLStreamDataProvider>> map = getElementReaderMap();
-		
 		XMLElementReader<PhyloXMLStreamDataProvider> cladeEndReader = new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
 				@Override
 				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {

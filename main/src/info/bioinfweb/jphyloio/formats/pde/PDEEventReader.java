@@ -57,7 +57,6 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 
 
@@ -114,8 +113,6 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 
 	@Override
 	protected void fillMap() {
-		Map<XMLElementReaderKey, XMLElementReader<PDEStreamDataProvider>> map = getElementReaderMap();
-		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override

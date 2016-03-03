@@ -34,7 +34,6 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLToMetaElementStartReader;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
@@ -44,7 +43,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
@@ -85,8 +83,6 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void fillMap() {
-		Map<XMLElementReaderKey, XMLElementReader<XMLStreamDataProvider<XTGEventReader>>> map = getElementReaderMap();
-		
 		AbstractXMLElementReader<XMLStreamDataProvider<XTGEventReader>> nodeStartReader = new AbstractXMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
