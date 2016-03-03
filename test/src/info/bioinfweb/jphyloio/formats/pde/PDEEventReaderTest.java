@@ -52,10 +52,10 @@ public class PDEEventReaderTest {
 //						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.OTU, EventTopologyType.START))) {
-//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+//					System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE))) {
-						System.out.println(event.asSequenceTokensEvent().getCharacterValues());
+						System.out.println(event.asSequenceTokensEvent().getCharacterValues().size());
 					}
 				}
 			}
