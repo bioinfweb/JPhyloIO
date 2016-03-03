@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexus;
+package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -31,24 +31,12 @@ import static org.junit.Assert.* ;
 
 
 
-public class NexusFactoryTest {
+public class PhylipFactoryTest {
 	@Test
-	public void test_checkFormat_upperCase() throws IOException {
-		Reader reader = new FileReader("data/Nexus/Matrix.nex");
+	public void test_checkFormat() throws IOException {
+		Reader reader = new FileReader("data/Phylip/Interleaved.phy");
 		try {
-			assertTrue(new NexusFactory().checkFormat(reader, new ReadWriteParameterMap()));
-		}
-		finally {
-			reader.close();
-		}
-	}
-	
-	
-	@Test
-	public void test_checkFormat_lowerCase() throws IOException {
-		Reader reader = new FileReader("data/Nexus/CharSet.nex");
-		try {
-			assertTrue(new NexusFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertTrue(new PhylipFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -60,7 +48,7 @@ public class NexusFactoryTest {
 	public void test_checkFormat_FASTA() throws IOException {
 		Reader reader = new FileReader("data/Fasta/Test.fasta");
 		try {
-			assertFalse(new NexusFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new PhylipFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -72,19 +60,7 @@ public class NexusFactoryTest {
 	public void test_checkFormat_MEGA() throws IOException {
 		Reader reader = new FileReader("data/MEGA/MatchToken.meg");
 		try {
-			assertFalse(new NexusFactory().checkFormat(reader, new ReadWriteParameterMap()));
-		}
-		finally {
-			reader.close();
-		}
-	}
-	
-	
-	@Test
-	public void test_checkFormat_Phylip() throws IOException {
-		Reader reader = new FileReader("data/Phylip/Interleaved.phy");
-		try {
-			assertFalse(new NexusFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new PhylipFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -96,7 +72,7 @@ public class NexusFactoryTest {
 	public void test_checkFormat_Newick() throws IOException {
 		Reader reader = new FileReader("data/Newick/Metadata.nwk");
 		try {
-			assertFalse(new NexusFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new PhylipFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -108,7 +84,7 @@ public class NexusFactoryTest {
 	public void test_checkFormat_NeXML() throws IOException {
 		Reader reader = new FileReader("data/NeXML/Paralogues.xml");
 		try {
-			assertFalse(new NexusFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new PhylipFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();

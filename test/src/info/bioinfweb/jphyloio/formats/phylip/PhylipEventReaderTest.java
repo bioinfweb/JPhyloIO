@@ -26,7 +26,6 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.* ;
 

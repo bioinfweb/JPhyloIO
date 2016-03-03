@@ -285,6 +285,7 @@ test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventWriterTest.java -text s
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventWriterTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReaderTest.java -text svneol=unset#text/plain
