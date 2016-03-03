@@ -18,7 +18,10 @@
  */
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
+
 import javax.xml.namespace.QName;
+
+
 
 public interface PhyloXMLConstants {
 	public static final String PHYLOXML_FORMAT_NAME = "PhyloXML";

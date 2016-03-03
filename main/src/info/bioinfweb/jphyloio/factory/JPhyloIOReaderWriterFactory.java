@@ -25,7 +25,18 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAFactory;
+import info.bioinfweb.jphyloio.formats.mega.MEGAFactory;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLFactory;
+import info.bioinfweb.jphyloio.formats.nexus.NexusFactory;
+import info.bioinfweb.jphyloio.formats.pde.PDEFactory;
+import info.bioinfweb.jphyloio.formats.phylip.PhylipFactory;
+import info.bioinfweb.jphyloio.formats.phylip.SequentialPhylipFactory;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLFactory;
+import info.bioinfweb.jphyloio.formats.xtg.XTGFactory;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -62,11 +73,182 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	private void fillMap() {
-		formatMap.put(FASTA_FORMAT_ID, new FASTAFactory());
+	private void addFactory(SingleReaderWriterFactory factory) {
+		formatMap.put(factory.getFormatInfo().getFormatID(), factory);
 	}
 	
 	
+	private void fillMap() {
+		addFactory(new NeXMLFactory());
+		addFactory(new NexusFactory());
+		addFactory(new PhyloXMLFactory());
+		addFactory(new XTGFactory());
+		addFactory(new PDEFactory());
+		addFactory(new FASTAFactory());
+		addFactory(new MEGAFactory());
+		addFactory(new PhylipFactory());
+		addFactory(new SequentialPhylipFactory());
+		//TODO Add Newick factory
+	}
+	
+	
+	/**
+	 * Tries to determine the format of the contents of the specified file by examining at its beginning (e.g. the root 
+	 * tag in XML formats). The format is determined by subsequent calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)} until a matching factory is found.
+	 * <p>
+	 * The parameter map is only necessary for formats that are so variable that parameter values are needed to determine 
+	 * how a valid input would look like. That is currently not the case for any format supported in <i>JPhyloIO</i>, but
+	 * may be necessary for third parts format-specific factories used in this instance. (Refer to the documentation of 
+	 * third party format-specific factories for details.) In most cases the convenience method {@link #guessFormat(File)}
+	 * will be sufficient.
+	 * 
+	 * @param reader the reader providing the contents
+	 * @param parameters the parameter map containing parameters for the <i>JPhyloIO</i> event reader that would 
+	 *        be used with {@code reader} 
+	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
+	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
+	 *         because of an IO error)
+	 * @see JPhyloIOFormatIDs
+	 */
+	public String guessFormat(File file, ReadWriteParameterMap parameters) throws Exception {
+		String result;
+		FileReader reader = new FileReader(file);
+		try {
+			result = guessFormat(reader, parameters);
+		}
+		finally {
+			reader.close();
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Tries to determine the format of the contents of the specified file by examining at its beginning (e.g. the root 
+	 * tag in XML formats). The format is determined by subsequent calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)} until a matching factory is found.
+	 * <p>
+	 * It uses an empty parameter map that is passed to the internal calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)}. Use 
+	 * {@link #guessFormat(File, ReadWriteParameterMap)} if parameters are necessary to determine the format correctly.
+	 * 
+	 * @param reader the reader providing the contents
+	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
+	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
+	 *         because of an IO error)
+	 * @see JPhyloIOFormatIDs
+	 */
+	public String guessFormat(File file) throws Exception {
+		return guessFormat(file, new ReadWriteParameterMap());
+	}
+	
+	
+	/**
+	 * Tries to determine the format of the contents of the specified reader by examining at its beginning (e.g. the root 
+	 * tag in XML formats). The format is determined by subsequent calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)} until a matching factory is found.
+	 * <p>
+	 * The parameter map is only necessary for formats that are so variable that parameter values are needed to determine 
+	 * how a valid input would look like. That is currently not the case for any format supported in <i>JPhyloIO</i>, but
+	 * may be necessary for third parts format-specific factories used in this instance. (Refer to the documentation of 
+	 * third party format-specific factories for details.) In most cases the convenience method {@link #guessFormat(Reader)}
+	 * will be sufficient.
+	 * 
+	 * @param reader the reader providing the contents
+	 * @param parameters the parameter map containing parameters for the <i>JPhyloIO</i> event reader that would 
+	 *        be used with {@code reader} 
+	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
+	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
+	 *         because of an IO error)
+	 * @see JPhyloIOFormatIDs
+	 */
+	public String guessFormat(Reader reader, ReadWriteParameterMap parameters) throws Exception {
+		for (SingleReaderWriterFactory factory : formatMap.values()) {
+			if (factory.checkFormat(reader, parameters)) {
+				return factory.getFormatInfo().getFormatID();
+			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * Tries to determine the format of the contents of the specified reader by examining at its beginning (e.g. the root 
+	 * tag in XML formats). The format is determined by subsequent calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)} until a matching factory is found.
+	 * <p>
+	 * It uses an empty parameter map that is passed to the internal calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)}. Use 
+	 * {@link #guessFormat(Reader, ReadWriteParameterMap)} if parameters are necessary to determine the format correctly.
+	 * 
+	 * @param reader the reader providing the contents
+	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
+	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
+	 *         because of an IO error)
+	 * @see JPhyloIOFormatIDs
+	 */
+	public String guessFormat(Reader reader) throws Exception {
+		return guessFormat(reader, new ReadWriteParameterMap());
+	}
+	
+	
+	/**
+	 * Tries to determine the format of the contents of the specified input stream by examining at its beginning (e.g. 
+	 * the root tag in XML formats). The format is determined by subsequent calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(InputStream, ReadWriteParameterMap)} until a matching factory is found.
+	 * <p>
+	 * The parameter map is only necessary for formats that are so variable that parameter values are needed to determine 
+	 * how a valid input would look like. That is currently not the case for any format supported in <i>JPhyloIO</i>, but
+	 * may be necessary for third parts format-specific factories used in this instance. (Refer to the documentation of 
+	 * third party format-specific factories for details.) In most cases the convenience method 
+	 * {@link #guessFormat(InputStream)} will be sufficient.
+	 * 
+	 * @param reader the reader providing the contents
+	 * @param parameters the parameter map containing parameters for the <i>JPhyloIO</i> event reader that would 
+	 *        be used with {@code reader} 
+	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
+	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
+	 *         because of an IO error)
+	 * @see JPhyloIOFormatIDs
+	 */
+	public String guessFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
+		for (SingleReaderWriterFactory factory : formatMap.values()) {
+			if (factory.checkFormat(stream, parameters)) {
+				return factory.getFormatInfo().getFormatID();
+			}
+		}
+		return null;
+	}
+
+	
+	/**
+	 * Tries to determine the format of the contents of the specified reader by examining at its beginning (e.g. the root 
+	 * tag in XML formats). The format is determined by subsequent calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(InputStream, ReadWriteParameterMap)} until a matching factory is found.
+	 * <p>
+	 * It uses an empty parameter map that is passed to the internal calls of 
+	 * {@link SingleReaderWriterFactory#checkFormat(InputStream, ReadWriteParameterMap)}. Use 
+	 * {@link #guessFormat(InputStream, ReadWriteParameterMap)} if parameters are necessary to determine the format 
+	 * correctly.
+	 * 
+	 * @param reader the reader providing the contents
+	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
+	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
+	 *         because of an IO error)
+	 * @see JPhyloIOFormatIDs
+	 */
+	public String guessFormat(InputStream stream) throws Exception {
+		return guessFormat(stream, new ReadWriteParameterMap());
+	}
+	
+	
+	/**
+	 * Returns an information object for the specified format.
+	 * 
+	 * @param formatID the unique format ID specifying the format
+	 * @return the information object
+	 */
 	public JPhyloIOFormatInfo getFormatInfo(String formatID) {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
 		if (factory == null) {
@@ -89,6 +271,11 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
+	public JPhyloIOEventReader getReader(String formatID, File file, ReadWriteParameterMap parameters) throws Exception {
+		return getReader(formatID, new FileReader(file), parameters);
+	}
+	
+	
 	public JPhyloIOEventReader getReader(String formatID, Reader reader, ReadWriteParameterMap parameters) throws Exception {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
 		if (factory == null) {
@@ -99,12 +286,6 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 		}
 	}
 	
-	
-	public JPhyloIOEventReader getReader(InputStream stream) throws IOException {
-		//TODO Implement
-		return null;
-	}
-
 	
 	public JPhyloIOEventWriter getWriter(String formatID) {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
