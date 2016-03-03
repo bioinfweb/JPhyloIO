@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.fasta;
+package info.bioinfweb.jphyloio.formats.xtg;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -31,12 +31,12 @@ import static org.junit.Assert.* ;
 
 
 
-public class FASTAFactoryTest {
+public class XTGFactoryTest {
 	@Test
 	public void test_checkFormat() throws IOException {
-		Reader reader = new FileReader("data/Fasta/Test.fasta");
+		Reader reader = new FileReader("data/XTG/ExampleXTGDocument.xml");
 		try {
-			assertTrue(new FASTAFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertTrue(new XTGFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -48,7 +48,7 @@ public class FASTAFactoryTest {
 	public void test_checkFormat_MEGA() throws IOException {
 		Reader reader = new FileReader("data/MEGA/MatchToken.meg");
 		try {
-			assertFalse(new FASTAFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new XTGFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -60,7 +60,7 @@ public class FASTAFactoryTest {
 	public void test_checkFormat_Nexus() throws IOException {
 		Reader reader = new FileReader("data/Nexus/Matrix.nex");
 		try {
-			assertFalse(new FASTAFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new XTGFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -72,7 +72,7 @@ public class FASTAFactoryTest {
 	public void test_checkFormat_Phylip() throws IOException {
 		Reader reader = new FileReader("data/Phylip/Interleaved.phy");
 		try {
-			assertFalse(new FASTAFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new XTGFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -84,7 +84,7 @@ public class FASTAFactoryTest {
 	public void test_checkFormat_Newick() throws IOException {
 		Reader reader = new FileReader("data/Newick/Metadata.nwk");
 		try {
-			assertFalse(new FASTAFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new XTGFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
@@ -96,7 +96,19 @@ public class FASTAFactoryTest {
 	public void test_checkFormat_NeXML() throws IOException {
 		Reader reader = new FileReader("data/NeXML/Paralogues.xml");
 		try {
-			assertFalse(new FASTAFactory().checkFormat(reader, new ReadWriteParameterMap()));
+			assertFalse(new XTGFactory().checkFormat(reader, new ReadWriteParameterMap()));
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_checkFormat_PhyloXML() throws IOException {
+		Reader reader = new FileReader("data/PhyloXML/PhyloXMLDocument.xml");
+		try {
+			assertFalse(new XTGFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
 			reader.close();
