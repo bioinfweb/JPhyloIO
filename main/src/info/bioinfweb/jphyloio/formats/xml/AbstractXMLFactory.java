@@ -27,6 +27,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.factory.AbstractSingleReaderWriterFactory;
@@ -99,7 +100,15 @@ public abstract class AbstractXMLFactory extends AbstractSingleReaderWriterFacto
 				return false;
 			}
 			
-			StartElement startElement = xmlReader.nextEvent().asStartElement();
+			XMLEvent event;
+			do {  // Skip e.g. comments before root tag.
+				event = xmlReader.nextEvent();
+				if (event.isEndElement() || event.isEndDocument()) {
+					return false;
+				}
+			} while (!event.isStartElement());
+			
+			StartElement startElement = event.asStartElement();
 			if (startElement.getName().getLocalPart().equals(getRootTag().getLocalPart())) {
 				return checkRootTag(startElement);
 			}

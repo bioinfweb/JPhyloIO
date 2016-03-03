@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 
 
 public interface PDEConstants {
+	public static final String PDE_FORMAT_NAME = "PDE (PhyDE)";
+
 	public static final QName TAG_ROOT = new QName("phyde");
 	public static final QName TAG_HEADER = new QName("header");
 	public static final QName TAG_META_TYPE_DEFINITIONS = new QName("entries");
