@@ -51,8 +51,8 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? extends AbstractXMLEventReader<P>>>
 		extends AbstractEventReader<P> {
 	
-	public static final String NAMESPACE_BIOINFWEB = "http://bioinfweb.info/JPhyloIO/technical";	
-	public static final QName TAG_PARENT_OF_ROOT = new QName(NAMESPACE_BIOINFWEB, "root");
+	public static final String INTERNAL_USE_NAMESPACE = "http://bioinfweb.info/xmlns/JPhyloIO/internalUse";	
+	public static final QName TAG_PARENT_OF_ROOT = new QName(INTERNAL_USE_NAMESPACE, "root");
 	
 	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = new HashMap<XMLElementReaderKey, XMLElementReader<P>>();
 	private XMLEventReader xmlReader;
