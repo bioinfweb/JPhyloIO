@@ -22,8 +22,6 @@ package info.bioinfweb.jphyloio.factory;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 
 

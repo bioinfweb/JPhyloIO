@@ -78,7 +78,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	public JPhyloIOEventReader getReader(String formatID, InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+	public JPhyloIOEventReader getReader(String formatID, InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
 		if (factory == null) {
 			return null;
@@ -89,7 +89,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	public JPhyloIOEventReader getReader(String formatID, Reader reader, ReadWriteParameterMap parameters) throws IOException {
+	public JPhyloIOEventReader getReader(String formatID, Reader reader, ReadWriteParameterMap parameters) throws Exception {
 		SingleReaderWriterFactory factory = formatMap.get(formatID);
 		if (factory == null) {
 			return null;

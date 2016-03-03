@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.factory;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -29,7 +28,7 @@ import java.io.InputStreamReader;
 
 public abstract class AbstractSingleReaderWriterFactory implements SingleReaderWriterFactory {
 	@Override
-	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
+	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		return checkFormat(new InputStreamReader(stream), parameters);
 	}
 }

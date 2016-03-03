@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.factory;
 
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
@@ -51,7 +50,7 @@ public interface SingleReaderWriterFactory {
 	 * @return {@code true} if the tested stream may be in the target format or {@code false} if the stream is not
 	 *         in valid target format
 	 */
-	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws IOException;
+	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception;
 	
 	/**
 	 * Implementations should read the start of the characters returned by the reader here and determine whether 
@@ -62,7 +61,7 @@ public interface SingleReaderWriterFactory {
 	 * @return {@code true} if the tested reader may return content in target format or {@code false} if the content is not
 	 *         in valid target format
 	 */
-	public boolean checkFormat(Reader reader, ReadWriteParameterMap parameters) throws IOException;
+	public boolean checkFormat(Reader reader, ReadWriteParameterMap parameters) throws Exception;
 	
   /**
    * Creates a new reader instance for the target format of this factory.
@@ -71,7 +70,7 @@ public interface SingleReaderWriterFactory {
 	 * @param parameters the parameter map for the new reader instance 
    * @return the new reader instance
    */
-  public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException;
+  public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) throws Exception;
   
   /**
    * Creates a new reader instance for the target format of this factory.
@@ -81,7 +80,7 @@ public interface SingleReaderWriterFactory {
    * @return the new reader instance or {@code null} if this factory is not able to create readers
    * @see #hasReader()
    */
-  public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) throws IOException;
+  public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) throws Exception;
   
   /**
    * Creates a new writer instance for the target format of this factory.
