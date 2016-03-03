@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.pde;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
@@ -33,7 +34,14 @@ import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
  * @since 0.0.0
  */
 public class PDEStreamDataProvider extends XMLStreamDataProvider<PDEEventReader>{
-	private String lastMetaDefinitionCharacters = null;
+	private int alignmentLength;
+	
+	private String otuListID;
+	
+	private int currentSequenceIndex;
+	private List<Map<Integer, String>> sequences;
+	
+	private String remainingCharacters = null;
 	private Map<Long, PDEMetaColumnDefintion> metaColumns = new HashMap<Long, PDEMetaColumnDefintion>();
 	
 	
@@ -42,18 +50,58 @@ public class PDEStreamDataProvider extends XMLStreamDataProvider<PDEEventReader>
 	}
 
 
-	public boolean hasLastMetaDefinitionCharacters() {
-		return lastMetaDefinitionCharacters != null;
-	}
-	
-	
-	public String getLastMetaDefinitionCharacters() {
-		return lastMetaDefinitionCharacters;
+	public int getAlignmentLength() {
+		return alignmentLength;
 	}
 
 
-	public void setLastMetaDefinitionCharacters(String lastMetaDefinitionCharacters) {
-		this.lastMetaDefinitionCharacters = lastMetaDefinitionCharacters;
+	public void setAlignmentLength(int alignmentLength) {
+		this.alignmentLength = alignmentLength;
+	}
+
+
+	public String getOtuListID() {
+		return otuListID;
+	}
+
+
+	public void setOtuListID(String otuListID) {
+		this.otuListID = otuListID;
+	}
+
+
+	public int getCurrentSequenceIndex() {
+		return currentSequenceIndex;
+	}
+
+
+	public void setCurrentSequenceIndex(int currentSequenceIndex) {
+		this.currentSequenceIndex = currentSequenceIndex;
+	}
+
+
+	public List<Map<Integer, String>> getSequences() {
+		return sequences;
+	}
+
+
+	public void setSequences(List<Map<Integer, String>> sequences) {
+		this.sequences = sequences;
+	}
+
+
+	public boolean hasRemainingCharacters() {
+		return remainingCharacters != null;
+	}
+	
+	
+	public String getRemainingCharacters() {
+		return remainingCharacters;
+	}
+
+
+	public void setRemainingCharacters(String remainingCharacters) {
+		this.remainingCharacters = remainingCharacters;
 	}
 
 

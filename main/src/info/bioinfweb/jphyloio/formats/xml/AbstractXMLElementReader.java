@@ -24,8 +24,11 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.util.Iterator;
 
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 
 
@@ -41,5 +44,20 @@ public abstract class AbstractXMLElementReader<P extends XMLStreamDataProvider<?
 			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key + "." + attribute.getName(), null, attribute.getValue()));
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
 		}
+	}
+	
+	
+	protected String readCharacterData(P streamDataProvider, StartElement element) throws XMLStreamException {
+		XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();
+		String value = null;
+		
+		if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
+			String characterData = nextEvent.asCharacters().getData();
+			if (!characterData.matches("\\s+")) {
+				value = characterData;
+			}
+		}
+		
+		return value;
 	}
 }
