@@ -21,6 +21,8 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 import javax.xml.namespace.QName;
 
 public interface PhyloXMLConstants {
+	public static final String PHYLOXML_FORMAT_NAME = "PhyloXML";
+
 	public static final String PHYLO_XML = "phyloXML";
 	
 	public static final String NAMESPACE_URI = "http://www.phyloxml.org";

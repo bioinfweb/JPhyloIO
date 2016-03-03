@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 
 
 public interface NeXMLConstants {
+	public static final String NEXML_FORMAT_NAME = "NeXML";
+
 	public static final String NAMESPACE_URI = "http://www.nexml.org/2009";
 	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	

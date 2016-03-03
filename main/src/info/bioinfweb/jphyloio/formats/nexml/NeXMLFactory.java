@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xtg;
+package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import java.io.IOException;
@@ -42,21 +42,21 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhyloIOFormatIDs {
-	public XTGFactory() {
-		super(TAG_DOCUMENT);
+public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, JPhyloIOFormatIDs {
+	public NeXMLFactory() {
+		super(TAG_NEXML);
 	}
 
 
 	@Override
 	public JPhyloIOEventReader getReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
-		return new XTGEventReader(stream, parameters);
+		return new NeXMLEventReader(stream, parameters);
 	}
 
 	
 	@Override
 	public JPhyloIOEventReader getReader(Reader reader, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
-		return new XTGEventReader(reader, parameters);
+		return new NeXMLEventReader(reader, parameters);
 	}
 
 	
@@ -80,7 +80,7 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(XTG_FORMAT_ID, XTG_FORMAT_NAME, new ExtensionFileFilter(
-				"XTG format of TreeGraph 2", "xtg", true, "xml"));
+		return new DefaultFormatInfo(NEXML_FORMAT_ID, NEXML_FORMAT_NAME, new ExtensionFileFilter(
+				"NeXML", "nexml", true, "xml"));
 	}
 }

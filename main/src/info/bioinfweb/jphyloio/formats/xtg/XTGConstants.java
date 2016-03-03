@@ -18,9 +18,14 @@
  */
 package info.bioinfweb.jphyloio.formats.xtg;
 
+
 import javax.xml.namespace.QName;
 
+
+
 public interface XTGConstants {
+	public static final String XTG_FORMAT_NAME = "Extensible TreeGraph 2 format";
+
 	public static final String XTG = "xtg";
 	
 	public static final String NAMESPACE_URI = "http://bioinfweb.info/xmlns/xtg";
