@@ -44,6 +44,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
@@ -57,27 +59,21 @@ import java.util.zip.ZipException;
  * @since 0.0.0
  */
 public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
+	//TODO Do any other methods need to be synchronized?
+	
 	public static final int DEFAULT_READ_AHAED_LIMIT = 4 * 1024;  // XML files may contain long comments before the root tag.
 	
 	
-	private static JPhyloIOReaderWriterFactory firstInstance = null;
+	private final ReadWriteLock readAheahLimitLock = new ReentrantReadWriteLock();	
 	
 	
 	private Map<String, SingleReaderWriterFactory> formatMap = new TreeMap<String, SingleReaderWriterFactory>();
 	private int readAheahLimit = DEFAULT_READ_AHAED_LIMIT;
 	
 	
-	private JPhyloIOReaderWriterFactory() {
+	public JPhyloIOReaderWriterFactory() {
 		super();
 		fillMap();
-	}
-	
-	
-	public static JPhyloIOReaderWriterFactory getInstance() {
-		if (firstInstance == null) {
-			firstInstance = new JPhyloIOReaderWriterFactory();
-		}
-		return firstInstance;
 	}
 	
 	
@@ -103,25 +99,39 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	/**
 	 * Returns the maximal number of bytes this factory will read to determine the format of an input in the 
 	 * {@code #guess*()} methods.
+	 * <p>
+	 * This method is thread save a secured with an {@link ReadWriteLock} together with {@link #setReadAheahLimit(int)}.
 	 * 
 	 * @return the current read ahead limit
 	 */
 	public int getReadAheahLimit() {
-		return readAheahLimit;
+		readAheahLimitLock.readLock().lock();
+		try {
+			return readAheahLimit;
+		}
+		finally {
+			readAheahLimitLock.readLock().unlock();
+		}
 	}
 
 
 	/**
 	 * Allows to specify the maximal number of bytes this factory will read to determine the format of an input
-	 * in the {@code #guess*()} methods. Note that changing this value will have an effect on classes using this
-	 * factory singleton.
+	 * in the {@code #guess*()} methods.
+	 * <p>
+	 * This method is thread save a secured with an {@link ReadWriteLock} together with {@link #getReadAheahLimit()}.
 	 * 
 	 * @param readAheahLimit the new read ahead limit
 	 */
 	public void setReadAheahLimit(int readAheahLimit) {
-		this.readAheahLimit = readAheahLimit;
+		readAheahLimitLock.writeLock().lock();
+		try {
+			this.readAheahLimit = readAheahLimit;
+		}
+		finally {
+			readAheahLimitLock.writeLock().unlock();
+		}
 	}
-	//TODO Should this class remain being a singleton, allowing to globally specify this value or should there be multiple instances?
 
 
 	/**
@@ -134,6 +144,9 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * may be necessary for third parts format-specific factories used in this instance. (Refer to the documentation of 
 	 * third party format-specific factories for details.) In most cases the convenience method {@link #guessFormat(File)}
 	 * will be sufficient.
+	 * <p>
+	 * Note that in contrast to {@link #guessReader(File, ReadWriteParameterMap)}, this method does not support
+	 * GZIPed inputs.
 	 * 
 	 * @param reader the reader providing the contents
 	 * @param parameters the parameter map containing parameters for the <i>JPhyloIO</i> event reader that would 
@@ -142,9 +155,18 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
 	 *         because of an IO error)
 	 * @see JPhyloIOFormatIDs
+	 * @see #guessReader(File, ReadWriteParameterMap)
 	 */
 	public String guessFormat(File file, ReadWriteParameterMap parameters) throws Exception {
-		return guessFormat(new FileReader(file), parameters);  // Stream must be closed, by calling close() of the returned reader.
+		String result;
+		FileInputStream stream = new FileInputStream(file);
+		try {
+			result = guessFormat(new FileReader(file), parameters);
+		}
+		finally {
+			stream.close();
+		}
+		return result;
 	}
 	
 	
@@ -156,12 +178,16 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * It uses an empty parameter map that is passed to the internal calls of 
 	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)}. Use 
 	 * {@link #guessFormat(File, ReadWriteParameterMap)} if parameters are necessary to determine the format correctly.
+	 * <p>
+	 * Note that in contrast to {@link #guessReader(File, ReadWriteParameterMap)}, this method does not support
+	 * GZIPed inputs.
 	 * 
 	 * @param reader the reader providing the contents
 	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
 	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
 	 *         because of an IO error)
 	 * @see JPhyloIOFormatIDs
+	 * @see #guessReader(File, ReadWriteParameterMap)
 	 */
 	public String guessFormat(File file) throws Exception {
 		return guessFormat(file, new ReadWriteParameterMap());
@@ -178,6 +204,9 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * may be necessary for third parts format-specific factories used in this instance. (Refer to the documentation of 
 	 * third party format-specific factories for details.) In most cases the convenience method {@link #guessFormat(Reader)}
 	 * will be sufficient.
+	 * <p>
+	 * Note that in contrast to {@link #guessReader(InputStream, ReadWriteParameterMap)}, this method does not support
+	 * GZIPed inputs.
 	 * 
 	 * @param reader the reader providing the contents
 	 * @param parameters the parameter map containing parameters for the <i>JPhyloIO</i> event reader that would 
@@ -186,10 +215,15 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
 	 *         because of an IO error)
 	 * @see JPhyloIOFormatIDs
+	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(Reader reader, ReadWriteParameterMap parameters) throws Exception {
+		BufferedReader bufferedReader = new BufferedReader(reader);
+		bufferedReader.mark(getReadAheahLimit());
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
-			if (factory.checkFormat(reader, parameters)) {
+			boolean formatFound = factory.checkFormat(bufferedReader, parameters);
+			bufferedReader.reset();
+			if (formatFound) {
 				return factory.getFormatInfo().getFormatID();
 			}
 		}
@@ -205,12 +239,16 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * It uses an empty parameter map that is passed to the internal calls of 
 	 * {@link SingleReaderWriterFactory#checkFormat(Reader, ReadWriteParameterMap)}. Use 
 	 * {@link #guessFormat(Reader, ReadWriteParameterMap)} if parameters are necessary to determine the format correctly.
+	 * <p>
+	 * Note that in contrast to {@link #guessReader(InputStream, ReadWriteParameterMap)}, this method does not support
+	 * GZIPed inputs.
 	 * 
 	 * @param reader the reader providing the contents
 	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
 	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
 	 *         because of an IO error)
 	 * @see JPhyloIOFormatIDs
+	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(Reader reader) throws Exception {
 		return guessFormat(reader, new ReadWriteParameterMap());
@@ -227,6 +265,9 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * may be necessary for third parts format-specific factories used in this instance. (Refer to the documentation of 
 	 * third party format-specific factories for details.) In most cases the convenience method 
 	 * {@link #guessFormat(InputStream)} will be sufficient.
+	 * <p>
+	 * Note that in contrast to {@link #guessReader(InputStream, ReadWriteParameterMap)}, this method does not support
+	 * GZIPed inputs.
 	 * 
 	 * @param reader the reader providing the contents
 	 * @param parameters the parameter map containing parameters for the <i>JPhyloIO</i> event reader that would 
@@ -235,10 +276,19 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
 	 *         because of an IO error)
 	 * @see JPhyloIOFormatIDs
+	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
+		return guessFormatFromBufferedStream(new BufferedInputStream(stream), parameters);
+	}
+	
+	
+	private String guessFormatFromBufferedStream(BufferedInputStream stream, ReadWriteParameterMap parameters) throws Exception {
+		stream.mark(getReadAheahLimit());
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
-			if (factory.checkFormat(stream, parameters)) {
+			boolean formatFound = factory.checkFormat(stream, parameters);
+			stream.reset();
+			if (formatFound) {
 				return factory.getFormatInfo().getFormatID();
 			}
 		}
@@ -255,12 +305,16 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * {@link SingleReaderWriterFactory#checkFormat(InputStream, ReadWriteParameterMap)}. Use 
 	 * {@link #guessFormat(InputStream, ReadWriteParameterMap)} if parameters are necessary to determine the format 
 	 * correctly.
+	 * <p>
+	 * Note that in contrast to {@link #guessReader(InputStream, ReadWriteParameterMap)}, this method does not support
+	 * GZIPed inputs.
 	 * 
 	 * @param reader the reader providing the contents
 	 * @return the ID of the determined format or {@code null} if no supported format seems to be matching the contents
 	 * @throws Exception if the underlying format specific factory throws an exception when testing the stream (e.g. 
 	 *         because of an IO error)
 	 * @see JPhyloIOFormatIDs
+	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(InputStream stream) throws Exception {
 		return guessFormat(stream, new ReadWriteParameterMap());
@@ -284,6 +338,30 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
+	/**
+	 * Tries to determine the format of the contents of the specified input stream as described in the documentation of
+	 * {@link #guessFormat(InputStream)}, resets the input stream and than creates a reader for the according format
+	 * from that stream. Additionally this method checks, if the input data is GZIPed and then returns a reader instance
+	 * that unpacks the stream data while reading.
+	 * <p>
+	 * In other words, this method is able to return a functional reader for input streams in all formats supported by 
+	 * this factory, as well as GZIPed streams providing data in any of these formats.
+	 * <p>
+	 * Note that bytes of {@code stream} will be consumed by this method to determine the format, even if no according 
+	 * reader is found. If an event reader is returned, no events of this reader will have been consumed.
+	 * <p>
+	 * Note that there is no version of this method accepting a {@link Reader} instead of an {@link InputStream},
+	 * because uncompressing data from a reader is not directly possible.
+	 * 
+	 * @param stream the stream to read the data from
+	 * @param parameters the parameter map optionally containing parameters for the returned reader
+	 * @return the new reader instance or {@code null} if no reader fitting the format of the stream could be found
+	 * @throws Exception if an exception occurs while determining the format from the stream or creating the returned
+	 *         reader instance (Depending on the type of reader that is returned, this will mostly be 
+	 *         {@link IOException}s.)
+	 * @see #guessFormat(InputStream)
+	 * @see #getReader(String, InputStream, ReadWriteParameterMap)
+	 */
 	public JPhyloIOEventReader guessReader(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		// Buffer stream for testing:
 		BufferedInputStream bufferedStream = new BufferedInputStream(stream);
@@ -297,11 +375,8 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 			bufferedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, bufferedStream was not set in the try block.)
 		}
 		
-		// Determine format:
-		String format = guessFormat(bufferedStream);
-		bufferedStream.reset();  // Reset bytes that have been read by guessFormat().
-		
 		// Return reader:
+		String format = guessFormatFromBufferedStream(bufferedStream, parameters);  // bufferedStream is already reset in the called method.
 		if (format == null) {
 			return null;
 		}
@@ -312,8 +387,39 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
+	/**
+	 * Tries to determine the format of the contents of the specified file as described in the documentation of
+	 * {@link #guessFormat(File)} and than creates a reader for the according format from that stream. Additionally this 
+	 * method checks, if the input data is GZIPed and then returns a reader instance that unpacks the stream data while 
+	 * reading.
+	 * <p>
+	 * In other words, this method is able to return a functional reader for files in all formats supported by 
+	 * this factory, as well as GZIPed files in any of these formats.
+	 * <p>
+	 * Note that there is no version of this method accepting a {@link Reader} instead of an {@link InputStream},
+	 * because uncompressing data from a reader is not directly possible.
+	 * 
+	 * @param stream the stream to read the data from
+	 * @param parameters the parameter map optionally containing parameters for the returned reader
+	 * @return the new reader instance or {@code null} if no reader fitting the format of the stream could be found
+	 * @throws Exception if an exception occurs while determining the format from the stream or creating the returned
+	 *         reader instance (Depending on the type of reader that is returned, this will mostly be 
+	 *         {@link IOException}s.)
+	 * @see #guessFormat(File)
+	 * @see #getReader(String, File, ReadWriteParameterMap)
+	 */
 	public JPhyloIOEventReader guessReader(File file, ReadWriteParameterMap parameters) throws Exception {
-		return guessReader(new FileInputStream(file), parameters);  // Stream must be closed, by calling close() of the returned reader.
+		JPhyloIOEventReader result = null;
+		FileInputStream stream = new FileInputStream(file);
+		try {
+			result = guessReader(stream, parameters);
+		}
+		finally {
+			if (result == null) {  // Otherwise stream must be closed, by calling close() of the returned reader.
+				stream.close();
+			}
+		}
+		return result;
 	}
 	
 	
@@ -329,7 +435,17 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	
 	
 	public JPhyloIOEventReader getReader(String formatID, File file, ReadWriteParameterMap parameters) throws Exception {
-		return getReader(formatID, new FileReader(file), parameters);  // Stream must be closed, by calling close() of the returned reader.
+		JPhyloIOEventReader result = null;
+		FileInputStream stream = new FileInputStream(file);
+		try {
+			result = getReader(formatID, new FileReader(file), parameters);
+		}
+		finally {
+			if (result == null) {  // Otherwise stream must be closed, by calling close() of the returned reader.
+				stream.close();
+			}
+		}
+		return result;
 	}
 	
 	
