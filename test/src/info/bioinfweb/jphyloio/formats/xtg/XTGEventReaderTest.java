@@ -44,10 +44,10 @@ public class XTGEventReaderTest {
 					}
 					
 					if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
+//						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
 //						System.out.println("Key: " + event.asMetaInformationEvent().getKey());

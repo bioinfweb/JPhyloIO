@@ -44,7 +44,7 @@ public class NeXMLEventReaderTest {
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
+//					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 					
 					if (event.getType().equals(new EventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.START))) {
 	//						System.out.println("Character State Type: " + event.asTokenSetDefinitionEvent().getSetType());
