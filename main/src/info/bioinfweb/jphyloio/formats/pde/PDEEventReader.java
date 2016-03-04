@@ -76,7 +76,6 @@ import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
  */
 public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider> implements PDEConstants {
 	private static final Pattern META_DEFINITION_PATTERN = Pattern.compile("(\\d+)\\s+\\\"([^\\\"]*)\\\"\\s+(\\w+)\\s*");
-	private static final Pattern UNKNOWN_CHARACTERS_PATTERN = Pattern.compile("\\\\FE(\\d+):");
 	
 
 	private static XMLEventReader createXMLEventReader(InputStream stream) throws XMLStreamException, IOException {
@@ -152,7 +151,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 						}
 						else {
 							type = CharacterStateType.AMINO_ACID;
-						}
+						}						
 						
 						streamDataProvider.setCharacterSetType(type);
 						streamDataProvider.setAlignmentLength(alignmentLength);
@@ -257,6 +256,11 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 						
 						streamDataProvider.setCurrentSequenceIndex(0);
+						streamDataProvider.setRemainingCharacters("");
+						
+						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
+						streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+								DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequences().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
 					}
 			});
 		
@@ -271,38 +275,65 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 		putElementReader(new XMLElementReaderKey(TAG_BLOCK, null, XMLStreamConstants.CHARACTERS), 
 				new AbstractXMLElementReader<PDEStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-						String sequenceData = event.asCharacters().getData().replaceAll("\\s", "");									
-						Matcher unknownMatcher = UNKNOWN_CHARACTERS_PATTERN.matcher(sequenceData);
-						List<String> sequence = new ArrayList<String>();
+					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {						
+						String sequenceData = event.asCharacters().getData().replaceAll("\\s", "");						
+						String specialToken = streamDataProvider.getRemainingCharacters();
 						
-						while (unknownMatcher.find()) {
-							String unknownSymbols = "";						
-							for (int i = 0; i < Integer.parseInt(StringUtils.invert(unknownMatcher.group(1))); i++) {
-								unknownSymbols += "?";
-							}
-							sequenceData = sequenceData.replace(unknownMatcher.group(), unknownSymbols);
-						}
+						List<String> sequence = new ArrayList<String>();
+						Character previousChar = null;
 						
 						for (int i = 0; i < sequenceData.length(); i++) {
 							Character nextChar = sequenceData.charAt(i);
-							if (!nextChar.equals('\\')) {
+							if (!nextChar.equals('\\') && specialToken.isEmpty()) {
 								sequence.add(Character.toString(nextChar));
 							}
-							else {
-								if (sequence.size() != 0) {
-									System.out.println("Sequence: " + sequence.size());
-									streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
-											streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
-									sequence = new ArrayList<String>();
+							else {							
+								while ((i < sequenceData.length()) && (sequenceData.charAt(i) != ':') 
+										&& !((sequenceData.charAt(i) == 'F') && previousChar == 'F')) {
+									previousChar = sequenceData.charAt(i);
+									specialToken += previousChar;									
+									i++;									
 								}
-								streamDataProvider.setCurrentSequenceIndex(streamDataProvider.getCurrentSequenceIndex() + 1);
-								i += 2;
+								
+								if (i == sequenceData.length()) {
+									streamDataProvider.setRemainingCharacters(specialToken);
+								}
+								else {
+									if (specialToken.equals("\\F")) {										
+										if (sequence.size() != 0) {
+											streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
+													streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+											sequence = new ArrayList<String>();
+										}
+										streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+										
+										int seqIndex = streamDataProvider.getCurrentSequenceIndex() + 1;
+										
+										if (seqIndex < streamDataProvider.getSequences().size()) {
+											streamDataProvider.setCurrentSequenceIndex(seqIndex);
+											
+											streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+													DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequences().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
+										}
+									}
+									else if (specialToken.contains("\\FE")) {
+										specialToken = specialToken.replaceAll("\\\\FE", "");
+										
+										for (int j = 0; j < Integer.parseInt(StringUtils.invert(specialToken)); j++) {
+											sequence.add("?");
+										}
+										streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
+												streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+										sequence = new ArrayList<String>();
+									}
+									
+									specialToken = "";
+									streamDataProvider.setRemainingCharacters(specialToken);
+								}								
 							}
 						}
-						
+							
 						if (sequence.size() != 0) {
-							System.out.println("Sequence: " + sequence.size());
 							streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
 						}
 					}

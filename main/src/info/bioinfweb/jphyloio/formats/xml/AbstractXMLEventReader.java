@@ -193,6 +193,12 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 			else if (type.equals(EventContentType.TREE)) {
 				result = DEFAULT_TREE_ID_PREFIX;
 			}
+			else if (type.equals(EventContentType.OTU_LIST)) {
+				result = DEFAULT_OTU_LIST_ID_PREFIX;
+			}
+			else if (type.equals(EventContentType.CHARACTER_SET)) {
+				result = DEFAULT_CHAR_SET_ID_PREFIX;
+			}
 		}
 		result += getStreamDataProvider().getIDManager().createNewID();
 		return result;
