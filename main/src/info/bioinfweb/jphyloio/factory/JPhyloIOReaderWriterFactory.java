@@ -43,12 +43,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
+
+import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
@@ -67,7 +67,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	
 	private final ReadWriteLock readAheahLimitLock = new ReentrantReadWriteLock();	
 	
-	private Map<String, SingleReaderWriterFactory> formatMap = new TreeMap<String, SingleReaderWriterFactory>();
+	private ListOrderedMap<String, SingleReaderWriterFactory> formatMap = new ListOrderedMap<String, SingleReaderWriterFactory>();
 	private int readAheahLimit = DEFAULT_READ_AHAED_LIMIT;
 	
 	
@@ -219,10 +219,11 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(Reader reader, ReadWriteParameterMap parameters) throws Exception {
-		BufferedReader bufferedReader = new BufferedReader(reader);
+		BufferedReader bufferedReader = new BufferedReader(reader, getReadAheahLimit());
 		bufferedReader.mark(getReadAheahLimit());
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
 			boolean formatFound = factory.checkFormat(bufferedReader, parameters);
+			System.out.println(factory.getFormatInfo().getFormatID());
 			bufferedReader.reset();
 			if (formatFound) {
 				return factory.getFormatInfo().getFormatID();
@@ -365,12 +366,12 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 */
 	public JPhyloIOEventReader guessReader(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		// Buffer stream for testing:
-		BufferedInputStream bufferedStream = new BufferedInputStream(stream);
+		BufferedInputStream bufferedStream = new BufferedInputStream(stream, getReadAheahLimit());
 		bufferedStream.mark(getReadAheahLimit());
 		
 	  // Try if the input is GZIPed:
 		try {
-			bufferedStream = new BufferedInputStream(new GZIPInputStream(bufferedStream));
+			bufferedStream = new BufferedInputStream(new GZIPInputStream(bufferedStream), getReadAheahLimit());
 		}
 		catch (ZipException e) {
 			bufferedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, bufferedStream was not set in the try block.)
