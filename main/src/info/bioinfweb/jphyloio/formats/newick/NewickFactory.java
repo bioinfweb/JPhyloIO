@@ -68,7 +68,6 @@ public class NewickFactory extends AbstractSingleReaderWriterFactory implements 
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
 			return false;
 		}
 		return true;

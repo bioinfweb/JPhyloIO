@@ -47,6 +47,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * Implements shared functionality for reading XML formats.
  * 
  * @author Ben St&ouml;ver
+ * @since 0.0.0
  */
 public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? extends AbstractXMLEventReader<P>>>
 		extends AbstractEventReader<P> {
@@ -62,7 +63,6 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	
 	public AbstractXMLEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
 		this(new FileReader(file), parameters);
-		
 	}
 
 	

@@ -67,7 +67,6 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	
 	private final ReadWriteLock readAheahLimitLock = new ReentrantReadWriteLock();	
 	
-	
 	private Map<String, SingleReaderWriterFactory> formatMap = new TreeMap<String, SingleReaderWriterFactory>();
 	private int readAheahLimit = DEFAULT_READ_AHAED_LIMIT;
 	
