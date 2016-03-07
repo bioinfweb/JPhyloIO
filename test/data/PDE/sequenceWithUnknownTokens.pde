@@ -20,7 +20,7 @@ Mon Feb 03 13:16:06 CET 2014  -->
 			<block x="0" y="0" width="20" height="3">
 				ACTGACTGACTGACTGACTG\FF
 				....\FE11:.....\FF
-				\FE10:.....\FE5:\FF
+				.........\FE10:.....\FE5:\FF
 			</block>
 		</matrix>
 	</alignment>
