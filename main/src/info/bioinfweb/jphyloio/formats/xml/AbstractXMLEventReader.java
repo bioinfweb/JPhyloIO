@@ -198,8 +198,10 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 			else if (type.equals(EventContentType.CHARACTER_SET)) {
 				result = DEFAULT_CHAR_SET_ID_PREFIX;
 			}
+			
+			result += getStreamDataProvider().getIDManager().createNewID();
 		}
-		result += getStreamDataProvider().getIDManager().createNewID();
+		
 		return result;
 	}
 	
