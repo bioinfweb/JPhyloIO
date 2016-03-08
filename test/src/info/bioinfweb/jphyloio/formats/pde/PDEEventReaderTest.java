@@ -37,7 +37,7 @@ public class PDEEventReaderTest {
 			PDEEventReader reader = new PDEEventReader(new File("data/PDE/sequenceWithUnknownTokens.pde"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
-//					JPhyloIOEvent event = reader.next();
+					JPhyloIOEvent event = reader.next();
 //					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());					
 				}
 			}
