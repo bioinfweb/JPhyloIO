@@ -213,12 +213,12 @@ test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
 test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
 test/data/NeXML/Paralogues.xml -text
 test/data/NeXML/UnknownTag.xml -text svneol=unset#text/plain
-test/data/NeXML/freeAnnoations/EditedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
-test/data/NeXML/freeAnnoations/MaskedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
-test/data/NeXML/freeAnnoations/NameAsCURIEPredicate.xml -text svneol=unset#text/plain
-test/data/NeXML/freeAnnoations/NameAsPredicate.xml -text svneol=unset#text/plain
-test/data/NeXML/freeAnnoations/NestedNameAndValue.xml -text svneol=unset#text/plain
-test/data/NeXML/freeAnnoations/ValueNestedInName.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnotations/EditedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnotations/MaskedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnotations/NameAsCURIEPredicate.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnotations/NameAsPredicate.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnotations/NestedNameAndValue.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnotations/ValueNestedInName.xml -text svneol=unset#text/plain
 test/data/Newick/Comments.nwk -text
 test/data/Newick/InternalsTerminalsLength.nwk -text
 test/data/Newick/InvalidNewick.txt -text svneol=unset#text/plain
