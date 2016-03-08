@@ -135,7 +135,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	  		else if (type.equals(TYPE_RESOURCE_META)) {
 	  			key = XMLUtils.readStringAttr(element, ATTR_REL, null);
 	  			stringValue = XMLUtils.readStringAttr(element, ATTR_HREF, null);
-	  			//TODO Create XMLStreamReader instance here, if nested XML is present. (In this case there will be no href attribute.)
+	  			//TODO Create XMLStreamReader instance here, if nested XML is present.
 	  			try {
 	  				objectValue = new URL(stringValue);
 	  			} 
@@ -454,7 +454,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 				if (!streamDataProvider.getTokenSets().isEmpty()) { //there are no token sets for continuous data and therefore no indirect char sets
 					if (streamDataProvider.getTokenSets().size() == 1) {
 						streamDataProvider.getTokenSets().get(streamDataProvider.getTokenSetID()).getCharSetIntervals()
-								.add(new CharacterSetIntervalEvent(0, streamDataProvider.getCharIDs().size()));
+								.add(new CharacterSetIntervalEvent(0, streamDataProvider.getCharIDs().size() - 1));
 					}					 
 					else {
 						String currentStates = null;
@@ -654,7 +654,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 		putElementReader(new XMLElementReaderKey(TAG_ROW, TAG_CELL, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SEQUENCE_TOKENS));
+				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
 			}
 		});
 		

@@ -26,7 +26,6 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 public class SingleSequenceTokenEvent extends ConcreteJPhyloIOEvent {
 	private String token;
-	//TODO should there be a property for the character this token belongs to? => No, but events in NeXML need to fired in the correct order (which may differ from the order in the file in rare cases.)
 
 	
 	public SingleSequenceTokenEvent(String token) {
