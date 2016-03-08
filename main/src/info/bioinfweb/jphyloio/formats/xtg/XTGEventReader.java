@@ -115,8 +115,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				}
 				branchInfo.setTarget(id);
 				
-				streamDataProvider.setCurrentNodeEdgeInfo(branchInfo);
 				streamDataProvider.getSourceNode().add(new NodeEdgeInfo(id, Double.NaN, new ArrayList<JPhyloIOEvent>()));
+				streamDataProvider.getEdgeInfos().add(branchInfo);
 				
 				readAttributes(streamDataProvider, element);
 			}
@@ -174,7 +174,6 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_TREE, XMLStreamConstants.START_ELEMENT), new AbstractXMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
-				streamDataProvider.setSourceNode(new Stack<NodeEdgeInfo>());
 				String treeID = getID(null, EventContentType.TREE);							
 				streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, treeID, null, null));		
 			}
@@ -183,6 +182,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_TREE, XMLStreamConstants.END_ELEMENT), new AbstractXMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
+				streamDataProvider.getSourceNode().clear();
+				streamDataProvider.getEdgeInfos().clear();
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));
 			}
 		});
@@ -198,7 +199,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 				StartElement element = event.asStartElement();				
 				double length = XMLUtils.readDoubleAttr(element, ATTR_BRANCH_LENGTH, Double.NaN);
 				
-				streamDataProvider.getCurrentNodeEdgeInfo().setLength(length);
+				streamDataProvider.getEdgeInfos().peek().setLength(length);
 				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 				
 				readAttributes(streamDataProvider, element);
@@ -209,7 +210,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
 				Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
-				NodeEdgeInfo info = streamDataProvider.getCurrentNodeEdgeInfo();
+				NodeEdgeInfo info = streamDataProvider.getEdgeInfos().pop();
 				
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
 				
@@ -227,7 +228,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
-				streamDataProvider.getCurrentNodeEdgeInfo().setLabel(label);
+				streamDataProvider.getEdgeInfos().peek().setLabel(label);
 				
 				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() 
 						+ "." + element.getName().getLocalPart(), null, null));

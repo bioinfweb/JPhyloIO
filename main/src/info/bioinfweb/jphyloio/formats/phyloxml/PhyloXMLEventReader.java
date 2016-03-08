@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
@@ -107,7 +108,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 					}
 					
 					createNodeEvents(streamDataProvider.getSourceNode().pop());
-					createEdgeEvents(streamDataProvider.getEdges().pop());					
+					createEdgeEvents(streamDataProvider.getEdgeInfos().pop());		
 				}
 			};
 			
@@ -125,7 +126,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 							value = characterData;
 						}
 					}
-					streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdges().peek().getNestedEvents());
+					streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
 					
 					streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key, null, value));
 					readAttributes(streamDataProvider, element);	
@@ -171,15 +172,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 				@Override
 				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					StartElement element = event.asStartElement();					
-					boolean rooted = XMLUtils.readBooleanAttr(event.asStartElement(), ATTR_ROOTED, false);
-					streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(META_KEY_DISPLAY_TREE_ROOTED, "boolean", Boolean.toString(rooted)));
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
+					boolean rooted = XMLUtils.readBooleanAttr(event.asStartElement(), ATTR_ROOTED, false);					
 					
-					streamDataProvider.setTreeInfo(new NodeEdgeInfo("", Double.NaN, null));
-					streamDataProvider.setSourceNode(new Stack<NodeEdgeInfo>());
-					streamDataProvider.setEdges(new Stack<NodeEdgeInfo>());
+					streamDataProvider.setRooted(rooted);
 					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
-					readAttributes(streamDataProvider, element); //TODO do not read root tag
+					readAttributes(streamDataProvider, element); //TODO do not read root tag again here
 				}
 		});
 		
@@ -188,6 +185,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 				@Override
 				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					streamDataProvider.getSourceNode().clear();
+					streamDataProvider.getEdgeInfos().clear();
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));			
 				}
 		});
@@ -196,22 +194,26 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 			new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
 				@Override
 				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {					
-					String treeID = getID(streamDataProvider.getTreeInfo().getID(), EventContentType.TREE);
-					String treeLabel = streamDataProvider.getTreeInfo().getLabel();					
+					String treeID = getID(streamDataProvider.getTreeID(), EventContentType.TREE);
+					String treeLabel = streamDataProvider.getTreeLabel();					
 					Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();					
 					
-					streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, treeID, treeLabel, null));		
+					streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, treeID, treeLabel, null));
+					
+					streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(META_KEY_DISPLAY_TREE_ROOTED, "boolean", 
+							Boolean.toString(streamDataProvider.isRooted()), streamDataProvider.isRooted()));					
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
+					
 					for (JPhyloIOEvent nextEvent : nestedEvents) {
 						streamDataProvider.getCurrentEventCollection().add(nextEvent);
 					}
 					
-					
+					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);	
 					streamDataProvider.getSourceNode().add(new NodeEdgeInfo(null, Double.NaN, new ArrayList<JPhyloIOEvent>()));
-					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
+					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(null, branchLength, new ArrayList<JPhyloIOEvent>()));
+					streamDataProvider.getEdgeInfos().peek().setSource(null);
 					
-					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);		
-					streamDataProvider.getEdges().add(new NodeEdgeInfo(null, branchLength, new ArrayList<JPhyloIOEvent>()));
-					streamDataProvider.getEdges().peek().setSource(null);
+					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());	
 				}
 			});
 		
@@ -224,12 +226,12 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 							streamDataProvider.resetCurrentEventCollection();
 						}						
 						
+						double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);	
 						streamDataProvider.getSourceNode().add(new NodeEdgeInfo(null, Double.NaN, new ArrayList<JPhyloIOEvent>()));
-						streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
+						streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(null, branchLength, new ArrayList<JPhyloIOEvent>()));
+						streamDataProvider.getEdgeInfos().peek().setSource(parentID);
 						
-						double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), TAG_BRANCH_LENGTH, Double.NaN);		
-						streamDataProvider.getEdges().add(new NodeEdgeInfo(null, branchLength, new ArrayList<JPhyloIOEvent>()));
-						streamDataProvider.getEdges().peek().setSource(parentID);				
+						streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());									
 					}
 				});
 		
@@ -257,19 +259,19 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 						
 						if (parentName.equals(TAG_PHYLOGENY.getLocalPart())) {
 							if (elementName.equals(TAG_NAME.getLocalPart())) {
-								streamDataProvider.getTreeInfo().setLabel(value);
+								streamDataProvider.setTreeLabel(value);
 							}
 							else if (elementName.equals(TAG_ID.getLocalPart())) {
-								streamDataProvider.getTreeInfo().setID(value);
+								streamDataProvider.setTreeID(value);
 							}
 						}
 						
-						else if (!streamDataProvider.getSourceNode().isEmpty() && !streamDataProvider.getEdges().isEmpty()) {
+						else if (!streamDataProvider.getSourceNode().isEmpty() && !streamDataProvider.getEdgeInfos().isEmpty()) {
 							NodeEdgeInfo currentNode = streamDataProvider.getSourceNode().peek();							
 							String currentNodeLabel = currentNode.getLabel();
 							String currentNodeID = currentNode.getID();
 							
-							NodeEdgeInfo currentEdge = streamDataProvider.getEdges().peek();
+							NodeEdgeInfo currentEdge = streamDataProvider.getEdgeInfos().peek();
 							double currentEdgeLength = currentEdge.getLength();
 							
 							if (parentName.equals(TAG_CLADE.getLocalPart())) {
@@ -308,10 +310,10 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 							currentNodeID = getID(currentNodeID, EventContentType.NODE);
 							
 							currentNode.setLabel(currentNodeLabel);
-							currentNode.setID(currentNodeID);
+							currentNode.setID(currentNodeID);							
 							
 							currentEdge.setTarget(currentNodeID);
-							currentEdge.setLength(currentEdgeLength);						
+							currentEdge.setLength(currentEdgeLength);
 						}
 					}
 				}

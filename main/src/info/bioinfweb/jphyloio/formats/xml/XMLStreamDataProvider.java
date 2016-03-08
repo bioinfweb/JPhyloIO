@@ -29,19 +29,16 @@ import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 
 
 
-public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLStreamDataProvider<R>>>
-		extends StreamDataProvider<R> {	
-	private String format;
-	
+public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLStreamDataProvider<R>>> extends StreamDataProvider<R> {	
+	private String format;	
 	private String parentName;
 	private String elementName;
+	private String incompleteToken = null;
 	
-	private CharacterStateType characterSetType;
+	private Stack<NodeEdgeInfo> sourceNode = new Stack<NodeEdgeInfo>();
+	private Stack<NodeEdgeInfo> edgeInfos = new Stack<NodeEdgeInfo>();
 	
-	
-	private Stack<NodeEdgeInfo> sourceNode;
-	private NodeEdgeInfo currentNodeEdgeInfo;
-	
+	private CharacterStateType characterSetType;	
 	
 	
 	public XMLStreamDataProvider(R eventReader) {
@@ -81,6 +78,21 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 
 	public void setElementName(String elementName) {
 		this.elementName = elementName;
+	}	
+	
+	
+	public boolean hasIncompleteToken() {
+		return incompleteToken != null;
+	}
+
+
+	public String getIncompleteToken() {
+		return incompleteToken;
+	}
+
+
+	public void setIncompleteToken(String incompleteToken) {
+		this.incompleteToken = incompleteToken;
 	}
 
 
@@ -99,17 +111,7 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 
 
-	public void setSourceNode(Stack<NodeEdgeInfo> sourceNode) {
-		this.sourceNode = sourceNode;
-	}
-
-
-	public NodeEdgeInfo getCurrentNodeEdgeInfo() {
-		return currentNodeEdgeInfo;
-	}
-
-
-	public void setCurrentNodeEdgeInfo(NodeEdgeInfo currentNodeInfo) {
-		this.currentNodeEdgeInfo = currentNodeInfo;
+	public Stack<NodeEdgeInfo> getEdgeInfos() {
+		return edgeInfos;
 	}
 }

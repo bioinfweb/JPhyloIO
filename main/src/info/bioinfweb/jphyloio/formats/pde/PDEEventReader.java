@@ -79,7 +79,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 	
 
 	private static XMLEventReader createXMLEventReader(InputStream stream) throws XMLStreamException, IOException {
-		try {
+		try {			
 			stream = new BufferedInputStream(stream);
 			stream.mark(1024);
 			stream = new GZIPInputStream(stream);
@@ -155,8 +155,6 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 						
 						streamDataProvider.setCharacterSetType(type);
 						streamDataProvider.setAlignmentLength(alignmentLength);
-						
-						streamDataProvider.setSequences(new ArrayList<Map<Integer, String>>());
 					}
 			});
 		
@@ -183,8 +181,8 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 				@Override
 				public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					String data = event.asCharacters().getData();
-					if (streamDataProvider.hasRemainingCharacters()) {
-						data = streamDataProvider.getRemainingCharacters() + data;
+					if (streamDataProvider.hasIncompleteToken()) {
+						data = streamDataProvider.getIncompleteToken() + data;
 					}
 					Matcher matcher = META_DEFINITION_PATTERN.matcher(data);
 					int offset = 0;
@@ -199,7 +197,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					
 					if (data.length() > 0) {
 						if (streamDataProvider.getXMLReader().peek().isCharacters()) {
-							streamDataProvider.setRemainingCharacters(data);
+							streamDataProvider.setIncompleteToken(data);
 						}
 						else {
 							throw new JPhyloIOReaderException("Invalid meta column definition in " + TAG_META_TYPE_DEFINITIONS.getLocalPart() 
@@ -207,7 +205,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 						}
 					}
 					else {
-						streamDataProvider.setRemainingCharacters(null);
+						streamDataProvider.setIncompleteToken(null);
 					}
 				}
 		});
@@ -217,7 +215,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 						streamDataProvider.setCurrentSequenceIndex(XMLUtils.readIntAttr(event.asStartElement(), ATTR_SEQUENCE_INDEX, -1));
-						streamDataProvider.getSequences().add(new HashMap<Integer, String>());
+						streamDataProvider.getSequenceInformations().add(new HashMap<Integer, String>());
 					}
 			});
 		
@@ -230,7 +228,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 						String value = readCharacterData(streamDataProvider, element);
 						int index = streamDataProvider.getCurrentSequenceIndex();
 						
-						streamDataProvider.getSequences().get(index).put(id, value);
+						streamDataProvider.getSequenceInformations().get(index).put(id, value);
 						
 						if (id == META_ID_SEQUENCE_LABEL) {
 							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, DEFAULT_OTU_ID_PREFIX + index, value)); //TODO maybe give meta information for OTU here?
@@ -256,11 +254,11 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 						
 						streamDataProvider.setCurrentSequenceIndex(0);
-						streamDataProvider.setRemainingCharacters("");
+						streamDataProvider.setIncompleteToken("");
 						
 						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
 						streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
-								DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequences().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
+								DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequenceInformations().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
 					}
 			});
 		
@@ -277,7 +275,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 					@Override
 					public void readEvent(PDEStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {						
 						String sequenceData = event.asCharacters().getData().replaceAll("\\s", "");						
-						String specialToken = streamDataProvider.getRemainingCharacters();
+						String specialToken = streamDataProvider.getIncompleteToken();
 						
 						List<String> sequence = new ArrayList<String>();
 						Character previousChar = null;
@@ -296,24 +294,24 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 								}
 								
 								if (i == sequenceData.length()) {
-									streamDataProvider.setRemainingCharacters(specialToken);
+									streamDataProvider.setIncompleteToken(specialToken);
 								}
 								else {
 									if (specialToken.equals("\\F")) {										
 										if (sequence.size() != 0) {
 											streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
-													streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+													streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
 											sequence = new ArrayList<String>();
 										}
 										streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 										
 										int seqIndex = streamDataProvider.getCurrentSequenceIndex() + 1;
 										
-										if (seqIndex < streamDataProvider.getSequences().size()) {
+										if (seqIndex < streamDataProvider.getSequenceInformations().size()) {
 											streamDataProvider.setCurrentSequenceIndex(seqIndex);
 											
 											streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
-													DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequences().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
+													DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequenceInformations().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
 										}
 									}
 									else if (specialToken.contains("\\FE")) {
@@ -323,18 +321,18 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 											sequence.add("?");
 										}
 										streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
-												streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+												streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
 										sequence = new ArrayList<String>();
 									}
 									
 									specialToken = "";
-									streamDataProvider.setRemainingCharacters(specialToken);
+									streamDataProvider.setIncompleteToken(specialToken);
 								}								
 							}
 						}
 							
 						if (sequence.size() != 0) {
-							streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getSequences().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+							streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
 						}
 					}
 			});

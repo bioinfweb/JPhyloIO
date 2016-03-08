@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.pde;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +36,11 @@ import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
  */
 public class PDEStreamDataProvider extends XMLStreamDataProvider<PDEEventReader>{
 	private int alignmentLength;
-	
-	private String otuListID;
-	
 	private int currentSequenceIndex;
-	private List<Map<Integer, String>> sequences;
 	
-	private String remainingCharacters = null;
+	private String otuListID;	
+	
+	private List<Map<Integer, String>> sequenceInformations = new ArrayList<Map<Integer,String>>();	
 	private Map<Long, PDEMetaColumnDefintion> metaColumns = new HashMap<Long, PDEMetaColumnDefintion>();
 	
 	
@@ -80,28 +79,8 @@ public class PDEStreamDataProvider extends XMLStreamDataProvider<PDEEventReader>
 	}
 
 
-	public List<Map<Integer, String>> getSequences() {
-		return sequences;
-	}
-
-
-	public void setSequences(List<Map<Integer, String>> sequences) {
-		this.sequences = sequences;
-	}
-
-
-	public boolean hasRemainingCharacters() {
-		return remainingCharacters != null;
-	}
-	
-	
-	public String getRemainingCharacters() {
-		return remainingCharacters;
-	}
-
-
-	public void setRemainingCharacters(String remainingCharacters) {
-		this.remainingCharacters = remainingCharacters;
+	public List<Map<Integer, String>> getSequenceInformations() {
+		return sequenceInformations;
 	}
 
 

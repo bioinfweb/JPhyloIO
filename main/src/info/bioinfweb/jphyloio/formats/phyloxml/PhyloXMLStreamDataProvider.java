@@ -19,39 +19,48 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import java.util.Stack;
-
-import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 
 
 public class PhyloXMLStreamDataProvider extends XMLStreamDataProvider<PhyloXMLEventReader>  {
-	private NodeEdgeInfo treeInfo;
-	private Stack<NodeEdgeInfo> edges;
+	private boolean rooted;
+	
+	private String treeID;
+	private String treeLabel;
 	
 
 	public PhyloXMLStreamDataProvider(PhyloXMLEventReader eventReader) {
 		super(eventReader);
+	}	
+
+
+	public boolean isRooted() {
+		return rooted;
 	}
 
 
-	public NodeEdgeInfo getTreeInfo() {
-		return treeInfo;
+	public void setRooted(boolean rooted) {
+		this.rooted = rooted;
 	}
 
 
-	public void setTreeInfo(NodeEdgeInfo treeInfo) {
-		this.treeInfo = treeInfo;
+	public String getTreeID() {
+		return treeID;
 	}
 
 
-	public Stack<NodeEdgeInfo> getEdges() {
-		return edges;
+	public void setTreeID(String treeID) {
+		this.treeID = treeID;
 	}
 
 
-	public void setEdges(Stack<NodeEdgeInfo> edges) {
-		this.edges = edges;
+	public String getTreeLabel() {
+		return treeLabel;
+	}
+
+
+	public void setTreeLabel(String treeLabel) {
+		this.treeLabel = treeLabel;
 	}
 }

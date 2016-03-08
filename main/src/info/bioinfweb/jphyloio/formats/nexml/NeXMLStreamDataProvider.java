@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
 
 import java.util.Collection;
@@ -31,24 +30,22 @@ import java.util.TreeMap;
 
 
 public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventReader> {	
-	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
-	private String tokenSetID = null;
-	
 	private boolean allowLongTokens;
-	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
 	
-	private String symbol = null;
-	private Map<String, String> tokenDefinitionIDToSymbolMap;
+	private String tokenSetID = null;
+	private String symbol = null;	
+	private String branchLengthsFormat = null;
+	
 	private Collection<String> constituents;
-	
-	private List<String> charIDs;
-	private Map<String, String> charIDToStatesMap;
 	
 	private Set<String> directCharSetIDs;
 	
-	private String incompleteToken = null;
+	private List<String> charIDs;
 	
-	private String branchLengthsFormat = null;	
+	private Map<String, String> charIDToStatesMap;
+	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
+	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
+	private Map<String, String> tokenDefinitionIDToSymbolMap;	
 	
 	
 	public NeXMLStreamDataProvider(NeXMLEventReader nexmlEventReader) {
@@ -160,16 +157,6 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventRea
 
 	public void setDirectCharSetIDs(Set<String> directCharSets) {
 		this.directCharSetIDs = directCharSets;
-	}
-
-
-	public String getIncompleteToken() {
-		return incompleteToken;
-	}
-
-
-	public void setIncompleteToken(String incompleteToken) {
-		this.incompleteToken = incompleteToken;
 	}
 
 

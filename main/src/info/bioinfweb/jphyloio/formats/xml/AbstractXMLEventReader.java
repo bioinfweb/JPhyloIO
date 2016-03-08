@@ -104,8 +104,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 			if (key.getTagName() != null) {
 				tag = new QName(key.getTagName().getLocalPart());
 			}
-			elementReaderMap.put(new XMLElementReaderKey(parentTag, 
-					tag, key.getXmlEventType()), reader);
+			elementReaderMap.put(new XMLElementReaderKey(parentTag, tag, key.getXmlEventType()), reader);
 		}
 	}
 
