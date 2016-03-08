@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.commons.bio.CharacterStateMeaning;
+import info.bioinfweb.commons.bio.CharacterStateType;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -320,38 +322,58 @@ public class NeXMLEventReaderTest {
 //	}
 	
 	
-//	@Test
-//	public void testReadingDNACells() {
-//		try {
-//			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/DNACells.xml"), false);
-//			try {
-//				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-//				assertMetaEvent("id", "test", true, true, reader);
-//				
-//				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
-//				assertMetaEvent("id", "alignment", true, true, reader);
-//				
-//				assertEventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.SOLE, reader);
-//				
-//				assertCharactersEvent("taxon1", "A", reader);
-//				assertCharactersEvent("taxon1", "G", reader);
-//				assertCharactersEvent("taxon1", "A", reader);
-//				
-//				assertCharactersEvent("taxon2", "A", reader);
-//				assertCharactersEvent("taxon2", "G", reader);
-//				assertCharactersEvent("taxon2", "T", reader);
-//				
-//				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
-//				
-//				assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
-//			}
-//			finally {
-//				reader.close();
-//			}
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//			fail(e.getLocalizedMessage());
-//		}
-//	}
+	@Test
+	public void testReadingDNACells() {
+		try {
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/DNACells.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon2", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxa", reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet0", null, reader);
+				assertCharacterSetEvent(0, 2, reader);
+				assertEndEvent(EventContentType.CHARACTER_SET, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", "charSet0", reader);
+				assertSingleTokenDefinitionEvent("A", CharacterStateMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("C", CharacterStateMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("G", CharacterStateMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("T", CharacterStateMeaning.CHARACTER_STATE, true, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertSingleTokenEvent("A", true, reader);
+				assertSingleTokenEvent("G", true, reader);
+				assertSingleTokenEvent("A", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "row2", "row2", "taxon2", reader);
+				assertSingleTokenEvent("A", true, reader);
+				assertSingleTokenEvent("G", true, reader);
+				assertSingleTokenEvent("T", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }

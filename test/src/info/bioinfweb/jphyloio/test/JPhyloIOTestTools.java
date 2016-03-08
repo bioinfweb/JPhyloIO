@@ -36,6 +36,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
@@ -133,6 +134,19 @@ public class JPhyloIOTestTools {
 		assertEventType(contentType, EventTopologyType.END, event);
 		PartEndEvent endEvent = event.asPartEndEvent();
 		assertEquals(expectedSequenceTerminated, endEvent.isTerminated());
+	}
+	
+	
+	public static void assertSingleTokenEvent(String expectedToken, boolean testEndEvent, JPhyloIOEventReader reader) throws Exception {
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEquals(EventContentType.SINGLE_SEQUENCE_TOKEN, event.getType().getContentType());
+		SingleSequenceTokenEvent tokensEvent = event.asSingleSequenceTokenEvent();
+		assertEquals(expectedToken, tokensEvent.getToken());
+		
+		if (testEndEvent) {
+			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
+		}
 	}
 	
 	

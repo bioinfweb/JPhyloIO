@@ -58,6 +58,7 @@ public class PDEEventReaderTest {
 			PDEEventReader reader = new PDEEventReader(new File("data/PDE/shortSequences.pde"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus0", null, reader);
 				assertLabeledIDEvent(EventContentType.OTU, "otu0", "sequence1", reader);
 				assertEndEvent(EventContentType.OTU, reader);
