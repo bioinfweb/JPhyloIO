@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TreegraphDocument>
+	<GlobalFormats ShowRooted="false"></GlobalFormats>
+	<Tree>
+		<Node UniqueName="alf41zs4p1">
+			<Branch LineColor="#000000" LineWidth="0.3"></Branch>
+			<Node UniqueName="flal1nlj6m">
+				<Branch LineColor="#000000" LineWidth="0.3">
+					<TextLabel Text="1.0"></TextLabel>					
+				</Branch>				
+			</Node>
+			<Node UniqueName="9faghvrb6i">
+				<Branch LineColor="#000000" LineWidth="0.3">
+					<TextLabel Text="1.0"></TextLabel>					
+				</Branch>
+				<Node Text="alpinus" UniqueName="umg0j087xw">					
+					<Branch LineColor="#000000" LineWidth="0.3"></Branch>
+				</Node>
+				<Node Text="grandiflora" UniqueName="npviuh9969">					
+					<Branch LineColor="#000000" LineWidth="0.3"></Branch>
+				</Node>
+			</Node>
+			<Node Text="uniflora" UniqueName="g9eqhv3crt">
+				<Branch LineColor="#000000" LineWidth="0.3"></Branch>
+			</Node>
+		</Node>
+		<ScaleBar LineColor="#000000" LineWidth="0.3"></ScaleBar>
+	</Tree>
+</TreegraphDocument>
