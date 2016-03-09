@@ -153,7 +153,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 	   		else if (stringValue != null) {
 	   			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key, dataType, stringValue));
 	   		}
-	   		else {
+	   		else { //TODO content attribute is optional
 	   			throw new JPhyloIOReaderException("Meta tag must either have an attribute called \"" + ATTR_CONTENT + "\" or \"" + 
 	   					ATTR_HREF + "\".", element.getLocation());
 	   		}
@@ -661,7 +661,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 		putElementReader(new XMLElementReaderKey(TAG_SEQ, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				String tokens = event.asCharacters().getData(); // TODO Influence read length of character events		
+				String tokens = event.asCharacters().getData(); // TODO Influence read length of character events, may not be  possible
 		   	streamDataProvider.getCurrentEventCollection().add(new SequenceTokensEvent(readSequence(streamDataProvider, tokens, streamDataProvider.getEventReader().getTranslateTokens())));				
 			}
 		});

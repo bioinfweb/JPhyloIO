@@ -43,7 +43,7 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventRea
 	private List<String> charIDs;
 	
 	private Map<String, String> charIDToStatesMap;
-	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();	
+	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();
 	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
 	private Map<String, String> tokenDefinitionIDToSymbolMap;	
 	

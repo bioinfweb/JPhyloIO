@@ -43,7 +43,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
@@ -101,7 +100,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 			@Override
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
-				String id = getID(XMLUtils.readStringAttr(element, ATTR_UNIQUE_NAME, null), EventContentType.NODE);
+				String id = getID(null, EventContentType.NODE);
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
 				streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, id, label, null));
@@ -228,7 +227,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLStreamDataProvider
 			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
 				StartElement element = event.asStartElement();
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
-				streamDataProvider.getEdgeInfos().peek().setLabel(label);
+				streamDataProvider.getEdgeInfos().peek().setLabel(label); //TODO which text is used as a label if more than one text labels exist?
 				
 				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() 
 						+ "." + element.getName().getLocalPart(), null, null));

@@ -174,7 +174,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	}
 	
 	
-	protected String getID(String id, EventContentType type) {
+	protected String getID(String id, EventContentType type) { //TODO handle possible conflicts between upcoming IDs and new IDs generated here that may arise in some of the classes using this method
 		String result = id;
 		if ((result == null) || result.equals("")) {
 			if (type.equals(EventContentType.ALIGNMENT)) {

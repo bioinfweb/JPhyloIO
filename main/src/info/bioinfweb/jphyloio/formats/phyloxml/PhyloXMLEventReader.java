@@ -107,12 +107,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 					NodeEdgeInfo nodeInfo = streamDataProvider.getSourceNode().pop();
 					NodeEdgeInfo edgeInfo = streamDataProvider.getEdgeInfos().pop();
 					
-					String nodeID = nodeInfo.getID();
-					if (nodeID == null || nodeID.equals("")) {
-						nodeID = getID(nodeInfo.getID(), EventContentType.NODE);
-						nodeInfo.setID(nodeID);
-						edgeInfo.setTarget(nodeID);
-					}
+					String nodeID = getID(nodeInfo.getID(), EventContentType.NODE);
+					nodeInfo.setID(nodeID);
+					edgeInfo.setTarget(nodeID);					
 					
 					createNodeEvents(nodeInfo);
 					createEdgeEvents(edgeInfo);		
@@ -201,7 +198,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 			new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
 				@Override
 				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {					
-					String treeID = getID(streamDataProvider.getTreeID(), EventContentType.TREE);
+					String treeID = getID(null, EventContentType.TREE);
 					String treeLabel = streamDataProvider.getTreeLabel();					
 					Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();					
 					
@@ -267,16 +264,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 						if (parentName.equals(TAG_PHYLOGENY.getLocalPart())) {
 							if (elementName.equals(TAG_NAME.getLocalPart())) {
 								streamDataProvider.setTreeLabel(value);
-							}
-							else if (elementName.equals(TAG_ID.getLocalPart())) {
-								streamDataProvider.setTreeID(value);
-							}
-						}
-						
+							}							
+						}						
 						else if (!streamDataProvider.getSourceNode().isEmpty() && !streamDataProvider.getEdgeInfos().isEmpty()) {
 							NodeEdgeInfo currentNode = streamDataProvider.getSourceNode().peek();							
-							String currentNodeLabel = currentNode.getLabel();
-							String currentNodeID = currentNode.getID();
+							String currentNodeLabel = currentNode.getLabel();							
 							
 							NodeEdgeInfo currentEdge = streamDataProvider.getEdgeInfos().peek();
 							double currentEdgeLength = currentEdge.getLength();
@@ -292,10 +284,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 									catch (NumberFormatException e) {
 										throw new JPhyloIOReaderException("The branch length must be of type double.", event.getLocation());
 									}
-								}
-								else if (elementName.equals(TAG_NODE_ID.getLocalPart())) {								
-									currentNodeID = value;
-								}
+								}								
 							}
 							else if (parentName.equals(TAG_TAXONOMY.getLocalPart())) {
 								if (elementName.equals(TAG_SCI_NAME.getLocalPart()) && (currentNodeLabel == null)) {								
@@ -303,21 +292,15 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 								}
 								else if (elementName.equals(TAG_COMMON_NAME.getLocalPart()) && (currentNodeLabel == null)) {								
 									currentNodeLabel = value;
-								}
-								else if (elementName.equals(TAG_ID.getLocalPart()) && (currentNodeID == null)) {								
-									currentNodeID = value;
-								}
+								}								
 							}							
 							else if (parentName.equals(TAG_SEQUENCE.getLocalPart())) {
 								if (elementName.equals(TAG_NAME.getLocalPart()) && (currentNodeLabel == null)) {									
 									currentNodeLabel = value;																	
 								}
-							}					
+							}						
 							
-							currentNode.setID(currentNodeID);
-							currentNode.setLabel(currentNodeLabel);										
-							
-							currentEdge.setTarget(currentNodeID);
+							currentNode.setLabel(currentNodeLabel);							
 							currentEdge.setLength(currentEdgeLength);							
 						}
 					}
