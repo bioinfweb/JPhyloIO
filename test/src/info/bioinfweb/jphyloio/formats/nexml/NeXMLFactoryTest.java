@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 
 import java.io.FileReader;
@@ -39,6 +40,19 @@ public class NeXMLFactoryTest {
 			assertTrue(new NeXMLFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_checkFormat_largerFile() throws IOException {
+		PeekReader reader = new PeekReader(new FileReader("data/NeXML/treebase-record.xml"));
+		try {
+			assertTrue(new NeXMLFactory().checkFormat(reader, new ReadWriteParameterMap()));
+		}
+		finally {
+			System.out.println(reader.getCharacterOffset());
 			reader.close();
 		}
 	}

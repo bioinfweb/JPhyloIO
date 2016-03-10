@@ -220,6 +220,7 @@ test/data/NeXML/freeAnnotations/NameAsCURIEPredicate.xml -text svneol=unset#text
 test/data/NeXML/freeAnnotations/NameAsPredicate.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/NestedNameAndValue.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/ValueNestedInName.xml -text svneol=unset#text/plain
+test/data/NeXML/treebase-record.xml -text svneol=unset#text/plain
 test/data/Newick/Comments.nwk -text
 test/data/Newick/InternalsTerminalsLength.nwk -text
 test/data/Newick/InvalidNewick.txt -text svneol=unset#text/plain
@@ -291,6 +292,7 @@ test/lib/commons-io-2.4.jar -text
 test/lib/hamcrest-core-1.3.jar -text
 test/lib/junit-4.12.jar -text
 test/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/IgnoreObjectListMetadataReceiverTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/factory/JPhyloIOReaderWriterFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriterLogTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriterTest.java -text svneol=unset#text/plain
