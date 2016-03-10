@@ -99,6 +99,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 		}
 		else {
 			throw new IOException("A NeXML file must have at least one OTU list"); //TODO give better exception
+			//TODO The generated UNDEFINED taxon may be the only entry. In such cases, no OTU list from the document adapter would be required.
 		}
 	}
 	
