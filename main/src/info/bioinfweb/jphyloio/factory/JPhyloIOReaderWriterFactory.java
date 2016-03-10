@@ -223,7 +223,6 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 		bufferedReader.mark(getReadAheahLimit());
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
 			boolean formatFound = factory.checkFormat(bufferedReader, parameters);
-			System.out.println(factory.getFormatInfo().getFormatID());
 			bufferedReader.reset();
 			if (formatFound) {
 				return factory.getFormatInfo().getFormatID();
