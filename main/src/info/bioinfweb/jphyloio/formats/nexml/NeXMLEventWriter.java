@@ -60,11 +60,15 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
-	private void writeLinkedOTUOrOTUsAttributes(LinkedOTUOrOTUsEvent event, QName linkAttribute) throws XMLStreamException {
+	private void writeLinkedOTUOrOTUsAttributes(LinkedOTUOrOTUsEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException {
 		writeLabeledIDAttributes(event);
 		if (event.isOTUOrOTUsLinked()) {
 			writer.writeAttribute(linkAttribute.getLocalPart(), event.getOTUOrOTUsID());
 		}
+		else if (forceOTULink) {
+			//TODO Link UNDEFINED taxon, if an OTU shall be linked.
+		}
+		//TODO Linking OTUs is never optional, therefore one OTU (usually the one containing the UDEFINED taxon) should be linked.
 	}
 	
 	
@@ -100,6 +104,9 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 		else {
 			throw new IOException("A NeXML file must have at least one OTU list"); //TODO give better exception
 			//TODO The generated UNDEFINED taxon may be the only entry. In such cases, no OTU list from the document adapter would be required.
+			//TODO In such cases an default OTU list and an UNDEFINED taxon should be created here and stored in property, to be used in writeLinkedOTUOrOTUsAttributes() later. 
+			//     (That should not be done, if a completely empty document (e.g. containing nothing or only document metadata) shall be written.
+			//     An UNDEFINED taxon will also have to be created, if an OTU list is present, if there is at least one sequence without a linked OTU.
 		}
 	}
 	
@@ -109,6 +116,11 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 		this.writer = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
 		this.parameters = parameters;
 		logger = parameters.getLogger();
+		
+		//TODO Before starting to write, the whole document must be iterated once and screened for 
+		//     - all metadata namespaces,
+		//     - whether it is empty (whether a default OTU list is needed),
+		//     - whether there are sequences without OTU links (whether an UNDEFINED OTU needs to be created).
 		
 		this.writer.writeStartDocument();
 		this.writer.writeStartElement(TAG_ROOT.getLocalPart());
