@@ -325,8 +325,10 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/TestMatrixDataAdapter.java -t
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestOTUListDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestSingleTokenSetAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestTreeDataAdapter.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/test/tests/BoundedInputStreamTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/WhiteSpaceTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/XMLLongAttribiteTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/XMLStreamExceptionTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStream.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStreamTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/OverwriteTest.java -text svneol=unset#text/plain
