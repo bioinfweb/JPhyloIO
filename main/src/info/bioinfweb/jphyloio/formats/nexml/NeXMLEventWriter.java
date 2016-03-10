@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -52,18 +53,17 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	
 	
 	private void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException {
-		writer.writeAttribute(ATTR_ID.getLocalPart(), event.getID());
-		writer.writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
+		writer.writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique. (Probably a task that should use resources to be added to the super class.)
+		if (event.hasLabel()) {
+			writer.writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
+		}
 	}
 	
 	
-	private void writeLinkedOTUOrOTUsAttributes(LinkedOTUOrOTUsEvent event, boolean singleOTULinked) throws XMLStreamException {
+	private void writeLinkedOTUOrOTUsAttributes(LinkedOTUOrOTUsEvent event, QName linkAttribute) throws XMLStreamException {
 		writeLabeledIDAttributes(event);
-		if (singleOTULinked) {
-			writer.writeAttribute(ATTR_OTU.getLocalPart(), event.getOTUOrOTUsID());
-		}
-		else {
-			writer.writeAttribute(ATTR_OTUS.getLocalPart(), event.getOTUOrOTUsID());
+		if (event.isOTUOrOTUsLinked()) {
+			writer.writeAttribute(linkAttribute.getLocalPart(), event.getOTUOrOTUsID());
 		}
 	}
 	
