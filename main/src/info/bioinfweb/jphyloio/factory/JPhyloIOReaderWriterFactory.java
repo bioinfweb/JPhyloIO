@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.factory;
 
 
+import info.bioinfweb.commons.io.ClosingNotAllowedException;
+import info.bioinfweb.commons.io.LimitedInputStream;
+import info.bioinfweb.commons.io.LimitedReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -62,7 +65,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	//TODO Do any other methods need to be synchronized?
 	
-	public static final int DEFAULT_READ_AHAED_LIMIT = 4 * 1024;  // XML files may contain long comments before the root tag.
+	public static final int DEFAULT_READ_AHAED_LIMIT = 8 * 1024;  // XML files may contain long comments before the root tag.
 	
 	
 	private final ReadWriteLock readAheahLimitLock = new ReentrantReadWriteLock();	
@@ -219,11 +222,19 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(Reader reader, ReadWriteParameterMap parameters) throws Exception {
-		BufferedReader bufferedReader = new BufferedReader(reader, getReadAheahLimit());
-		bufferedReader.mark(getReadAheahLimit());
+		LimitedReader limitedReader = new LimitedReader(new BufferedReader(reader, getReadAheahLimit()), getReadAheahLimit());
+		limitedReader.mark(getReadAheahLimit());
+		limitedReader.setAllowClose(false);  // Disallow closing, to avoid that XMLEventReaders close this reader, if they encounter an incomplete tag, because of the read limit. (Some implementations of XMLEventReader close the underlying stream, if they encounter an eof while trying to produce the next event.)
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
-			boolean formatFound = factory.checkFormat(bufferedReader, parameters);
-			bufferedReader.reset();
+			boolean formatFound;
+			try {
+				formatFound = factory.checkFormat(limitedReader, parameters);
+			}
+			catch (ClosingNotAllowedException e) {
+				formatFound = false;  // The limit was reached, before an XML format could be determined or an invalid XML file was encountered.
+				//TODO Should formats that could not be determined anyway be treated as candidates or should any feedback be given on this?
+			}
+			limitedReader.reset();
 			if (formatFound) {
 				return factory.getFormatInfo().getFormatID();
 			}
@@ -280,15 +291,16 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
-		return guessFormatFromBufferedStream(new BufferedInputStream(stream), parameters);
+		return guessFormatFromLimitedStream(new LimitedInputStream(new BufferedInputStream(stream, getReadAheahLimit()), 
+				getReadAheahLimit()), parameters);
 	}
 	
 	
-	private String guessFormatFromBufferedStream(BufferedInputStream stream, ReadWriteParameterMap parameters) throws Exception {
-		stream.mark(getReadAheahLimit());
+	private String guessFormatFromLimitedStream(LimitedInputStream limitedStream, ReadWriteParameterMap parameters) throws Exception {
+		limitedStream.mark(getReadAheahLimit());  // Will also mark the decorated stream.
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
-			boolean formatFound = factory.checkFormat(stream, parameters);
-			stream.reset();
+			boolean formatFound = factory.checkFormat(limitedStream, parameters);
+			limitedStream.reset();  // Will also reset the decorated stream.
 			if (formatFound) {
 				return factory.getFormatInfo().getFormatID();
 			}
@@ -365,24 +377,24 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 */
 	public JPhyloIOEventReader guessReader(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		// Buffer stream for testing:
-		BufferedInputStream bufferedStream = new BufferedInputStream(stream, getReadAheahLimit());
-		bufferedStream.mark(getReadAheahLimit());
+		LimitedInputStream limitedStream = new LimitedInputStream(new BufferedInputStream(stream, getReadAheahLimit()), getReadAheahLimit());
+		limitedStream.mark(getReadAheahLimit());
 		
 	  // Try if the input is GZIPed:
 		try {
-			bufferedStream = new BufferedInputStream(new GZIPInputStream(bufferedStream), getReadAheahLimit());
+			limitedStream = new LimitedInputStream(new BufferedInputStream(new GZIPInputStream(limitedStream), getReadAheahLimit()), getReadAheahLimit());  //TODO Is there a more efficient solution than using 5 decorators here?
 		}
 		catch (ZipException e) {
-			bufferedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, bufferedStream was not set in the try block.)
+			limitedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, bufferedStream was not set in the try block.)
 		}
 		
 		// Return reader:
-		String format = guessFormatFromBufferedStream(bufferedStream, parameters);  // bufferedStream is already reset in the called method.
+		String format = guessFormatFromLimitedStream(limitedStream, parameters);  // bufferedStream is already reset in the called method.
 		if (format == null) {
 			return null;
 		}
 		else {
-			return getReader(format, bufferedStream, parameters);
+			return getReader(format, limitedStream, parameters);
 		}
 		//TODO Does the any of the created streams in here need to be closed, if the underlying stream is closed later in application code? (Usually the top-most stream would be closed, which is not known by the application.)
 	}
