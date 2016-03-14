@@ -62,7 +62,7 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 	
 	@Override
 	public JPhyloIOEventWriter getWriter() {
-		return null;  //TODO Add reader when implemented.
+		return new NeXMLEventWriter();
 	}
 
 	
@@ -74,7 +74,7 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 	
 	@Override
 	public boolean hasWriter() {
-		return false;
+		return true;
 	}
 
 	
