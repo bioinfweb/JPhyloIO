@@ -25,7 +25,6 @@ import java.io.Reader;
 
 import javax.xml.stream.XMLStreamException;
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -80,7 +79,7 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(PDE_FORMAT_ID, PDE_FORMAT_NAME, new ExtensionFileFilter(
-				"PDE format of PhyDE", "pde", true));
+		return new DefaultFormatInfo(PDE_FORMAT_ID, PDE_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
+				"PDE format of PhyDE", "pde"));
 	}
 }

@@ -25,7 +25,6 @@ import java.io.Reader;
 
 import javax.xml.stream.XMLStreamException;
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -80,7 +79,7 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, new ExtensionFileFilter(
-				"PhylXML", "phyloxml", true, "phylo.xml", "pxml", "xml"));
+		return new DefaultFormatInfo(PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
+				"PhylXML", "phyloxml", "phylo.xml", "pxml", "xml"));
 	}
 }

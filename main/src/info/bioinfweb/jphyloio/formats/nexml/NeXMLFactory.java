@@ -25,7 +25,6 @@ import java.io.Reader;
 
 import javax.xml.stream.XMLStreamException;
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -80,7 +79,7 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(NEXML_FORMAT_ID, NEXML_FORMAT_NAME, new ExtensionFileFilter(
-				"NeXML", "nexml", true, "xml"));
+		return new DefaultFormatInfo(NEXML_FORMAT_ID, NEXML_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(), 
+				"NeXML", "nexml",  "xml"));
 	}
 }

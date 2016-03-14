@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -81,7 +80,7 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(MEGA_FORMAT_ID, MEGA_FORMAT_NAME, new ExtensionFileFilter(
-				"MEGA format", "meg", true, "mega"));
+		return new DefaultFormatInfo(MEGA_FORMAT_ID, MEGA_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
+				"MEGA format", "meg", "mega"));
 	}
 }

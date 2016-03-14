@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -78,8 +77,7 @@ public class NexusFactory extends AbstractStartStringSingleFactory implements Ne
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(NEXUS_FORMAT_ID, NEXUS_FORMAT_NAME, new ExtensionFileFilter(
-				"Nexus format", "nex", true, "nexus", "tre", "tree", "con"));  //TODO Should the tree extension better be removed?
-				//TODO Should a file filter be provided that also opens files (uses checkFormat())?
+		return new DefaultFormatInfo(NEXUS_FORMAT_ID, NEXUS_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
+				"Nexus format", "nex", "nexus", "tre", "tree", "con"));  //TODO Should the tree extension better be removed?
 	}
 }

@@ -25,7 +25,6 @@ import java.io.Reader;
 
 import javax.xml.stream.XMLStreamException;
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -80,7 +79,7 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(XTG_FORMAT_ID, XTG_FORMAT_NAME, new ExtensionFileFilter(
-				"XTG format of TreeGraph 2", "xtg", true, "xml"));
+		return new DefaultFormatInfo(XTG_FORMAT_ID, XTG_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
+				"XTG format of TreeGraph 2", "xtg", "xml"));
 	}
 }

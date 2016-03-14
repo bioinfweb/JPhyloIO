@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -90,7 +89,7 @@ public class FASTAFactory extends AbstractStartStringSingleFactory implements Si
 	 */
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(FASTA_FORMAT_ID, FASTA_FORMAT_NAME, new ExtensionFileFilter(
-				"FASTA format", "fasta", true, "fas", "fa", "fas", "fna", "ffn", "faa", "frn"));
+		return new DefaultFormatInfo(FASTA_FORMAT_ID, FASTA_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
+				"FASTA format", "fasta", "fas", "fa", "fas", "fna", "ffn", "faa", "frn"));
 	}
 }

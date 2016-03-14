@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -106,7 +105,7 @@ public class NewickFactory extends AbstractSingleReaderWriterFactory implements 
 
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(NEWICK_FORMAT_ID, NEWICK_FORMAT_NAME, new ExtensionFileFilter(
-				"Newick tree format", "nwk", true, "newick", "tre", "tree", "con"));
+		return new DefaultFormatInfo(NEWICK_FORMAT_ID, NEWICK_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
+				"Newick tree format", "nwk", "newick", "tre", "tree", "con"));
 	}
 }
