@@ -83,6 +83,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
 //TODO Would it make sense, to have no content event nested in LITERAL_META or must there be at least one? (Can NeXML have empty meta tags?)
 //TODO LITRAL_META_CONTENT can represent XML events, simple numeric or string values or also contain more complex objects as values. (In such cases custom XML could already be parsed as (optional) an alternative to giving single XML content events.)
 //TODO Is it really necessary to model LITERAL_META.START and RESOURCE_META.START in different classes?
+//     Some questions may be solved by comparing to the current JDOM-based Java NeXML reader implementation.
 public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	/**
 	 * Checks if another event could be parsed from the underlying document.
