@@ -111,4 +111,20 @@ public class JPhyloIOReaderWriterFactoryTest implements JPhyloIOFormatIDs {
 		testGuessReader(XTG_FORMAT_ID, factory, "data/XTG/ExampleXTGDocument.xml");
 		testGuessReader(null, factory, "data/other/Text.txt");
 	}
+	
+	
+	@Test
+	public void test_guessReader_GZIP() throws Exception {
+		JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
+		testGuessReader(FASTA_FORMAT_ID, factory, "data/Fasta/Comment.fasta.gz");
+		testGuessReader(MEGA_FORMAT_ID, factory, "data/MEGA/HLA-3Seq.meg.gz");
+		testGuessReader(NEWICK_FORMAT_ID, factory, "data/Newick/OneNodeLength.nwk.gz");
+		testGuessReader(NEXML_FORMAT_ID, factory, "data/NeXML/MetaElements.xml.gz");
+		testGuessReader(NEXUS_FORMAT_ID, factory, "data/Nexus/Matrix.nex.gz");
+		testGuessReader(PDE_FORMAT_ID, factory, "data/PDE/compressedPDE.pde.gz");
+		testGuessReader(PHYLIP_FORMAT_ID, factory, "data/Phylip/Interleaved.phy.gz");
+		testGuessReader(PHYLOXML_FORMAT_ID, factory, "data/PhyloXML/BranchLengths.xml.gz");
+		testGuessReader(XTG_FORMAT_ID, factory, "data/XTG/ExampleXTGDocument.xml.gz");
+		testGuessReader(null, factory, "data/other/Text.txt.gz");
+	}
 }

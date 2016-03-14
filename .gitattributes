@@ -202,6 +202,7 @@ test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 test/data/Fasta/Comment.fasta -text
+test/data/Fasta/Comment.fasta.gz -text
 test/data/Fasta/Indices.fasta -text
 test/data/Fasta/MatchToken.fasta -text
 test/data/Fasta/OutputTestException.fasta -text
@@ -209,10 +210,12 @@ test/data/Fasta/OutputTestLongTokens.fasta -text
 test/data/Fasta/OutputTestShortTokens.fasta -text
 test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
+test/data/MEGA/HLA-3Seq.meg.gz -text
 test/data/MEGA/MatchToken.meg -text
 test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
 test/data/NeXML/LargeSequences.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
+test/data/NeXML/MetaElements.xml.gz -text
 test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
 test/data/NeXML/Paralogues.xml -text
 test/data/NeXML/UnknownTag.xml -text svneol=unset#text/plain
@@ -233,6 +236,7 @@ test/data/Newick/NHX2.nwk -text
 test/data/Newick/NoNamedNodes.nwk -text
 test/data/Newick/NoTrees.nwk -text
 test/data/Newick/OneNodeLength.nwk -text
+test/data/Newick/OneNodeLength.nwk.gz -text
 test/data/Newick/OneNodeName.nwk -text
 test/data/Newick/OneNodeNameAndLength.nwk -text
 test/data/Newick/OneNodeNone.nwk -text
@@ -248,6 +252,7 @@ test/data/Nexus/FormatMrBayesDataTypeInvalidSymbols.nex -text
 test/data/Nexus/FormatMrBayesDataTypeNoSingleDefs.nex -text
 test/data/Nexus/FormatTokens.nex -text
 test/data/Nexus/Matrix.nex -text
+test/data/Nexus/Matrix.nex.gz -text
 test/data/Nexus/MatrixContinuous.nex -text
 test/data/Nexus/MatrixDNAAlternatives.nex -text
 test/data/Nexus/MatrixInterleaved.nex -text
@@ -271,6 +276,7 @@ test/data/PDE/sequencesWithCustomMeta.pde -text
 test/data/PDE/shortAminoSequences.pde -text
 test/data/PDE/shortSequences.pde -text
 test/data/Phylip/Interleaved.phy -text
+test/data/Phylip/Interleaved.phy.gz -text
 test/data/Phylip/Interleaved3Blocks.phy -text
 test/data/Phylip/InterleavedMatchCharacter.phy -text
 test/data/Phylip/InvalidCharacterCount.phy -text
@@ -282,14 +288,17 @@ test/data/Phylip/RelaxedSequential.phy -text
 test/data/Phylip/Sequential.phy -text
 test/data/Phylip/TooManyCounts.phy -text
 test/data/PhyloXML/BranchLengths.xml -text svneol=unset#text/plain
+test/data/PhyloXML/BranchLengths.xml.gz -text
 test/data/PhyloXML/IDsAndLabels.xml -text svneol=unset#text/plain
 test/data/PhyloXML/MultipleTrees.xml -text svneol=unset#text/plain
 test/data/PhyloXML/PhyloXMLDocument.xml -text svneol=unset#text/plain
 test/data/XML/Invalid.xml -text svneol=unset#text/plain
 test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml -text svneol=unset#text/plain
+test/data/XTG/ExampleXTGDocument.xml.gz -text
 test/data/XTG/NoNamespaceShortened.xml -text
 test/data/other/Text.txt -text svneol=unset#text/plain
+test/data/other/Text.txt.gz -text
 test/lib/commons-collections4-4.1.jar -text
 test/lib/commons-io-2.4.jar -text
 test/lib/hamcrest-core-1.3.jar -text
