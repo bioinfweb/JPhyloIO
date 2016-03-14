@@ -34,14 +34,18 @@ public class JPhyloIOReaderWriterFactoryTest implements JPhyloIOFormatIDs {
 	@Test
 	public void test_guessFormat() throws Exception {
 		JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
-//		assertEquals(FASTA_FORMAT_ID, factory.guessFormat(new File("data/Fasta/Comment.fasta")));
-//		assertEquals(MEGA_FORMAT_ID, factory.guessFormat(new File("data/MEGA/HLA-3Seq.meg")));
-//		assertEquals(NEWICK_FORMAT_ID, factory.guessFormat(new File("data/Newick/OneNodeLength.nwk")));
+		assertEquals(FASTA_FORMAT_ID, factory.guessFormat(new File("data/Fasta/Comment.fasta")));
+		assertEquals(MEGA_FORMAT_ID, factory.guessFormat(new File("data/MEGA/HLA-3Seq.meg")));
+		assertEquals(NEWICK_FORMAT_ID, factory.guessFormat(new File("data/Newick/OneNodeLength.nwk")));
 		assertEquals(NEXML_FORMAT_ID, factory.guessFormat(new File("data/NeXML/MetaElements.xml")));
-//		assertEquals(NEXUS_FORMAT_ID, factory.guessFormat(new File("data/Nexus/Matrix.nex")));
-//		assertEquals(PDE_FORMAT_ID, factory.guessFormat(new File("data/PDE/shortSequences.pde")));
-//		assertEquals(PHYLIP_FORMAT_ID, factory.guessFormat(new File("data/Phylip/Interleaved.phy")));
-//		assertEquals(PHYLOXML_FORMAT_ID, factory.guessFormat(new File("data/PhyloXML/BranchLengths.xml")));
-//		assertEquals(XTG_FORMAT_ID, factory.guessFormat(new File("data/XTG/ExampleXTGDocument.xml")));
+		assertEquals(NEXUS_FORMAT_ID, factory.guessFormat(new File("data/Nexus/Matrix.nex")));
+		assertEquals(PDE_FORMAT_ID, factory.guessFormat(new File("data/PDE/shortSequences.pde")));
+		assertEquals(PHYLIP_FORMAT_ID, factory.guessFormat(new File("data/Phylip/Interleaved.phy")));
+		assertEquals(PHYLOXML_FORMAT_ID, factory.guessFormat(new File("data/PhyloXML/BranchLengths.xml")));
+		assertEquals(XTG_FORMAT_ID, factory.guessFormat(new File("data/XTG/ExampleXTGDocument.xml")));
+		
+		//TODO Also test with input stream.
+		//TODO Also test guessReader().
+		//TODO Also test GZIPed files for all formats.
 	}
 }

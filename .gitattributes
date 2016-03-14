@@ -335,4 +335,5 @@ test/src/info/bioinfweb/jphyloio/test/tests/XMLLongAttribiteTest.java -text svne
 test/src/info/bioinfweb/jphyloio/test/tests/XMLStreamExceptionTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStream.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStreamTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BufferedReaderResetTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/OverwriteTest.java -text svneol=unset#text/plain
