@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
-import info.bioinfweb.jphyloio.events.MetaXMLEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetaContentEvent;
 
 import java.util.NoSuchElementException;
 
@@ -31,7 +31,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * Adapter class that allows reading a sequence of {@link MetaXMLEvent}s using a {@link XMLStreamReader}.
+ * Adapter class that allows reading a sequence of {@link LiteralMetaContentEvent}s using a {@link XMLStreamReader}.
  * 
  * @author Ben St&ouml;ver
  */

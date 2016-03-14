@@ -16,9 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.events;
+package info.bioinfweb.jphyloio.events.meta;
 
 
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -33,7 +35,7 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public class MetaXMLEvent extends ConcreteJPhyloIOEvent {
+public class LiteralMetaContentEvent extends ConcreteJPhyloIOEvent {
 	private XMLEvent xmlEvent;
 
 	
@@ -42,7 +44,7 @@ public class MetaXMLEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @param xmlEvent XML event to be wrapped 
 	 */
-	public MetaXMLEvent(XMLEvent xmlEvent) {
+	public LiteralMetaContentEvent(XMLEvent xmlEvent) {
 		super(EventContentType.META_XML_CONTENT, EventTopologyType.SOLE);
 		this.xmlEvent = xmlEvent;
 	}
