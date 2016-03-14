@@ -19,9 +19,12 @@
 package info.bioinfweb.jphyloio.factory;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 import java.io.File;
+import java.io.FileReader;
 
 import org.junit.* ;
 
@@ -31,10 +34,12 @@ import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 
 
 public class JPhyloIOReaderWriterFactoryTest implements JPhyloIOFormatIDs {
+	//TODO Also test GZIPed files for all formats.
+
 	@Test
-	public void test_guessFormat() throws Exception {
+	public void test_guessFormat_File() throws Exception {
 		JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
-		assertEquals(FASTA_FORMAT_ID, factory.guessFormat(new File("data/Fasta/Comment.fasta")));
+		assertEquals(FASTA_FORMAT_ID, factory.guessFormat(new File("data/Fasta/Comment.fasta")));  // Uses a FileInputStream.
 		assertEquals(MEGA_FORMAT_ID, factory.guessFormat(new File("data/MEGA/HLA-3Seq.meg")));
 		assertEquals(NEWICK_FORMAT_ID, factory.guessFormat(new File("data/Newick/OneNodeLength.nwk")));
 		assertEquals(NEXML_FORMAT_ID, factory.guessFormat(new File("data/NeXML/MetaElements.xml")));
@@ -43,9 +48,67 @@ public class JPhyloIOReaderWriterFactoryTest implements JPhyloIOFormatIDs {
 		assertEquals(PHYLIP_FORMAT_ID, factory.guessFormat(new File("data/Phylip/Interleaved.phy")));
 		assertEquals(PHYLOXML_FORMAT_ID, factory.guessFormat(new File("data/PhyloXML/BranchLengths.xml")));
 		assertEquals(XTG_FORMAT_ID, factory.guessFormat(new File("data/XTG/ExampleXTGDocument.xml")));
-		
-		//TODO Also test with input stream.
-		//TODO Also test guessReader().
-		//TODO Also test GZIPed files for all formats.
+		assertNull(factory.guessFormat(new File("data/other/Text.txt")));
+	}
+	
+	
+	private void testGuessFormatReader(String exptectedFormat, JPhyloIOReaderWriterFactory factory, String file) throws Exception {
+		FileReader reader = new FileReader(new File(file));
+		try {
+			assertEquals(exptectedFormat, factory.guessFormat(reader));
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
+	public void test_guessFormat_Reader() throws Exception {
+		JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
+		testGuessFormatReader(FASTA_FORMAT_ID, factory, "data/Fasta/Comment.fasta");
+		testGuessFormatReader(MEGA_FORMAT_ID, factory, "data/MEGA/HLA-3Seq.meg");
+		testGuessFormatReader(NEWICK_FORMAT_ID, factory, "data/Newick/OneNodeLength.nwk");
+		testGuessFormatReader(NEXML_FORMAT_ID, factory, "data/NeXML/MetaElements.xml");
+		testGuessFormatReader(NEXUS_FORMAT_ID, factory, "data/Nexus/Matrix.nex");
+		testGuessFormatReader(PDE_FORMAT_ID, factory, "data/PDE/shortSequences.pde");
+		testGuessFormatReader(PHYLIP_FORMAT_ID, factory, "data/Phylip/Interleaved.phy");
+		testGuessFormatReader(PHYLOXML_FORMAT_ID, factory, "data/PhyloXML/BranchLengths.xml");
+		testGuessFormatReader(XTG_FORMAT_ID, factory, "data/XTG/ExampleXTGDocument.xml");
+		testGuessFormatReader(null, factory, "data/other/Text.txt");
+	}
+	
+	
+	private void testGuessReader(String exptectedFormat, JPhyloIOReaderWriterFactory factory, String file) throws Exception {
+		JPhyloIOEventReader reader = factory.guessReader(new File(file), new ReadWriteParameterMap());
+		try {
+			if (exptectedFormat == null) {
+				assertNull(reader);
+			}
+			else {
+				assertEquals(exptectedFormat, reader.getFormatID());
+			}
+		}
+		finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+	}
+	
+	
+	@Test
+	public void test_guessReader() throws Exception {
+		JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
+		testGuessReader(FASTA_FORMAT_ID, factory, "data/Fasta/Comment.fasta");
+		testGuessReader(MEGA_FORMAT_ID, factory, "data/MEGA/HLA-3Seq.meg");
+		testGuessReader(NEWICK_FORMAT_ID, factory, "data/Newick/OneNodeLength.nwk");
+		testGuessReader(NEXML_FORMAT_ID, factory, "data/NeXML/MetaElements.xml");
+		testGuessReader(NEXUS_FORMAT_ID, factory, "data/Nexus/Matrix.nex");
+		testGuessReader(PDE_FORMAT_ID, factory, "data/PDE/shortSequences.pde");
+		testGuessReader(PHYLIP_FORMAT_ID, factory, "data/Phylip/Interleaved.phy");
+		testGuessReader(PHYLOXML_FORMAT_ID, factory, "data/PhyloXML/BranchLengths.xml");
+		testGuessReader(XTG_FORMAT_ID, factory, "data/XTG/ExampleXTGDocument.xml");
+		testGuessReader(null, factory, "data/other/Text.txt");
 	}
 }
