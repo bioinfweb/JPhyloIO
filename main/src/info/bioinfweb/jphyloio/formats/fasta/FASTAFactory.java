@@ -89,7 +89,7 @@ public class FASTAFactory extends AbstractStartStringSingleFactory implements Si
 	 */
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(FASTA_FORMAT_ID, FASTA_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
-				"FASTA format", "fasta", "fas", "fa", "fas", "fna", "ffn", "faa", "frn"));
+		return new DefaultFormatInfo(this, FASTA_FORMAT_ID, FASTA_FORMAT_NAME, new ReadWriteParameterMap(),
+				"FASTA format", "fasta", "fas", "fa", "fas", "fna", "ffn", "faa", "frn");
 	}
 }

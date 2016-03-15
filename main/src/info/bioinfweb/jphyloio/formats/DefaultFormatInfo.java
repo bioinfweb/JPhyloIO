@@ -19,7 +19,10 @@
 package info.bioinfweb.jphyloio.formats;
 
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
+import info.bioinfweb.commons.io.ContentExtensionFileFilter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.factory.JPhyloIOContentExtensionFileFilter;
+import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 
 
 
@@ -30,9 +33,13 @@ import info.bioinfweb.commons.io.ExtensionFileFilter;
  * @since 0.0.0
  */
 public class DefaultFormatInfo implements JPhyloIOFormatInfo {
+	private SingleReaderWriterFactory factory;
 	private String formatID;
 	private String formatName;
-	private ExtensionFileFilter fileFilter;
+	private ReadWriteParameterMap filterParamaters;
+	private String filterDescription;
+	private String filterDefaultExtension;
+	private String[] filterExtensions;
 	
 
 	/**
@@ -43,21 +50,43 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	 * @param fileFilter the filter for the format this information object is about
 	 * @throws NullPointerException if any of the arguments is {@code null}
 	 */
-	public DefaultFormatInfo(String formatID, String formatName,	ExtensionFileFilter fileFilter) {
+	public DefaultFormatInfo(SingleReaderWriterFactory factory, String formatID, String formatName, 
+			ReadWriteParameterMap filterParamaters,	String filterDescription,	String filterDefaultExtension, String... filterExtensions) {
+		
 		super();
-		if (formatID == null) {
+		if (factory == null) {
+			throw new NullPointerException("factory must not be null.");
+		}
+		else if (formatID == null) {
 			throw new NullPointerException("formatID must not be null.");
 		}
 		else if (formatName == null) {
 			throw new NullPointerException("formatName must not be null.");
 		}
-		else if (fileFilter == null) {
-			throw new NullPointerException("fileFilter must not be null.");
+		else if (filterDescription == null) {
+			throw new NullPointerException("filterDescription must not be null.");
+		}
+		else if (filterDefaultExtension == null) {
+			throw new NullPointerException("filterDefaultExtension must not be null.");
 		}
 		else {
+			for (int i = 0; i < filterExtensions.length; i++) {
+				if (filterExtensions[i] == null) {
+					throw new NullPointerException("The filter extension with the index " + i + " is null.");
+				}
+			}
+			
 			this.formatID = formatID;
 			this.formatName = formatName;
-			this.fileFilter = fileFilter;
+			if (filterParamaters == null) {
+				this.filterParamaters = new ReadWriteParameterMap();
+			}
+			else {
+				this.filterParamaters = filterParamaters;
+			}
+			this.filterDescription = filterDescription;
+			this.filterDefaultExtension = filterDefaultExtension;
+			this.filterExtensions = filterExtensions;
 		}
 	}
 
@@ -75,7 +104,8 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 
 	
 	@Override
-	public ExtensionFileFilter getFileFilter() {
-		return fileFilter;
+	public ContentExtensionFileFilter createFileFilter() {
+		return new JPhyloIOContentExtensionFileFilter(factory, filterParamaters, filterDescription, filterDefaultExtension, true, 
+				ContentExtensionFileFilter.TestStrategy.CONTENT, false, filterExtensions);
 	}
 }

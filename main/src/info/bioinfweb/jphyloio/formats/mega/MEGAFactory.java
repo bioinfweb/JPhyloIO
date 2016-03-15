@@ -80,7 +80,6 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(MEGA_FORMAT_ID, MEGA_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
-				"MEGA format", "meg", "mega"));
+		return new DefaultFormatInfo(this, MEGA_FORMAT_ID, MEGA_FORMAT_NAME, new ReadWriteParameterMap(),	"MEGA format", "meg", "mega");
 	}
 }

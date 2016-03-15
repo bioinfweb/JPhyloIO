@@ -79,7 +79,7 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(XTG_FORMAT_ID, XTG_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
-				"XTG format of TreeGraph 2", "xtg", "xml"));
+		return new DefaultFormatInfo(this, XTG_FORMAT_ID, XTG_FORMAT_NAME, new ReadWriteParameterMap(),
+				"XTG format of TreeGraph 2", "xtg", "xml");
 	}
 }

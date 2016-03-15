@@ -105,7 +105,7 @@ public class NewickFactory extends AbstractSingleReaderWriterFactory implements 
 
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(NEWICK_FORMAT_ID, NEWICK_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
-				"Newick tree format", "nwk", "newick", "tre", "tree", "con"));
+		return new DefaultFormatInfo(this, NEWICK_FORMAT_ID, NEWICK_FORMAT_NAME, new ReadWriteParameterMap(),
+				"Newick tree format", "nwk", "newick", "tre", "tree", "con");
 	}
 }

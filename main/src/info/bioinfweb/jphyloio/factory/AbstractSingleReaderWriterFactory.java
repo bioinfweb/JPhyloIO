@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.factory;
 
 
-import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 
 import java.io.InputStream;
@@ -31,13 +30,5 @@ public abstract class AbstractSingleReaderWriterFactory implements SingleReaderW
 	@Override
 	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		return checkFormat(new InputStreamReader(stream), parameters);
-	}
-	
-	
-	protected JPhyloIOContentExtensionFileFilter createFileFilter(ReadWriteParameterMap defaultParamaters, 
-			String description,	String defaultExtension, String... extensions) {
-		
-		return new JPhyloIOContentExtensionFileFilter(this, defaultParamaters, description, defaultExtension, true, 
-				ContentExtensionFileFilter.TestStrategy.CONTENT, false, extensions);
 	}
 }

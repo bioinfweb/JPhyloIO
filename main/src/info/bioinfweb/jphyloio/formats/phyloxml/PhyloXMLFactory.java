@@ -79,7 +79,7 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
-				"PhylXML", "phyloxml", "phylo.xml", "pxml", "xml"));
+		return new DefaultFormatInfo(this, PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, new ReadWriteParameterMap(),
+				"PhylXML", "phyloxml", "phylo.xml", "pxml", "xml");
 	}
 }

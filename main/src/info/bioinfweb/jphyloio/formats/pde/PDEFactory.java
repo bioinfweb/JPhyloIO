@@ -79,7 +79,6 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(PDE_FORMAT_ID, PDE_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
-				"PDE format of PhyDE", "pde"));
+		return new DefaultFormatInfo(this, PDE_FORMAT_ID, PDE_FORMAT_NAME, new ReadWriteParameterMap(),	"PDE format of PhyDE", "pde");
 	}
 }

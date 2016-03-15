@@ -79,7 +79,6 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(NEXML_FORMAT_ID, NEXML_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(), 
-				"NeXML", "nexml",  "xml"));
+		return new DefaultFormatInfo(this, NEXML_FORMAT_ID, NEXML_FORMAT_NAME, new ReadWriteParameterMap(),	"NeXML", "nexml",  "xml");
 	}
 }

@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats;
 
 
-import info.bioinfweb.commons.io.ExtensionFileFilter;
+import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 
 
 
@@ -28,5 +28,5 @@ public interface JPhyloIOFormatInfo {
 	
 	public String getFormatName();
 	
-	public ExtensionFileFilter getFileFilter();
+	public ContentExtensionFileFilter createFileFilter();
 }

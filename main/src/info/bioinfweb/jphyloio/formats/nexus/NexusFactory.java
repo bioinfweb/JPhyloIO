@@ -77,7 +77,7 @@ public class NexusFactory extends AbstractStartStringSingleFactory implements Ne
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(NEXUS_FORMAT_ID, NEXUS_FORMAT_NAME, createFileFilter(new ReadWriteParameterMap(),
-				"Nexus format", "nex", "nexus", "tre", "tree", "con"));  //TODO Should the tree extension better be removed?
+		return new DefaultFormatInfo(this, NEXUS_FORMAT_ID, NEXUS_FORMAT_NAME, new ReadWriteParameterMap(),
+				"Nexus format", "nex", "nexus", "tre", "tree", "con");  //TODO Should the tree extension better be removed?
 	}
 }
