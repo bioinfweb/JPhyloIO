@@ -147,7 +147,7 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhylo
 				}  // End events can be ignored.
 				break;
 			case META_INFORMATION:
-			case META_XML_CONTENT:
+			case META_LITERAL_CONTENT:  //TODO Add additional meta types.
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					addIgnoredMetadata(1);  // This way nested metadata will be counted as well. XML content events will not be counted, since they are SOLE.
 				}

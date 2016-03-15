@@ -66,7 +66,7 @@ main/src/info/bioinfweb/jphyloio/events/SingleSequenceTokenEvent.java -text svne
 main/src/info/bioinfweb/jphyloio/events/SingleTokenDefinitionEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/TokenSetDefinitionEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/UnknownCommandEvent.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/events/meta/LiteralMetaContentEvent.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/events/meta/LiteralMetadataContentEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/meta/LiteralMetadataEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/meta/ResourceMetadataEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/package-info.java -text svneol=unset#text/plain

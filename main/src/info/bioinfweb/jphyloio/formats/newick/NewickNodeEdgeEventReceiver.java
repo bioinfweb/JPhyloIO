@@ -132,7 +132,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Certai
 					metadataLevel--;
 				}
 				break;
-			case META_XML_CONTENT:
+			case META_LITERAL_CONTENT:  //TODO Add additional meta types.
 				ignoredXMLMetadata = true;
 				break;
 			default:

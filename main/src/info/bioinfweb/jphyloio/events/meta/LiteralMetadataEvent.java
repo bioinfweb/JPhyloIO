@@ -35,7 +35,19 @@ public class LiteralMetadataEvent extends ConcreteJPhyloIOEvent {
 	                     //     (May also depend on where the string key will be stored in NeXML.)
 	
 	
-	public LiteralMetadataEvent() {
-		super(EventContentType.META_INFORMATION, EventTopologyType.START);  //TODO Adjust content type.
+	public LiteralMetadataEvent(QName predicate, String key) {
+		super(EventContentType.META_LITERAL, EventTopologyType.START);
+		this.predicate = predicate;
+		this.key = key;
+	}
+
+
+	public QName getPredicate() {
+		return predicate;
+	}
+
+
+	public String getKey() {
+		return key;
 	}
 }

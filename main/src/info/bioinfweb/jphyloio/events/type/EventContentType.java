@@ -35,7 +35,7 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetaContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 
 
@@ -76,18 +76,9 @@ public enum EventContentType {
 	 */
 	META_INFORMATION,
 	
-	/**
-	 * One or more of these events can be nested inside {@link MetaInformationEvent}s, if the content (object) 
-	 * of the metadata is XML. Events of this type are instances of {@link MetaXMLEvent} and always have the
-	 * topology type {@link EventTopologyType#SOLE}. 
-	 * <p>
-	 * The according event objects are wrappers for {@link XMLEvent}s, therefore there
-	 * will be one {@link MetaXMLEvent} for each {@link XMLEvent} encountered in the underlying file.
-	 * <p>
-	 * Currently events of this type are created by {@link NexusEventReader} if a {@code meta} tag
-	 * with nested custom XML is encountered.
-	 */
-	META_XML_CONTENT,
+	META_RESOURCE,
+	META_LITERAL,
+	META_LITERAL_CONTENT,
 	
 	/** 
 	 * Events of this type are used by some readers to provide the application with contents

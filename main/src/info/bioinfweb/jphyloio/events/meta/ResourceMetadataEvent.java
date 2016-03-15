@@ -19,14 +19,41 @@
 package info.bioinfweb.jphyloio.events.meta;
 
 
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+
 import java.net.URI;
 
 import javax.xml.namespace.QName;
 
 
 
-public class ResourceMetadataEvent {
+public class ResourceMetadataEvent extends ConcreteJPhyloIOEvent {
 	private QName rel;
-	private URI href;
+	private URI hRef;
 	private String about;
+	
+	
+	public ResourceMetadataEvent(QName rel, URI hRef, String about) {
+		super(EventContentType.META_RESOURCE, EventTopologyType.START);
+		this.rel = rel;
+		this.hRef = hRef;
+		this.about = about;
+	}
+
+
+	public QName getRel() {
+		return rel;
+	}
+
+
+	public URI getHRef() {
+		return hRef;
+	}
+
+
+	public String getAbout() {
+		return about;
+	}
 }
