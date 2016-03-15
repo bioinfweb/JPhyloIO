@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -40,12 +40,14 @@ public class LiteralMetadataEvent extends ConcreteJPhyloIOEvent {
 	private QName predicate;
 	private String key;  //TODO Should the predicate be compulsory, while the string key is optional? (A string may be combined with a default (or even any?) predicate then.) 
 	                     //     (May also depend on where the string key will be stored in NeXML.)
+	private LiteralContentSequenceType sequenceType;
 	
 	
-	public LiteralMetadataEvent(QName predicate, String key) {
+	public LiteralMetadataEvent(QName predicate, String key, LiteralContentSequenceType sequenceType) {
 		super(EventContentType.META_LITERAL, EventTopologyType.START);
 		this.predicate = predicate;
 		this.key = key;
+		this.sequenceType = sequenceType;
 	}
 
 
@@ -56,5 +58,16 @@ public class LiteralMetadataEvent extends ConcreteJPhyloIOEvent {
 
 	public String getKey() {
 		return key;
+	}
+
+
+	/**
+	 * Determines which type of sequence of {@link LiteralMetadataContentEvent}s will be nested within this
+	 * event. 
+	 * 
+	 * @return the content sequence type
+	 */
+	public LiteralContentSequenceType getSequenceType() {
+		return sequenceType;
 	}
 }
