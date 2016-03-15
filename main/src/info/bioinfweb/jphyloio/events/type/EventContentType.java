@@ -74,6 +74,7 @@ public enum EventContentType {
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
 	 */
+	@Deprecated
 	META_INFORMATION,
 	
 	META_RESOURCE,

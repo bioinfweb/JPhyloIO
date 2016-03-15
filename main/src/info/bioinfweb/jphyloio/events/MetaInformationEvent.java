@@ -29,6 +29,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
+@Deprecated
 public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	private String key;
 	private String stringValue;
@@ -36,6 +37,7 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	private String originalType;
 	
 	
+	@Deprecated
 	public MetaInformationEvent(String key, String originalType, String stringValue) {
 		this(key, originalType, stringValue, stringValue);
 	}
@@ -51,6 +53,7 @@ public class MetaInformationEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @return a new instance of MetaInformationEvent
 	 */
+	@Deprecated
 	public MetaInformationEvent(String key, String originalType, String stringValue, Object objectValue) {
 		super(EventContentType.META_INFORMATION, EventTopologyType.START);
 		this.key = key;
