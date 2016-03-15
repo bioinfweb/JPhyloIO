@@ -298,12 +298,14 @@ test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml.gz -text
 test/data/XTG/NoNamespaceShortened.xml -text
+test/data/other/Test.png -text
 test/data/other/Text.txt -text svneol=unset#text/plain
 test/data/other/Text.txt.gz -text
 test/lib/commons-collections4-4.1.jar -text
 test/lib/commons-io-2.4.jar -text
 test/lib/hamcrest-core-1.3.jar -text
 test/lib/junit-4.12.jar -text
+test/lib/org.nexml.model.jar -text
 test/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/IgnoreObjectListMetadataReceiverTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/factory/JPhyloIOReaderWriterFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
@@ -348,3 +350,4 @@ test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStream.jav
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStreamTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BufferedReaderResetTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/OverwriteTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/nexml/MetadataTest.java -text svneol=unset#text/plain
