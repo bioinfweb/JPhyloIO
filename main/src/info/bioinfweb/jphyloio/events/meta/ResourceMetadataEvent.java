@@ -29,6 +29,14 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Indicates that metadata linking a RDF resource has been encountered at the current position of the document. The resource can 
+ * either be named and referenced by {@link #getHRef()} or (if {@link #getHRef()} returns {@code null}) be an anonymous RDF which 
+ * is formed by the set of upcoming nested metaevents. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class ResourceMetadataEvent extends ConcreteJPhyloIOEvent {
 	private QName rel;
 	private URI hRef;

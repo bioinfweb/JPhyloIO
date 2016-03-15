@@ -27,6 +27,13 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Indicates that literal metadata has been encountered at the current position of the document. The actual literal value will be 
+ * represented by one or more nested {@link LiteralMetadataContentEvent}s.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class LiteralMetadataEvent extends ConcreteJPhyloIOEvent {
 	//TODO This class shall replace the current MetaInformationEvent implementation as soon as the metadata concept is finally approved.
 

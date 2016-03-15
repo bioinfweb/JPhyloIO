@@ -28,11 +28,19 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * Instances of this class act as a wrapper for {@link XMLEvent}s and are nested within 
- * {@link EventContentType#META_INFORMATION}, if the content of this metainformation is
- * XML.  
+ * This event represents a value of a literal metadata and is therefore always nested inside start and end events of the type
+ * {@link EventContentType#META_LITERAL}.
+ * <p>
+ * Values can be represented in the following ways:
+ * <ul>
+ *   <li>An instance can represent a single object value directly.</li>
+ *   <li>An sequence of events can represent values of an array (e.g. read from a Newick hot comment).</li>
+ *   <li>An sequence of events can represent a more complex XML representation of the literal value. In such cases one event 
+ *       instance will represent each {@link XMLEvent} created from the encountered XML.</li>
+ * </ul>
  * 
  * @author Ben St&ouml;ver
+ * @since 0.0.0
  */
 public class LiteralMetadataContentEvent extends ConcreteJPhyloIOEvent {
 	private String stringValue;

@@ -78,7 +78,6 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * @see EventContentType
  * @see JPhyloIOEventWriter
  */
-//TODO "RESOURCE_META.START" must have a property linking an external resource.
 //TODO Would it make sense, to have no content event nested in LITERAL_META or must there be at least one? (Can NeXML have empty meta tags?)
 //TODO LITRAL_META_CONTENT can represent XML events, simple numeric or string values or also contain more complex objects as values. (In such cases custom XML could already be parsed as (optional) an alternative to giving single XML content events.)
 public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
