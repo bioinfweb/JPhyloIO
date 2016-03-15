@@ -21,10 +21,8 @@ package info.bioinfweb.jphyloio.test.tests.nexml;
 
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -88,15 +86,18 @@ public class MetadataTest {
 		OTU otu = otus.createOTU();
 		otu.setLabel("some OTU");
 		
-		otu.addAnnotationValue("kt:hasString", nameSpaceURI, "some string");
-		Annotation annotation = otu.addAnnotationValue("kt:hasNumber", nameSpaceURI, 18.3);  // Value will be ignored as soon as nested elements are present.
+		otu.addAnnotationValue("kt:hasString", nameSpaceURI, "top level literal");
+		//Annotation annotation = otu.addAnnotationValue("kt:hasNumber", nameSpaceURI, 18.3);  // Value will be ignored as soon as nested elements are present.
+		//Annotation annotation = otu.addAnnotationValue("kt:hasResource", nameSpaceURI, new URI("http://bioinfweb.info/SubjectConflict"));
+		Annotation annotation = otu.addAnnotationValue("kt:hasResource", nameSpaceURI, "");
+		annotation.setId("parentMeta");
 		annotation.setAbout("#" + annotation.getId());
-		annotation.addAnnotationValue("kt:hasNumber", nameSpaceURI, 19.2);
-		annotation.addAnnotationValue("kt:hasNumber", nameSpaceURI, 20.1);
-		otu.addAnnotationValue("kt:hasResource", nameSpaceURI, new URL("http://bioinfweb.info/Test_URL"));
-		otu.addAnnotationValue("kt:hasResource", nameSpaceURI, new URI("http://bioinfweb.info/Test_URI"));
-		otu.addAnnotationValue("kt:hasMyObject", nameSpaceURI, new MyClass(18, "Hello World!", EventContentType.ALIGNMENT));
-		otu.addAnnotationValue("kt:hasImage", nameSpaceURI, ImageIO.read(new File("data/other/Test.png")));
+		annotation.addAnnotationValue("kt:hasString", nameSpaceURI, "nested meta 1");
+		annotation.addAnnotationValue("kt:hasString", nameSpaceURI, "nested meta 2");
+//		otu.addAnnotationValue("kt:hasResource", nameSpaceURI, new URL("http://bioinfweb.info/Test_URL"));  // Not written as resource meta.
+//		otu.addAnnotationValue("kt:hasResource", nameSpaceURI, new URI("http://bioinfweb.info/Test_URI"));
+//		otu.addAnnotationValue("kt:hasMyObject", nameSpaceURI, new MyClass(18, "Hello World!", EventContentType.ALIGNMENT));
+//		otu.addAnnotationValue("kt:hasImage", nameSpaceURI, ImageIO.read(new File("data/other/Test.png")));  // Not correctly written.
 		
 		System.out.println(document.getXmlString());
 	}

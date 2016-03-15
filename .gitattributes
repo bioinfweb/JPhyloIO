@@ -215,6 +215,7 @@ test/data/MEGA/HLA-3Seq.meg.gz -text
 test/data/MEGA/MatchToken.meg -text
 test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
 test/data/NeXML/LargeSequences.xml -text svneol=unset#text/plain
+test/data/NeXML/MetaCustomXML.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml.gz -text
 test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
@@ -351,3 +352,4 @@ test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStreamTest
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BufferedReaderResetTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/OverwriteTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/nexml/MetadataTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/nexml/ReadingCustomXMLTest.java -text svneol=unset#text/plain
