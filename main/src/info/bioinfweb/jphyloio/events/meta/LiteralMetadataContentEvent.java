@@ -45,28 +45,55 @@ import javax.xml.stream.events.XMLEvent;
 public class LiteralMetadataContentEvent extends ConcreteJPhyloIOEvent {
 	private String stringValue;
 	private Object objectValue;
+	private String alternativeStringValue = null;
 	private String originalType;
 
+	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param originalType the original type of meta information or null. 
+	 * @param stringValue the string value of the meta information.
+	 */
 	public LiteralMetadataContentEvent(String originalType, String stringValue) {
 		this(originalType, stringValue, stringValue);
 	}
 	
 	
 	/**
-	 * Creates a new instance of MetaInformationEvent.
+	 * Creates a new instance of this class.
 	 * 
-	 * @param originalType The original type of meta information or null. 
-	 * @param stringValue The string value of the meta information.
-	 * @param objectValue The object value of the meta information.
-	 * 
-	 * @return a new instance of MetaInformationEvent
+	 * @param originalType the original type of meta information or null. 
+	 * @param stringValue the string value of the meta information.
+	 * @param objectValue the object value of the meta information.
 	 */
 	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue) {
+		this(originalType, stringValue, objectValue, null);
+	}
+	
+	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param originalType the original type of meta information or null. 
+	 * @param stringValue the string value of the meta information.
+	 * @param objectValue the object value of the meta information.
+	 * @param alternativeStringValue an alternative string representation of the value (Some formats may provide alternative
+	 *        representations of a value, e.g. a human and a machine readable one.)
+	 * @throws NullPointerException if {@code stringValue} is {@code null} and {@code alternativeStringValue} is not
+	 */
+	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue) {
 		super(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE);
 		
-		this.stringValue = stringValue;  //TODO Should an NPE be thrown if both values are null?
+		this.stringValue = stringValue;  //TODO Should an NPE be thrown if stringValue and objectValue are null?
 		this.objectValue = objectValue;
 		this.originalType = originalType;
+		if ((stringValue == null) && (alternativeStringValue != null)) {
+			throw new NullPointerException("stringValue must not be null, if alternativeStringValue is provided.");
+		}
+		else {
+			this.alternativeStringValue = alternativeStringValue;
+		}
 	}
 	
 
@@ -117,5 +144,27 @@ public class LiteralMetadataContentEvent extends ConcreteJPhyloIOEvent {
 	
 	public XMLEvent getXMLEvent() {  //TODO Should simple strings also be converted to a characters event here or in the constructor?
 		return (XMLEvent)getObjectValue();
+	}
+
+
+	/**
+	 * Determines whether an alternative string representation is available for the value modeled by this event.
+	 * 
+	 * @return {@code true} if an alternative representation is available or {@code false} otherwise
+	 */
+	public boolean hasAlternativeStringValue() {
+		return getAlternativeStringValue() != null;
+	}
+	
+	
+	/**
+	 * Returns the alternative string representation of the literal value modeled by this event.
+	 * <p>
+	 * Some formats may provide alternative representations of a value, e.g. a human and a machine readable one.
+	 * 
+	 * @return the alternative representation or {@code null} if there is none
+	 */
+	public String getAlternativeStringValue() {
+		return alternativeStringValue;
 	}
 }
