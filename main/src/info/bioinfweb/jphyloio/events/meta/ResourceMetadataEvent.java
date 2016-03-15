@@ -19,7 +19,14 @@
 package info.bioinfweb.jphyloio.events.meta;
 
 
+import java.net.URI;
+
+import javax.xml.namespace.QName;
+
+
 
 public class ResourceMetadataEvent {
-	
+	private QName rel;
+	private URI href;
+	private String about;
 }

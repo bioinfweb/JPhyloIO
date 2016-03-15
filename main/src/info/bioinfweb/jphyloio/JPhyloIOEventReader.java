@@ -65,7 +65,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * Edge = "EDGE.START", {MetaInformation,} "EDGE.END";
  * 
  * MetaInformation = ResourceMeta | LiteralMeta;
- * ResourceMeta = "RESOURCE_META.START", {LiteralMeta,} "RESOURCE_META.END";
+ * ResourceMeta = "RESOURCE_META.START", {MetaInformation,} "RESOURCE_META.END";
  * LiteralMeta = "LITERAL_META.START", {"LITERAL_META_CONTENT.SOLE",} "LITERAL_META.END";
  * </pre>
  * Additionally {@link CommentEvent}s ({@code "COMMENT.SOLE"}) may occur at any position in the stream, which 
@@ -78,12 +78,9 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * @see EventContentType
  * @see JPhyloIOEventWriter
  */
-//TODO "RESOURCE_META.START" must have a property linking an external resource or indicating that nested literal events follow. Maybe there should also be a property indicating whether this metaevent is a subject (had an about attribute)
-//TODO RESOURCE_META linking external resource could also have the type SOLE (or even have a different content type). (Can NeXML meta tags with href and nested events occur? If so, how should they be interpreted? What would be the subject of the nested tags?)
+//TODO "RESOURCE_META.START" must have a property linking an external resource.
 //TODO Would it make sense, to have no content event nested in LITERAL_META or must there be at least one? (Can NeXML have empty meta tags?)
 //TODO LITRAL_META_CONTENT can represent XML events, simple numeric or string values or also contain more complex objects as values. (In such cases custom XML could already be parsed as (optional) an alternative to giving single XML content events.)
-//TODO Is it really necessary to model LITERAL_META.START and RESOURCE_META.START in different classes?
-//     Some questions may be solved by comparing to the current JDOM-based Java NeXML reader implementation.
 public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	/**
 	 * Checks if another event could be parsed from the underlying document.
