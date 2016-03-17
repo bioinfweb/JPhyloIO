@@ -30,9 +30,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {	
-	public NeXMLSequenceContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, String commentStart,
-			String commentEnd, boolean longTokens) {
-		super(writer, parameterMap, commentStart, commentEnd, longTokens);
+	public NeXMLSequenceContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens) {
+		super(writer, parameterMap, null, null, longTokens);
 	}
 
 

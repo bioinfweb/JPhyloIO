@@ -113,6 +113,7 @@ main/src/info/bioinfweb/jphyloio/formats/newick/NewickTokenType.java -text svneo
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickWriterNodeLabelProcessor.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/AbstractNeXMLElementReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/DocumentInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventWriter.java -text svneol=unset#text/plain

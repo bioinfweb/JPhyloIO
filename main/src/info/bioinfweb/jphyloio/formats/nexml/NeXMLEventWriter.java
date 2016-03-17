@@ -48,6 +48,8 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	private ReadWriteParameterMap parameters;
 	private ApplicationLogger logger;
 	
+	private DocumentInformation documentInformation = new DocumentInformation();
+	
 	
 	@Override
 	public String getFormatID() {
@@ -77,7 +79,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	
 	
 	private void writeRowTag(LinkedOTUOrOTUsEvent sequenceEvent, MatrixDataAdapter alignment) throws Exception {
-		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, "" + COMMENT_START, "" + COMMENT_END, alignment.containsLongTokens());
+		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, alignment.containsLongTokens());
 		
 		writer.writeStartElement(TAG_ROW.getLocalPart());
 		writeLinkedOTUOrOTUsAttributes(sequenceEvent, TAG_OTU, true);
@@ -85,16 +87,6 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 		alignment.writeSequencePartContentData(receiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));
 		
 		writer.writeEndElement();
-	}
-	
-	
-	private void writeCharTag(String id, String states) {
-		
-	}
-	
-	
-	private void writeFormatTag(MatrixDataAdapter alignment) {
-		
 	}
 	
 	
@@ -135,16 +127,34 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
+	private void checkOTUTag() {
+		
+	}
+	
+	
 	private void writeOTUSTag(OTUListDataAdapter otuList) throws XMLStreamException {		
 		writer.writeStartElement(TAG_OTUS.getLocalPart());
 		writeLabeledIDAttributes(otuList.getListStartEvent());
 		
 		Iterator<String> otuIDIterator = otuList.getIDIterator();
 		while (otuIDIterator.hasNext()) {
-			writeOTUTag(otuList.getOTUStartEvent(otuIDIterator.next()));
+			writeOTUTag(otuList.getOTUStartEvent(otuIDIterator.next())); //TODO use otuList.writeData() with according receiver instead
+		}
+		
+		if (otuList.hasMetadata()) {
+//			otuList.writeMetadata(receiver); //TODO write according meta data 
 		}
 		
 		writer.writeEndElement();
+	}
+	
+	
+	private void checkOTUSTag(OTUListDataAdapter otuList) {		
+//		otuList.writeData(receiver, id); //TODO check OTUS with according receiver		
+		
+		if (otuList.hasMetadata()) {
+//			otuList.writeMetadata(receiver); //TODO check meta data 
+		}
 	}
 	
 	
@@ -168,6 +178,42 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
+	private void checkOTUSTags(DocumentDataAdapter document) {
+		if (document.getOTUListCount() > 0) {
+			documentInformation.setHasOTUList(true);
+		}
+		else {
+			documentInformation.setHasOTUList(false);
+		}
+		
+		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
+		if (otusIterator.hasNext()) {
+			checkOTUSTag(otusIterator.next());
+			if (otusIterator.hasNext()) {				
+				do {
+					checkOTUSTag(otusIterator.next());
+				}	while (otusIterator.hasNext());
+			}
+		}
+	}
+	
+	
+	private void checkDocument(DocumentDataAdapter document) { //check if document is empty (or contains only meta data)
+		if (document.hasMetadata()) {
+//			document.writeMetadata(receiver); //TODO check meta data for namespaces with according receiver
+		}
+		
+		if (!document.getOTUListIterator().hasNext() && !document.getMatrixIterator().hasNext() && !document.getTreeNetworkIterator().hasNext()) {
+			documentInformation.setEmpty(true);
+		}
+		else {
+			documentInformation.setEmpty(false);
+			checkOTUSTags(document);
+			//TODO check rest of document
+		}
+	}
+	
+	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws Exception {
 		this.writer = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
@@ -182,6 +228,10 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 		this.writer.writeStartDocument();
 		this.writer.writeStartElement(TAG_ROOT.getLocalPart());
 		XMLUtils.writeNamespaceAttr(this.writer, NAMESPACE_URI.toString());  //TODO Link xsd? 
+		
+		if (document.hasMetadata()) {
+//			document.writeMetadata(receiver); //TODO write according meta data 
+		}
 		
 		writeOTUSTags(document);
 		writeCharactersTags(document);
