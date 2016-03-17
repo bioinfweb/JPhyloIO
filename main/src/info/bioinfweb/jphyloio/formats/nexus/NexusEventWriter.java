@@ -40,7 +40,7 @@ import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -219,7 +219,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeTaxaBlock(OTUListDataAdapter otuList) throws IOException {
+	private void writeTaxaBlock(OTUListDataAdapter otuList) throws Exception {
 		logIgnoredMetadata(otuList, "Metadata attached to an OTU list have been ignored.");
 		if (otuList.getCount() > 0) {
 			writeBlockStart(BLOCK_NAME_TAXA);
@@ -262,7 +262,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeTaxaBlocks(DocumentDataAdapter document) throws IOException {
+	private void writeTaxaBlocks(DocumentDataAdapter document) throws Exception {
 		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
 		if (otusIterator.hasNext()) {
 			writeTaxaBlock(otusIterator.next());
@@ -318,7 +318,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 
 	
 	
-	private void writeFormatCommand(MatrixDataAdapter matrix) throws IOException {
+	private void writeFormatCommand(MatrixDataAdapter matrix) throws Exception {
 		ObjectListDataAdapter tokenSets = matrix.getTokenSets();
 		if (tokenSets.getCount() > 0) {
 			writeLineStart(writer, COMMAND_NAME_FORMAT);
@@ -427,7 +427,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, long alignmentLength, 
-			String extensionToken)	throws IOException {
+			String extensionToken)	throws Exception {
 		
 		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
 		writeLineStart(writer, COMMAND_NAME_MATRIX);
@@ -446,7 +446,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeLineStart(writer, formatToken(sequenceName));
 			writer.write(' ');
 			
-			SequenceContentReceiver receiver = new SequenceContentReceiver(
+			TextSequenceContentReceiver receiver = new TextSequenceContentReceiver(
 					writer, parameters, "" + COMMENT_START, "" + COMMENT_END, matrix.containsLongTokens());
 			matrix.writeSequencePartContentData(receiver, id, 0, matrix.getSequenceLength(id));
 			if (receiver.didIgnoreMetadata()) {
@@ -486,7 +486,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	 * @return a value indicating if and which Nexus block was written
 	 * @throws IOException
 	 */
-	private MatrixWriteResult writeCharactersUnalignedBlock(DocumentDataAdapter document, MatrixDataAdapter matrix) throws IOException {
+	private MatrixWriteResult writeCharactersUnalignedBlock(DocumentDataAdapter document, MatrixDataAdapter matrix) throws Exception {
 		logIgnoredMetadata(matrix, "A character matrix");
 		if (matrix.getSequenceCount() > 0) {
 			long columnCount = matrix.getColumnCount();
@@ -527,7 +527,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeCharactersUnalignedBlocks(DocumentDataAdapter document) throws IOException {
+	private void writeCharactersUnalignedBlocks(DocumentDataAdapter document) throws Exception {
 		boolean charactersWritten = false;
 		boolean unalignedWritten = false;
 		
@@ -622,7 +622,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeTreesBlocks(DocumentDataAdapter document) throws IOException {
+	private void writeTreesBlocks(DocumentDataAdapter document) throws Exception {
 		Set<String> processedOTUsIDs = new HashSet<String>();
 		boolean treeWritten;
 		long skippedNetworks;

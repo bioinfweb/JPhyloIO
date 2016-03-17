@@ -28,7 +28,7 @@ import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.SequenceContentReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
@@ -152,7 +152,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 			}
     	
     	// Write sequence:
-    	SequenceContentReceiver receiver = new SequenceContentReceiver(writer, parameters, null, null, 
+    	TextSequenceContentReceiver receiver = new TextSequenceContentReceiver(writer, parameters, null, null, 
     			matrix.containsLongTokens());
     	matrix.writeSequencePartContentData(receiver, id, 0, matrix.getSequenceLength(id));
     	extendSequence(matrix, id, maxSequenceLength, extensionToken, receiver);

@@ -42,7 +42,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-class FASTASequenceEventReceiver extends AbstractEventReceiver implements JPhyloIOEventReceiver, FASTAConstants {
+class FASTASequenceEventReceiver extends AbstractEventReceiver<Writer> implements JPhyloIOEventReceiver, FASTAConstants {
 	private int charsPerLineWritten = 0;
 	private MatrixDataAdapter matrixDataAdapter;
 	private long lineLength;

@@ -20,8 +20,9 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -39,10 +40,9 @@ import java.util.regex.Pattern;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class SequenceContentReceiver extends AbstractEventReceiver {
+public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver<Writer> {
 	private String commentStart;
 	private String commentEnd;
-	private boolean longTokens;
 	
 	
 	/**
@@ -55,59 +55,50 @@ public class SequenceContentReceiver extends AbstractEventReceiver {
 	 * @param longTokens Specify {@code true} here if sequence tokens shall be separated by spaces (if one token may
 	 *        be longer than one character) or {@code false} otherwise.
 	 */
-	public SequenceContentReceiver(Writer writer,	ReadWriteParameterMap parameterMap, String commentStart,
+	public TextSequenceContentReceiver(Writer writer,	ReadWriteParameterMap parameterMap, String commentStart,
 			String commentEnd, boolean longTokens) {
 		
-		super(writer, parameterMap);
-		this.commentStart = commentStart;
-		this.commentEnd = commentEnd;
-		this.longTokens = longTokens;
+		super(writer, parameterMap, commentStart, commentEnd, longTokens);
 	}
 	
 	
-	private void writeToken(String token) throws IOException {
+	protected void writeSingleToken(String token) throws IOException {
 		getWriter().write(token);
-		if (longTokens) {
+		if (isLongTokens()) {
 			getWriter().write(' ');
 		}
 	}
 
 
 	@Override
-	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, ClassCastException, IOException {
-		switch (event.getType().getContentType()) {
-			case SINGLE_SEQUENCE_TOKEN:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					writeToken(event.asSingleSequenceTokenEvent().getToken());
-				}  // End events can be ignored.
-				break;
-			case SEQUENCE_TOKENS:
-				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
-					writeToken(token);
-				}
-				break;
-			case COMMENT:
-				if (commentStart != null) {
-					getWriter().write(commentStart);
-					String content = event.asCommentEvent().getContent();
-					String editedContent = content.replaceAll(Pattern.quote(commentEnd), "");
-					getWriter().write(editedContent);
-					if (!content.equals(editedContent)) {
-						getLogger().addWarning("A comment inside a sequence contained one or more comment end symbols used by the target "
-								+ "format. The according parts were removed from the comment.");
-					}
-					getWriter().write(commentEnd);
-				}
-				else {
-					addIgnoredComments(1);
-				}
-				break;
-			case META_INFORMATION:  //TODO Filter comments nested in metadata by counting metadata level. (Possibly use superclass shared with NewickNodeEdgeEventReceiver.)
-				addIgnoredMetadata(1);
-				break;
-			default:
-				break;
+	protected void writeTokens(SequenceTokensEvent event) throws Exception {
+		for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
+			writeSingleToken(token);
+		}		
+	}
+
+
+	@Override
+	protected void writeComment(CommentEvent event) throws IOException {
+		if (commentStart != null) {
+			getWriter().write(commentStart);
+			String content = event.getContent();
+			String editedContent = content.replaceAll(Pattern.quote(commentEnd), "");
+			getWriter().write(editedContent);
+			if (!content.equals(editedContent)) {
+				getLogger().addWarning("A comment inside a sequence contained one or more comment end symbols used by the target "
+						+ "format. The according parts were removed from the comment.");
+			}
+			getWriter().write(commentEnd);
 		}
-		return true;
-	}	
+		else {
+			addIgnoredComments(1);
+		}		
+	}
+
+
+	@Override
+	protected void writeMetaData(MetaInformationEvent event) throws Exception {
+		addIgnoredMetadata(1);
+	}
 }

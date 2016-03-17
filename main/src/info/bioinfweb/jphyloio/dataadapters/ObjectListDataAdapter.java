@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
-import java.io.IOException;
 import java.util.Iterator;
 
 
@@ -27,9 +26,9 @@ import java.util.Iterator;
 /**
  * Allows to provide data for a list of phylogenetic objects. All objects need to be identified by
  * unique IDs, provided by {@link #getIDIterator()} and the event sequence for each object will be requested
- * be separate calls of {@link #writeData(JPhyloIOEventReceiver, String)}.
+ * by separate calls of {@link #writeData(JPhyloIOEventReceiver, String)}.
  * <p>
- * Such objects may e.g. be OTUs, token setsor character sets, depending on where instances of this 
+ * Such objects may e.g. be OTUs, token sets or character sets, depending on where instances of this 
  * interface are used.
  * 
  * @author Ben St&ouml;ver
@@ -57,5 +56,5 @@ public interface ObjectListDataAdapter {
 	 * @param nodeID the ID of the requested node
 	 * @throws IllegalArgumentException if an unknown ID was specified
 	 */
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException, IOException;
+	public void writeData(JPhyloIOEventReceiver receiver, String id) throws Exception;
 }

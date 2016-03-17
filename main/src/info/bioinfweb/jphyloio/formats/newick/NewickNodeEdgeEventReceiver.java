@@ -26,18 +26,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.CertainStartEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 
-public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends CertainStartEventReceiver<E> 
+public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends CertainStartEventReceiver<Writer, E> 
 		implements NewickConstants {
 	
 	public static final char STRING_DELEMITER_REPLACEMENT = '\'';

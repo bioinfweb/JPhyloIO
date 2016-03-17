@@ -377,7 +377,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	protected void extendSequence(MatrixDataAdapter matrix, String sequenceID, long targetLength, 
 			String extensionToken, JPhyloIOEventReceiver receiver) 
-			throws IllegalArgumentException, ClassCastException, IOException {
+			throws Exception {
 		
 		if (extensionToken != null) {
 			long additionalLength = targetLength - matrix.getSequenceLength(sequenceID);

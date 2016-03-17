@@ -59,7 +59,7 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 	 * @param nodeID the ID of the requested node
 	 * @throws IllegalArgumentException if an unknown node ID was specified
 	 */
-	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws Exception;  //TODO Can metadata be written directly to all formats, without storing metaevents?
 	
 	/**
 	 * Returns an iterator returning the IDs of all edges starting at the specified node. This includes 
@@ -79,5 +79,5 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 	 * @param edgeID the ID of the requested edge
 	 * @throws IllegalArgumentException if an unknown edge ID was specified
 	 */
-	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws Exception;  //TODO Can metadata be written directly to all formats, without storing metaevents?
 }

@@ -145,8 +145,7 @@ public class NewickStringWriter implements NewickConstants {
 //	}
 	
 	
-	private void writeSubtree(String rootEdgeID) 
-			throws IllegalArgumentException, IOException {
+	private void writeSubtree(String rootEdgeID) throws Exception {
 		
 		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = 
 				new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters, EventContentType.EDGE);
@@ -207,7 +206,7 @@ public class NewickStringWriter implements NewickConstants {
 	 * 
 	 * @throws IOException if an I/O error occurs while writing to specified writer
 	 */
-	public void write() throws IOException {
+	public void write() throws Exception {
 		ApplicationLogger logger = parameters.getLogger();
 		if (tree.isTree()) {
 			if (tree.hasMetadata()) {

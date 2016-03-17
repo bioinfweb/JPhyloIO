@@ -21,9 +21,6 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -36,7 +33,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-public class TokenSetEventReceiver extends CertainStartEventReceiver<TokenSetDefinitionEvent> 
+public class TokenSetEventReceiver extends CertainStartEventReceiver<Writer, TokenSetDefinitionEvent> 
 		implements JPhyloIOEventReceiver, NexusConstants {
 
 	private StringBuilder singleTokens = new StringBuilder();

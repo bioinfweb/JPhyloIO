@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
@@ -33,7 +34,9 @@ import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
@@ -54,6 +57,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	
 	private void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException {
 		writer.writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique. (Probably a task that should use resources to be added to the super class.)
+		writer.writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
 		if (event.hasLabel()) {
 			writer.writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
 		}
@@ -69,6 +73,59 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 			//TODO Link UNDEFINED taxon, if an OTU shall be linked.
 		}
 		//TODO Linking OTUs is never optional, therefore one OTU (usually the one containing the UDEFINED taxon) should be linked.
+	}
+	
+	
+	private void writeRowTag(LinkedOTUOrOTUsEvent sequenceEvent, MatrixDataAdapter alignment) throws Exception {
+		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, "" + COMMENT_START, "" + COMMENT_END, alignment.containsLongTokens());
+		
+		writer.writeStartElement(TAG_ROW.getLocalPart());
+		writeLinkedOTUOrOTUsAttributes(sequenceEvent, TAG_OTU, true);
+		
+		alignment.writeSequencePartContentData(receiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));
+		
+		writer.writeEndElement();
+	}
+	
+	
+	private void writeCharTag(String id, String states) {
+		
+	}
+	
+	
+	private void writeFormatTag(MatrixDataAdapter alignment) {
+		
+	}
+	
+	
+	private void writeCharactersTag(MatrixDataAdapter alignment) throws Exception {
+		writer.writeStartElement(TAG_CHARACTERS.getLocalPart());
+		writeLinkedOTUOrOTUsAttributes(alignment.getStartEvent(), TAG_OTUS, true);
+		
+		//TODO write format tag
+		
+		writer.writeStartElement(TAG_MATRIX.getLocalPart()); //tag does not have attributes
+		
+		Iterator<String> sequenceIDIterator = alignment.getSequenceIDIterator();
+		while (sequenceIDIterator.hasNext()) {
+			writeRowTag(alignment.getSequenceStartEvent(sequenceIDIterator.next()), alignment);
+		}		
+		
+		writer.writeEndElement();
+		writer.writeEndElement();
+	}
+	
+	
+	private void writeCharactersTags(DocumentDataAdapter document) throws Exception {
+		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator();
+		if (matricesIterator.hasNext()) {
+			writeCharactersTag(matricesIterator.next());
+			if (matricesIterator.hasNext()) {				
+				do {
+					writeCharactersTag(matricesIterator.next());
+				}	while (matricesIterator.hasNext());
+			}
+		}
 	}
 	
 	
@@ -104,7 +161,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 		else {
 			throw new IOException("A NeXML file must have at least one OTU list"); //TODO give better exception
 			//TODO The generated UNDEFINED taxon may be the only entry. In such cases, no OTU list from the document adapter would be required.
-			//TODO In such cases an default OTU list and an UNDEFINED taxon should be created here and stored in property, to be used in writeLinkedOTUOrOTUsAttributes() later. 
+			//TODO In such cases a default OTU list and an UNDEFINED taxon should be created here and stored in property, to be used in writeLinkedOTUOrOTUsAttributes() later. 
 			//     (That should not be done, if a completely empty document (e.g. containing nothing or only document metadata) shall be written.
 			//     An UNDEFINED taxon will also have to be created, if an OTU list is present, if there is at least one sequence without a linked OTU.
 		}
@@ -115,7 +172,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws Exception {
 		this.writer = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
 		this.parameters = parameters;
-		logger = parameters.getLogger();
+		logger = parameters.getLogger();		
 		
 		//TODO Before starting to write, the whole document must be iterated once and screened for 
 		//     - all metadata namespaces,
@@ -127,6 +184,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 		XMLUtils.writeNamespaceAttr(this.writer, NAMESPACE_URI.toString());  //TODO Link xsd? 
 		
 		writeOTUSTags(document);
+		writeCharactersTags(document);
 		
 		this.writer.writeEndElement();
 		this.writer.writeEndDocument();
