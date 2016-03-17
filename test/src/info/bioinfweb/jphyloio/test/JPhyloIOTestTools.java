@@ -19,8 +19,8 @@
 package info.bioinfweb.jphyloio.test;
 
 
-import info.bioinfweb.commons.bio.CharacterStateType;
-import info.bioinfweb.commons.bio.CharacterStateMeaning;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -226,14 +226,14 @@ public class JPhyloIOTestTools {
   }
 	
 	
-  public static void assertTokenSetDefinitionEvent(CharacterStateType expectedType, String expectedParsedName, 
+  public static void assertTokenSetDefinitionEvent(CharacterStateSetType expectedType, String expectedParsedName, 
   		JPhyloIOEventReader reader) throws Exception {
   	
   	assertTokenSetDefinitionEvent(expectedType, expectedParsedName, null, reader);
   }
   
   
-  public static void assertTokenSetDefinitionEvent(CharacterStateType expectedType, String expectedLabel, 
+  public static void assertTokenSetDefinitionEvent(CharacterStateSetType expectedType, String expectedLabel, 
   		String expectedCharSetID, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
@@ -248,7 +248,7 @@ public class JPhyloIOTestTools {
 	
 	
   public static void assertSingleTokenDefinitionEvent(String expectedTokenName, 
-  		CharacterStateMeaning expectedMeaning, boolean testEndEvent, JPhyloIOEventReader reader) throws Exception {
+  		CharacterSymbolMeaning expectedMeaning, boolean testEndEvent, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();

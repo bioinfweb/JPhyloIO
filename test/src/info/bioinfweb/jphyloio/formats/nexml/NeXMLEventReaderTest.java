@@ -19,8 +19,8 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import info.bioinfweb.commons.bio.CharacterStateMeaning;
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -344,11 +344,11 @@ public class NeXMLEventReaderTest {
 				assertCharacterSetEvent(0, 2, reader);
 				assertEndEvent(EventContentType.CHARACTER_SET, reader);
 				
-				assertTokenSetDefinitionEvent(CharacterStateType.DNA, "DNA", "charSet0", reader);
-				assertSingleTokenDefinitionEvent("A", CharacterStateMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("C", CharacterStateMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("G", CharacterStateMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("T", CharacterStateMeaning.CHARACTER_STATE, true, reader);
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", "charSet0", reader);
+				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);

@@ -76,7 +76,7 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements
 
 	
 	@Override
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException, IOException {
+	public void writeData(JPhyloIOEventReceiver receiver, String id) throws Exception {
 		receiver.add(otus.get(id));
 		receiver.add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
 	}

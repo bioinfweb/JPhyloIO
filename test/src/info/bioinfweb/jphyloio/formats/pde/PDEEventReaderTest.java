@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formats.pde;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.* ;
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -73,7 +73,7 @@ public class PDEEventReaderTest {
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertTokenSetDefinitionEvent(CharacterStateType.DNA, null, "charSet2", reader);
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
@@ -122,7 +122,7 @@ public class PDEEventReaderTest {
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertTokenSetDefinitionEvent(CharacterStateType.AMINO_ACID, null, "charSet2", reader);
+				assertTokenSetDefinitionEvent(CharacterStateSetType.AMINO_ACID, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
@@ -189,7 +189,7 @@ public class PDEEventReaderTest {
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertTokenSetDefinitionEvent(CharacterStateType.DNA, null, "charSet2", reader);
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
@@ -238,7 +238,7 @@ public class PDEEventReaderTest {
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertTokenSetDefinitionEvent(CharacterStateType.DNA, null, "charSet2", reader);
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
@@ -287,7 +287,7 @@ public class PDEEventReaderTest {
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertTokenSetDefinitionEvent(CharacterStateType.DNA, null, "charSet2", reader);
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);

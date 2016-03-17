@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import info.bioinfweb.commons.bio.CharacterStateMeaning;
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
@@ -50,17 +50,17 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter impleme
 
 	
 	@Override
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException, IOException {
+	public void writeData(JPhyloIOEventReceiver receiver, String id) throws Exception {
 		if (id.equals("tokenSet0")) {
-			receiver.add(new TokenSetDefinitionEvent(CharacterStateType.DNA, id, "Some token set"));
+			receiver.add(new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "Some token set"));
 			
-			receiver.add(new SingleTokenDefinitionEvent("-", CharacterStateMeaning.GAP));
-			receiver.add(new SingleTokenDefinitionEvent("?", CharacterStateMeaning.MISSING));
-			receiver.add(new SingleTokenDefinitionEvent(".", CharacterStateMeaning.MATCH));
-			receiver.add(new SingleTokenDefinitionEvent("A", CharacterStateMeaning.CHARACTER_STATE));
-			receiver.add(new SingleTokenDefinitionEvent("T", CharacterStateMeaning.CHARACTER_STATE));
-			receiver.add(new SingleTokenDefinitionEvent("C", CharacterStateMeaning.CHARACTER_STATE));
-			receiver.add(new SingleTokenDefinitionEvent("G", CharacterStateMeaning.CHARACTER_STATE));
+			receiver.add(new SingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP));
+			receiver.add(new SingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING));
+			receiver.add(new SingleTokenDefinitionEvent(".", CharacterSymbolMeaning.MATCH));
+			receiver.add(new SingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE));
+			receiver.add(new SingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE));
+			receiver.add(new SingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE));
+			receiver.add(new SingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE));
 			
 			receiver.add(new MetaInformationEvent("someKey", "someType", "someValue"));
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
