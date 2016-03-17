@@ -23,7 +23,7 @@ import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
 
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.StreamDataProvider;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 
@@ -38,7 +38,7 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	private Stack<NodeEdgeInfo> sourceNode = new Stack<NodeEdgeInfo>();
 	private Stack<NodeEdgeInfo> edgeInfos = new Stack<NodeEdgeInfo>();
 	
-	private CharacterStateType characterSetType;	
+	private CharacterStateSetType characterSetType;	
 	
 	
 	public XMLStreamDataProvider(R eventReader) {
@@ -96,12 +96,12 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	}
 
 
-	public CharacterStateType getCharacterSetType() {
+	public CharacterStateSetType getCharacterSetType() {
 		return characterSetType;
 	}
 
 
-	public void setCharacterSetType(CharacterStateType characterSetType) {
+	public void setCharacterSetType(CharacterStateSetType characterSetType) {
 		this.characterSetType = characterSetType;
 	}
 	

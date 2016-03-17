@@ -19,8 +19,8 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import info.bioinfweb.commons.bio.CharacterStateMeaning;
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -262,16 +262,16 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 			@Override
 			public void readEvent(NeXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				String symbol = streamDataProvider.getSymbol();
-				CharacterStateMeaning meaning;
+				CharacterSymbolMeaning meaning;
 				
 				if (symbol.equals("?")) {
-					meaning = CharacterStateMeaning.MISSING;
+					meaning = CharacterSymbolMeaning.MISSING;
 				}
 				else if (symbol.equals("-")) {
-					meaning = CharacterStateMeaning.GAP;
+					meaning = CharacterSymbolMeaning.GAP;
 				}
 				else {
-					meaning = CharacterStateMeaning.CHARACTER_STATE;
+					meaning = CharacterSymbolMeaning.CHARACTER_STATE;
 				}
 				
 				Collection<JPhyloIOEvent> currentEventCollection = streamDataProvider.resetCurrentEventCollection();
@@ -388,35 +388,35 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 					throw new JPhyloIOReaderException("Character tag must have an attribute called \"" + ATTR_TYPE + "\".", element.getLocation());
 				}
 				else {
-					CharacterStateType setType = null;				
+					CharacterStateSetType setType = null;				
 					if (tokenSetType.equals(TYPE_DNA_SEQS) || tokenSetType.equals(TYPE_DNA_CELLS)) {
 						info.label = "DNA";
-						setType = CharacterStateType.DNA; //standard IUPAC nucleotide symbols
+						setType = CharacterStateSetType.DNA; //standard IUPAC nucleotide symbols
 						streamDataProvider.setAllowLongTokens(false);
 					}
 					else if (tokenSetType.equals(TYPE_RNA_SEQS) || tokenSetType.equals(TYPE_RNA_CELLS)) {
 						info.label = "RNA";
-						setType = CharacterStateType.RNA;  //standard IUPAC nucleotide symbols
+						setType = CharacterStateSetType.RNA;  //standard IUPAC nucleotide symbols
 						streamDataProvider.setAllowLongTokens(false);
 					}
 					else if (tokenSetType.equals(TYPE_PROTEIN_SEQS) || tokenSetType.equals(TYPE_PROTEIN_CELLS)) {
 						info.label = "AminoAcid";
-						setType = CharacterStateType.AMINO_ACID;  //standard IUPAC amino acid symbols
+						setType = CharacterStateSetType.AMINO_ACID;  //standard IUPAC amino acid symbols
 						streamDataProvider.setAllowLongTokens(false);
 					}
 					else if (tokenSetType.equals(TYPE_CONTIN_SEQ) || tokenSetType.equals(TYPE_CONTIN_CELLS)) {
 						info.label = "ContinuousData";
-						setType = CharacterStateType.CONTINUOUS; 
+						setType = CharacterStateSetType.CONTINUOUS; 
 						streamDataProvider.setAllowLongTokens(true);
 					}
 					else if (tokenSetType.equals(TYPE_RESTRICTION_SEQS) || tokenSetType.equals(TYPE_RESTRICTION_CELLS)) {
 						info.label = "RestrictionSiteData";
-						setType = CharacterStateType.DISCRETE; 
+						setType = CharacterStateSetType.DISCRETE; 
 						streamDataProvider.setAllowLongTokens(false);
 					}
 					else { // type of character block is StandardSeqs or StandardCells
 						info.label = "StandardData";
-						setType = CharacterStateType.DISCRETE;
+						setType = CharacterStateSetType.DISCRETE;
 						streamDataProvider.setAllowLongTokens(true);
 					}
 					streamDataProvider.setCharacterSetType(setType);
@@ -501,7 +501,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 				while (indirectTokenSetIDIterator.hasNext()) {
 					String tokenSetID = indirectTokenSetIDIterator.next();
 					NeXMLTokenSetInformation info = streamDataProvider.getTokenSets().get(tokenSetID);
-					CharacterStateType type = info.getSetType();
+					CharacterStateSetType type = info.getSetType();
 					String id = info.getID();
 					String label = info.getLabel();
 					String charSetID = info.getCharacterSetID();
@@ -637,7 +637,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLStreamDataProv
 				String token = XMLUtils.readStringAttr(element, ATTR_STATE, null);
 				String character = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
 				
-				if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.DISCRETE) 
+				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) 
 						&& !streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
 					
 					String currentStates = streamDataProvider.getCharIDToStatesMap().get(character);

@@ -41,7 +41,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
@@ -144,13 +144,13 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEStreamDataProvider
 						String tokenSetType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null);
 						int alignmentLength = XMLUtils.readIntAttr(element, ATTR_ALIGNEMNT_LENGTH, 0);
 						
-						CharacterStateType type = null;
+						CharacterStateSetType type = null;
 						
 						if (tokenSetType.equals(DNA_TYPE)) {
-							type = CharacterStateType.DNA;
+							type = CharacterStateSetType.DNA;
 						}
 						else {
-							type = CharacterStateType.AMINO_ACID;
+							type = CharacterStateSetType.AMINO_ACID;
 						}						
 						
 						streamDataProvider.setCharacterSetType(type);

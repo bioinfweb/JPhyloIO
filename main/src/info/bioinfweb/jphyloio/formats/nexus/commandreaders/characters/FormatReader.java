@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import info.bioinfweb.commons.bio.CharacterStateType;
-import info.bioinfweb.commons.bio.CharacterStateMeaning;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
@@ -78,28 +78,28 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	}
 	
 	
-	private CharacterStateType getTokenSetType(String parsedName) {
+	private CharacterStateSetType getTokenSetType(String parsedName) {
 		if (parsedName.equals(FORMAT_VALUE_STANDARD_DATA_TYPE)) {
-			return CharacterStateType.DISCRETE;
+			return CharacterStateSetType.DISCRETE;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE)) {
-			return CharacterStateType.NUCLEOTIDE;
+			return CharacterStateSetType.NUCLEOTIDE;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_DNA_DATA_TYPE)) {
-			return CharacterStateType.DNA;
+			return CharacterStateSetType.DNA;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_RNA_DATA_TYPE)) {
-			return CharacterStateType.RNA;
+			return CharacterStateSetType.RNA;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_PROTEIN_DATA_TYPE)) {
-			return CharacterStateType.AMINO_ACID;
+			return CharacterStateSetType.AMINO_ACID;
 		}
 		else if (parsedName.equals(FORMAT_VALUE_CONTINUOUS_DATA_TYPE)) {
 			continuousData = true;
-			return CharacterStateType.CONTINUOUS;
+			return CharacterStateSetType.CONTINUOUS;
 		}
 		else {
-			return CharacterStateType.UNKNOWN;
+			return CharacterStateSetType.UNKNOWN;
 		}
 	}
 	
@@ -134,7 +134,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	}
 	
 	
-	private void addSingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning) {
+	private void addSingleTokenDefinitionEvent(String tokenName, CharacterSymbolMeaning meaning) {
 		singleTokenDefinitionEvents.add(new SingleTokenDefinitionEvent(tokenName, meaning, null));
 	}
 	
@@ -184,15 +184,15 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 		}
 		else if (FORMAT_SUBCOMMAND_MATCH_CHAR.equals(key)) {
 			getStreamDataProvider().getSequenceTokensEventManager().setMatchToken(info.getValue());
-			addSingleTokenDefinitionEvent(info.getValue(), CharacterStateMeaning.MATCH);
+			addSingleTokenDefinitionEvent(info.getValue(), CharacterSymbolMeaning.MATCH);
 			eventCreated = true;
 		}
 		else if (FORMAT_SUBCOMMAND_GAP_CHAR.equals(key)) {
-			addSingleTokenDefinitionEvent(info.getValue(), CharacterStateMeaning.GAP);
+			addSingleTokenDefinitionEvent(info.getValue(), CharacterSymbolMeaning.GAP);
 			eventCreated = true;
 		}
 		else if (FORMAT_SUBCOMMAND_MISSING_CHAR.equals(key)) {
-			addSingleTokenDefinitionEvent(info.getValue(), CharacterStateMeaning.MISSING);
+			addSingleTokenDefinitionEvent(info.getValue(), CharacterSymbolMeaning.MISSING);
 			eventCreated = true;
 		}
 		else if (FORMAT_SUBCOMMAND_SYMBOLS.equals(key)) {
@@ -205,7 +205,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 				for (int i = 0; i < info.getValue().length(); i++) {
 					char c = info.getValue().charAt(i);
 					if (!Character.isWhitespace(c)) {
-						addSingleTokenDefinitionEvent(Character.toString(c), CharacterStateMeaning.CHARACTER_STATE);
+						addSingleTokenDefinitionEvent(Character.toString(c), CharacterSymbolMeaning.CHARACTER_STATE);
 						eventCreated = true;  // Otherwise the previously constructed meta event will be returned, indicating an empty symbols subcommand.
 					}
 				} 
@@ -225,7 +225,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	private void removeWaitingCharacterStateEvents() {
 		Iterator<SingleTokenDefinitionEvent> iterator = singleTokenDefinitionEvents.iterator();
 		while (iterator.hasNext()) {
-			if (CharacterStateMeaning.CHARACTER_STATE.equals(iterator.next().getMeaning())) {
+			if (CharacterSymbolMeaning.CHARACTER_STATE.equals(iterator.next().getMeaning())) {
 				iterator.remove();
 			}
 		}
@@ -237,7 +237,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	 * <p>
 	 * In the case of MrBayes {@code MIXED} data type more than one token set definition event may be added. The 
 	 * stored single token definition events are nested into each of these token set definition event, except for 
-	 * events with the meaning {@link CharacterStateMeaning#CHARACTER_STATE}, which are removed in this case, 
+	 * events with the meaning {@link CharacterSymbolMeaning#CHARACTER_STATE}, which are removed in this case, 
 	 * because they may not fit to all defined token sets.
 	 * <p>
 	 * If only single token definition events could be created from the format command and no token set, no

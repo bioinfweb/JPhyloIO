@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.events;
 
 
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
@@ -46,7 +46,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * @author Ben St&ouml;ver
  */
 public class TokenSetDefinitionEvent extends LabeledIDEvent {
-	private CharacterStateType setType;
+	private CharacterStateSetType setType;
 	private String characterSetID = null;
 	
 	
@@ -61,7 +61,7 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 * @param label a name describing this token set
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
-	public TokenSetDefinitionEvent(CharacterStateType type, String id, String label) {
+	public TokenSetDefinitionEvent(CharacterStateSetType type, String id, String label) {
 		this (type, id, label, null);
 	}
 	
@@ -81,7 +81,7 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 *        previously fired events.)
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
-	public TokenSetDefinitionEvent(CharacterStateType type, String id, String label, String linkedCharacterSetID) {
+	public TokenSetDefinitionEvent(CharacterStateSetType type, String id, String label, String linkedCharacterSetID) {
 		super(EventContentType.TOKEN_SET_DEFINITION, id, label);
 
 		if (type == null) {
@@ -99,7 +99,7 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 * 
 	 * @return the meaning of the token set as defined by {@link TokenSetType}
 	 */
-	public CharacterStateType getSetType() {
+	public CharacterStateSetType getSetType() {
 		return setType;
 	}
 	

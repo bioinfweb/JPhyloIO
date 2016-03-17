@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
@@ -96,7 +96,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 				}
 			}			
 
-			if (streamDataProvider.getCharacterSetType().equals(CharacterStateType.DISCRETE) && !translateTokens.equals(TokenTranslationStrategy.NEVER)) { //standard data
+			if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) && !translateTokens.equals(TokenTranslationStrategy.NEVER)) { //standard data
 	 			for (int i = 0; i < tokenList.size(); i++) {	 				
 		 			String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
 	 	 			tokenList.set(i, streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(tokenList.get(i)));

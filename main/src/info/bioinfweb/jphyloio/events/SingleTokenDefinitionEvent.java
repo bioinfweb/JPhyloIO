@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.events;
 import java.util.Collection;
 import java.util.Collections;
 
-import info.bioinfweb.commons.bio.CharacterStateMeaning;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -40,7 +40,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  */
 public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	private String tokenName;
-	private CharacterStateMeaning meaning;
+	private CharacterSymbolMeaning meaning;
 	private Collection<String> constituents = null;
 
 	
@@ -53,7 +53,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 *        (Maybe {@code null}.)
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
-	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning, Collection<String> constituents) {
+	public SingleTokenDefinitionEvent(String tokenName, CharacterSymbolMeaning meaning, Collection<String> constituents) {
 		super(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.START);
 
 		if (tokenName == null) {
@@ -80,7 +80,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * @param meaning the meaning of the new token
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
-	public SingleTokenDefinitionEvent(String tokenName, CharacterStateMeaning meaning) {
+	public SingleTokenDefinitionEvent(String tokenName, CharacterSymbolMeaning meaning) {
 		this(tokenName, meaning, null);
 	}
 	
@@ -100,7 +100,7 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @return the meaning
 	 */
-	public CharacterStateMeaning getMeaning() {
+	public CharacterSymbolMeaning getMeaning() {
 		return meaning;
 	}
 

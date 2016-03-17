@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import java.util.Collection;
 import java.util.Map;
 
-import info.bioinfweb.commons.bio.CharacterStateType;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 public class NeXMLTokenSetInformation {
 	private String id = null;
 	private String label = null;
-	private CharacterStateType setType;
+	private CharacterStateSetType setType;
 	private String characterSetID = null;
 	
 	private Collection<JPhyloIOEvent> singleTokens;
@@ -39,7 +39,7 @@ public class NeXMLTokenSetInformation {
 	private Map<String, String> symbolTranslationMap;
 	
 	
-	public NeXMLTokenSetInformation(String id, String label, CharacterStateType setType) {
+	public NeXMLTokenSetInformation(String id, String label, CharacterStateSetType setType) {
 		super();
 		if (id == null) {
 			throw new NullPointerException("The ID of this event must not be null.");
@@ -75,12 +75,12 @@ public class NeXMLTokenSetInformation {
 	}
 	
 	
-	public CharacterStateType getSetType() {
+	public CharacterStateSetType getSetType() {
 		return setType;
 	}
 	
 	
-	public void setSetType(CharacterStateType setType) {
+	public void setSetType(CharacterStateSetType setType) {
 		this.setType = setType;
 	}
 	
