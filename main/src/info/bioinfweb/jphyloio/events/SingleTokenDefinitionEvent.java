@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
@@ -40,6 +41,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 	private String tokenName;
 	private CharacterSymbolMeaning meaning;
+	private CharacterSymbolType tokenType;
 	private Collection<String> constituents = null;
 
 	
@@ -52,7 +54,8 @@ public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 	 *        (Maybe {@code null}.)
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
-	public SingleTokenDefinitionEvent(String id, String label, String tokenName, CharacterSymbolMeaning meaning, Collection<String> constituents) {
+	public SingleTokenDefinitionEvent(String id, String label, String tokenName, CharacterSymbolMeaning meaning, 
+			CharacterSymbolType tokenType, Collection<String> constituents) {
 		super(EventContentType.SINGLE_TOKEN_DEFINITION, id, label);
 		
 		if (tokenName == null) {
@@ -64,6 +67,7 @@ public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 		else {
 			this.tokenName = tokenName;
 			this.meaning = meaning;
+			this.tokenType = tokenType;
 			
 			if (constituents != null) {
 				this.constituents = Collections.unmodifiableCollection(constituents);
@@ -79,21 +83,9 @@ public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 	 * @param meaning the meaning of the new token
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
-	public SingleTokenDefinitionEvent(String id, String label, String tokenName, CharacterSymbolMeaning meaning) {
-		this(id, label, tokenName, meaning, null);
+	public SingleTokenDefinitionEvent(String id, String label, String tokenName, CharacterSymbolMeaning meaning, CharacterSymbolType tokenType) {
+		this(id, label, tokenName, meaning, tokenType, null);
 	}
-	
-	
-//	/**
-//	 * Creates a new instance of this class without a constituents collection.
-//	 * 
-//	 * @param tokenName the string representation of the new token
-//	 * @param meaning the meaning of the new token
-//	 * @throws NullPointerException if {@code null} is specified for any of the arguments
-//	 */
-//	public SingleTokenDefinitionEvent(String id, String tokenName, CharacterSymbolMeaning meaning) {
-//		this(id, null, tokenName, meaning, null);
-//	}
 	
 	
 	/**
@@ -115,6 +107,17 @@ public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 		return meaning;
 	}
 
+	
+	/**
+	 * Returns the type of the new token (e.g. UNCERTAIN if the token definition is an ambiguity code).
+	 * 
+	 * @return the tokenType
+	 */
+	public CharacterSymbolType getTokenType() {
+		return tokenType;
+	}
+
+
 	/**
 	 * Returns a collection of tokens that are constituents of this token (e.g. in case of ambiguity codes) or null, if no constituents are specified.
 	 * 
@@ -123,7 +126,8 @@ public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 	public Collection<String> getConstituents() {
 		return constituents;
 	}
-	
+
+
 	/**
 	 * Returns true if a collection of constituents is specified for this token or false if it is not.
 	 * 

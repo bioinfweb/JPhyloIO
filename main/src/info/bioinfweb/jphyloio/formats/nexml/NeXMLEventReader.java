@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -264,6 +265,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				String symbol = streamDataProvider.getSymbol();
 				CharacterSymbolMeaning meaning;
+				String parent = streamDataProvider.getParentName();
+				CharacterSymbolType tokenType;
 				
 				if (symbol.equals("?")) {
 					meaning = CharacterSymbolMeaning.MISSING;
@@ -275,10 +278,21 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					meaning = CharacterSymbolMeaning.CHARACTER_STATE;
 				}
 				
+				if (parent.equals(TAG_POLYMORPHIC.getLocalPart())) {
+					tokenType = CharacterSymbolType.POLYMORPHIC;
+				}
+				else if (parent.equals(TAG_UNCERTAIN.getLocalPart())) {
+					tokenType = CharacterSymbolType.UNCERTAIN;
+				}
+				else {
+					tokenType = CharacterSymbolType.ATOMIC_STATE;
+				}
+				
 				Collection<JPhyloIOEvent> currentEventCollection = streamDataProvider.resetCurrentEventCollection();				
 				LabeledIDEventInformation info = streamDataProvider.getTokenDefinitionInfo();
 				
-				streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.id, info.label, symbol, meaning, streamDataProvider.getConstituents()));
+				streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.id, info.label, symbol, meaning, 
+						tokenType, streamDataProvider.getConstituents()));
   			Iterator<JPhyloIOEvent> subEventIterator = currentEventCollection.iterator();
   			while (subEventIterator.hasNext()) {
   				streamDataProvider.getCurrentEventCollection().add(subEventIterator.next());
