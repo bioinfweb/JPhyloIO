@@ -31,22 +31,24 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 
 
 public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStreamWriter> implements NeXMLConstants {
+	private NeXMLWriterStreamDataProvider streamDataProvider;
 	
 	
-	
-	public NeXMLOTUListContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap) {
+	public NeXMLOTUListContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap);
+		this.streamDataProvider = streamDataProvider;
 	}
 	
 	
 	private void writeResourceMeta(ResourceMetadataEvent event) throws XMLStreamException {
 		getWriter().writeEmptyElement(TAG_META.getLocalPart());
 		
-		
+		//TODO write ID attribute of meta event
 		getWriter().writeAttribute(ATTR_REL.getLocalPart(), event.getRel().getLocalPart());
 		if (event.getRel() != null) {
 			getWriter().writeAttribute(ATTR_HREF.getLocalPart(), event.getHRef().toString());
@@ -66,16 +68,9 @@ public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStream
 	}
 	
 	
-	private void writeOTUTag(LabeledIDEvent event) throws XMLStreamException { //TODO use method from NeXMLEventWriter to write attributes
-		getWriter().writeEmptyElement(TAG_OTU.getLocalPart());
-		
-//		writeLabeledIDAttributes(event);
-		
-		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique.
-		getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
-		if (event.hasLabel()) {
-			getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
-		}
+	private void writeOTUTag(LabeledIDEvent event) throws XMLStreamException {
+		getWriter().writeEmptyElement(TAG_OTU.getLocalPart());		
+		streamDataProvider.writeLabeledIDAttributes(event);
 	}
 	
 

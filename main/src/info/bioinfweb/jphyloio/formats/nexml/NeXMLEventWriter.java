@@ -22,11 +22,8 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import info.bioinfweb.commons.io.XMLUtils;
@@ -36,8 +33,6 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLOTUListContentReceiver;
@@ -51,40 +46,31 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	private ApplicationLogger logger;
 	
 	private DocumentInformation documentInformation = new DocumentInformation();
+	private NeXMLWriterStreamDataProvider streamDataProvider;
 	
 	
+	public NeXMLEventWriter() {
+		super();
+		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this);
+	}
+
+
 	@Override
 	public String getFormatID() {
 		return JPhyloIOFormatIDs.NEXML_FORMAT_ID;
 	}
 	
 	
-	protected void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException {
-		writer.writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique. (Probably a task that should use resources to be added to the super class.)
-		writer.writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
-		if (event.hasLabel()) {
-			writer.writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
-		}
+	public XMLStreamWriter getWriter() {
+		return writer;
 	}
-	
-	
-	protected void writeLinkedOTUOrOTUsAttributes(LinkedOTUOrOTUsEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException {
-		writeLabeledIDAttributes(event);
-		if (event.isOTUOrOTUsLinked()) {
-			writer.writeAttribute(linkAttribute.getLocalPart(), event.getOTUOrOTUsID());
-		}
-		else if (forceOTULink) {
-			//TODO Link UNDEFINED taxon, if an OTU shall be linked.
-		}
-		//TODO Linking OTUs is never optional, therefore one OTU (usually the one containing the UDEFINED taxon) should be linked.
-	}
-	
-	
+
+
 	private void writeRowTag(LinkedOTUOrOTUsEvent sequenceEvent, MatrixDataAdapter alignment) throws Exception {
 		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, alignment.containsLongTokens());
 		
 		writer.writeStartElement(TAG_ROW.getLocalPart());
-		writeLinkedOTUOrOTUsAttributes(sequenceEvent, TAG_OTU, true);
+		streamDataProvider.writeLinkedOTUOrOTUsAttributes(sequenceEvent, TAG_OTU, true);
 		
 		alignment.writeSequencePartContentData(receiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));
 		
@@ -94,7 +80,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	
 	private void writeCharactersTag(MatrixDataAdapter alignment) throws Exception {
 		writer.writeStartElement(TAG_CHARACTERS.getLocalPart());
-		writeLinkedOTUOrOTUsAttributes(alignment.getStartEvent(), TAG_OTUS, true);
+		streamDataProvider.writeLinkedOTUOrOTUsAttributes(alignment.getStartEvent(), TAG_OTUS, true);
 		
 		//TODO write format tag
 		
@@ -125,9 +111,9 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	
 	private void writeOTUSTag(OTUListDataAdapter otuList) throws Exception {		
 		writer.writeStartElement(TAG_OTUS.getLocalPart());
-		writeLabeledIDAttributes(otuList.getListStartEvent());
+		streamDataProvider.writeLabeledIDAttributes(otuList.getListStartEvent());
 		
-		NeXMLOTUListContentReceiver receiver = new NeXMLOTUListContentReceiver(writer, parameters);		
+		NeXMLOTUListContentReceiver receiver = new NeXMLOTUListContentReceiver(writer, parameters, streamDataProvider);		
 		
 		Iterator<String> otuIDIterator = otuList.getIDIterator();
 		while (otuIDIterator.hasNext()) {
