@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -19,9 +19,8 @@
 package info.bioinfweb.jphyloio.events.meta;
 
 
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.net.URI;
 
@@ -37,14 +36,14 @@ import javax.xml.namespace.QName;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class ResourceMetadataEvent extends ConcreteJPhyloIOEvent {
+public class ResourceMetadataEvent extends LabeledIDEvent {
 	private QName rel;
 	private URI hRef;
 	private String about;
 	
 	
-	public ResourceMetadataEvent(QName rel, URI hRef, String about) {
-		super(EventContentType.META_RESOURCE, EventTopologyType.START);
+	public ResourceMetadataEvent(String id, String label, QName rel, URI hRef, String about) {
+		super(EventContentType.META_RESOURCE, id, label);
 		this.rel = rel;
 		this.hRef = hRef;
 		this.about = about;

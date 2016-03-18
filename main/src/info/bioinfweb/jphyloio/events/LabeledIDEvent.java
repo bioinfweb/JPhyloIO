@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.events;
 
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -30,9 +29,8 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-public class LabeledIDEvent extends ConcreteJPhyloIOEvent {
+public class LabeledIDEvent extends LabeledEvent {
 	private String id;
-	private String label;
 	
 	
 	/**
@@ -46,15 +44,14 @@ public class LabeledIDEvent extends ConcreteJPhyloIOEvent {
 	 * @throws NullPointerException if {@code contentType}, {@code topologyType} or {@code id} are {@code null}
 	 * @throws IllegalArgumentException if the specified ID is an empty string or contains whitespace
 	 */
-	public LabeledIDEvent(EventContentType contentType,	String id, String label) {
-		super(contentType, EventTopologyType.START);
+	public LabeledIDEvent(EventContentType contentType, String id, String label) {
+		super(contentType, label);
 		
 		checkID(id, "ID");
 		this.id = id;
-		this.label = label;
 	}
-	
-	
+
+
 	protected void checkID(String id, String idName) {
 		if (id == null) {
 			throw new NullPointerException("The " + idName + " of this event must not be null.");
@@ -75,28 +72,5 @@ public class LabeledIDEvent extends ConcreteJPhyloIOEvent {
 	 */
 	public String getID() {
 		return id;
-	}
-
-
-	/**
-	 * A text label associated with the data element represented by this event.
-	 * <p>
-	 * Note that additional annotations of that object may be specified by nested metaevents, even if 
-	 * this event carries no label.
-	 * 
-	 * @return the labeling text or {@code null}, if no label was specified for the modeled object
-	 */
-	public String getLabel() {
-		return label;
-	}
-	
-	
-	/**
-	 * Indicates whether the modeled data element carries a label.
-	 * 
-	 * @return {@code true} if the data element carries a label, {@code false} otherwise.
-	 */
-	public boolean hasLabel() {
-		return getLabel() != null;
 	}
 }

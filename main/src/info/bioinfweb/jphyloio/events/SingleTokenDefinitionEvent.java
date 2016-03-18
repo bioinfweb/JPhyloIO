@@ -24,7 +24,6 @@ import java.util.Collections;
 
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -38,7 +37,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
+public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 	private String tokenName;
 	private CharacterSymbolMeaning meaning;
 	private Collection<String> constituents = null;
@@ -53,9 +52,9 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 *        (Maybe {@code null}.)
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
-	public SingleTokenDefinitionEvent(String tokenName, CharacterSymbolMeaning meaning, Collection<String> constituents) {
-		super(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.START);
-
+	public SingleTokenDefinitionEvent(String id, String label, String tokenName, CharacterSymbolMeaning meaning, Collection<String> constituents) {
+		super(EventContentType.SINGLE_TOKEN_DEFINITION, id, label);
+		
 		if (tokenName == null) {
 			throw new NullPointerException("The token name must not be null.");
 		}
@@ -80,9 +79,21 @@ public class SingleTokenDefinitionEvent extends ConcreteJPhyloIOEvent {
 	 * @param meaning the meaning of the new token
 	 * @throws NullPointerException if {@code null} is specified for any of the arguments
 	 */
-	public SingleTokenDefinitionEvent(String tokenName, CharacterSymbolMeaning meaning) {
-		this(tokenName, meaning, null);
+	public SingleTokenDefinitionEvent(String id, String label, String tokenName, CharacterSymbolMeaning meaning) {
+		this(id, label, tokenName, meaning, null);
 	}
+	
+	
+//	/**
+//	 * Creates a new instance of this class without a constituents collection.
+//	 * 
+//	 * @param tokenName the string representation of the new token
+//	 * @param meaning the meaning of the new token
+//	 * @throws NullPointerException if {@code null} is specified for any of the arguments
+//	 */
+//	public SingleTokenDefinitionEvent(String id, String tokenName, CharacterSymbolMeaning meaning) {
+//		this(id, null, tokenName, meaning, null);
+//	}
 	
 	
 	/**

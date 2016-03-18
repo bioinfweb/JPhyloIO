@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.jphyloio.formats.nexml.AbstractNeXMLElementReader.LabeledIDEventInformation;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import java.util.Collection;
@@ -33,6 +34,7 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	private boolean allowLongTokens;
 	
 	private String tokenSetID = null;
+	private LabeledIDEventInformation tokenDefinitionInfo = null;
 	private String symbol = null;	
 	private String branchLengthsFormat = null;
 	
@@ -76,6 +78,16 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 
 	public void setTokenSetID(String tokenSetID) {
 		this.tokenSetID = tokenSetID;
+	}
+
+
+	public LabeledIDEventInformation getTokenDefinitionInfo() {
+		return tokenDefinitionInfo;
+	}
+
+
+	public void setTokenDefinitionInfo(LabeledIDEventInformation tokenDefinitionInfo) {
+		this.tokenDefinitionInfo = tokenDefinitionInfo;
 	}
 
 

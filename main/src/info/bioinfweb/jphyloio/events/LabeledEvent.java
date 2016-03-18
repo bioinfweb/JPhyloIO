@@ -20,20 +20,40 @@ package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-public class SingleSequenceTokenEvent extends LabeledEvent {
-	private String token;
+public class LabeledEvent extends ConcreteJPhyloIOEvent {
+	private String label;	
 
+
+	public LabeledEvent(EventContentType contentType, String label) {
+		super(contentType, EventTopologyType.START);
+		
+		this.label = label;
+	}
+
+
+	/**
+	 * A text label associated with the data element represented by this event.
+	 * <p>
+	 * Note that additional annotations of that object may be specified by nested metaevents, even if 
+	 * this event carries no label.
+	 * 
+	 * @return the labeling text or {@code null}, if no label was specified for the modeled object
+	 */
+	public String getLabel() {
+		return label;
+	}
 	
-	public SingleSequenceTokenEvent(String label, String token) {
-		super(EventContentType.SINGLE_SEQUENCE_TOKEN, label);
-		this.token = token;
-	}	
-
-
-	public String getToken() {
-		return token;
+	
+	/**
+	 * Indicates whether the modeled data element carries a label.
+	 * 
+	 * @return {@code true} if the data element carries a label, {@code false} otherwise.
+	 */
+	public boolean hasLabel() {
+		return getLabel() != null;
 	}
 }

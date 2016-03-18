@@ -380,7 +380,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		
 		if (extensionToken != null) {
 			long additionalLength = targetLength - matrix.getSequenceLength(sequenceID);
-			SingleSequenceTokenEvent event = new SingleSequenceTokenEvent(extensionToken);
+			SingleSequenceTokenEvent event = new SingleSequenceTokenEvent(null, extensionToken);
 			for (long i = 0; i < additionalLength; i++) {
 				receiver.add(event);
 			}

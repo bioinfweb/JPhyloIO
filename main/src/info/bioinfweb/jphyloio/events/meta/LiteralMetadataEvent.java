@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.events.meta;
 
 
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -34,7 +35,7 @@ import javax.xml.namespace.QName;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class LiteralMetadataEvent extends ConcreteJPhyloIOEvent {
+public class LiteralMetadataEvent extends LabeledIDEvent {
 	//TODO This class shall replace the current MetaInformationEvent implementation as soon as the metadata concept is finally approved.
 
 	private QName predicate;
@@ -43,8 +44,8 @@ public class LiteralMetadataEvent extends ConcreteJPhyloIOEvent {
 	private LiteralContentSequenceType sequenceType;
 	
 	
-	public LiteralMetadataEvent(QName predicate, String key, LiteralContentSequenceType sequenceType) {
-		super(EventContentType.META_LITERAL, EventTopologyType.START);
+	public LiteralMetadataEvent(String id, String label, QName predicate, String key, LiteralContentSequenceType sequenceType) {
+		super(EventContentType.META_LITERAL, id, label);
 		this.predicate = predicate;
 		this.key = key;
 		this.sequenceType = sequenceType;

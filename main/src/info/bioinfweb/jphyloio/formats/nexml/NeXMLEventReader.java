@@ -252,7 +252,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	  			throw new JPhyloIOReaderException("State tag must have an attribute called \"" + ATTR_SYMBOL + "\".", element.getLocation());
 	  		}
 	  		
-	  		List<String> currentConstitituents = new ArrayList<String>();		
+	  		List<String> currentConstitituents = new ArrayList<String>();
+	  		streamDataProvider.setTokenDefinitionInfo(info);
 				streamDataProvider.setConstituents(currentConstitituents);
 				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 			}
@@ -274,14 +275,15 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					meaning = CharacterSymbolMeaning.CHARACTER_STATE;
 				}
 				
-				Collection<JPhyloIOEvent> currentEventCollection = streamDataProvider.resetCurrentEventCollection();
-				streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(symbol, meaning, streamDataProvider.getConstituents()));
+				Collection<JPhyloIOEvent> currentEventCollection = streamDataProvider.resetCurrentEventCollection();				
+				LabeledIDEventInformation info = streamDataProvider.getTokenDefinitionInfo();
+				
+				streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.id, info.label, symbol, meaning, streamDataProvider.getConstituents()));
   			Iterator<JPhyloIOEvent> subEventIterator = currentEventCollection.iterator();
   			while (subEventIterator.hasNext()) {
   				streamDataProvider.getCurrentEventCollection().add(subEventIterator.next());
   			}
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-				//TODO welche liste soll hier gecleared werden?
 			}
 		};
 		
@@ -633,7 +635,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_ROW, TAG_CELL, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
-				StartElement element = event.asStartElement();				
+				StartElement element = event.asStartElement();
+				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 				String token = XMLUtils.readStringAttr(element, ATTR_STATE, null);
 				String character = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
 				
@@ -647,7 +650,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		 	 		}
 		 		}
 				
-				streamDataProvider.getCurrentEventCollection().add(new SingleSequenceTokenEvent(token));
+				streamDataProvider.getCurrentEventCollection().add(new SingleSequenceTokenEvent(label, token));
 			}
 		});
 		
