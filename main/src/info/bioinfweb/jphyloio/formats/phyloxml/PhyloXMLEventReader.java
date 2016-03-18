@@ -66,7 +66,7 @@ import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDataProvider> 
+public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderStreamDataProvider> 
 		implements PhyloXMLConstants {
 	
 	
@@ -98,9 +98,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 
 	@SuppressWarnings("unchecked")
 	protected void fillMap() {
-		XMLElementReader<PhyloXMLStreamDataProvider> cladeEndReader = new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+		XMLElementReader<PhyloXMLReaderStreamDataProvider> cladeEndReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					if (streamDataProvider.hasSpecialEventCollection()) {
 						streamDataProvider.resetCurrentEventCollection();
 					}
@@ -116,9 +116,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 				}
 			};
 			
-		XMLElementReader<PhyloXMLStreamDataProvider> branchMetaStartReader = new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+		XMLElementReader<PhyloXMLReaderStreamDataProvider> branchMetaStartReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					StartElement element = event.asStartElement();						
 					XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
 					String key = streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() + "." + element.getName();
@@ -137,32 +137,32 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 				}
 			};
 			
-		XMLElementReader<PhyloXMLStreamDataProvider> branchMetaEndReader = new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+		XMLElementReader<PhyloXMLReaderStreamDataProvider> branchMetaEndReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 			@Override
-			public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
 				streamDataProvider.resetCurrentEventCollection();
 			}
 		};
 		
-		XMLElementReader<PhyloXMLStreamDataProvider> emptyReader = new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {			
+		XMLElementReader<PhyloXMLReaderStreamDataProvider> emptyReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {			
 			@Override
-			public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {}
+			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {}
 		};
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
-			new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 					streamDataProvider.setFormat(PHYLO_XML);
 				}
 		});
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), 
-			new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.DOCUMENT));
 				}
 		});
@@ -172,9 +172,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		putElementReader(new XMLElementReaderKey(null, TAG_ROOT, XMLStreamConstants.END_ELEMENT), emptyReader); //no meta events belonging to tag phyloXML are read
 				
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_PHYLOGENY, XMLStreamConstants.START_ELEMENT), 
-			new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					StartElement element = event.asStartElement();					
 					boolean rooted = XMLUtils.readBooleanAttr(event.asStartElement(), ATTR_ROOTED, false);					
 					
@@ -185,9 +185,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		});
 		
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_PHYLOGENY, XMLStreamConstants.END_ELEMENT), 
-			new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 					streamDataProvider.getSourceNode().clear();
 					streamDataProvider.getEdgeInfos().clear();
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));			
@@ -195,9 +195,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		});
 		
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CLADE, XMLStreamConstants.START_ELEMENT),
-			new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {					
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {					
 					String treeID = getID(null, EventContentType.TREE);
 					String treeLabel = streamDataProvider.getTreeLabel();					
 					Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();					
@@ -222,9 +222,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 			});
 		
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_CLADE, XMLStreamConstants.START_ELEMENT),
-				new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+				new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 						String parentID = streamDataProvider.getSourceNode().peek().getID();
 						if (streamDataProvider.hasSpecialEventCollection()) {
 							streamDataProvider.resetCurrentEventCollection();
@@ -252,9 +252,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_COLOR, XMLStreamConstants.END_ELEMENT), branchMetaEndReader);
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.CHARACTERS), 
-			new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {			
+			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {			
 				@Override
-				public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {					
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {					
 					String value = event.asCharacters().getData();
 					
 					if (!value.matches("\\s+")) { //space characters after tag ends are excluded this way					
@@ -314,9 +314,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new XMLToMetaElementStartReader());
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), 
-				new AbstractXMLElementReader<PhyloXMLStreamDataProvider>() {
+				new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PhyloXMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {						
+					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {						
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));			
 					}
 			});
@@ -349,7 +349,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLStreamDa
 	
 	
 	@Override
-	protected PhyloXMLStreamDataProvider createStreamDataProvider() {
-		return new PhyloXMLStreamDataProvider(this);
+	protected PhyloXMLReaderStreamDataProvider createStreamDataProvider() {
+		return new PhyloXMLReaderStreamDataProvider(this);
 	}
 }

@@ -49,7 +49,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? extends AbstractXMLEventReader<P>>>
+public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>>
 		extends AbstractEventReader<P> {
 	
 	public static final String INTERNAL_USE_NAMESPACE = "http://bioinfweb.info/xmlns/JPhyloIO/internalUse";	
@@ -209,7 +209,7 @@ public abstract class AbstractXMLEventReader<P extends XMLStreamDataProvider<? e
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Override
 	protected P createStreamDataProvider() {
-		return (P)new XMLStreamDataProvider(this);
+		return (P)new XMLReaderStreamDataProvider(this);
 	}
 	
 	

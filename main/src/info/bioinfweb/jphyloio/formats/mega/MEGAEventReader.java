@@ -44,7 +44,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
-import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
 
@@ -54,7 +54,7 @@ import info.bioinfweb.jphyloio.tools.IDToNameManager;
  * 
  * @author Ben St&ouml;ver
  */
-public class MEGAEventReader extends AbstractTextEventReader<TextStreamDataProvider<MEGAEventReader>> implements MEGAConstants {
+public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDataProvider<MEGAEventReader>> implements MEGAConstants {
 	private static final Pattern READ_COMMAND_PATTERN = 
 			Pattern.compile(".+(\\" + COMMENT_START + "|\\" + COMMAND_END + ")", Pattern.DOTALL);
 	private static final Pattern SEQUENCE_NAME_PATTERN = Pattern.compile(".+\\s+");

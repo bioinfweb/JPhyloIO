@@ -40,7 +40,7 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractEventReader<P extends StreamDataProvider<? extends AbstractEventReader<P>>> 
+public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? extends AbstractEventReader<P>>> 
 		implements JPhyloIOEventReader, ReadWriteConstants {
 	
 	private JPhyloIOEvent next = null;
@@ -71,12 +71,12 @@ public abstract class AbstractEventReader<P extends StreamDataProvider<? extends
 	 * data provider that will be returned by {@link #getStreamDataProvider()}. Inherit classes that use
 	 * their own stream data provider implementation should overwrite this method.
 	 * <p>
-	 * This default implementation creates a new instance of {@link StreamDataProvider}.
+	 * This default implementation creates a new instance of {@link ReaderStreamDataProvider}.
 	 * 
 	 * @return the stream data provider to be used with this instance
 	 */
 	protected P createStreamDataProvider() {
-		return (P)new StreamDataProvider(this);  // Cannot be created generic, since this implementation is used by different inherited classes.
+		return (P)new ReaderStreamDataProvider(this);  // Cannot be created generic, since this implementation is used by different inherited classes.
 	}
 
 	

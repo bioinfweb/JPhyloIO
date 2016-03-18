@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
 
@@ -40,27 +40,27 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 
 
 	@Override
-	public void handleBegin(NexusStreamDataProvider streamDataProvider) {}
+	public void handleBegin(NexusReaderStreamDataProvider streamDataProvider) {}
 
 	
 	@Override
-	public void handleEnd(NexusStreamDataProvider streamDataProvider) {
+	public void handleEnd(NexusReaderStreamDataProvider streamDataProvider) {
 		streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 	}
 
 
 	@Override
-	public void beforeCommand(NexusStreamDataProvider streamDataProvider,	String commandName, NexusCommandEventReader commandReader) {
+	public void beforeCommand(NexusReaderStreamDataProvider streamDataProvider,	String commandName, NexusCommandEventReader commandReader) {
 		ParameterMap map = streamDataProvider.getSharedInformationMap();
-		if (!map.getBoolean(NexusStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, false) 
+		if (!map.getBoolean(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, false) 
 				&& (commandName.equals(COMMAND_NAME_DIMENSIONS) || commandName.equals(COMMAND_NAME_FORMAT) 
 						|| commandName.equals(COMMAND_NAME_MATRIX))) {  // Fire start event, as soon as one of these commands is encountered.
 			
 			streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
 					DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-					map.getString(NexusStreamDataProvider.INFO_KEY_BLOCK_TITLE),
+					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE),
 					streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));
-			map.put(NexusStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
+			map.put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
 		}
 	}
 }

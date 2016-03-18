@@ -20,14 +20,14 @@ package info.bioinfweb.jphyloio.formats.text;
 
 
 import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.jphyloio.StreamDataProvider;
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 
 
 
-public class TextStreamDataProvider<R extends AbstractTextEventReader<? extends TextStreamDataProvider<R>>> 
-		extends StreamDataProvider<R> {
+public class TextReaderStreamDataProvider<R extends AbstractTextEventReader<? extends TextReaderStreamDataProvider<R>>> 
+		extends ReaderStreamDataProvider<R> {
 	
-	public TextStreamDataProvider(R eventReader) {
+	public TextReaderStreamDataProvider(R eventReader) {
 		super(eventReader);
 	}
 

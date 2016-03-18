@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
-import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -69,7 +69,7 @@ import java.util.List;
  * 
  * @author Ben St&ouml;ver
  */
-public class FASTAEventReader extends AbstractTextEventReader<TextStreamDataProvider<FASTAEventReader>> implements FASTAConstants {
+public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDataProvider<FASTAEventReader>> implements FASTAConstants {
 	private String currentSequenceName = null;
 	
 	

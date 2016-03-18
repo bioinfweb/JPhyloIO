@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +36,7 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	private String commandName;
 	private Collection<String> validBlocks;
 	private boolean allDataProcessed = false;
-	private NexusStreamDataProvider streamDataProvider;
+	private NexusReaderStreamDataProvider streamDataProvider;
 
 	
 	/**
@@ -48,7 +48,7 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	 * @param validBlocks an array with the names of the Nexus blocks the command parsed by the implementing
 	 *        class may be contained in
 	 */
-	public AbstractNexusCommandEventReader(String commandName, String[] validBlocks, NexusStreamDataProvider nexusDocument) {
+	public AbstractNexusCommandEventReader(String commandName, String[] validBlocks, NexusReaderStreamDataProvider nexusDocument) {
 		super();
 		
 		this.commandName = commandName.toUpperCase();
@@ -89,7 +89,7 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	}
 
 
-	protected NexusStreamDataProvider getStreamDataProvider() {
+	protected NexusReaderStreamDataProvider getStreamDataProvider() {
 		return streamDataProvider;
 	}
 

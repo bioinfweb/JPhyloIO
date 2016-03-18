@@ -32,7 +32,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public abstract class AbstractXMLElementReader<P extends XMLStreamDataProvider<? extends AbstractXMLEventReader<P>>>
+public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>>
 		implements XMLElementReader<P> {
 	
 	protected void readAttributes(P streamDataProvider, StartElement element) {

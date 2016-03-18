@@ -23,7 +23,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 import java.io.EOFException;
@@ -31,7 +31,7 @@ import java.io.EOFException;
 
 
 public class TranslateReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
-	public TranslateReader(NexusStreamDataProvider nexusDocument) {
+	public TranslateReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_TRANSLATE, new String[]{BLOCK_NAME_TREES}, nexusDocument);
 	}
 

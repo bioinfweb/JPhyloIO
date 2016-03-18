@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
@@ -51,7 +51,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 	private IDToNameManager idToNameManager = new IDToNameManager(DEFAULT_SEQUENCE_ID_PREFIX);
 	
 	
-	public MatrixReader(NexusStreamDataProvider nexusDocument) {
+	public MatrixReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_MATRIX, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument);
 	}
 

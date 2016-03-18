@@ -42,7 +42,7 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 
@@ -72,7 +72,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	private List<SingleTokenDefinitionEvent> singleTokenDefinitionEvents = new ArrayList<SingleTokenDefinitionEvent>();
 	
 	
-	public FormatReader(NexusStreamDataProvider nexusDocument) {
+	public FormatReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_FORMAT, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, 
 				nexusDocument, KEY_PREFIX);
 	}

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 
 
@@ -34,7 +34,7 @@ import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class PDEStreamDataProvider extends XMLStreamDataProvider<PDEEventReader>{
+public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDEEventReader>{
 	private int alignmentLength;
 	private int currentSequenceIndex;
 	
@@ -44,7 +44,7 @@ public class PDEStreamDataProvider extends XMLStreamDataProvider<PDEEventReader>
 	private Map<Long, PDEMetaColumnDefintion> metaColumns = new HashMap<Long, PDEMetaColumnDefintion>();
 	
 	
-	public PDEStreamDataProvider(PDEEventReader eventReader) {
+	public PDEReaderStreamDataProvider(PDEEventReader eventReader) {
 		super(eventReader);
 	}
 

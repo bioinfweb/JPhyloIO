@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.TreeMap;
 
 
 
-public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventReader> {	
+public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<NeXMLEventReader> {	
 	private boolean allowLongTokens;
 	
 	private String tokenSetID = null;
@@ -48,7 +48,7 @@ public class NeXMLStreamDataProvider extends XMLStreamDataProvider<NeXMLEventRea
 	private Map<String, String> tokenDefinitionIDToSymbolMap;	
 	
 	
-	public NeXMLStreamDataProvider(NeXMLEventReader nexmlEventReader) {
+	public NeXMLReaderStreamDataProvider(NeXMLEventReader nexmlEventReader) {
 		super(nexmlEventReader);
 	}
 

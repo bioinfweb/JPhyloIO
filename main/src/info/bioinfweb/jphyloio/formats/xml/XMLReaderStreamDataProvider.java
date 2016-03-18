@@ -24,12 +24,12 @@ import java.util.Stack;
 import javax.xml.stream.XMLEventReader;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
-import info.bioinfweb.jphyloio.StreamDataProvider;
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 
 
 
-public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLStreamDataProvider<R>>> extends StreamDataProvider<R> {	
+public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLReaderStreamDataProvider<R>>> extends ReaderStreamDataProvider<R> {	
 	private String format;	
 	private String parentName;
 	private String elementName;
@@ -41,7 +41,7 @@ public class XMLStreamDataProvider<R extends AbstractXMLEventReader<? extends XM
 	private CharacterStateSetType characterSetType;	
 	
 	
-	public XMLStreamDataProvider(R eventReader) {
+	public XMLReaderStreamDataProvider(R eventReader) {
 		super(eventReader);
 	}
 	

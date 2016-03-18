@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 
 import java.io.EOFException;
@@ -34,7 +34,7 @@ public abstract class AbstractKeyValueCommandReader extends AbstractNexusCommand
 	private String keyPrefix;
 	
 	
-	public AbstractKeyValueCommandReader(String commandName, String[] validBlocks, NexusStreamDataProvider nexusDocument,
+	public AbstractKeyValueCommandReader(String commandName, String[] validBlocks, NexusReaderStreamDataProvider nexusDocument,
 			String keyPrefix) {
 		
 		super(commandName, validBlocks, nexusDocument);

@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
 
@@ -32,17 +32,17 @@ public class TreesBlockHandler extends AbstractNexusBlockHandler implements Nexu
 
 
 	@Override
-	public void handleBegin(NexusStreamDataProvider streamDataProvider) {
+	public void handleBegin(NexusReaderStreamDataProvider streamDataProvider) {
 		streamDataProvider.getTreesTranslationTable().clear();  // Usually not necessary. Just to make sure, that no other classes left any data in it. 
 	}
 
 	
 	@Override
-	public void handleEnd(NexusStreamDataProvider streamDataProvider) {
+	public void handleEnd(NexusReaderStreamDataProvider streamDataProvider) {
 		streamDataProvider.getTreesTranslationTable().clear();  // Clear for another possible upcoming TREES block.
 	}
 
 
 	@Override
-	public void beforeCommand(NexusStreamDataProvider streamDataProvider,	String commandName, NexusCommandEventReader commandReader) {}
+	public void beforeCommand(NexusReaderStreamDataProvider streamDataProvider,	String commandName, NexusCommandEventReader commandReader) {}
 }

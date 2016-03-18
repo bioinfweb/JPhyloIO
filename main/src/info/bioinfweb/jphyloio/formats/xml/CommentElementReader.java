@@ -30,7 +30,7 @@ import javax.xml.stream.events.XMLEvent;
 public class CommentElementReader extends AbstractXMLElementReader {	                                                                
 	@SuppressWarnings("unchecked")
 	@Override
-	public void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 		streamDataProvider.getCurrentEventCollection().add(new CommentEvent(((Comment)event).getText(), false));
 	}
 }

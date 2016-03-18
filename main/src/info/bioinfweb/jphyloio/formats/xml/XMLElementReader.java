@@ -23,6 +23,6 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public interface XMLElementReader<P extends XMLStreamDataProvider<? extends AbstractXMLEventReader<P>>> {
+public interface XMLElementReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>> {
 	public void readEvent(P streamDataProvider, XMLEvent event) throws Exception;
 }

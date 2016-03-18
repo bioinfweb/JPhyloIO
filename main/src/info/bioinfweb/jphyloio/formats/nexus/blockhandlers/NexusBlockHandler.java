@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 import java.util.Collection;
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
 
@@ -54,7 +54,7 @@ public interface NexusBlockHandler {
 	 * @param streamDataProvider the stream data provider of the calling {@link NexusEventReader}
 	 * @see NexusEventReader#getStreamDataProvider()
 	 */
-	public void handleBegin(NexusStreamDataProvider streamDataProvider);
+	public void handleBegin(NexusReaderStreamDataProvider streamDataProvider);
 
 	/**
 	 * This method will be called by {@link NexusEventReader} each time an {@code END} command for
@@ -63,7 +63,7 @@ public interface NexusBlockHandler {
 	 * @param streamDataProvider the stream data provider of the calling {@link NexusEventReader}
 	 * @see NexusEventReader#getStreamDataProvider()
 	 */
-	public void handleEnd(NexusStreamDataProvider streamDataProvider);
+	public void handleEnd(NexusReaderStreamDataProvider streamDataProvider);
 	
 	/**
 	 * This method is called before a command found in a block handled by this handler is processed,
@@ -75,5 +75,5 @@ public interface NexusBlockHandler {
 	 *        no according reader was found
 	 * @see NexusEventReader#getStreamDataProvider()
 	 */
-	public void beforeCommand(NexusStreamDataProvider streamDataProvider, String commandName, NexusCommandEventReader commandReader);
+	public void beforeCommand(NexusReaderStreamDataProvider streamDataProvider, String commandName, NexusCommandEventReader commandReader);
 }

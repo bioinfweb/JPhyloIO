@@ -24,7 +24,7 @@ import java.io.IOException;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 
@@ -32,7 +32,7 @@ import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 
 /**
  * Reads the {@code LINK} command of a Nexus block and stores the links in the shared information map of the
- * stream data provider under the key {@link NexusStreamDataProvider#INFO_KEY_BLOCK_LINKS}.
+ * stream data provider under the key {@link NexusReaderStreamDataProvider#INFO_KEY_BLOCK_LINKS}.
  * <p>
  * Note that the {@code LINK} command is not part of the initial Nexus definition, but was used by Mesquite
  * as a custom command to allow references between blocks using the {@code TITLE} command.
@@ -70,7 +70,7 @@ import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
  * @see TitleReader
  */
 public class LinkReader extends AbstractKeyValueCommandReader implements NexusConstants {
-	public LinkReader(NexusStreamDataProvider nexusDocument) {
+	public LinkReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_LINK, new String[0], nexusDocument, "");
 	}
 	

@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<? extends AbstractTextEventReader<P>>> 
+public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProvider<? extends AbstractTextEventReader<P>>> 
 		extends AbstractEventReader<P> {
 	
 	private PeekReader reader;
@@ -112,7 +112,7 @@ public abstract class AbstractTextEventReader<P extends TextStreamDataProvider<?
 
 	@Override
 	protected P createStreamDataProvider() {
-		return (P)new TextStreamDataProvider(this);
+		return (P)new TextReaderStreamDataProvider(this);
 	}
 
 

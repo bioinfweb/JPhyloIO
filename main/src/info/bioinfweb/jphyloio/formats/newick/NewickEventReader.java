@@ -31,7 +31,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
-import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 
 
 
@@ -45,7 +45,7 @@ import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
  * 
  * @author Ben St&ouml;ver
  */
-public class NewickEventReader extends AbstractTextEventReader<TextStreamDataProvider<NewickEventReader>> 
+public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamDataProvider<NewickEventReader>> 
 		implements NewickConstants {
 	
 	private static enum State {

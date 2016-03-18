@@ -41,11 +41,11 @@ import java.util.Collection;
  * @see AbstractEventReader#getStreamDataProvider()
  * @see AbstractEventReader#createStreamDataProvider()
  */
-public class StreamDataProvider<R extends AbstractEventReader<? extends StreamDataProvider<R>>> {
+public class ReaderStreamDataProvider<R extends AbstractEventReader<? extends ReaderStreamDataProvider<R>>> {
 	private R eventReader;
 	
 	
-	public StreamDataProvider(R eventReader) {
+	public ReaderStreamDataProvider(R eventReader) {
 		super();
 		this.eventReader = eventReader;
 	}

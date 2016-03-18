@@ -27,7 +27,7 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 
@@ -40,7 +40,7 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 	public static final String INFO_KEY_CHAR = "info.bioinfweb.jphyloio.nexus.ntax";
 	
 	
-	public DimensionsReader(NexusStreamDataProvider nexusDocument) {
+	public DimensionsReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_DIMENSIONS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, 
 				nexusDocument, KEY_PREFIX);
 		//TODO In the UNALIGNED block NCHAR is invalid.

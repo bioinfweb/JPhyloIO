@@ -23,15 +23,15 @@ import java.util.Collections;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.formats.newick.NewickReaderNodeLabelProcessor;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
 
 
 public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabelProcessor {
-	private NexusStreamDataProvider streamDataProvider;
+	private NexusReaderStreamDataProvider streamDataProvider;
 	
 	
-	public NexusNewickReaderNodeLabelProcessor(NexusStreamDataProvider streamDataProvider) {
+	public NexusNewickReaderNodeLabelProcessor(NexusReaderStreamDataProvider streamDataProvider) {
 		super();
 		this.streamDataProvider = streamDataProvider;
 	}

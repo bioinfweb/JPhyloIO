@@ -31,7 +31,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.TreeReader;
-import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -75,7 +75,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	private static final int NO_HOT_COMMENT_READ = -2;
 	private static final int ONE_HOT_COMMENT_READ = -1;	
 	
-	private TextStreamDataProvider<?> streamDataProvider;
+	private TextReaderStreamDataProvider<?> streamDataProvider;
 	private String treeLabel;
 	private String linkedOTUsID;
 	private NewickReaderNodeLabelProcessor nodeLabelProcessor;
@@ -99,7 +99,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	 * @param nodeLabelProcessor the node label processor to be used to possibly translate node labels in Newick strings
 	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
-	public NewickStringReader(TextStreamDataProvider<?> streamDataProvider, String treeLabel, String linkedOTUsID,
+	public NewickStringReader(TextReaderStreamDataProvider<?> streamDataProvider, String treeLabel, String linkedOTUsID,
 			NewickReaderNodeLabelProcessor nodeLabelProcessor) {
 		
 		super();

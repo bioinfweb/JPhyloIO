@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.all.LinkReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.all.TitleReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.DimensionsReader;
@@ -102,13 +102,13 @@ public class NexusCommandReaderFactory {
 	
 	
 	private NexusCommandEventReader createReaderInstance(Class<? extends NexusCommandEventReader> readerClass, 
-			NexusStreamDataProvider streamDataProvider) throws IllegalArgumentException {
+			NexusReaderStreamDataProvider streamDataProvider) throws IllegalArgumentException {
 		
 		try {
-			return readerClass.getConstructor(NexusStreamDataProvider.class).newInstance(streamDataProvider);
+			return readerClass.getConstructor(NexusReaderStreamDataProvider.class).newInstance(streamDataProvider);
 		}
 		catch (Exception e) {
-			throw new IllegalArgumentException("Unable to create instance with single " + NexusStreamDataProvider.class.getName() + 
+			throw new IllegalArgumentException("Unable to create instance with single " + NexusReaderStreamDataProvider.class.getName() + 
 					" argument. The specified reader class does not seem to offer the appropriate constructor.", e);
 		}
 	}
@@ -143,7 +143,7 @@ public class NexusCommandReaderFactory {
 	 * @param streamDataProvider the stream and data provider to be used by the returned reader
 	 * @return the reader or {@code null} if no according reader was found in this factory
 	 */
-	public NexusCommandEventReader createReader(String blockName, String commandName, NexusStreamDataProvider streamDataProvider) {
+	public NexusCommandEventReader createReader(String blockName, String commandName, NexusReaderStreamDataProvider streamDataProvider) {
 		Class<? extends NexusCommandEventReader> readerClass = readers.get(blockName.toUpperCase() + BLOCK_COMMAND_CONNECTOR + 
 				commandName.toUpperCase());
 		

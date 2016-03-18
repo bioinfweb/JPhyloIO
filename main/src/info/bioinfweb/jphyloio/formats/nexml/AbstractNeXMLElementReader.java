@@ -38,8 +38,8 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * @author Sarah Wiechers
  */
-public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReader<NeXMLStreamDataProvider> 
-		implements XMLElementReader<NeXMLStreamDataProvider>, NeXMLConstants {
+public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReader<NeXMLReaderStreamDataProvider> 
+		implements XMLElementReader<NeXMLReaderStreamDataProvider>, NeXMLConstants {
 	
 	protected static class LabeledIDEventInformation {
 		public String id;
@@ -52,7 +52,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected List<String> readSequence(NeXMLStreamDataProvider streamDataProvider, String sequence, TokenTranslationStrategy translateTokens) {		
+	protected List<String> readSequence(NeXMLReaderStreamDataProvider streamDataProvider, String sequence, TokenTranslationStrategy translateTokens) {		
 		List<String> tokenList = new ArrayList<String>();
 		String lastToken = "";
    	String currentToken = "";
@@ -117,7 +117,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected LabeledIDEventInformation getLabeledIDEventInformation(NeXMLStreamDataProvider streamDataProvider, 
+	protected LabeledIDEventInformation getLabeledIDEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, 
 			StartElement element) {
 		LabeledIDEventInformation labeledIDEventInformation = new LabeledIDEventInformation();
 		labeledIDEventInformation.id = XMLUtils.readStringAttr(element, ATTR_ID, null);
@@ -127,7 +127,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected OTUorOTUSEventInformation getOTUorOTUSEventInformation(NeXMLStreamDataProvider streamDataProvider, StartElement element) {
+	protected OTUorOTUSEventInformation getOTUorOTUSEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) {
 		LabeledIDEventInformation labeledIDEventInformation = getLabeledIDEventInformation(streamDataProvider, element);
 		OTUorOTUSEventInformation otuEventInformation = new OTUorOTUSEventInformation();
 		

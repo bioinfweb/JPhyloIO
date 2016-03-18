@@ -19,17 +19,17 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import info.bioinfweb.jphyloio.formats.xml.XMLStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 
 
-public class PhyloXMLStreamDataProvider extends XMLStreamDataProvider<PhyloXMLEventReader>  {
+public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<PhyloXMLEventReader>  {
 	private boolean rooted;
 	
 	private String treeLabel;
 	
 
-	public PhyloXMLStreamDataProvider(PhyloXMLEventReader eventReader) {
+	public PhyloXMLReaderStreamDataProvider(PhyloXMLEventReader eventReader) {
 		super(eventReader);
 	}	
 

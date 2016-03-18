@@ -25,14 +25,14 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 
 
 /**
  * Reads the {@code TITLE} command of a Nexus block and stores the title in the shared information map of the
- * stream data provider under the key {@link NexusStreamDataProvider#INFO_KEY_BLOCK_TITLE}.
+ * stream data provider under the key {@link NexusReaderStreamDataProvider#INFO_KEY_BLOCK_TITLE}.
  * <p>
  * Note that the {@code TITLE} command is not part of the initial Nexus definition, but was used by Mesquite
  * as a custom command to allow references between blocks using the {@code LINK} command.
@@ -46,7 +46,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
  * @see LinkReader
  */
 public class TitleReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
-	public TitleReader(NexusStreamDataProvider nexusDocument) {
+	public TitleReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_TITLE, new String[0], nexusDocument);  // Empty array makes this reader valid for all blocks.
 	}
 
@@ -56,7 +56,7 @@ public class TitleReader extends AbstractNexusCommandEventReader implements Nexu
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		try {
 			getStreamDataProvider().consumeWhiteSpaceAndComments();  //TODO Store comments until start event was fired by substituting the event queue.
-			getStreamDataProvider().getSharedInformationMap().put(NexusStreamDataProvider.INFO_KEY_BLOCK_TITLE, 
+			getStreamDataProvider().getSharedInformationMap().put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE, 
 					getStreamDataProvider().readNexusWord());
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			if (reader.readChar() == COMMAND_END) {

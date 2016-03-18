@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 
@@ -35,7 +35,7 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 	private NewickStringReader newickStringReader = null;
 	
 	
-	public TreeReader(NexusStreamDataProvider nexusDocument) {
+	public TreeReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_TREE, new String[]{BLOCK_NAME_TREES}, nexusDocument);
 	}
 

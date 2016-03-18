@@ -23,7 +23,7 @@ import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.NexusTranslationTable;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
-import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ import java.util.TreeMap;
  * 
  * @author Ben St&ouml;ver
  */
-public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventReader> implements NexusConstants {
+public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<NexusEventReader> implements NexusConstants {
 	public static final String INFO_KEY_BLOCK_START_EVENT_FIRED = "info.bioinfweb.jphyloio.nexus.blockStartEventFired";
 	public static final String INFO_KEY_BLOCK_TITLE = "info.bioinfweb.jphyloio.nexus.blockTitle";
 	public static final String INFO_KEY_BLOCK_LINKS = "info.bioinfweb.jphyloio.nexus.blockLinks";
@@ -54,7 +54,7 @@ public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventRe
 	private ParameterMap sharedInformationMap = new ParameterMap();
 	
 	
-	public NexusStreamDataProvider(NexusEventReader nexusReader) {
+	public NexusReaderStreamDataProvider(NexusEventReader nexusReader) {
 		super(nexusReader);
 	}
 
@@ -132,7 +132,7 @@ public class NexusStreamDataProvider extends TextStreamDataProvider<NexusEventRe
 	public String getCurrentLinkedOTUsID() {
 		String result = getBlockLinks().get(BLOCK_NAME_TAXA);
 		if (result == null) {
-			result = getSharedInformationMap().getString(NexusStreamDataProvider.INFO_KEY_DEFAULT_OTU_LIST_ID);
+			result = getSharedInformationMap().getString(NexusReaderStreamDataProvider.INFO_KEY_DEFAULT_OTU_LIST_ID);
 		}
 		return result;
 	}

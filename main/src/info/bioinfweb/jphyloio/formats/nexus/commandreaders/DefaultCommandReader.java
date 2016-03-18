@@ -23,7 +23,7 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
 
 
@@ -46,7 +46,7 @@ public class DefaultCommandReader extends AbstractNexusCommandEventReader implem
 	 * @param commandName the name of the command to be parsed
 	 * @param streamDataProvider the provider to access the shared Nexus data and the input stream
 	 */
-	public DefaultCommandReader(String commandName, NexusStreamDataProvider streamDataProvider) {
+	public DefaultCommandReader(String commandName, NexusReaderStreamDataProvider streamDataProvider) {
 		super(commandName, new String[0], streamDataProvider);
 	}
 

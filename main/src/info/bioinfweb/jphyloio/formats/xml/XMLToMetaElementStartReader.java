@@ -31,7 +31,7 @@ import javax.xml.stream.events.XMLEvent;
 public class XMLToMetaElementStartReader extends AbstractXMLElementReader {
 	@SuppressWarnings("unchecked")
 	@Override
-	public void readEvent(XMLStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
 		StartElement element = event.asStartElement();
 		String elementName = element.getName().getLocalPart();
 		XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();

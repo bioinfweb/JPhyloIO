@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.nexus.NexusStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 
@@ -54,7 +54,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	 * 
 	 * @param streamDataProvider the provider of shared Nexus data and streams
 	 */
-	public CharSetReader(NexusStreamDataProvider streamDataProvider) {
+	public CharSetReader(NexusReaderStreamDataProvider streamDataProvider) {
 		super(COMMAND_NAME_CHAR_SET, new String[]{BLOCK_NAME_SETS}, streamDataProvider);
 	}
 

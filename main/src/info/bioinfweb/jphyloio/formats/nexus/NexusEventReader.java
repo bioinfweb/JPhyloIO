@@ -67,7 +67,7 @@ import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
  * 
  * @author Ben St&ouml;ver
  */
-public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataProvider> implements NexusConstants {
+public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamDataProvider> implements NexusConstants {
 	private NexusBlockHandlerMap blockHandlerMap;
 	private NexusCommandReaderFactory factory;
 	private boolean createUnknownCommandEvents = false;
@@ -148,8 +148,8 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 
 
 	@Override
-	protected NexusStreamDataProvider createStreamDataProvider() {
-		return new NexusStreamDataProvider(this);
+	protected NexusReaderStreamDataProvider createStreamDataProvider() {
+		return new NexusReaderStreamDataProvider(this);
 	}
 
 
@@ -181,7 +181,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 
 	/**
 	 * Calls {@link #consumeWhiteSpaceAndComments(char, char)} with according parameters and
-	 * ensures visibility for {@link NexusStreamDataProvider}.
+	 * ensures visibility for {@link NexusReaderStreamDataProvider}.
 	 * 
 	 * @throws IOException if an I/O error occurs during the read operation
 	 */
@@ -228,7 +228,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusStreamDataPro
 	
 	/**
 	 * Calls {@link #readComment(char, char)} with according parameters and
-	 * ensures visibility for {@link NexusStreamDataProvider}.
+	 * ensures visibility for {@link NexusReaderStreamDataProvider}.
 	 * 
 	 * @throws IOException if an I/O error occurs during the read operation
 	 */

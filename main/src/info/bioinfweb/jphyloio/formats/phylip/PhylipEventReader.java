@@ -36,7 +36,7 @@ import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
-import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
 
@@ -60,7 +60,7 @@ import info.bioinfweb.jphyloio.tools.IDToNameManager;
  * @author Ben St&ouml;ver
  * @see SequentialPhylipEventReader
  */
-public class PhylipEventReader extends AbstractPhylipEventReader<TextStreamDataProvider<PhylipEventReader>> {
+public class PhylipEventReader extends AbstractPhylipEventReader<TextReaderStreamDataProvider<PhylipEventReader>> {
 	private boolean allowInterleavedParsing = true;
 	private List<String> sequenceNames = new ArrayList<String>();
 	private int currentSequenceIndex = 0;

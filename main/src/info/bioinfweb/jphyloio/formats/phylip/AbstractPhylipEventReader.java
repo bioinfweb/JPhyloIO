@@ -32,7 +32,7 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
-import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 
 
 
@@ -41,7 +41,7 @@ import info.bioinfweb.jphyloio.formats.text.TextStreamDataProvider;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractPhylipEventReader<P extends TextStreamDataProvider<? extends AbstractPhylipEventReader<P>>>
+public abstract class AbstractPhylipEventReader<P extends TextReaderStreamDataProvider<? extends AbstractPhylipEventReader<P>>>
 		extends AbstractTextEventReader<P> implements PhylipConstants {
 	
 	private long sequenceCount = -1;
