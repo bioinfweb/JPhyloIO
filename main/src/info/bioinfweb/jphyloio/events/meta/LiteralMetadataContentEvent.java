@@ -34,8 +34,8 @@ import javax.xml.stream.events.XMLEvent;
  * Values can be represented in the following ways:
  * <ul>
  *   <li>An instance can represent a single object value directly.</li>
- *   <li>An sequence of events can represent values of an array (e.g. read from a Newick hot comment).</li>
- *   <li>An sequence of events can represent a more complex XML representation of the literal value. In such cases one event 
+ *   <li>A sequence of events can represent values of an array (e.g. read from a Newick hot comment).</li>
+ *   <li>A sequence of events can represent a more complex XML representation of the literal value. In such cases one event 
  *       instance will represent each {@link XMLEvent} created from the encountered XML.</li>
  * </ul>
  * 

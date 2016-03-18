@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
@@ -69,6 +72,24 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	@Override
 	public MetaInformationEvent asMetaInformationEvent() throws ClassCastException {
 		return (MetaInformationEvent)this;
+	}
+
+
+	@Override
+	public ResourceMetadataEvent asResourceMetadataEvent() throws ClassCastException {
+		return (ResourceMetadataEvent)this;
+	}
+
+
+	@Override
+	public LiteralMetadataEvent asLiteralMetadataEvent() throws ClassCastException {
+		return (LiteralMetadataEvent)this;
+	}
+
+
+	@Override
+	public LiteralMetadataContentEvent asLiteralMetadataContentEvent() throws ClassCastException {
+		return (LiteralMetadataContentEvent)this;
 	}
 
 

@@ -118,6 +118,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLConstants.java -text svneol=
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLFactory.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLOTUListContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTokenSetInformation.java -text svneol=unset#text/plain

@@ -20,6 +20,9 @@ package info.bioinfweb.jphyloio.events;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventType;
 
 
@@ -44,6 +47,30 @@ public interface JPhyloIOEvent {
 	 * @throws ClassCastException if this event is not an instance of {@link MetaInformationEvent}
 	 */
 	public MetaInformationEvent asMetaInformationEvent() throws ClassCastException;
+	
+	/**
+	 * Casts this event to a resource metadata event.
+	 * 
+	 * @return a reference to this event as a resource metadata event
+	 * @throws ClassCastException if this event is not an instance of {@link ResourceMetadataEvent}
+	 */
+	public ResourceMetadataEvent asResourceMetadataEvent() throws ClassCastException;
+	
+	/**
+	 * Casts this event to a literal metadata event.
+	 * 
+	 * @return a reference to this event as a literal metadata event
+	 * @throws ClassCastException if this event is not an instance of {@link LiteralMetadataEvent}
+	 */
+	public LiteralMetadataEvent asLiteralMetadataEvent() throws ClassCastException;
+	
+	/**
+	 * Casts this event to a literal content metadata event.
+	 * 
+	 * @return a reference to this event as a literal content metadata event
+	 * @throws ClassCastException if this event is not an instance of {@link LiteralMetadataContentEvent}
+	 */
+	public LiteralMetadataContentEvent asLiteralMetadataContentEvent() throws ClassCastException;
 	
 	/**
 	 * Casts this event to an unknown command event.
@@ -131,5 +158,5 @@ public interface JPhyloIOEvent {
 	 * @return a reference to this event as an edge event
 	 * @throws ClassCastException if this event is not an instance of {@link SingleTokenDefinitionEvent}
 	 */
-	public EdgeEvent asEdgeEvent() throws ClassCastException;	
+	public EdgeEvent asEdgeEvent() throws ClassCastException;
 }

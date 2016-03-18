@@ -57,7 +57,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
-	private void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException {
+	protected void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException {
 		writer.writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique. (Probably a task that should use resources to be added to the super class.)
 		writer.writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
 		if (event.hasLabel()) {
@@ -66,7 +66,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
-	private void writeLinkedOTUOrOTUsAttributes(LinkedOTUOrOTUsEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException {
+	protected void writeLinkedOTUOrOTUsAttributes(LinkedOTUOrOTUsEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException {
 		writeLabeledIDAttributes(event);
 		if (event.isOTUOrOTUsLinked()) {
 			writer.writeAttribute(linkAttribute.getLocalPart(), event.getOTUOrOTUsID());
@@ -121,28 +121,19 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
-	private void writeOTUTag(LabeledIDEvent otuEvent) throws XMLStreamException {
-		writer.writeEmptyElement(TAG_OTU.getLocalPart());
-		writeLabeledIDAttributes(otuEvent);
-	}
-	
-	
-	private void checkOTUTag() {
-		
-	}
-	
-	
-	private void writeOTUSTag(OTUListDataAdapter otuList) throws XMLStreamException {		
+	private void writeOTUSTag(OTUListDataAdapter otuList) throws Exception {		
 		writer.writeStartElement(TAG_OTUS.getLocalPart());
 		writeLabeledIDAttributes(otuList.getListStartEvent());
 		
+		NeXMLOTUListContentReceiver receiver = new NeXMLOTUListContentReceiver(writer, parameters);		
+		
 		Iterator<String> otuIDIterator = otuList.getIDIterator();
 		while (otuIDIterator.hasNext()) {
-			writeOTUTag(otuList.getOTUStartEvent(otuIDIterator.next())); //TODO use otuList.writeData() with according receiver instead
+			otuList.writeData(receiver, otuIDIterator.next());
 		}
 		
 		if (otuList.hasMetadata()) {
-//			otuList.writeMetadata(receiver); //TODO write according meta data 
+			otuList.writeMetadata(receiver);
 		}
 		
 		writer.writeEndElement();
@@ -224,6 +215,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 		//     - all metadata namespaces,
 		//     - whether it is empty (whether a default OTU list is needed),
 		//     - whether there are sequences without OTU links (whether an UNDEFINED OTU needs to be created).
+//		checkDocument(document);
 		
 		this.writer.writeStartDocument();
 		this.writer.writeStartElement(TAG_ROOT.getLocalPart());
