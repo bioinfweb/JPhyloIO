@@ -40,6 +40,8 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequen
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLOTUListContentReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceContentReceiver;
 
 
 

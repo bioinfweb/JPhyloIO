@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml;
+package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSe
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 
 import javax.xml.stream.XMLStreamWriter;
 
