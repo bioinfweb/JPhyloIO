@@ -201,8 +201,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			throws IOException, XMLStreamException {
 
 		this.writer = writer;  //TODO Move to superclass?
-		this.parameters = parameters;  //TODO Move to superclass?
-		logger = parameters.getLogger();	  //TODO Move to superclass?	
+		this.parameters = parameters;  //TODO Move to superclass (also used by NexusEventWriter)?
+		logger = parameters.getLogger();	  //TODO Move to superclass (also used by NexusEventWriter)?	
 		
 		//TODO Before starting to write, the whole document must be iterated once and screened for 
 		//     - all metadata namespaces,

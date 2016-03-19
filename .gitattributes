@@ -18,6 +18,7 @@ main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 main/lib/commons-collections4-4.1.jar -text
 main/lib/commons-lang3-3.1.jar -text
+main/lib/owlapi-XMLUtils-4.1.4.jar -text
 main/src/info/bioinfweb/jphyloio/AbstractEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/AbstractEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/AbstractSingleMatrixEventWriter.java -text svneol=unset#text/plain

@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.core/bin" sourcepath="/info.bioinfweb.commons.core/src"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/owlapi-XMLUtils-4.1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

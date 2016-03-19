@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import org.semanticweb.owlapi.io.XMLUtils;
+
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
@@ -59,8 +61,8 @@ public class LabeledIDEvent extends LabeledEvent {
 		else if ("".equals(id)) {
 			throw new IllegalArgumentException("The " + idName + " of this event must not be an empty string.");
 		}
-		else if (StringUtils.containsWhitespace(id)) {
-			throw new IllegalArgumentException("The " + idName + " of this event must not contain any whitespace. (\"" + id + "\")");
+		else if (XMLUtils.isNCName(id)) {
+			throw new IllegalArgumentException("The " + idName + " (\"" + id + "\") of this event is not a valid NCName.");
 		}
 	}
 

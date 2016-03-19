@@ -19,8 +19,6 @@
 package info.bioinfweb.jphyloio.events.type;
 
 
-import javax.xml.stream.events.XMLEvent;
-
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -35,8 +33,6 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 
 
 

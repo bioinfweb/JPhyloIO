@@ -18,6 +18,7 @@
  */
 package info.bioinfweb.jphyloio.tools;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ import info.bioinfweb.commons.LongIDManager;
 
 /**
  * Allows to assign IDs to labels, without having multiple IDs for the same label.
- * This class can only be used to unique labels.
+ * This class can only be used for unique labels.
  * 
  * @author Ben St&ouml;ver
  */
