@@ -188,7 +188,7 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
 			assertEventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.END, reader);
 			
-			ParameterMap map = ((NexusStreamDataProvider)TestTools.getPrivateMethod(
+			ParameterMap map = ((NexusReaderStreamDataProvider)TestTools.getPrivateMethod(
 					AbstractEventReader.class, "getStreamDataProvider").invoke(reader)).getSharedInformationMap();
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
 			assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
@@ -222,7 +222,7 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
-			ParameterMap map = ((NexusStreamDataProvider)TestTools.getPrivateMethod(
+			ParameterMap map = ((NexusReaderStreamDataProvider)TestTools.getPrivateMethod(
 					AbstractEventReader.class, "getStreamDataProvider").invoke(reader)).getSharedInformationMap();
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
 			assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
@@ -255,7 +255,7 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
-			ParameterMap map = ((NexusStreamDataProvider)TestTools.getPrivateMethod(
+			ParameterMap map = ((NexusReaderStreamDataProvider)TestTools.getPrivateMethod(
 					AbstractEventReader.class, "getStreamDataProvider").invoke(reader)).getSharedInformationMap();
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
 			assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));
@@ -732,7 +732,7 @@ public class NexusEventReaderTest {
 			assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 
-			ParameterMap map = ((NexusStreamDataProvider)TestTools.getPrivateMethod(
+			ParameterMap map = ((NexusReaderStreamDataProvider)TestTools.getPrivateMethod(
 					AbstractEventReader.class, "getStreamDataProvider").invoke(reader)).getSharedInformationMap();
 			assertTrue(map.getBoolean(FormatReader.INFO_KEY_INTERLEAVE, false));
 			assertFalse(map.getBoolean(FormatReader.INFO_KEY_LABELS, true));

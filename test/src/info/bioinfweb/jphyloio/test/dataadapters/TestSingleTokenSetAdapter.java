@@ -19,12 +19,14 @@
 package info.bioinfweb.jphyloio.test.dataadapters;
 
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import info.bioinfweb.commons.IntegerIDManager;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolType;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
@@ -36,7 +38,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
-public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter implements ObjectListDataAdapter {
+public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter implements ObjectListDataAdapter, ReadWriteConstants {
 	@Override
 	public long getCount() {
 		return 1;
@@ -54,13 +56,21 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter impleme
 		if (id.equals("tokenSet0")) {
 			receiver.add(new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "Some token set"));
 			
-			receiver.add(new SingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP));
-			receiver.add(new SingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING));
-			receiver.add(new SingleTokenDefinitionEvent(".", CharacterSymbolMeaning.MATCH));
-			receiver.add(new SingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE));
-			receiver.add(new SingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE));
-			receiver.add(new SingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE));
-			receiver.add(new SingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE));
+			IntegerIDManager idManager = new IntegerIDManager();
+			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "-", 
+					CharacterSymbolMeaning.GAP, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "?", 
+					CharacterSymbolMeaning.MISSING, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, ".", 
+					CharacterSymbolMeaning.MATCH, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "A", 
+					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "T", 
+					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "C", 
+					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "G", 
+					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
 			
 			receiver.add(new MetaInformationEvent("someKey", "someType", "someValue"));
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
