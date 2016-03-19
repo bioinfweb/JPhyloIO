@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.events;
 
 import org.semanticweb.owlapi.io.XMLUtils;
 
-import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
@@ -36,15 +35,15 @@ public class LabeledIDEvent extends LabeledEvent {
 	
 	
 	/**
-	 * Creates a new instance of this class.
-	 * <p>
-	 * Instances are always start events.
+	 * Creates a new instance of this class. Instances are always start events.
 	 * 
 	 * @param contentType the content type of the event
-	 * @param id the unique ID associated with the represented data element (Must not contain any whitespace.)
+	 * @param id the unique ID associated with the represented data element (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
 	 * @param label a label associated with the represented data element (Maybe {@code null}.)
 	 * @throws NullPointerException if {@code contentType}, {@code topologyType} or {@code id} are {@code null}
-	 * @throws IllegalArgumentException if the specified ID is an empty string or contains whitespace
+	 * @throws IllegalArgumentException if the specified ID is not a valid 
+	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>
 	 */
 	public LabeledIDEvent(EventContentType contentType, String id, String label) {
 		super(contentType, label);

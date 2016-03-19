@@ -48,6 +48,10 @@ public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 	/**
 	 * Creates a new instance of this class.
 	 * 
+	 * @param id the unique ID associated with the represented single token definition (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
+	 * @param label an optional label of the modeled single token definition (Maybe {@code null}, if no label is present. This is 
+	 *        not the token name.)
 	 * @param tokenName the string representation of the new token
 	 * @param meaning the meaning of the new token
 	 * @param constituents if this token is an ambiguity or uncertain token, a list of constituents can be specified here

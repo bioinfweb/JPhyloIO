@@ -45,14 +45,15 @@ public class EdgeEvent extends LabeledIDEvent {
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param id the ID of the represented edge
+	 * @param id the unique ID associated with the represented edge (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
 	 * @param label an optional label associated with this edge (Maybe {@code null}.)
 	 * @param sourceID the ID of the source node of this edge (Maybe {@code null} if this a root edge.) 
 	 * @param targetID the ID of the target node of this edge
 	 * @param length an optional lengths of this edge (Maybe {@link Double#NaN} if no length is given.)
 	 * @throws NullPointerException if {@code id} or {@code targetID} are {@code null}
-	 * @throws IllegalArgumentException if {@code id}, {@code sourceID} or {@code targetID} are an empty 
-	 *         string or contain whitespace
+	 * @throws IllegalArgumentException if {@code id}, {@code sourceID} or {@code targetID} are not a valid 
+	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCNames</a>
 	 */
 	public EdgeEvent(String id, String label,	String sourceID, String targetID, double length) {
 		super(EventContentType.EDGE, id, label);

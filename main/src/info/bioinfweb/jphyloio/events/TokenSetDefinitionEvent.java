@@ -57,7 +57,8 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 * string ("").
 	 * 
 	 * @param type the meaning of the token set as defined by {@link TokenSetType}
-	 * @param id a document-wide unique ID identifying this token set
+	 * @param id the unique ID associated with the represented token set (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
 	 * @param label a name describing this token set
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */

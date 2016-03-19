@@ -82,6 +82,7 @@ main/src/info/bioinfweb/jphyloio/exception/JPhyloIOWriterException.java -text sv
 main/src/info/bioinfweb/jphyloio/factory/AbstractSingleReaderWriterFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/AbstractStartStringSingleFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/JPhyloIOContentExtensionFileFilter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/factory/JPhyloIOEventFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/JPhyloIOReaderWriterFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/SingleReaderWriterFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/package-info.java -text svneol=unset#text/plain

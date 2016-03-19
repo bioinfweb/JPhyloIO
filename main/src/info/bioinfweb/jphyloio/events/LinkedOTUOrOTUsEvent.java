@@ -42,10 +42,13 @@ public class LinkedOTUOrOTUsEvent extends LabeledIDEvent {
 	 * 
 	 * @param contentType the content type of the modeled data element (e.g. 
 	 *        {@link EventContentType#OTU} or {@link EventContentType#SEQUENCE})
+	 * @param id the unique ID associated with the represented data element (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
 	 * @param label the label of the modeled data element (Maybe {@code null}, if no label is present.)
 	 * @param otuID the declared or linked OTU ID (Maybe {@code null}, if none is present.)
-	 * @throws NullPointerException if {@code contentType} is {@code null}
-	 * @throws IllegalArgumentException if {@code id} or {@code otuID} are an empty string or contain whitespace
+	 * @throws NullPointerException if {@code contentType} or {@code id} are {@code null}
+	 * @throws IllegalArgumentException if {@code id} or {@code otuID} are not valid 
+	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCNames</a>
 	 */
 	public LinkedOTUOrOTUsEvent(EventContentType contentType, String id, String label, String otuID) {
 		super(contentType, id, label);
