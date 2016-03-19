@@ -38,6 +38,7 @@ import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 
 
 

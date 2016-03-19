@@ -16,17 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio;
+package info.bioinfweb.jphyloio.exception;
 
 
 import java.io.IOException;
 
 import info.bioinfweb.commons.io.StreamLocationProvider;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 
 import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Exception thrown by implementations of {@link JPhyloIOEventReader}, if an error during reading occurs. The exception
+ * can be used directly to indicate an error or to wrap another exception (e.g. an {@link XMLStreamException}.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class JPhyloIOReaderException extends IOException implements StreamLocationProvider {
 	private long characterOffset;
 	private long lineNumber;

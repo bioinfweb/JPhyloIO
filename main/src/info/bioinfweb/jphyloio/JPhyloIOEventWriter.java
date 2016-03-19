@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 
 
 

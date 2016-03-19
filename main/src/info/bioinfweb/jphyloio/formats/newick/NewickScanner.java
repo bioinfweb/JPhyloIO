@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.StreamLocation;
-import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.TreeReader;
 
 

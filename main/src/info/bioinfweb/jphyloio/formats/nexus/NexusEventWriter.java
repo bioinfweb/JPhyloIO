@@ -30,7 +30,6 @@ import java.util.Set;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
@@ -44,6 +43,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequen
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 

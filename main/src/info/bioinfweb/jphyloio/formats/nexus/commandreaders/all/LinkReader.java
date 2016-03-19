@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.all;
 
 import java.io.IOException;
 
-import info.bioinfweb.jphyloio.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
