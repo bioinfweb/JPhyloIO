@@ -190,6 +190,7 @@ main/src/info/bioinfweb/jphyloio/formats/text/TextReaderStreamDataProvider.java 
 main/src/info/bioinfweb/jphyloio/formats/text/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/CommentElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLEventReader.java -text svneol=unset#text/plain

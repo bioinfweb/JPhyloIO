@@ -39,10 +39,11 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLOTUListContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceContentReceiver;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 
 
 
-public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConstants {
+public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLConstants {
 	private XMLStreamWriter writer;
 	private ReadWriteParameterMap parameters;
 	private ApplicationLogger logger;
@@ -196,34 +197,29 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
-		try {
-			this.writer = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
-			this.parameters = parameters;
-			logger = parameters.getLogger();		
-			
-			//TODO Before starting to write, the whole document must be iterated once and screened for 
-			//     - all metadata namespaces,
-			//     - whether it is empty (whether a default OTU list is needed),
-			//     - whether there are sequences without OTU links (whether an UNDEFINED OTU needs to be created).
-	//		checkDocument(document);
-			
-			this.writer.writeStartDocument();
-			this.writer.writeStartElement(TAG_ROOT.getLocalPart());
-			XMLUtils.writeNamespaceAttr(this.writer, NAMESPACE_URI.toString());  //TODO Link xsd? 
-			
-			if (document.hasMetadata()) {
-	//			document.writeMetadata(receiver); //TODO write according meta data 
-			}
-			
-			writeOTUSTags(document);
-			writeCharactersTags(document);
-			
-			this.writer.writeEndElement();
-			this.writer.writeEndDocument();
+	protected void doWriteDocument(DocumentDataAdapter document, XMLStreamWriter writer, ReadWriteParameterMap parameters)
+			throws IOException, XMLStreamException {
+
+		this.writer = writer;  //TODO Move to superclass?
+		this.parameters = parameters;  //TODO Move to superclass?
+		logger = parameters.getLogger();	  //TODO Move to superclass?	
+		
+		//TODO Before starting to write, the whole document must be iterated once and screened for 
+		//     - all metadata namespaces,
+		//     - whether it is empty (whether a default OTU list is needed),
+		//     - whether there are sequences without OTU links (whether an UNDEFINED OTU needs to be created).
+//		checkDocument(document);
+		
+		this.writer.writeStartElement(TAG_ROOT.getLocalPart());
+		XMLUtils.writeNamespaceAttr(this.writer, NAMESPACE_URI.toString());  //TODO Link xsd? 
+		
+		if (document.hasMetadata()) {
+//			document.writeMetadata(receiver); //TODO write according meta data 
 		}
-		catch (XMLStreamException e) {
-			throw new JPhyloIOWriterException("An XML stream exception occured in the underlying XMLStreamWriter.", e);
-		}
+		
+		writeOTUSTags(document);
+		writeCharactersTags(document);
+		
+		this.writer.writeEndElement();
 	}
 }
