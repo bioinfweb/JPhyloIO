@@ -96,7 +96,7 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 
 	
 	@Override
-	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws Exception {
+	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
 				case "n1":
@@ -149,7 +149,7 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 
 	
 	@Override
-	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws Exception {
+	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException {
 		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (edgeID.substring(nodeEdgeIDPrefix.length())) {
 				case "eRoot":

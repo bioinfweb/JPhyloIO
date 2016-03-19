@@ -45,7 +45,7 @@ public class SingleTokenTestMatrixDataAdapter extends TestMatrixDataAdapter {
 	
 	@Override
 	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, long endColumn)
-			throws Exception {
+			throws IOException {
 		
 		String firstID = getMatrix().keySet().iterator().next();  // Throws exception, if map is empty.
 		if (firstID.equals(sequenceID) && Math2.isBetween(SINGLE_TOKEN_INDEX, startColumn, endColumn - 1)) {

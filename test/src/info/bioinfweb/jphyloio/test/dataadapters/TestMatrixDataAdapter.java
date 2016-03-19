@@ -167,7 +167,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 
 	@Override
 	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
-			long endColumn) throws Exception {
+			long endColumn) throws IOException {
 		
 		SequenceData data = getSequence(sequenceID);
 		if (startColumn == 0) {  // Write leading events.

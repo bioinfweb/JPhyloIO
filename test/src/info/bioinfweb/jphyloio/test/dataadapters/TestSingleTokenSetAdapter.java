@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.test.dataadapters;
 
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -52,7 +53,7 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter impleme
 
 	
 	@Override
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws Exception {
+	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IOException {
 		if (id.equals("tokenSet0")) {
 			receiver.add(new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "Some token set"));
 			
