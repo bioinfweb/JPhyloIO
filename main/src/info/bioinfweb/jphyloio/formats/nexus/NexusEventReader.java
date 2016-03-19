@@ -263,7 +263,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	}
 	
 	
-	private boolean readNextCommand() throws Exception {
+	private boolean readNextCommand() throws IOException {
 		consumeWhiteSpaceAndComments();  // Needs to be done before the loop once, if the rest of the file only consists of whitespace and comments.
 		while (getUpcomingEvents().isEmpty() && (getReader().peek() != -1)) {  // Read commands until an event is produced.  
 			String commandName = getReader().readRegExp(UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN, false).getSequence().toString();
@@ -339,7 +339,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	
 	
 	@Override
-	protected void readNextEvent() throws Exception {
+	protected void readNextEvent() throws IOException {
 		if (!documentEndReached) { 
 			if (isBeforeFirstAccess()) {
 				checkStart();

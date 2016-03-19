@@ -186,7 +186,7 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 	}
 	
 	
-	private JPhyloIOEvent eventFromCharacters(String currentSequenceName, CharSequence content) throws Exception {
+	private JPhyloIOEvent eventFromCharacters(String currentSequenceName, CharSequence content) throws IOException {
 		List<String> characters = createTokenList(content);
 		if (characters.isEmpty()) {  // The rest of the line was consisting only of spaces
 			return null;
@@ -197,7 +197,7 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 	}
 	
 	
-	protected JPhyloIOEvent readCharacters(String currentSequenceName) throws Exception {
+	protected JPhyloIOEvent readCharacters(String currentSequenceName) throws IOException {
 		PeekReader.ReadResult readResult = getReader().readLine(getParameters().getMaxTokensToRead());
 		lineConsumed = readResult.isCompletelyRead();
 		return eventFromCharacters(currentSequenceName, readResult.getSequence());
@@ -214,7 +214,7 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 	 * @return the sequence tokens event that was added to the event queue
 	 * @throws Exception
 	 */
-	protected JPhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws Exception {
+	protected JPhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws IOException {
 		final Pattern pattern = Pattern.compile(".*(\\n|\\r|\\" + commentStart + ")");
 		PeekReader.ReadResult readResult = getReader().readRegExp(getParameters().getMaxTokensToRead() /*- content.length()*/, pattern, false);  // In greedy mode the start of a nested comment could be consumed.
 		char lastChar = StringUtils.lastChar(readResult.getSequence());
@@ -309,7 +309,7 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 
 
 	@Override
-	public void close() throws Exception {
+	public void close() throws IOException {
 		super.close();
 		reader.close();
 	}

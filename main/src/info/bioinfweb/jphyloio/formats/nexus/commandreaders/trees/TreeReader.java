@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees;
 
 
 import java.io.EOFException;
+import java.io.IOException;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -41,7 +42,7 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 
 	
 	@Override
-	protected boolean doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		
 		try {

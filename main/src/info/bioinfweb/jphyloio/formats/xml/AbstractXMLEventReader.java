@@ -40,6 +40,7 @@ import javax.xml.stream.events.XMLEvent;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 
 
 
@@ -113,48 +114,53 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	
 	
 	@Override
-	protected void readNextEvent() throws Exception {
-		while (getXMLReader().hasNext() && getUpcomingEvents().isEmpty()) {
-			XMLEvent xmlEvent = getXMLReader().nextEvent();
-			QName parentTag = null;
-			
-			QName elementTag = null;
-			switch (xmlEvent.getEventType()) {
-				case XMLStreamConstants.START_DOCUMENT:
-					elementTag = null;
-					break;
-				case XMLStreamConstants.END_DOCUMENT:
-					elementTag = null;
-					break;
-				case XMLStreamConstants.START_ELEMENT:
-					elementTag = xmlEvent.asStartElement().getName();
-					break;
-				case XMLStreamConstants.END_ELEMENT:
-					getEncounteredTags().pop();
-					elementTag = xmlEvent.asEndElement().getName();
-					break;
-				default: 
-					break;  // Nothing to do.
+	protected void readNextEvent() throws IOException {
+		try {
+			while (getXMLReader().hasNext() && getUpcomingEvents().isEmpty()) {
+				XMLEvent xmlEvent = getXMLReader().nextEvent();
+				QName parentTag = null;
+				
+				QName elementTag = null;
+				switch (xmlEvent.getEventType()) {
+					case XMLStreamConstants.START_DOCUMENT:
+						elementTag = null;
+						break;
+					case XMLStreamConstants.END_DOCUMENT:
+						elementTag = null;
+						break;
+					case XMLStreamConstants.START_ELEMENT:
+						elementTag = xmlEvent.asStartElement().getName();
+						break;
+					case XMLStreamConstants.END_ELEMENT:
+						getEncounteredTags().pop();
+						elementTag = xmlEvent.asEndElement().getName();
+						break;
+					default: 
+						break;  // Nothing to do.
+				}
+	
+				if (!getEncounteredTags().isEmpty()) {
+					parentTag = getEncounteredTags().peek();
+				}
+				else {
+					parentTag = TAG_PARENT_OF_ROOT;
+				}		
+				
+				if (xmlEvent.isStartElement()) {
+					QName elementName = xmlEvent.asStartElement().getName();
+					getEncounteredTags().push(elementName);
+					getStreamDataProvider().setParentName(parentTag.getLocalPart());
+					getStreamDataProvider().setElementName(elementName.getLocalPart());
+				}
+				
+				XMLElementReader<P> elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
+				if (elementReader != null) {
+					elementReader.readEvent(getStreamDataProvider(), xmlEvent);
+				}			
 			}
-
-			if (!getEncounteredTags().isEmpty()) {
-				parentTag = getEncounteredTags().peek();
-			}
-			else {
-				parentTag = TAG_PARENT_OF_ROOT;
-			}		
-			
-			if (xmlEvent.isStartElement()) {
-				QName elementName = xmlEvent.asStartElement().getName();
-				getEncounteredTags().push(elementName);
-				getStreamDataProvider().setParentName(parentTag.getLocalPart());
-				getStreamDataProvider().setElementName(elementName.getLocalPart());
-			}
-			
-			XMLElementReader<P> elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
-			if (elementReader != null) {
-				elementReader.readEvent(getStreamDataProvider(), xmlEvent);
-			}			
+		}
+		catch (XMLStreamException e) {
+			throw new JPhyloIOReaderException("The underlying XML reader throw an exception, when trying read the next event.", e);
 		}
 	}
 	
@@ -229,8 +235,13 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 
 
 	@Override
-	public void close() throws Exception {
+	public void close() throws IOException {
 		super.close();
-		getXMLReader().close();
+		try {
+			getXMLReader().close();
+		}
+		catch (XMLStreamException e) {
+			throw new JPhyloIOReaderException("The underlying XML reader throw an exception, when trying to close it.", e);
+		}
 	}
 }

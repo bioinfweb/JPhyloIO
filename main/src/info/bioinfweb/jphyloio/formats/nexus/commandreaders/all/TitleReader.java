@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.all;
 
 
 import java.io.EOFException;
+import java.io.IOException;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -52,7 +53,7 @@ public class TitleReader extends AbstractNexusCommandEventReader implements Nexu
 
 	
 	@Override
-	protected boolean doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		try {
 			getStreamDataProvider().consumeWhiteSpaceAndComments();  //TODO Store comments until start event was fired by substituting the event queue.

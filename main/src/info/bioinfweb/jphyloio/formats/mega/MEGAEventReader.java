@@ -251,7 +251,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	 * @return {@code true} if at least one event was added to the event queue as a result of calling this method
 	 * @throws Exception
 	 */
-	private boolean readCommand() throws Exception {
+	private boolean readCommand() throws IOException {
 		boolean result = false;
 		int c = getReader().peek();
 		if ((c != -1) && ((char)c == COMMAND_START)) {
@@ -327,7 +327,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	
 	
 	@Override
-	protected void readNextEvent() throws Exception {
+	protected void readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
 			checkStart();
 			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);

@@ -19,10 +19,13 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 
 
 public interface XMLElementReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>> {
-	public void readEvent(P streamDataProvider, XMLEvent event) throws Exception;
+	public void readEvent(P streamDataProvider, XMLEvent event) throws IOException, XMLStreamException;
 }

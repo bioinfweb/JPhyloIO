@@ -123,7 +123,7 @@ public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamD
 	
 	
 	@Override
-	protected void readNextEvent() throws Exception {
+	protected void readNextEvent() throws IOException {
 		switch (state) {
 			case START:
 				state = State.IN_DOCUMENT;

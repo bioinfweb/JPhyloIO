@@ -218,7 +218,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	
 	
 	@Override
-	protected boolean doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws IOException {
 		int initialEventCount = getStreamDataProvider().getCurrentEventCollection().size();
 		
 		PeekReader reader = getStreamDataProvider().getDataReader();

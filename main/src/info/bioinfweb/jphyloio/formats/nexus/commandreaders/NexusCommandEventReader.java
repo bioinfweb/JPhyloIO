@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
+import java.io.IOException;
 import java.util.Collection;
 
 
@@ -62,5 +63,5 @@ public interface NexusCommandEventReader {
 	 * @return {@code true} if at least one additional event was added or {@code false} if the underlying Nexus
 	 *         command was already completely processed an no more events can generated from it
 	 */
-	public boolean readNextEvent() throws Exception;
+	public boolean readNextEvent() throws IOException;
 }

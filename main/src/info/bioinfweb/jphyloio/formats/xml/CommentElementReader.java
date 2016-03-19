@@ -19,8 +19,11 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import java.io.IOException;
+
 import info.bioinfweb.jphyloio.events.CommentEvent;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Comment;
 import javax.xml.stream.events.XMLEvent;
 
@@ -30,7 +33,7 @@ import javax.xml.stream.events.XMLEvent;
 public class CommentElementReader extends AbstractXMLElementReader {	                                                                
 	@SuppressWarnings("unchecked")
 	@Override
-	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 		streamDataProvider.getCurrentEventCollection().add(new CommentEvent(((Comment)event).getText(), false));
 	}
 }

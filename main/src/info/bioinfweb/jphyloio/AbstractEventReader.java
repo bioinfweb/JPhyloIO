@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio;
 
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -202,7 +203,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	}
 
 	
-	private JPhyloIOEvent getNextEventFromQueue() throws Exception {
+	private JPhyloIOEvent getNextEventFromQueue() throws IOException {
 		if (getUpcomingEvents().isEmpty()) {
 			readNextEvent();
 		}
@@ -211,14 +212,14 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	
 	
 	@Override
-	public boolean hasNextEvent() throws Exception {
+	public boolean hasNextEvent() throws IOException {
 		ensureFirstEvent();
 		return !dataSourceClosed && (next != null);
 	}
 
 	
 	@Override
-	public JPhyloIOEvent next() throws Exception {
+	public JPhyloIOEvent next() throws IOException {
 		// ensureFirstEvent() is called in hasNextEvent()
 		if (!hasNextEvent()) {
 			throw new NoSuchElementException("The end of the document was already reached.");
@@ -235,7 +236,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 
 
 	@Override
-	public JPhyloIOEvent nextOfType(Set<EventType> types) throws Exception {
+	public JPhyloIOEvent nextOfType(Set<EventType> types) throws IOException {
 		try {
 			JPhyloIOEvent result = next();
 			while (!types.contains(result.getType())) {
@@ -250,7 +251,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 
 
 	@Override
-	public JPhyloIOEvent peek() throws Exception {
+	public JPhyloIOEvent peek() throws IOException {
 		// ensureFirstEvent() is called in hasNextEvent()
 		if (!hasNextEvent()) {  //
 			throw new NoSuchElementException("The end of the document was already reached.");
@@ -261,7 +262,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	}
 
 
-	private void ensureFirstEvent() throws Exception {
+	private void ensureFirstEvent() throws IOException {
 		if (beforeFirstAccess) {
 			next = getNextEventFromQueue();
 			beforeFirstAccess = false;
@@ -273,11 +274,11 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	 * Method to be implemented be inherited classes that adds at least one additional event (determined from 
 	 * the underlying data source) to the event queue.
 	 */
-	protected abstract void readNextEvent() throws Exception;
+	protected abstract void readNextEvent() throws IOException;
 
 
 	@Override
-	public void close() throws Exception {
+	public void close() throws IOException {
 		dataSourceClosed = true;
 	}
 }

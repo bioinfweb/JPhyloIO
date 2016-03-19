@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
+import java.io.IOException;
+
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
@@ -52,7 +54,7 @@ public class DefaultCommandReader extends AbstractNexusCommandEventReader implem
 
 	
 	@Override
-	protected boolean doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws IOException {
 		StringBuilder result = new StringBuilder();
 		CharSequence sequence;
 		do {

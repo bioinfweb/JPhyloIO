@@ -50,6 +50,11 @@ public class JPhyloIOReaderException extends IOException implements StreamLocati
 	}
 
 
+	public JPhyloIOReaderException(String message, Throwable cause) {
+		this(message, -1, -1, -1, cause);
+	}
+	
+	
 	public JPhyloIOReaderException(String message, long characterOffset, long lineNumber, long columnNumber) {
 		this(message, characterOffset, lineNumber, columnNumber, null);
 	}

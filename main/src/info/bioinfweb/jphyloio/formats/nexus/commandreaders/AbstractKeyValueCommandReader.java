@@ -69,7 +69,7 @@ public abstract class AbstractKeyValueCommandReader extends AbstractNexusCommand
 	
 	
 	@Override
-	protected boolean doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		try {
 			while (reader.peekChar() != COMMAND_END) {

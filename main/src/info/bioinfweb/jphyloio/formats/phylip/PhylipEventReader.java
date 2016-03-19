@@ -139,7 +139,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextReaderStrea
 	
 	
 	@Override
-	protected void readNextEvent() throws Exception {
+	protected void readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
 			getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 		}

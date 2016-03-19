@@ -98,7 +98,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 	
 	
 	@Override
-	protected boolean doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws IOException {
 		ParameterMap map = getStreamDataProvider().getSharedInformationMap();
 		if (map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false)) {
 			throw new JPhyloIOReaderException("Transposed Nexus matrices are currently not supported by JPhyloIO.", 

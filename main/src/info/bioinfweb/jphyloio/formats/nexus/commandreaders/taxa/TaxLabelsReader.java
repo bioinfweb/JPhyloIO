@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.taxa;
 
 
 import java.io.EOFException;
+import java.io.IOException;
 import java.util.Collection;
 
 import info.bioinfweb.commons.io.PeekReader;
@@ -47,7 +48,7 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 
 	
 	@Override
-	protected boolean doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		try {
 			if (beforeStart) {

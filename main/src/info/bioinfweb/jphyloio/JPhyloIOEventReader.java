@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio;
 
 
+import java.io.IOException;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -86,16 +87,16 @@ public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	 * 
 	 * @return {@code true} if another event is waiting, {@code false} if the end of the underlying document was reached
 	 */
-	public boolean hasNextEvent() throws Exception;
+	public boolean hasNextEvent() throws IOException;
 	
 	/**
 	 * Returns the next event from the underlying document and moves one step forward.
 	 * 
 	 * @return the next event object
 	 * @throws NoSuchElementException if the end of the document has been reached with the previous call of this method
-	 * @throws Exception Implementing classes might throw additional exceptions
+	 * @throws IOException Implementing classes might throw additional exceptions
 	 */
-	public JPhyloIOEvent next() throws Exception;
+	public JPhyloIOEvent next() throws IOException;
 	
 	/**
 	 * Reads elements from the underlying stream until one of the specified is found or the end of the document is reached.
@@ -104,9 +105,9 @@ public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	 * @param types a set of valid types to be returned
 	 * @return the next element of the specified type or {@code null} if end of the file was reached before an according
 	 *         element was found
-	 * @throws Exception Implementing classes might throw additional exceptions
+	 * @throws IOException Implementing classes might throw additional exceptions
 	 */
-	public JPhyloIOEvent nextOfType(Set<EventType> types) throws Exception;
+	public JPhyloIOEvent nextOfType(Set<EventType> types) throws IOException;
 
 	/**
 	 * Returns the event from the underlying document that will be returned in the next call of {@link #next()}
@@ -114,9 +115,9 @@ public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	 * 
 	 * @return the next event object
 	 * @throws NoSuchElementException if the end of the document has been reached with the previous call of this method
-	 * @throws Exception Implementing classes might throw additional exceptions
+	 * @throws IOException Implementing classes might throw additional exceptions
 	 */
-	public JPhyloIOEvent peek() throws Exception;
+	public JPhyloIOEvent peek() throws IOException;
 	
 	/**
 	 * Returns the event that was returned with the last call of {@link #next()}.
@@ -142,8 +143,8 @@ public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	/**
 	 * Closes the underlying document source (usually a stream).
 	 * 
-	 * @throws Exception Implementing classes might throw different types of exceptions if the stream cannot 
+	 * @throws IOException Implementing classes might throw different types of exceptions if the stream cannot 
 	 *         be closed properly
 	 */
-	public void close() throws Exception;
+	public void close() throws IOException;
 }

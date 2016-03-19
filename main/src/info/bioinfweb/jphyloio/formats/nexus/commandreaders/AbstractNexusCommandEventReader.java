@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,11 +95,11 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	}
 
 
-	protected abstract boolean doReadNextEvent() throws Exception;
+	protected abstract boolean doReadNextEvent() throws IOException;
 	
 	
 	@Override
-	public boolean readNextEvent() throws Exception {
+	public boolean readNextEvent() throws IOException {
 		if (isAllDataProcessed()) {
 			return false;
 		}

@@ -118,7 +118,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextR
 
 
 	@Override
-	protected void readNextEvent() throws Exception {
+	protected void readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
 			getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 		}

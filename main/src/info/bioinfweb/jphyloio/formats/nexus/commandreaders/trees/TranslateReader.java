@@ -27,6 +27,7 @@ import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 import java.io.EOFException;
+import java.io.IOException;
 
 
 
@@ -37,7 +38,7 @@ public class TranslateReader extends AbstractNexusCommandEventReader implements 
 
 	
 	@Override
-	protected boolean doReadNextEvent() throws Exception {
+	protected boolean doReadNextEvent() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		try {
 			while (reader.peekChar() != COMMAND_END) {

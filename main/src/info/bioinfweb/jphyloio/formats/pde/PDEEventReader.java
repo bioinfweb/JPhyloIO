@@ -122,7 +122,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
 						streamDataProvider.setFormat(PDE);
 					}
@@ -131,7 +131,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.DOCUMENT));
 					}
 			});
@@ -139,7 +139,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_ALIGNMENT, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						StartElement element = event.asStartElement();
 						String tokenSetType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null);
 						int alignmentLength = XMLUtils.readIntAttr(element, ATTR_ALIGNEMNT_LENGTH, 0);
@@ -161,7 +161,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_HEADER, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						String otuListID = getID(null, EventContentType.OTU_LIST);
 						streamDataProvider.setOtuListID(otuListID);
 						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU_LIST, otuListID, null));
@@ -171,7 +171,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_HEADER, XMLStreamConstants.END_ELEMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.OTU_LIST));
 					}
 			});
@@ -179,7 +179,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_HEADER, TAG_META_TYPE_DEFINITIONS, XMLStreamConstants.CHARACTERS), 
 			new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+				public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 					String data = event.asCharacters().getData();
 					if (streamDataProvider.hasIncompleteToken()) {
 						data = streamDataProvider.getIncompleteToken() + data;
@@ -213,7 +213,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_HEADER, TAG_SEQUENCE_INFORMATION, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.setCurrentSequenceIndex(XMLUtils.readIntAttr(event.asStartElement(), ATTR_SEQUENCE_INDEX, -1));
 						streamDataProvider.getSequenceInformations().add(new HashMap<Integer, String>());
 					}
@@ -222,7 +222,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE_INFORMATION, TAG_SEQUENCE_META_INFORMATION, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						StartElement element = event.asStartElement();
 						int id = XMLUtils.readIntAttr(element, ATTR_ID, 0);
 						String value = readCharacterData(streamDataProvider, element);
@@ -240,7 +240,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_MATRIX, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, getID(null, EventContentType.ALIGNMENT), null, 
 								streamDataProvider.getOtuListID()));
 						
@@ -265,7 +265,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_MATRIX, XMLStreamConstants.END_ELEMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.ALIGNMENT));
 					}
 			});
@@ -273,7 +273,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_BLOCK, null, XMLStreamConstants.CHARACTERS), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {						
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {						
 						String sequenceData = event.asCharacters().getData().replaceAll("\\s", "");						
 						String specialToken = streamDataProvider.getIncompleteToken();
 						

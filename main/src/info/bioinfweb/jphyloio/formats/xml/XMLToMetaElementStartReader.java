@@ -19,9 +19,12 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import java.io.IOException;
+
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 
 import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -31,7 +34,7 @@ import javax.xml.stream.events.XMLEvent;
 public class XMLToMetaElementStartReader extends AbstractXMLElementReader {
 	@SuppressWarnings("unchecked")
 	@Override
-	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws Exception {
+	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 		StartElement element = event.asStartElement();
 		String elementName = element.getName().getLocalPart();
 		XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
