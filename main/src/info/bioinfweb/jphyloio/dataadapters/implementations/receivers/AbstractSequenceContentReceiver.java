@@ -19,6 +19,10 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -40,20 +44,20 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 	}
 	
 	
-	protected abstract void writeSingleToken(String token) throws Exception;
+	protected abstract void writeSingleToken(String token) throws IOException, XMLStreamException;
 	
 	
-	protected abstract void writeTokens(SequenceTokensEvent event) throws Exception;
+	protected abstract void writeTokens(SequenceTokensEvent event) throws IOException, XMLStreamException;
 
 	
-	protected abstract void writeComment(CommentEvent event) throws Exception;
+	protected abstract void writeComment(CommentEvent event) throws IOException, XMLStreamException;
 	
 	
-	protected abstract void writeMetaData(MetaInformationEvent event) throws Exception;
+	protected abstract void writeMetaData(MetaInformationEvent event) throws IOException, XMLStreamException;
 	
 
 	@Override
-	public boolean add(JPhyloIOEvent event) throws Exception {
+	public boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {

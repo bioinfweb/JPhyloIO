@@ -71,7 +71,7 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 
 
 	@Override
-	protected void writeTokens(SequenceTokensEvent event) throws Exception {
+	protected void writeTokens(SequenceTokensEvent event) throws IOException {
 		for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
 			writeSingleToken(token);
 		}		
@@ -98,7 +98,7 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 
 
 	@Override
-	protected void writeMetaData(MetaInformationEvent event) throws Exception {
+	protected void writeMetaData(MetaInformationEvent event) {
 		addIgnoredMetadata(1);
 	}
 }

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
@@ -114,7 +115,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 
 	@Override
 	protected void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws Exception {
+			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws IOException {
 
 		int nameLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
 		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);

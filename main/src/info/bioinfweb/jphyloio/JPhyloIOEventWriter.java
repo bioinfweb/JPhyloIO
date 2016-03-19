@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
@@ -44,7 +45,7 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */
-	public void writeDocument(DocumentDataAdapter document, OutputStream stream, ReadWriteParameterMap parameters) throws Exception;
+	public void writeDocument(DocumentDataAdapter document, OutputStream stream, ReadWriteParameterMap parameters) throws IOException;
 	
 	/**
 	 * Writes the data provided by the data adapter to a document in the according format of the implementing class.
@@ -55,7 +56,7 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */
-	public void writeDocument(DocumentDataAdapter document, File file, ReadWriteParameterMap parameters) throws Exception;
+	public void writeDocument(DocumentDataAdapter document, File file, ReadWriteParameterMap parameters) throws IOException;
 	
 	/**
 	 * Writes the data provided by the data adapter to a document in the according format of the implementing class.
@@ -66,5 +67,5 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */
-	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws Exception;
+	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException;
 }

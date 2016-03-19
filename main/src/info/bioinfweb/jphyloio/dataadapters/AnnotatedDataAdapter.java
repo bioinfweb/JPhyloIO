@@ -18,6 +18,8 @@
  */
 package info.bioinfweb.jphyloio.dataadapters;
 
+import java.io.IOException;
+
 
 
 /**
@@ -31,7 +33,7 @@ public interface AnnotatedDataAdapter {
 	 * 
 	 * @param receiver the writer accepting the events
 	 */
-	public void writeMetadata(JPhyloIOEventReceiver receiver);
+	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException;
 	
 	/**
 	 * Indicates whether this data adapter provides metadata via {@link #writeMetadata(JPhyloIOEventReceiver)}.

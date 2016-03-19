@@ -90,7 +90,7 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 	
 	@Override
 	protected void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws Exception {
+			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws IOException {
 		
 		FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrix, 
 				parameters.getLong(ReadWriteParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));

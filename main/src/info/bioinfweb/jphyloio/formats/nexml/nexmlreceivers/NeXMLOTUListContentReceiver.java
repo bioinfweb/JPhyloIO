@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
+import java.io.IOException;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -75,7 +77,7 @@ public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStream
 	
 
 	@Override
-	public boolean add(JPhyloIOEvent event) throws Exception {
+	public boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case OTU:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {

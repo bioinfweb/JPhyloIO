@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
@@ -68,7 +69,7 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 	 * @throws Exception if the implementing writer throws an exception
 	 */
 	protected abstract void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer,	ReadWriteParameterMap parameters) throws Exception;
+			Iterator<String> sequenceIDIterator, Writer writer,	ReadWriteParameterMap parameters) throws IOException;
 
 
 	protected String editSequenceOrNodeLabel(final LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters, 
@@ -95,7 +96,7 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer,
-			ReadWriteParameterMap parameters) throws Exception {
+			ReadWriteParameterMap parameters) throws IOException {
 		
 		ApplicationLogger logger = parameters.getLogger();
 		logIngnoredOTULists(document, logger, formatName, "sequences");

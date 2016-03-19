@@ -65,5 +65,5 @@ public interface JPhyloIOEventReceiver {
 	 *         with its type as document in {@link EventContentType}
 	 * @throws IOException if an I/O error occurs when writing to the underlying stream
 	 */
-	public boolean add(JPhyloIOEvent event) throws Exception;
+	public boolean add(JPhyloIOEvent event) throws IOException;
 }

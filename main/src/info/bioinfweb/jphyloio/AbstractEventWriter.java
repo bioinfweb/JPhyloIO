@@ -377,7 +377,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	
 	protected void extendSequence(MatrixDataAdapter matrix, String sequenceID, long targetLength, 
-			String extensionToken, JPhyloIOEventReceiver receiver) throws Exception {
+			String extensionToken, JPhyloIOEventReceiver receiver) throws IOException {
 		
 		if (extensionToken != null) {
 			long additionalLength = targetLength - matrix.getSequenceLength(sequenceID);
@@ -390,7 +390,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, File file, ReadWriteParameterMap parameters) throws Exception {
+	public void writeDocument(DocumentDataAdapter document, File file, ReadWriteParameterMap parameters) throws IOException {
 		Writer writer = new BufferedWriter(new FileWriter(file));
 		try {
 			writeDocument(document, writer, parameters);	
@@ -402,7 +402,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 
 	@Override
-	public void writeDocument(DocumentDataAdapter document, OutputStream stream, ReadWriteParameterMap parameters) throws Exception {		
+	public void writeDocument(DocumentDataAdapter document, OutputStream stream, ReadWriteParameterMap parameters) throws IOException {		
 		writeDocument(document, new BufferedWriter(new OutputStreamWriter(stream)), parameters);		
 	}
 }

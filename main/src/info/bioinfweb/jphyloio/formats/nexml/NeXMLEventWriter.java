@@ -24,6 +24,7 @@ import java.io.Writer;
 import java.util.Iterator;
 
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import info.bioinfweb.commons.io.XMLUtils;
@@ -34,6 +35,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLOTUListContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceContentReceiver;
@@ -66,7 +68,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 
 
-	private void writeRowTag(LinkedOTUOrOTUsEvent sequenceEvent, MatrixDataAdapter alignment) throws Exception {
+	private void writeRowTag(LinkedOTUOrOTUsEvent sequenceEvent, MatrixDataAdapter alignment) throws IOException, XMLStreamException {
 		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, alignment.containsLongTokens());
 		
 		writer.writeStartElement(TAG_ROW.getLocalPart());
@@ -78,7 +80,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
-	private void writeCharactersTag(MatrixDataAdapter alignment) throws Exception {
+	private void writeCharactersTag(MatrixDataAdapter alignment) throws IOException, XMLStreamException {
 		writer.writeStartElement(TAG_CHARACTERS.getLocalPart());
 		streamDataProvider.writeLinkedOTUOrOTUsAttributes(alignment.getStartEvent(), TAG_OTUS, true);
 		
@@ -96,7 +98,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
-	private void writeCharactersTags(DocumentDataAdapter document) throws Exception {
+	private void writeCharactersTags(DocumentDataAdapter document) throws IOException, XMLStreamException {
 		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator();
 		if (matricesIterator.hasNext()) {
 			writeCharactersTag(matricesIterator.next());
@@ -109,7 +111,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
-	private void writeOTUSTag(OTUListDataAdapter otuList) throws Exception {		
+	private void writeOTUSTag(OTUListDataAdapter otuList) throws IOException, XMLStreamException {		
 		writer.writeStartElement(TAG_OTUS.getLocalPart());
 		streamDataProvider.writeLabeledIDAttributes(otuList.getListStartEvent());
 		
@@ -137,7 +139,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	}
 	
 	
-	private void writeOTUSTags(DocumentDataAdapter document) throws Exception {
+	private void writeOTUSTags(DocumentDataAdapter document) throws IOException, XMLStreamException {
 		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
 		if (otusIterator.hasNext()) {
 			writeOTUSTag(otusIterator.next());
@@ -148,7 +150,7 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 			}
 		}
 		else {
-			throw new IOException("A NeXML file must have at least one OTU list"); //TODO give better exception
+			throw new JPhyloIOWriterException("A NeXML file must have at least one OTU list");
 			//TODO The generated UNDEFINED taxon may be the only entry. In such cases, no OTU list from the document adapter would be required.
 			//TODO In such cases a default OTU list and an UNDEFINED taxon should be created here and stored in property, to be used in writeLinkedOTUOrOTUsAttributes() later. 
 			//     (That should not be done, if a completely empty document (e.g. containing nothing or only document metadata) shall be written.
@@ -194,29 +196,34 @@ public class NeXMLEventWriter extends AbstractEventWriter implements NeXMLConsta
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws Exception {
-		this.writer = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
-		this.parameters = parameters;
-		logger = parameters.getLogger();		
-		
-		//TODO Before starting to write, the whole document must be iterated once and screened for 
-		//     - all metadata namespaces,
-		//     - whether it is empty (whether a default OTU list is needed),
-		//     - whether there are sequences without OTU links (whether an UNDEFINED OTU needs to be created).
-//		checkDocument(document);
-		
-		this.writer.writeStartDocument();
-		this.writer.writeStartElement(TAG_ROOT.getLocalPart());
-		XMLUtils.writeNamespaceAttr(this.writer, NAMESPACE_URI.toString());  //TODO Link xsd? 
-		
-		if (document.hasMetadata()) {
-//			document.writeMetadata(receiver); //TODO write according meta data 
+	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
+		try {
+			this.writer = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
+			this.parameters = parameters;
+			logger = parameters.getLogger();		
+			
+			//TODO Before starting to write, the whole document must be iterated once and screened for 
+			//     - all metadata namespaces,
+			//     - whether it is empty (whether a default OTU list is needed),
+			//     - whether there are sequences without OTU links (whether an UNDEFINED OTU needs to be created).
+	//		checkDocument(document);
+			
+			this.writer.writeStartDocument();
+			this.writer.writeStartElement(TAG_ROOT.getLocalPart());
+			XMLUtils.writeNamespaceAttr(this.writer, NAMESPACE_URI.toString());  //TODO Link xsd? 
+			
+			if (document.hasMetadata()) {
+	//			document.writeMetadata(receiver); //TODO write according meta data 
+			}
+			
+			writeOTUSTags(document);
+			writeCharactersTags(document);
+			
+			this.writer.writeEndElement();
+			this.writer.writeEndDocument();
 		}
-		
-		writeOTUSTags(document);
-		writeCharactersTags(document);
-		
-		this.writer.writeEndElement();
-		this.writer.writeEndDocument();
+		catch (XMLStreamException e) {
+			throw new JPhyloIOWriterException("An XML stream exception occured in the underlying XMLStreamWriter.", e);
+		}
 	}
 }

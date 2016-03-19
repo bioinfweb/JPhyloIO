@@ -19,9 +19,15 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
+
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 
@@ -81,5 +87,20 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 
 	protected void addIgnoredMetadata(long addend) {
 		ignoredMetadata += addend;
+	}
+
+	
+	protected abstract boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException;
+	
+	
+	@Override
+	public boolean add(JPhyloIOEvent event) throws IOException {
+		try {
+			return doAdd(event);
+		}
+		catch (XMLStreamException e) {
+			throw new JPhyloIOWriterException("An XMLStream exception with the message \"" + e.getMessage() + 
+					"\" occured when trying to add an event to this receiver.", e);
+		}
 	}
 }

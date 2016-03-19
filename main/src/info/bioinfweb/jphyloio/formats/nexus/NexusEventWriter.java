@@ -219,7 +219,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeTaxaBlock(OTUListDataAdapter otuList) throws Exception {
+	private void writeTaxaBlock(OTUListDataAdapter otuList) throws IOException {
 		logIgnoredMetadata(otuList, "Metadata attached to an OTU list have been ignored.");
 		if (otuList.getCount() > 0) {
 			writeBlockStart(BLOCK_NAME_TAXA);
@@ -262,7 +262,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeTaxaBlocks(DocumentDataAdapter document) throws Exception {
+	private void writeTaxaBlocks(DocumentDataAdapter document) throws IOException {
 		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
 		if (otusIterator.hasNext()) {
 			writeTaxaBlock(otusIterator.next());
@@ -318,7 +318,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 
 	
 	
-	private void writeFormatCommand(MatrixDataAdapter matrix) throws Exception {
+	private void writeFormatCommand(MatrixDataAdapter matrix) throws IOException {
 		ObjectListDataAdapter tokenSets = matrix.getTokenSets();
 		if (tokenSets.getCount() > 0) {
 			writeLineStart(writer, COMMAND_NAME_FORMAT);
@@ -427,7 +427,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, long alignmentLength, 
-			String extensionToken)	throws Exception {
+			String extensionToken)	throws IOException {
 		
 		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
 		writeLineStart(writer, COMMAND_NAME_MATRIX);
@@ -486,7 +486,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	 * @return a value indicating if and which Nexus block was written
 	 * @throws IOException
 	 */
-	private MatrixWriteResult writeCharactersUnalignedBlock(DocumentDataAdapter document, MatrixDataAdapter matrix) throws Exception {
+	private MatrixWriteResult writeCharactersUnalignedBlock(DocumentDataAdapter document, MatrixDataAdapter matrix) throws IOException {
 		logIgnoredMetadata(matrix, "A character matrix");
 		if (matrix.getSequenceCount() > 0) {
 			long columnCount = matrix.getColumnCount();
@@ -527,7 +527,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeCharactersUnalignedBlocks(DocumentDataAdapter document) throws Exception {
+	private void writeCharactersUnalignedBlocks(DocumentDataAdapter document) throws IOException {
 		boolean charactersWritten = false;
 		boolean unalignedWritten = false;
 		
@@ -622,7 +622,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeTreesBlocks(DocumentDataAdapter document) throws Exception {
+	private void writeTreesBlocks(DocumentDataAdapter document) throws IOException {
 		Set<String> processedOTUsIDs = new HashSet<String>();
 		boolean treeWritten;
 		long skippedNetworks;
@@ -719,7 +719,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws Exception {
+	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
 		this.writer = writer;
 		this.parameters = parameters;
 		logger = parameters.getLogger();

@@ -120,33 +120,7 @@ public class NewickStringWriter implements NewickConstants {
 	}
 	
 	
-//	private String getNodeName(LinkedOTUOrOTUsEvent nodeEvent) {
-//		String result;
-//		if ((indexMap != null) && nodeEvent.isOTUOrOTUsLinked()) {
-//			Long index = indexMap.get(nodeEvent.getID());
-//			if (index == null) {
-//				throw new InconsistentAdapterDataException("Error when writing tree: The node with the ID " + nodeEvent.getID() + 
-//						" references an OTU with the ID " + nodeEvent.getOTUOrOTUsID() + 
-//						", which could not be found in the OTU list associated with this tree.");
-//			}
-//			else {
-//				result = index.toString();
-//			}
-//		}
-//		else {
-//			if (useOTUFirst) {
-//				result = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeEvent, otuList);
-//			}
-//			else {
-//				result = AbstractEventWriter.getLinkedOTUNameOwnFirst(nodeEvent, otuList);
-//			}
-//		}
-//		return result;
-//	}
-	
-	
-	private void writeSubtree(String rootEdgeID) throws Exception {
-		
+	private void writeSubtree(String rootEdgeID) throws IOException {
 		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = 
 				new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters, EventContentType.EDGE);
 		tree.writeEdgeData(edgeReceiver, rootEdgeID);  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
@@ -206,7 +180,7 @@ public class NewickStringWriter implements NewickConstants {
 	 * 
 	 * @throws IOException if an I/O error occurs while writing to specified writer
 	 */
-	public void write() throws Exception {
+	public void write() throws IOException {
 		ApplicationLogger logger = parameters.getLogger();
 		if (tree.isTree()) {
 			if (tree.hasMetadata()) {

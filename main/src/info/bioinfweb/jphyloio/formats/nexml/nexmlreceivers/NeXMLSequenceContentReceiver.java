@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
+import java.io.IOException;
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -26,6 +28,7 @@ import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
@@ -37,7 +40,7 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 
 
 	@Override
-	protected void writeSingleToken(String token) throws Exception {
+	protected void writeSingleToken(String token) throws XMLStreamException {
 		getWriter().writeStartElement(TAG_CELL.getLocalPart());
 		getWriter().writeCharacters(token);
 		getWriter().writeEndElement();
@@ -45,7 +48,7 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 
 
 	@Override
-	protected void writeTokens(SequenceTokensEvent event) throws Exception {
+	protected void writeTokens(SequenceTokensEvent event) throws XMLStreamException {
 		getWriter().writeStartElement(TAG_SEQ.getLocalPart());
 		
 		for (String token : event.getCharacterValues()) {
@@ -55,8 +58,9 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 		getWriter().writeEndElement();
 	}
 
+	
 	@Override
-	protected void writeComment(CommentEvent event) throws Exception {
+	protected void writeComment(CommentEvent event) throws XMLStreamException {
 		String comment = event.getContent();
 		if (!comment.isEmpty()) {
 			getWriter().writeComment(comment);			
@@ -65,7 +69,7 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 	
 
 	@Override
-	protected void writeMetaData(MetaInformationEvent event) throws Exception {
+	protected void writeMetaData(MetaInformationEvent event) throws XMLStreamException {
 		// TODO Auto-generated method stub		
 	}	
 }

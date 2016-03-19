@@ -117,7 +117,7 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver<Writer> implement
 	
 	
 	@Override
-	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
+	public boolean doAdd(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
 		if (continuedCommentExpected && !EventContentType.COMMENT.equals(event.getType().getContentType())) {
 			throw new IllegalArgumentException("The previous event was a comment event indicating that it would be continued in this "
 					+ "event, but this event was of type " + event.getType());

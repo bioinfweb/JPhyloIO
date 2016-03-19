@@ -23,6 +23,7 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 
+import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
@@ -139,8 +140,9 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataA
 	 * @param sequenceID the ID of the sequence from which a part shall be written
 	 * @param startColumn the first column of the sequence part to be written (inclusive)
 	 * @param endColumn the last column of the sequence part to be written (exclusive)
+	 * @throws IOException if a I/O error occurs while writing the data
 	 * @throws IllegalArgumentException if an unknown sequence ID was specified
 	 */
 	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
-			long endColumn) throws Exception;
+			long endColumn) throws IOException, IllegalArgumentException;
 }
