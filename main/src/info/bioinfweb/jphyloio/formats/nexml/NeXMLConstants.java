@@ -29,6 +29,21 @@ public interface NeXMLConstants {
 	public static final String NAMESPACE_URI = "http://www.nexml.org/2009";
 	public static final String NAMESPACE_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	
+	
+//	public static String XSI_URI = javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+//	public static String XMLNS_URI = javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+	public static String XS_URI = javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+//	public static String RDF_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
+//
+//	public static String XMLNS_PRE = javax.xml.XMLConstants.XMLNS_ATTRIBUTE;
+//	public static String XSI_PRE = "xsi";
+	public static String XSD_PRE = "xsd";
+	public static String NEX_PRE = "nex";
+//	public static String RDF_PRE = "rdf";
+//	
+//	public static String XSI_TYPE = XSI_PRE + ":type";
+	
+	
 	public static final QName TAG_ROOT = new QName(NAMESPACE_URI, "nexml");
 	public static final QName TAG_META = new QName(NAMESPACE_URI, "meta");
 	public static final QName TAG_SET = new QName(NAMESPACE_URI, "set");
@@ -77,24 +92,24 @@ public interface NeXMLConstants {
 	public static final QName ATTR_CONTENT = new QName("content");
 	public static final QName ATTR_PROPERTY = new QName("property");	
 	
-	public static final String TYPE_DNA_SEQS = "nex:DnaSeqs";
-	public static final String TYPE_DNA_CELLS = "nex:DnaCells";
-	public static final String TYPE_RNA_SEQS = "nex:RnaSeqs";
-	public static final String TYPE_RNA_CELLS= "nex:RnaCells";
-	public static final String TYPE_PROTEIN_SEQS = "nex:ProteinSeqs";
-	public static final String TYPE_PROTEIN_CELLS= "nex:ProteinCells";
-	public static final String TYPE_RESTRICTION_SEQS = "nex:RestrictionSeqs";
-	public static final String TYPE_RESTRICTION_CELLS = "nex:RestrictionCells";
-	public static final String TYPE_CONTIN_SEQ = "nex:ContinuousSeqs";
-	public static final String TYPE_CONTIN_CELLS = "nex:ContinuousCells";
-	public static final String TYPE_STANDARD_SEQ = "nex:StandardSeqs";
-	public static final String TYPE_STANDARD_CELLS = "nex:StandardCells";
+	public static final String TYPE_DNA_SEQS = NEX_PRE + ":DnaSeqs";
+	public static final String TYPE_DNA_CELLS = NEX_PRE + ":DnaCells";
+	public static final String TYPE_RNA_SEQS = NEX_PRE + ":RnaSeqs";
+	public static final String TYPE_RNA_CELLS= NEX_PRE + ":RnaCells";
+	public static final String TYPE_PROTEIN_SEQS = NEX_PRE + ":ProteinSeqs";
+	public static final String TYPE_PROTEIN_CELLS= NEX_PRE + ":ProteinCells";
+	public static final String TYPE_RESTRICTION_SEQS = NEX_PRE + ":RestrictionSeqs";
+	public static final String TYPE_RESTRICTION_CELLS = NEX_PRE + ":RestrictionCells";
+	public static final String TYPE_CONTIN_SEQ = NEX_PRE + ":ContinuousSeqs";
+	public static final String TYPE_CONTIN_CELLS = NEX_PRE + ":ContinuousCells";
+	public static final String TYPE_STANDARD_SEQ = NEX_PRE + ":StandardSeqs";
+	public static final String TYPE_STANDARD_CELLS = NEX_PRE + ":StandardCells";
 	
-	public static final String TYPE_FLOAT_TREE = "nex:FloatTree";
-	public static final String TYPE_INT_TREE = "nex:IntTree";
+	public static final String TYPE_FLOAT_TREE = NEX_PRE + ":FloatTree";
+	public static final String TYPE_INT_TREE = NEX_PRE + ":IntTree";
 	
-	public static final String TYPE_STRING = "xsd:string";
+	public static final String TYPE_STRING = XSD_PRE + ":string";
 	
-	public static final String TYPE_LITERAL_META = "nex:LiteralMeta";
-	public static final String TYPE_RESOURCE_META = "nex:ResourceMeta";
+	public static final String TYPE_LITERAL_META = NEX_PRE + ":LiteralMeta";
+	public static final String TYPE_RESOURCE_META = NEX_PRE + ":ResourceMeta";
 }

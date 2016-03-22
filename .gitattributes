@@ -126,6 +126,10 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLReaderStreamDataProvider.jav
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTokenSetInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLWriterStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/TokenTranslationStrategy.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLCollectAlignmentDataReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLCollectDocumentDataReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLCollectFormatDataReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLCollectNamespaceReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLOTUListContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/package-info.java -text svneol=unset#text/plain

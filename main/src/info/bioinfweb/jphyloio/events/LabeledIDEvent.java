@@ -60,7 +60,7 @@ public class LabeledIDEvent extends LabeledEvent {
 		else if ("".equals(id)) {
 			throw new IllegalArgumentException("The " + idName + " of this event must not be an empty string.");
 		}
-		else if (XMLUtils.isNCName(id)) {
+		else if (!XMLUtils.isNCName(id)) {
 			throw new IllegalArgumentException("The " + idName + " (\"" + id + "\") of this event is not a valid NCName.");
 		}
 	}

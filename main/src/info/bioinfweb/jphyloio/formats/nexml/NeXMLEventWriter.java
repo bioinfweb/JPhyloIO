@@ -20,16 +20,13 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -37,6 +34,7 @@ import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectNamespaceReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLOTUListContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceContentReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
@@ -131,11 +129,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void checkOTUSTag(OTUListDataAdapter otuList) {		
-//		otuList.writeData(receiver, id); //TODO check OTUS with according receiver		
-		
+	private void checkOTUSTag(OTUListDataAdapter otuList) throws IOException {
 		if (otuList.hasMetadata()) {
-//			otuList.writeMetadata(receiver); //TODO check meta data 
+			NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, documentInformation);
+			otuList.writeMetadata(receiver);
 		}
 	}
 	
@@ -160,7 +157,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void checkOTUSTags(DocumentDataAdapter document) {
+	private void checkOTUSTags(DocumentDataAdapter document) throws IOException {
 		if (document.getOTUListCount() > 0) {
 			documentInformation.setHasOTUList(true);
 		}
@@ -180,9 +177,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void checkDocument(DocumentDataAdapter document) { //check if document is empty (or contains only meta data)
+	private void checkDocument(DocumentDataAdapter document) throws IOException { //check if document is empty (or contains only meta data)
 		if (document.hasMetadata()) {
-//			document.writeMetadata(receiver); //TODO check meta data for namespaces with according receiver
+			NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, documentInformation);
+			document.writeMetadata(receiver);
 		}
 		
 		if (!document.getOTUListIterator().hasNext() && !document.getMatrixIterator().hasNext() && !document.getTreeNetworkIterator().hasNext()) {
@@ -208,7 +206,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		//     - all metadata namespaces,
 		//     - whether it is empty (whether a default OTU list is needed),
 		//     - whether there are sequences without OTU links (whether an UNDEFINED OTU needs to be created).
-//		checkDocument(document);
+		checkDocument(document);
 		
 		this.writer.writeStartElement(TAG_ROOT.getLocalPart());
 		XMLUtils.writeNamespaceAttr(this.writer, NAMESPACE_URI.toString());  //TODO Link xsd? 

@@ -19,9 +19,22 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-class DocumentInformation {
-	boolean empty; //is true if the document contains nothing or only document meta data
-	boolean hasOTUList; //is true if the document contains at least one OTU list
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+
+import java.util.Set;
+import java.util.TreeSet;
+
+
+
+public class DocumentInformation {
+	private boolean empty; //is true if the document contains nothing or only document meta data
+	private boolean hasOTUList; //is true if the document contains at least one OTU list
+	private Set<String> metaDataNameSpaces = new TreeSet<String>();
+	
+	private boolean writeCellsTags;
+	private CharacterStateSetType alignmentType;
+	
+	private boolean writeUndefinedOTU;
 
 	
 	public boolean isEmpty() {
@@ -34,12 +47,47 @@ class DocumentInformation {
 	}
 
 
-	public boolean isHasOTUList() {
+	public boolean hasOTUList() {
 		return hasOTUList;
 	}
 
 
 	public void setHasOTUList(boolean hasOTUList) {
 		this.hasOTUList = hasOTUList;
-	}	
+	}
+
+
+	public Set<String> getMetaDataNameSpaces() {
+		return metaDataNameSpaces;
+	}
+
+
+	public boolean isWriteCellsTags() {
+		return writeCellsTags;
+	}
+
+
+	public void setWriteCellsTags(boolean writeCellsTags) {
+		this.writeCellsTags = writeCellsTags;
+	}
+
+
+	public CharacterStateSetType getAlignmentType() {
+		return alignmentType;
+	}
+
+
+	public void setAlignmentType(CharacterStateSetType alignmentType) {
+		this.alignmentType = alignmentType;
+	}
+
+
+	public boolean isWriteUndefinedOTU() {
+		return writeUndefinedOTU;
+	}
+
+
+	public void setWriteUndefinedOTU(boolean writeUndefinedOTU) {
+		this.writeUndefinedOTU = writeUndefinedOTU;
+	}
 }
