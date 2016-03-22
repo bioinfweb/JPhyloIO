@@ -225,7 +225,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeBlockStart(BLOCK_NAME_TAXA);
 			increaseIndention();
 			
-			writeTitleCommand(otuList.getStartEvent());
+			writeTitleCommand(otuList.getListStartEvent());
 			
 			writeLineStart(writer, COMMAND_NAME_DIMENSIONS);
 			writer.write(' ');
@@ -240,7 +240,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			Iterator<String> iterator = otuList.getIDIterator();
 			while (iterator.hasNext()) {
 				String id = iterator.next();
-				writeLineStart(writer, formatToken(createUniqueLabel(parameters, otuList.getOTUStartEvent(id))));
+				writeLineStart(writer, formatToken(createUniqueLabel(parameters, otuList.getObjectStartEvent(id))));
 				if (iterator.hasNext()) {
 					writeLineBreak(writer, parameters);
 				}
@@ -325,7 +325,39 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			Iterator<String> iterator = tokenSets.getIDIterator();
 			if (tokenSets.getCount() == 1) {
 				TokenSetEventReceiver receiver = new TokenSetEventReceiver(writer, parameters);
-				tokenSets.writeData(receiver, iterator.next());
+				
+				String dataType;
+				String tokenSetID = iterator.next();
+				switch (tokenSets.getObjectStartEvent(tokenSetID).asTokenSetDefinitionEvent().getSetType()) {
+					case DISCRETE:
+						dataType = FORMAT_VALUE_STANDARD_DATA_TYPE;
+						break;
+					case NUCLEOTIDE:
+						dataType = FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE;
+						break;
+					case DNA:
+						dataType = FORMAT_VALUE_DNA_DATA_TYPE;
+						break;
+					case RNA:
+						dataType = FORMAT_VALUE_RNA_DATA_TYPE;
+						break;
+					case AMINO_ACID:
+						dataType = FORMAT_VALUE_PROTEIN_DATA_TYPE;
+						break;
+					case CONTINUOUS:
+						dataType = FORMAT_VALUE_CONTINUOUS_DATA_TYPE;
+						break;
+					default:  // UNKNOWN
+						dataType = null;
+						break;
+				}
+				
+				if (dataType != null) {
+					writer.write(' ');
+					NexusEventWriter.writeKeyValueExpression(writer, FORMAT_SUBCOMMAND_DATA_TYPE, dataType);
+				}			
+				
+				tokenSets.writeData(receiver, tokenSetID);
 				
 				if (receiver.getSingleTokens() != null) {
 					writer.write(' ');

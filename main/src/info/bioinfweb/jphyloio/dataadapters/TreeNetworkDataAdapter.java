@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 
 public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataAdapter {
-	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition.
+	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition. Alternative iterators or returning events in WLR order may solve the problem.
 	
 	/**
 	 * Determines whether this instance represents a phylogenetic tree or a phylogenetic network.
@@ -53,15 +53,6 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 	public Iterator<String> getRootEdgeIDs();
 
 	/**
-	 * Writes the events describing the specified node and possible nested metadata.
-	 * 
-	 * @param receiver the receiver for the events
-	 * @param nodeID the ID of the requested node
-	 * @throws IllegalArgumentException if an unknown node ID was specified
-	 */
-	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
-	
-	/**
 	 * Returns an iterator returning the IDs of all edges starting at the specified node. This includes 
 	 * all edges that reference the specified node as their source, but not edges that have this node as
 	 * their target.
@@ -72,6 +63,15 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 	 */
 	public Iterator<String> getEdgeIDsFromNode(String nodeID) throws IllegalArgumentException;  //TODO Using this pattern may include circular references in networks.
 
+	/**
+	 * Writes the events describing the specified node and possible nested metadata.
+	 * 
+	 * @param receiver the receiver for the events
+	 * @param nodeID the ID of the requested node
+	 * @throws IllegalArgumentException if an unknown node ID was specified
+	 */
+	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	
 	/**
 	 * Writes the events describing the specified edge and possible nested metadata.
 	 * 

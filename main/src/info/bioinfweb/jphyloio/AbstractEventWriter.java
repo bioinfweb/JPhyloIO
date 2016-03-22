@@ -137,7 +137,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		String result = linkedOTUEvent.getLabel();
 		if (result == null) {
 			if (linkedOTUEvent.isOTUOrOTUsLinked() && (otuList != null)) {
-				result = otuList.getOTUStartEvent(linkedOTUEvent.getOTUOrOTUsID()).getLabel();
+				result = otuList.getObjectStartEvent(linkedOTUEvent.getOTUOrOTUsID()).getLabel();
 			}
 			if (result == null) {
 				result = linkedOTUEvent.getID();
@@ -165,7 +165,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 */
 	public static String getLinkedOTUNameOTUFirst(LinkedOTUOrOTUsEvent linkedOTUEvent, OTUListDataAdapter otuList) {
 		if (linkedOTUEvent.isOTUOrOTUsLinked() && (otuList != null)) {
-			return getLabeledIDName(otuList.getOTUStartEvent(linkedOTUEvent.getOTUOrOTUsID()));
+			return getLabeledIDName(otuList.getObjectStartEvent(linkedOTUEvent.getOTUOrOTUsID()));
 		}
 		else {
 			return getLabeledIDName(linkedOTUEvent);
@@ -327,12 +327,12 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			try {
 				String result;
 				if (otuFirst) {
-					result = createUniqueLabel(parameters, handler, otuList.getOTUStartEvent(event.getOTUOrOTUsID()).getLabel(), 
+					result = createUniqueLabel(parameters, handler, otuList.getObjectStartEvent(event.getOTUOrOTUsID()).getLabel(), 
 							event.getOTUOrOTUsID(), event.getLabel(), event.getID()); 
 				}
 				else {
 					result = createUniqueLabel(parameters, handler, event.getLabel(), event.getID(), 
-							otuList.getOTUStartEvent(event.getOTUOrOTUsID()).getLabel(), event.getOTUOrOTUsID()); 
+							otuList.getObjectStartEvent(event.getOTUOrOTUsID()).getLabel(), event.getOTUOrOTUsID()); 
 				}
 				parameters.getLabelEditingReporter().addEdit(event, result);
 				return result;
@@ -340,7 +340,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			catch (IllegalArgumentException e) {  // from otuList.getOTUStartEvent()
 				throw new InconsistentAdapterDataException("The OTU with the ID " + event.getOTUOrOTUsID() + 
 						" referenced by the data element with the ID " + event.getID() + 
-						" was not found in the OTU list with the ID " +	otuList.getStartEvent().getID());
+						" was not found in the OTU list with the ID " +	otuList.getListStartEvent().getID());
 			}
 		}
 		else {

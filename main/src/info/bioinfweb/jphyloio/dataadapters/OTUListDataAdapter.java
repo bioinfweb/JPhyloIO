@@ -34,16 +34,10 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 public interface OTUListDataAdapter extends ObjectListDataAdapter, AnnotatedDataAdapter {
 	
 	/**
-	 * Returns the start event of an OTU definition determined by the specified OTU ID.
-	 * <p>
-	 * This method is meant for writers that just need access to a single OTU of which they already
-	 * know the ID (because it was e.g. referenced by a sequence or tree node event), whereas 
-	 * {@link #writeData(JPhyloIOEventReceiver, String)} is used to get the whole list of OTUs
-	 * including their metadata.
+	 * Returns an event describing the OTU list modeled by this instance. This event allows
+	 * to specify a label and an ID, which will be used by some writers.
 	 * 
-	 * @param otuID the ID of the requested OTU
-	 * @return an instance of a labeled ID event that describes the specified OTU
-	 * @throws IllegalArgumentException if no to OTU for the specified ID is present 
+	 * @return an event describing the OTU list
 	 */
-	public LabeledIDEvent getOTUStartEvent(String otuID) throws IllegalArgumentException;
+	public LabeledIDEvent getListStartEvent();
 }

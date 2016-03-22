@@ -29,7 +29,12 @@ public class SingleSequenceTokenEvent extends LabeledEvent {
 	
 	public SingleSequenceTokenEvent(String label, String token) {
 		super(EventContentType.SINGLE_SEQUENCE_TOKEN, label);
-		this.token = token;
+		if (token != null) {
+			this.token = token;
+		}
+		else {
+			throw new NullPointerException("The token can not be null.");
+		}
 	}	
 
 

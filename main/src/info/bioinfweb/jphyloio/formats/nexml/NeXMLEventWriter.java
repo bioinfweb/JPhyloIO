@@ -31,10 +31,12 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectNamespaceReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectSequenceDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLOTUListContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceContentReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
@@ -65,36 +67,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	public XMLStreamWriter getWriter() {
 		return writer;
 	}
-
-
-	private void writeRowTag(LinkedOTUOrOTUsEvent sequenceEvent, MatrixDataAdapter alignment) throws IOException, XMLStreamException {
-		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, alignment.containsLongTokens());
-		
-		writer.writeStartElement(TAG_ROW.getLocalPart());
-		streamDataProvider.writeLinkedOTUOrOTUsAttributes(sequenceEvent, TAG_OTU, true);
-		
-		alignment.writeSequencePartContentData(receiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));
-		
-		writer.writeEndElement();
-	}
-	
-	
-	private void writeCharactersTag(MatrixDataAdapter alignment) throws IOException, XMLStreamException {
-		writer.writeStartElement(TAG_CHARACTERS.getLocalPart());
-		streamDataProvider.writeLinkedOTUOrOTUsAttributes(alignment.getStartEvent(), TAG_OTUS, true);
-		
-		//TODO write format tag
-		
-		writer.writeStartElement(TAG_MATRIX.getLocalPart()); //tag does not have attributes
-		
-		Iterator<String> sequenceIDIterator = alignment.getSequenceIDIterator();
-		while (sequenceIDIterator.hasNext()) {
-			writeRowTag(alignment.getSequenceStartEvent(sequenceIDIterator.next()), alignment);
-		}		
-		
-		writer.writeEndElement();
-		writer.writeEndElement();
-	}
 	
 	
 	private void writeCharactersTags(DocumentDataAdapter document) throws IOException, XMLStreamException {
@@ -110,29 +82,101 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void writeOTUSTag(OTUListDataAdapter otuList) throws IOException, XMLStreamException {		
-		writer.writeStartElement(TAG_OTUS.getLocalPart());
-		streamDataProvider.writeLabeledIDAttributes(otuList.getStartEvent());
+	private void writeCharactersTag(MatrixDataAdapter alignment) throws IOException, XMLStreamException {
+		writer.writeStartElement(TAG_CHARACTERS.getLocalPart());
+		streamDataProvider.writeLinkedOTUOrOTUsAttributes(alignment.getStartEvent(), TAG_OTUS, true);
 		
-		NeXMLOTUListContentReceiver receiver = new NeXMLOTUListContentReceiver(writer, parameters, streamDataProvider);		
+		writeFormatTag(alignment);
 		
-		Iterator<String> otuIDIterator = otuList.getIDIterator();
-		while (otuIDIterator.hasNext()) {
-			otuList.writeData(receiver, otuIDIterator.next());
-		}
+		writer.writeStartElement(TAG_MATRIX.getLocalPart()); //tag does not have attributes
 		
-		if (otuList.hasMetadata()) {
-			otuList.writeMetadata(receiver);
-		}
+		Iterator<String> sequenceIDIterator = alignment.getSequenceIDIterator();
+		while (sequenceIDIterator.hasNext()) {
+			writeRowTag(alignment.getSequenceStartEvent(sequenceIDIterator.next()), alignment);
+		}		
+		
+		writer.writeEndElement();
+		writer.writeEndElement();
+	}
+	
+	
+	private void writeFormatTag(MatrixDataAdapter alignment) throws XMLStreamException {
+		writer.writeStartElement(TAG_FORMAT.getLocalPart());
+		
+		writeTokenSetDefinitions(alignment.getTokenSets());
+		writeCharacterSets(alignment.getCharacterSets());
 		
 		writer.writeEndElement();
 	}
 	
 	
-	private void checkOTUSTag(OTUListDataAdapter otuList) throws IOException {
-		if (otuList.hasMetadata()) {
-			NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, documentInformation);
-			otuList.writeMetadata(receiver);
+	private void writeTokenSetDefinitions(ObjectListDataAdapter tokenSetDefinitions) throws XMLStreamException {
+		Iterator<String> tokenSetDefinitionIDs = tokenSetDefinitions.getIDIterator();
+		//TODO generate receiver for token set definitions
+		
+		while (tokenSetDefinitionIDs.hasNext()) {
+			String tokenSetID = tokenSetDefinitionIDs.next();
+			writer.writeStartElement(TAG_STATES.getLocalPart());
+			streamDataProvider.writeLabeledIDAttributes(tokenSetDefinitions.getObjectStartEvent(tokenSetID));
+//			tokenSetDefinitions.writeData(receiver, tokenSetID);
+			writer.writeEndElement();
+		}
+	}
+
+
+	private void writeCharacterSets(ObjectListDataAdapter charSets) throws IllegalArgumentException, XMLStreamException {
+		Iterator<String> characterSetIDs = charSets.getIDIterator();
+		//TODO generate receiver for char set definitions
+		
+		while (characterSetIDs.hasNext()) {
+			String charSetID = characterSetIDs.next();
+			writer.writeStartElement(TAG_SET.getLocalPart());
+			streamDataProvider.writeLabeledIDAttributes(charSets.getObjectStartEvent(charSetID));
+//			tokenSetDefinitions.writeData(receiver, charSetID);
+			writer.writeEndElement();
+		}
+	}
+	
+	
+	private void writeRowTag(LinkedOTUOrOTUsEvent sequenceEvent, MatrixDataAdapter alignment) throws IOException, XMLStreamException {
+		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, alignment.containsLongTokens());
+		
+		writer.writeStartElement(TAG_ROW.getLocalPart());
+		streamDataProvider.writeLinkedOTUOrOTUsAttributes(sequenceEvent, TAG_OTU, true);
+		
+		alignment.writeSequencePartContentData(receiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));
+		
+		writer.writeEndElement();
+	}
+	
+	
+	private void checkCharactersTags(DocumentDataAdapter document) throws IllegalArgumentException, IOException {
+		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator();
+		
+		if (matricesIterator.hasNext()) {
+			checkMatrix(matricesIterator.next());
+			if (matricesIterator.hasNext()) {				
+				do {
+					checkMatrix(matricesIterator.next());
+				}	while (matricesIterator.hasNext());
+			}
+		}
+	}
+	
+	
+	private void checkMatrix(MatrixDataAdapter alignment) throws IllegalArgumentException, IOException {
+		NeXMLCollectSequenceDataReceiver receiver = new NeXMLCollectSequenceDataReceiver(writer, parameters, documentInformation);
+		
+		Iterator<String> sequenceIDs = alignment.getSequenceIDIterator();
+		while (sequenceIDs.hasNext()) {
+			String sequenceID = sequenceIDs.next();
+			LinkedOTUOrOTUsEvent sequenceStartEvent = alignment.getSequenceStartEvent(sequenceID);
+			
+			if (sequenceStartEvent.getOTUOrOTUsID().isEmpty()) {
+				documentInformation.setWriteUndefinedOTU(true);
+			}			
+			
+			alignment.writeSequencePartContentData(receiver, sequenceID, 0, alignment.getSequenceLength(sequenceStartEvent.getID()));
 		}
 	}
 	
@@ -157,11 +201,27 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void checkOTUSTags(DocumentDataAdapter document) throws IOException {
-		if (document.getOTUListCount() > 0) {
-			documentInformation.setHasOTUList(true);
+	private void writeOTUSTag(OTUListDataAdapter otuList) throws IOException, XMLStreamException {		
+		writer.writeStartElement(TAG_OTUS.getLocalPart());
+		streamDataProvider.writeLabeledIDAttributes(otuList.getListStartEvent());
+		
+		NeXMLOTUListContentReceiver receiver = new NeXMLOTUListContentReceiver(writer, parameters, streamDataProvider);		
+		
+		Iterator<String> otuIDIterator = otuList.getIDIterator();
+		while (otuIDIterator.hasNext()) {
+			otuList.writeData(receiver, otuIDIterator.next());
 		}
-		else {
+		
+		if (otuList.hasMetadata()) {
+			otuList.writeMetadata(receiver);
+		}
+		
+		writer.writeEndElement();
+	}
+	
+	
+	private void checkOTUSTags(DocumentDataAdapter document) throws IOException {
+		if (document.getOTUListCount() == 0) {
 			documentInformation.setHasOTUList(false);
 		}
 		
@@ -177,19 +237,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void checkDocument(DocumentDataAdapter document) throws IOException { //check if document is empty (or contains only meta data)
-		if (document.hasMetadata()) {
+	private void checkOTUSTag(OTUListDataAdapter otuList) throws IOException {
+		if (otuList.hasMetadata()) {
 			NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, documentInformation);
-			document.writeMetadata(receiver);
-		}
-		
-		if (!document.getOTUListIterator().hasNext() && !document.getMatrixIterator().hasNext() && !document.getTreeNetworkIterator().hasNext()) {
-			documentInformation.setEmpty(true);
-		}
-		else {
-			documentInformation.setEmpty(false);
-			checkOTUSTags(document);
-			//TODO check rest of document
+			otuList.writeMetadata(receiver);
 		}
 	}
 	
@@ -219,5 +270,25 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		writeCharactersTags(document);
 		
 		this.writer.writeEndElement();
+	}
+	
+	
+	private void checkDocument(DocumentDataAdapter document) throws IOException { //check if document is empty (or contains only meta data)
+		if (document.hasMetadata()) {
+			NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, documentInformation);
+			document.writeMetadata(receiver);
+		}
+		
+		if (!document.getOTUListIterator().hasNext() && !document.getMatrixIterator().hasNext() && !document.getTreeNetworkIterator().hasNext()) {
+			documentInformation.setEmpty(true);
+		}
+		else {
+			checkOTUSTags(document);
+			checkCharactersTags(document);
+			//TODO check trees
+		}
+		
+		System.out.println(documentInformation.isWriteCellsTags());
+		System.out.println(documentInformation.isWriteUndefinedOTU());
 	}
 }

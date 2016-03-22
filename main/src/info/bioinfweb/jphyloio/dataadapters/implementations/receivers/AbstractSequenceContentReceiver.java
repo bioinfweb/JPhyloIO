@@ -36,18 +36,13 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 	private boolean longTokens;
 	
 	
-	public AbstractSequenceContentReceiver(W writer,	ReadWriteParameterMap parameterMap, String commentStart,
-			String commentEnd, boolean longTokens) {
-		
+	public AbstractSequenceContentReceiver(W writer,	ReadWriteParameterMap parameterMap, boolean longTokens) {		
 		super(writer, parameterMap);
 		this.longTokens = longTokens;
 	}
 	
 	
-	protected abstract void writeSingleToken(String token) throws IOException, XMLStreamException;
-	
-	
-	protected abstract void writeTokens(SequenceTokensEvent event) throws IOException, XMLStreamException;
+	protected abstract void writeToken(String token) throws IOException, XMLStreamException;
 
 	
 	protected abstract void writeComment(CommentEvent event) throws IOException, XMLStreamException;
@@ -61,17 +56,21 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 		switch (event.getType().getContentType()) {
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					writeSingleToken(event.asSingleSequenceTokenEvent().getToken());
+					writeToken(event.asSingleSequenceTokenEvent().getToken());
 				}  // End events can be ignored.
 				break;
 			case SEQUENCE_TOKENS:
-				writeTokens(event.asSequenceTokensEvent());
+				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
+					writeToken(token);
+				}
 				break;
 			case COMMENT:
 				writeComment(event.asCommentEvent());
 				break;
 			case META_INFORMATION:  //TODO Filter comments nested in metadata by counting metadata level. (Possibly use superclass shared with NewickNodeEdgeEventReceiver.)
-				writeMetaData(event.asMetaInformationEvent());
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					writeMetaData(event.asMetaInformationEvent());
+				}
 				break;
 			default:
 				break;

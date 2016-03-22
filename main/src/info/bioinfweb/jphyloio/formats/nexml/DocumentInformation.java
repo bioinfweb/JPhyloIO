@@ -27,14 +27,14 @@ import java.util.TreeSet;
 
 
 public class DocumentInformation {
-	private boolean empty; //is true if the document contains nothing or only document meta data
-	private boolean hasOTUList; //is true if the document contains at least one OTU list
+	private boolean empty = false; //is true if the document contains nothing or only document meta data
+	private boolean hasOTUList = true; //is true if the document contains at least one OTU list
 	private Set<String> metaDataNameSpaces = new TreeSet<String>();
 	
 	private boolean writeCellsTags;
-	private CharacterStateSetType alignmentType;
+	private CharacterStateSetType alignmentType = CharacterStateSetType.UNKNOWN;
 	
-	private boolean writeUndefinedOTU;
+	private boolean writeUndefinedOTU = false;
 
 	
 	public boolean isEmpty() {

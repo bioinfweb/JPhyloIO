@@ -37,14 +37,15 @@ import java.util.Iterator;
  * @author Ben St&ouml;ver
  */
 public interface ObjectListDataAdapter {
-	
 	/**
-	 * Returns an event describing the object list modeled by this instance. This event allows
-	 * to specify a label and an ID, which will be used by some writers.
+	 * Returns the start event of an object determined by the specified object ID.
+	 * <p>
 	 * 
-	 * @return an event describing the object list
+	 * @param id the ID of the requested object
+	 * @return an instance of a labeled ID event that describes the specified object
+	 * @throws IllegalArgumentException if no to object for the specified ID is present 
 	 */
-	public LabeledIDEvent getStartEvent();
+	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException;
 	
 	/**
 	 * Returns the number of objects to be returned by {@link #getIDIterator()}.

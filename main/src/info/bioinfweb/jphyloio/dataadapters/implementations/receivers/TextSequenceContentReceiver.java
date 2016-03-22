@@ -58,23 +58,18 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 	public TextSequenceContentReceiver(Writer writer,	ReadWriteParameterMap parameterMap, String commentStart,
 			String commentEnd, boolean longTokens) {
 		
-		super(writer, parameterMap, commentStart, commentEnd, longTokens);
+		super(writer, parameterMap, longTokens);
+		
+		this.commentStart = commentStart;
+		this.commentEnd = commentEnd;
 	}
 	
 	
-	protected void writeSingleToken(String token) throws IOException {
+	protected void writeToken(String token) throws IOException {
 		getWriter().write(token);
 		if (isLongTokens()) {
 			getWriter().write(' ');
 		}
-	}
-
-
-	@Override
-	protected void writeTokens(SequenceTokensEvent event) throws IOException {
-		for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
-			writeSingleToken(token);
-		}		
 	}
 
 

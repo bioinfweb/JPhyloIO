@@ -24,23 +24,21 @@ import java.io.Writer;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.CertainStartEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
-import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-public class TokenSetEventReceiver extends CertainStartEventReceiver<Writer, TokenSetDefinitionEvent> 
+public class TokenSetEventReceiver extends AbstractEventReceiver<Writer> 
 		implements JPhyloIOEventReceiver, NexusConstants {
 
 	private StringBuilder singleTokens = new StringBuilder();
 	
 	
 	public TokenSetEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
-		super(writer, parameterMap, EventContentType.TOKEN_SET_DEFINITION);
+		super(writer, parameterMap);
 	}
 
 	
@@ -54,44 +52,8 @@ public class TokenSetEventReceiver extends CertainStartEventReceiver<Writer, Tok
 	}
 
 
-	@Override
 	public void clear() {
-		super.clear();
 		singleTokens.delete(0, singleTokens.length());
-	}
-
-
-	@Override
-	protected void processStartEvent(TokenSetDefinitionEvent startEvent) throws IOException {
-		String dataType;
-		switch (startEvent.getSetType()) {
-			case DISCRETE:
-				dataType = FORMAT_VALUE_STANDARD_DATA_TYPE;
-				break;
-			case NUCLEOTIDE:
-				dataType = FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE;
-				break;
-			case DNA:
-				dataType = FORMAT_VALUE_DNA_DATA_TYPE;
-				break;
-			case RNA:
-				dataType = FORMAT_VALUE_RNA_DATA_TYPE;
-				break;
-			case AMINO_ACID:
-				dataType = FORMAT_VALUE_PROTEIN_DATA_TYPE;
-				break;
-			case CONTINUOUS:
-				dataType = FORMAT_VALUE_CONTINUOUS_DATA_TYPE;
-				break;
-			default:  // UNKNOWN
-				dataType = null;
-				break;
-		}
-		
-		if (dataType != null) {
-			getWriter().write(' ');
-			NexusEventWriter.writeKeyValueExpression(getWriter(), FORMAT_SUBCOMMAND_DATA_TYPE, dataType);
-		}
 	}
 	
 	

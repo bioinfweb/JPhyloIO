@@ -36,16 +36,11 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
  */
 public class EmptyObjectListDataAdapter implements ObjectListDataAdapter {
 	public static final EmptyObjectListDataAdapter SHARED_EMPTY_OBJECT_LIST_ADAPTER = new EmptyObjectListDataAdapter();
-	
-	
-	/**
-	 * This default implementation always returns null.
-	 * 
-	 * @return always null
-	 */
+
+
 	@Override
-	public LabeledIDEvent getStartEvent() { //TODO return something else?
-		return null;
+	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException {
+		throw new IllegalArgumentException("No object with the ID \"" + id + "\" is offered by this adapter.");
 	}
 
 

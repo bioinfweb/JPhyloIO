@@ -35,28 +35,29 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {	
 	public NeXMLSequenceContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens) {
-		super(writer, parameterMap, null, null, longTokens);
+		super(writer, parameterMap, longTokens);
 	}
 
 
 	@Override
-	protected void writeSingleToken(String token) throws XMLStreamException {
+	protected void writeToken(String token) throws XMLStreamException {
+		//TODO decide if cell or seq tag is to be used
 		getWriter().writeStartElement(TAG_CELL.getLocalPart());
 		getWriter().writeCharacters(token);
 		getWriter().writeEndElement();
 	}
 
 
-	@Override
-	protected void writeTokens(SequenceTokensEvent event) throws XMLStreamException {
-		getWriter().writeStartElement(TAG_SEQ.getLocalPart());
-		
-		for (String token : event.getCharacterValues()) {
-			getWriter().writeCharacters(token);
-		}
-		
-		getWriter().writeEndElement();
-	}
+//	@Override
+//	protected void writeTokens(SequenceTokensEvent event) throws XMLStreamException {
+//		getWriter().writeStartElement(TAG_SEQ.getLocalPart());
+//		
+//		for (String token : event.getCharacterValues()) {
+//			getWriter().writeCharacters(token);
+//		}
+//		
+//		getWriter().writeEndElement();
+//	}
 
 	
 	@Override

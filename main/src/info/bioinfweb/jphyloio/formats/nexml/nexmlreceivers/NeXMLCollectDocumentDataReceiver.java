@@ -42,7 +42,7 @@ public abstract class NeXMLCollectDocumentDataReceiver extends AbstractEventRece
 
 	
 	@Override
-	protected abstract boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException; //TODO handle name space collecting here?
+	protected abstract boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException; //TODO handle metadata name space collecting here?
 	
 
 	public DocumentInformation getDocumentInformation() {
