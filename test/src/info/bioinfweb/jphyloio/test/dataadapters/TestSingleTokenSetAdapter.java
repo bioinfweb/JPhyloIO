@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -40,6 +41,15 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter implements ObjectListDataAdapter, ReadWriteConstants {
+	private int indexOfTokenSet;
+	
+	
+	public TestSingleTokenSetAdapter(int indexOfTokenSet) {
+		super();
+		this.indexOfTokenSet = indexOfTokenSet;
+	}
+
+
 	@Override
 	public long getCount() {
 		return 1;
@@ -47,16 +57,20 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter impleme
 
 	
 	@Override
+	public LabeledIDEvent getStartEvent() {
+		return new TokenSetDefinitionEvent(CharacterStateSetType.DNA, ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + indexOfTokenSet, "Some token set");
+	}
+
+
+	@Override
 	public Iterator<String> getIDIterator() {
-		return Arrays.asList(new String[]{"tokenSet0"}).iterator();
+		return Arrays.asList(new String[]{ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + indexOfTokenSet}).iterator(); //TODO maybe return an iterator of token definitions instead?
 	}
 
 	
 	@Override
 	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IOException {
-		if (id.equals("tokenSet0")) {
-			receiver.add(new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "Some token set"));
-			
+		if (id.equals(ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + indexOfTokenSet)) {			
 			IntegerIDManager idManager = new IntegerIDManager();
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "-", 
 					CharacterSymbolMeaning.GAP, CharacterSymbolType.ATOMIC_STATE));

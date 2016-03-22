@@ -18,27 +18,32 @@
  */
 package info.bioinfweb.jphyloio.formats.xtg;
 
+
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.fail;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
+import info.bioinfweb.jphyloio.formats.pde.PDEEventReader;
 
 import java.io.File;
 
 import org.junit.Test;
 
+
+
 public class XTGEventReaderTest {
 	@Test
 	public void testOutputNeXML() {
 		try {
-			XTGEventReader reader = new XTGEventReader(new File("data/XTG/ExampleXTGDocument.xml"), new ReadWriteParameterMap());
+			XTGEventReader reader = new XTGEventReader(new File("data/XTG/NoNamespaceShortened.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
-					JPhyloIOEvent event = reader.next();
+					JPhyloIOEvent event = reader.next();					
+					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 					
-//					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 					if (!event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
 //						System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 					}
@@ -67,4 +72,21 @@ public class XTGEventReaderTest {
 		}
 	}
 
+	
+	@Test
+	public void readXTGWithoutNamespace() {
+		try {
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/NoNamespaceShortened.xtg"), new ReadWriteParameterMap());
+			try {
+				
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }

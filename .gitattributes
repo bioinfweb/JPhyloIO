@@ -242,7 +242,10 @@ test/data/NeXML/freeAnnotations/NameAsCURIEPredicate.xml -text svneol=unset#text
 test/data/NeXML/freeAnnotations/NameAsPredicate.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/NestedNameAndValue.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/ValueNestedInName.xml -text svneol=unset#text/plain
+test/data/NeXML/shortNeXMLExample.xml -text svneol=unset#text/plain
+test/data/NeXML/treebase-example.xml -text svneol=unset#text/plain
 test/data/NeXML/treebase-record.xml -text svneol=unset#text/plain
+test/data/NeXML/xml2rdf.rdf -text
 test/data/Newick/Comments.nwk -text
 test/data/Newick/InternalsTerminalsLength.nwk -text
 test/data/Newick/InvalidNewick.txt -text svneol=unset#text/plain

@@ -23,6 +23,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 
 import java.io.File;
@@ -47,7 +48,9 @@ public class NeXMLEventWriterTest implements NeXMLConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "species1"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", "species2"),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "species3"));
-		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
+		TestMatrixDataAdapter alignment = new TestMatrixDataAdapter("alignment", null, false, "AGCTCTGAAACGGARTGTAG", "AGTTTAGAAAAGGGBTGTCG");
+		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
+		document.getMatrices().add(alignment);
 		return document;
 	}
 }

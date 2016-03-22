@@ -72,7 +72,7 @@ public class NewickEventWriterTest {
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "label1"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", null),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "otu0"));
-		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
 		
 		document.getTreesNetworks().add(new TestTreeDataAdapter("tree0", "first tree", "t0"));
 		TestTreeDataAdapter tree = new TestTreeDataAdapter("tree1", "second tree", "t1", new String[]{"otu0", "otu1", "otu2"});

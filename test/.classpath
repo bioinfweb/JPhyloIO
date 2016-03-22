@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/commons-collections4-4.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/org.nexml.model.jar"/>
+	<classpathentry kind="lib" path="/JPhyloIO/lib/owlapi-XMLUtils-4.1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

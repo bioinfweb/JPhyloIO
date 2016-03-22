@@ -83,7 +83,7 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements
 
 	
 	@Override
-	public LabeledIDEvent getListStartEvent() {
+	public LabeledIDEvent getStartEvent() {
 		return new LabeledIDEvent(EventContentType.OTU_LIST, ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + indexOfList, 
 				"OTU list " + indexOfList);
 	}

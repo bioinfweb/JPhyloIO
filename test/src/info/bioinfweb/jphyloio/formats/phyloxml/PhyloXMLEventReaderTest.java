@@ -156,39 +156,39 @@ public class PhyloXMLEventReaderTest {
 				assertMetaEvent("phyloXML.phyloxml.phylogeny.rooted", "true", true, true, reader);
 				assertMetaEvent("phyloXML.phylogeny.name", "Tree 1", true, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "A", null, null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n1", null, null, reader);
 				assertMetaEvent("phyloXML.clade.node_id", "A", true, true, reader);
 				assertEndEvent(EventContentType.NODE, reader);
 				
-				assertEdgeEvent("1", "A", reader);
+				assertEdgeEvent("n9", "n1", reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "B", null, null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n3", null, null, reader);
 				assertMetaEvent("phyloXML.clade.node_id", "B", true, true, reader);
 				assertEndEvent(EventContentType.NODE, reader);
 				
-				assertEdgeEvent("2", "B", reader);
+				assertEdgeEvent("n7", "n3", reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "C", null, null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n5", null, null, reader);
 				assertMetaEvent("phyloXML.clade.node_id", "C", true, true, reader);
 				assertEndEvent(EventContentType.NODE, reader);
 				
-				assertEdgeEvent("2", "C", reader);
+				assertEdgeEvent("n7", "n5", reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "2", null, null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n7", null, null, reader);
 				assertMetaEvent("phyloXML.clade.node_id", "2", true, true, reader);
 				assertEndEvent(EventContentType.NODE, reader);
 				
-				assertEdgeEvent("1", "2", reader);
+				assertEdgeEvent("n9", "n7", reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "1", null, null, reader);
+				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n9", null, null, reader);
 				assertMetaEvent("phyloXML.clade.node_id", "1", true, true, reader);				
 				assertEndEvent(EventContentType.NODE, reader);
 				
-				assertEdgeEvent("root", "1", reader);
+				assertEdgeEvent("root", "n9", reader);
 				assertEndEvent(EventContentType.EDGE, reader);				
 				
 				assertEndEvent(EventContentType.TREE, reader);
