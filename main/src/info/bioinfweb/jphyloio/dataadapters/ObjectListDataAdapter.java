@@ -28,8 +28,9 @@ import java.util.Iterator;
 
 /**
  * Allows to provide data for a list of phylogenetic objects. All objects need to be identified by
- * unique IDs, provided by {@link #getIDIterator()} and the event sequence for each object will be requested
- * by separate calls of {@link #writeData(JPhyloIOEventReceiver, String)}.
+ * unique IDs, provided by {@link #getIDIterator()}. The start event of each object will be requested by 
+ * separate calls of {@link #getObjectStartEvent(String)} and the event sequence by
+ * separate calls of {@link #writeContentData(JPhyloIOEventReceiver, String)}.
  * <p>
  * Such objects may e.g. be OTUs, token sets or character sets, depending on where instances of this 
  * interface are used.
@@ -70,5 +71,5 @@ public interface ObjectListDataAdapter {
 	 * @throws IOException if a I/O error occurs while writing the data
 	 * @throws IllegalArgumentException if an unknown ID was specified
 	 */
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException;
+	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException;
 }

@@ -77,7 +77,7 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 	public LinkedOTUOrOTUsEvent getNodeStartEvent(String id);
 	
 	/**
-	 * Writes the events describing the specified node and possible nested metadata.
+	 * Writes the events nested in the specified node.
 	 * 
 	 * @param receiver the receiver for the events
 	 * @param nodeID the ID of the requested node
@@ -96,7 +96,7 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 	public EdgeEvent getEdgeStartEvent(String id);
 	
 	/**
-	 * Writes the events describing the specified edge and possible nested metadata.
+	 * Writes the events nested in the specified node.
 	 * 
 	 * @param receiver the receiver for the events
 	 * @param edgeID the ID of the requested edge

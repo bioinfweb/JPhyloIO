@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 /**
- * Event receiver that can be passed to {@link ObjectListDataAdapter#writeData(JPhyloIOEventReceiver, String)}.
+ * Event receiver that can be passed to {@link ObjectListDataAdapter#writeContentData(JPhyloIOEventReceiver, String)}.
  * It checks whether any metadata is written and writes an according warning, that this data is not supported.
  * 
  * @author Ben St&ouml;ver

@@ -247,7 +247,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				else {
 					writeCommandEnd();
 				}
-				otuList.writeData(receiver, id);
+				otuList.writeContentData(receiver, id);
 				receiver.reset();
 			}
 			decreaseIndention();
@@ -357,7 +357,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					NexusEventWriter.writeKeyValueExpression(writer, FORMAT_SUBCOMMAND_DATA_TYPE, dataType);
 				}			
 				
-				tokenSets.writeData(receiver, tokenSetID);
+				tokenSets.writeContentData(receiver, tokenSetID);
 				
 				if (receiver.getSingleTokens() != null) {
 					writer.write(' ');

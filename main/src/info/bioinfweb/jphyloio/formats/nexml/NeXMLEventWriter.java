@@ -209,7 +209,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		Iterator<String> otuIDIterator = otuList.getIDIterator();
 		while (otuIDIterator.hasNext()) {
-			otuList.writeData(receiver, otuIDIterator.next());
+			otuList.writeContentData(receiver, otuIDIterator.next());
 		}
 		
 		if (otuList.hasMetadata()) {

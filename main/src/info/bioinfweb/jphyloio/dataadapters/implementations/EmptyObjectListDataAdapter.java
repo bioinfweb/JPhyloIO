@@ -72,10 +72,10 @@ public class EmptyObjectListDataAdapter implements ObjectListDataAdapter {
 	 * Always throws an {@link IllegalArgumentException}, since this default implementation does not contain
 	 * any objects.
 	 * 
-	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#writeData(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver, java.lang.String)
+	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#writeContentData(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver, java.lang.String)
 	 */
 	@Override
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException {
+	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException {
 		throw new IllegalArgumentException("No object with the ID \"" + id + "\" is offered by this adapter.");
 	}
 }
