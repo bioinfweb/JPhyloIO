@@ -26,16 +26,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.CertainStartEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends CertainStartEventReceiver<Writer, E> 
+public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends AbstractEventReceiver<Writer> 
 		implements NewickConstants {
 	
 	public static final char STRING_DELEMITER_REPLACEMENT = '\'';
@@ -65,8 +64,8 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Certai
 	private int metadataLevel = 0;
 	
 	
-	public NewickNodeEdgeEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap, EventContentType startEventType) {
-		super(writer, parameterMap, startEventType);
+	public NewickNodeEdgeEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
+		super(writer, parameterMap);
 	}
 
 	
@@ -81,7 +80,6 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Certai
 	
 	
 	public void clear() {
-		super.clear();
 		commentEvents.clear();
 		ignoredNestedMetadata = false;
 		ignoredXMLMetadata = false;
@@ -98,10 +96,6 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Certai
 					event.getStringValue().replaceAll("\\" + NAME_DELIMITER, "" + NAME_DELIMITER + NAME_DELIMITER) + NAME_DELIMITER;
 		}
 	}
-	
-	
-	@Override
-	protected void processStartEvent(E startEvent) throws IOException {}  // Nothing to do.
 
 
 	@Override

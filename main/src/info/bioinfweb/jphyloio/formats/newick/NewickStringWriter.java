@@ -120,9 +120,9 @@ public class NewickStringWriter implements NewickConstants {
 	
 	private void writeSubtree(String rootEdgeID) throws IOException {
 		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = 
-				new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters, EventContentType.EDGE);
-		tree.writeEdgeData(edgeReceiver, rootEdgeID);  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
-		String nodeID = edgeReceiver.getStartEvent().getTargetID();
+				new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters);
+		tree.writeEdgeContentData(edgeReceiver, rootEdgeID);  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
+		String nodeID = tree.getEdgeStartEvent(rootEdgeID).getTargetID();
 		Iterator<String> childEdgeIDIterator = tree.getEdgeIDsFromNode(nodeID);
 		if (childEdgeIDIterator.hasNext()) {
 			writer.write(SUBTREE_START);
@@ -135,18 +135,18 @@ public class NewickStringWriter implements NewickConstants {
 		}
 		
 		NewickNodeEdgeEventReceiver<LinkedOTUOrOTUsEvent> nodeReceiver = 
-				new NewickNodeEdgeEventReceiver<LinkedOTUOrOTUsEvent>(writer, parameters, EventContentType.NODE);
-		tree.writeNodeData(nodeReceiver, nodeID);
+				new NewickNodeEdgeEventReceiver<LinkedOTUOrOTUsEvent>(writer, parameters);
+		tree.writeNodeContentData(nodeReceiver, nodeID);
 		
 		// Write node data:
-		writer.write(formatToken(nodeLabelProcessor.createNodeName(nodeReceiver.getStartEvent()), NAME_DELIMITER));
+		writer.write(formatToken(nodeLabelProcessor.createNodeName(tree.getNodeStartEvent(nodeID)), NAME_DELIMITER));
 		nodeReceiver.writeMetadata();
 		nodeReceiver.writeComments();
 		
 		// Write edge data:
-		if (edgeReceiver.getStartEvent().hasLength()) {
+		if (tree.getEdgeStartEvent(rootEdgeID).hasLength()) {
 			writer.write(LENGTH_SEPERATOR);
-			writer.write(Double.toString(edgeReceiver.getStartEvent().getLength()));
+			writer.write(Double.toString(tree.getEdgeStartEvent(rootEdgeID).getLength()));
 		}
 		edgeReceiver.writeMetadata();
 		edgeReceiver.writeComments();

@@ -47,7 +47,6 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/NoSetsMatrixDataAd
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/AbstractEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/AbstractSequenceContentReceiver.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/CertainStartEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/IgnoreObjectListMetadataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/TextSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/package-info.java -text svneol=unset#text/plain

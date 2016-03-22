@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -64,13 +67,33 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 	public Iterator<String> getEdgeIDsFromNode(String nodeID) throws IllegalArgumentException;  //TODO Using this pattern may include circular references in networks.
 
 	/**
+	 * Returns the start event of a node determined by the specified node ID.
+	 * <p>
+	 * 
+	 * @param id the ID of the requested node
+	 * @return an instance of LinkedOTUOrOTUsEvent event that describes the specified node
+	 * @throws IllegalArgumentException if no to node start for the specified ID is present 
+	 */
+	public LinkedOTUOrOTUsEvent getNodeStartEvent(String id);
+	
+	/**
 	 * Writes the events describing the specified node and possible nested metadata.
 	 * 
 	 * @param receiver the receiver for the events
 	 * @param nodeID the ID of the requested node
 	 * @throws IllegalArgumentException if an unknown node ID was specified
 	 */
-	public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	public void writeNodeContentData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	
+	/**
+	 * Returns the start event of an edge determined by the specified ID.
+	 * <p>
+	 * 
+	 * @param id the ID of the requested edge
+	 * @return an instance of EdgeEvent that describes the specified edge
+	 * @throws IllegalArgumentException if no to EdgeEvent for the specified ID is present 
+	 */
+	public EdgeEvent getEdgeStartEvent(String id);
 	
 	/**
 	 * Writes the events describing the specified edge and possible nested metadata.
@@ -80,5 +103,5 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 	 * @throws IOException if a I/O error occurs while writing the data
 	 * @throws IllegalArgumentException if an unknown edge ID was specified
 	 */
-	public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
 }
