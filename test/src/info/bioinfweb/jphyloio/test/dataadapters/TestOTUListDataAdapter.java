@@ -76,21 +76,18 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements
 
 	
 	@Override
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IOException {
-		receiver.add(otus.get(id));
-		receiver.add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));
-	}
+	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IOException {}
 
 	
 	@Override
-	public LabeledIDEvent getStartEvent() {
+	public LabeledIDEvent getListStartEvent() {
 		return new LabeledIDEvent(EventContentType.OTU_LIST, ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + indexOfList, 
 				"OTU list " + indexOfList);
 	}
 
 	
 	@Override
-	public LabeledIDEvent getOTUStartEvent(String otuID) throws IllegalArgumentException {
+	public LabeledIDEvent getObjectStartEvent(String otuID) throws IllegalArgumentException {
 		return otus.get(otuID);
 	}
 }

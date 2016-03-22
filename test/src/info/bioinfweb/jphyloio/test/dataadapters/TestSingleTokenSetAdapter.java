@@ -40,37 +40,33 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
-public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter implements ObjectListDataAdapter, ReadWriteConstants {
-	private int indexOfTokenSet;
-	
-	
-	public TestSingleTokenSetAdapter(int indexOfTokenSet) {
-		super();
-		this.indexOfTokenSet = indexOfTokenSet;
-	}
-
-
+public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter implements ObjectListDataAdapter, ReadWriteConstants {	
 	@Override
 	public long getCount() {
 		return 1;
 	}
 
-	
-	@Override
-	public LabeledIDEvent getStartEvent() {
-		return new TokenSetDefinitionEvent(CharacterStateSetType.DNA, ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + indexOfTokenSet, "Some token set");
-	}
-
 
 	@Override
 	public Iterator<String> getIDIterator() {
-		return Arrays.asList(new String[]{ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + indexOfTokenSet}).iterator(); //TODO maybe return an iterator of token definitions instead?
+		return Arrays.asList(new String[]{"tokenSet0"}).iterator();
 	}
 
 	
 	@Override
+	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException {
+		if (id.equals("tokenSet0")) {
+			return new TokenSetDefinitionEvent(CharacterStateSetType.DNA, "tokenSet0", "Some token set");
+		}
+		else {
+			throw new IllegalArgumentException("No token set with the ID " + id + " could be found.");
+		}
+	}
+
+
+	@Override
 	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IOException {
-		if (id.equals(ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + indexOfTokenSet)) {			
+		if (id.equals("tokenSet0")) {			
 			IntegerIDManager idManager = new IntegerIDManager();
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "-", 
 					CharacterSymbolMeaning.GAP, CharacterSymbolType.ATOMIC_STATE));

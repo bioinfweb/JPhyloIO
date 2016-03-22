@@ -76,7 +76,7 @@ public class XTGEventReaderTest {
 	@Test
 	public void readXTGWithoutNamespace() {
 		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/NoNamespaceShortened.xtg"), new ReadWriteParameterMap());
+			XTGEventReader reader = new XTGEventReader(new File("data/XTG/NoNamespaceShortened.xml"), new ReadWriteParameterMap());
 			try {
 				
 			}

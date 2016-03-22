@@ -53,7 +53,7 @@ public class SingleTokenTestMatrixDataAdapter extends TestMatrixDataAdapter {
 				super.writeSequencePartContentData(receiver, sequenceID, startColumn, SINGLE_TOKEN_INDEX);
 			}
 			
-			receiver.add(new SingleSequenceTokenEvent(getMatrix().get(firstID).tokens.get(SINGLE_TOKEN_INDEX), null));
+			receiver.add(new SingleSequenceTokenEvent(null, getMatrix().get(firstID).tokens.get(SINGLE_TOKEN_INDEX)));
 			receiver.add(new MetaInformationEvent("someKey", "someType", "someValue"));
 			receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			receiver.add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, EventTopologyType.END));

@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 
@@ -130,10 +131,20 @@ public class FASTAEventWriterLogTest {
 			}
 
 			@Override
-			public void writeNodeData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {}
+			public LinkedOTUOrOTUsEvent getNodeStartEvent(String id) {
+				return null;
+			}
+
+			@Override
+			public EdgeEvent getEdgeStartEvent(String id) {
+				return null;
+			}
+
+			@Override
+			public void writeNodeContentData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {}
 			
 			@Override
-			public void writeEdgeData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException {}
+			public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException {}
 			
 			@Override
 			public boolean isTree() {

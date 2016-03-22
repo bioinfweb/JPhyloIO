@@ -49,7 +49,7 @@ public class NeXMLEventWriterTest implements NeXMLConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu1", "species2"),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "species3"));
 		TestMatrixDataAdapter alignment = new TestMatrixDataAdapter("alignment", null, false, "AGCTCTGAAACGGARTGTAG", "AGTTTAGAAAAGGGBTGTCG");
-		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
 		document.getMatrices().add(alignment);
 		return document;
 	}
