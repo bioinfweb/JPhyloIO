@@ -76,7 +76,7 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements
 
 	
 	@Override
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IOException {}
+	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException {}
 
 	
 	@Override

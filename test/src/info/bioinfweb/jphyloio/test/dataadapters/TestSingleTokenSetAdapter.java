@@ -65,7 +65,7 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter impleme
 
 
 	@Override
-	public void writeData(JPhyloIOEventReceiver receiver, String id) throws IOException {
+	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException {
 		if (id.equals("tokenSet0")) {			
 			IntegerIDManager idManager = new IntegerIDManager();
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "-", 
