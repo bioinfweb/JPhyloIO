@@ -46,7 +46,7 @@ public interface DocumentDataAdapter extends AnnotatedDataAdapter {
 	 * Returns an iterator providing access to all OTU lists contained in the document
 	 * to be written. 
 	 * 
-	 * @return the iterator (Maybe empty but not {@code null}.)
+	 * @return the iterator (May be empty but not {@code null}.)
 	 */
 	public Iterator<OTUListDataAdapter> getOTUListIterator();
 	

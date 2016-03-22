@@ -29,7 +29,7 @@ import java.io.IOException;
  */
 public interface AnnotatedDataAdapter {
 	/**
-	 * Writes events describing the metadata associates with the object represented by this instance.
+	 * Writes events describing the metadata associated with the object represented by this instance.
 	 * 
 	 * @param receiver the writer accepting the events
 	 */

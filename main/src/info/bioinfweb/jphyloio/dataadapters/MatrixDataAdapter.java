@@ -85,7 +85,7 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataA
 	 * Note that character sets referenced by token sets provided here, are expected be contained
 	 * in the return value of {@link #getCharacterSets()}.
 	 * 
-	 * @return a (possibly empty) list of character sets
+	 * @return a (possibly empty) list of token sets
 	 */
 	public ObjectListDataAdapter getTokenSets();
 	

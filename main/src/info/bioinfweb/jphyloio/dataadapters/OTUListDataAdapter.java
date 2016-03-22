@@ -32,13 +32,6 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
  * @see JPhyloIOEventWriter
  */
 public interface OTUListDataAdapter extends ObjectListDataAdapter, AnnotatedDataAdapter {
-	/**
-	 * Returns an event describing the OTU list modeled by this instance. This event allows
-	 * to specify a label and an ID, which will be used by some writers.
-	 * 
-	 * @return an event describing the OTU list
-	 */
-	public LabeledIDEvent getListStartEvent();
 	
 	/**
 	 * Returns the start event of an OTU definition determined by the specified OTU ID.

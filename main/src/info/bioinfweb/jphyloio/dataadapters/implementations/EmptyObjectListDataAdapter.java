@@ -24,11 +24,12 @@ import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 
 
 
 /**
- * Empty implementation of {@link EmptyObjectListDataAdapter}. Can be used by applications
+ * Empty implementation of {@link ObjectListDataAdapter}. Can be used by applications
  * that do not model any of the according objects.
  * 
  * @author Ben St&ouml;ver
@@ -37,6 +38,17 @@ public class EmptyObjectListDataAdapter implements ObjectListDataAdapter {
 	public static final EmptyObjectListDataAdapter SHARED_EMPTY_OBJECT_LIST_ADAPTER = new EmptyObjectListDataAdapter();
 	
 	
+	/**
+	 * This default implementation always returns null.
+	 * 
+	 * @return always null
+	 */
+	@Override
+	public LabeledIDEvent getStartEvent() { //TODO return something else?
+		return null;
+	}
+
+
 	/**
 	 * This default implementation always returns 0.
 	 * 

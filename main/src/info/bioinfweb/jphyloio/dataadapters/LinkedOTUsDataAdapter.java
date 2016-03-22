@@ -32,7 +32,7 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 public interface LinkedOTUsDataAdapter {
 	/**
 	 * Returns the start event of this data element (usually a matrix, tree or network). The returned
-	 * event can be used to determine the label and ID of the modeled data element and an otionally linked
+	 * event can be used to determine the label and ID of the modeled data element and an optionally linked
 	 * OTU list. 
 	 * 
 	 * @return the start event of this data element

@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -35,6 +37,15 @@ import java.util.Iterator;
  * @author Ben St&ouml;ver
  */
 public interface ObjectListDataAdapter {
+	
+	/**
+	 * Returns an event describing the object list modeled by this instance. This event allows
+	 * to specify a label and an ID, which will be used by some writers.
+	 * 
+	 * @return an event describing the object list
+	 */
+	public LabeledIDEvent getStartEvent();
+	
 	/**
 	 * Returns the number of objects to be returned by {@link #getIDIterator()}.
 	 * 

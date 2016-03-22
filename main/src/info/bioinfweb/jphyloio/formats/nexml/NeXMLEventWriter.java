@@ -112,7 +112,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	private void writeOTUSTag(OTUListDataAdapter otuList) throws IOException, XMLStreamException {		
 		writer.writeStartElement(TAG_OTUS.getLocalPart());
-		streamDataProvider.writeLabeledIDAttributes(otuList.getListStartEvent());
+		streamDataProvider.writeLabeledIDAttributes(otuList.getStartEvent());
 		
 		NeXMLOTUListContentReceiver receiver = new NeXMLOTUListContentReceiver(writer, parameters, streamDataProvider);		
 		

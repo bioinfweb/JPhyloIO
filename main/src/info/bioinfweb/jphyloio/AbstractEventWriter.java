@@ -340,7 +340,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			catch (IllegalArgumentException e) {  // from otuList.getOTUStartEvent()
 				throw new InconsistentAdapterDataException("The OTU with the ID " + event.getOTUOrOTUsID() + 
 						" referenced by the data element with the ID " + event.getID() + 
-						" was not found in the OTU list with the ID " +	otuList.getListStartEvent().getID());
+						" was not found in the OTU list with the ID " +	otuList.getStartEvent().getID());
 			}
 		}
 		else {
