@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -75,7 +76,7 @@ public class EmptyObjectListDataAdapter implements ObjectListDataAdapter {
 	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#writeContentData(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver, java.lang.String)
 	 */
 	@Override
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IllegalArgumentException {
+	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
 		throw new IllegalArgumentException("No object with the ID \"" + id + "\" is offered by this adapter.");
 	}
 }

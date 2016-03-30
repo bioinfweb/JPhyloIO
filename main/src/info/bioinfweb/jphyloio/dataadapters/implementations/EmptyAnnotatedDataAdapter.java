@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
+import java.io.IOException;
+
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 
@@ -37,7 +39,7 @@ public class EmptyAnnotatedDataAdapter implements AnnotatedDataAdapter {
 	 * @see info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter#writeMetadata(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver)
 	 */
 	@Override
-	public void writeMetadata(JPhyloIOEventReceiver writer) {}
+	public void writeMetadata(JPhyloIOEventReceiver writer) throws IOException {}
 
 	
 	/**
