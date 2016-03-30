@@ -23,30 +23,35 @@ import java.io.IOException;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.formats.nexml.DocumentInformation;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLCollectNamespaceReceiver extends NeXMLCollectDocumentDataReceiver {
+public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
 	
 
 	public NeXMLCollectNamespaceReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			DocumentInformation documentInformation) {
-		super(writer, parameterMap, documentInformation);
+			NeXMLWriterStreamDataProvider streamDataProvider) {
+		super(writer, parameterMap, streamDataProvider);
 	}
-	
 
+	
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case META_RESOURCE:
-				getDocumentInformation().getMetaDataNameSpaces().add(event.asResourceMetadataEvent().getRel().getNamespaceURI());
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					getStreamDataProvider().getMetaDataNameSpaces().add(event.asResourceMetadataEvent().getRel().getNamespaceURI());
+				}				
 				break;
 			case META_LITERAL:
-				getDocumentInformation().getMetaDataNameSpaces().add(event.asLiteralMetadataEvent().getPredicate().getNamespaceURI());
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					getStreamDataProvider().getMetaDataNameSpaces().add(event.asLiteralMetadataEvent().getPredicate().getNamespaceURI());
+				}
 				break;
 			default:
 				break;

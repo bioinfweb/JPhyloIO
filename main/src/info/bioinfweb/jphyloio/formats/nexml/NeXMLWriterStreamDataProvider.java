@@ -18,6 +18,7 @@
  */
 package info.bioinfweb.jphyloio.formats.nexml;
 
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
@@ -25,19 +26,34 @@ import java.time.Duration;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
 
+
+
 public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private NeXMLEventWriter eventWriter;
 	private LiteralMetadataEvent literalWithoutXMLContent;
+	
+	private boolean emptyDocument = false; //is true if the document contains nothing or only document meta data
+	private boolean hasOTUList = true; //is true if the document contains at least one OTU list
+	private Set<String> metaDataNameSpaces = new TreeSet<String>();
+	
+	private boolean writeCellsTags;
+	private CharacterStateSetType alignmentType;
+	
+	private boolean writeUndefinedOTU = false;
 	
 	@SuppressWarnings("serial")
 	private static Map<QName,Class<?>> classForXsdType = new HashMap<QName, Class<?>>() {{
@@ -51,10 +67,10 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		put(new QName(XS_URI,"long",XSD_PRE), Long.class);
 		put(new QName(XS_URI,"short",XSD_PRE), Short.class);		
 		put(new QName(XS_URI,"string",XSD_PRE), String.class);
-//		put(new QName(XS_URI,"char",XSD_PRE), CharWrapper.class);	//TODO should we implement these wrapper classes?
-//		put(new QName(XS_URI,"dateTime",XSD_PRE), DateTimeWrapper.class);
-//		put(new QName(XS_URI,"base64Binary",XSD_PRE), Base64BinaryWrapper.class);		
-//		put(new QName(XS_URI,"duration",XSD_PRE), DurationWrapper.class);		
+		put(new QName(XS_URI,"char",XSD_PRE), Character.class);
+		put(new QName(XS_URI,"dateTime",XSD_PRE), Date.class);
+//		put(new QName(XS_URI,"base64Binary",XSD_PRE), Base64BinaryWrapper.class); //TODO do we really need this?
+		put(new QName(XS_URI,"duration",XSD_PRE), Duration.class);		
 	}};
 	
 	@SuppressWarnings("serial")
@@ -95,6 +111,61 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public static Map<Class<?>, QName> getXsdTypeForClass() {
 		return xsdTypeForClass;
+	}
+	
+	
+	public boolean isEmptyDocument() {
+		return emptyDocument;
+	}
+	
+
+	public void setEmptyDocument(boolean empty) {
+		this.emptyDocument = empty;
+	}
+
+
+	public boolean hasOTUList() {
+		return hasOTUList;
+	}
+
+
+	public void setHasOTUList(boolean hasOTUList) {
+		this.hasOTUList = hasOTUList;
+	}
+
+
+	public Set<String> getMetaDataNameSpaces() {
+		return metaDataNameSpaces;
+	}
+
+
+	public boolean isWriteCellsTags() {
+		return writeCellsTags;
+	}
+
+
+	public void setWriteCellsTags(boolean writeCellsTags) {
+		this.writeCellsTags = writeCellsTags;
+	}
+
+
+	public CharacterStateSetType getAlignmentType() {
+		return alignmentType;
+	}
+
+
+	public void setAlignmentType(CharacterStateSetType alignmentType) throws JPhyloIOWriterException {
+		this.alignmentType = alignmentType;	
+	}
+
+
+	public boolean isWriteUndefinedOTU() {
+		return writeUndefinedOTU;
+	}
+
+
+	public void setWriteUndefinedOTU(boolean writeUndefinedOTU) {
+		this.writeUndefinedOTU = writeUndefinedOTU;
 	}
 
 

@@ -30,47 +30,69 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
-import info.bioinfweb.jphyloio.formats.nexml.DocumentInformation;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 
 
-public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectDocumentDataReceiver {
+public class NeXMLCollectSequenceDataReceiver extends AbstractNeXMLDataReceiver {
+	private boolean nestedUnderSingleToken = false;
 	
-	
-	public NeXMLCollectSequenceDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			DocumentInformation documentInformation) {
-		super(writer, parameterMap, documentInformation);
-		documentInformation.setWriteCellsTags(false);
+
+	public NeXMLCollectSequenceDataReceiver(XMLStreamWriter writer,	ReadWriteParameterMap parameterMap,
+			NeXMLWriterStreamDataProvider streamDataProvider) {
+		super(writer, parameterMap, streamDataProvider);
 	}
-	
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					if (event.asSingleSequenceTokenEvent().getLabel() != null) { //TODO also check for nested meta
-						getDocumentInformation().setWriteCellsTags(true);
+					nestedUnderSingleToken = true;
+					if (event.asSingleSequenceTokenEvent().getLabel() != null) {
+						getStreamDataProvider().setWriteCellsTags(true);
 					}
+				}
+				else {
+					nestedUnderSingleToken = false;
 				}
 				break;
 			case SEQUENCE_TOKENS:
 				List<String> tokens = event.asSequenceTokensEvent().getCharacterValues();
-				if (getDocumentInformation().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+				if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
 					//TODO check for previously undefined states
 				}
-				else if (getDocumentInformation().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
+				else if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
 					for (String token : tokens) {
 						try {
 							Double.parseDouble(token);
 						}
 						catch (NumberFormatException e) {
-							throw new JPhyloIOWriterException(""); //TODO give exception message
+							throw new JPhyloIOWriterException("All tokens in a continuous data sequence must be numbers.");
 						}
 					}
 				}
 				break;
-			default: //TODO handle metadata (possibly in superclass)
+			case META_RESOURCE:
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					getStreamDataProvider().getMetaDataNameSpaces().add(event.asResourceMetadataEvent().getRel().getNamespaceURI());
+				}
+				else {
+					break;
+				}
+			case META_LITERAL:
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					getStreamDataProvider().getMetaDataNameSpaces().add(event.asLiteralMetadataEvent().getPredicate().getNamespaceURI());
+				}
+				else {
+					break;
+				}
+			case META_LITERAL_CONTENT:
+				if (nestedUnderSingleToken) {
+					getStreamDataProvider().setWriteCellsTags(true);
+				}		
+				break;
+			default:
 				break;
 		}
 		return true;

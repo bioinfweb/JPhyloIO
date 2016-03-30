@@ -19,45 +19,37 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
-import java.io.IOException;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {	
-	public NeXMLSequenceContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens) {
+public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {
+	private NeXMLWriterStreamDataProvider streamDataProvider; //TODO Doppelvererbungsproblem: müsste eigentlich auch von AbstractNeXMLDataReceiver erben
+	
+	
+	public NeXMLSequenceContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens, 
+			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, longTokens);
+		
+		this.streamDataProvider = streamDataProvider;
 	}
 
 
 	@Override
 	protected void writeToken(String token) throws XMLStreamException {
-		//TODO decide if cell or seq tag is to be used
-		getWriter().writeStartElement(TAG_CELL.getLocalPart());
 		getWriter().writeCharacters(token);
-		getWriter().writeEndElement();
+		if (isLongTokens() && !streamDataProvider.isWriteCellsTags()) {
+			getWriter().writeCharacters(" ");
+		}			
 	}
-
-
-//	@Override
-//	protected void writeTokens(SequenceTokensEvent event) throws XMLStreamException {
-//		getWriter().writeStartElement(TAG_SEQ.getLocalPart());
-//		
-//		for (String token : event.getCharacterValues()) {
-//			getWriter().writeCharacters(token);
-//		}
-//		
-//		getWriter().writeEndElement();
-//	}
 
 	
 	@Override

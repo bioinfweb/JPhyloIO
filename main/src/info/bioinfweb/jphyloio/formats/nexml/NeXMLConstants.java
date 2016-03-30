@@ -36,7 +36,7 @@ public interface NeXMLConstants {
 //	public static String RDF_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
 //
 //	public static String XMLNS_PRE = javax.xml.XMLConstants.XMLNS_ATTRIBUTE;
-//	public static String XSI_PRE = "xsi";
+	public static String XSI_PRE = "xsi";
 	public static String XSD_PRE = "xsd";
 	public static String NEX_PRE = "nex";
 //	public static String RDF_PRE = "rdf";
@@ -85,7 +85,7 @@ public interface NeXMLConstants {
 	public static final QName ATTR_TARGET = new QName("target");
 	public static final QName ATTR_LENGTH = new QName("length");
 	
-	public static final QName ATTR_TYPE = new QName(NAMESPACE_URI_XSI, "type");	
+	public static final QName ATTR_XSI_TYPE = new QName(XSI_PRE + ":type");	
 	public static final QName ATTR_DATATYPE = new QName("datatype");
 	public static final QName ATTR_HREF = new QName("href");
 	public static final QName ATTR_REL = new QName("rel");

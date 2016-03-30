@@ -121,7 +121,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 	    	StartElement element = event.asStartElement();
-	    	String type = XMLUtils.readStringAttr(element, ATTR_TYPE, null);
+	    	String type = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
 	  		String key = null;	
 	  		String stringValue = null;
 	  		Object objectValue = null;
@@ -399,9 +399,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				StartElement element = event.asStartElement();
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
 				
-				String tokenSetType = XMLUtils.readStringAttr(element, ATTR_TYPE, null);			
+				String tokenSetType = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);			
 				if (tokenSetType == null) {
-					throw new JPhyloIOReaderException("Character tag must have an attribute called \"" + ATTR_TYPE + "\".", element.getLocation());
+					throw new JPhyloIOReaderException("Character tag must have an attribute called \"" + ATTR_XSI_TYPE + "\".", element.getLocation());
 				}
 				else {
 					CharacterStateSetType setType = null;				
@@ -691,7 +691,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
 				streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, info.id,	info.label, info.otuOrOtusID));
 				
-	  		String branchLengthsFormat = XMLUtils.readStringAttr(element, ATTR_TYPE, null);
+	  		String branchLengthsFormat = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
 				if (branchLengthsFormat.equals(null)) {}
 				else if (branchLengthsFormat.equals(TYPE_FLOAT_TREE)) {
 					streamDataProvider.setBranchLengthsFormat(TYPE_FLOAT_TREE);

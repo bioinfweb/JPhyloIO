@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.nexml.DocumentInformation;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
 
@@ -31,15 +31,14 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectDocumentDataReceiver {
-	
-	
-	public NeXMLCollectTokenSetDefinitionDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			DocumentInformation documentInformation) {
-		super(writer, parameterMap, documentInformation);
-	}
+public class NeXMLCollectTokenSetDefinitionDataReceiver extends AbstractNeXMLDataReceiver {
 
 	
+	public NeXMLCollectTokenSetDefinitionDataReceiver(XMLStreamWriter writer,
+			ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
+		super(writer, parameterMap, streamDataProvider);
+	}
+
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {

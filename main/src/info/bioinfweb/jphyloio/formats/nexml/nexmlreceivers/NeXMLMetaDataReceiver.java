@@ -25,32 +25,34 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 
+/**
+ * This receiver should be used if no other elements than meta are expected under an element.
+ * 
+ * @author Sarah Wiechers
+ */
+public class NeXMLMetaDataReceiver extends AbstractNeXMLDataReceiver {	
 
-public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStreamWriter> implements NeXMLConstants {
-	NeXMLWriterStreamDataProvider streamDataProvider;
 
-	public NeXMLOTUListContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap);
-		this.streamDataProvider = streamDataProvider;
+	public NeXMLMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
+			NeXMLWriterStreamDataProvider streamDataProvider) {
+		super(writer, parameterMap, streamDataProvider);
 	}
 
 
 	private void writeResourceMeta(ResourceMetadataEvent event) throws XMLStreamException {
 		getWriter().writeStartElement(TAG_META.getLocalPart());
 		
-		streamDataProvider.writeLabeledIDAttributes(event);
+		getStreamDataProvider().writeLabeledIDAttributes(event);
 		
 		getWriter().writeAttribute(ATTR_REL.getLocalPart(), event.getRel().getLocalPart());		
 		
@@ -58,14 +60,14 @@ public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStream
 			getWriter().writeAttribute(ATTR_HREF.getLocalPart(), event.getHRef().toString());
 		}
 		
-		getWriter().writeAttribute(ATTR_TYPE.getLocalPart(), TYPE_RESOURCE_META);
+		getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_RESOURCE_META);
 	}
 	
 	
 	private void writeLiteralMeta(LiteralMetadataEvent event, Class objectType) throws XMLStreamException {
 		getWriter().writeStartElement(TAG_META.getLocalPart());
 		
-		streamDataProvider.writeLabeledIDAttributes(event);
+		getStreamDataProvider().writeLabeledIDAttributes(event);
 		
 		if (event.getPredicate() != null) {
 			getWriter().writeAttribute(ATTR_PROPERTY.getLocalPart(), event.getPredicate().getLocalPart());		
@@ -76,7 +78,7 @@ public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStream
 		
 		getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), NeXMLWriterStreamDataProvider.getXsdTypeForClass().get(objectType).getLocalPart());	//TODO write prefix?	
 		
-		getWriter().writeAttribute(ATTR_TYPE.getLocalPart(), TYPE_LITERAL_META);
+		getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_LITERAL_META);
 	}
 	
 	
@@ -85,23 +87,17 @@ public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStream
 	}
 	
 	
-	private void writeOTUTag(LabeledIDEvent event) throws XMLStreamException {
-		getWriter().writeStartElement(TAG_OTU.getLocalPart()); //TODO possibly check if there is meta data to follow and write empty element if not
-		streamDataProvider.writeLabeledIDAttributes(event);
+	protected void writeComment(CommentEvent event) throws XMLStreamException {
+		String comment = event.getContent();
+		if (!comment.isEmpty()) {
+			getWriter().writeComment(comment);			
+		}
 	}
 	
 
 	@Override
 	public boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
-			case OTU:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					writeOTUTag(event.asLabeledIDEvent());
-				}
-				else {
-					getWriter().writeEndElement();
-				}
-				break;
 			case META_RESOURCE:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					writeResourceMeta(event.asResourceMetadataEvent());
@@ -117,7 +113,7 @@ public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStream
 						writeLiteralMeta(literalMetadataEvent, null);
 					}
 					else {
-						streamDataProvider.setLiteralWithoutXMLContent(literalMetadataEvent);
+						getStreamDataProvider().setLiteralWithoutXMLContent(literalMetadataEvent);
 					}
 				}
 				else {
@@ -126,10 +122,13 @@ public class NeXMLOTUListContentReceiver extends AbstractEventReceiver<XMLStream
 				break;
 			case META_LITERAL_CONTENT:
 				LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
-				if (streamDataProvider.getLiteralWithoutXMLContent() != null) {
-					writeLiteralMeta(streamDataProvider.getLiteralWithoutXMLContent(), contentEvent.getObjectValue().getClass());							
+				if (getStreamDataProvider().getLiteralWithoutXMLContent() != null) {
+					writeLiteralMeta(getStreamDataProvider().getLiteralWithoutXMLContent(), contentEvent.getObjectValue().getClass());							
 				}
 				writeLiteralMetaContent(contentEvent);				
+				break;
+			case COMMENT:
+				writeComment(event.asCommentEvent());
 				break;
 			default:
 				break;

@@ -27,25 +27,26 @@ import javax.xml.stream.XMLStreamWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.formats.nexml.DocumentInformation;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 
 
-public abstract class NeXMLCollectDocumentDataReceiver extends AbstractEventReceiver<XMLStreamWriter> {
-	private DocumentInformation documentInformation;
+public abstract class AbstractNeXMLDataReceiver extends AbstractEventReceiver<XMLStreamWriter> implements NeXMLConstants {
+	private NeXMLWriterStreamDataProvider streamDataProvider;
 	
 
-	public NeXMLCollectDocumentDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, DocumentInformation documentInformation) {
+	public AbstractNeXMLDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap);
-		this.documentInformation = documentInformation;
+		this.streamDataProvider = streamDataProvider;
 	}
 
 	
 	@Override
 	protected abstract boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException; //TODO handle metadata name space collecting here?
-	
 
-	public DocumentInformation getDocumentInformation() {
-		return documentInformation;
+
+	public NeXMLWriterStreamDataProvider getStreamDataProvider() {
+		return streamDataProvider;
 	}
 }
