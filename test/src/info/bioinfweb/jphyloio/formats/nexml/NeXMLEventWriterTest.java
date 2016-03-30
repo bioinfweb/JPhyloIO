@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestSingleTokenSetAdapter;
 
 import java.io.File;
 
@@ -48,7 +49,9 @@ public class NeXMLEventWriterTest implements NeXMLConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "species1"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", "species2"),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "species3"));
-		TestMatrixDataAdapter alignment = new TestMatrixDataAdapter("alignment", null, false, "AGCTCTGAAACGGARTGTAG", "AGTTTAGAAAAGGGBTGTCG");
+		TestMatrixDataAdapter alignment = new TestMatrixDataAdapter("alignment", "some label", false, "AGCTCTGAAACGGARTGTAG", "AGTTTAGAAAAGGGBTGTCG");
+		TestSingleTokenSetAdapter tokenSet = new TestSingleTokenSetAdapter();
+		alignment.setTokenSets(tokenSet);
 		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
 		document.getMatrices().add(alignment);
 		return document;
