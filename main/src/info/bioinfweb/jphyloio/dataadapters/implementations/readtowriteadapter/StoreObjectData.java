@@ -16,27 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.dataadapters;
+package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
-import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+
+import java.util.List;
 
 
 
-/**
- * Allows to access data from the application business model that make up an OTU list. 
- * 
- * @author Ben St&ouml;ver
- * @see DocumentDataAdapter
- * @see JPhyloIOEventWriter
- */
-public interface OTUListDataAdapter extends ObjectListDataAdapter<LabeledIDEvent>, AnnotatedDataAdapter {
-	/**
-	 * Returns an event describing the OTU list modeled by this instance. This event allows
-	 * to specify a label and an ID, which will be used by some writers.
-	 * 
-	 * @return an event describing the OTU list
-	 */
-	public LabeledIDEvent getListStartEvent();
+public class StoreObjectData<E extends JPhyloIOEvent> {
+	private E objectStartEvent;
+	private List<JPhyloIOEvent> objectContent;
+	
+	
+	public StoreObjectData(E objectStartEvent, List<JPhyloIOEvent> objectContent) {
+		super();
+		this.objectStartEvent = objectStartEvent;
+		this.objectContent = objectContent;
+	}
+
+
+	public E getObjectStartEvent() {
+		return objectStartEvent;
+	}
+
+
+	public void setObjectStartEvent(E objectStartEvent) {
+		this.objectStartEvent = objectStartEvent;
+	}
+
+
+	public List<JPhyloIOEvent> getObjectContent() {
+		return objectContent;
+	}	
 }

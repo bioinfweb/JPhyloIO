@@ -21,7 +21,9 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
@@ -76,7 +78,7 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataA
 	 * 
 	 * @return a (possibly empty) list of character sets
 	 */
-	public ObjectListDataAdapter getCharacterSets();
+	public ObjectListDataAdapter<LabeledIDEvent> getCharacterSets();
 	
 	/**
 	 * Returns a list of token sets defined for the matrix modeled by this instance.
@@ -86,7 +88,7 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataA
 	 * 
 	 * @return a (possibly empty) list of token sets
 	 */
-	public ObjectListDataAdapter getTokenSets();
+	public ObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets();
 	
 	/**
 	 * Returns an iterator returning the IDs of all sequences in the represented matrix.

@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -37,7 +37,7 @@ import java.util.Iterator;
  * 
  * @author Ben St&ouml;ver
  */
-public interface ObjectListDataAdapter {
+public interface ObjectListDataAdapter<E extends JPhyloIOEvent> {
 	/**
 	 * Returns the start event of an object determined by the specified object ID.
 	 * <p>
@@ -46,7 +46,7 @@ public interface ObjectListDataAdapter {
 	 * @return an instance of a labeled ID event that describes the specified object
 	 * @throws IllegalArgumentException if no to object for the specified ID is present 
 	 */
-	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException;
+	public E getObjectStartEvent(String id) throws IllegalArgumentException;
 	
 	/**
 	 * Returns the number of objects to be returned by {@link #getIDIterator()}.

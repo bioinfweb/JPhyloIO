@@ -19,13 +19,6 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import java.io.IOException;
-import java.util.Iterator;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
@@ -48,6 +41,12 @@ import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLMetaDataReceive
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMlTokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
+
+import java.io.IOException;
+import java.util.Iterator;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 
 
@@ -167,13 +166,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void writeTokenSetDefinitions(ObjectListDataAdapter tokenSetDefinitions) throws XMLStreamException, IllegalArgumentException, IOException {
+	private void writeTokenSetDefinitions(ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSetDefinitions) throws XMLStreamException, IllegalArgumentException, IOException {
 		Iterator<String> tokenSetDefinitionIDs = tokenSetDefinitions.getIDIterator();
 		NeXMlTokenSetEventReceiver receiver = new NeXMlTokenSetEventReceiver(writer, parameters, streamDataProvider);
 		
 		while (tokenSetDefinitionIDs.hasNext()) {
 			String tokenSetID = tokenSetDefinitionIDs.next();
-			TokenSetDefinitionEvent startEvent = tokenSetDefinitions.getObjectStartEvent(tokenSetID).asTokenSetDefinitionEvent();
+			TokenSetDefinitionEvent startEvent = tokenSetDefinitions.getObjectStartEvent(tokenSetID);
 			CharacterStateSetType alignmentType = startEvent.getSetType();
 			
 			switch (alignmentType) {
@@ -200,7 +199,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 
 
-	private void writeCharacterSets(ObjectListDataAdapter charSets) throws IllegalArgumentException, XMLStreamException {
+	private void writeCharacterSets(ObjectListDataAdapter<LabeledIDEvent> charSets) throws IllegalArgumentException, XMLStreamException {
 		Iterator<String> characterSetIDs = charSets.getIDIterator();
 		//TODO generate receiver for char set definitions
 		
@@ -269,13 +268,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void checkTokenSets(ObjectListDataAdapter tokenSets) throws IllegalArgumentException, IOException {
+	private void checkTokenSets(ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets) throws IllegalArgumentException, IOException {
 		NeXMLCollectTokenSetDefinitionDataReceiver receiver = new NeXMLCollectTokenSetDefinitionDataReceiver(writer, parameters, streamDataProvider);
 		Iterator<String> tokenSetDefinitionIDs = tokenSets.getIDIterator();
 		
 		while (tokenSetDefinitionIDs.hasNext()) {
 			String tokenSetID = tokenSetDefinitionIDs.next();
-			CharacterStateSetType alignmentType = tokenSets.getObjectStartEvent(tokenSetID).asTokenSetDefinitionEvent().getSetType();
+			CharacterStateSetType alignmentType = tokenSets.getObjectStartEvent(tokenSetID).getSetType();
 			
 			CharacterStateSetType previousType = streamDataProvider.getAlignmentType();
 			if ((previousType == null) || previousType.equals(CharacterStateSetType.UNKNOWN)) {

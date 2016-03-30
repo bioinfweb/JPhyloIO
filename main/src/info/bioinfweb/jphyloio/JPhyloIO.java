@@ -18,11 +18,11 @@
  */
 package info.bioinfweb.jphyloio;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import info.bioinfweb.commons.appversion.ApplicationType;
 import info.bioinfweb.commons.appversion.ApplicationVersion;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 
