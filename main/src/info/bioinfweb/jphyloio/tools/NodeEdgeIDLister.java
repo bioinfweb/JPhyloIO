@@ -22,10 +22,10 @@ package info.bioinfweb.jphyloio.tools;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 
 import java.util.ArrayDeque;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Queue;
-import java.util.Set;
+
+import org.apache.commons.collections4.set.ListOrderedSet;
 
 
 
@@ -37,8 +37,8 @@ import java.util.Set;
  * @see TreeNetworkDataAdapter
  */
 public class NodeEdgeIDLister {
-	private Set<String> edgeIDs = new HashSet<String>();
-	private Set<String> nodeIDs = new HashSet<String>();
+	private ListOrderedSet<String> edgeIDs = new ListOrderedSet<String>();
+	private ListOrderedSet<String> nodeIDs = new ListOrderedSet<String>();
 	
 	
 	/**
@@ -83,7 +83,7 @@ public class NodeEdgeIDLister {
 	 * 
 	 * @return a set of all edge IDs
 	 */
-	public Set<String> getEdgeIDs() {
+	public ListOrderedSet<String> getEdgeIDs() {
 		return edgeIDs;
 	}
 
@@ -95,7 +95,7 @@ public class NodeEdgeIDLister {
 	 * 
 	 * @return a set of all node IDs
 	 */
-	public Set<String> getNodeIDs() {
+	public ListOrderedSet<String> getNodeIDs() {
 		return nodeIDs;
 	}
 }
