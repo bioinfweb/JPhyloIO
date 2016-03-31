@@ -377,3 +377,4 @@ test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BufferedReaderResetTes
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/OverwriteTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/nexml/MetadataTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/nexml/ReadingCustomXMLTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/tools/NodeEdgeIDListerTest.java -text svneol=unset#text/plain
