@@ -21,6 +21,8 @@ package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
 
 
@@ -40,8 +42,9 @@ public abstract class NoSetsMatrixDataAdapter extends EmptyAnnotatedDataAdapter 
 	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
 	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getTokenSets()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter getTokenSets() {
+	public ObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets() {
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 	
@@ -52,8 +55,9 @@ public abstract class NoSetsMatrixDataAdapter extends EmptyAnnotatedDataAdapter 
 	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
 	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getCharacterSets()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter getCharacterSets() {
+	public ObjectListDataAdapter<LabeledIDEvent> getCharacterSets() {
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }

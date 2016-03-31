@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
@@ -35,12 +35,12 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public class EmptyObjectListDataAdapter implements ObjectListDataAdapter {
+public class EmptyObjectListDataAdapter<E extends JPhyloIOEvent> implements ObjectListDataAdapter<E> {
 	public static final EmptyObjectListDataAdapter SHARED_EMPTY_OBJECT_LIST_ADAPTER = new EmptyObjectListDataAdapter();
 
 
 	@Override
-	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException {
+	public E getObjectStartEvent(String id) throws IllegalArgumentException {
 		throw new IllegalArgumentException("No object with the ID \"" + id + "\" is offered by this adapter.");
 	}
 
