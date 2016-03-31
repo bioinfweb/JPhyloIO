@@ -34,6 +34,7 @@ import java.util.Set;
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
+ * @see TreeNetworkDataAdapter
  */
 public class NodeEdgeIDLister {
 	private Set<String> edgeIDs = new HashSet<String>();

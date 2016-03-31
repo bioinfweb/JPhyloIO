@@ -21,12 +21,20 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.tools.NodeEdgeIDLister;
 
 import java.io.IOException;
 import java.util.Iterator;
 
 
 
+/**
+ * Data adapter interface that provides data for a tree or a network.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ * @see NodeEdgeIDLister
+ */
 public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUsDataAdapter {
 	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition. Alternative iterators or returning events in WLR order may solve the problem.
 	
