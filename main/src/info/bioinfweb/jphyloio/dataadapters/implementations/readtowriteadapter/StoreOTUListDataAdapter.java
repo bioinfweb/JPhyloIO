@@ -35,7 +35,8 @@ public class StoreOTUListDataAdapter extends StoreObjectListDataAdapter<LabeledI
 
 
 	public StoreOTUListDataAdapter(LabeledIDEvent listStartEvent, List<JPhyloIOEvent> annotations) {
-		super();		
+		super();
+		this.listStartEvent = listStartEvent;
 		annotationAdapter = new StoreAnnotatedDataAdapter(annotations);
 	}
 	

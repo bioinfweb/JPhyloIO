@@ -48,9 +48,12 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/NoSetsMatrixDataAd
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreAnnotatedDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreDocumentDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreLinkedOTUsDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreMatrixDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreOTUListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectListDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreTreeNetworkDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/AbstractEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/AbstractSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/IgnoreObjectListMetadataReceiver.java -text svneol=unset#text/plain
@@ -131,6 +134,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTokenSetInformation.java -te
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLWriterStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/TokenTranslationStrategy.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/AbstractNeXMLDataReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLCollectCharSetDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLCollectNamespaceReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLCollectSequenceDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/nexmlreceivers/NeXMLCollectTokenSetDefinitionDataReceiver.java -text svneol=unset#text/plain

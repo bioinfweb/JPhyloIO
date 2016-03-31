@@ -37,7 +37,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
  * @param <E>
  */
 public class StoreObjectListDataAdapter<E extends JPhyloIOEvent> implements ObjectListDataAdapter<E> {	
-	private ListOrderedMap<String, StoreObjectData<E>> objectMap;
+	private ListOrderedMap<String, StoreObjectData<E>> objectMap = new ListOrderedMap<String, StoreObjectData<E>>();
 	
 
 	public ListOrderedMap<String, StoreObjectData<E>> getObjectMap() {

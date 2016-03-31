@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -51,7 +52,12 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private Set<String> metaDataNameSpaces = new TreeSet<String>();
 	
 	private boolean writeCellsTags;
-	private CharacterStateSetType alignmentType;
+	private CharacterStateSetType alignmentType = CharacterStateSetType.UNKNOWN;
+	
+	private Map<String, String> charSetToTokenSetMap = new HashMap<String, String>();
+	private Map<String, Set<Long>> charSets = new HashMap<String, Set<Long>>();
+	private Map<Long, String> charIndexToIDMap = new HashMap<Long, String>();
+	private Map<String, String> charIDToStatesMap = new HashMap<String, String>();
 	
 	private boolean writeUndefinedOTU = false;
 	
@@ -159,6 +165,26 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
+	public Map<String, String> getCharSetToTokenSetMap() {
+		return charSetToTokenSetMap;
+	}
+	
+
+	public Map<String, Set<Long>> getCharSets() {
+		return charSets;
+	}
+
+
+	public Map<Long, String> getCharIndexToIDMap() {
+		return charIndexToIDMap;
+	}
+
+
+	public Map<String, String> getCharIDToStatesMap() {
+		return charIDToStatesMap;
+	}
+
+
 	public boolean isWriteUndefinedOTU() {
 		return writeUndefinedOTU;
 	}
@@ -171,7 +197,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException {
 		getEventWriter().getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique. (Probably a task that should use resources to be added to the super class.)
-		getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
+		getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID()); //TODO maybe only write about attribute if meta data follows?
 		if (event.hasLabel()) {
 			getEventWriter().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
 		}

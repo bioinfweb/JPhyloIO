@@ -18,43 +18,26 @@
  */
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
+import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-
-public class StoreObjectData<E extends JPhyloIOEvent> {
-	private E objectStartEvent;
-	private List<JPhyloIOEvent> objectContent = new ArrayList<JPhyloIOEvent>();
+public class StoreLinkedOTUsDataAdapter implements LinkedOTUsDataAdapter {
+	private LinkedOTUOrOTUsEvent startEvent;
 	
 	
-	public StoreObjectData(E objectStartEvent, List<JPhyloIOEvent> objectContent) {
+	public StoreLinkedOTUsDataAdapter(LinkedOTUOrOTUsEvent startEvent) {
 		super();
-		this.objectStartEvent = objectStartEvent;
-		
-		if (objectContent == null) {
-			this.objectContent = new ArrayList<JPhyloIOEvent>();
-		}
-		else {
-			this.objectContent = objectContent;
-		}
+		this.startEvent = startEvent;
 	}
 
 
-	public E getObjectStartEvent() {
-		return objectStartEvent;
+	@Override
+	public LinkedOTUOrOTUsEvent getStartEvent() {
+		return startEvent;
 	}
 
 
-	public void setObjectStartEvent(E objectStartEvent) {
-		this.objectStartEvent = objectStartEvent;
+	public void setStartEvent(LinkedOTUOrOTUsEvent startEvent) {
+		this.startEvent = startEvent;
 	}
-
-
-	public List<JPhyloIOEvent> getObjectContent() {
-		return objectContent;
-	}	
 }

@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -34,6 +35,7 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectCharSetDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectNamespaceReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectSequenceDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectTokenSetDefinitionDataReceiver;
@@ -43,10 +45,16 @@ import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMlTokenSetEventRe
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
@@ -109,6 +117,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					alignmentType = TYPE_CONTIN_CELLS;
 					break;
 				case DISCRETE:
+				case UNKNOWN:
 					alignmentType = TYPE_STANDARD_CELLS;
 					break;
 				default:
@@ -130,6 +139,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					alignmentType = TYPE_CONTIN_SEQ;
 					break;
 				case DISCRETE:
+				case UNKNOWN:
 					alignmentType = TYPE_STANDARD_SEQ;
 					break;
 				default:
@@ -160,7 +170,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				
 		writeTokenSetDefinitions(alignment.getTokenSets()); //only in case of discrete data		
 		
-		writeCharacterSets(alignment.getCharacterSets());
+		writeCharacterSets(alignment);
 		
 		getWriter().writeEndElement();
 	}
@@ -197,17 +207,36 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			}
 		}
 	}
+	
 
-
-	private void writeCharacterSets(ObjectListDataAdapter<LabeledIDEvent> charSets) throws IllegalArgumentException, XMLStreamException {
-		Iterator<String> characterSetIDs = charSets.getIDIterator();
-		//TODO generate receiver for char set definitions
+	private void writeCharacterSets(MatrixDataAdapter alignment) throws IllegalArgumentException, XMLStreamException, IOException {
+		Iterator<String> characterSetIDs = alignment.getCharacterSets().getIDIterator();
+		
+		for (long i = 0; i < alignment.getColumnCount(); i++) {
+			String charID = streamDataProvider.getCharIndexToIDMap().get(i);
+			
+			getWriter().writeStartElement(TAG_CHAR.getLocalPart());
+			getWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
+			getWriter().writeAttribute(ATTR_STATES.getLocalPart(), streamDataProvider.getCharIDToStatesMap().get(charID));
+			//TODO write MetaData
+			getWriter().writeEndElement();
+		}
 		
 		while (characterSetIDs.hasNext()) {
-			String charSetID = characterSetIDs.next();
+			String charSetID = characterSetIDs.next();			
+			
 			getWriter().writeStartElement(TAG_SET.getLocalPart());
-			streamDataProvider.writeLabeledIDAttributes(charSets.getObjectStartEvent(charSetID));
-//			tokenSetDefinitions.writeData(receiver, charSetID);
+			
+			StringBuffer value = new StringBuffer();			
+			for (long columnIndex : streamDataProvider.getCharSets().get(charSetID)) {
+				value.append(streamDataProvider.getCharIndexToIDMap().get(columnIndex));
+				value.append(" ");
+			}
+			
+			getWriter().writeAttribute(ATTR_CHAR.getLocalPart(), value.toString());
+			
+			streamDataProvider.writeLabeledIDAttributes(alignment.getCharacterSets().getObjectStartEvent(charSetID));			
+//			alignment.getCharacterSets().writeContentData(receiver, charSetID);
 			getWriter().writeEndElement();
 		}
 	}
@@ -252,6 +281,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLCollectSequenceDataReceiver receiver = new NeXMLCollectSequenceDataReceiver(writer, parameters, streamDataProvider);
 		
 		checkTokenSets(alignment.getTokenSets());
+		checkCharacterSets(alignment.getCharacterSets(), alignment.getColumnCount());
 		
 		Iterator<String> sequenceIDs = alignment.getSequenceIDIterator();
 		while (sequenceIDs.hasNext()) {
@@ -286,7 +316,46 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				}
 			}
 			
+			if (tokenSets.getObjectStartEvent(tokenSetID).getCharacterSetID() == null) {
+				if (streamDataProvider.getCharSetToTokenSetMap().get("general") == null) {
+					streamDataProvider.getCharSetToTokenSetMap().put("general", tokenSetID);
+				}
+				else {
+					throw new JPhyloIOWriterException("More than one token set withot a reference to a chraracter set was encountered.");
+				}
+			}
+			else {
+				streamDataProvider.getCharSetToTokenSetMap().put(tokenSets.getObjectStartEvent(tokenSetID).getCharacterSetID(), tokenSetID);
+			}
+			
 			tokenSets.writeContentData(receiver, tokenSetID);
+		}
+	}
+	
+	
+	private void checkCharacterSets(ObjectListDataAdapter<LabeledIDEvent> charSets, long columnCount) throws IllegalArgumentException, IOException {
+		Iterator<String> charSetIDs = charSets.getIDIterator();
+		
+		while (charSetIDs.hasNext()) {
+			String charSetID = charSetIDs.next();
+			NeXMLCollectCharSetDataReceiver receiver = new NeXMLCollectCharSetDataReceiver(writer, parameters, streamDataProvider, charSetID);			
+			String referencedTokenSetID = streamDataProvider.getCharSetToTokenSetMap().get(charSetID);
+			
+			if (referencedTokenSetID == null) {
+				referencedTokenSetID = streamDataProvider.getCharSetToTokenSetMap().get("general"); //TODO what to do if it is still null?
+			}			
+			
+			streamDataProvider.getCharSets().put(charSetID, new HashSet<Long>());
+			charSets.writeContentData(receiver, charSetID);
+			
+			for (long i = 0; i < columnCount; i++) {
+				String charID = TAG_CHAR.getLocalPart() + i;
+				streamDataProvider.getCharIndexToIDMap().put(i, charID);				
+				streamDataProvider.getCharIDToStatesMap().put(charID, referencedTokenSetID);
+			}
+			
+			streamDataProvider.getCharSets().put(charSetID, new HashSet<Long>());
+			charSets.writeContentData(receiver, charSetID);
 		}
 	}
 	

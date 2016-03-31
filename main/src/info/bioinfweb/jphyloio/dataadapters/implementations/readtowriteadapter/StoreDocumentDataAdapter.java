@@ -19,32 +19,29 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
-import java.io.IOException;
+import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections4.map.ListOrderedMap;
 
-import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
-
-public class StoreDocumentDataAdapter implements DocumentDataAdapter {
+public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter implements DocumentDataAdapter {
 	private ListOrderedMap<String, OTUListDataAdapter> otuListsMap;
 	private List<MatrixDataAdapter> matrices;
 	private List<TreeNetworkDataAdapter> treesNetworks;
-	private List<JPhyloIOEvent> annotations;
 	
 	
 	public StoreDocumentDataAdapter(ListOrderedMap<String, OTUListDataAdapter> otusMap, List<MatrixDataAdapter> matrices,
 			List<TreeNetworkDataAdapter> treesNetworks, List<JPhyloIOEvent> annotations) {		
-		super();
+		super(annotations);
 		
 		if (otusMap == null) {
 			this.otuListsMap = new ListOrderedMap<String, OTUListDataAdapter>();
@@ -65,13 +62,6 @@ public class StoreDocumentDataAdapter implements DocumentDataAdapter {
 		}
 		else {
 			this.treesNetworks = treesNetworks;
-		}
-		
-		if (annotations == null) {
-			this.annotations = new ArrayList<JPhyloIOEvent>();
-		}
-		else {
-			this.annotations = annotations;
 		}
 	}
 	
@@ -129,19 +119,5 @@ public class StoreDocumentDataAdapter implements DocumentDataAdapter {
 	@Override
 	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator() {
 		return treesNetworks.iterator();
-	}
-
-
-	@Override
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {
-		for (JPhyloIOEvent annotation : annotations) {
-			receiver.add(annotation);
-		}		
-	}
-
-
-	@Override
-	public boolean hasMetadata() {
-		return annotations.isEmpty();
 	}
 }
