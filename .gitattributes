@@ -216,6 +216,7 @@ main/src/info/bioinfweb/jphyloio/formats/xtg/XTGFactory.java -text svneol=unset#
 main/src/info/bioinfweb/jphyloio/formats/xtg/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/tools/IDToNameManager.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/tools/NodeEdgeIDLister.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/tools/SequenceTokensEventManager.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/tools/package-info.java -text svneol=unset#text/plain
 test/.classpath -text svneol=unset#text/plain
