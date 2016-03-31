@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.tools;
 
 
+import java.util.Iterator;
+
 import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
 
 import org.junit.* ;
@@ -32,18 +34,23 @@ public class NodeEdgeIDListerTest {
 	public void test() {
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(new TestTreeDataAdapter("tree0", "first tree", ""));
 		
-		assertTrue(lister.getEdgeIDs().contains("eRoot"));
-		assertTrue(lister.getEdgeIDs().contains("e1"));
-		assertTrue(lister.getEdgeIDs().contains("eA"));
-		assertTrue(lister.getEdgeIDs().contains("eB"));
-		assertTrue(lister.getEdgeIDs().contains("eC"));
-		assertFalse(lister.getEdgeIDs().contains("eD"));
+		Iterator<String> iterator = lister.getEdgeIDs().iterator();
+		assertEquals("eRoot", iterator.next());
+		assertEquals("e1", iterator.next());
+		assertEquals("eC", iterator.next());
+		assertEquals("eA", iterator.next());
+		assertEquals("eB", iterator.next());
+		assertFalse(iterator.hasNext());
 		
-		assertTrue(lister.getNodeIDs().contains("nRoot"));
-		assertTrue(lister.getNodeIDs().contains("n1"));
-		assertTrue(lister.getNodeIDs().contains("nA"));
-		assertTrue(lister.getNodeIDs().contains("nB"));
-		assertTrue(lister.getNodeIDs().contains("nC"));
+		iterator = lister.getNodeIDs().iterator();
+		assertEquals("nRoot", iterator.next());
+		assertEquals("n1", iterator.next());
+		assertEquals("nC", iterator.next());
+		assertEquals("nA", iterator.next());
+		assertEquals("nB", iterator.next());
+		assertFalse(iterator.hasNext());
+		
+		assertFalse(lister.getEdgeIDs().contains("eD"));
 		assertFalse(lister.getNodeIDs().contains("nD"));
 	}
 }
