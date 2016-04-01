@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Queue;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
