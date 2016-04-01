@@ -30,14 +30,17 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.S
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreOTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectData;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,36 +58,42 @@ public class NeXMLStoreDataAdapterTest {
 	private List<List<String>> sequences = new ArrayList<List<String>>();
 	
 	
-	protected void createTestDocument() {		
-		document.getOTUListsMap().put("taxa0", createOTUList());
+	protected void createTestDocument() {
+		for (JPhyloIOEvent event : createMetaData("document")) {
+			document.getAnnotations().add(event);
+		}
+		document.getOTUListsMap().put("taxa0", createOTUList("taxa0"));
 		document.getMatrices().add(createMatrix(0, "taxa0"));
+		document.getTreesNetworks().add(createTree(0, "test"));
 	}
 	
 	
 	protected List<JPhyloIOEvent> createMetaData(String about) {
 		List<JPhyloIOEvent> metaData = new ArrayList<JPhyloIOEvent>();
 		
-		metaData.add(new ResourceMetadataEvent("meta1", "resourceMeta", new QName("relations"), null, about));
+		metaData.add(new ResourceMetadataEvent("meta1", "ResourceMeta", new QName("relations"), null, about));
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		return metaData;
 	}
 	
 	
-	protected StoreOTUListDataAdapter createOTUList() {
-		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, "taxaID", "taxa label"), 
-				createMetaData("taxaID"));
+	protected StoreOTUListDataAdapter createOTUList(String id) {
+		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, id, "taxa label"), 
+				createMetaData(id));
 		
 		for (int i = 0; i < 5; i++) {
-			otuList.getObjectMap().put(ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + i, createOTU(i));
+			String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + i;
+			otuList.getObjectMap().put(otuID, createOTU(otuID, i));
 		}		
 		
 		return otuList;
 	}
 	
 	
-	protected StoreObjectData<LabeledIDEvent> createOTU(int index) {		
+	protected StoreObjectData<LabeledIDEvent> createOTU(String otuID, int index) {		
 		StoreObjectData<LabeledIDEvent> otu = new StoreObjectData<LabeledIDEvent>(new LabeledIDEvent(EventContentType.OTU, 
-				ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + index, "taxon " + index), null);		
+				otuID, "taxon " + index), null);		
 		return otu;
 	}
 	
@@ -104,6 +113,11 @@ public class NeXMLStoreDataAdapterTest {
 					tokens, document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID()));
 			sequenceIndex++;
 		}
+		matrix.getMatrix().getObjectMap().put(ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + sequenceIndex, createSequence(sequenceIndex, 
+				tokens, null));
+		
+//		matrix.getMatrix().getObjectMap().put(ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + sequenceIndex, createSingleTokens(sequenceIndex, 
+//				null));
 		
 		matrix.getTokenSets().getObjectMap().put(ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + 0, createTokenSet(0, CharacterStateSetType.DNA));
 		matrix.getCharacterSets().getObjectMap().put(ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + 0, createCharSet(0));
@@ -155,11 +169,30 @@ public class NeXMLStoreDataAdapterTest {
 	}
 	
 	
+	protected StoreObjectData<LinkedLabeledIDEvent> createSingleTokens(int index, String otuID) {		
+		StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(new LinkedLabeledIDEvent(EventContentType.OTU, 
+				ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + index, "taxon " + index, otuID), null);
+		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "A"));
+		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "C"));
+		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "G"));
+		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "T"));
+		return singleTokens;
+	}
+	
+	
+	private TestTreeDataAdapter createTree(int index, String prefix) {
+		String treeID = ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + index;
+		TestTreeDataAdapter tree = new TestTreeDataAdapter(treeID, null, prefix);
+		tree.setLinkedOTUsID("taxa0");
+		return tree;
+	}
+	
+	
 	@Test
 	public void test_writeDocument() throws Exception {
 		createTestDocument();
 		NeXMLEventWriter writer = new NeXMLEventWriter();		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-		writer.writeDocument(document, new File("data/testOutput/NeXMLTest.xml"), parameters);		
+		writer.writeDocument(document, new File("data/testOutput/NeXMLTest.xml"), parameters);	
 	}
 }
