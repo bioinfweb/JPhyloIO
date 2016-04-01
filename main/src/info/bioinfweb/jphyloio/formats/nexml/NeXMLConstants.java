@@ -107,6 +107,8 @@ public interface NeXMLConstants {
 	
 	public static final String TYPE_FLOAT_TREE = NEX_PRE + ":FloatTree";
 	public static final String TYPE_INT_TREE = NEX_PRE + ":IntTree";
+	public static final String TYPE_FLOAT_NETWORK = NEX_PRE + ":FloatNetwork";
+	public static final String TYPE_INT_NETWORK = NEX_PRE + ":IntNetwork";
 	
 	public static final String TYPE_STRING = XSD_PRE + ":string";
 	

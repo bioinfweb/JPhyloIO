@@ -64,7 +64,7 @@ public class NeXMLMetaDataReceiver extends AbstractNeXMLDataReceiver {
 	}
 	
 	
-	private void writeLiteralMeta(LiteralMetadataEvent event, Class objectType) throws XMLStreamException {
+	private void writeLiteralMeta(LiteralMetadataEvent event, Class<? extends Object> objectType) throws XMLStreamException {
 		getWriter().writeStartElement(TAG_META.getLocalPart());
 		
 		getStreamDataProvider().writeLabeledIDAttributes(event);
@@ -82,8 +82,8 @@ public class NeXMLMetaDataReceiver extends AbstractNeXMLDataReceiver {
 	}
 	
 	
-	private void writeLiteralMetaContent(LiteralMetadataContentEvent event) {
-		
+	private void writeLiteralMetaContent(LiteralMetadataContentEvent event) throws XMLStreamException {
+		getWriter().writeCharacters(event.getStringValue());
 	}
 	
 	

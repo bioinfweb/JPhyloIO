@@ -19,43 +19,56 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
-
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
 
 
-public class EmptyOTUListDataAdapter implements OTUListDataAdapter {
-	private int otuListIndex;
+
+public class UndefinedOTUListDataAdapter implements OTUListDataAdapter {
+	public static final String UNDEFINED_OTU_ID = "undefinedTaxon";
+	public static final String UNDEFINED_OTUS_ID = "undefinedTaxa";
 	
 	
-	public EmptyOTUListDataAdapter(int otuListIndex) {
+	private LabeledIDEvent undefinedOTU = new LabeledIDEvent(EventContentType.OTU, UNDEFINED_OTU_ID, "undefined taxon");
+	
+	
+	public UndefinedOTUListDataAdapter() {
 		super();
-		this.otuListIndex = otuListIndex;
 	}
 
 
 	@Override
 	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException {
-		throw new IllegalArgumentException("No OTU with the ID \"" + id + "\" is offered by this adapter.");
+		if (id.equals(UNDEFINED_OTU_ID)) {
+			return undefinedOTU;
+		}
+		else {
+			throw new IllegalArgumentException("No OTU with the ID \"" + id + "\" is offered by this adapter.");
+		}
 	}
 	
 
 	@Override
 	public long getCount() {
-		return 0;
+		return 1;
 	}
 
 	
 	@Override
 	public Iterator<String> getIDIterator() {
-		return Collections.emptyIterator();
+		return Arrays.asList(new String[]{UNDEFINED_OTU_ID}).iterator();
+	}
+	
+	
+	public String getUndefinedOtuID() {
+		return undefinedOTU.getID();
 	}
 
 	
@@ -75,6 +88,6 @@ public class EmptyOTUListDataAdapter implements OTUListDataAdapter {
 	
 	@Override
 	public LabeledIDEvent getListStartEvent() {
-		return new LabeledIDEvent(EventContentType.OTU_LIST, ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + otuListIndex, "Undefined OTUs");
+		return new LabeledIDEvent(EventContentType.OTU_LIST, UNDEFINED_OTUS_ID, "undefined taxa");
 	}	
 }

@@ -19,16 +19,16 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLStreamException;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
 
 
 
@@ -42,7 +42,7 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 	}
 	
 	
-	protected abstract void writeToken(String token) throws IOException, XMLStreamException;
+	protected abstract void writeToken(String token, String label) throws IOException, XMLStreamException;
 
 	
 	protected abstract void writeComment(CommentEvent event) throws IOException, XMLStreamException;
@@ -56,12 +56,13 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 		switch (event.getType().getContentType()) {
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					writeToken(event.asSingleSequenceTokenEvent().getToken());
+					SingleSequenceTokenEvent tokenEvent = event.asSingleSequenceTokenEvent();
+					writeToken(tokenEvent.getToken(), tokenEvent.getLabel());
 				}  // End events can be ignored.
 				break;
 			case SEQUENCE_TOKENS:
 				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
-					writeToken(token);
+					writeToken(token, null);
 				}
 				break;
 			case COMMENT:

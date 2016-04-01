@@ -19,23 +19,24 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
-
-import info.bioinfweb.commons.bio.CharacterStateSetType;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -60,6 +61,11 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private Map<String, String> charIDToStatesMap = new HashMap<String, String>();
 	
 	private boolean writeUndefinedOTU = false;
+	private boolean writeUndefinedOtuList = false;
+	private Set<String> otuIDs = new HashSet<String>();
+	private Set<String> otusIDs = new HashSet<String>();	
+	
+	private Set<String> phylogenyLinkedOtusIDs = new HashSet<String>();
 	
 	@SuppressWarnings("serial")
 	private static Map<QName,Class<?>> classForXsdType = new HashMap<QName, Class<?>>() {{
@@ -195,6 +201,31 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
+	public boolean isWriteUndefinedOtuList() {
+		return writeUndefinedOtuList;
+	}
+
+
+	public void setWriteUndefinedOtuList(boolean writeUndefinedOtuList) {
+		this.writeUndefinedOtuList = writeUndefinedOtuList;
+	}
+
+
+	public Set<String> getOtuIDs() {
+		return otuIDs;
+	}
+
+
+	public Set<String> getOtusIDs() {
+		return otusIDs;
+	}
+
+
+	public Set<String> getPhylogenyLinkedOtusIDs() {
+		return phylogenyLinkedOtusIDs;
+	}
+
+
 	public void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException {
 		getEventWriter().getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique. (Probably a task that should use resources to be added to the super class.)
 		getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID()); //TODO maybe only write about attribute if meta data follows?
@@ -204,14 +235,22 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
-	public void writeLinkedOTUOrOTUsAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException {
+	public void writeLinkedLabeledIDAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException, JPhyloIOWriterException {		
 		writeLabeledIDAttributes(event);
-		if (event.hasLink()) {
+		if (event.hasLink()) {			
+			if ((linkAttribute.equals(TAG_OTUS) && !otusIDs.contains(event.getLinkedID())) 
+					|| (linkAttribute.equals(TAG_OTU) && !otuIDs.contains(event.getLinkedID()))) {
+				throw new JPhyloIOWriterException("An element links to a non-existent OTU list or OTU.");
+			}
 			getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
 		}
 		else if (forceOTULink) {
-			//TODO Link UNDEFINED taxon, if an OTU shall be linked.
+			if (linkAttribute.equals(TAG_OTUS)) {				
+				getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTUS_ID);			
+			}
+			else if (linkAttribute.equals(TAG_OTU)) {			
+				getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID);
+			}
 		}
-		//TODO Linking OTUs is never optional, therefore one OTU (usually the one containing the UDEFINED taxon) should be linked.
 	}
 }

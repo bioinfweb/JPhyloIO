@@ -19,10 +19,8 @@
 package info.bioinfweb.jphyloio.events.meta;
 
 
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import javax.xml.namespace.QName;
 

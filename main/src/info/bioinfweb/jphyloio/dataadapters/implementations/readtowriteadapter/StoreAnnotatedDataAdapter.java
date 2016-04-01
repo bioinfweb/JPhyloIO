@@ -55,7 +55,7 @@ public class StoreAnnotatedDataAdapter implements AnnotatedDataAdapter {
 
 	@Override
 	public boolean hasMetadata() {
-		return annotations.isEmpty();
+		return !annotations.isEmpty();
 	}
 
 

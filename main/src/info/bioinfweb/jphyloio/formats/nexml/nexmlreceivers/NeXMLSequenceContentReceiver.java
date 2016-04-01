@@ -32,7 +32,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {
-	private NeXMLWriterStreamDataProvider streamDataProvider; //TODO Doppelvererbungsproblem: müsste eigentlich auch von AbstractNeXMLDataReceiver erben
+	private NeXMLWriterStreamDataProvider streamDataProvider; //TODO Doppelvererbungsproblem: müsste eigentlich auch von AbstractNeXMLDataReceiver erben um dort MetaDaten zu behandeln
 	
 	
 	public NeXMLSequenceContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens, 
@@ -44,10 +44,20 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 
 
 	@Override
-	protected void writeToken(String token) throws XMLStreamException {
-		getWriter().writeCharacters(token);
-		if (isLongTokens() && !streamDataProvider.isWriteCellsTags()) {
-			getWriter().writeCharacters(" ");
+	protected void writeToken(String token, String label) throws XMLStreamException {		
+		if (streamDataProvider.isWriteCellsTags()) {
+			getWriter().writeStartElement(TAG_CELL.getLocalPart());
+			if (label != null) {
+				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
+			}
+			getWriter().writeCharacters(token);
+			getWriter().writeEndElement();
+		}		
+		else {
+			getWriter().writeCharacters(token);
+			if (isLongTokens()) {
+				getWriter().writeCharacters(" ");
+			}
 		}			
 	}
 
