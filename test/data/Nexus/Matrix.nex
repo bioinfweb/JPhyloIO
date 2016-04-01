@@ -12,7 +12,7 @@ END;
 
 BEGIN Characters;
   Title someMatrix;
-  Dimensions NTax=3 NChar=7;
+  Dimensions NTax=4 NChar=7;
   Format DataType = DNA Missing=? Gap= -;
   Matrix A [comment 1]CGGTCAT
          B[comment 2] CG-TCTT 

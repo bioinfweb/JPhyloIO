@@ -304,7 +304,7 @@ public class NexusEventReaderTest {
 			
 			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "someMatrix", null, reader);  //TODO Check linkes OTU ID
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
+			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "4", null, new Long(4), true, true, reader);
 			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
 
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
