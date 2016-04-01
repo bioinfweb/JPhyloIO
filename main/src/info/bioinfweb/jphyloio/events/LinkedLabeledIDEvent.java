@@ -24,17 +24,14 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 /**
- * Instances of this or inherited classes model data elements with an ID and an optional label, 
- * that link a single OTU or an OTU list by their ID.
- * <p>
- * If a single OTU or an whole OTU list is linked, depends on the modeled object (the content type of this 
- * instance). Matrices, trees or networks links OTU lists, while sequences or tree/network nodes link single
- * OTUs.
+ * Instances of this class model data elements with an ID and an optional label, that link another data
+ * element in a phylogenetic document. (Examples would be a sequence or a tree node that links an OTU,
+ * an alignment that links an OTU list or a character set that links an alignment.) 
  * 
  * @author Ben St&ouml;ver
  */
-public class LinkedOTUOrOTUsEvent extends LabeledIDEvent {
-	private String linkedOTUOrOTUsID;
+public class LinkedLabeledIDEvent extends LabeledIDEvent {
+	private String linkedID;
 
 	
 	/**
@@ -45,42 +42,37 @@ public class LinkedOTUOrOTUsEvent extends LabeledIDEvent {
 	 * @param id the unique ID associated with the represented data element (Must be a valid
 	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
 	 * @param label the label of the modeled data element (Maybe {@code null}, if no label is present.)
-	 * @param otuID the declared or linked OTU ID (Maybe {@code null}, if none is present.)
+	 * @param linkedID the ID if a linked data element (Maybe {@code null}, if none is linked.)
 	 * @throws NullPointerException if {@code contentType} or {@code id} are {@code null}
 	 * @throws IllegalArgumentException if {@code id} or {@code otuID} are not valid 
 	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCNames</a>
 	 */
-	public LinkedOTUOrOTUsEvent(EventContentType contentType, String id, String label, String otuID) {
+	public LinkedLabeledIDEvent(EventContentType contentType, String id, String label, String linkedID) {
 		super(contentType, id, label);
 		
-		if (otuID != null) {
-			checkID(otuID, "linked OTU ID");
+		if (linkedID != null) {
+			checkID(linkedID, "linked OTU ID");
 		}
-		this.linkedOTUOrOTUsID = otuID;
+		this.linkedID = linkedID;
 	}
 
 
 	/**
-	 * Returns the ID of a single OTU or an OTU list linked to the data element, which is modeled by this event.
-	 * <p>
-	 * If a single OTU or an whole OTU list is linked, depends on the modeled object (the content type of this 
-	 * instance). Matrices, trees or networks links OTU lists, while sequences or tree/network nodes link single
-	 * OTUs.
+	 * Returns the ID of a data element, linked to the element modeled by this event.
 	 * 
-	 * @return the linked OTU or OTU list ID or {@code null} if this object does not have an associated OTU or
-	 *         OTU list
+	 * @return the linked ID or {@code null} if this object does not have an associated data element
 	 */
-	public String getOTUOrOTUsID() {
-		return linkedOTUOrOTUsID;
+	public String getLinkedID() {
+		return linkedID;
 	}
 	
 	
 	/**
-	 * Indicates whether this event links an OTU or OTU list ID.
+	 * Indicates whether this event links another data element.
 	 * 
 	 * @return {@code true} if an ID is present, {@code false} otherwise
 	 */
-	public boolean isOTUOrOTUsLinked() {
-		return getOTUOrOTUsID() != null;
+	public boolean hasLink() {
+		return getLinkedID() != null;
 	}
 }

@@ -25,7 +25,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
 
@@ -54,9 +54,9 @@ public class NewickStringWriter implements NewickConstants {
 	 * @param tree the tree data adapter providing the tree data to be written
 	 * @param otuList the list of OTU definitions to be used to label unlabeled tree nodes (Maybe {@code null}.)
 	 * @param useOTUFirst Specify {@code true} here, if 
-	 *        {@link AbstractEventWriter#getLinkedOTUNameOTUFirst(LinkedOTUOrOTUsEvent, OTUListDataAdapter)}
+	 *        {@link AbstractEventWriter#getLinkedOTUNameOTUFirst(LinkedLabeledIDEvent, OTUListDataAdapter)}
 	 *        shall be used to determine node names (e.g. for writing Nexus) or {@code false} if
-	 *        {@link AbstractEventWriter#getLinkedOTUNameOwnFirst(LinkedOTUOrOTUsEvent, OTUListDataAdapter)}
+	 *        {@link AbstractEventWriter#getLinkedOTUNameOwnFirst(LinkedLabeledIDEvent, OTUListDataAdapter)}
 	 *        should be used instead (e.g. for writing Newick).
 	 * @param parameters the write parameter map specified to the calling reader
 	 */
@@ -134,8 +134,8 @@ public class NewickStringWriter implements NewickConstants {
 			writer.write(SUBTREE_END);
 		}
 		
-		NewickNodeEdgeEventReceiver<LinkedOTUOrOTUsEvent> nodeReceiver = 
-				new NewickNodeEdgeEventReceiver<LinkedOTUOrOTUsEvent>(writer, parameters);
+		NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent> nodeReceiver = 
+				new NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent>(writer, parameters);
 		tree.writeNodeContentData(nodeReceiver, nodeID);
 		
 		// Write node data:

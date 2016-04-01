@@ -19,25 +19,25 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 public class StoreLinkedOTUsDataAdapter implements LinkedOTUsDataAdapter {
-	private LinkedOTUOrOTUsEvent startEvent;
+	private LinkedLabeledIDEvent startEvent;
 	
 	
-	public StoreLinkedOTUsDataAdapter(LinkedOTUOrOTUsEvent startEvent) {
+	public StoreLinkedOTUsDataAdapter(LinkedLabeledIDEvent startEvent) {
 		super();
 		this.startEvent = startEvent;
 	}
 
 
 	@Override
-	public LinkedOTUOrOTUsEvent getStartEvent() {
+	public LinkedLabeledIDEvent getStartEvent() {
 		return startEvent;
 	}
 
 
-	public void setStartEvent(LinkedOTUOrOTUsEvent startEvent) {
+	public void setStartEvent(LinkedLabeledIDEvent startEvent) {
 		this.startEvent = startEvent;
 	}
 }

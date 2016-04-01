@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
@@ -56,7 +56,7 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 				&& (commandName.equals(COMMAND_NAME_DIMENSIONS) || commandName.equals(COMMAND_NAME_FORMAT) 
 						|| commandName.equals(COMMAND_NAME_MATRIX))) {  // Fire start event, as soon as one of these commands is encountered.
 			
-			streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, 
 					DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
 					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE),
 					streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));

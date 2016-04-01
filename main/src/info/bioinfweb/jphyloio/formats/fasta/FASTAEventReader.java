@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.fasta;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -132,7 +132,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 			if (getReader().readChar() == NAME_START_CHAR) {
 				currentSequenceName = getReader().readLine().getSequence().toString();
 			  //TODO Optionally an additional OTU event with an ID could be generated here.
-				getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+				getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
 						DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(),	currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
 				int maxCommentLength = getParameters().getMaxCommentLength();
 				while (getReader().peekChar() == COMMENT_START_CHAR) {
@@ -187,7 +187,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+						getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, 
 								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 						break;
 					}

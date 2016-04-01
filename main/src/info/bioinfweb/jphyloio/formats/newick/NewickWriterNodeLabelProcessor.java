@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 
 
@@ -31,5 +31,5 @@ import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
  * @since 0.0.0
  */
 public interface NewickWriterNodeLabelProcessor {
-	public String createNodeName(LinkedOTUOrOTUsEvent nodeEvent);
+	public String createNodeName(LinkedLabeledIDEvent nodeEvent);
 }

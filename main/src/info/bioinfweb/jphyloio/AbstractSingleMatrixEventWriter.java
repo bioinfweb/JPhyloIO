@@ -23,7 +23,7 @@ import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -72,7 +72,7 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 			Iterator<String> sequenceIDIterator, Writer writer,	ReadWriteParameterMap parameters) throws IOException;
 
 
-	protected String editSequenceOrNodeLabel(final LinkedOTUOrOTUsEvent event, final ReadWriteParameterMap parameters, 
+	protected String editSequenceOrNodeLabel(final LinkedLabeledIDEvent event, final ReadWriteParameterMap parameters, 
 			OTUListDataAdapter otuList) {
 		
 		return createUniqueLinkedOTULabel(parameters,

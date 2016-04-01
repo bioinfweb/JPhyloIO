@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
@@ -147,7 +147,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextReaderStrea
 			switch (getPreviousEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getPreviousEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+						getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, 
 								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 						readMatrixDimensions();  // Adds metaevents to the queue.
 					}  // Calling method will throw a NoSuchElementException for the else case. //TODO Check if this is still true after refactoring in r164.
@@ -193,7 +193,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextReaderStrea
 							break;
 						}
 						else {
-							getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+							getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
 									sequenceIDToNameManager.getID(currentSequenceName), currentSequenceName, null));
 						}
 					}

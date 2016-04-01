@@ -23,7 +23,7 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
@@ -35,13 +35,13 @@ import java.util.List;
 
 public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements MatrixDataAdapter {
 	private StoreLinkedOTUsDataAdapter storeLinkedOTUsAdapter;
-	private StoreObjectListDataAdapter<LinkedOTUOrOTUsEvent> matrix = new StoreObjectListDataAdapter<LinkedOTUOrOTUsEvent>();
+	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> matrix = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	private StoreObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = new StoreObjectListDataAdapter<TokenSetDefinitionEvent>();
 	private StoreObjectListDataAdapter<LabeledIDEvent> characterSets = new StoreObjectListDataAdapter<LabeledIDEvent>();
 	private boolean longTokens;
 	
 	
-	public StoreMatrixDataAdapter(List<JPhyloIOEvent> annotations, LinkedOTUOrOTUsEvent alignmentStartEvent, boolean longTokens) {
+	public StoreMatrixDataAdapter(List<JPhyloIOEvent> annotations, LinkedLabeledIDEvent alignmentStartEvent, boolean longTokens) {
 		super(annotations);
 		this.storeLinkedOTUsAdapter = new StoreLinkedOTUsDataAdapter(alignmentStartEvent);
 		this.longTokens = longTokens;
@@ -66,12 +66,12 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements
 	}
 	
 
-	public LinkedOTUOrOTUsEvent getStartEvent() {
+	public LinkedLabeledIDEvent getStartEvent() {
 		return storeLinkedOTUsAdapter.getStartEvent();
 	}
 
 
-	public void setStartEvent(LinkedOTUOrOTUsEvent startEvent) {
+	public void setStartEvent(LinkedLabeledIDEvent startEvent) {
 		storeLinkedOTUsAdapter.setStartEvent(startEvent);
 	}
 
@@ -105,7 +105,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements
 	}
 
 
-	public StoreObjectListDataAdapter<LinkedOTUOrOTUsEvent> getMatrix() {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getMatrix() {
 		return matrix;
 	}
 
@@ -129,7 +129,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements
 	
 
 	@Override
-	public LinkedOTUOrOTUsEvent getSequenceStartEvent(String sequenceID) {
+	public LinkedLabeledIDEvent getSequenceStartEvent(String sequenceID) {
 		return matrix.getObjectStartEvent(sequenceID);
 	}
 	

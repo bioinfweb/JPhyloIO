@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -121,12 +121,12 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
 		long maxSequenceLength = determineMaxSequenceLength(matrix);
 		OTUListDataAdapter otuList = null;
-		LinkedOTUOrOTUsEvent matrixStartEvent = matrix.getStartEvent();
-		if (matrixStartEvent.isOTUOrOTUsLinked()) {
-			otuList = document.getOTUList(matrixStartEvent.getOTUOrOTUsID());
+		LinkedLabeledIDEvent matrixStartEvent = matrix.getStartEvent();
+		if (matrixStartEvent.hasLink()) {
+			otuList = document.getOTUList(matrixStartEvent.getLinkedID());
 			if (otuList == null) {
 				parameters.getLogger().addWarning("The matrix with the ID " + matrixStartEvent.getID() 
-						+	" references an OTU list with the ID " + matrixStartEvent.getOTUOrOTUsID() 
+						+	" references an OTU list with the ID " + matrixStartEvent.getLinkedID() 
 						+	", but the document data adapter does not provide an OTU list with this ID. "
 						+ "OTU references of writtes sequences will be ignored.");
 				//TODO Would it be better to throw an InconsistentDataException here?

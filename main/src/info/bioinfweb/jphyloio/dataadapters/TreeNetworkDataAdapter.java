@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.tools.NodeEdgeIDLister;
 
 import java.io.IOException;
@@ -76,13 +76,12 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter, LinkedOTUs
 
 	/**
 	 * Returns the start event of a node determined by the specified node ID.
-	 * <p>
 	 * 
 	 * @param id the ID of the requested node
-	 * @return an instance of LinkedOTUOrOTUsEvent event that describes the specified node
+	 * @return the event that describes the specified node
 	 * @throws IllegalArgumentException if no to node start for the specified ID is present 
 	 */
-	public LinkedOTUOrOTUsEvent getNodeStartEvent(String id);
+	public LinkedLabeledIDEvent getNodeStartEvent(String id);
 	
 	/**
 	 * Writes the events nested in the specified node.

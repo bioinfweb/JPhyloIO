@@ -37,7 +37,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -202,7 +202,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					String treeLabel = streamDataProvider.getTreeLabel();					
 					Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();					
 					
-					streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, treeID, treeLabel, null));
+					streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, treeID, treeLabel, null));
 					
 					streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(META_KEY_DISPLAY_TREE_ROOTED, "boolean", 
 							Boolean.toString(streamDataProvider.isRooted()), streamDataProvider.isRooted()));					
@@ -326,7 +326,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 	
 	
 	private void createNodeEvents(NodeEdgeInfo info) {		
-		getStreamDataProvider().getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, info.getID(), info.getLabel(), null));
+		getStreamDataProvider().getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NODE, info.getID(), info.getLabel(), null));
 		for (JPhyloIOEvent nextEvent : info.getNestedEvents()) {
 			getStreamDataProvider().getCurrentEventCollection().add(nextEvent);
 		}							

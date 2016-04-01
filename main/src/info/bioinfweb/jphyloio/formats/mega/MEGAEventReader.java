@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -311,7 +311,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 		else if (firstSequenceName.equals(currentSequenceName)) {
 			currentLabelPos = Math.max(currentLabelPos, charactersRead);  // Label command can be omitted in interleaved format.
 		}
-		getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE,
+		getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE,
 				sequenceIDToNameManager.getID(currentSequenceName), currentSequenceName, null));
 	}
 	
@@ -339,7 +339,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 			switch (getLastNonCommentEvent().getType().getContentType()) {
 				case DOCUMENT:
 					if (getLastNonCommentEvent().getType().getTopologyType().equals(EventTopologyType.START)) {
-						getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, 
+						getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, 
 								DEFAULT_MATRIX_ID_PREFIX + getIDManager().createNewID(), null, null));
 					}
 					break;

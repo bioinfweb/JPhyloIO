@@ -27,7 +27,7 @@ import org.semanticweb.owlapi.io.XMLUtils;
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
@@ -160,7 +160,7 @@ public class JPhyloIOEventFactory {
 	
 	
 	/**
-	 * Creates a new {@link LinkedOTUOrOTUsEvent} with a valid ID.
+	 * Creates a new {@link LinkedLabeledIDEvent} with a valid ID.
 	 * <p>
 	 * This method will generate a new ID if {@code id} is already used, if {@link #isReplaceUsedIDs()} is set to {@code true}.
 	 * Otherwise an {@link IllegalArgumentException} exception will be thrown if a used ID is specified.
@@ -168,14 +168,14 @@ public class JPhyloIOEventFactory {
 	 * @param contentType the content type of the modeled data element (e.g. 
 	 *        {@link EventContentType#OTU} or {@link EventContentType#SEQUENCE})
 	 * @param label the label of the modeled data element (Maybe {@code null}, if no label is present.)
-	 * @param otuID the declared or linked OTU ID (Maybe {@code null}, if none is present.)
+	 * @param linkedID the ID of a linked element (Maybe {@code null}, if none is present.)
 	 * @throws NullPointerException if {@code contentType} is {@code null}
 	 * @throws IllegalArgumentException if {@code id} is already used and {@link #isReplaceUsedIDs()} is set to {@code true} or 
 	 *         {@code otuID} is not a valid <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCNames</a>
 	 */
-	public LinkedOTUOrOTUsEvent createLinkedOTUOrOTUsEvent(EventContentType contentType, String id, String label, String otuID) {
+	public LinkedLabeledIDEvent createLinkedLabeledIDEvent(EventContentType contentType, String id, String label, String linkedID) {
 		id = checkID(id, replaceUsedIDs);
-		LinkedOTUOrOTUsEvent result = new LinkedOTUOrOTUsEvent(contentType, id, label, otuID);
+		LinkedLabeledIDEvent result = new LinkedLabeledIDEvent(contentType, id, label, linkedID);
 		usedIDs.add(id);  // ID must be added after the creation of the event, since the constructor may throw an exception, if the ID is invalid.
 		return result;
 	}

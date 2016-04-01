@@ -47,7 +47,7 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -241,7 +241,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, getID(null, EventContentType.ALIGNMENT), null, 
+						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, getID(null, EventContentType.ALIGNMENT), null, 
 								streamDataProvider.getOtuListID()));
 						
 						String charSetID = getID(null, EventContentType.CHARACTER_SET);
@@ -257,7 +257,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						streamDataProvider.setIncompleteToken("");
 						
 						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
-						streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
 								DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequenceInformations().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
 					}
 			});
@@ -310,7 +310,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 										if (seqIndex < streamDataProvider.getSequenceInformations().size()) {
 											streamDataProvider.setCurrentSequenceIndex(seqIndex);
 											
-											streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, 
+											streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
 													DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequenceInformations().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
 										}
 									}

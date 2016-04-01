@@ -36,7 +36,7 @@ import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 
@@ -131,13 +131,13 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 * @param linkedOTUEvent the event defining the name
 	 * @param otuList the data adapter providing the OTU data
 	 * @return a string representing the specified event as described
-	 * @see #getLinkedOTUNameOTUFirst(LinkedOTUOrOTUsEvent, OTUListDataAdapter)
+	 * @see #getLinkedOTUNameOTUFirst(LinkedLabeledIDEvent, OTUListDataAdapter)
 	 */
-	public static String getLinkedOTUNameOwnFirst(LinkedOTUOrOTUsEvent linkedOTUEvent, OTUListDataAdapter otuList) {
+	public static String getLinkedOTUNameOwnFirst(LinkedLabeledIDEvent linkedOTUEvent, OTUListDataAdapter otuList) {
 		String result = linkedOTUEvent.getLabel();
 		if (result == null) {
-			if (linkedOTUEvent.isOTUOrOTUsLinked() && (otuList != null)) {
-				result = otuList.getObjectStartEvent(linkedOTUEvent.getOTUOrOTUsID()).getLabel();
+			if (linkedOTUEvent.hasLink() && (otuList != null)) {
+				result = otuList.getObjectStartEvent(linkedOTUEvent.getLinkedID()).getLabel();
 			}
 			if (result == null) {
 				result = linkedOTUEvent.getID();
@@ -161,11 +161,11 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 * @param linkedOTUEvent the event defining the name
 	 * @param otuList the data adapter providing the OTU data
 	 * @return a string representing the specified event as described
-	 * @see #getLinkedOTUNameOwnFirst(LinkedOTUOrOTUsEvent, OTUListDataAdapter)
+	 * @see #getLinkedOTUNameOwnFirst(LinkedLabeledIDEvent, OTUListDataAdapter)
 	 */
-	public static String getLinkedOTUNameOTUFirst(LinkedOTUOrOTUsEvent linkedOTUEvent, OTUListDataAdapter otuList) {
-		if (linkedOTUEvent.isOTUOrOTUsLinked() && (otuList != null)) {
-			return getLabeledIDName(otuList.getObjectStartEvent(linkedOTUEvent.getOTUOrOTUsID()));
+	public static String getLinkedOTUNameOTUFirst(LinkedLabeledIDEvent linkedOTUEvent, OTUListDataAdapter otuList) {
+		if (linkedOTUEvent.hasLink() && (otuList != null)) {
+			return getLabeledIDName(otuList.getObjectStartEvent(linkedOTUEvent.getLinkedID()));
 		}
 		else {
 			return getLabeledIDName(linkedOTUEvent);
@@ -183,7 +183,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 */
 	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, LinkedOTUsDataAdapter source) {
 		OTUListDataAdapter result = null;
-		String otuListID = source.getStartEvent().getOTUOrOTUsID();
+		String otuListID = source.getStartEvent().getLinkedID();
 		if (otuListID != null) {
 			result = document.getOTUList(otuListID);
 		}
@@ -321,24 +321,24 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	
 	public static String createUniqueLinkedOTULabel(ReadWriteParameterMap parameters, UniqueLabelHandler handler, 
-			LinkedOTUOrOTUsEvent event, OTUListDataAdapter otuList, boolean otuFirst) {
+			LinkedLabeledIDEvent event, OTUListDataAdapter otuList, boolean otuFirst) {
 		
-		if (event.isOTUOrOTUsLinked() && (otuList != null)) {
+		if (event.hasLink() && (otuList != null)) {
 			try {
 				String result;
 				if (otuFirst) {
-					result = createUniqueLabel(parameters, handler, otuList.getObjectStartEvent(event.getOTUOrOTUsID()).getLabel(), 
-							event.getOTUOrOTUsID(), event.getLabel(), event.getID()); 
+					result = createUniqueLabel(parameters, handler, otuList.getObjectStartEvent(event.getLinkedID()).getLabel(), 
+							event.getLinkedID(), event.getLabel(), event.getID()); 
 				}
 				else {
 					result = createUniqueLabel(parameters, handler, event.getLabel(), event.getID(), 
-							otuList.getObjectStartEvent(event.getOTUOrOTUsID()).getLabel(), event.getOTUOrOTUsID()); 
+							otuList.getObjectStartEvent(event.getLinkedID()).getLabel(), event.getLinkedID()); 
 				}
 				parameters.getLabelEditingReporter().addEdit(event, result);
 				return result;
 			}
 			catch (IllegalArgumentException e) {  // from otuList.getOTUStartEvent()
-				throw new InconsistentAdapterDataException("The OTU with the ID " + event.getOTUOrOTUsID() + 
+				throw new InconsistentAdapterDataException("The OTU with the ID " + event.getLinkedID() + 
 						" referenced by the data element with the ID " + event.getID() + 
 						" was not found in the OTU list with the ID " +	otuList.getListStartEvent().getID());
 			}

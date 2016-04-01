@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.newick;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
@@ -56,9 +56,9 @@ public class DefaultNewickWriterNodeLabelProcessor implements NewickWriterNodeLa
 
 
 	@Override
-	public String createNodeName(LinkedOTUOrOTUsEvent nodeEvent) {
+	public String createNodeName(LinkedLabeledIDEvent nodeEvent) {
 		String result;
-		if (nodeEvent.isOTUOrOTUsLinked()) {
+		if (nodeEvent.hasLink()) {
 			result = AbstractEventWriter.createUniqueLinkedOTULabel(parameters,
 					new AbstractEventWriter.NoEditUniqueLabelHandler() {
 						@Override

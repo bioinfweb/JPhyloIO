@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 
 
@@ -38,5 +38,5 @@ public interface LinkedOTUsDataAdapter {
 	 * @return the start event of this data element
 	 * @see OTUListDataAdapter#getListStartEvent()
 	 */
-	public LinkedOTUOrOTUsEvent getStartEvent();
+	public LinkedLabeledIDEvent getStartEvent();
 }

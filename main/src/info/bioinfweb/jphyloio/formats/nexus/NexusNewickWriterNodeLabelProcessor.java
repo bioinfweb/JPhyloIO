@@ -25,7 +25,7 @@ import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.newick.DefaultNewickWriterNodeLabelProcessor;
@@ -51,19 +51,19 @@ public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNode
 
 
 	@Override
-	public String createNodeName(LinkedOTUOrOTUsEvent nodeEvent) {
+	public String createNodeName(LinkedLabeledIDEvent nodeEvent) {
 		LabelEditingReporter reporter = getParameters().getLabelEditingReporter();
 		String result;
-		if ((indexMap != null) && nodeEvent.isOTUOrOTUsLinked()) {
-			Long index = indexMap.get(nodeEvent.getOTUOrOTUsID());
+		if ((indexMap != null) && nodeEvent.hasLink()) {
+			Long index = indexMap.get(nodeEvent.getLinkedID());
 			if (index == null) {
 				throw new InconsistentAdapterDataException("Error when writing tree: The node with the ID " + nodeEvent.getID() + 
-						" references an OTU with the ID " + nodeEvent.getOTUOrOTUsID() + 
+						" references an OTU with the ID " + nodeEvent.getLinkedID() + 
 						", which could not be found in the OTU list associated with this tree.");
 			}
 			else {
 				result = index.toString();
-				reporter.addEdit(nodeEvent, reporter.getEditedLabel(EventContentType.OTU, nodeEvent.getOTUOrOTUsID()));
+				reporter.addEdit(nodeEvent, reporter.getEditedLabel(EventContentType.OTU, nodeEvent.getLinkedID()));
 			}
 		}
 		else {

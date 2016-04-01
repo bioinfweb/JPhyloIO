@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
@@ -242,7 +242,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void writeRowTag(LinkedOTUOrOTUsEvent sequenceEvent, MatrixDataAdapter alignment) throws IOException, XMLStreamException {
+	private void writeRowTag(LinkedLabeledIDEvent sequenceEvent, MatrixDataAdapter alignment) throws IOException, XMLStreamException {
 		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, alignment.containsLongTokens(), streamDataProvider);
 		
 		getWriter().writeStartElement(TAG_ROW.getLocalPart());
@@ -286,8 +286,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		Iterator<String> sequenceIDs = alignment.getSequenceIDIterator();
 		while (sequenceIDs.hasNext()) {
 			String sequenceID = sequenceIDs.next();
-			LinkedOTUOrOTUsEvent sequenceStartEvent = alignment.getSequenceStartEvent(sequenceID);
-			String linkedOtuID = sequenceStartEvent.getOTUOrOTUsID();
+			LinkedLabeledIDEvent sequenceStartEvent = alignment.getSequenceStartEvent(sequenceID);
+			String linkedOtuID = sequenceStartEvent.getLinkedID();
 			
 			if ((linkedOtuID == null) || linkedOtuID.isEmpty()) {
 				streamDataProvider.setWriteUndefinedOTU(true);

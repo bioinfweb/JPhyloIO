@@ -33,7 +33,7 @@ import java.util.UUID;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
@@ -204,10 +204,10 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
-	public void writeLinkedOTUOrOTUsAttributes(LinkedOTUOrOTUsEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException {
+	public void writeLinkedOTUOrOTUsAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException {
 		writeLabeledIDAttributes(event);
-		if (event.isOTUOrOTUsLinked()) {
-			getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getOTUOrOTUsID());
+		if (event.hasLink()) {
+			getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
 		}
 		else if (forceOTULink) {
 			//TODO Link UNDEFINED taxon, if an OTU shall be linked.

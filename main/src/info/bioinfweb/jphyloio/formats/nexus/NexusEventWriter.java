@@ -41,7 +41,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
@@ -206,14 +206,14 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeLinkTaxaCommand(LinkedOTUOrOTUsEvent startEvent) throws IOException {
-		if (startEvent.isOTUOrOTUsLinked()) {
+	private void writeLinkTaxaCommand(LinkedLabeledIDEvent startEvent) throws IOException {
+		if (startEvent.hasLink()) {
 			writeLineStart(writer, COMMAND_NAME_LINK);
 			writer.write(' ');
 			writer.write(BLOCK_NAME_TAXA);
 			writer.write(KEY_VALUE_SEPARATOR);
 			writer.write(formatToken(parameters.getLabelEditingReporter().getEditedLabel(
-					EventContentType.OTU_LIST, startEvent.getOTUOrOTUsID())));
+					EventContentType.OTU_LIST, startEvent.getLinkedID())));
 			writeCommandEnd();
 		}
 	}
@@ -284,13 +284,13 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		Set<String> encounteredOTUs = new HashSet<String>();
 		Iterator<String> iterator = matrix.getSequenceIDIterator();
 		while (iterator.hasNext()) {
-			LinkedOTUOrOTUsEvent event = matrix.getSequenceStartEvent(iterator.next());
-			if (event.isOTUOrOTUsLinked()) {
-				if (encounteredOTUs.contains(event.getOTUOrOTUsID())) {
+			LinkedLabeledIDEvent event = matrix.getSequenceStartEvent(iterator.next());
+			if (event.hasLink()) {
+				if (encounteredOTUs.contains(event.getLinkedID())) {
 					return true;
 				}
 				else {
-					encounteredOTUs.add(event.getOTUOrOTUsID());
+					encounteredOTUs.add(event.getLinkedID());
 				}
 			}
 			else {
@@ -399,14 +399,14 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		Set<String> encounteredOTUs = new HashSet<String>();
 		Iterator<String> iterator = matrix.getSequenceIDIterator();
 		while (iterator.hasNext()) {
-			LinkedOTUOrOTUsEvent event = matrix.getSequenceStartEvent(iterator.next());
+			LinkedLabeledIDEvent event = matrix.getSequenceStartEvent(iterator.next());
 			boolean createNewLabel = false;
-			if (event.isOTUOrOTUsLinked()) {
-				if (encounteredOTUs.contains(event.getOTUOrOTUsID())) {
+			if (event.hasLink()) {
+				if (encounteredOTUs.contains(event.getLinkedID())) {
 					createNewLabel = true;
 				}
 				else {
-					encounteredOTUs.add(event.getOTUOrOTUsID());
+					encounteredOTUs.add(event.getLinkedID());
 				}
 			}
 			else {
@@ -438,10 +438,10 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				writeLineStart(writer, formatToken(label));
 			}
 			else {
-				label = reporter.getEditedLabel(EventContentType.OTU, event.getOTUOrOTUsID());
+				label = reporter.getEditedLabel(EventContentType.OTU, event.getLinkedID());
 				if (label == null) {
 					throw new InconsistentAdapterDataException("The sequence with the ID " + event.getID() + 
-							" is referencing an OTU with the ID " + event.getOTUOrOTUsID() + " which could not be found.");
+							" is referencing an OTU with the ID " + event.getLinkedID() + " which could not be found.");
 				}
 			}
 			reporter.addEdit(event, label);
@@ -538,7 +538,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			}
 			increaseIndention();
 			
-			LinkedOTUOrOTUsEvent startEvent = matrix.getStartEvent();
+			LinkedLabeledIDEvent startEvent = matrix.getStartEvent();
 			writeTitleCommand(startEvent);
 			writeLinkTaxaCommand(startEvent);
 			
@@ -586,9 +586,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private String getOTUsIDForTree(LinkedOTUOrOTUsEvent event) {
-		if (event.isOTUOrOTUsLinked()) {
-			return event.getOTUOrOTUsID();
+	private String getOTUsIDForTree(LinkedLabeledIDEvent event) {
+		if (event.hasLink()) {
+			return event.getLinkedID();
 		}
 		else {
 			return UNDEFINED_OTUS_ID;
@@ -596,7 +596,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private String createUniqueTreeLabel(LinkedOTUOrOTUsEvent event, final Set<String> usedLabels) {
+	private String createUniqueTreeLabel(LinkedLabeledIDEvent event, final Set<String> usedLabels) {
 		String result = createUniqueLabel(
 				parameters, 
 				new NoEditUniqueLabelHandler() {
@@ -668,7 +668,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			while (iterator.hasNext()) {
 				TreeNetworkDataAdapter treeNetwork = iterator.next();
 				if (treeNetwork.isTree()) {
-					LinkedOTUOrOTUsEvent startEvent = treeNetwork.getStartEvent();
+					LinkedLabeledIDEvent startEvent = treeNetwork.getStartEvent();
 				
 					// The following code ensures that trees referencing different TAXA blocks are written in separate TREES blocks:
 					if (currentOTUsID == null) {
@@ -701,7 +701,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 							}
 							else {
 								writeTitleCommand("Trees linked to " + parameters.getLabelEditingReporter().getEditedLabel(
-										EventContentType.OTU_LIST, startEvent.getOTUOrOTUsID()));
+										EventContentType.OTU_LIST, startEvent.getLinkedID()));
 							}
 							writeLinkTaxaCommand(startEvent);  // Writes only if a block is linked.
 							

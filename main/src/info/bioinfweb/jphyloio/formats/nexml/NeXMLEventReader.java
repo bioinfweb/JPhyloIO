@@ -29,7 +29,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
@@ -179,7 +179,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();				
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
-				streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.NODE, info.id,	info.label, info.otuOrOtusID));
+				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NODE, info.id,	info.label, info.otuOrOtusID));
 			}
 		};
 		
@@ -438,7 +438,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					streamDataProvider.setCharacterSetType(setType);
 				}
 				
-				streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, info.id, info.label, info.otuOrOtusID));				
+				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, info.id, info.label, info.otuOrOtusID));				
 			}
 		});
 		
@@ -635,7 +635,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				OTUorOTUSEventInformation otuInfo = getOTUorOTUSEventInformation(streamDataProvider, element);
-	  		streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, otuInfo.id, otuInfo.label, otuInfo.otuOrOtusID));
+	  		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, otuInfo.id, otuInfo.label, otuInfo.otuOrOtusID));
 			}
 		});
 		
@@ -689,7 +689,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				StartElement element = event.asStartElement();
 				
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
-				streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, info.id,	info.label, info.otuOrOtusID));
+				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, info.id,	info.label, info.otuOrOtusID));
 				
 	  		String branchLengthsFormat = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
 				if (branchLengthsFormat.equals(null)) {}
@@ -714,7 +714,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				OTUorOTUSEventInformation otuInfo = getOTUorOTUSEventInformation(streamDataProvider, element);
-	  		streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.NETWORK, otuInfo.id, otuInfo.label, otuInfo.otuOrOtusID));
+	  		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NETWORK, otuInfo.id, otuInfo.label, otuInfo.otuOrOtusID));
 			}
 		});
 		

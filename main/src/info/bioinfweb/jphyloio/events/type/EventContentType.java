@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
@@ -123,7 +123,7 @@ public enum EventContentType {
 	/** 
 	 * Indicates the start or the end of the contents of a matrix. 
 	 * <p>
-	 * Start events of this type are instances of {@link LinkedOTUOrOTUsEvent}, end events are
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}. Start events optionally link an OTU list.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
@@ -133,7 +133,7 @@ public enum EventContentType {
 	/** 
 	 * Indicates the start or the end of the contents of a sequence in a matrix. 
 	 * <p>
-	 * Start events of this type are instances of {@link LinkedOTUOrOTUsEvent}, end events are
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
 	 * instances of {@link PartEndEvent}. Start events optionally link a single OTU.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
@@ -207,7 +207,7 @@ public enum EventContentType {
 	/** 
 	 * Indicates the start of the end of the contents of a phylogenetic network. 
 	 * <p>
-	 * Start events of this type are instances of {@link LinkedOTUOrOTUsEvent}, end events are
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}. Start events optionally link an OTU list.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
@@ -217,7 +217,7 @@ public enum EventContentType {
 	/** 
 	 * Indicates the start of the end of the contents of a phylogenetic tree. 
 	 * <p>
-	 * Start events of this type are instances of {@link LinkedOTUOrOTUsEvent}, end events are
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}. Start events optionally link an OTU list.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}.
@@ -230,7 +230,7 @@ public enum EventContentType {
 	/** 
 	 * Indicates a node in a phylogenetic tree or network.
 	 * <p> 
-	 * Start events of this type are instances of {@link LinkedOTUOrOTUsEvent}, end events are
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}. Start events optionally link a single OTU.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 

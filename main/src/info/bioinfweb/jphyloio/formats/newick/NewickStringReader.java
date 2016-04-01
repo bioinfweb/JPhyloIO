@@ -24,7 +24,7 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -217,7 +217,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	}
 	
 	
-	private LinkedOTUOrOTUsEvent readNode() throws IOException {
+	private LinkedLabeledIDEvent readNode() throws IOException {
 		NewickToken token;
 		if (scanner.hasMoreTokens()) {
 			token = scanner.peek();
@@ -256,7 +256,7 @@ public class NewickStringReader implements ReadWriteConstants {
 			// Generate node information:
 			passedSubnodes.peek().add(new NodeEdgeInfo(nodeID, length, nestedEdgeEvents));
 			String processedLabel = nodeLabelProcessor.processLabel(label);
-			LinkedOTUOrOTUsEvent result = new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, processedLabel,
+			LinkedLabeledIDEvent result = new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, processedLabel,
 					nodeLabelProcessor.getLinkedOTUID(processedLabel));
 			streamDataProvider.getCurrentEventCollection().add(result);
 			streamDataProvider.getCurrentEventCollection().addAll(nestedNodeEvents);
@@ -321,7 +321,7 @@ public class NewickStringReader implements ReadWriteConstants {
 						}
 						else {
 							Queue<NodeEdgeInfo> levelInfo = passedSubnodes.pop();
-							LinkedOTUOrOTUsEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
+							LinkedLabeledIDEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
 							String sourceID = nodeEvent.getID();
 							addEdgeEvents(sourceID, levelInfo);
 						}
@@ -379,7 +379,7 @@ public class NewickStringReader implements ReadWriteConstants {
 					addCommentEvent(scanner.nextToken());
 				}
 				else {
-					streamDataProvider.getCurrentEventCollection().add(new LinkedOTUOrOTUsEvent(EventContentType.TREE, 
+					streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, 
 							DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), treeLabel, linkedOTUsID));
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 						boolean currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);

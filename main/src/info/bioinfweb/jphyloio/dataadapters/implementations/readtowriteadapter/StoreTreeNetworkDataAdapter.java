@@ -23,7 +23,7 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -37,11 +37,11 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter imple
 	private StoreLinkedOTUsDataAdapter storeLinkedOTUsAdapter;
 	private boolean isTree;
 	private boolean considerRooted;
-	private ListOrderedMap<String, StoreObjectData<LinkedOTUOrOTUsEvent>> nodes = null;
+	private ListOrderedMap<String, StoreObjectData<LinkedLabeledIDEvent>> nodes = null;
 	private ListOrderedMap<String, StoreObjectData<EdgeEvent>> edges = null;
 	
 
-	public StoreTreeNetworkDataAdapter(List<JPhyloIOEvent> annotations, LinkedOTUOrOTUsEvent treeOrNetworkStartEvent, 
+	public StoreTreeNetworkDataAdapter(List<JPhyloIOEvent> annotations, LinkedLabeledIDEvent treeOrNetworkStartEvent, 
 			boolean isTree, boolean considerRooted) {
 		super(annotations);
 		this.storeLinkedOTUsAdapter = new StoreLinkedOTUsDataAdapter(treeOrNetworkStartEvent);
@@ -68,12 +68,12 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter imple
 	}
 	
 
-	public LinkedOTUOrOTUsEvent getStartEvent() {
+	public LinkedLabeledIDEvent getStartEvent() {
 		return storeLinkedOTUsAdapter.getStartEvent();
 	}
 
 
-	public void setStartEvent(LinkedOTUOrOTUsEvent startEvent) {
+	public void setStartEvent(LinkedLabeledIDEvent startEvent) {
 		storeLinkedOTUsAdapter.setStartEvent(startEvent);
 	}
 
@@ -90,7 +90,7 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter imple
 	}
 
 
-	public ListOrderedMap<String, StoreObjectData<LinkedOTUOrOTUsEvent>> getNodes() {
+	public ListOrderedMap<String, StoreObjectData<LinkedLabeledIDEvent>> getNodes() {
 		return nodes;
 	}
 
@@ -129,7 +129,7 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter imple
 	
 
 	@Override
-	public LinkedOTUOrOTUsEvent getNodeStartEvent(String id) {
+	public LinkedLabeledIDEvent getNodeStartEvent(String id) {
 		return nodes.get(id).getObjectStartEvent();
 	}
 	
