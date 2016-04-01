@@ -32,7 +32,7 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 
 import java.io.BufferedReader;
@@ -121,7 +121,7 @@ public class FASTAEventWriterLogTest {
 			public void writeMetadata(JPhyloIOEventReceiver writer) {}
 			
 			@Override
-			public LinkedOTUOrOTUsEvent getStartEvent() {
+			public LinkedLabeledIDEvent getStartEvent() {
 				return null;
 			}
 
@@ -131,7 +131,7 @@ public class FASTAEventWriterLogTest {
 			}
 
 			@Override
-			public LinkedOTUOrOTUsEvent getNodeStartEvent(String id) {
+			public LinkedLabeledIDEvent getNodeStartEvent(String id) {
 				return null;
 			}
 

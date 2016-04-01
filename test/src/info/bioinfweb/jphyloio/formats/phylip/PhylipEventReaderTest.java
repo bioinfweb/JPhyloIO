@@ -48,23 +48,23 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATG-TTTCCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("ATG-TT-CCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -97,23 +97,23 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATG-TTTCCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("ATG-TT-CCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -146,27 +146,27 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T-", reader);
 				assertCharactersEvent("-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT", reader);
 				assertCharactersEvent("-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T-", reader);
 				assertCharactersEvent("-CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATG-TT", reader);
 				assertCharactersEvent("TCCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("ATG-TT", reader);
 				assertCharactersEvent("-CCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -230,43 +230,43 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 				
-				String id1 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				String id1 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id2 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				String id2 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id3 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				String id3 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id4 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				String id4 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATG-TTTCCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id5 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				String id5 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("ATG-TT-CCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id1, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id1, "Seq 1", null, reader);
 				assertCharactersEvent("CCGT-GT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id2, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id2, "Seq 2", null, reader);
 				assertCharactersEvent("CCGT-GTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id3, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id3, "Seq 3", null, reader);
 				assertCharactersEvent("CCGT-CT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id4, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id4, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("CCGT-GTTTA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id5, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id5, "Seq 5", null, reader);
 				assertCharactersEvent("CGGT-CTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -299,43 +299,43 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 				
-				String id1 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				String id1 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id2 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				String id2 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id3 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				String id3 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id4 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				String id4 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATG-TTTCCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id5 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				String id5 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("ATG-TT-CCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id1, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id1, "Seq 1", null, reader);
 				assertCharactersEvent("CCGT-GT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id2, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id2, "Seq 2", null, reader);
 				assertCharactersEvent("CCGT-GTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id3, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id3, "Seq 3", null, reader);
 				assertCharactersEvent("CCGT-CT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id4, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id4, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("CCGT-GTTTA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id5, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id5, "Seq 5", null, reader);
 				assertCharactersEvent("CGGT-CTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -368,52 +368,52 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 				
-				String id1 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				String id1 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T-", reader);
 				assertCharactersEvent("-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id2 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				String id2 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT", reader);
 				assertCharactersEvent("-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id3 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				String id3 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T-", reader);
 				assertCharactersEvent("-CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id4 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				String id4 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATG-TT", reader);
 				assertCharactersEvent("TCCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				String id5 = assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				String id5 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("ATG-TT", reader);
 				assertCharactersEvent("-CCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id1, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id1, "Seq 1", null, reader);
 				assertCharactersEvent("CCGT-G", reader);
 				assertCharactersEvent("T--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id2, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id2, "Seq 2", null, reader);
 				assertCharactersEvent("CCGT-G", reader);
 				assertCharactersEvent("TT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id3, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id3, "Seq 3", null, reader);
 				assertCharactersEvent("CCGT-C", reader);
 				assertCharactersEvent("T--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id4, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id4, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("CCGT-G", reader);
 				assertCharactersEvent("TTTA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, id5, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id5, "Seq 5", null, reader);
 				assertCharactersEvent("CGGT-C", reader);
 				assertCharactersEvent("TT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -446,52 +446,52 @@ public class PhylipEventReaderTest {
 			assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 			assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 			assertCharactersEvent("ATG-T", reader);
 			assertCharactersEvent("--CCG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 			assertCharactersEvent("ATG-T", reader);
 			assertCharactersEvent("T-CCG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 			assertCharactersEvent("ATG-T", reader);
 			assertCharactersEvent("--CGG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 			assertCharactersEvent("ATG-T", reader);
 			assertCharactersEvent("TTCCG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 			assertCharactersEvent("ATG-T", reader);
 			assertCharactersEvent("T-CCC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 			assertCharactersEvent("CCGT-", reader);
 			assertCharactersEvent("GT--A", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 			assertCharactersEvent("CCGT-", reader);
 			assertCharactersEvent("GTT-A", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 			assertCharactersEvent("CCGT-", reader);
 			assertCharactersEvent("CT--A", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 			assertCharactersEvent("CCGT-", reader);
 			assertCharactersEvent("GTTTA", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 			assertCharactersEvent("CGGT-", reader);
 			assertCharactersEvent("CTT-A", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -520,63 +520,63 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "25", null, new Long(25), true, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATG-TTTCCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("ATG-TT-CCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("CCGT-GT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("CCGT-GTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("CCGT-CT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("CCGT-GTTTA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("CGGT-CTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 								
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATA-G", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATT-G", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATTTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
 				assertCharactersEvent("ATTAG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
 				assertCharactersEvent("TTT-G", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -610,63 +610,63 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "25", null, new Long(25), true, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_4", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_4", null, reader);
 				assertCharactersEvent("ATG-TTTCCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_5", null, reader);
 				assertCharactersEvent("ATG-TT-CCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_1", null, reader);
 				assertCharactersEvent("CCGT-GT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_2", null, reader);
 				assertCharactersEvent("CCGT-GTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_3", null, reader);
 				assertCharactersEvent("CCGT-CT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_4", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_4", null, reader);
 				assertCharactersEvent("CCGT-GTTTA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_5", null, reader);
 				assertCharactersEvent("CGGT-CTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 								
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_1", null, reader);
 				assertCharactersEvent("ATA-G", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_2", null, reader);
 				assertCharactersEvent("ATT-G", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_3", null, reader);
 				assertCharactersEvent("ATTTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_4", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_4", null, reader);
 				assertCharactersEvent("ATTAG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Sequence_name_5", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_5", null, reader);
 				assertCharactersEvent("TTT-G", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -697,27 +697,27 @@ public class PhylipEventReaderTest {
 				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "3", null, new Long(3), true, true, reader);
 				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("ATG-TT-CCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("ATG-T--CGG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("CCGT-GT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
 				assertCharactersEvent("CCGT-GTT-A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
 				assertCharactersEvent("CCGT-CT--A", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				

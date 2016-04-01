@@ -32,7 +32,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.S
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -91,7 +91,7 @@ public class NeXMLStoreDataAdapterTest {
 	
 	protected StoreMatrixDataAdapter createMatrix(int index, String otusID) {
 		String matrixID = ReadWriteConstants.DEFAULT_MATRIX_ID_PREFIX + index;
-		LinkedOTUOrOTUsEvent startEvent = new LinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, matrixID, "matrix" + index, otusID);
+		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "matrix" + index, otusID);
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(createMetaData(matrixID), startEvent, false);
 		
 		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
@@ -147,8 +147,8 @@ public class NeXMLStoreDataAdapterTest {
 	}
 	
 	
-	protected StoreObjectData<LinkedOTUOrOTUsEvent> createSequence(int index, List<String> tokens, String otuID) {		
-		StoreObjectData<LinkedOTUOrOTUsEvent> sequence = new StoreObjectData<LinkedOTUOrOTUsEvent>(new LinkedOTUOrOTUsEvent(EventContentType.OTU, 
+	protected StoreObjectData<LinkedLabeledIDEvent> createSequence(int index, List<String> tokens, String otuID) {		
+		StoreObjectData<LinkedLabeledIDEvent> sequence = new StoreObjectData<LinkedLabeledIDEvent>(new LinkedLabeledIDEvent(EventContentType.OTU, 
 				ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + index, "taxon " + index, otuID), null);
 		sequence.getObjectContent().add(new SequenceTokensEvent(tokens));
 		return sequence;

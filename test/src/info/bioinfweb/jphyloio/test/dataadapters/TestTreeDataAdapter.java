@@ -29,7 +29,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -72,8 +72,8 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 
 
 	@Override
-	public LinkedOTUOrOTUsEvent getStartEvent() {
-		return new LinkedOTUOrOTUsEvent(EventContentType.TREE, id, label, linkedOTUsID);
+	public LinkedLabeledIDEvent getStartEvent() {
+		return new LinkedLabeledIDEvent(EventContentType.TREE, id, label, linkedOTUsID);
 	}
 
 
@@ -96,19 +96,19 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 
 	
 	@Override
-	public LinkedOTUOrOTUsEvent getNodeStartEvent(String nodeID) {
+	public LinkedLabeledIDEvent getNodeStartEvent(String nodeID) {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
 				case "n1":
-					return new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node '_1", null);
+					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node '_1", null);
 				case "nRoot":  
-					return new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null);
+					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null);
 				case "nA":
-					return new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[0]);
+					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[0]);
 				case "nB":
-					return new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[1]);
+					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[1]);
 				case "nC":
-					return new LinkedOTUOrOTUsEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[2]);
+					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[2]);
 				default:
 					throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
 			}

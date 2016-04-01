@@ -68,7 +68,7 @@ public class PDEEventReaderTest {
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
 				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet2", null, reader);
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
@@ -76,15 +76,15 @@ public class PDEEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -117,7 +117,7 @@ public class PDEEventReaderTest {
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
 				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet2", null, reader);
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
@@ -125,15 +125,15 @@ public class PDEEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateSetType.AMINO_ACID, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
 				assertCharactersEvent("ATWSATWSATWSATWSATWS", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
 				assertCharactersEvent("ATWSATWSATWSATWSATWS", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
 				assertCharactersEvent("ATWSATWSATWSATWSATWS", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -184,7 +184,7 @@ public class PDEEventReaderTest {
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
 				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet2", null, reader);
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
@@ -192,15 +192,15 @@ public class PDEEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -233,7 +233,7 @@ public class PDEEventReaderTest {
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
 				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet2", null, reader);
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
@@ -241,15 +241,15 @@ public class PDEEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -282,7 +282,7 @@ public class PDEEventReaderTest {
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
 				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet2", null, reader);
 				assertCharacterSetEvent(0, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
@@ -290,16 +290,16 @@ public class PDEEventReaderTest {
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
 				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
 				assertCharactersEvent("ACTG???????????", reader);
 				assertCharactersEvent("GACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
 				assertCharactersEvent("ACTGACTGA?", reader);
 				assertCharactersEvent("TGACT?????", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);

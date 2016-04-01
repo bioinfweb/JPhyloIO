@@ -76,12 +76,12 @@ public class PhyloXMLEventReaderTest {
 //			try {
 //				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.TREE, "tree0", "Test Tree", null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree0", "Test Tree", null, reader);
 //				assertMetaEvent("info.bioinfweb.jphyloio.displayTreeRooted", "true", true, true, reader);
 //				assertMetaEvent("phyloXML.phyloxml.phylogeny.rooted", "true", true, true, reader);
 //				assertMetaEvent("phyloXML.phylogeny.name", "Test Tree", true, true, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "N1", "AA bb", null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "N1", "AA bb", null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "N1", true, true, reader);
 //				assertMetaEvent("phyloXML.clade.taxonomy", null, false, true, reader);
 //				assertMetaEvent("phyloXML.taxonomy.id", "taxonomy ID", true, true, reader);
@@ -93,7 +93,7 @@ public class PhyloXMLEventReaderTest {
 //				assertEdgeEvent("internal1", "N1", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n2", "BB cc", null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n2", "BB cc", null, reader);
 //				assertMetaEvent("phyloXML.clade.sequence", null, false, true, reader);
 //				assertMetaEvent("phyloXML.sequence.name", "BB cc", true, true, reader);
 //				assertEndEvent(EventContentType.META_INFORMATION, reader);
@@ -102,13 +102,13 @@ public class PhyloXMLEventReaderTest {
 //				assertEdgeEvent("N2", "n2", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n4", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n4", null, null, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("N2", "n4", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);			
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "N2", "internal2", null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "N2", "internal2", null, reader);
 //				assertMetaEvent("phyloXML.clade.taxonomy", null, false, true, reader);
 //				assertMetaEvent("phyloXML.taxonomy.id", "N2", true, true, reader);
 //				assertMetaEvent("phyloXML.taxonomy.common_name", "internal2", true, true, reader);
@@ -121,7 +121,7 @@ public class PhyloXMLEventReaderTest {
 //				assertEdgeEvent("internal1", "N2", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);				
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "internal1", "internalNode1", null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "internal1", "internalNode1", null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "internal1", true, true, reader);
 //				assertMetaEvent("phyloXML.clade.name", "internalNode1", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
@@ -151,40 +151,40 @@ public class PhyloXMLEventReaderTest {
 //			try {
 //				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);				
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.TREE, "tree0", "Tree 1", null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree0", "Tree 1", null, reader);
 //				assertMetaEvent("info.bioinfweb.jphyloio.displayTreeRooted", "true", true, true, reader);
 //				assertMetaEvent("phyloXML.phyloxml.phylogeny.rooted", "true", true, true, reader);
 //				assertMetaEvent("phyloXML.phylogeny.name", "Tree 1", true, true, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n1", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n1", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "A", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("n9", "n1", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n3", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n3", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "B", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("n7", "n3", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n5", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "C", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("n7", "n5", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n7", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n7", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "2", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("n9", "n7", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "n9", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n9", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "1", true, true, reader);				
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
@@ -194,40 +194,40 @@ public class PhyloXMLEventReaderTest {
 //				assertEndEvent(EventContentType.TREE, reader);
 //				
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.TREE, "tree6", "Tree 2", null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree6", "Tree 2", null, reader);
 //				assertMetaEvent("info.bioinfweb.jphyloio.displayTreeRooted", "false", true, true, reader);
 //				assertMetaEvent("phyloXML.phyloxml.phylogeny.rooted", "false", true, true, reader);
 //				assertMetaEvent("phyloXML.phylogeny.name", "Tree 2", true, true, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "A", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "A", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "A", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("2", "A", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "B", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "B", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "B", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("2", "B", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "2", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "2", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "2", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("1", "2", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "C", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "C", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "C", true, true, reader);
 //				assertEndEvent(EventContentType.NODE, reader);
 //				
 //				assertEdgeEvent("1", "C", reader);
 //				assertEndEvent(EventContentType.EDGE, reader);				
 //				
-//				assertLinkedOTUOrOTUsEvent(EventContentType.NODE, "1", null, null, reader);
+//				assertLinkedLabeledIDEvent(EventContentType.NODE, "1", null, null, reader);
 //				assertMetaEvent("phyloXML.clade.node_id", "1", true, true, reader);				
 //				assertEndEvent(EventContentType.NODE, reader);
 //				

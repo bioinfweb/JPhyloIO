@@ -18,7 +18,7 @@
  */
 package info.bioinfweb.jphyloio.test.dataadapters;
 
-import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
@@ -36,8 +36,8 @@ public class SharedOTUTestMatrixAdapter extends TestMatrixDataAdapter {
 	
 
 	@Override
-	public LinkedOTUOrOTUsEvent getSequenceStartEvent(String sequenceID) {
-		return new LinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, sequenceID, getSequence(sequenceID).label, sharedOTUID);
+	public LinkedLabeledIDEvent getSequenceStartEvent(String sequenceID) {
+		return new LinkedLabeledIDEvent(EventContentType.SEQUENCE, sequenceID, getSequence(sequenceID).label, sharedOTUID);
 	}
 	
 }

@@ -338,7 +338,7 @@ public class NeXMLEventReaderTest {
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxa", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxa", reader);
 				
 				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet0", null, reader);
 				assertCharacterSetEvent(0, 2, reader);
@@ -351,13 +351,13 @@ public class NeXMLEventReaderTest {
 				assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
 				assertSingleTokenEvent("A", true, reader);
 				assertSingleTokenEvent("G", true, reader);
 				assertSingleTokenEvent("A", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedOTUOrOTUsEvent(EventContentType.SEQUENCE, "row2", "row2", "taxon2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "row2", "taxon2", reader);
 				assertSingleTokenEvent("A", true, reader);
 				assertSingleTokenEvent("G", true, reader);
 				assertSingleTokenEvent("T", true, reader);
