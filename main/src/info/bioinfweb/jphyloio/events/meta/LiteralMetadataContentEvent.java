@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.events.meta;
 
 
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.ContinuedEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -42,7 +43,7 @@ import javax.xml.stream.events.XMLEvent;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class LiteralMetadataContentEvent extends ConcreteJPhyloIOEvent {
+public class LiteralMetadataContentEvent extends ContinuedEvent {
 	private String stringValue;
 	private Object objectValue;
 	private String alternativeStringValue = null;
@@ -55,8 +56,8 @@ public class LiteralMetadataContentEvent extends ConcreteJPhyloIOEvent {
 	 * @param originalType the original type of meta information or null. 
 	 * @param stringValue the string value of the meta information.
 	 */
-	public LiteralMetadataContentEvent(String originalType, String stringValue) {
-		this(originalType, stringValue, stringValue);
+	public LiteralMetadataContentEvent(String originalType, String stringValue, boolean continuedInNextEvent) {
+		this(originalType, stringValue, stringValue, continuedInNextEvent);
 	}
 	
 	
@@ -67,8 +68,8 @@ public class LiteralMetadataContentEvent extends ConcreteJPhyloIOEvent {
 	 * @param stringValue the string value of the meta information.
 	 * @param objectValue the object value of the meta information.
 	 */
-	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue) {
-		this(originalType, stringValue, objectValue, null);
+	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, boolean continuedInNextEvent) {
+		this(originalType, stringValue, objectValue, null, continuedInNextEvent);
 	}
 	
 	
@@ -82,8 +83,8 @@ public class LiteralMetadataContentEvent extends ConcreteJPhyloIOEvent {
 	 *        representations of a value, e.g. a human and a machine readable one.)
 	 * @throws NullPointerException if {@code stringValue} is {@code null} and {@code alternativeStringValue} is not
 	 */
-	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue) {
-		super(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE);
+	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue, boolean continuedInNextEvent) {
+		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
 		
 		this.stringValue = stringValue;  //TODO Should an NPE be thrown if stringValue and objectValue are null?
 		this.objectValue = objectValue;
@@ -97,8 +98,8 @@ public class LiteralMetadataContentEvent extends ConcreteJPhyloIOEvent {
 	}
 	
 
-	public LiteralMetadataContentEvent(XMLEvent xmlEvent) {
-		super(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE);
+	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent) {
+		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
 		
 		this.stringValue = null;
 		this.objectValue = xmlEvent;

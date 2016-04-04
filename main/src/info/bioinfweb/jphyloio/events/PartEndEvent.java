@@ -31,6 +31,9 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * surrounded by a start and a end event), especially when interleaved formats 
  * are read. {@link #isTerminated()} determines whether another part of the same 
  * sequence may follow.
+ * <p>
+ * (Note that this class differs from {@link ContinuedEvent}, which has a property indicating if a single value 
+ * is separates among a sequence of identical events. No direct instances from {@link ContinuedEvent} can be created.)
  * 
  * @author Ben St&ouml;ver
  */

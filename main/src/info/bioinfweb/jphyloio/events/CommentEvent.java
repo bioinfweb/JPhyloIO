@@ -18,8 +18,8 @@
  */
 package info.bioinfweb.jphyloio.events;
 
+
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -31,9 +31,8 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-public class CommentEvent extends ConcreteJPhyloIOEvent {
+public class CommentEvent extends ContinuedEvent {
 	private String content;
-	private boolean continuedInNextEvent;
 
 	
 	/**
@@ -41,12 +40,11 @@ public class CommentEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @param content the content of the represented comment
 	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
-	 *        this comment are more events are ahead.
+	 *        this comment and more events are ahead or {@code false otherwise}.
 	 */
 	public CommentEvent(String content, boolean continuedInNextEvent) {
-		super(EventContentType.COMMENT, EventTopologyType.SOLE);  //TODO Possibly change to START later.
+		super(EventContentType.COMMENT, continuedInNextEvent);
 		this.content = content;
-		this.continuedInNextEvent = continuedInNextEvent;
 	}
 
 
@@ -67,18 +65,5 @@ public class CommentEvent extends ConcreteJPhyloIOEvent {
 	 */
 	public String getContent() {
 		return content;
-	}
-
-
-	/**
-	 * Returns whether this event only contains a part of a long comment and the next event(s) will contain
-	 * additional characters from the current comment. (The final event of a split comment returns {@code true} here.)
-	 * 
-	 * @return {@code false} if this event includes the final characters of the current comment (always the case for
-	 *         comments that are not split between events) and {@code true} if future events will contain the
-	 *         remaining characters from the current comment.
-	 */
-	public boolean isContinuedInNextEvent() {
-		return continuedInNextEvent;
 	}
 }
