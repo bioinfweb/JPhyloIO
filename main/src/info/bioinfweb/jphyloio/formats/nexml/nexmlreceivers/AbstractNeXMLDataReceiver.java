@@ -19,16 +19,12 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+
+import javax.xml.stream.XMLStreamWriter;
 
 
 
@@ -42,11 +38,7 @@ public abstract class AbstractNeXMLDataReceiver extends AbstractEventReceiver<XM
 	}
 
 	
-	@Override
-	protected abstract boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException; //TODO handle metadata name space collecting here?
-
-
-	public NeXMLWriterStreamDataProvider getStreamDataProvider() {
+	protected NeXMLWriterStreamDataProvider getStreamDataProvider() {
 		return streamDataProvider;
 	}
 }

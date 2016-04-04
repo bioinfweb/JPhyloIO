@@ -19,10 +19,14 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
+import java.io.IOException;
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
@@ -32,7 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {
-	private NeXMLWriterStreamDataProvider streamDataProvider; //TODO Doppelvererbungsproblem: müsste eigentlich auch von AbstractNeXMLDataReceiver erben um dort MetaDaten zu behandeln
+	private NeXMLWriterStreamDataProvider streamDataProvider;
 	
 	
 	public NeXMLSequenceContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens, 
@@ -41,10 +45,34 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 		
 		this.streamDataProvider = streamDataProvider;
 	}
+	
+
+	@Override
+	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleLiteralMeta(streamDataProvider, event);
+	}
 
 
 	@Override
-	protected void writeToken(String token, String label) throws XMLStreamException {		
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(streamDataProvider, event);
+	}
+
+
+	@Override
+	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleResourceMeta(streamDataProvider, event);
+	}
+
+
+	@Override
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleComment(streamDataProvider, event);
+	}
+	
+	
+	@Override
+	protected void writeToken(String token, String label) throws XMLStreamException {
 		if (streamDataProvider.isWriteCellsTags()) {
 			getWriter().writeStartElement(TAG_CELL.getLocalPart());
 			if (label != null) {
@@ -60,19 +88,4 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 			}
 		}			
 	}
-
-	
-	@Override
-	protected void writeComment(CommentEvent event) throws XMLStreamException {
-		String comment = event.getContent();
-		if (!comment.isEmpty()) {
-			getWriter().writeComment(comment);			
-		}
-	}
-	
-
-	@Override
-	protected void writeMetaData(MetaInformationEvent event) throws XMLStreamException {
-		// TODO Auto-generated method stub		
-	}	
 }

@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 
 import java.io.IOException;
 import java.io.Writer;

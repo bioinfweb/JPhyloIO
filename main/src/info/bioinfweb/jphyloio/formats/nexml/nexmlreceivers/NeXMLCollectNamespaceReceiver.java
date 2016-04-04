@@ -19,12 +19,15 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
-import java.io.IOException;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+
+import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -32,30 +35,34 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
-	
-
 	public NeXMLCollectNamespaceReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}
+	
+	
+	@Override
+	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+			getStreamDataProvider().getMetaDataNameSpaces().add(event.getPredicate().getNamespaceURI());
+		}
+	}
+
+
+	@Override
+	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+			getStreamDataProvider().getMetaDataNameSpaces().add(event.getRel().getNamespaceURI());
+		}
+	}
+
+
+	@Override
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {}
 
 	
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		switch (event.getType().getContentType()) {
-			case META_RESOURCE:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					getStreamDataProvider().getMetaDataNameSpaces().add(event.asResourceMetadataEvent().getRel().getNamespaceURI());
-				}				
-				break;
-			case META_LITERAL:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					getStreamDataProvider().getMetaDataNameSpaces().add(event.asLiteralMetadataEvent().getPredicate().getNamespaceURI());
-				}
-				break;
-			default:
-				break;
-		}
 		return true;
 	}
 }

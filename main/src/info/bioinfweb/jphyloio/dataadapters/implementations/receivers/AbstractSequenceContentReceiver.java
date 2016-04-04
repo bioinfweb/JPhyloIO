@@ -20,9 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -40,15 +38,9 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 		super(writer, parameterMap);
 		this.longTokens = longTokens;
 	}
-	
-	
-	protected abstract void writeToken(String token, String label) throws IOException, XMLStreamException;
 
-	
-	protected abstract void writeComment(CommentEvent event) throws IOException, XMLStreamException;
-	
-	
-	protected abstract void writeMetaData(MetaInformationEvent event) throws IOException, XMLStreamException;
+
+	protected abstract void writeToken(String token, String label) throws IOException, XMLStreamException;
 	
 
 	@Override
@@ -63,14 +55,6 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 			case SEQUENCE_TOKENS:
 				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
 					writeToken(token, null);
-				}
-				break;
-			case COMMENT:
-				writeComment(event.asCommentEvent());
-				break;
-			case META_INFORMATION:  //TODO Filter comments nested in metadata by counting metadata level. (Possibly use superclass shared with NewickNodeEdgeEventReceiver.)
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					writeMetaData(event.asMetaInformationEvent());
 				}
 				break;
 			default:

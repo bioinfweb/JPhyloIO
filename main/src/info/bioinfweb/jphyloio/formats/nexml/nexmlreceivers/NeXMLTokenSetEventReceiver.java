@@ -35,11 +35,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMlTokenSetEventReceiver extends AbstractNeXMLDataReceiver {
+public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	private int tokenDefinitionIndex = 0;
 	private Map<String, String> tokenNametoIDMap = new TreeMap<String, String>();
 	
-	public NeXMlTokenSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
+	public NeXMLTokenSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}
@@ -90,7 +90,7 @@ public class NeXMlTokenSetEventReceiver extends AbstractNeXMLDataReceiver {
 							&& !singleTokenEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {
 						switch (singleTokenEvent.getTokenType()) {
 							case ATOMIC_STATE:
-								writeState(singleTokenEvent);
+								writeState(singleTokenEvent); //TODO if its a gap character write uncertain set
 								break;
 							case POLYMORPHIC:
 								writeStateSet(singleTokenEvent, true);
@@ -104,10 +104,9 @@ public class NeXMlTokenSetEventReceiver extends AbstractNeXMLDataReceiver {
 						break;
 					}
 				}
-			default: //TODO handle meta information
+			default:
 				break;
 		}
 		return true;
-	}
-	
+	}	
 }

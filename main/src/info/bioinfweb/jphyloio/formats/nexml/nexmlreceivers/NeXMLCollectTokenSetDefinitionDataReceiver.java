@@ -31,13 +31,14 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLCollectTokenSetDefinitionDataReceiver extends AbstractNeXMLDataReceiver {
+public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectNamespaceReceiver {
 
 	
 	public NeXMLCollectTokenSetDefinitionDataReceiver(XMLStreamWriter writer,
 			ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}
+	
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
@@ -47,9 +48,9 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends AbstractNeXMLDat
 					//TODO check here if all definitions for DNA, RNA and AA are according to the IUPAC standard
 				}
 				break;
-			default: //TODO handle meta data (possibly in superclass?)
+			default:
 				break;
 		}
 		return true;
-	}	
+	}
 }

@@ -28,13 +28,16 @@ import javax.xml.stream.XMLStreamWriter;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 
 
-public class NeXMLCollectSequenceDataReceiver extends AbstractNeXMLDataReceiver {
+public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceReceiver {
 	private boolean nestedUnderSingleToken = false;
 	
 
@@ -42,6 +45,33 @@ public class NeXMLCollectSequenceDataReceiver extends AbstractNeXMLDataReceiver 
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}
+	
+
+	@Override
+	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		super.handleResourceMeta(event);
+		if (nestedUnderSingleToken) {
+			getStreamDataProvider().setWriteCellsTags(true);
+		}
+	}
+
+
+	@Override
+	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+		super.handleLiteralMeta(event);
+		if (nestedUnderSingleToken) {
+			getStreamDataProvider().setWriteCellsTags(true);
+		}
+	}
+
+
+	@Override
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
+		if (nestedUnderSingleToken) {
+			getStreamDataProvider().setWriteCellsTags(true);
+		}
+	}
+
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
@@ -73,29 +103,9 @@ public class NeXMLCollectSequenceDataReceiver extends AbstractNeXMLDataReceiver 
 					}
 				}
 				break;
-			case META_RESOURCE:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					getStreamDataProvider().getMetaDataNameSpaces().add(event.asResourceMetadataEvent().getRel().getNamespaceURI());
-				}
-				else {
-					break;
-				}
-			case META_LITERAL:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					getStreamDataProvider().getMetaDataNameSpaces().add(event.asLiteralMetadataEvent().getPredicate().getNamespaceURI());
-				}
-				else {
-					break;
-				}
-			case META_LITERAL_CONTENT:
-				if (nestedUnderSingleToken) {
-					getStreamDataProvider().setWriteCellsTags(true);
-				}		
-				break;
 			default:
 				break;
 		}
 		return true;
-	}
-	
+	}	
 }

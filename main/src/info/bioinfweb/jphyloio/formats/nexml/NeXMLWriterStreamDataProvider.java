@@ -40,32 +40,35 @@ import java.util.UUID;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 
 
 
 public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private NeXMLEventWriter eventWriter;
-	private LiteralMetadataEvent literalWithoutXMLContent;
 	
-	private boolean emptyDocument = false; //is true if the document contains nothing or only document meta data
-	private boolean hasOTUList = true; //is true if the document contains at least one OTU list
+	private LiteralMetadataEvent literalWithoutXMLContent;
 	private Set<String> metaDataNameSpaces = new TreeSet<String>();
 	
+	private boolean emptyDocument = false; //is true if the document contains nothing or only document meta data
+	
+	private boolean hasOTUList = true; //is true if the document contains at least one OTU list	
+	private boolean writeUndefinedOTU = false;
+	private boolean writeUndefinedOtuList = false;
+	private Set<String> otuIDs = new HashSet<String>();
+	private Set<String> otusIDs = new HashSet<String>();
+	
 	private boolean writeCellsTags;
-	private CharacterStateSetType alignmentType = CharacterStateSetType.UNKNOWN;
+	private CharacterStateSetType alignmentType;
 	
 	private Map<String, String> charSetToTokenSetMap = new HashMap<String, String>();
 	private Map<String, Set<Long>> charSets = new HashMap<String, Set<Long>>();
 	private Map<Long, String> charIndexToIDMap = new HashMap<Long, String>();
 	private Map<String, String> charIDToStatesMap = new HashMap<String, String>();
 	
-	private boolean writeUndefinedOTU = false;
-	private boolean writeUndefinedOtuList = false;
-	private Set<String> otuIDs = new HashSet<String>();
-	private Set<String> otusIDs = new HashSet<String>();	
-	
 	private Set<String> phylogenyLinkedOtusIDs = new HashSet<String>();
+	
 	
 	@SuppressWarnings("serial")
 	private static Map<QName,Class<?>> classForXsdType = new HashMap<QName, Class<?>>() {{
@@ -85,6 +88,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		put(new QName(XS_URI,"duration",XSD_PRE), Duration.class);		
 	}};
 	
+	
 	@SuppressWarnings("serial")
 	private static Map<Class<?>,QName> xsdTypeForClass = new HashMap<Class<?>,QName>() {{
 		for ( QName xsdType : classForXsdType.keySet() ) {
@@ -100,9 +104,15 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		put(Source.class, new QName(XS_URI,"base64Binary",XSD_PRE));
 	}};
 	
+	
 	public NeXMLWriterStreamDataProvider(NeXMLEventWriter eventWriter) {
 		super();
 		this.eventWriter = eventWriter;
+	}
+
+
+	public XMLStreamWriter getXMLStreamWriter() {
+		return eventWriter.getWriter();
 	}
 
 
@@ -226,23 +236,32 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException {
+	public void writeLabeledIDAttributes(LabeledIDEvent event, boolean writeAbout) throws XMLStreamException {
 		getEventWriter().getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique. (Probably a task that should use resources to be added to the super class.)
-		getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID()); //TODO maybe only write about attribute if meta data follows?
+		
+		if (writeAbout) {
+			getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
+		}
+		
 		if (event.hasLabel()) {
 			getEventWriter().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
 		}
 	}
 	
 	
-	public void writeLinkedLabeledIDAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException, JPhyloIOWriterException {		
-		writeLabeledIDAttributes(event);
-		if (event.hasLink()) {			
-			if ((linkAttribute.equals(TAG_OTUS) && !otusIDs.contains(event.getLinkedID())) 
-					|| (linkAttribute.equals(TAG_OTU) && !otuIDs.contains(event.getLinkedID()))) {
-				throw new JPhyloIOWriterException("An element links to a non-existent OTU list or OTU.");
+	public void writeLinkedLabeledIDAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink, boolean writeAbout) throws XMLStreamException, JPhyloIOWriterException {		
+		writeLabeledIDAttributes(event, writeAbout);
+		if (event.hasLink()) {
+			if (hasOTUList()) {
+				if ((linkAttribute.equals(TAG_OTUS) && !otusIDs.contains(event.getLinkedID())) 
+						|| (linkAttribute.equals(TAG_OTU) && !otuIDs.contains(event.getLinkedID()))) {
+					throw new JPhyloIOWriterException("An element links to a non-existent OTU list or OTU.");
+				}
+				getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
 			}
-			getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
+			else {
+				throw new JPhyloIOWriterException("An element links to an OTU list or OTU though no OTU list exists in the document.");
+			}
 		}
 		else if (forceOTULink) {
 			if (linkAttribute.equals(TAG_OTUS)) {				

@@ -18,6 +18,7 @@
  */
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
@@ -27,8 +28,11 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-public class NeXMLCollectCharSetDataReceiver extends AbstractNeXMLDataReceiver {
+
+
+public class NeXMLCollectCharSetDataReceiver extends NeXMLCollectNamespaceReceiver {
 	private String charSetID;
+	
 	
 	public NeXMLCollectCharSetDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider, String charSetID) {
@@ -45,7 +49,7 @@ public class NeXMLCollectCharSetDataReceiver extends AbstractNeXMLDataReceiver {
 					getStreamDataProvider().getCharSets().get(charSetID).add(i);
 				}				
 				break;
-			default: //TODO handle meta data and comments (possibly in superclass?)
+			default:
 				break;
 		}
 		return true;

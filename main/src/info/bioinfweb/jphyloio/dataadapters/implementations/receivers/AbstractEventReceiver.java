@@ -19,15 +19,19 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLStreamException;
-
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
 
 
 
@@ -35,7 +39,8 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	private W writer;
 	private ReadWriteParameterMap parameterMap;
 	private long ignoredComments = 0;
-	private long ignoredMetadata = 0;
+	private long ignoredLiteralMetadata = 0;
+	private long ignoredResourceMetadata = 0;
 	
 	
 	public AbstractEventReceiver(W writer, ReadWriteParameterMap parameterMap) {
@@ -75,20 +80,53 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	}
 
 
-	public long getIgnoredMetadata() {
-		return ignoredMetadata;
+	public long getIgnoredLiteralMetadata() {
+		return ignoredLiteralMetadata;
 	}
 
 
-	public boolean didIgnoreMetadata() {
-		return getIgnoredMetadata() > 0;
+	public boolean didIgnoreLiteralMetadata() {
+		return getIgnoredLiteralMetadata() > 0;
 	}
 
 
-	protected void addIgnoredMetadata(long addend) {
-		ignoredMetadata += addend;
+	protected void addIgnoredLiteralMetadata(long addend) {
+		ignoredLiteralMetadata += addend;
+	}
+	
+	
+	public long getIgnoredResourceMetadata() {
+		return ignoredResourceMetadata;
 	}
 
+
+	public boolean didIgnoreResourceMetadata() {
+		return getIgnoredResourceMetadata() > 0;
+	}
+
+
+	protected void addIgnoredResourceMetadata(long addend) {
+		ignoredResourceMetadata += addend;
+	}
+	
+	
+	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+		addIgnoredLiteralMetadata(1);
+	}
+	
+	
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {}
+	
+	
+	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		addIgnoredResourceMetadata(1);
+	}
+	
+	
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
+		addIgnoredComments(1);
+	}
+	
 	
 	protected abstract boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException;
 	
@@ -96,7 +134,23 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IOException {
 		try {
-			return doAdd(event);
+			switch (event.getType().getContentType()) {
+				case META_RESOURCE:
+					handleResourceMeta(event.asResourceMetadataEvent());
+					break;
+				case META_LITERAL:
+					handleLiteralMeta(event.asLiteralMetadataEvent());
+					break;
+				case META_LITERAL_CONTENT:
+					handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
+					break;
+				case COMMENT:
+					handleComment(event.asCommentEvent());
+					break;
+				default:
+					return doAdd(event);
+			}
+			return true;
 		}
 		catch (XMLStreamException e) {
 			throw new JPhyloIOWriterException("An XMLStream exception with the message \"" + e.getMessage() + 

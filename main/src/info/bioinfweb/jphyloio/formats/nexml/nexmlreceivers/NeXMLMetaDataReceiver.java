@@ -19,20 +19,18 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 
 /**
@@ -49,90 +47,32 @@ public class NeXMLMetaDataReceiver extends AbstractNeXMLDataReceiver {
 	}
 
 
-	private void writeResourceMeta(ResourceMetadataEvent event) throws XMLStreamException {
-		getWriter().writeStartElement(TAG_META.getLocalPart());
-		
-		getStreamDataProvider().writeLabeledIDAttributes(event);
-		
-		getWriter().writeAttribute(ATTR_REL.getLocalPart(), event.getRel().getLocalPart());		
-		
-		if (event.getHRef() != null) {
-			getWriter().writeAttribute(ATTR_HREF.getLocalPart(), event.getHRef().toString());
-		}
-		
-		getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_RESOURCE_META);
+	@Override
+	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleLiteralMeta(getStreamDataProvider(), event);
 	}
-	
-	
-	private void writeLiteralMeta(LiteralMetadataEvent event, Class<? extends Object> objectType) throws XMLStreamException {
-		getWriter().writeStartElement(TAG_META.getLocalPart());
-		
-		getStreamDataProvider().writeLabeledIDAttributes(event);
-		
-		if (event.getPredicate() != null) {
-			getWriter().writeAttribute(ATTR_PROPERTY.getLocalPart(), event.getPredicate().getLocalPart());		
-		}
-		else {
-			throw new InternalError("Literal meta should have a predicate that is a QName.");
-		}
-		
-		getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), NeXMLWriterStreamDataProvider.getXsdTypeForClass().get(objectType).getLocalPart());	//TODO write prefix?	
-		
-		getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_LITERAL_META);
-	}
-	
-	
-	private void writeLiteralMetaContent(LiteralMetadataContentEvent event) throws XMLStreamException {
-		getWriter().writeCharacters(event.getStringValue());
-	}
-	
-	
-	protected void writeComment(CommentEvent event) throws XMLStreamException {
-		String comment = event.getContent();
-		if (!comment.isEmpty()) {
-			getWriter().writeComment(comment);			
-		}
-	}
-	
+
 
 	@Override
-	public boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		switch (event.getType().getContentType()) {
-			case META_RESOURCE:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					writeResourceMeta(event.asResourceMetadataEvent());
-				}
-				else {
-					getWriter().writeEndElement();
-				}
-				break;
-			case META_LITERAL:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					LiteralMetadataEvent literalMetadataEvent = event.asLiteralMetadataEvent();
-					if (literalMetadataEvent.getSequenceType().equals(LiteralContentSequenceType.XML)) {
-						writeLiteralMeta(literalMetadataEvent, null);
-					}
-					else {
-						getStreamDataProvider().setLiteralWithoutXMLContent(literalMetadataEvent);
-					}
-				}
-				else {
-					getWriter().writeEndElement();
-				}
-				break;
-			case META_LITERAL_CONTENT:
-				LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
-				if (getStreamDataProvider().getLiteralWithoutXMLContent() != null) {
-					writeLiteralMeta(getStreamDataProvider().getLiteralWithoutXMLContent(), contentEvent.getObjectValue().getClass());							
-				}
-				writeLiteralMetaContent(contentEvent);				
-				break;
-			case COMMENT:
-				writeComment(event.asCommentEvent());
-				break;
-			default:
-				break;
-		}
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(getStreamDataProvider(), event);
+	}
+
+
+	@Override
+	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleResourceMeta(getStreamDataProvider(), event);
+	}
+
+
+	@Override
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleComment(getStreamDataProvider(), event);
+	}
+
+
+	@Override
+	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		return true;
 	}
 }
