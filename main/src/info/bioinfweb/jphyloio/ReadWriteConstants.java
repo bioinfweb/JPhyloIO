@@ -44,6 +44,7 @@ public interface ReadWriteConstants {
 	public static final String DEFAULT_TOKEN_SET_ID_PREFIX = "tokenSet";
 	public static final String DEFAULT_TOKEN_DEFINITION_ID_PREFIX = "tokenDefinition";
 	public static final String DEFAULT_TREE_ID_PREFIX = "tree";
+	public static final String DEFAULT_TREES_ID_PREFIX = "trees";
 	public static final String DEFAULT_NODE_ID_PREFIX = "n";
 	public static final String DEFAULT_EDGE_ID_PREFIX = "e";
 }

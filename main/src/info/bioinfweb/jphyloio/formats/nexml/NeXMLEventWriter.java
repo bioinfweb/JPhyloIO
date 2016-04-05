@@ -100,8 +100,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeTreesTag(DocumentDataAdapter document, String linkedOTUs) throws XMLStreamException, IOException {
 		getWriter().writeStartElement(TAG_TREES.getLocalPart());
 		streamDataProvider.writeLinkedLabeledIDAttributes(new LinkedLabeledIDEvent(EventContentType.TREE, 
-				ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + "s", null, linkedOTUs), TAG_OTUS, true); //TODO which ID prefix should be chosen here? ID needs to be unique!
-		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = document.getTreeNetworkIterator(); //TODO direkter Zugriff auf Bäume per ID wäre hier praktischer
+				ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + linkedOTUs, null, linkedOTUs), TAG_OTUS, true); //TODO Might lead to conflicting IDs as long as Tree Group Event does not exist
+		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = document.getTreeNetworkIterator();
 		while (treesAndNetworksIterator.hasNext()) {
 			TreeNetworkDataAdapter treeOrNetwork = treesAndNetworksIterator.next();
 			if ((linkedOTUs == null) || treeOrNetwork.getStartEvent().getLinkedID().equals(linkedOTUs)) {
@@ -585,17 +585,16 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	@Override
 	protected void doWriteDocument(DocumentDataAdapter document, XMLStreamWriter writer, ReadWriteParameterMap parameters)
 			throws IOException, XMLStreamException {
-		this.writer = writer;  //TODO Move to superclass?
-		this.parameters = parameters;  //TODO Move to superclass (also used by NexusEventWriter)?
-		logger = parameters.getLogger();	  //TODO Move to superclass (also used by NexusEventWriter)?	
+		this.writer = writer; //TODO Move to superclass?
+		this.parameters = parameters; //TODO Move to superclass (also used by NexusEventWriter)?
+		logger = parameters.getLogger(); //TODO Move to superclass (also used by NexusEventWriter)?	
 
 		checkDocument(document);		
 		
 		//TODO write documents with only meta data (create default OTU list without entries)
 		if (!streamDataProvider.isEmptyDocument()) { //A valid NeXMl Document needs at least one OTU list, so completely empty documents or ones with only document meta data should not be written
 			getWriter().writeStartElement(TAG_ROOT.getLocalPart());
-			//TODO get and write document ID
-			XMLUtils.writeNamespaceAttr(getWriter(), NAMESPACE_URI.toString());  //TODO Link xsd?
+			XMLUtils.writeNamespaceAttr(getWriter(), NAMESPACE_URI.toString()); //TODO Link xsd?
 			for (String nameSpace : streamDataProvider.getMetaDataNameSpaces()) {
 				XMLUtils.writeNamespaceAttr(getWriter(), nameSpace);
 			}
@@ -607,8 +606,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			writeTreesTags(document);
 			
 			getWriter().writeEndElement();
-			
-			System.out.println(streamDataProvider.getDocumentIDs());
 		}
 	}
 	
