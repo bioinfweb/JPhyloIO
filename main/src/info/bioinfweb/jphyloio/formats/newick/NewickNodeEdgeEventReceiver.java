@@ -32,10 +32,13 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEvent
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 
 
 
@@ -66,7 +69,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	private List<CommentEvent> commentEvents = new ArrayList<CommentEvent>();
 	private boolean ignoredXMLMetadata = false;
 	private boolean ignoredNestedMetadata = false;
-	private int metadataLevel = 0;
+	private StringBuilder currentLiteralValue = new StringBuilder();
 	
 	
 	public NewickNodeEdgeEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
@@ -84,11 +87,16 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	}
 	
 	
+	private void clearCurrentLiteralValue() {
+		currentLiteralValue.delete(0, currentLiteralValue.length());
+	}
+	
+	
 	public void clear() {
 		commentEvents.clear();
 		ignoredNestedMetadata = false;
 		ignoredXMLMetadata = false;
-		metadataLevel = 0;
+		clearCurrentLiteralValue();
 	}
 	
 	
@@ -106,12 +114,19 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		if (getParentEvents().isEmpty()) {
-			String key = event.getKey();
-			if (key == null) {
-				key = event.getPredicate().getLocalPart();  //TODO Should this be handled this way?
+			if (event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE) || 
+					event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE_ARRAY)) {
+				
+				String key = event.getKey();
+				if (key == null) {
+					key = event.getPredicate().getLocalPart();  //TODO Should this be handled this way?
+				}
+				metadataList.add(new Metadata(key));
+				//TODO Add values later. Possibly throw exception e.g. in handleMetaEndEvent, if no value was specified or allow empty annotations.
 			}
-			metadataList.add(new Metadata(key));
-			//TODO Add values later. Possibly throw exception e.g. in handleMetaEndEvent, if no value was specified or allow empty annotations.
+			else {  // Will also be executed for OTHER.
+				ignoredXMLMetadata = true;
+			}
 		}
 		else {
 			ignoredNestedMetadata = true;
@@ -121,51 +136,37 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		// TODO Auto-generated method stub
-		super.handleLiteralContentMeta(event);
+		if (metadataList.isEmpty()) {
+			throw new InternalError("No metadata entry was added for the parent literal meta event.");  // Should not happen.
+		}
+		else {
+			currentLiteralValue.append(event.getStringValue());  // Such events cannot have non-string object values.
+			if (!event.isContinuedInNextEvent()) {
+				String value = currentLiteralValue.toString();;
+				if (!(event.getObjectValue() instanceof Number)) {
+					value = NAME_DELIMITER + value.replaceAll("\\" + NAME_DELIMITER, "" + NAME_DELIMITER + NAME_DELIMITER) + NAME_DELIMITER;
+				}
+				
+				metadataList.get(metadataList.size() - 1).values.add(value);
+				clearCurrentLiteralValue();
+			}
+		}
+	}
+
+
+	@Override
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		if (event.getType().getContentType().equals(EventContentType.META_LITERAL) && currentLiteralValue.length() > 0) {
+			throw new InconsistentAdapterDataException("A literal meta end event was encounterd, althoug the last literal meta content "
+					+ "event was marked to be continued in a subsequent event.");
+		}
+		//TODO The functionality of this method should be moved to AbstractEventReceiver.
 	}
 
 
 	@Override
 	protected void handleComment(CommentEvent event) {
 		commentEvents.add(event.asCommentEvent());
-	}
-
-
-	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IllegalArgumentException,	IOException {
-		switch (event.getType().getContentType()) {
-			case COMMENT:
-				commentEvents.add(event.asCommentEvent());
-				break;
-			case META_INFORMATION:  //TODO Filter comments nested in metadata possibly by a superclass shared with SequenceContentReceiver.
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					metadataLevel++;
-					
-					if (metadataLevel == 1) {  // Ignore nested events.
-						MetaInformationEvent metaevent = event.asMetaInformationEvent();
-						Metadata metadata = new Metadata(metaevent.getKey());
-						if (metaevent.hasValue()) {
-							metadata.values.add(createValue(metaevent));
-						}
-						metadataList.add(metadata);
-					}  //TODO Implement adding array values, when concept is clear.
-					else {
-						ignoredNestedMetadata = true;
-					}
-				}
-				else {
-					metadataLevel--;
-				}
-				break;
-			case META_LITERAL_CONTENT:  //TODO Add additional meta types.
-				ignoredXMLMetadata = true;
-				break;
-			default:
-				throw new IllegalArgumentException("Events of the type " + event.getType().getContentType() + 
-						" are not allowed in a tree/network edge subsequence.");
-		}
-		return true;
 	}
 
 
