@@ -25,16 +25,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.stream.XMLStreamException;
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
-public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends AbstractEventReceiver<Writer> 
+public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicEventReceiver<Writer> 
 		implements NewickConstants {
 	
 	public static final char STRING_DELEMITER_REPLACEMENT = '\'';
@@ -95,6 +100,35 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends Abstra
 			return NAME_DELIMITER + 
 					event.getStringValue().replaceAll("\\" + NAME_DELIMITER, "" + NAME_DELIMITER + NAME_DELIMITER) + NAME_DELIMITER;
 		}
+	}
+
+
+	@Override
+	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+		if (getParentEvents().isEmpty()) {
+			String key = event.getKey();
+			if (key == null) {
+				key = event.getPredicate().getLocalPart();  //TODO Should this be handled this way?
+			}
+			metadataList.add(new Metadata(key));
+			//TODO Add values later. Possibly throw exception e.g. in handleMetaEndEvent, if no value was specified or allow empty annotations.
+		}
+		else {
+			ignoredNestedMetadata = true;
+		}
+	}
+
+
+	@Override
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
+		// TODO Auto-generated method stub
+		super.handleLiteralContentMeta(event);
+	}
+
+
+	@Override
+	protected void handleComment(CommentEvent event) {
+		commentEvents.add(event.asCommentEvent());
 	}
 
 

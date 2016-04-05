@@ -33,13 +33,23 @@ import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Stack;
 
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 
 
-public abstract class AbstractEventReceiver<W extends Object> implements JPhyloIOEventReceiver {
+/**
+ * Most event receivers will be inherited from this class. It implements basic shared functionalities mainly for handling
+ * metadata and comments. The default behaviour of some methods may need to be overwritten by inherited classes.
+ * 
+ * @author Ben St&ouml;ver
+ *
+ * @param <W> the type of writer to write the data to (usually {@link Writer} or {@link XMLStreamWriter})
+ */
+public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiver {
 	private W writer;
 	private ReadWriteParameterMap parameterMap;
 	
@@ -50,7 +60,7 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	private long ignoredResourceMetadata = 0;
 	
 	
-	public AbstractEventReceiver(W writer, ReadWriteParameterMap parameterMap) {
+	public BasicEventReceiver(W writer, ReadWriteParameterMap parameterMap) {
 		super();
 		this.writer = writer;
 		this.parameterMap = parameterMap;
@@ -163,7 +173,26 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {}
 	
 	
-	protected abstract boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException;
+	/**
+	 * This method is called internally by {@link #add(JPhyloIOEvent)} to process and events that do not model metadata or
+	 * comments. (Such events are treated by the according special methods of this class).
+	 * <p>
+	 * This default implementation just throws an {@link IllegalEventException}. Inherited classes that need to support other
+	 * events then these modeling metadata or comments, must overwrite this method.
+	 * 
+	 * @param event the event to be processed
+	 * @return {@code true} if more events can be written to this acceptor or {@code false} if writing should
+	 *         be aborted
+	 * @throws IllegalEventException if the specified event is illegal in this acceptor in general or at
+	 *         the current position in the sequence
+	 * @throws ClassCastException if an event object was specified that is not an instance of a class associated 
+	 *         with its type as document in {@link EventContentType}
+	 * @throws IOException if an I/O error occurs when writing to the underlying stream
+	 * @throws XMLStreamException if an XML stream error occurs when writing to the underlying stream
+	 */
+	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		throw IllegalEventException.newInstance(this, getParentEvent(), event);
+	}
 	
 	
 	@Override

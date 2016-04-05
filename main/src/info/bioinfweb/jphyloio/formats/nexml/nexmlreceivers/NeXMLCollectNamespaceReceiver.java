@@ -68,10 +68,4 @@ public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
 
 	@Override
 	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {}
-
-	
-	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		return true;
-	}
 }

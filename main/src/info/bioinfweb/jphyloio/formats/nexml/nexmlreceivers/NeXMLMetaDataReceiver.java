@@ -75,10 +75,4 @@ public class NeXMLMetaDataReceiver extends AbstractNeXMLDataReceiver {
 	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
 		AbstractNeXMLDataReceiverMixin.handleComment(getStreamDataProvider(), event);
 	}
-
-
-	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		return true;
-	}
 }

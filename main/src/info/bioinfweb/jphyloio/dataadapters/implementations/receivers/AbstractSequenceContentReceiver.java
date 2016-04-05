@@ -30,7 +30,7 @@ import javax.xml.stream.XMLStreamException;
 
 
 
-public abstract class AbstractSequenceContentReceiver<W extends Object> extends AbstractEventReceiver<W> {
+public abstract class AbstractSequenceContentReceiver<W extends Object> extends BasicEventReceiver<W> {
 	private boolean longTokens;
 	
 	

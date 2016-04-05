@@ -24,7 +24,7 @@ import java.io.Writer;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -32,7 +32,7 @@ import info.bioinfweb.jphyloio.exception.IllegalEventException;
 
 
 
-public class TokenSetEventReceiver extends AbstractEventReceiver<Writer> 
+public class TokenSetEventReceiver extends BasicEventReceiver<Writer> 
 		implements JPhyloIOEventReceiver, NexusConstants {
 
 	private StringBuilder singleTokens = new StringBuilder();

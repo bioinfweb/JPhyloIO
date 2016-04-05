@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
@@ -44,7 +44,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-class FASTASequenceEventReceiver extends AbstractEventReceiver<Writer> implements JPhyloIOEventReceiver, FASTAConstants {
+class FASTASequenceEventReceiver extends BasicEventReceiver<Writer> implements JPhyloIOEventReceiver, FASTAConstants {
 	private int charsPerLineWritten = 0;
 	private MatrixDataAdapter matrixDataAdapter;
 	private long lineLength;
