@@ -35,9 +35,11 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 
 
@@ -381,9 +383,11 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		
 		if (extensionToken != null) {
 			long additionalLength = targetLength - matrix.getSequenceLength(sequenceID);
-			SingleSequenceTokenEvent event = new SingleSequenceTokenEvent(null, extensionToken);
+			SingleSequenceTokenEvent startEvent = new SingleSequenceTokenEvent(null, extensionToken);
+			ConcreteJPhyloIOEvent endEvent = ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN);
 			for (long i = 0; i < additionalLength; i++) {
-				receiver.add(event);
+				receiver.add(startEvent);
+				receiver.add(endEvent);
 			}
 		}
 	}
