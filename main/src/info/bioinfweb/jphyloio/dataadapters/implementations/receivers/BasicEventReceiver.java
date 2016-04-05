@@ -223,7 +223,7 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 					}
 					break;
 				case META_LITERAL_CONTENT:
-					if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+					if ((parentEvent != null) && parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
 						handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
 					}
 					else {
