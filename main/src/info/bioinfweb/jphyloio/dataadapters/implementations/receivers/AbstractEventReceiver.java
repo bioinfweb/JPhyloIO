@@ -128,6 +128,16 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 		return getIgnoredResourceMetadata() > 0;
 	}
 
+	
+	public boolean didIgnoreMetadata() {
+		return didIgnoreLiteralMetadata() || didIgnoreResourceMetadata();
+	}
+	
+	
+	public long getIgnoredMetadata() {
+		return getIgnoredLiteralMetadata() + getIgnoredResourceMetadata();
+	}
+	
 
 	protected void addIgnoredResourceMetadata(long addend) {
 		ignoredResourceMetadata += addend;
@@ -162,7 +172,7 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 			
 			switch (event.getType().getContentType()) {
 				case META_RESOURCE:
-					handleResourceMeta(event.asResourceMetadataEvent());
+					handleResourceMeta(event.asResourceMetadataEvent());  //TODO Only start events can be case here and in similar lines below.
 					break;
 				case META_LITERAL:
 					if (!getParentElement().getType().getContentType().equals(EventContentType.META_LITERAL)) {
@@ -184,7 +194,7 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 					handleComment(event.asCommentEvent());
 					break;
 				default:
-					if (getParentElement().getType().getContentType() == null) {
+					if (getParentElement() == null) {
 						result = doAdd(event);
 					}
 					else {
