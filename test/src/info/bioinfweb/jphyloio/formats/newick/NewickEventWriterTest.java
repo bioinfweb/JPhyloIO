@@ -50,8 +50,8 @@ public class NewickEventWriterTest {
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			assertEquals("[&R] ((Node_t0nA:1.1[&annotation=100], Node_t0nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t0nC:2.0)Node_t0nRoot:1.5;", reader.readLine());
-			assertEquals("[&R] ((Node_t1nA:1.1[&annotation=100], Node_t1nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t1nC:2.0)Node_t1nRoot:1.5;", reader.readLine());
+			assertEquals("[&R] ((Node_t0nA:1.1[&splitString='ABCDEF', array={100, 'abc'}], Node_t0nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t0nC:2.0)Node_t0nRoot:1.5;", reader.readLine());
+			assertEquals("[&R] ((Node_t1nA:1.1[&splitString='ABCDEF', array={100, 'abc'}], Node_t1nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t1nC:2.0)Node_t1nRoot:1.5;", reader.readLine());
 			assertEquals(-1, reader.read());
 		}
 		finally {
@@ -85,8 +85,8 @@ public class NewickEventWriterTest {
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			assertEquals("[&R] ((Node_t0nA:1.1[&annotation=100], Node_t0nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t0nC:2.0)Node_t0nRoot:1.5;", reader.readLine());
-			assertEquals("[&R] ((label1:1.1[&annotation=100], Node_t1nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu0:2.0)Node_t1nRoot:1.5;", reader.readLine());
+			assertEquals("[&R] ((Node_t0nA:1.1[&splitString='ABCDEF', array={100, 'abc'}], Node_t0nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t0nC:2.0)Node_t0nRoot:1.5;", reader.readLine());
+			assertEquals("[&R] ((label1:1.1[&splitString='ABCDEF', array={100, 'abc'}], Node_t1nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu0:2.0)Node_t1nRoot:1.5;", reader.readLine());
 			assertEquals(-1, reader.read());
 		}
 		finally {

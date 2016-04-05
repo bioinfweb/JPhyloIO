@@ -130,14 +130,10 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 						LiteralContentSequenceType.SIMPLE));
 				receiver.add(new LiteralMetadataContentEvent(null, "100", new Integer(100)));
 				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-//				receiver.add(new MetaInformationEvent("a1", null, "100", new Integer(100)));
-//				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 				receiver.add(new LiteralMetadataEvent("n1meta2", null, new QName("http://example.org/", "somePredicate"), "a2", 
 						LiteralContentSequenceType.SIMPLE));
 				receiver.add(new LiteralMetadataContentEvent(null, "ab 'c", "ab 'c"));
 				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-//				receiver.add(new MetaInformationEvent("a2", null, "ab 'c", "ab 'c"));
-//				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 		}
 	}
@@ -190,12 +186,17 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException {
 		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
 			if(edgeID.substring(nodeEdgeIDPrefix.length()).equals("eA")) {
-				receiver.add(new LiteralMetadataEvent("eAmeta1", null, new QName("http://example.org/", "somePredicate"), "annotation", 
+				receiver.add(new LiteralMetadataEvent("eAmeta1", null, new QName("http://example.org/", "somePredicate"), "splitString", 
 						LiteralContentSequenceType.SIMPLE));
-				receiver.add(new LiteralMetadataContentEvent(null, "100", new Integer(100)));
+				receiver.add(new LiteralMetadataContentEvent(null, "ABC", true));
+				receiver.add(new LiteralMetadataContentEvent(null, "DEF", false));
 				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-//				receiver.add(new MetaInformationEvent("annotation", null, "100", new Integer(100)));
-//				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				
+				receiver.add(new LiteralMetadataEvent("eAmeta2", null, new QName("http://example.org/", "somePredicate"), "array", 
+						LiteralContentSequenceType.SIMPLE_ARRAY));
+				receiver.add(new LiteralMetadataContentEvent(null, "100", new Integer(100)));
+				receiver.add(new LiteralMetadataContentEvent(null, "abc", false));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			}
 		}
 	}
