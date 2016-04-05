@@ -27,7 +27,8 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.IllegalEventException;
 
 
 
@@ -66,37 +67,31 @@ public class TokenSetEventReceiver extends AbstractEventReceiver<Writer>
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IllegalArgumentException,	IOException {
-		switch (event.getType().getContentType()) {
-			case SINGLE_TOKEN_DEFINITION:
-				SingleTokenDefinitionEvent singleTokenEvent = event.asSingleTokenDefinitionEvent();
-				switch (singleTokenEvent.getMeaning()) {
-					case CHARACTER_STATE:
-						if (singleTokens.length() > 0) {
-							singleTokens.append(" ");
-						}
-						singleTokens.append(singleTokenEvent.getTokenName());  // TODO Check token name for invalid characters
-						break;
-					case GAP:
-						writeSingleTokenDefinition(FORMAT_SUBCOMMAND_GAP_CHAR, singleTokenEvent);
-						break;
-					case MISSING:
-						writeSingleTokenDefinition(FORMAT_SUBCOMMAND_MISSING_CHAR, singleTokenEvent);
-						break;
-					case MATCH:
-						writeSingleTokenDefinition(FORMAT_SUBCOMMAND_MATCH_CHAR, singleTokenEvent);
-						break;
-					default:  // OTHER
-						break;  // Nothing to do.
-				}
-				break;
-			case META_INFORMATION:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					addIgnoredMetadata(1);
-				}
-				break;
-			default:
-				break;
+		if (event.getType().getContentType().equals(EventContentType.SINGLE_TOKEN_DEFINITION) && (getParentElement() == null)) {  // Such events are only allowed on the top level.
+			SingleTokenDefinitionEvent singleTokenEvent = event.asSingleTokenDefinitionEvent();
+			switch (singleTokenEvent.getMeaning()) {
+				case CHARACTER_STATE:
+					if (singleTokens.length() > 0) {
+						singleTokens.append(" ");
+					}
+					singleTokens.append(singleTokenEvent.getTokenName());  // TODO Check token name for invalid characters
+					break;
+				case GAP:
+					writeSingleTokenDefinition(FORMAT_SUBCOMMAND_GAP_CHAR, singleTokenEvent);
+					break;
+				case MISSING:
+					writeSingleTokenDefinition(FORMAT_SUBCOMMAND_MISSING_CHAR, singleTokenEvent);
+					break;
+				case MATCH:
+					writeSingleTokenDefinition(FORMAT_SUBCOMMAND_MATCH_CHAR, singleTokenEvent);
+					break;
+				default:  // OTHER
+					break;  // Nothing to do.
+			}
+			return true;
 		}
-		return true;
+		else {  // No other events would be valid here.
+			throw IllegalEventException.newInstance(this, getParentElement(), event);
+		}
 	}
 }

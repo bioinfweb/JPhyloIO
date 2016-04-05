@@ -21,11 +21,12 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.regex.Pattern;
+
+import javax.xml.stream.XMLStreamException;
 
 
 
@@ -73,7 +74,7 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 
 
 	@Override
-	protected void writeComment(CommentEvent event) throws IOException {
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
 		if (commentStart != null) {
 			getWriter().write(commentStart);
 			String content = event.getContent();
@@ -88,11 +89,5 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 		else {
 			addIgnoredComments(1);
 		}		
-	}
-
-
-	@Override
-	protected void writeMetaData(MetaInformationEvent event) {
-		addIgnoredMetadata(1);
 	}
 }

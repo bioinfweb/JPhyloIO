@@ -146,12 +146,6 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver<Writer> implement
 					tokenWritten = true;
 				}  // End events can be ignored.
 				break;
-			case META_INFORMATION:
-			case META_LITERAL_CONTENT:  //TODO Add additional meta types.
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					addIgnoredMetadata(1);  // This way nested metadata will be counted as well. XML content events will not be counted, since they are SOLE.
-				}
-				break;
 			default:
 				throw new IllegalArgumentException("Events of the type " + event.getType().getContentType() + 
 						" are not allowed in a sequence content subsequence.");
