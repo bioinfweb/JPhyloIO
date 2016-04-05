@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 import java.io.IOException;
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 import javax.xml.stream.XMLStreamException;
@@ -79,7 +80,12 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	
 	
 	public JPhyloIOEvent getParentElement() {
-		return getEncounteredEvents().peek();
+		if (!getEncounteredEvents().isEmpty()) {
+			return getEncounteredEvents().peek();
+		}
+		else {
+			return null;			
+		}		
 	}
 
 
@@ -159,13 +165,31 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 					handleResourceMeta(event.asResourceMetadataEvent());
 					break;
 				case META_LITERAL:
-					handleLiteralMeta(event.asLiteralMetadataEvent());
+					if (!getParentElement().getType().getContentType().equals(EventContentType.META_LITERAL)) {
+						handleLiteralMeta(event.asLiteralMetadataEvent());
+					}
+					else {
+						IllegalEventException.newInstance(this, getParentElement(), event);
+					}
+					break;
+				case META_LITERAL_CONTENT:
+					if (getParentElement().getType().getContentType().equals(EventContentType.META_LITERAL)) {
+						handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
+					}
+					else {
+						IllegalEventException.newInstance(this, getParentElement(), event);
+					}
 					break;
 				case COMMENT:
 					handleComment(event.asCommentEvent());
 					break;
 				default:
-					result = doAdd(event);
+					if (getParentElement().getType().getContentType() == null) {
+						result = doAdd(event);
+					}
+					else {
+						IllegalEventException.newInstance(this, getParentElement(), event);
+					}
 			}
 			
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
@@ -173,7 +197,7 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 			}
 			else if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
 				if ((getParentElement() == null) || !getParentElement().getType().getContentType().equals(event.getType().getContentType())) {
-					throw new IllegalEventException(this, getParentElement().getType().getContentType(), event);
+					IllegalEventException.newInstance(this, getParentElement(), event);
 				}
 				else {
 					getEncounteredEvents().pop();

@@ -44,7 +44,7 @@ public class NeXMLCollectCharSetDataReceiver extends NeXMLCollectNamespaceReceiv
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
-			case CHARACTER_SET_INTERVAL:
+			case CHARACTER_SET_INTERVAL:				
 				for (long i = event.asCharacterSetEvent().getStart(); i <= event.asCharacterSetEvent().getEnd(); i++) {
 					getStreamDataProvider().getCharSets().get(charSetID).add(i);
 				}				

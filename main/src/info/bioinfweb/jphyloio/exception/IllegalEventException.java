@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.exception;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
@@ -41,43 +40,45 @@ public class IllegalEventException extends InconsistentAdapterDataException {
 	
 	
 	private JPhyloIOEventReceiver receiver;
-	private EventContentType parentType;
+	private JPhyloIOEvent parentEvent;
 	private JPhyloIOEvent invalidEvent;
 	
 	
 	/**
-	 * Tool method that creates a new instance of this class. It uses the parent type from the specified parent event. If that
-	 * parent event should be {@code null}, {@code rootParentType} will be used instead.
+	 * Tool method that creates a new instance of this class. It uses the specified parent event. If that
+	 * parent event should be {@code null}, a different exception message will be used.
 	 * 
 	 * @param receiver the receiver throwing the returned exception
 	 * @param parentEvent the current parent event or {@code null}
-	 * @param rootParentType the type or the grammar root node associated with {@code receiver} 
 	 * @param invalidEvent the invalid element that was encountered
 	 * @return the new instance
 	 */
-	public static IllegalEventException newInstanceFromParentEvent(JPhyloIOEventReceiver receiver, JPhyloIOEvent parentEvent, 
-			EventContentType rootParentType, JPhyloIOEvent invalidEvent) {
-		
-		if (parentEvent != null) {
-			rootParentType = parentEvent.getType().getContentType();
+	public static IllegalEventException newInstance(JPhyloIOEventReceiver receiver, JPhyloIOEvent parentEvent, JPhyloIOEvent invalidEvent) {
+		String message;
+		if (parentEvent == null) {
+			message = "An event of the type " + invalidEvent.getType().getContentType() + " was encountered under the root event of this receiver " + 
+					" which is invalid in this receiver.";
 		}
-		return new IllegalEventException(receiver, rootParentType, invalidEvent);
+		else {
+			message = "An event of the type " + invalidEvent.getType().getContentType() + " was encountered under an event of the type " + 
+					parentEvent.getType() + " which is invalid in this receiver.";
+		}
+		return new IllegalEventException(message, receiver, parentEvent, invalidEvent);
 	}
 	
 	
-	public IllegalEventException(JPhyloIOEventReceiver receiver, EventContentType parentType, JPhyloIOEvent invalidEvent) {
-		super("An event of the type " + invalidEvent.getType().getContentType() + " was encountered under an event of the type " + 
-				parentType + " which is invalid in this receiver.");
+	public IllegalEventException(String message, JPhyloIOEventReceiver receiver, JPhyloIOEvent parentEvent, JPhyloIOEvent invalidEvent) {
+		super(message);
 		
 		if (receiver == null) {
 			throw new NullPointerException("receiver must not be null");
 		}
-		else if (parentType == null) {
-			throw new NullPointerException("parentEvent must not be null");
-		}  // invalidEvent would have cause an NPE in the generation of the message.
+		else if (invalidEvent == null) {
+			throw new NullPointerException("invalidEvent must not be null");
+		}  // parentEvent may be null.
 		else {
 			this.receiver = receiver;
-			this.parentType = parentType;
+			this.parentEvent = parentEvent;
 			this.invalidEvent = invalidEvent;
 		}
 	}
@@ -88,8 +89,13 @@ public class IllegalEventException extends InconsistentAdapterDataException {
 	}
 
 
-	public EventContentType getParentType() {
-		return parentType;
+	public JPhyloIOEvent getParentEvent() {
+		return parentEvent;
+	}
+	
+	
+	public boolean wasAtReceiverRootLevel() {
+		return parentEvent == null;
 	}
 
 
