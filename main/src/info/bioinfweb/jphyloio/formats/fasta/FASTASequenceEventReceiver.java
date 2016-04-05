@@ -24,6 +24,8 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.xml.stream.XMLStreamException;
+
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -117,6 +119,17 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver<Writer> implement
 	
 	
 	@Override
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
+		if (isAllowCommentsBeforeTokens()) {
+			writeComment(event.asCommentEvent());
+		}
+		else {
+			addIgnoredComments(1);
+		}
+	}
+
+
+	@Override
 	public boolean doAdd(JPhyloIOEvent event) throws IllegalArgumentException, IOException {
 		if (continuedCommentExpected && !EventContentType.COMMENT.equals(event.getType().getContentType())) {
 			throw new IllegalArgumentException("The previous event was a comment event indicating that it would be continued in this "
@@ -125,14 +138,6 @@ class FASTASequenceEventReceiver extends AbstractEventReceiver<Writer> implement
 		
 		boolean tokenWritten = false;
 		switch (event.getType().getContentType()) {
-			case COMMENT:
-				if (isAllowCommentsBeforeTokens()) {
-					writeComment(event.asCommentEvent());
-				}
-				else {
-					addIgnoredComments(1);
-				}
-				break;
 			case SEQUENCE_TOKENS:
 				SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
 				if (!tokensEvent.getCharacterValues().isEmpty()) {

@@ -169,36 +169,36 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	public boolean add(JPhyloIOEvent event) throws IOException {
 		try {
 			boolean result = true;
-			
+			JPhyloIOEvent parentEvent = getParentElement();
 			switch (event.getType().getContentType()) {
 				case META_RESOURCE:
 					handleResourceMeta(event.asResourceMetadataEvent());  //TODO Only start events can be case here and in similar lines below.
 					break;
 				case META_LITERAL:
-					if (!getParentElement().getType().getContentType().equals(EventContentType.META_LITERAL)) {
+					if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
 						handleLiteralMeta(event.asLiteralMetadataEvent());
 					}
 					else {
-						IllegalEventException.newInstance(this, getParentElement(), event);
+						IllegalEventException.newInstance(this, parentEvent, event);
 					}
 					break;
 				case META_LITERAL_CONTENT:
-					if (getParentElement().getType().getContentType().equals(EventContentType.META_LITERAL)) {
+					if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
 						handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
 					}
 					else {
-						IllegalEventException.newInstance(this, getParentElement(), event);
+						IllegalEventException.newInstance(this, parentEvent, event);
 					}
 					break;
 				case COMMENT:
 					handleComment(event.asCommentEvent());
 					break;
 				default:
-					if (getParentElement() == null) {
+					if (parentEvent == null) {
 						result = doAdd(event);
 					}
 					else {
-						IllegalEventException.newInstance(this, getParentElement(), event);
+						IllegalEventException.newInstance(this, parentEvent, event);
 					}
 			}
 			
@@ -206,8 +206,8 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 				getEncounteredEvents().add(event);
 			}
 			else if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
-				if ((getParentElement() == null) || !getParentElement().getType().getContentType().equals(event.getType().getContentType())) {
-					IllegalEventException.newInstance(this, getParentElement(), event);
+				if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(event.getType().getContentType())) {
+					IllegalEventException.newInstance(this, parentEvent, event);
 				}
 				else {
 					getEncounteredEvents().pop();
