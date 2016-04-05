@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9"
+    xmlns:foo="http://bioinfweb.info/xmlns/example" >
+    
+  <otus id="otus1" label="Taxon list">
+    <otu id="otu1" label="Taxon 1">
+      <!-- Does validate and allows any user defined name. -->
+      <meta id="meta1" rel="foo:freeArrayAnnotation" xsi:type="nex:ResourceMeta" content="my support value">
+        <meta datatype="xsd:integer" id="meta3" property="foo:isValue" content="95" xsi:type="nex:LiteralMeta" />
+        <meta datatype="xsd:string" id="meta4" property="foo:isValue" content="ABC" xsi:type="nex:LiteralMeta" />
+      </meta>
+    </otu>
+  </otus>
+</nex:nexml>
