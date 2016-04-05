@@ -45,7 +45,27 @@ public class IllegalEventException extends InconsistentAdapterDataException {
 	private JPhyloIOEvent invalidEvent;
 	
 	
-	public IllegalEventException(JPhyloIOEventReceiver receiver, EventContentType parentType,	JPhyloIOEvent invalidEvent) {
+	/**
+	 * Tool method that creates a new instance of this class. It uses the parent type from the specified parent event. If that
+	 * parent event should be {@code null}, {@code rootParentType} will be used instead.
+	 * 
+	 * @param receiver the receiver throwing the returned exception
+	 * @param parentEvent the current parent event or {@code null}
+	 * @param rootParentType the type or the grammar root node associated with {@code receiver} 
+	 * @param invalidEvent the invalid element that was encountered
+	 * @return the new instance
+	 */
+	public static IllegalEventException newInstanceFromParentEvent(JPhyloIOEventReceiver receiver, JPhyloIOEvent parentEvent, 
+			EventContentType rootParentType, JPhyloIOEvent invalidEvent) {
+		
+		if (parentEvent != null) {
+			rootParentType = parentEvent.getType().getContentType();
+		}
+		return new IllegalEventException(receiver, rootParentType, invalidEvent);
+	}
+	
+	
+	public IllegalEventException(JPhyloIOEventReceiver receiver, EventContentType parentType, JPhyloIOEvent invalidEvent) {
 		super("An event of the type " + invalidEvent.getType().getContentType() + " was encountered under an event of the type " + 
 				parentType + " which is invalid in this receiver.");
 		
