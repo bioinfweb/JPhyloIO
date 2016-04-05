@@ -19,10 +19,10 @@
 package info.bioinfweb.jphyloio.events.meta;
 
 
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import java.util.List;
+
 import info.bioinfweb.jphyloio.events.ContinuedEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import javax.xml.stream.events.XMLEvent;
 
@@ -39,6 +39,10 @@ import javax.xml.stream.events.XMLEvent;
  *   <li>A sequence of events can represent a more complex XML representation of the literal value. In such cases one event 
  *       instance will represent each {@link XMLEvent} created from the encountered XML.</li>
  * </ul>
+ * Note that large string values may additionally be separated along subsequent events (indicated by 
+ * {@link #isContinuedInNextEvent()}) in all three cases. This is only possible if the object value is identical with its
+ * string representation. This technique is not meant to split any other value (e.g. {@link List} instances) among separate
+ * events.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
@@ -57,7 +61,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * @param stringValue the string value of the meta information.
 	 */
 	public LiteralMetadataContentEvent(String originalType, String stringValue, boolean continuedInNextEvent) {
-		this(originalType, stringValue, stringValue, continuedInNextEvent);
+		this(originalType, stringValue, stringValue, null, continuedInNextEvent);
 	}
 	
 	
@@ -68,8 +72,18 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * @param stringValue the string value of the meta information.
 	 * @param objectValue the object value of the meta information.
 	 */
-	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, boolean continuedInNextEvent) {
-		this(originalType, stringValue, objectValue, null, continuedInNextEvent);
+	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue) {
+		this(originalType, stringValue, objectValue, null, false);
+	}
+	
+	
+	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue) {
+		this(originalType, stringValue, objectValue, alternativeStringValue, false);
+	}
+	
+	
+	public LiteralMetadataContentEvent(String originalType, String stringValue, String alternativeStringValue) {
+		this(originalType, stringValue, stringValue, alternativeStringValue, false);
 	}
 	
 	
@@ -83,17 +97,22 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 *        representations of a value, e.g. a human and a machine readable one.)
 	 * @throws NullPointerException if {@code stringValue} is {@code null} and {@code alternativeStringValue} is not
 	 */
-	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue, boolean continuedInNextEvent) {
+	private LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue, boolean continuedInNextEvent) {
 		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
 		
 		this.stringValue = stringValue;  //TODO Should an NPE be thrown if stringValue and objectValue are null?
-		this.objectValue = objectValue;
-		this.originalType = originalType;
-		if ((stringValue == null) && (alternativeStringValue != null)) {
-			throw new NullPointerException("stringValue must not be null, if alternativeStringValue is provided.");
+		if (!(objectValue instanceof String) && isContinuedInNextEvent()) {
+			throw new IllegalArgumentException("Only string values may be separated amoung continued events.");
 		}
 		else {
-			this.alternativeStringValue = alternativeStringValue;
+			this.objectValue = objectValue;
+			this.originalType = originalType;
+			if ((stringValue == null) && (alternativeStringValue != null)) {
+				throw new NullPointerException("stringValue must not be null, if alternativeStringValue is provided.");
+			}
+			else {
+				this.alternativeStringValue = alternativeStringValue;
+			}
 		}
 	}
 	
