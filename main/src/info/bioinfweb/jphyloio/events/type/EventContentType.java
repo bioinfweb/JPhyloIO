@@ -205,20 +205,32 @@ public enum EventContentType {
 	// Tree and network events:
 	
 	/** 
-	 * Indicates the start of the end of the contents of a phylogenetic network. 
+	 * Indicates the start or the end of a sequence of phylogenetic trees and network. (Such group corresponds e.g. to 
+	 * the contents of a {@code TREES} block in Nexus or a {@code trees} tag in NeXML.) 
 	 * <p>
 	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
-	 * instances of {@link ConcreteJPhyloIOEvent}. Start events optionally link an OTU list.
+	 * instances of {@link ConcreteJPhyloIOEvent}. Start events optionally link an OTU list that is valid for all 
+	 * contained trees and networks.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	TREE_NETWORK_GROUP,
+
+	/** 
+	 * Indicates the start or the end of the contents of a phylogenetic network. 
+	 * <p>
+	 * Start events of this type are instances of {@link LabeledIDEvent}, end events are
+	 * instances of {@link ConcreteJPhyloIOEvent}.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
 	 */
 	NETWORK,
 
 	/** 
-	 * Indicates the start of the end of the contents of a phylogenetic tree. 
+	 * Indicates the start or the end of the contents of a phylogenetic tree. 
 	 * <p>
-	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
-	 * instances of {@link ConcreteJPhyloIOEvent}. Start events optionally link an OTU list.
+	 * Start events of this type are instances of {@link LabeledIDEvent}, end events are
+	 * instances of {@link ConcreteJPhyloIOEvent}.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}.
 	 * <p>

@@ -39,7 +39,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * <a href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">EBNF</a>:
  * <pre>
  * Document = "DOCUMENT.START", {DocumentContent,} "DOCUMENT.END";
- * DocumentContent = OTUSet | Matrix | Tree | Network | CharacterSetPart | MetaInformation;
+ * DocumentContent = OTUSet | Matrix | TreeNetworkGroup | CharacterSetPart | MetaInformation;
  * 
  * OTUSet = "OTUS.START", {OTUContent,} "OTUS.END";
  * OTUContent = OTU | MetaInformation;
@@ -59,6 +59,8 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * CharacterSetPart = "CHARACTER_SET.START", {CharacterSetPartContent,} "CHARACTER_SET.END";
  * CharacterSetPartContent = "CHARACTER_SET_PART.SOLE" | MetaInformation;
  * 
+ * TreeNetworkGroup = TREE_NETWORK_GROUP.START, {TreeNetworkGroupContent,} TREE_NETWORK_GROUP.END;
+ * TreeNetworkGroupContent = Tree | Network;
  * Tree = "TREE.START", {TreeOrNetworkContent,} "TREE.END";
  * Network = "NETWORK.START", {TreeOrNetworkContent,} "NETWORK.END";
  * TreeOrNetworkContent = Node | Edge | MetaInformation;
