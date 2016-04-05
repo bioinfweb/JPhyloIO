@@ -24,15 +24,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
+import javax.xml.namespace.QName;
+
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -123,10 +126,18 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	public void writeNodeContentData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			if(nodeID.substring(nodeEdgeIDPrefix.length()).equals("n1")) {
-				receiver.add(new MetaInformationEvent("a1", null, "100", new Integer(100)));
-				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-				receiver.add(new MetaInformationEvent("a2", null, "ab 'c", "ab 'c"));
-				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				receiver.add(new LiteralMetadataEvent("n1meta1", null, new QName("http://example.org/", "somePredicate"), "a1", 
+						LiteralContentSequenceType.SIMPLE));
+				receiver.add(new LiteralMetadataContentEvent(null, "100", new Integer(100)));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+//				receiver.add(new MetaInformationEvent("a1", null, "100", new Integer(100)));
+//				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				receiver.add(new LiteralMetadataEvent("n1meta2", null, new QName("http://example.org/", "somePredicate"), "a2", 
+						LiteralContentSequenceType.SIMPLE));
+				receiver.add(new LiteralMetadataContentEvent(null, "ab 'c", "ab 'c"));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+//				receiver.add(new MetaInformationEvent("a2", null, "ab 'c", "ab 'c"));
+//				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 		}
 	}
@@ -179,8 +190,12 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException {
 		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
 			if(edgeID.substring(nodeEdgeIDPrefix.length()).equals("eA")) {
-				receiver.add(new MetaInformationEvent("annotation", null, "100", new Integer(100)));
-				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+				receiver.add(new LiteralMetadataEvent("eAmeta1", null, new QName("http://example.org/", "somePredicate"), "annotation", 
+						LiteralContentSequenceType.SIMPLE));
+				receiver.add(new LiteralMetadataContentEvent(null, "100", new Integer(100)));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+//				receiver.add(new MetaInformationEvent("annotation", null, "100", new Integer(100)));
+//				receiver.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 		}
 	}
