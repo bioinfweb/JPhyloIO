@@ -43,7 +43,7 @@ public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
 	
 	
 	@Override
-	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 			getStreamDataProvider().getMetaDataNameSpaces().add(event.getPredicate().getNamespaceURI());
 		}
@@ -51,7 +51,7 @@ public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
 
 
 	@Override
-	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 			getStreamDataProvider().getMetaDataNameSpaces().add(event.getRel().getNamespaceURI());
 		}

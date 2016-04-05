@@ -49,7 +49,7 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 	
 
 	@Override
-	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		AbstractNeXMLDataReceiverMixin.handleLiteralMeta(streamDataProvider, event);
 	}
 
@@ -61,7 +61,7 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 
 
 	@Override
-	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		AbstractNeXMLDataReceiverMixin.handleResourceMeta(streamDataProvider, event);
 	}
 	

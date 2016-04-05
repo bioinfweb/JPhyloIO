@@ -43,7 +43,7 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	private W writer;
 	private ReadWriteParameterMap parameterMap;
 	
-	private Stack<JPhyloIOEvent> encounteredEvents = new Stack<JPhyloIOEvent>();
+	private Stack<JPhyloIOEvent> parentEvents = new Stack<JPhyloIOEvent>();
 	
 	private long ignoredComments = 0;
 	private long ignoredLiteralMetadata = 0;
@@ -72,14 +72,14 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	}
 
 
-	public Stack<JPhyloIOEvent> getEncounteredEvents() {
-		return encounteredEvents;
+	public Stack<JPhyloIOEvent> getParentEvents() {
+		return parentEvents;
 	}
 	
 	
-	public JPhyloIOEvent getParentElement() {
-		if (!getEncounteredEvents().isEmpty()) {
-			return getEncounteredEvents().peek();
+	public JPhyloIOEvent getParentEvent() {
+		if (!getParentEvents().isEmpty()) {
+			return getParentEvents().peek();
 		}
 		else {
 			return null;			
@@ -142,7 +142,7 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	}
 	
 	
-	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		addIgnoredLiteralMetadata(1);
 	}
 	
@@ -150,7 +150,7 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {}
 	
 	
-	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		addIgnoredResourceMetadata(1);
 	}
 	
@@ -170,11 +170,11 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	public boolean add(JPhyloIOEvent event) throws IOException {
 		try {
 			boolean result = true;
-			JPhyloIOEvent parentEvent = getParentElement();
+			JPhyloIOEvent parentEvent = getParentEvent();
 			switch (event.getType().getContentType()) {
 				case META_RESOURCE:
 					if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-						handleResourceMeta(event.asResourceMetadataEvent());
+						handleResourceMetaStart(event.asResourceMetadataEvent());
 					}
 					else {
 						handleMetaEndEvent(event);
@@ -183,7 +183,7 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 				case META_LITERAL:
 					if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-							handleLiteralMeta(event.asLiteralMetadataEvent());
+							handleLiteralMetaStart(event.asLiteralMetadataEvent());
 						}
 						else {
 							handleMetaEndEvent(event);
@@ -214,14 +214,14 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 			}
 			
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				getEncounteredEvents().add(event);
+				getParentEvents().add(event);
 			}
 			else if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
 				if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(event.getType().getContentType())) {
 					IllegalEventException.newInstance(this, parentEvent, event);
 				}
 				else {
-					getEncounteredEvents().pop();
+					getParentEvents().pop();
 				}
 			}
 			return result;

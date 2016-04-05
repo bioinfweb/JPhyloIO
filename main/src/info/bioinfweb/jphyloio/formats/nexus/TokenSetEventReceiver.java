@@ -67,7 +67,7 @@ public class TokenSetEventReceiver extends AbstractEventReceiver<Writer>
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IllegalArgumentException,	IOException {
-		if (event.getType().getContentType().equals(EventContentType.SINGLE_TOKEN_DEFINITION) && (getParentElement() == null)) {  // Such events are only allowed on the top level.
+		if (event.getType().getContentType().equals(EventContentType.SINGLE_TOKEN_DEFINITION) && (getParentEvent() == null)) {  // Such events are only allowed on the top level.
 			SingleTokenDefinitionEvent singleTokenEvent = event.asSingleTokenDefinitionEvent();
 			switch (singleTokenEvent.getMeaning()) {
 				case CHARACTER_STATE:
@@ -91,7 +91,7 @@ public class TokenSetEventReceiver extends AbstractEventReceiver<Writer>
 			return true;
 		}
 		else {  // No other events would be valid here.
-			throw IllegalEventException.newInstance(this, getParentElement(), event);
+			throw IllegalEventException.newInstance(this, getParentEvent(), event);
 		}
 	}
 }

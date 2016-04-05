@@ -48,8 +48,8 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceRecei
 	
 
 	@Override
-	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		super.handleResourceMeta(event);
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		super.handleResourceMetaStart(event);
 		if (nestedUnderSingleToken) {
 			getStreamDataProvider().setWriteCellsTags(true);
 		}
@@ -57,8 +57,8 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceRecei
 
 
 	@Override
-	protected void handleLiteralMeta(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		super.handleLiteralMeta(event);
+	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
+		super.handleLiteralMetaStart(event);
 		if (nestedUnderSingleToken) {
 			getStreamDataProvider().setWriteCellsTags(true);
 		}
