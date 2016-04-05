@@ -85,6 +85,7 @@ main/src/info/bioinfweb/jphyloio/events/type/EventContentType.java -text svneol=
 main/src/info/bioinfweb/jphyloio/events/type/EventTopologyType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/EventType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/exception/IllegalEventException.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/exception/InconsistentAdapterDataException.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/exception/JPhyloIOReaderException.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/exception/JPhyloIOWriterException.java -text svneol=unset#text/plain
