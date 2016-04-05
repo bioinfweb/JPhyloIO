@@ -32,10 +32,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
+
 /**
  * Provides a set of static methods to be used as static imports when needed
  * across multiple NeXML data receivers. Since not all of these classes allow direct access to a 
- * NeXMLWriterStreamDataProvider, this class is a parameter of the static methods instead of an 
+ * NeXMLWriterStreamDataProvider, an instance of it is a parameter of the static methods instead of an 
  * instance of AbstractNeXMLDataReceiver.
  * 
  * @author Sarah Wiechers
@@ -50,7 +51,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		streamDataProvider.writeLabeledIDAttributes(event, false); //TODO are there any cases where an about-attribute should be written?
 		
 		if (event.getPredicate() != null) {
-			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), event.getPredicate().getLocalPart());		
+			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), event.getPredicate().getLocalPart()); //TODO make sure predicate is valid CURIE
 		}
 		else {
 			throw new InternalError("Literal meta should have a predicate that is a QName.");

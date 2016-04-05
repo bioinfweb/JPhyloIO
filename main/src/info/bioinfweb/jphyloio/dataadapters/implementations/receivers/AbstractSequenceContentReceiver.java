@@ -23,6 +23,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.IllegalEventException;
 
 import java.io.IOException;
 
@@ -44,22 +45,33 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 	
 
 	@Override
-	public boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
+	public boolean doAdd(JPhyloIOEvent event) throws XMLStreamException, IOException {
 		switch (event.getType().getContentType()) {
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					SingleSequenceTokenEvent tokenEvent = event.asSingleSequenceTokenEvent();
-					writeToken(tokenEvent.getToken(), tokenEvent.getLabel());
-				}  // End events can be ignored.
+					if (getParentElement() == null) {
+						SingleSequenceTokenEvent tokenEvent = event.asSingleSequenceTokenEvent();
+						writeToken(tokenEvent.getToken(), tokenEvent.getLabel());
+					}
+					else {
+						throw new IllegalEventException(this, getParentElement().getType().getContentType(), event);
+					}
+				} // End events can be ignored here.
 				break;
 			case SEQUENCE_TOKENS:
-				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
-					writeToken(token, null);
+				if (getParentElement() == null) {
+					for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
+						writeToken(token, null);
+					}
+				}
+				else {
+					throw new IllegalEventException(this, getParentElement().getType().getContentType(), event);
 				}
 				break;
 			default:
 				break;
 		}
+		
 		return true;
 	}
 

@@ -27,9 +27,14 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.IllegalEventException;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 import java.io.IOException;
+import java.util.Stack;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -38,6 +43,9 @@ import javax.xml.stream.XMLStreamException;
 public abstract class AbstractEventReceiver<W extends Object> implements JPhyloIOEventReceiver {
 	private W writer;
 	private ReadWriteParameterMap parameterMap;
+	
+	private Stack<JPhyloIOEvent> encounteredEvents = new Stack<JPhyloIOEvent>();
+	
 	private long ignoredComments = 0;
 	private long ignoredLiteralMetadata = 0;
 	private long ignoredResourceMetadata = 0;
@@ -62,6 +70,16 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	
 	protected ApplicationLogger getLogger() {
 		return getParameterMap().getApplicationLogger(ReadWriteParameterMap.KEY_LOGGER);
+	}
+
+
+	public Stack<JPhyloIOEvent> getEncounteredEvents() {
+		return encounteredEvents;
+	}
+	
+	
+	public JPhyloIOEvent getParentElement() {
+		return getEncounteredEvents().peek();
 	}
 
 
@@ -134,6 +152,8 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IOException {
 		try {
+			boolean result = true;
+			
 			switch (event.getType().getContentType()) {
 				case META_RESOURCE:
 					handleResourceMeta(event.asResourceMetadataEvent());
@@ -141,16 +161,25 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 				case META_LITERAL:
 					handleLiteralMeta(event.asLiteralMetadataEvent());
 					break;
-				case META_LITERAL_CONTENT:
-					handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
-					break;
 				case COMMENT:
 					handleComment(event.asCommentEvent());
 					break;
 				default:
-					return doAdd(event);
+					result = doAdd(event);
 			}
-			return true;
+			
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				getEncounteredEvents().add(event);
+			}
+			else if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
+				if ((getParentElement() == null) || !getParentElement().getType().getContentType().equals(event.getType().getContentType())) {
+					throw new IllegalEventException(this, getParentElement().getType().getContentType(), event);
+				}
+				else {
+					getEncounteredEvents().pop();
+				}
+			}
+			return result;
 		}
 		catch (XMLStreamException e) {
 			throw new JPhyloIOWriterException("An XMLStream exception with the message \"" + e.getMessage() + 

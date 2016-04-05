@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListData
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 import java.math.BigDecimal;
@@ -249,18 +250,18 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
-	public void writeLinkedLabeledIDAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink, boolean writeAbout) throws XMLStreamException, JPhyloIOWriterException {		
+	public void writeLinkedLabeledIDAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink, boolean writeAbout) throws XMLStreamException {		
 		writeLabeledIDAttributes(event, writeAbout);
 		if (event.hasLink()) {
 			if (hasOTUList()) {
 				if ((linkAttribute.equals(TAG_OTUS) && !otusIDs.contains(event.getLinkedID())) 
 						|| (linkAttribute.equals(TAG_OTU) && !otuIDs.contains(event.getLinkedID()))) {
-					throw new JPhyloIOWriterException("An element links to a non-existent OTU list or OTU.");
+					throw new InconsistentAdapterDataException("An element links to a non-existent OTU list or OTU.");
 				}
 				getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
 			}
 			else {
-				throw new JPhyloIOWriterException("An element links to an OTU list or OTU though no OTU list exists in the document.");
+				throw new InconsistentAdapterDataException("An element links to an OTU list or OTU though no OTU list exists in the document.");
 			}
 		}
 		else if (forceOTULink) {
