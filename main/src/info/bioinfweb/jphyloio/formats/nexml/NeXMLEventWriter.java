@@ -85,6 +85,11 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
+	public ReadWriteParameterMap getParameters() {
+		return parameters;
+	}
+
+
 	private void writeTreesTags(DocumentDataAdapter document) throws XMLStreamException, IOException {
 		if (!streamDataProvider.getPhylogenyLinkedOtusIDs().isEmpty()) {
 			for (String otusID : streamDataProvider.getPhylogenyLinkedOtusIDs()) {

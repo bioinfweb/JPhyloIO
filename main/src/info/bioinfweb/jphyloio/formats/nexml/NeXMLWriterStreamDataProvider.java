@@ -63,6 +63,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private boolean writeCellsTags;
 	private CharacterStateSetType alignmentType;
 	
+	private Map<String, String> tokenTranslationMap = new HashMap<String, String>();
+	
 	private Map<String, String> charSetToTokenSetMap = new HashMap<String, String>();
 	private Map<String, Set<Long>> charSets = new HashMap<String, Set<Long>>();
 	private Map<Long, String> charIndexToIDMap = new HashMap<Long, String>();
@@ -184,6 +186,11 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public void setAlignmentType(CharacterStateSetType alignmentType) throws JPhyloIOWriterException {
 		this.alignmentType = alignmentType;	
+	}
+
+
+	public Map<String, String> getTokenTranslationMap() {
+		return tokenTranslationMap;
 	}
 
 

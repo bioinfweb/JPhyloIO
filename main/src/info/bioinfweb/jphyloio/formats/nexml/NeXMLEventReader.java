@@ -109,8 +109,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	
 	
 	public TokenTranslationStrategy getTranslateTokens() {
-		return getParameters().getObject(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, 
-				TokenTranslationStrategy.SYMBOL_TO_LABEL, TokenTranslationStrategy.class);
+		return getParameters().getTranslateTokens();
 	}
 
 

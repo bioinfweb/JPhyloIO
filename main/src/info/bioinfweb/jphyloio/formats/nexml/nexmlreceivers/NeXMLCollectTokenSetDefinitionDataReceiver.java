@@ -19,8 +19,11 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
@@ -32,6 +35,9 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectNamespaceReceiver {
+	private static final String DNA_TOKEN = "ABCDGHKMNRSTVWXY-?";
+	private static final String RNA_TOKEN = "-?ABCDGHKMNRSUVWXY";
+	private static final String AA_TOKEN = "*-?ABCDEFGHIKLMNPQRSTUVWXYZ";
 
 	
 	public NeXMLCollectTokenSetDefinitionDataReceiver(XMLStreamWriter writer,
@@ -42,14 +48,64 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		switch (event.getType().getContentType()) {
-			case SINGLE_TOKEN_DEFINITION:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					//TODO check here if all definitions for DNA, RNA and AA are according to the IUPAC standard
-				}
-				break;
-			default:
-				break;
+		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+			switch (event.getType().getContentType()) {
+				case SINGLE_TOKEN_DEFINITION:
+						SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
+						
+						if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH)) {
+							String tokenName = tokenDefinitionEvent.getTokenName();
+							String tokenSymbol = null;							
+							switch (getStreamDataProvider().getEventWriter().getParameters().getTranslateTokens()) {
+								case NEVER:
+									tokenSymbol = tokenName;
+									break;
+								case SYMBOL_TO_LABEL:
+									if (tokenDefinitionEvent.getLabel() != null) {
+										tokenSymbol = tokenDefinitionEvent.getLabel();
+										break;
+									}
+								case SYMBOL_TO_ID:
+									tokenSymbol = tokenDefinitionEvent.getID();
+									break;
+							}
+							
+							switch (getStreamDataProvider().getAlignmentType()) {							
+								case DNA:
+									if (!((tokenName.length() == 1) && DNA_TOKEN.contains(tokenName))) {
+										getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+										getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
+									}
+									break;
+								case RNA:
+									if (!((tokenName.length() == 1) && RNA_TOKEN.contains(tokenName))) {
+										getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+										getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
+									}
+									break;
+								case NUCLEOTIDE:
+									if (!((tokenName.length() == 1) && (RNA_TOKEN.contains(tokenName) || DNA_TOKEN.contains(tokenName)))) {
+										getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+										getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
+									}
+									break;
+								case AMINO_ACID:
+									if (!((tokenName.length() == 1) && AA_TOKEN.contains(tokenName))) {
+										getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+										getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
+									}
+									break;
+								case DISCRETE:
+									getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
+									break;							
+								default:
+									break;
+							}
+						}
+					break;
+				default:
+					break;
+			}
 		}
 		return true;
 	}

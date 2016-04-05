@@ -298,4 +298,10 @@ public class ReadWriteParameterMap extends ParameterMap {
 		}
 		return (LabelEditingReporter)result;
 	}
+	
+	
+	public TokenTranslationStrategy getTranslateTokens() {
+		return getObject(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, 
+				TokenTranslationStrategy.SYMBOL_TO_LABEL, TokenTranslationStrategy.class);
+	}
 }
