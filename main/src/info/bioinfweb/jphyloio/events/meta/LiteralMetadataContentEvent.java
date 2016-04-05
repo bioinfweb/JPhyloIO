@@ -59,6 +59,8 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * 
 	 * @param originalType the original type of meta information or null. 
 	 * @param stringValue the string value of the meta information.
+	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
+	 *        its value and more events are ahead or {@code false otherwise}.
 	 */
 	public LiteralMetadataContentEvent(String originalType, String stringValue, boolean continuedInNextEvent) {
 		this(originalType, stringValue, stringValue, null, continuedInNextEvent);
@@ -95,9 +97,13 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * @param objectValue the object value of the meta information.
 	 * @param alternativeStringValue an alternative string representation of the value (Some formats may provide alternative
 	 *        representations of a value, e.g. a human and a machine readable one.)
+	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
+	 *        its value and more events are ahead or {@code false otherwise}.
 	 * @throws NullPointerException if {@code stringValue} is {@code null} and {@code alternativeStringValue} is not
 	 */
-	private LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue, boolean continuedInNextEvent) {
+	private LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue, 
+			boolean continuedInNextEvent) {
+		
 		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
 		
 		this.stringValue = stringValue;  //TODO Should an NPE be thrown if stringValue and objectValue are null?
@@ -117,12 +123,28 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	}
 	
 
+	/**
+	 * Creates a new instance of this class wrapping an {@link XMLEvent}.
+	 * 
+	 * @param xmlEvent the XML event object to be wrapped
+	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
+	 *        its value and more events are ahead or {@code false otherwise}. (Note that {@code true} this is only allowed
+	 *        for character XML events which contain only a part of the represented string.)
+	 * @throws IllegalArgumentException if {@code continuedInNextEvent} in set to {@code true}, but the specified XML event
+	 *         was not a characters event 
+	 */
 	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent) {
 		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
 		
-		this.stringValue = null;
-		this.objectValue = xmlEvent;
-		this.originalType = null;  //TODO Should something else be stored here (e.g. the XML event type)?
+		if (!xmlEvent.isCharacters() && continuedInNextEvent) {
+			throw new IllegalArgumentException("Only character XML events may be continued in the next event. "
+					+ "The specified event had the type " + xmlEvent.getEventType() + ".");
+		}
+		else {
+			this.stringValue = null;
+			this.objectValue = xmlEvent;
+			this.originalType = null;  //TODO Should something else be stored here (e.g. the XML event type)?
+		}
 	}
 	
 
