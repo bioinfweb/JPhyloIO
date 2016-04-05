@@ -49,6 +49,8 @@ import javax.xml.transform.Source;
 public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private NeXMLEventWriter eventWriter;
 	
+	private Set<String> documentIDs = new HashSet<String>();
+	
 	private LiteralMetadataEvent literalWithoutXMLContent;
 	private Set<String> metaDataNameSpaces = new TreeSet<String>();
 	
@@ -57,8 +59,6 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private boolean hasOTUList = true; //is true if the document contains at least one OTU list	
 	private boolean writeUndefinedOTU = false;
 	private boolean writeUndefinedOtuList = false;
-	private Set<String> otuIDs = new HashSet<String>();
-	private Set<String> otusIDs = new HashSet<String>();
 	
 	private boolean writeCellsTags;
 	private CharacterStateSetType alignmentType;
@@ -122,6 +122,11 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
+	public Set<String> getDocumentIDs() {
+		return documentIDs;
+	}
+
+
 	public LiteralMetadataEvent getLiteralWithoutXMLContent() {
 		return literalWithoutXMLContent;
 	}
@@ -222,26 +227,31 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public Set<String> getOtuIDs() {
-		return otuIDs;
-	}
-
-
-	public Set<String> getOtusIDs() {
-		return otusIDs;
-	}
-
-
 	public Set<String> getPhylogenyLinkedOtusIDs() {
 		return phylogenyLinkedOtusIDs;
 	}
+	
+	
+	public void writeID(String id) throws XMLStreamException, JPhyloIOWriterException {
+		if (getDocumentIDs().add(id)) {
+			getEventWriter().getWriter().writeAttribute(ATTR_ID.getLocalPart(), id);
+		}
+		else {
+			throw new JPhyloIOWriterException("The encountered ID " + id + " already exists in the document. IDs have to be unique."); //TODO give different type of exception?
+		}
+	}
+	
+	
+	public void writeLabeledIDAttributes(LabeledIDEvent event) throws XMLStreamException, JPhyloIOWriterException {
+		writeLabeledIDAttributes(event, event.getID());
+	}
 
 
-	public void writeLabeledIDAttributes(LabeledIDEvent event, boolean writeAbout) throws XMLStreamException {
-		getEventWriter().getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());  //TODO Add ID to set to ensure all IDs are unique. (Probably a task that should use resources to be added to the super class.)
+	public void writeLabeledIDAttributes(LabeledIDEvent event, String about) throws XMLStreamException, JPhyloIOWriterException {
+		writeID(event.getID());		
 		
-		if (writeAbout) {
-			getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
+		if (about != null) {
+			getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + about);
 		}
 		
 		if (event.hasLabel()) {
@@ -250,12 +260,11 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
-	public void writeLinkedLabeledIDAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink, boolean writeAbout) throws XMLStreamException {		
-		writeLabeledIDAttributes(event, writeAbout);
+	public void writeLinkedLabeledIDAttributes(LinkedLabeledIDEvent event, QName linkAttribute, boolean forceOTULink) throws XMLStreamException, JPhyloIOWriterException {		
+		writeLabeledIDAttributes(event);
 		if (event.hasLink()) {
 			if (hasOTUList()) {
-				if ((linkAttribute.equals(TAG_OTUS) && !otusIDs.contains(event.getLinkedID())) 
-						|| (linkAttribute.equals(TAG_OTU) && !otuIDs.contains(event.getLinkedID()))) {
+				if (!getDocumentIDs().contains(event.getLinkedID())) {
 					throw new InconsistentAdapterDataException("An element links to a non-existent OTU list or OTU.");
 				}
 				getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());

@@ -24,6 +24,7 @@ import java.io.IOException;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
@@ -62,6 +63,12 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 	@Override
 	protected void handleResourceMeta(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		AbstractNeXMLDataReceiverMixin.handleResourceMeta(streamDataProvider, event);
+	}
+	
+	
+	@Override
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.handleMetaEndEvent(streamDataProvider, event);
 	}
 
 

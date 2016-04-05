@@ -33,7 +33,6 @@ import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -101,7 +100,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeTreesTag(DocumentDataAdapter document, String linkedOTUs) throws XMLStreamException, IOException {
 		getWriter().writeStartElement(TAG_TREES.getLocalPart());
 		streamDataProvider.writeLinkedLabeledIDAttributes(new LinkedLabeledIDEvent(EventContentType.TREE, 
-				ReadWriteConstants.DEFAULT_TREE_ID_PREFIX, null, linkedOTUs), TAG_OTUS, true, true);
+				ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + "s", null, linkedOTUs), TAG_OTUS, true); //TODO which ID prefix should be chosen here? ID needs to be unique!
 		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = document.getTreeNetworkIterator(); //TODO direkter Zugriff auf Bäume per ID wäre hier praktischer
 		while (treesAndNetworksIterator.hasNext()) {
 			TreeNetworkDataAdapter treeOrNetwork = treesAndNetworksIterator.next();
@@ -118,12 +117,12 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		if (treeOrNetwork.isTree()) {
 			getWriter().writeStartElement(TAG_TREE.getLocalPart());
-			streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent(), true);
+			streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent());
 			getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_TREE); //trees are always written as float trees
 		}
 		else {
 			getWriter().writeStartElement(TAG_NETWORK.getLocalPart());
-			streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent(), true);
+			streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent());
 			getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_NETWORK); //networks are always written as float networks
 		}		
 		
@@ -135,7 +134,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		for (String nodeID : lister.getNodeIDs()) {
 			getWriter().writeStartElement(TAG_NODE.getLocalPart());
-			streamDataProvider.writeLinkedLabeledIDAttributes(treeOrNetwork.getNodeStartEvent(nodeID), TAG_OTU, false, true);
+			streamDataProvider.writeLinkedLabeledIDAttributes(treeOrNetwork.getNodeStartEvent(nodeID), TAG_OTU, false);
 			treeOrNetwork.writeNodeContentData(receiver, nodeID);
 			getWriter().writeEndElement();
 		}
@@ -159,7 +158,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			getWriter().writeAttribute(ATTR_SOURCE.getLocalPart(), edge.getSourceID());
 		}
 		getWriter().writeAttribute(ATTR_TARGET.getLocalPart(), edge.getTargetID());
-		streamDataProvider.writeLabeledIDAttributes(edge, true);
+		streamDataProvider.writeLabeledIDAttributes(edge);
 		
 		if (edge.getLength() != Double.NaN) {
 			getWriter().writeAttribute(ATTR_LENGTH.getLocalPart(), Double.toString(edge.getLength()));
@@ -232,7 +231,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	private void writeCharactersTag(MatrixDataAdapter alignment) throws IOException, XMLStreamException {
 		getWriter().writeStartElement(TAG_CHARACTERS.getLocalPart());
-		streamDataProvider.writeLinkedLabeledIDAttributes(alignment.getStartEvent(), TAG_OTUS, true, true);
+		streamDataProvider.writeLinkedLabeledIDAttributes(alignment.getStartEvent(), TAG_OTUS, true);
 		String alignmentType = null;
 		
 		if (streamDataProvider.isWriteCellsTags()) {
@@ -336,7 +335,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					break;
 				default: //discrete data
 					getWriter().writeStartElement(TAG_STATES.getLocalPart());
-					streamDataProvider.writeLabeledIDAttributes(startEvent, true);
+					streamDataProvider.writeLabeledIDAttributes(startEvent);
 					tokenSetDefinitions.writeContentData(receiver, tokenSetID);
 					getWriter().writeEndElement();
 				//TODO how should Restriction data token sets be handled here?			
@@ -352,7 +351,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			String charID = streamDataProvider.getCharIndexToIDMap().get(i);
 			
 			getWriter().writeEmptyElement(TAG_CHAR.getLocalPart());
-			getWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
+			
+			streamDataProvider.writeID(charID);
 			getWriter().writeAttribute(ATTR_STATES.getLocalPart(), streamDataProvider.getCharIDToStatesMap().get(charID));
 		}
 		
@@ -369,7 +369,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			
 			getWriter().writeAttribute(ATTR_CHAR.getLocalPart(), value.toString());
 			
-			streamDataProvider.writeLabeledIDAttributes(alignment.getCharacterSets().getObjectStartEvent(charSetID), true);
+			streamDataProvider.writeLabeledIDAttributes(alignment.getCharacterSets().getObjectStartEvent(charSetID));
 			
 			writeOrCheckObjectMetaData(alignment.getCharacterSets(), charSetID, false); //interval events were already handled in checkCharacterSets()
 			
@@ -382,7 +382,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLSequenceContentReceiver receiver = new NeXMLSequenceContentReceiver(writer, parameters, alignment.containsLongTokens(), streamDataProvider);
 		
 		getWriter().writeStartElement(TAG_ROW.getLocalPart());
-		streamDataProvider.writeLinkedLabeledIDAttributes(sequenceEvent, TAG_OTU, true, true);
+		streamDataProvider.writeLinkedLabeledIDAttributes(sequenceEvent, TAG_OTU, true);
 		
 		if (streamDataProvider.isWriteCellsTags()) {			
 			alignment.writeSequencePartContentData(receiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));		
@@ -527,16 +527,9 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void writeOTUSTag(OTUListDataAdapter otuList) throws IOException, XMLStreamException {		
-		streamDataProvider.getOtusIDs().add(otuList.getListStartEvent().getID());
+		getWriter().writeStartElement(TAG_OTUS.getLocalPart());		
 		
-		getWriter().writeStartElement(TAG_OTUS.getLocalPart());				
-		
-		if (otuList.hasMetadata()) {
-			streamDataProvider.writeLabeledIDAttributes(otuList.getListStartEvent(), true);
-		}
-		else {
-			streamDataProvider.writeLabeledIDAttributes(otuList.getListStartEvent(), false);
-		}
+		streamDataProvider.writeLabeledIDAttributes(otuList.getListStartEvent());	
 
 		writeOrCheckMetaData(otuList, false);
 		
@@ -544,20 +537,18 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		Set<String> otuIDs = new HashSet<String>();
 		while (otuIDIterator.hasNext()) {
 			String otuID = otuIDIterator.next();
-			streamDataProvider.getOtuIDs().add(otuID);
 			otuIDs.add(otuID);
 			
 			getWriter().writeStartElement(TAG_OTU.getLocalPart());
-			streamDataProvider.writeLabeledIDAttributes(otuList.getObjectStartEvent(otuID), true);
+			streamDataProvider.writeLabeledIDAttributes(otuList.getObjectStartEvent(otuID));
 			writeOrCheckObjectMetaData(otuList, otuID, false);
 			getWriter().writeEndElement();
 		}
 		
-		if (streamDataProvider.isWriteUndefinedOTU() && (!otuIDs.contains(UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID))) {
-			streamDataProvider.getOtuIDs().add(UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID);
-			
-			getWriter().writeEmptyElement(TAG_OTU.getLocalPart());
-			streamDataProvider.writeLabeledIDAttributes(new LabeledIDEvent(EventContentType.OTU, UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID, "undefined taxon"), false);
+		if (streamDataProvider.isWriteUndefinedOTU() && (!otuIDs.contains(UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID))) {		
+			getWriter().writeStartElement(TAG_OTU.getLocalPart());
+			streamDataProvider.writeLabeledIDAttributes(new LabeledIDEvent(EventContentType.OTU, UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID, "undefined taxon"));
+			getWriter().writeEndElement();
 		}
 		
 		getWriter().writeEndElement();
@@ -616,6 +607,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			writeTreesTags(document);
 			
 			getWriter().writeEndElement();
+			
+			System.out.println(streamDataProvider.getDocumentIDs());
 		}
 	}
 	

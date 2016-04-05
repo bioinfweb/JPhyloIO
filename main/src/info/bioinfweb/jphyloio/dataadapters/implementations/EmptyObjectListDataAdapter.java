@@ -36,6 +36,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
  * @author Ben St&ouml;ver
  */
 public class EmptyObjectListDataAdapter<E extends JPhyloIOEvent> implements ObjectListDataAdapter<E> {
+	@SuppressWarnings("rawtypes")
 	public static final EmptyObjectListDataAdapter SHARED_EMPTY_OBJECT_LIST_ADAPTER = new EmptyObjectListDataAdapter();
 
 

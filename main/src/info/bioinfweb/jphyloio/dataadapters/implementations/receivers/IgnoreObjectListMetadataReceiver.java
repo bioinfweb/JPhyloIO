@@ -36,6 +36,8 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * @author Ben St&ouml;ver
  */
 public class IgnoreObjectListMetadataReceiver implements JPhyloIOEventReceiver {
+	//TODO Can this class be removed (and the ignored event counts from AbstractEventreceiver be used instead)?
+	
 	private boolean ignoredMetadata = false;
 	private ApplicationLogger logger;
 	private String objectName;

@@ -20,13 +20,16 @@ package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+
+import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -43,12 +46,12 @@ import javax.xml.stream.XMLStreamWriter;
  * @since 0.0.0
  */
 public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
-	private static void writeLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event, Class<? extends Object> objectType) throws XMLStreamException {
+	private static void writeLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event, Class<? extends Object> objectType) throws XMLStreamException, JPhyloIOWriterException {
 		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();
 		
 		writer.writeStartElement(TAG_META.getLocalPart());
 		
-		streamDataProvider.writeLabeledIDAttributes(event, false); //TODO are there any cases where an about-attribute should be written?
+		streamDataProvider.writeLabeledIDAttributes(event, null); //TODO are there any cases where an about-attribute should be written?
 		
 		if (event.getPredicate() != null) {
 			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), event.getPredicate().getLocalPart()); //TODO make sure predicate is valid CURIE
@@ -63,23 +66,18 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	}
 
 	
-	public static void handleLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) throws XMLStreamException {		
-		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-			LiteralMetadataEvent literalMetadataEvent = event.asLiteralMetadataEvent();
-			if (literalMetadataEvent.getSequenceType().equals(LiteralContentSequenceType.XML)) {
-				writeLiteralMeta(streamDataProvider, literalMetadataEvent, null);
-			}
-			else {
-				streamDataProvider.setLiteralWithoutXMLContent(literalMetadataEvent);
-			}
+	public static void handleLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) throws XMLStreamException, JPhyloIOWriterException {		
+		LiteralMetadataEvent literalMetadataEvent = event.asLiteralMetadataEvent();
+		if (literalMetadataEvent.getSequenceType().equals(LiteralContentSequenceType.XML)) {
+			writeLiteralMeta(streamDataProvider, literalMetadataEvent, null);
 		}
 		else {
-			streamDataProvider.getXMLStreamWriter().writeEndElement();
-		}
+			streamDataProvider.setLiteralWithoutXMLContent(literalMetadataEvent);
+		}		
 	}
 
 
-	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException {
+	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException, JPhyloIOWriterException {
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 		if (streamDataProvider.getLiteralWithoutXMLContent() != null) {
 			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(), contentEvent.getObjectValue().getClass()); //TODO should getOriginalType() be used here?
@@ -96,41 +94,32 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	}
 
 
-	public static void handleResourceMeta(NeXMLWriterStreamDataProvider streamDataProvider, ResourceMetadataEvent event) throws ClassCastException, XMLStreamException {
+	public static void handleResourceMeta(NeXMLWriterStreamDataProvider streamDataProvider, ResourceMetadataEvent event) throws ClassCastException, XMLStreamException, JPhyloIOWriterException {
 		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();
+					
+		writer.writeStartElement(TAG_META.getLocalPart());		
 		
-		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-			boolean writeAboutAttribute;
-			
-			writer.writeStartElement(TAG_META.getLocalPart());
-			
-			if (event.getAbout() != null) {
-				writeAboutAttribute = true;
-			}
-			else {
-				writeAboutAttribute = false;
-			}
-			
-			streamDataProvider.writeLabeledIDAttributes(event, writeAboutAttribute);
-			
-			if (event.getRel() != null) {
-				writer.writeAttribute(ATTR_REL.getLocalPart(), event.getRel().getLocalPart());		
-			}
-			else {
-				throw new InternalError("Resource meta should have a predicate that is a QName.");
-			}
-			
-			if (event.getHRef() != null) {
-				writer.writeAttribute(ATTR_HREF.getLocalPart(), event.getHRef().toString());
-			}
-			
-			writer.writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_RESOURCE_META);
+		streamDataProvider.writeLabeledIDAttributes(event, event.getAbout());
+		
+		if (event.getRel() != null) {
+			writer.writeAttribute(ATTR_REL.getLocalPart(), event.getRel().getLocalPart());		
 		}
 		else {
-			writer.writeEndElement();
+			throw new InternalError("Resource meta should have a predicate that is a QName.");
 		}
+		
+		if (event.getHRef() != null) {
+			writer.writeAttribute(ATTR_HREF.getLocalPart(), event.getHRef().toString());
+		}
+		
+		writer.writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_RESOURCE_META);
 	}
-
+	
+	
+	public static void handleMetaEndEvent(NeXMLWriterStreamDataProvider streamDataProvider, JPhyloIOEvent event) throws IOException, XMLStreamException {
+		streamDataProvider.getXMLStreamWriter().writeEndElement();
+	}
+	
 
 	public static void handleComment(NeXMLWriterStreamDataProvider streamDataProvider, CommentEvent event) throws ClassCastException, XMLStreamException {
 		String comment = event.getContent();

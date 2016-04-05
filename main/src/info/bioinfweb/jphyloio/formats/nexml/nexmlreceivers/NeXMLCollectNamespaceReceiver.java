@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -55,6 +56,14 @@ public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
 			getStreamDataProvider().getMetaDataNameSpaces().add(event.getRel().getNamespaceURI());
 		}
 	}
+
+
+	@Override
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {}
+
+
+	@Override
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {}
 
 
 	@Override

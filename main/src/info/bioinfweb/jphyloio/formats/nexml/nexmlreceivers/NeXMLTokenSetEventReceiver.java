@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -45,9 +46,8 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	}
 	
 	
-	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException {
-		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
-		getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getTokenName());
+	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
+		getStreamDataProvider().writeLabeledIDAttributes(event);
 		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), "" + tokenDefinitionIndex);
 		
 		tokenDefinitionIndex++;		
@@ -55,13 +55,13 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	}
 	
 	
-	private void writeState(SingleTokenDefinitionEvent event) throws XMLStreamException {
+	private void writeState(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
 		getWriter().writeEmptyElement(TAG_STATE.getLocalPart());
 		writeTokenDefinitionAttributes(event);
 	}
 	
 	
-	private void writeStateSet(SingleTokenDefinitionEvent event, boolean isPolymorphic) throws XMLStreamException {
+	private void writeStateSet(SingleTokenDefinitionEvent event, boolean isPolymorphic) throws XMLStreamException, JPhyloIOWriterException {
 		if (isPolymorphic) {
 			getWriter().writeStartElement(TAG_POLYMORPHIC.getLocalPart());
 		}

@@ -30,11 +30,9 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
-import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 import java.io.IOException;
-import java.util.EmptyStackException;
 import java.util.Stack;
 
 import javax.xml.stream.XMLStreamException;
@@ -162,6 +160,9 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 	}
 	
 	
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {}
+	
+	
 	protected abstract boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException;
 	
 	
@@ -172,11 +173,21 @@ public abstract class AbstractEventReceiver<W extends Object> implements JPhyloI
 			JPhyloIOEvent parentEvent = getParentElement();
 			switch (event.getType().getContentType()) {
 				case META_RESOURCE:
-					handleResourceMeta(event.asResourceMetadataEvent());  //TODO Only start events can be case here and in similar lines below.
+					if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+						handleResourceMeta(event.asResourceMetadataEvent());
+					}
+					else {
+						handleMetaEndEvent(event);
+					}
 					break;
 				case META_LITERAL:
 					if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
-						handleLiteralMeta(event.asLiteralMetadataEvent());
+						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+							handleLiteralMeta(event.asLiteralMetadataEvent());
+						}
+						else {
+							handleMetaEndEvent(event);
+						}
 					}
 					else {
 						IllegalEventException.newInstance(this, parentEvent, event);
