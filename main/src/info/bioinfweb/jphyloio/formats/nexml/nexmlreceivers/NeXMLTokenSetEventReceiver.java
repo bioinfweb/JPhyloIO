@@ -19,7 +19,9 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
@@ -28,8 +30,10 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -37,8 +41,9 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
+	private Map<String, String> tokenNameToIDMap = new HashMap<String, String>();
 	private int tokenDefinitionIndex = 0;
-	private Map<String, String> tokenNametoIDMap = new TreeMap<String, String>();
+	
 	
 	public NeXMLTokenSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
@@ -47,21 +52,32 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 	
 	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
-		getStreamDataProvider().writeLabeledIDAttributes(event);
-		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), "" + tokenDefinitionIndex);
+		String tokenName = event.getTokenName();
+		String tokenSymbol = tokenName;
 		
-		tokenDefinitionIndex++;		
-		tokenNametoIDMap.put(event.getTokenName(), event.getID());
+		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+			tokenSymbol = "" + tokenDefinitionIndex;
+			tokenDefinitionIndex++;
+		}
+		
+		getStreamDataProvider().getTokenTranslationMap().put(event.getTokenName(), tokenSymbol);
+		tokenNameToIDMap.put(tokenName, event.getID());
+		
+		getStreamDataProvider().writeLabeledIDAttributes(event);
+		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);
 	}
 	
 	
 	private void writeState(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
-		getWriter().writeEmptyElement(TAG_STATE.getLocalPart());
+		getWriter().writeStartElement(TAG_STATE.getLocalPart());
 		writeTokenDefinitionAttributes(event);
 	}
 	
 	
 	private void writeStateSet(SingleTokenDefinitionEvent event, boolean isPolymorphic) throws XMLStreamException, JPhyloIOWriterException {
+		String memberID = null;
+		String tokenName = event.getTokenName();
+		
 		if (isPolymorphic) {
 			getWriter().writeStartElement(TAG_POLYMORPHIC.getLocalPart());
 		}
@@ -71,12 +87,53 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		
 		writeTokenDefinitionAttributes(event);
 		
-		for (String tokenDefinition : event.getConstituents()) {
-			getWriter().writeEmptyElement(TAG_MEMBER.getLocalPart());
-			getWriter().writeAttribute(ATTR_STATE.getLocalPart(), tokenNametoIDMap.get(tokenDefinition)); //TODO make sure this is a valid state ID
+		if (!event.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
+			Collection<String> constituents = new ArrayList<String>();
+			
+			if (event.getConstituents() == null || event.getConstituents().isEmpty()) {
+				switch (getStreamDataProvider().getAlignmentType()) {
+					case DNA:
+						char[] dnaConstituents = SequenceUtils.nucleotideConstituents(tokenName.charAt(0));
+						for (int i = 0; i < dnaConstituents.length; i++) {
+							constituents.add(Character.toString(dnaConstituents[i]));
+						}	
+						break;
+					case RNA:
+						char[]rnaConstituents = SequenceUtils.rnaConstituents(tokenName.charAt(0));
+						for (int i = 0; i < rnaConstituents.length; i++) {
+							constituents.add(Character.toString(rnaConstituents[i]));
+						}	
+						break;
+					case AMINO_ACID:
+						if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(tokenName)) {
+							char[] oneLetterCodeConstituents = SequenceUtils.oneLetterAminoAcidConstituents(tokenName);
+							for (int i = 0; i < oneLetterCodeConstituents.length; i++) {
+								constituents.add(Character.toString(oneLetterCodeConstituents[i]));
+							}
+						}
+						else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(tokenName)) {
+							String[] threLetterCodeConstituents = SequenceUtils.threeLetterAminoAcidConstituents(tokenName);
+							for (int i = 0; i < threLetterCodeConstituents.length; i++) {
+								constituents.add(threLetterCodeConstituents[i]);
+							}
+						}		
+						break;
+					default:
+						break;
+				}						
+			}
+			else {
+				constituents = event.getConstituents();
+			}
+			
+			for (String tokenDefinition : constituents) {
+				getWriter().writeEmptyElement(TAG_MEMBER.getLocalPart());
+				memberID = tokenNameToIDMap.get(tokenDefinition);
+				if ((memberID != null) && getStreamDataProvider().getDocumentIDs().contains(memberID)) { //TODO check this in collect data receiver
+					getWriter().writeAttribute(ATTR_STATE.getLocalPart(), memberID);
+				}
+			}			
 		}
-		
-		getWriter().writeEndElement();
 	}
 	
 
@@ -90,7 +147,12 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 							&& !singleTokenEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {
 						switch (singleTokenEvent.getTokenType()) {
 							case ATOMIC_STATE:
-								writeState(singleTokenEvent); //TODO if its a gap character write uncertain set
+								if (singleTokenEvent.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
+									writeStateSet(singleTokenEvent, false);
+								}
+								else {
+									writeState(singleTokenEvent);
+								}
 								break;
 							case POLYMORPHIC:
 								writeStateSet(singleTokenEvent, true);
@@ -104,6 +166,10 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 						break;
 					}
 				}
+				else {
+					getWriter().writeEndElement();
+				}
+				break;
 			default:
 				break;
 		}

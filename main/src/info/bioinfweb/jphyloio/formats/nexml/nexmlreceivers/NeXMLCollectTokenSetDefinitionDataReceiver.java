@@ -21,13 +21,17 @@ package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.bio.CharacterSymbolType;
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -35,15 +39,213 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectNamespaceReceiver {
-	private static final String DNA_TOKEN = "ABCDGHKMNRSTVWXY-?";
-	private static final String RNA_TOKEN = "-?ABCDGHKMNRSUVWXY";
-	private static final String AA_TOKEN = "*-?ABCDEFGHIKLMNPQRSTUVWXYZ";
-
+	
 	
 	public NeXMLCollectTokenSetDefinitionDataReceiver(XMLStreamWriter writer,
 			ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}
+	
+	
+	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {
+		switch (getStreamDataProvider().getAlignmentType()) {							
+			case DNA:
+				if (!isDNAToken(event)) {
+					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+				}
+				break;
+			case RNA:
+				if (!isRNAToken(event)) {
+					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+				}
+				break;
+			case NUCLEOTIDE:
+				if (!(isDNAToken(event) || isRNAToken(event))) {
+					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+				}
+				break;
+			case AMINO_ACID:
+				if (!isAAToken(event)) {
+					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+				}
+				break;				
+			default:
+				break;
+		}		
+	}
+	
+	
+	private boolean isDNAToken(SingleTokenDefinitionEvent event) {
+		if (event.getTokenName().length() == 1) {
+			char token = event.getTokenName().charAt(0);
+			if (SequenceUtils.isDNAChar(token)) {
+				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
+					if (SequenceUtils.isNonAmbiguityNucleotide(token)) {
+						return true;
+					}
+					else if (isMissingChar(event) || isGapChar(event)) {
+						return true;
+					}
+				}
+				else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
+					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
+						Collection<String> constituents = event.getConstituents();
+						char[] expectedConstituents = SequenceUtils.nucleotideConstituents(token);
+						if (!constituents.isEmpty()) {
+							if (constituents.size() == expectedConstituents.length) {
+								boolean isContained = true;
+								for (int i = 0; i < expectedConstituents.length; i++) {
+									isContained = constituents.contains(Character.toString(expectedConstituents[i]));
+									if (!isContained) {
+										return false;
+									}
+								}
+								if (isContained) {
+									return true;
+								}
+							}
+						}
+						else {
+							return true;
+						}
+						return true;
+					}
+					else if (isGapChar(event)) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	private boolean isRNAToken(SingleTokenDefinitionEvent event) {
+		if (event.getTokenName().length() == 1) {
+			char token = event.getTokenName().charAt(0);
+			if (SequenceUtils.isRNAChar(token)) {
+				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
+					if (SequenceUtils.isNonAmbiguityNucleotide(token)) {
+						return true;
+					}
+					else if (isMissingChar(event) || isGapChar(event)) {
+						return true;
+					}
+				}
+				else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
+					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
+						Collection<String> constituents = event.getConstituents();
+						char[] expectedConstituents = SequenceUtils.rnaConstituents(token);
+						if (!constituents.isEmpty()) {
+							if (constituents.size() == expectedConstituents.length) {
+								boolean isContained = true;
+								for (int i = 0; i < expectedConstituents.length; i++) {
+									isContained = constituents.contains(Character.toString(expectedConstituents[i]));
+									if (!isContained) {
+										return false;
+									}
+								}
+								if (isContained) {
+									return true;
+								}
+							}
+						}
+						else {
+							return true;
+						}
+						return true;
+					}
+					else if (isGapChar(event)) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	private boolean isAAToken(SingleTokenDefinitionEvent event) {
+		String token = event.getTokenName();
+
+		if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
+			if (SequenceUtils.isNonAmbiguityAminoAcid(token)) {
+				return true;
+			}				
+			else if (isMissingChar(event) || isGapChar(event)) {
+				return true;
+			}
+			else if (event.getMeaning().equals(CharacterSymbolMeaning.OTHER) && token.equals(SequenceUtils.STOP_CODON_CHAR)) { //TODO maybe create new CharacterSymbolMeaning?
+				return true;
+			}
+		}		
+		else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
+			if (SequenceUtils.isAminoAcidAmbiguityCode(token)) { //TODO check if right constituents are present
+				if (!(token.equals("J") || token.equals("Xle"))) {
+//					Collection<String> constituents = event.getConstituents();
+//					
+//					if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(token)) {
+//						char[] expectedConstituents = SequenceUtils.oneLetterAminoAcidConstituents(token);
+//						checkConstituents(constituents, expectedConstituents, token.charAt(0));
+//					}
+//					else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(token)) {
+//						String[] expectedConstituents = SequenceUtils.threeLetterAminoAcidConstituents(token);					
+//					}
+					return true;
+				}
+			}
+			else if (isGapChar(event)) {
+				return true;
+			}
+		}		
+		
+		return false;
+	}
+	
+	
+	private boolean isGapChar(SingleTokenDefinitionEvent event) {
+		if (event.getMeaning().equals(CharacterSymbolMeaning.GAP) && event.getTokenName().equals(SequenceUtils.GAP_CHAR)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	
+	private boolean isMissingChar(SingleTokenDefinitionEvent event) {
+		if (event.getMeaning().equals(CharacterSymbolMeaning.MISSING) && event.getTokenName().equals(SequenceUtils.MISSING_DATA_CHAR)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	
+//	private boolean checkConstituents(Collection<String> constituents, Object[] expectedConstituents, char token) {
+//		if (!constituents.isEmpty()) {
+//			if (constituents.size() == expectedConstituents.length) {
+//				boolean isContained = true;
+//				for (int i = 0; i < expectedConstituents.length; i++) {
+//					isContained = constituents.contains(expectedConstituents[i]);
+//					if (!isContained) {
+//						return false;
+//					}
+//				}
+//				if (isContained) {
+//					return true;
+//				}
+//			}
+//		}
+//		else {
+//			return true;
+//		}
+//		
+//		return false;
+//	}
 	
 
 	@Override
@@ -52,55 +254,8 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			switch (event.getType().getContentType()) {
 				case SINGLE_TOKEN_DEFINITION:
 						SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
-						
 						if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH)) {
-							String tokenName = tokenDefinitionEvent.getTokenName();
-							String tokenSymbol = null;							
-							switch (getStreamDataProvider().getEventWriter().getParameters().getTranslateTokens()) {
-								case NEVER:
-									tokenSymbol = tokenName;
-									break;
-								case SYMBOL_TO_LABEL:
-									if (tokenDefinitionEvent.getLabel() != null) {
-										tokenSymbol = tokenDefinitionEvent.getLabel();
-										break;
-									}
-								case SYMBOL_TO_ID:
-									tokenSymbol = tokenDefinitionEvent.getID();
-									break;
-							}
-							
-							switch (getStreamDataProvider().getAlignmentType()) {							
-								case DNA:
-									if (!((tokenName.length() == 1) && DNA_TOKEN.contains(tokenName))) {
-										getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
-										getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
-									}
-									break;
-								case RNA:
-									if (!((tokenName.length() == 1) && RNA_TOKEN.contains(tokenName))) {
-										getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
-										getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
-									}
-									break;
-								case NUCLEOTIDE:
-									if (!((tokenName.length() == 1) && (RNA_TOKEN.contains(tokenName) || DNA_TOKEN.contains(tokenName)))) {
-										getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
-										getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
-									}
-									break;
-								case AMINO_ACID:
-									if (!((tokenName.length() == 1) && AA_TOKEN.contains(tokenName))) {
-										getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
-										getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
-									}
-									break;
-								case DISCRETE:
-									getStreamDataProvider().getTokenTranslationMap().put(tokenSymbol, tokenName);
-									break;							
-								default:
-									break;
-							}
+							checkSingleTokenDefinition(tokenDefinitionEvent);
 						}
 					break;
 				default:

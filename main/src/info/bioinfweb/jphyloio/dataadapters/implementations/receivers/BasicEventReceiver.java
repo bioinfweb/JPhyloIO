@@ -174,7 +174,7 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 	
 	
 	/**
-	 * This method is called internally by {@link #add(JPhyloIOEvent)} to process and events that do not model metadata or
+	 * This method is called internally by {@link #add(JPhyloIOEvent)} to process events that do not model metadata or
 	 * comments. (Such events are treated by the according special methods of this class).
 	 * <p>
 	 * This default implementation just throws an {@link IllegalEventException}. Inherited classes that need to support other
@@ -200,6 +200,17 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 		try {
 			boolean result = true;
 			JPhyloIOEvent parentEvent = getParentEvent();
+			
+			if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
+				if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(event.getType().getContentType())) {
+					throw IllegalEventException.newInstance(this, parentEvent, event);
+				}
+				else {
+					getParentEvents().pop();
+					parentEvent = getParentEvent();
+				}
+			}			
+			
 			switch (event.getType().getContentType()) {
 				case META_RESOURCE:
 					if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
@@ -219,7 +230,7 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 						}
 					}
 					else {
-						IllegalEventException.newInstance(this, parentEvent, event);
+						throw IllegalEventException.newInstance(this, parentEvent, event);
 					}
 					break;
 				case META_LITERAL_CONTENT:
@@ -227,7 +238,7 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 						handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
 					}
 					else {
-						IllegalEventException.newInstance(this, parentEvent, event);
+						throw IllegalEventException.newInstance(this, parentEvent, event);
 					}
 					break;
 				case COMMENT:
@@ -236,23 +247,16 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 				default:
 					if (parentEvent == null) {
 						result = doAdd(event);
-					}
+					}					
 					else {
-						IllegalEventException.newInstance(this, parentEvent, event);
+						throw IllegalEventException.newInstance(this, parentEvent, event);
 					}
-			}
+			}			
 			
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				getParentEvents().add(event);
 			}
-			else if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
-				if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(event.getType().getContentType())) {
-					IllegalEventException.newInstance(this, parentEvent, event);
-				}
-				else {
-					getParentEvents().pop();
-				}
-			}
+			
 			return result;
 		}
 		catch (XMLStreamException e) {

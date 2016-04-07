@@ -74,8 +74,7 @@ public class StoreObjectListDataAdapter<E extends JPhyloIOEvent> implements Obje
 
 	
 	@Override
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id)
-			throws IOException, IllegalArgumentException {
+	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
 		for (JPhyloIOEvent event : objectMap.get(id).getObjectContent()) {
 			receiver.add(event);
 		}		

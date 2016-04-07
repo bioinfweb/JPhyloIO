@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
@@ -60,7 +61,9 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			throw new InternalError("Literal meta should have a predicate that is a QName.");
 		}
 		
-		writer.writeAttribute(ATTR_DATATYPE.getLocalPart(), XSD_PRE + ":" + NeXMLWriterStreamDataProvider.getXsdTypeForClass().get(objectType).getLocalPart());
+		if (objectType != null) {
+			writer.writeAttribute(ATTR_DATATYPE.getLocalPart(), XSD_PRE + ":" + NeXMLWriterStreamDataProvider.getXsdTypeForClass().get(objectType).getLocalPart());
+		}
 		
 		writer.writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_LITERAL_META);
 	}
@@ -68,7 +71,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	
 	public static void handleLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) throws XMLStreamException, JPhyloIOWriterException {		
 		LiteralMetadataEvent literalMetadataEvent = event.asLiteralMetadataEvent();
-		if (literalMetadataEvent.getSequenceType().equals(LiteralContentSequenceType.XML)) {
+		if (literalMetadataEvent.getSequenceType().equals(LiteralContentSequenceType.XML)) { //TODO if type is simple array, write xml, too
 			writeLiteralMeta(streamDataProvider, literalMetadataEvent, null);
 		}
 		else {
@@ -90,7 +93,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		else if (event.getStringValue() != null) {
 			streamDataProvider.getXMLStreamWriter().writeCharacters(event.getStringValue()); //TODO should the alternative String value be written somewhere to?
 		}
-		//TODO can both object and string value be null? what should be written then?
+		//TODO can both object and string value be null? what should be written then? --> an empty string
 	}
 
 
@@ -117,6 +120,11 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	
 	
 	public static void handleMetaEndEvent(NeXMLWriterStreamDataProvider streamDataProvider, JPhyloIOEvent event) throws IOException, XMLStreamException {
+		if (event.getType().getContentType().equals(EventContentType.META_LITERAL) && (streamDataProvider.getLiteralWithoutXMLContent() != null)) {
+			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(), null);
+			streamDataProvider.setLiteralWithoutXMLContent(null);
+		}		
+		
 		streamDataProvider.getXMLStreamWriter().writeEndElement();
 	}
 	

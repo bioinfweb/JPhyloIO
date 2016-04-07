@@ -40,11 +40,13 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.AbstractNeXMLDataReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCharacterSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectCharSetDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectNamespaceReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectSequenceDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLCollectTokenSetDefinitionDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLMetaDataReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLMolecularDataTokenDefinitionReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLTokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
@@ -319,6 +321,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeTokenSetDefinitions(ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSetDefinitions) throws XMLStreamException, IllegalArgumentException, IOException {
 		Iterator<String> tokenSetDefinitionIDs = tokenSetDefinitions.getIDIterator();
 		NeXMLTokenSetEventReceiver receiver = new NeXMLTokenSetEventReceiver(writer, parameters, streamDataProvider);
+		NeXMLMolecularDataTokenDefinitionReceiver molecularDataReceiver = 
+				new NeXMLMolecularDataTokenDefinitionReceiver(writer, parameters, streamDataProvider);
 		
 		while (tokenSetDefinitionIDs.hasNext()) {
 			String tokenSetID = tokenSetDefinitionIDs.next();
@@ -330,27 +334,33 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					break;
 				case NUCLEOTIDE:
 				case DNA:
+					getWriter().writeStartElement(TAG_STATES.getLocalPart());
+					streamDataProvider.writeLabeledIDAttributes(startEvent);
+					tokenSetDefinitions.writeContentData(molecularDataReceiver, tokenSetID);
+					molecularDataReceiver.addRemainingEvents(CharacterStateSetType.DNA);
+					getWriter().writeEndElement();
 					//TODO write standardized states tag for DNA
+					//TODO write method that adds according events for DNA token definitions to receiver
 					break;
 				case RNA:
 					//TODO write standardized states tag for DNA
 					break;
 				case AMINO_ACID:
-					//TODO write standardized states tag for DNA
+					//TODO write standardized states tag for DNA, translate AA 3-Letter-Code
 					break;
 				default: //discrete data
 					getWriter().writeStartElement(TAG_STATES.getLocalPart());
 					streamDataProvider.writeLabeledIDAttributes(startEvent);
 					tokenSetDefinitions.writeContentData(receiver, tokenSetID);
 					getWriter().writeEndElement();
-				//TODO how should Restriction data token sets be handled here?			
 			}
 		}
 	}
 	
-
+	
 	private void writeCharacterSets(MatrixDataAdapter alignment) throws IllegalArgumentException, XMLStreamException, IOException {
 		Iterator<String> characterSetIDs = alignment.getCharacterSets().getIDIterator();
+		NeXMLCharacterSetEventReceiver receiver = new NeXMLCharacterSetEventReceiver(writer, parameters, streamDataProvider);
 		
 		for (long i = 0; i < alignment.getColumnCount(); i++) {
 			String charID = streamDataProvider.getCharIndexToIDMap().get(i);
@@ -376,7 +386,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			
 			streamDataProvider.writeLabeledIDAttributes(alignment.getCharacterSets().getObjectStartEvent(charSetID));
 			
-			writeOrCheckObjectMetaData(alignment.getCharacterSets(), charSetID, false); //interval events were already handled in checkCharacterSets()
+			alignment.getCharacterSets().writeContentData(receiver, charSetID);
 			
 			getWriter().writeEndElement();
 		}
@@ -464,7 +474,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					streamDataProvider.getCharSetToTokenSetMap().put("general", tokenSetID);
 				}
 				else {
-					throw new JPhyloIOWriterException("More than one token set withot a reference to a character set was encountered.");
+					throw new JPhyloIOWriterException("More than one token set withot a reference to a character set was encountered."); //TODO what exactly is this?
 				}
 			}
 			else {
@@ -600,8 +610,9 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		if (!streamDataProvider.isEmptyDocument()) { //A valid NeXMl Document needs at least one OTU list, so completely empty documents or ones with only document meta data should not be written
 			getWriter().writeStartElement(TAG_ROOT.getLocalPart());
 			XMLUtils.writeNamespaceAttr(getWriter(), NAMESPACE_URI.toString()); //TODO Link xsd?
+			
 			for (String nameSpace : streamDataProvider.getMetaDataNameSpaces()) {
-				XMLUtils.writeNamespaceAttr(getWriter(), nameSpace);
+				XMLUtils.writeNamespaceAttr(getWriter(), nameSpace); //TODO write correct prefixes
 			}
 			
 			writeOrCheckMetaData(document, false);
@@ -655,7 +666,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			receiver = new NeXMLMetaDataReceiver(writer, parameters, streamDataProvider);
 		}
 		
-		if (objectID == null) {		
+		if (objectID != null) {
 			adapter.writeContentData(receiver, objectID);
 		}			
 	}

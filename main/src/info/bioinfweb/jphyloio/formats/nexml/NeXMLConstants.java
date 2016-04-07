@@ -39,10 +39,7 @@ public interface NeXMLConstants {
 	public static String XSI_PRE = "xsi";
 	public static String XSD_PRE = "xsd";
 	public static String NEX_PRE = "nex";
-//	public static String RDF_PRE = "rdf";
-//	
-//	public static String XSI_TYPE = XSI_PRE + ":type";
-	
+	public static String RDF_PRE = "rdf";	
 	
 	public static final QName TAG_ROOT = new QName(NAMESPACE_URI, "nexml");
 	public static final QName TAG_META = new QName(NAMESPACE_URI, "meta");
@@ -85,14 +82,14 @@ public interface NeXMLConstants {
 	public static final QName ATTR_TARGET = new QName("target");
 	public static final QName ATTR_LENGTH = new QName("length");
 	
-	public static final QName ATTR_XSI_TYPE = new QName(XSI_PRE + ":type");	
+	public static final QName ATTR_XSI_TYPE = new QName(XSI_PRE + ":type");
 	public static final QName ATTR_DATATYPE = new QName("datatype");
 	public static final QName ATTR_HREF = new QName("href");
 	public static final QName ATTR_REL = new QName("rel");
 	public static final QName ATTR_CONTENT = new QName("content");
 	public static final QName ATTR_PROPERTY = new QName("property");	
 	
-	public static final String TYPE_DNA_SEQS = NEX_PRE + ":DnaSeqs";
+	public static final String TYPE_DNA_SEQS = NEX_PRE + ":DnaSeqs";  //TODO static prefixes cannot be used here, since they are user-defined
 	public static final String TYPE_DNA_CELLS = NEX_PRE + ":DnaCells";
 	public static final String TYPE_RNA_SEQS = NEX_PRE + ":RnaSeqs";
 	public static final String TYPE_RNA_CELLS= NEX_PRE + ":RnaCells";
