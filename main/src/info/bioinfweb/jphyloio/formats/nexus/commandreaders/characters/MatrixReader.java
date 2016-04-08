@@ -125,7 +125,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 							return true;  // Immediately return comment in front of sequence name, if it was not added to the final event list.
 						}
 						
-						String linkedOTUsID = getStreamDataProvider().getCurrentLinkedOTUsID();
+						String linkedOTUsID = getStreamDataProvider().getCurrentLinkedBlockID(BLOCK_NAME_TAXA);
 						if (noLabels) {
 							if (linkedOTUsID == null) {
 								throw new JPhyloIOReaderException("A MATRIX command with the NOLABELS option was found, but no preceding TAXA "

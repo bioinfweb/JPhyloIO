@@ -38,15 +38,31 @@ public class BlockTitleToIDMap {
 	private static final String KEY_SEPARATOR = "|";
 	
 	
-	private Map<String, String> map = new TreeMap<String, String>();
+	private Map<String, String> defaultBlockIDMap = new TreeMap<String, String>();
+	private Map<String, String> blockNameToIDMap = new TreeMap<String, String>();
 	
 	
-	public String get(String blockTypeName, String blockTitle) {
-		return map.get(blockTypeName + KEY_SEPARATOR + blockTitle);
+	public boolean hasDefaultBlockID(String blockTypeName) {
+		return defaultBlockIDMap.containsKey(blockTypeName.toUpperCase());
 	}
 	
 	
-	public void put(String blockTypeName, String blockTitle, String id) {
-		map.put(blockTypeName + KEY_SEPARATOR + blockTitle, id);
+	public String getDefaultBlockID(String blockTypeName) {
+		return defaultBlockIDMap.get(blockTypeName.toUpperCase());
+	}
+	
+	
+	public void putDefaultBlockID(String blockTypeName, String id) {
+		defaultBlockIDMap.put(blockTypeName.toUpperCase(), id);
+	}
+	
+	
+	public String getID(String blockTypeName, String blockTitle) {
+		return blockNameToIDMap.get(blockTypeName.toUpperCase() + KEY_SEPARATOR + blockTitle.toUpperCase());
+	}
+	
+	
+	public void putID(String blockTypeName, String blockTitle, String id) {
+		blockNameToIDMap.put(blockTypeName.toUpperCase() + KEY_SEPARATOR + blockTitle.toUpperCase(), id);
 	}
 }

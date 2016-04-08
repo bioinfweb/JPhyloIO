@@ -43,9 +43,9 @@ import java.util.TreeMap;
  */
 public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<NexusEventReader> implements NexusConstants {
 	public static final String INFO_KEY_BLOCK_START_EVENT_FIRED = "info.bioinfweb.jphyloio.nexus.blockStartEventFired";
+	public static final String INFO_KEY_CURRENT_BLOCK_NAME = "info.bioinfweb.jphyloio.nexus.currentBlockTitle";
 	public static final String INFO_KEY_BLOCK_TITLE = "info.bioinfweb.jphyloio.nexus.blockTitle";
 	public static final String INFO_KEY_BLOCK_LINKS = "info.bioinfweb.jphyloio.nexus.blockLinks";
-	public static final String INFO_KEY_DEFAULT_OTU_LIST_ID = "info.bioinfweb.jphyloio.nexus.taxa.defaultOTUListID";
 	public static final String INFO_KEY_BLOCK_ID_MAP = "info.bioinfweb.jphyloio.nexus.taxa.blockTitleToIDMap";
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaIDMap";
@@ -135,10 +135,10 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
-	public String getCurrentLinkedOTUsID() {
-		String result = getBlockLinks().get(BLOCK_NAME_TAXA);
+	public String getCurrentLinkedBlockID(String blockTypeName) {
+		String result = getBlockLinks().get(blockTypeName);
 		if (result == null) {
-			result = getSharedInformationMap().getString(NexusReaderStreamDataProvider.INFO_KEY_DEFAULT_OTU_LIST_ID);
+			result = getBlockTitleToIDMap().getDefaultBlockID(blockTypeName);
 		}
 		return result;
 	}

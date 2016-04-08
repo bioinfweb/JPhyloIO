@@ -23,11 +23,12 @@ import java.util.Collections;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.formats.newick.NewickReaderNodeLabelProcessor;
+import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
 
 
-public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabelProcessor {
+public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabelProcessor, NexusConstants {
 	private NexusReaderStreamDataProvider streamDataProvider;
 	
 	
@@ -44,7 +45,7 @@ public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabe
 		}
 		else {
 			NexusTranslationTable table = streamDataProvider.getTreesTranslationTable();
-			String linkedOTUsID = streamDataProvider.getCurrentLinkedOTUsID();
+			String linkedOTUsID = streamDataProvider.getCurrentLinkedBlockID(BLOCK_NAME_TAXA);
 			List<String> taxaList;
 			if (linkedOTUsID == null) {
 				taxaList = Collections.emptyList();
@@ -81,7 +82,7 @@ public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabe
 			return null;
 		}
 		else {
-			String linkedOTUsID = streamDataProvider.getCurrentLinkedOTUsID();
+			String linkedOTUsID = streamDataProvider.getCurrentLinkedBlockID(BLOCK_NAME_TAXA);
 			if (linkedOTUsID == null) {
 				return null;
 			}

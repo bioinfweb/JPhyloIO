@@ -71,7 +71,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	private NexusBlockHandlerMap blockHandlerMap;
 	private NexusCommandReaderFactory factory;
 	private boolean createUnknownCommandEvents = false;
-	private String currentBlockName = null;
+	private String currentBlockName;
 	private NexusCommandEventReader currentCommandReader = null;
 	private boolean documentEndReached = false;
 	
@@ -164,6 +164,17 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	 */
 	protected boolean getCreateUnknownCommandEvents() {
 		return createUnknownCommandEvents;
+	}
+
+
+	/**
+	 * Returns the name of the current Nexus block (e.g. {@code TAXA}). Note that this is different from a possible title of
+	 * this block.
+	 * 
+	 * @return the current block name or {@code null} if the reader is currently not located inside a block
+	 */
+	public String getCurrentBlockName() {
+		return currentBlockName;
 	}
 
 
