@@ -182,7 +182,7 @@ public class NeXMLStoreDataAdapterTest {
 		
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));		
 		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Thymin", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Uracil", "U", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
@@ -221,7 +221,7 @@ public class NeXMLStoreDataAdapterTest {
 		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "A"));
 		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "C"));
 		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "G"));
-		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "T"));
+		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent("label", "U"));
 		return singleTokens;
 	}
 	
@@ -239,6 +239,6 @@ public class NeXMLStoreDataAdapterTest {
 		createTestDocument();
 		NeXMLEventWriter writer = new NeXMLEventWriter();		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-		writer.writeDocument(document, new File("data/testOutput/NeXMLTest.xml"), parameters);	
+		writer.writeDocument(document, new File("data/testOutput/NeXMLTest.xml"), parameters);
 	}
 }
