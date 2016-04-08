@@ -93,23 +93,14 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 			if (event.getConstituents() == null || event.getConstituents().isEmpty()) {
 				switch (getStreamDataProvider().getAlignmentType()) {
 					case DNA:
-						char[] dnaConstituents = SequenceUtils.nucleotideConstituents(tokenName.charAt(0));
-						for (int i = 0; i < dnaConstituents.length; i++) {
-							constituents.add(Character.toString(dnaConstituents[i]));
-						}	
+						constituents = addConstituents(SequenceUtils.nucleotideConstituents(tokenName.charAt(0)));
 						break;
 					case RNA:
-						char[]rnaConstituents = SequenceUtils.rnaConstituents(tokenName.charAt(0));
-						for (int i = 0; i < rnaConstituents.length; i++) {
-							constituents.add(Character.toString(rnaConstituents[i]));
-						}	
+						constituents = addConstituents(SequenceUtils.rnaConstituents(tokenName.charAt(0)));
 						break;
 					case AMINO_ACID:
 						if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(tokenName)) {
-							char[] oneLetterCodeConstituents = SequenceUtils.oneLetterAminoAcidConstituents(tokenName);
-							for (int i = 0; i < oneLetterCodeConstituents.length; i++) {
-								constituents.add(Character.toString(oneLetterCodeConstituents[i]));
-							}
+							constituents = addConstituents(SequenceUtils.oneLetterAminoAcidConstituents(tokenName));
 						}
 						else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(tokenName)) {
 							String[] threLetterCodeConstituents = SequenceUtils.threeLetterAminoAcidConstituents(tokenName);
@@ -129,11 +120,22 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 			for (String tokenDefinition : constituents) {
 				getWriter().writeEmptyElement(TAG_MEMBER.getLocalPart());
 				memberID = tokenNameToIDMap.get(tokenDefinition);
-				if ((memberID != null) && getStreamDataProvider().getDocumentIDs().contains(memberID)) { //TODO check this in collect data receiver
+				if ((memberID != null) && getStreamDataProvider().getDocumentIDs().contains(memberID)) { //TODO check this in collect data receiver?
 					getWriter().writeAttribute(ATTR_STATE.getLocalPart(), memberID);
 				}
 			}			
 		}
+	}
+	
+	
+	private Collection<String> addConstituents(char[] molecularConstituents) {
+		Collection<String> constituents = new ArrayList<String>();
+		
+		for (int i = 0; i < molecularConstituents.length; i++) {
+			constituents.add(Character.toString(molecularConstituents[i]));
+		}	
+		
+		return constituents;
 	}
 	
 

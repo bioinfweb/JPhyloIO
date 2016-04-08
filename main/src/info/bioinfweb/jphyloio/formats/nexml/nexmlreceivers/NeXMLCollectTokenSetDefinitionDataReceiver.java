@@ -89,26 +89,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				}
 				else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
 					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
-						Collection<String> constituents = event.getConstituents();
-						char[] expectedConstituents = SequenceUtils.nucleotideConstituents(token);
-						if (!constituents.isEmpty()) {
-							if (constituents.size() == expectedConstituents.length) {
-								boolean isContained = true;
-								for (int i = 0; i < expectedConstituents.length; i++) {
-									isContained = constituents.contains(Character.toString(expectedConstituents[i]));
-									if (!isContained) {
-										return false;
-									}
-								}
-								if (isContained) {
-									return true;
-								}
-							}
-						}
-						else {
-							return true;
-						}
-						return true;
+						return checkConstituents(event.getConstituents(), SequenceUtils.nucleotideConstituents(token));
 					}
 					else if (isGapChar(event)) {
 						return true;
@@ -134,27 +115,8 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					}
 				}
 				else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
-					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
-						Collection<String> constituents = event.getConstituents();
-						char[] expectedConstituents = SequenceUtils.rnaConstituents(token);
-						if (!constituents.isEmpty()) {
-							if (constituents.size() == expectedConstituents.length) {
-								boolean isContained = true;
-								for (int i = 0; i < expectedConstituents.length; i++) {
-									isContained = constituents.contains(Character.toString(expectedConstituents[i]));
-									if (!isContained) {
-										return false;
-									}
-								}
-								if (isContained) {
-									return true;
-								}
-							}
-						}
-						else {
-							return true;
-						}
-						return true;
+					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {		
+						return checkConstituents(event.getConstituents(), SequenceUtils.rnaConstituents(token));
 					}
 					else if (isGapChar(event)) {
 						return true;
@@ -182,17 +144,16 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			}
 		}		
 		else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
-			if (SequenceUtils.isAminoAcidAmbiguityCode(token)) { //TODO check if right constituents are present
+			if (SequenceUtils.isAminoAcidAmbiguityCode(token)) {
 				if (!(token.equals("J") || token.equals("Xle"))) {
-//					Collection<String> constituents = event.getConstituents();
-//					
-//					if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(token)) {
-//						char[] expectedConstituents = SequenceUtils.oneLetterAminoAcidConstituents(token);
-//						checkConstituents(constituents, expectedConstituents, token.charAt(0));
-//					}
-//					else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(token)) {
-//						String[] expectedConstituents = SequenceUtils.threeLetterAminoAcidConstituents(token);					
-//					}
+					Collection<String> constituents = event.getConstituents();
+					
+					if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(token.charAt(0))) {
+						checkConstituents(constituents, SequenceUtils.oneLetterAminoAcidConstituents(token));
+					}
+					else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(token)) {
+						checkConstituents(constituents, SequenceUtils.threeLetterAminoAcidConstituents(token));
+					}
 					return true;
 				}
 			}
@@ -225,27 +186,38 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	}
 	
 	
-//	private boolean checkConstituents(Collection<String> constituents, Object[] expectedConstituents, char token) {
-//		if (!constituents.isEmpty()) {
-//			if (constituents.size() == expectedConstituents.length) {
-//				boolean isContained = true;
-//				for (int i = 0; i < expectedConstituents.length; i++) {
-//					isContained = constituents.contains(expectedConstituents[i]);
-//					if (!isContained) {
-//						return false;
-//					}
-//				}
-//				if (isContained) {
-//					return true;
-//				}
-//			}
-//		}
-//		else {
-//			return true;
-//		}
-//		
-//		return false;
-//	}
+	private boolean checkConstituents(Collection<String> constituents, char[] expectedConstituents) {
+		String[] expectedConstituentsString = new String[expectedConstituents.length];
+		
+		for (int i = 0; i < expectedConstituents.length; i++) {
+			expectedConstituentsString[i] = Character.toString(expectedConstituents[i]);
+		}
+		
+		return checkConstituents(constituents, expectedConstituentsString);
+	}
+	
+	
+	private boolean checkConstituents(Collection<String> constituents, String[] expectedConstituents) {
+		if (!constituents.isEmpty()) {
+			if (constituents.size() == expectedConstituents.length) {
+				boolean isContained = true;
+				for (int i = 0; i < expectedConstituents.length; i++) {
+					isContained = constituents.contains(expectedConstituents[i]);
+					if (!isContained) {
+						return false;
+					}
+				}
+				if (isContained) {
+					return true;
+				}
+			}
+		}
+		else {
+			return true;
+		}
+		
+		return false;
+	}
 	
 
 	@Override
