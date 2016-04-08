@@ -102,7 +102,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 						if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(tokenName)) {
 							constituents = addConstituents(SequenceUtils.oneLetterAminoAcidConstituents(tokenName));
 						}
-						else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(tokenName)) {
+						else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(tokenName)) { //TODO do not write events with 3 letter codes
 							String[] threLetterCodeConstituents = SequenceUtils.threeLetterAminoAcidConstituents(tokenName);
 							for (int i = 0; i < threLetterCodeConstituents.length; i++) {
 								constituents.add(threLetterCodeConstituents[i]);

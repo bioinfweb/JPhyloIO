@@ -257,7 +257,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					alignmentType = TYPE_CONTIN_CELLS;
 					break;
 				case DISCRETE:
-				case UNKNOWN:
+				case UNKNOWN: //should not occur if previous code worked correctly
 					alignmentType = TYPE_STANDARD_CELLS;
 					break;
 				default:
@@ -279,7 +279,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					alignmentType = TYPE_CONTIN_SEQ;
 					break;
 				case DISCRETE:
-				case UNKNOWN:
+				case UNKNOWN: //should not occur if previous code worked correctly
 					alignmentType = TYPE_STANDARD_SEQ;
 					break;
 				default:
@@ -327,26 +327,31 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		while (tokenSetDefinitionIDs.hasNext()) {
 			String tokenSetID = tokenSetDefinitionIDs.next();
 			TokenSetDefinitionEvent startEvent = tokenSetDefinitions.getObjectStartEvent(tokenSetID);
-			CharacterStateSetType alignmentType = startEvent.getSetType();
 			
-			switch (alignmentType) {
+			switch (streamDataProvider.getAlignmentType()) {
 				case CONTINUOUS:
+				case NUCLEOTIDE: //should not occur
 					break;
-				case NUCLEOTIDE:
 				case DNA:
 					getWriter().writeStartElement(TAG_STATES.getLocalPart());
 					streamDataProvider.writeLabeledIDAttributes(startEvent);
 					tokenSetDefinitions.writeContentData(molecularDataReceiver, tokenSetID);
 					molecularDataReceiver.addRemainingEvents(CharacterStateSetType.DNA);
 					getWriter().writeEndElement();
-					//TODO write standardized states tag for DNA
-					//TODO write method that adds according events for DNA token definitions to receiver
 					break;
 				case RNA:
-					//TODO write standardized states tag for DNA
+					getWriter().writeStartElement(TAG_STATES.getLocalPart());
+					streamDataProvider.writeLabeledIDAttributes(startEvent);
+					tokenSetDefinitions.writeContentData(molecularDataReceiver, tokenSetID);
+					molecularDataReceiver.addRemainingEvents(CharacterStateSetType.RNA);
+					getWriter().writeEndElement();
 					break;
 				case AMINO_ACID:
-					//TODO write standardized states tag for DNA, translate AA 3-Letter-Code
+					getWriter().writeStartElement(TAG_STATES.getLocalPart());
+					streamDataProvider.writeLabeledIDAttributes(startEvent);
+					tokenSetDefinitions.writeContentData(molecularDataReceiver, tokenSetID);
+					molecularDataReceiver.addRemainingEvents(CharacterStateSetType.AMINO_ACID);
+					getWriter().writeEndElement();
 					break;
 				default: //discrete data
 					getWriter().writeStartElement(TAG_STATES.getLocalPart());
@@ -474,16 +479,15 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					streamDataProvider.getCharSetToTokenSetMap().put("general", tokenSetID);
 				}
 				else {
-					throw new JPhyloIOWriterException("More than one token set withot a reference to a character set was encountered."); //TODO what exactly is this?
+					throw new JPhyloIOWriterException("More than one token set without a reference to a character set was encountered."); //TODO what exactly is this?
 				}
 			}
 			else {
 				streamDataProvider.getCharSetToTokenSetMap().put(tokenSets.getObjectStartEvent(tokenSetID).getCharacterSetID(), tokenSetID);
 			}
-			
 			tokenSets.writeContentData(receiver, tokenSetID);
 		}
-		
+	
 		if (streamDataProvider.getAlignmentType() == null || streamDataProvider.getAlignmentType().equals(CharacterStateSetType.UNKNOWN)) {
 			streamDataProvider.setAlignmentType(CharacterStateSetType.DISCRETE);
 		}

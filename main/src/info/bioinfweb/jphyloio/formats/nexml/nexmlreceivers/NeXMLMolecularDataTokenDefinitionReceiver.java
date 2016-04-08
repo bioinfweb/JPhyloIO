@@ -71,7 +71,7 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 			states.add(Character.toString(SequenceUtils.DNA_CHARS.charAt(i)));
 		}
 		
-		writeTokenDefinitionEvents(receiver, remainingTokens, true, states);
+		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.DNA, states);
 	}
 	
 	
@@ -85,7 +85,7 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 			states.add(Character.toString(SequenceUtils.RNA_CHARS.charAt(i)));
 		}
 		
-		writeTokenDefinitionEvents(receiver, remainingTokens, true, states);
+		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.RNA, states);
 	}
 	
 	
@@ -99,11 +99,11 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 			states.add(Character.toString(state));
 		}
 		
-		writeTokenDefinitionEvents(receiver, remainingTokens, false, states);
+		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.AMINO_ACID, states);
 	}
 	
 	
-	private void writeTokenDefinitionEvents(NeXMLTokenSetEventReceiver receiver, Set<Character> remainingTokens, boolean isNucleotides, 
+	private void writeTokenDefinitionEvents(NeXMLTokenSetEventReceiver receiver, Set<Character> remainingTokens, CharacterStateSetType alignmentType, 
 			Collection<String> atomicStates) throws IOException, XMLStreamException {
 		List<String> constituents;
 		CharacterSymbolType type;
@@ -111,12 +111,15 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 		for (Character token : remainingTokens) {
 			constituents = null;
 			type = CharacterSymbolType.ATOMIC_STATE;
-			char[] constituentChars;
+			char[] constituentChars = new char[0];
 			
-			if (isNucleotides) {
-				constituentChars = SequenceUtils.nucleotideConstituents(token); //TODO for RNA T is always included instead of U
+			if (alignmentType.equals(CharacterStateSetType.DNA)) {
+				constituentChars = SequenceUtils.nucleotideConstituents(token);
 			}
-			else {
+			else if (alignmentType.equals(CharacterStateSetType.RNA)) {
+				constituentChars = SequenceUtils.rnaConstituents(token);
+			}
+			else if (alignmentType.equals(CharacterStateSetType.AMINO_ACID)) {
 				constituentChars = SequenceUtils.oneLetterAminoAcidConstituents(Character.toString(token));
 			}
 			
@@ -140,7 +143,7 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 				Character.toString(SequenceUtils.MISSING_DATA_CHAR), CharacterSymbolMeaning.MISSING, CharacterSymbolType.UNCERTAIN, atomicStates));
 		receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
-		if (!isNucleotides) {
+		if (alignmentType.equals(CharacterStateSetType.AMINO_ACID)) {
 			receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "StopCodon", null, //TODO generate unique ID
 					Character.toString(SequenceUtils.STOP_CODON_CHAR), CharacterSymbolMeaning.OTHER, CharacterSymbolType.ATOMIC_STATE, null));
 			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));

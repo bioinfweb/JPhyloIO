@@ -51,16 +51,32 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 		switch (getStreamDataProvider().getAlignmentType()) {							
 			case DNA:
 				if (!isDNAToken(event)) {
-					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+					if (isRNAToken(event)) {
+						getStreamDataProvider().setAlignmentType(CharacterStateSetType.RNA);
+					}
+					else {
+						getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+					}
 				}
 				break;
 			case RNA:
 				if (!isRNAToken(event)) {
-					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+					if (isDNAToken(event)) {
+						getStreamDataProvider().setAlignmentType(CharacterStateSetType.DNA);
+					}
+					else {
+						getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+					}
 				}
 				break;
 			case NUCLEOTIDE:
-				if (!(isDNAToken(event) || isRNAToken(event))) {
+				if (isDNAToken(event)) {
+					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DNA);
+				}
+				else if (isRNAToken(event)) {
+					getStreamDataProvider().setAlignmentType(CharacterStateSetType.RNA);
+				}			
+				else {
 					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
 				}
 				break;
