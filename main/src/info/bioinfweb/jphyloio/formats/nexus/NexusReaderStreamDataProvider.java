@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.all.BlockTitleToIDMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.NexusTranslationTable;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
@@ -45,7 +46,7 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	public static final String INFO_KEY_BLOCK_TITLE = "info.bioinfweb.jphyloio.nexus.blockTitle";
 	public static final String INFO_KEY_BLOCK_LINKS = "info.bioinfweb.jphyloio.nexus.blockLinks";
 	public static final String INFO_KEY_DEFAULT_OTU_LIST_ID = "info.bioinfweb.jphyloio.nexus.taxa.defaultOTUListID";
-	public static final String INFO_KEY_OTU_LIST_ID_MAP = "info.bioinfweb.jphyloio.nexus.taxa.otuListIDMap";
+	public static final String INFO_KEY_BLOCK_ID_MAP = "info.bioinfweb.jphyloio.nexus.taxa.blockTitleToIDMap";
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaIDMap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
@@ -124,8 +125,13 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
-	public Map<String, String> getOTUsLabelToIDMap() {
-		return getMap(INFO_KEY_OTU_LIST_ID_MAP);
+	public BlockTitleToIDMap getBlockTitleToIDMap() {
+		BlockTitleToIDMap result = getSharedInformationMap().getObject(INFO_KEY_BLOCK_ID_MAP, null, BlockTitleToIDMap.class);
+		if (result == null) {
+			result = new BlockTitleToIDMap();
+			getSharedInformationMap().put(INFO_KEY_BLOCK_ID_MAP, result);  // If an object of another type is stored under this key, getObject() would also return null and it will be overwritten here. 
+		}
+		return result;
 	}
 	
 	

@@ -61,7 +61,7 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 							NexusReaderStreamDataProvider.INFO_KEY_DEFAULT_OTU_LIST_ID, currentListID);  // Set first OTU list as the default.
 				}
 				if (label != null) {
-					getStreamDataProvider().getOTUsLabelToIDMap().put(label, currentListID);
+					getStreamDataProvider().getBlockTitleToIDMap().put(BLOCK_NAME_TAXA, label, currentListID);
 				}
 				
 				Collection<JPhyloIOEvent> leadingComments = getStreamDataProvider().resetCurrentEventCollection();

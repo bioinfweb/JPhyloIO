@@ -81,13 +81,15 @@ public class LinkReader extends AbstractKeyValueCommandReader implements NexusCo
 		if (!info.wasValueDelimited()) {
 			value = value.replace(NewickConstants.FREE_NAME_BLANK, ' ');
 		}
-		if (info.getKey().toUpperCase().equals(BLOCK_NAME_TAXA.toUpperCase())) {
-			value = getStreamDataProvider().getOTUsLabelToIDMap().get(value);
+		
+		if (info.getKey().toUpperCase().equals(BLOCK_NAME_TAXA.toUpperCase())) {  //TODO Add more block types that are translated
+			value = getStreamDataProvider().getBlockTitleToIDMap().get(info.getKey().toUpperCase(), value);
 			if (value == null) {
-				throw new JPhyloIOReaderException("The linked Nexus TAXA block with the label \"" + info.getValue() + 
-						"\" was not previously declared unsing a TITLE command.", getStreamDataProvider().getDataReader());
+				throw new JPhyloIOReaderException("The linked Nexus " + info.getKey().toUpperCase() + " block with the label \"" + 
+						info.getValue() +	"\" was not previously declared unsing a TITLE command.", getStreamDataProvider().getDataReader());
 			}
 		}
+		//System.out.println("Replacing: " + info.getKey().toUpperCase() + ": " + getStreamDataProvider().getBlockLinks().get(info.getKey().toUpperCase()) + " -> " + value);
 		getStreamDataProvider().getBlockLinks().put(info.getKey().toUpperCase(), value);
 		return false;
 	}

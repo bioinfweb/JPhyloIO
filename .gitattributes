@@ -166,6 +166,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/AbstractNexusComma
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/DefaultCommandReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/NexusCommandEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/NexusCommandReaderFactory.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/BlockTitleToIDMap.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/LinkReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/TitleReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/package-info.java -text svneol=unset#text/plain
