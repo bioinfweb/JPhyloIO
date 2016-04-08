@@ -38,14 +38,18 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -81,7 +85,13 @@ public class NeXMLStoreDataAdapterTest {
 		List<JPhyloIOEvent> metaData = new ArrayList<JPhyloIOEvent>();
 		
 		metaData.add(new ResourceMetadataEvent("meta" + getIdIndex(), "ResourceMeta", new QName("relations"), null, about));
+		
+		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new QName("predicate"), "literal value", LiteralContentSequenceType.SIMPLE));
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
 		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
+		
 		
 		return metaData;
 	}
@@ -102,7 +112,11 @@ public class NeXMLStoreDataAdapterTest {
 	
 	protected StoreObjectData<LabeledIDEvent> createOTU(String otuID) {		
 		StoreObjectData<LabeledIDEvent> otu = new StoreObjectData<LabeledIDEvent>(new LabeledIDEvent(EventContentType.OTU, 
-				otuID, "taxon"), null);		
+				otuID, "taxon"), null);
+		
+		otu.getObjectContent().add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new QName("predicate"), "literal value", LiteralContentSequenceType.SIMPLE));
+		otu.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
 		return otu;
 	}
 	
@@ -129,14 +143,12 @@ public class NeXMLStoreDataAdapterTest {
 //				null));
 		
 		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIdIndex();
-		matrix.getTokenSets().getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA));
-		
+		matrix.getTokenSets().getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA));		
 		
 		String charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIdIndex();
 		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID, true));
 		charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIdIndex();
-		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID, false));
-		
+		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID, false));		
 		
 		return matrix;
 	}
@@ -154,15 +166,35 @@ public class NeXMLStoreDataAdapterTest {
 		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
 				new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "token set label"), new ArrayList<JPhyloIOEvent>());
 		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent("token1", "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent("token1", "Guanin", "G", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Guanin", "G", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent("token1", "Cytosin", "C", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent("token1", "Thymin", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Cytosin", "C", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
 		
+//		tokenSet.getObjectContent().add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new QName("predicate"), "literal value", LiteralContentSequenceType.SIMPLE));
+//		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));		
+		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Thymin", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
+				CharacterSymbolType.ATOMIC_STATE));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		Set<String> ambiguityCodeB = new HashSet<String>();
+//		ambiguityCodeB.add("C");
+//		ambiguityCodeB.add("G");
+//		ambiguityCodeB.add("T");
+//		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), null, "B", CharacterSymbolMeaning.CHARACTER_STATE, 
+				CharacterSymbolType.UNCERTAIN, ambiguityCodeB));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+//		
 		return tokenSet;
 	}
 	
