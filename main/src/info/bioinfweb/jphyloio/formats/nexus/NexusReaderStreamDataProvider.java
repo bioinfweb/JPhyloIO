@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.all.BlockTitleToIDMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.NexusTranslationTable;
@@ -43,8 +44,13 @@ import java.util.TreeMap;
  */
 public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<NexusEventReader> implements NexusConstants {
 	public static final String INFO_KEY_BLOCK_START_EVENT_FIRED = "info.bioinfweb.jphyloio.nexus.blockStartEventFired";
-	public static final String INFO_KEY_CURRENT_BLOCK_NAME = "info.bioinfweb.jphyloio.nexus.currentBlockTitle";
+	
+	/** Used to store the ID of the according <i>JPhyloIO</i> event to the current Nexus block (if one exists). */ 
+	public static final String INFO_KEY_CURRENT_BLOCK_ID = "info.bioinfweb.jphyloio.nexus.currentBlockID";
+	
+	/** Used to store the title of the current block if specified by a TITLE command. */
 	public static final String INFO_KEY_BLOCK_TITLE = "info.bioinfweb.jphyloio.nexus.blockTitle";
+	
 	public static final String INFO_KEY_BLOCK_LINKS = "info.bioinfweb.jphyloio.nexus.blockLinks";
 	public static final String INFO_KEY_BLOCK_ID_MAP = "info.bioinfweb.jphyloio.nexus.taxa.blockTitleToIDMap";
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
@@ -108,9 +114,34 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
+	public String getMatrixLink() {
+		Map<String, String> map = getBlockLinks();
+		String result = map.get(BLOCK_NAME_CHARACTERS);
+		if (result == null) {
+			result = map.get(BLOCK_NAME_DATA);
+			if (result == null) {
+				result = map.get(BLOCK_NAME_UNALIGNED);  //TODO Can sets be defined for unaligned blocks?
+				
+				if (result == null) {
+					getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_CHARACTERS);
+					if (result == null) {
+						getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_DATA);
+						if (result == null) {
+							getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_UNALIGNED);  //TODO Can sets be defined for unaligned blocks?
+						}
+					}
+				}
+			}
+		}  //TODO Should an exception be thrown if more than one link is defined in a SETS block?
+		return result;
+	}
+	
+	
 	public void clearBlockInformation() {
 		getSharedInformationMap().remove(INFO_KEY_BLOCK_TITLE);
 		getSharedInformationMap().remove(INFO_KEY_BLOCK_LINKS);
+		getSharedInformationMap().remove(INFO_KEY_CURRENT_BLOCK_ID);
+		getSharedInformationMap().remove(INFO_KEY_BLOCK_START_EVENT_FIRED);
 	}
 	
 	

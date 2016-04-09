@@ -40,7 +40,10 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 
 
 	@Override
-	public void handleBegin(NexusReaderStreamDataProvider streamDataProvider) {}
+	public void handleBegin(NexusReaderStreamDataProvider streamDataProvider) {
+		streamDataProvider.getSharedInformationMap().put(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID, 
+				DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID());
+	}
 
 	
 	@Override
@@ -57,9 +60,8 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 						|| commandName.equals(COMMAND_NAME_MATRIX))) {  // Fire start event, as soon as one of these commands is encountered.
 			
 			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, 
-					DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE),
-					streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));
+					map.getString(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID),	
+					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));
 			map.put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
 		}
 	}

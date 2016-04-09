@@ -164,8 +164,9 @@ public enum EventContentType {
 	/** 
 	 * Indicates the start or end of a sequence of {@link #CHARACTER_SET_INTERVAL} events. 
 	 * <p>
-	 * Start events of this type are instances of {@link LabeledIDEvent}, end events are
-	 * instances of {@link PartEndEvent}.
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * instances of {@link PartEndEvent}. The start events link a matrix by their ID using 
+	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
 	 */

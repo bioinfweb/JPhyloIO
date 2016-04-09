@@ -57,8 +57,12 @@ public class TitleReader extends AbstractNexusCommandEventReader implements Nexu
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		try {
 			getStreamDataProvider().consumeWhiteSpaceAndComments();  //TODO Store comments until start event was fired by substituting the event queue.
-			getStreamDataProvider().getSharedInformationMap().put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE, 
-					getStreamDataProvider().readNexusWord());
+			String title = getStreamDataProvider().readNexusWord();
+			getStreamDataProvider().getSharedInformationMap().put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE, title);
+			String id = getStreamDataProvider().getSharedInformationMap().getString(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID);
+			if (id != null) {
+				getStreamDataProvider().getBlockTitleToIDMap().putID(getStreamDataProvider().getEventReader().getCurrentBlockName(), title, id);
+			}
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			if (reader.readChar() == COMMAND_END) {
 				setAllDataProcessed(true);

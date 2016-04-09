@@ -20,6 +20,8 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.all;
 
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.TreeSet;
 
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
@@ -70,6 +72,20 @@ import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
  * @see TitleReader
  */
 public class LinkReader extends AbstractKeyValueCommandReader implements NexusConstants {
+	private static final Set<String> BLOCK_NAMES_WITH_EVENTS = createBlockNamesWithEvents();
+	
+	
+	private static Set<String> createBlockNamesWithEvents() {
+		Set<String> result = new TreeSet<String>();
+		result.add(BLOCK_NAME_TAXA);  // All constants must be upper case characters.
+		result.add(BLOCK_NAME_CHARACTERS);
+		result.add(BLOCK_NAME_DATA);
+		result.add(BLOCK_NAME_UNALIGNED);
+		result.add(BLOCK_NAME_TREES);
+		return result;
+	}
+	
+	
 	public LinkReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_LINK, new String[0], nexusDocument, "");
 	}
@@ -82,14 +98,14 @@ public class LinkReader extends AbstractKeyValueCommandReader implements NexusCo
 			value = value.replace(NewickConstants.FREE_NAME_BLANK, ' ');
 		}
 		
-		if (info.getKey().toUpperCase().equals(BLOCK_NAME_TAXA.toUpperCase())) {  //TODO Add more block types that are translated
+		if (BLOCK_NAMES_WITH_EVENTS.contains(info.getKey().toUpperCase())) {
+			String nexusBlockLabel = value;  // Save undelimited value for possible error message.
 			value = getStreamDataProvider().getBlockTitleToIDMap().getID(info.getKey().toUpperCase(), value);
 			if (value == null) {
 				throw new JPhyloIOReaderException("The linked Nexus " + info.getKey().toUpperCase() + " block with the label \"" + 
-						info.getValue() +	"\" was not previously declared unsing a TITLE command.", getStreamDataProvider().getDataReader());
+						nexusBlockLabel +	"\" was not previously declared unsing a TITLE command.", getStreamDataProvider().getDataReader());
 			}
 		}
-		//System.out.println("Replacing: " + info.getKey().toUpperCase() + ": " + getStreamDataProvider().getBlockLinks().get(info.getKey().toUpperCase()) + " -> " + value);
 		getStreamDataProvider().getBlockLinks().put(info.getKey().toUpperCase(), value);
 		return false;
 	}

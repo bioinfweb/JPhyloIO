@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -62,6 +63,12 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		return reader.peekString(name.length()).toUpperCase().equals(name);
 	}
 	
+
+	private void addStartEvent(String name) {
+		getStreamDataProvider().getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, 
+				DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name, 
+				getStreamDataProvider().getMatrixLink()));  // Will link null if no CHARACTERS, DATA or UNALIGNED block was defined before.  //TODO Should an exception be thrown instead?
+	}
 	
 	private boolean readNameAndFormat() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
@@ -80,9 +87,10 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		else if (end == COMMAND_END) {  // character set definition incomplete
 			setAllDataProcessed(true);
 			if (name.length() > 1) {
-				getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
-						DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
-						StringUtils.cutEnd(name, 1)));
+				addStartEvent(StringUtils.cutEnd(name, 1));
+//				getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
+//						DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+//						StringUtils.cutEnd(name, 1)));
 				getStreamDataProvider().getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
 				getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 				return true;
@@ -108,8 +116,9 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			char c = reader.readChar();
 			if (c == COMMAND_END) {
 				setAllDataProcessed(true);
-				getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
-						DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
+				addStartEvent(name);
+//				getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
+//						DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
 				getStreamDataProvider().getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
 				getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 				return true;
@@ -119,8 +128,9 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			}
 		}
 		
-		getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
-				DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
+		addStartEvent(name);
+//		getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
+//				DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
 		return false;
 	}
 	
