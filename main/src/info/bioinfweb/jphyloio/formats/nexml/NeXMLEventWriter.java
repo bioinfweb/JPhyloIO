@@ -357,6 +357,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					getWriter().writeStartElement(TAG_STATES.getLocalPart());
 					streamDataProvider.writeLabeledIDAttributes(startEvent);
 					tokenSetDefinitions.writeContentData(receiver, tokenSetID);
+					streamDataProvider.getTokenDefinitions().removeAll(streamDataProvider.getTokenTranslationMap().keySet());
+					if (!streamDataProvider.getTokenDefinitions().isEmpty()) {
+						receiver.writeRemainingStandardTokenDefinitions();
+					}
 					getWriter().writeEndElement();
 			}
 		}

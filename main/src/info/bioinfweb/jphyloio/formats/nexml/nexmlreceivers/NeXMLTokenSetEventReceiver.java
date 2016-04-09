@@ -21,10 +21,14 @@ package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.bio.SequenceUtils;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
@@ -34,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -48,23 +53,6 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	public NeXMLTokenSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
-	}
-	
-	
-	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
-		String tokenName = event.getTokenName();
-		String tokenSymbol = tokenName;
-		
-		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
-			tokenSymbol = "" + tokenDefinitionIndex;
-			tokenDefinitionIndex++;
-		}
-		
-		getStreamDataProvider().getTokenTranslationMap().put(event.getTokenName(), tokenSymbol);
-		tokenNameToIDMap.put(tokenName, event.getID());
-		
-		getStreamDataProvider().writeLabeledIDAttributes(event);
-		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);
 	}
 	
 	
@@ -102,12 +90,10 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 						if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(tokenName)) {
 							constituents = addConstituents(SequenceUtils.oneLetterAminoAcidConstituents(tokenName));
 						}
-						else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(tokenName)) { //TODO do not write events with 3 letter codes
-							String[] threLetterCodeConstituents = SequenceUtils.threeLetterAminoAcidConstituents(tokenName);
-							for (int i = 0; i < threLetterCodeConstituents.length; i++) {
-								constituents.add(threLetterCodeConstituents[i]);
-							}
-						}		
+						else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(tokenName)) {
+							tokenName = Character.toString(SequenceUtils.oneLetterAminoAcidByThreeLetter(tokenName));
+							constituents = addConstituents(SequenceUtils.oneLetterAminoAcidConstituents(tokenName));
+							}		
 						break;
 					default:
 						break;
@@ -123,8 +109,54 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 				if ((memberID != null) && getStreamDataProvider().getDocumentIDs().contains(memberID)) { //TODO check this in collect data receiver?
 					getWriter().writeAttribute(ATTR_STATE.getLocalPart(), memberID);
 				}
-			}			
+			}
 		}
+	}
+	
+	
+	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
+		String tokenName = event.getTokenName();
+		String tokenSymbol = tokenName;
+		String label = null;
+		
+		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+			if (event.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
+				if (!((tokenName.length() == 1) && (tokenName.charAt(0) == SequenceUtils.GAP_CHAR))) {
+					tokenSymbol = "" + tokenDefinitionIndex;
+					tokenDefinitionIndex++;
+					label = tokenName;
+				}
+			}
+			else if (event.getMeaning().equals(CharacterSymbolMeaning.MISSING)) {
+				if (!((tokenName.length() == 1) && (tokenName.charAt(0) == SequenceUtils.MISSING_DATA_CHAR))) {
+					tokenSymbol = "" + tokenDefinitionIndex;
+					tokenDefinitionIndex++;
+					label = tokenName;
+				}
+			}
+			else {
+				tokenSymbol = "" + tokenDefinitionIndex;
+				tokenDefinitionIndex++;
+				label = tokenName;
+			}
+		}
+		else if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.AMINO_ACID)) {
+			if (tokenName.length() == 3) {
+				tokenSymbol = Character.toString(SequenceUtils.oneLetterAminoAcidByThreeLetter(tokenName));
+				label = tokenName;
+			}
+		}
+		
+		getStreamDataProvider().getTokenTranslationMap().put(event.getTokenName(), tokenSymbol);
+		tokenNameToIDMap.put(tokenName, event.getID());
+		
+		getStreamDataProvider().writeLabeledIDAttributes(event);
+		
+		if ((event.getLabel() == null) && (label != null)) {
+			getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
+		}
+		
+		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);
 	}
 	
 	
@@ -138,32 +170,41 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		return constituents;
 	}
 	
+	
+	public void writeRemainingStandardTokenDefinitions() throws IOException, XMLStreamException {
+		Set<String> tokenNames = getStreamDataProvider().getTokenDefinitions();
+		
+		for (String token : tokenNames) {
+			doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + token, null, //TODO generate unique ID
+					token, CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
+			doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		}
+	}
+	
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case SINGLE_TOKEN_DEFINITION:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					SingleTokenDefinitionEvent singleTokenEvent = event.asSingleTokenDefinitionEvent();
-					if (!singleTokenEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH) 
-							&& !singleTokenEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {
-						switch (singleTokenEvent.getTokenType()) {
+					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
+					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH) 
+							&& !tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {
+						switch (tokenDefinitionEvent.getTokenType()) {
 							case ATOMIC_STATE:
-								if (singleTokenEvent.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
-									writeStateSet(singleTokenEvent, false);
+								if (tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
+									writeStateSet(tokenDefinitionEvent, false);
 								}
 								else {
-									writeState(singleTokenEvent);
+									writeState(tokenDefinitionEvent);
 								}
 								break;
 							case POLYMORPHIC:
-								writeStateSet(singleTokenEvent, true);
+								writeStateSet(tokenDefinitionEvent, true);
 								break;
 							case UNCERTAIN:
-								writeStateSet(singleTokenEvent, false);
+								writeStateSet(tokenDefinitionEvent, false);
 								break;
-							default:
-								break; // Nothing to do.
 						}
 						break;
 					}

@@ -64,6 +64,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private CharacterStateSetType alignmentType;
 	
 	private Map<String, String> tokenTranslationMap = new HashMap<String, String>();
+	private Set<String> tokenDefinitions = new HashSet<String>();
 	
 	private Map<String, String> charSetToTokenSetMap = new HashMap<String, String>();
 	private Map<String, Set<Long>> charSets = new HashMap<String, Set<Long>>();
@@ -190,6 +191,11 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public Map<String, String> getTokenTranslationMap() {
 		return tokenTranslationMap;
+	}
+
+
+	public Set<String> getTokenDefinitions() {
+		return tokenDefinitions;
 	}
 
 

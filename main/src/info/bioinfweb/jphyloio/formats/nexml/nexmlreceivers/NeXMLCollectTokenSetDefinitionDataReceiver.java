@@ -60,13 +60,8 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				}
 				break;
 			case RNA:
-				if (!isRNAToken(event)) {
-					if (isDNAToken(event)) {
-						getStreamDataProvider().setAlignmentType(CharacterStateSetType.DNA);
-					}
-					else {
-						getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
-					}
+				if (!isRNAToken(event)) {					
+					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);					
 				}
 				break;
 			case NUCLEOTIDE:
@@ -85,6 +80,9 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
 				}
 				break;				
+			case DISCRETE:
+				getStreamDataProvider().getTokenDefinitions().add(event.getTokenName());
+				break;
 			default:
 				break;
 		}		
@@ -237,18 +235,18 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	
 
 	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-			switch (event.getType().getContentType()) {
-				case SINGLE_TOKEN_DEFINITION:
-						SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
-						if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH)) {
-							checkSingleTokenDefinition(tokenDefinitionEvent);
-						}
-					break;
-				default:
-					break;
-			}
+	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {		
+		switch (event.getType().getContentType()) {
+			case SINGLE_TOKEN_DEFINITION:
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
+					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH)) {
+						checkSingleTokenDefinition(tokenDefinitionEvent);
+					}
+				}
+				break;
+			default:
+				break;
 		}
 		return true;
 	}

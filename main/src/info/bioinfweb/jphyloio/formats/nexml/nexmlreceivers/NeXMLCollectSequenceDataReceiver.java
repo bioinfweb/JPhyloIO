@@ -71,6 +71,21 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceRecei
 			getStreamDataProvider().setWriteCellsTags(true);
 		}
 	}
+	
+	
+	private void checkToken(String token) throws JPhyloIOWriterException {
+		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+			getStreamDataProvider().getTokenDefinitions().add(token);
+		}
+		else if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
+			try {
+				Double.parseDouble(token);
+			}
+			catch (NumberFormatException e) {
+				throw new JPhyloIOWriterException("All tokens in a continuous data characters tag must be numbers.");
+			}
+		}
+	}
 
 
 	@Override
@@ -78,6 +93,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceRecei
 		switch (event.getType().getContentType()) {
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					checkToken(event.asSingleSequenceTokenEvent().getToken());
 					nestedUnderSingleToken = true;
 					if (event.asSingleSequenceTokenEvent().getLabel() != null) {
 						getStreamDataProvider().setWriteCellsTags(true);
@@ -89,19 +105,9 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceRecei
 				break;
 			case SEQUENCE_TOKENS:
 				List<String> tokens = event.asSequenceTokensEvent().getCharacterValues();
-				if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
-					//TODO check for previously undefined states
-				}
-				else if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-					for (String token : tokens) {
-						try {
-							Double.parseDouble(token);
-						}
-						catch (NumberFormatException e) {
-							throw new JPhyloIOWriterException("All tokens in a continuous data sequence must be numbers.");
-						}
-					}
-				}
+				for (String token : tokens) {
+					checkToken(token);
+				}				
 				break;
 			default:
 				break;

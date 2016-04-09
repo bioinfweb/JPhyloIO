@@ -78,18 +78,25 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 	}
 	
 	
+	public NeXMLWriterStreamDataProvider getStreamDataProvider() {
+		return streamDataProvider;
+	}
+
+
 	@Override
 	protected void writeToken(String token, String label) throws XMLStreamException {
+		String translatedToken = getStreamDataProvider().getTokenTranslationMap().get(token);
+		
 		if (streamDataProvider.isWriteCellsTags()) {
 			getWriter().writeStartElement(TAG_CELL.getLocalPart());
 			if (label != null) {
 				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
-			}
-			getWriter().writeCharacters(token);
+			} 
+			getWriter().writeCharacters(translatedToken);
 			getWriter().writeEndElement();
 		}		
 		else {
-			getWriter().writeCharacters(token);
+			getWriter().writeCharacters(translatedToken);
 			if (isLongTokens()) {
 				getWriter().writeCharacters(" ");
 			}

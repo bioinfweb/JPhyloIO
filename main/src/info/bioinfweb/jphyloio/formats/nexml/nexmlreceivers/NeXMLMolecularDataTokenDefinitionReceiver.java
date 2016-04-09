@@ -23,7 +23,6 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.bio.SequenceUtils;
-import info.bioinfweb.commons.collections.CollectionUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -135,16 +134,16 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		}
 		
-		receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "Gap", null, //TODO generate unique ID
+		receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "Gap", "gap", //TODO generate unique ID
 				Character.toString(SequenceUtils.GAP_CHAR), CharacterSymbolMeaning.GAP, CharacterSymbolType.UNCERTAIN, null));
 		receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
-		receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "MissingData", null, //TODO generate unique ID
+		receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "MissingData", "missing data", //TODO generate unique ID
 				Character.toString(SequenceUtils.MISSING_DATA_CHAR), CharacterSymbolMeaning.MISSING, CharacterSymbolType.UNCERTAIN, atomicStates));
 		receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
 		if (alignmentType.equals(CharacterStateSetType.AMINO_ACID)) {
-			receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "StopCodon", null, //TODO generate unique ID
+			receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "StopCodon", "stop codon", //TODO generate unique ID
 					Character.toString(SequenceUtils.STOP_CODON_CHAR), CharacterSymbolMeaning.OTHER, CharacterSymbolType.ATOMIC_STATE, null));
 			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		}
@@ -204,15 +203,15 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 		switch (event.getType().getContentType()) {
 			case SINGLE_TOKEN_DEFINITION:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					SingleTokenDefinitionEvent tokenEvent = event.asSingleTokenDefinitionEvent();
+					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
 					
 					if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.AMINO_ACID)) {
-						if (tokenEvent.getTokenName().length() > 1) { //only one letter codes can be written to NeXML
-							tokens.add(SequenceUtils.oneLetterAminoAcidByThreeLetter(tokenEvent.getTokenName())); //Token must be a valid three letter code which was already checked in NeXMLCollection
+						if (tokenDefinitionEvent.getTokenName().length() > 1) { //only one letter codes can be written to NeXML
+							tokens.add(SequenceUtils.oneLetterAminoAcidByThreeLetter(tokenDefinitionEvent.getTokenName())); //Token must be a valid three letter code which was already checked in NeXMLCollectTokenSetDefinitionDataReceiver
 						}
 					}
 					else {
-						tokens.add(tokenEvent.getTokenName().charAt(0));						
+						tokens.add(tokenDefinitionEvent.getTokenName().charAt(0));						
 					}
 				}
 				receiver.doAdd(event);
