@@ -106,8 +106,12 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 			for (String tokenDefinition : constituents) {
 				getWriter().writeEmptyElement(TAG_MEMBER.getLocalPart());
 				memberID = tokenNameToIDMap.get(tokenDefinition);
-				if ((memberID != null) && getStreamDataProvider().getDocumentIDs().contains(memberID)) { //TODO check this in collect data receiver?
+				if ((memberID != null) && getStreamDataProvider().getDocumentIDs().contains(memberID)) {
 					getWriter().writeAttribute(ATTR_STATE.getLocalPart(), memberID);
+				}
+				else {
+					throw new JPhyloIOWriterException("The token definition set with the ID " + event.getID() 
+							+ " linked to the token definition ID " + memberID + " which does not exist in the document");
 				}
 			}
 		}
@@ -156,7 +160,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 			getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
 		}
 		
-		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);
+		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);		
 	}
 	
 	
@@ -175,8 +179,8 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		Set<String> tokenNames = getStreamDataProvider().getTokenDefinitions();
 		
 		for (String token : tokenNames) {
-			doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + token, null, //TODO generate unique ID
-					token, CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
+			doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX),
+					null, token, CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
 			doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		}
 	}

@@ -40,6 +40,7 @@ public interface ReadWriteConstants {
 	public static final String DEFAULT_OTU_ID_PREFIX = "otu";
 	public static final String DEFAULT_MATRIX_ID_PREFIX = "matrix";
 	public static final String DEFAULT_SEQUENCE_ID_PREFIX = "seq";
+	public static final String DEFAULT_CHAR_ID_PREFIX = "char";
 	public static final String DEFAULT_CHAR_SET_ID_PREFIX = "charSet";
 	public static final String DEFAULT_TOKEN_SET_ID_PREFIX = "tokenSet";
 	public static final String DEFAULT_TOKEN_DEFINITION_ID_PREFIX = "tokenDefinition";

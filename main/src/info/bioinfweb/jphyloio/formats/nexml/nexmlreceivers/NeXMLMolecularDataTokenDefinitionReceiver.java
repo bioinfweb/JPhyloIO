@@ -129,22 +129,22 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 					constituents.add(Character.toString(constituentChars[i]));
 				}				
 			}
-			receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + token, null, //TODO generate unique ID
-					Character.toString(token), CharacterSymbolMeaning.CHARACTER_STATE, type, constituents));
+			receiver.doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX), 
+					null, Character.toString(token), CharacterSymbolMeaning.CHARACTER_STATE, type, constituents));
 			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		}
 		
-		receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "Gap", "gap", //TODO generate unique ID
-				Character.toString(SequenceUtils.GAP_CHAR), CharacterSymbolMeaning.GAP, CharacterSymbolType.UNCERTAIN, null));
+		receiver.doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX),
+				"gap", Character.toString(SequenceUtils.GAP_CHAR), CharacterSymbolMeaning.GAP, CharacterSymbolType.UNCERTAIN, null));
 		receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
-		receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "MissingData", "missing data", //TODO generate unique ID
-				Character.toString(SequenceUtils.MISSING_DATA_CHAR), CharacterSymbolMeaning.MISSING, CharacterSymbolType.UNCERTAIN, atomicStates));
+		receiver.doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX),
+				"missing data", Character.toString(SequenceUtils.MISSING_DATA_CHAR), CharacterSymbolMeaning.MISSING, CharacterSymbolType.UNCERTAIN, atomicStates));
 		receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
 		if (alignmentType.equals(CharacterStateSetType.AMINO_ACID)) {
-			receiver.doAdd(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + "StopCodon", "stop codon", //TODO generate unique ID
-					Character.toString(SequenceUtils.STOP_CODON_CHAR), CharacterSymbolMeaning.OTHER, CharacterSymbolType.ATOMIC_STATE, null));
+			receiver.doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX),
+					"stop codon", Character.toString(SequenceUtils.STOP_CODON_CHAR), CharacterSymbolMeaning.OTHER, CharacterSymbolType.ATOMIC_STATE, null));
 			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		}
 	}

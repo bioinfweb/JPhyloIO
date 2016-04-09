@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -50,6 +51,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private NeXMLEventWriter eventWriter;
 	
 	private Set<String> documentIDs = new HashSet<String>();
+	private int idIndex = 0;
 	
 	private LiteralMetadataEvent literalWithoutXMLContent;
 	private Set<String> metaDataNameSpaces = new TreeSet<String>();
@@ -68,8 +70,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	
 	private Map<String, String> charSetToTokenSetMap = new HashMap<String, String>();
 	private Map<String, Set<Long>> charSets = new HashMap<String, Set<Long>>();
-	private Map<Long, String> charIndexToIDMap = new HashMap<Long, String>();
-	private Map<String, String> charIDToStatesMap = new HashMap<String, String>();
+	private Map<Long, String> columnIndexToStatesMap = new HashMap<Long, String>();
 	
 	private Set<String> phylogenyLinkedOtusIDs = new HashSet<String>();
 	
@@ -126,6 +127,13 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	
 	public Set<String> getDocumentIDs() {
 		return documentIDs;
+	}
+	
+	
+	public void addToDocumentIDs(String id) throws JPhyloIOWriterException {
+		if (!getDocumentIDs().add(id)) {
+			throw new JPhyloIOWriterException("The encountered ID " + id + " already exists in the document. IDs have to be unique."); //TODO give different type of exception?
+		}
 	}
 
 
@@ -209,13 +217,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public Map<Long, String> getCharIndexToIDMap() {
-		return charIndexToIDMap;
-	}
-
-
-	public Map<String, String> getCharIDToStatesMap() {
-		return charIDToStatesMap;
+	public Map<Long, String> getColumnIndexToStatesMap() {
+		return columnIndexToStatesMap;
 	}
 
 
@@ -244,13 +247,15 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
-	public void writeID(String id) throws XMLStreamException, JPhyloIOWriterException {
-		if (getDocumentIDs().add(id)) {
-			getEventWriter().getWriter().writeAttribute(ATTR_ID.getLocalPart(), id);
-		}
-		else {
-			throw new JPhyloIOWriterException("The encountered ID " + id + " already exists in the document. IDs have to be unique."); //TODO give different type of exception?
-		}
+	public String createNewID(String prefix) {
+		String id;
+		
+		do {
+			id = prefix + idIndex;
+			idIndex++;
+		} while (!getDocumentIDs().add(id));
+		
+		return id;
 	}
 	
 	
@@ -260,7 +265,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 
 	public void writeLabeledIDAttributes(LabeledIDEvent event, String about) throws XMLStreamException, JPhyloIOWriterException {
-		writeID(event.getID());		
+		getEventWriter().getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
 		
 		if (about != null) {
 			getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + about);

@@ -47,20 +47,20 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	}
 	
 	
-	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {
-		switch (getStreamDataProvider().getAlignmentType()) {							
+	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {		
+		switch (getStreamDataProvider().getAlignmentType()) {
 			case DNA:
 				if (!isDNAToken(event)) {
-					if (isRNAToken(event)) {
+					if (isRNAToken(event) && getStreamDataProvider().getTokenDefinitions().contains("T")) {
 						getStreamDataProvider().setAlignmentType(CharacterStateSetType.RNA);
 					}
-					else {
+					else { //data is mixed DNA and RNA
 						getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
 					}
 				}
 				break;
 			case RNA:
-				if (!isRNAToken(event)) {					
+				if (!isRNAToken(event)) {
 					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);					
 				}
 				break;
@@ -79,13 +79,10 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				if (!isAAToken(event)) {
 					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
 				}
-				break;				
-			case DISCRETE:
-				getStreamDataProvider().getTokenDefinitions().add(event.getTokenName());
 				break;
 			default:
 				break;
-		}		
+		}	
 	}
 	
 	
@@ -242,7 +239,9 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
 					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH)) {
 						checkSingleTokenDefinition(tokenDefinitionEvent);
-					}
+						getStreamDataProvider().addToDocumentIDs(tokenDefinitionEvent.getID());
+						getStreamDataProvider().getTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
+					}					
 				}
 				break;
 			default:
