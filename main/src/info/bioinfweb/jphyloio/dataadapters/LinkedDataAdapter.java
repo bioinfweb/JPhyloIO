@@ -24,16 +24,16 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 
 /**
- * All data adapters possibly linking an OTU list should implement this interface.
+ * All data adapters possibly linking another data element (e.g. an OTU list or a matrix) should implement this interface.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public interface LinkedOTUsDataAdapter {
+public interface LinkedDataAdapter {
 	/**
 	 * Returns the start event of this data element (usually a matrix, tree or network). The returned
 	 * event can be used to determine the label and ID of the modeled data element and an optionally linked
-	 * OTU list. 
+	 * data element. 
 	 * 
 	 * @return the start event of this data element
 	 * @see OTUListDataAdapter#getListStartEvent()

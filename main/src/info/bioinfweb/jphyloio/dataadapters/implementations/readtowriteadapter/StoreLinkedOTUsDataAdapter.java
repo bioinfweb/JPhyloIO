@@ -18,10 +18,10 @@
  */
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
-import info.bioinfweb.jphyloio.dataadapters.LinkedOTUsDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.LinkedDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
-public class StoreLinkedOTUsDataAdapter implements LinkedOTUsDataAdapter {
+public class StoreLinkedOTUsDataAdapter implements LinkedDataAdapter {
 	private LinkedLabeledIDEvent startEvent;
 	
 	
