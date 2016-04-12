@@ -245,6 +245,7 @@ test/data/MEGA/HLA-3Seq.meg -text
 test/data/MEGA/HLA-3Seq.meg.gz -text
 test/data/MEGA/MatchToken.meg -text
 test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
+test/data/NeXML/EmptyCURIEPrefix.xml -text svneol=unset#text/plain
 test/data/NeXML/LargeSequences.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaCustomXML.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
