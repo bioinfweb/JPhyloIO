@@ -147,7 +147,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public void addToDocumentIDs(String id) throws JPhyloIOWriterException {
 		if (!getDocumentIDs().add(id)) {
-			throw new JPhyloIOWriterException("The encountered ID " + id + " already exists in the document. IDs have to be unique."); //TODO give different type of exception?
+			throw new InconsistentAdapterDataException("The encountered ID " + id + " already exists in the document. IDs have to be unique.");
 		}
 	}
 

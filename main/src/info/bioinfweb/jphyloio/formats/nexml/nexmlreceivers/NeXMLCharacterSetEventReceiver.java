@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -45,8 +46,7 @@ public class NeXMLCharacterSetEventReceiver extends NeXMLMetaDataReceiver {
 			case CHARACTER_SET_INTERVAL:
 				break;
 			default:
-				//TODO give exception if yet another event type occurs
-				break;
+				throw IllegalEventException.newInstance(this, getParentEvent(), event);
 		}
 		return true;
 	}

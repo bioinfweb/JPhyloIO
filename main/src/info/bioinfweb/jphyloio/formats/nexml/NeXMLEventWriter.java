@@ -64,7 +64,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLConstants {	
+public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLConstants {
 	private XMLStreamWriter writer;
 	private ReadWriteParameterMap parameters;
 	private ApplicationLogger logger;

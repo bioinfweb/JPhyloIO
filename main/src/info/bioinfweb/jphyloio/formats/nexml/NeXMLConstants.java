@@ -93,7 +93,7 @@ public interface NeXMLConstants {
 	public static final QName ATTR_CONTENT = new QName("content");
 	public static final QName ATTR_PROPERTY = new QName("property");	
 	
-	public static final String TYPE_DNA_SEQS = NEX_PRE + ":DnaSeqs";  //TODO static prefixes cannot be used here, since they are user-defined
+	public static final String TYPE_DNA_SEQS = NEX_PRE + ":DnaSeqs"; //TODO static prefixes cannot be used here, since they are user-defined
 	public static final String TYPE_DNA_CELLS = NEX_PRE + ":DnaCells";
 	public static final String TYPE_RNA_SEQS = NEX_PRE + ":RnaSeqs";
 	public static final String TYPE_RNA_CELLS= NEX_PRE + ":RnaCells";
