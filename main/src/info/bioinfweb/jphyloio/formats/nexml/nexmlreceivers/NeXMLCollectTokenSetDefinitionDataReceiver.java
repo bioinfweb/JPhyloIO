@@ -49,15 +49,16 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	
 	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {		
 		switch (getStreamDataProvider().getAlignmentType()) {
-			case DNA:
+			case DNA:				
 				if (!isDNAToken(event)) {
-					if (isRNAToken(event) && getStreamDataProvider().getTokenDefinitions().contains("T")) {
+					if (getStreamDataProvider().isNucleotideType() && isRNAToken(event) && !getStreamDataProvider().getTokenDefinitions().contains("T")) {
 						getStreamDataProvider().setAlignmentType(CharacterStateSetType.RNA);
 					}
-					else { //data is mixed DNA and RNA
+					else {
 						getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
 					}
-				}
+				}				
+				else
 				break;
 			case RNA:
 				if (!isRNAToken(event)) {
@@ -232,14 +233,13 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	
 
 	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {		
+	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case SINGLE_TOKEN_DEFINITION:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
 					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH)) {
 						checkSingleTokenDefinition(tokenDefinitionEvent);
-						getStreamDataProvider().addToDocumentIDs(tokenDefinitionEvent.getID());
 						getStreamDataProvider().getTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
 					}					
 				}

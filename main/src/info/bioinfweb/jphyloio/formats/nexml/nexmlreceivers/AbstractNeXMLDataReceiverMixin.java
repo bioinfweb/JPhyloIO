@@ -26,6 +26,8 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
@@ -47,6 +49,8 @@ import javax.xml.stream.XMLStreamWriter;
  * @since 0.0.0
  */
 public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
+	
+	
 	private static void writeLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event, Class<? extends Object> objectType) throws XMLStreamException, JPhyloIOWriterException {
 		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();
 		
@@ -66,34 +70,72 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		}
 		
 		writer.writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_LITERAL_META);
+		
+		if (streamDataProvider.getCommentContent().length() != 0) {
+			streamDataProvider.getXMLStreamWriter().writeComment(streamDataProvider.getCommentContent().toString());
+			streamDataProvider.getCommentContent().delete(0, streamDataProvider.getCommentContent().length());
+		}
+	}
+	
+	
+	public static void checkLiteralMeta (NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) 
+			throws XMLStreamException, JPhyloIOWriterException {
+		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+			streamDataProvider.addToDocumentIDs(event.getID());
+			
+			String nameSpace = event.getPredicate().getNamespaceURI();
+			if (streamDataProvider.getXMLStreamWriter().getPrefix(nameSpace) == null) {
+				String prefix = "defaultNamespacePrefix";
+				String nameSpacePrefix;
+				int index = 0;
+				
+				do {
+					nameSpacePrefix = prefix + index;
+					index++;
+				} while (!streamDataProvider.getNamespacePrefixes().add(nameSpacePrefix));
+				
+				streamDataProvider.getXMLStreamWriter().setPrefix(nameSpacePrefix, nameSpace);
+				streamDataProvider.getNameSpaces().add(nameSpace);
+			}
+		}
 	}
 
 	
 	public static void handleLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) throws XMLStreamException, JPhyloIOWriterException {		
-		LiteralMetadataEvent literalMetadataEvent = event.asLiteralMetadataEvent();
-		if (literalMetadataEvent.getSequenceType().equals(LiteralContentSequenceType.XML)) { //TODO if type is simple array, write xml, too
-			writeLiteralMeta(streamDataProvider, literalMetadataEvent, null);
+		if (!event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE)) { //TODO what about type OTHER?
+			writeLiteralMeta(streamDataProvider, event, null);
 		}
 		else {
-			streamDataProvider.setLiteralWithoutXMLContent(literalMetadataEvent);
-		}		
+			streamDataProvider.setLiteralWithoutXMLContent(event);
+		}
 	}
 
 
-	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException, JPhyloIOWriterException {
-		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
+	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException, JPhyloIOWriterException {		
 		if (streamDataProvider.getLiteralWithoutXMLContent() != null) {
-			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(), contentEvent.getObjectValue().getClass()); //TODO should getOriginalType() be used here?
+			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(), event.getObjectValue().getClass()); //TODO should getOriginalType() be used here?
 			streamDataProvider.setLiteralWithoutXMLContent(null);
 		}
 		
+		streamDataProvider.setLiteralContentIsContinued(event.isContinuedInNextEvent());
+				
 		if (event.getObjectValue() != null) {
 			streamDataProvider.getXMLStreamWriter().writeCharacters(event.getObjectValue().toString());
 		}
 		else if (event.getStringValue() != null) {
 			streamDataProvider.getXMLStreamWriter().writeCharacters(event.getStringValue()); //TODO should the alternative String value be written somewhere to?
 		}
-		//TODO can both object and string value be null? what should be written then? --> an empty string
+		else {
+			streamDataProvider.getXMLStreamWriter().writeCharacters("");
+		}
+	}
+	
+	
+	public static void checkResourceMeta(NeXMLWriterStreamDataProvider streamDataProvider, ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+			streamDataProvider.addToDocumentIDs(event.getID());
+			streamDataProvider.getNameSpaces().add(event.getRel().getNamespaceURI());
+		}
 	}
 
 
@@ -123,16 +165,29 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		if (event.getType().getContentType().equals(EventContentType.META_LITERAL) && (streamDataProvider.getLiteralWithoutXMLContent() != null)) {
 			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(), null);
 			streamDataProvider.setLiteralWithoutXMLContent(null);
+			
+			if (streamDataProvider.isLiteralContentIsContinued()) { //TODO do the same for comments?
+				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
+						+ "event was marked to be continued in a subsequent event.");
+			}
 		}		
 		
 		streamDataProvider.getXMLStreamWriter().writeEndElement();
 	}
 	
-
+	
 	public static void handleComment(NeXMLWriterStreamDataProvider streamDataProvider, CommentEvent event) throws ClassCastException, XMLStreamException {
 		String comment = event.getContent();
+		
 		if (!comment.isEmpty()) {
-			streamDataProvider.getXMLStreamWriter().writeComment(comment);			
+			streamDataProvider.getCommentContent().append(comment);
+		}
+		
+		if (!event.isContinuedInNextEvent()) {
+			if (streamDataProvider.getLiteralWithoutXMLContent() == null) {
+				streamDataProvider.getXMLStreamWriter().writeComment(streamDataProvider.getCommentContent().toString());
+				streamDataProvider.getCommentContent().delete(0, streamDataProvider.getCommentContent().length());
+			}
 		}
 	}
 }

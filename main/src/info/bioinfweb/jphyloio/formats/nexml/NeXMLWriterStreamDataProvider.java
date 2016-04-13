@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
-import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -53,10 +52,12 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private Set<String> documentIDs = new HashSet<String>();
 	private int idIndex = 0;
 	
-	private LiteralMetadataEvent literalWithoutXMLContent;
-	private Set<String> metaDataNameSpaces = new TreeSet<String>();
+	private Set<String> nameSpaces = new TreeSet<String>();
+	private Set<String> namespacePrefixes = new HashSet<String>();
 	
-	private boolean emptyDocument = false; //is true if the document contains nothing or only document meta data
+	private LiteralMetadataEvent literalWithoutXMLContent;
+	private StringBuffer commentContent = new StringBuffer();
+	private boolean literalContentIsContinued = false;
 	
 	private boolean hasOTUList = true; //is true if the document contains at least one OTU list	
 	private boolean writeUndefinedOTU = false;
@@ -65,6 +66,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private boolean writeCellsTags;
 	private CharacterStateSetType alignmentType;
 	
+	private boolean hasTokenDefinitionSet = true;
+	private boolean isNucleotideType = false;
 	private Map<String, String> tokenTranslationMap = new HashMap<String, String>();
 	private Set<String> tokenDefinitions = new HashSet<String>();
 	
@@ -72,24 +75,26 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private Map<String, Set<Long>> charSets = new HashMap<String, Set<Long>>();
 	private Map<Long, String> columnIndexToStatesMap = new HashMap<Long, String>();
 	
+	private String singleToken = null;
+	
 	private Set<String> phylogenyLinkedOtusIDs = new HashSet<String>();
 	
 	
 	@SuppressWarnings("serial")
 	private static Map<QName,Class<?>> classForXsdType = new HashMap<QName, Class<?>>() {{
-		put(new QName(XS_URI, "decimal", XSD_PRE), BigDecimal.class);
-		put(new QName(XS_URI, "integer", XSD_PRE), BigInteger.class);
-		put(new QName(XS_URI, "boolean", XSD_PRE), Boolean.class);
-		put(new QName(XS_URI, "byte", XSD_PRE), Byte.class);
-		put(new QName(XS_URI, "QName", XSD_PRE), QName.class);		
-		put(new QName(XS_URI, "double", XSD_PRE), Double.class);
-		put(new QName(XS_URI, "float", XSD_PRE), Float.class);
-		put(new QName(XS_URI, "long", XSD_PRE), Long.class);
-		put(new QName(XS_URI, "short", XSD_PRE), Short.class);		
-		put(new QName(XS_URI, "string",XSD_PRE), String.class);
-		put(new QName(XS_URI, "char", XSD_PRE), Character.class);
-		put(new QName(XS_URI, "dateTime", XSD_PRE), Date.class);
-		put(new QName(XS_URI, "duration", XSD_PRE), Duration.class);		
+		put(new QName(NAMESPACE_XS, "decimal", XSD_PRE), BigDecimal.class);
+		put(new QName(NAMESPACE_XS, "integer", XSD_PRE), BigInteger.class);
+		put(new QName(NAMESPACE_XS, "boolean", XSD_PRE), Boolean.class);
+		put(new QName(NAMESPACE_XS, "byte", XSD_PRE), Byte.class);
+		put(new QName(NAMESPACE_XS, "QName", XSD_PRE), QName.class);		
+		put(new QName(NAMESPACE_XS, "double", XSD_PRE), Double.class);
+		put(new QName(NAMESPACE_XS, "float", XSD_PRE), Float.class);
+		put(new QName(NAMESPACE_XS, "long", XSD_PRE), Long.class);
+		put(new QName(NAMESPACE_XS, "short", XSD_PRE), Short.class);		
+		put(new QName(NAMESPACE_XS, "string",XSD_PRE), String.class);
+		put(new QName(NAMESPACE_XS, "char", XSD_PRE), Character.class);
+		put(new QName(NAMESPACE_XS, "dateTime", XSD_PRE), Date.class);
+		put(new QName(NAMESPACE_XS, "duration", XSD_PRE), Duration.class);		
 	}};
 	
 	
@@ -98,14 +103,14 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		for ( QName xsdType : classForXsdType.keySet() ) {
 			put(classForXsdType.get(xsdType), xsdType);
 		}	
-		put(Integer.class,new QName(XS_URI, "integer", XSD_PRE));
-		put(Date.class, new QName(XS_URI, "dateTime", XSD_PRE));
-		put(Calendar.class, new QName(XS_URI, "dateTime", XSD_PRE));
-		put(UUID.class, new QName(XS_URI, "string", XSD_PRE));
-		put(java.awt.Image.class, new QName(XS_URI, "base64Binary", XSD_PRE));
-		put(Duration.class, new QName(XS_URI, "duration", XSD_PRE));
-		put(java.lang.Character.class, new QName(XS_URI, "char", XSD_PRE));
-		put(Source.class, new QName(XS_URI, "base64Binary", XSD_PRE));
+		put(Integer.class,new QName(NAMESPACE_XS, "integer", XSD_PRE));
+		put(Date.class, new QName(NAMESPACE_XS, "dateTime", XSD_PRE));
+		put(Calendar.class, new QName(NAMESPACE_XS, "dateTime", XSD_PRE));
+		put(UUID.class, new QName(NAMESPACE_XS, "string", XSD_PRE));
+		put(java.awt.Image.class, new QName(NAMESPACE_XS, "base64Binary", XSD_PRE));
+		put(Duration.class, new QName(NAMESPACE_XS, "duration", XSD_PRE));
+		put(java.lang.Character.class, new QName(NAMESPACE_XS, "char", XSD_PRE));
+		put(Source.class, new QName(NAMESPACE_XS, "base64Binary", XSD_PRE));
 	}};
 	
 	
@@ -130,6 +135,16 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
+	public int getIdIndex() {
+		return idIndex;
+	}
+
+
+	public void setIdIndex(int idIndex) {
+		this.idIndex = idIndex;
+	}
+
+
 	public void addToDocumentIDs(String id) throws JPhyloIOWriterException {
 		if (!getDocumentIDs().add(id)) {
 			throw new JPhyloIOWriterException("The encountered ID " + id + " already exists in the document. IDs have to be unique."); //TODO give different type of exception?
@@ -137,28 +152,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public LiteralMetadataEvent getLiteralWithoutXMLContent() {
-		return literalWithoutXMLContent;
-	}
-
-
-	public void setLiteralWithoutXMLContent(LiteralMetadataEvent literalWithoutXMLContent) {
-		this.literalWithoutXMLContent = literalWithoutXMLContent;
-	}
-
-
 	public static Map<Class<?>, QName> getXsdTypeForClass() {
 		return xsdTypeForClass;
-	}
-	
-	
-	public boolean isEmptyDocument() {
-		return emptyDocument;
-	}
-	
-
-	public void setEmptyDocument(boolean empty) {
-		this.emptyDocument = empty;
 	}
 
 
@@ -172,8 +167,38 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public Set<String> getMetaDataNameSpaces() {
-		return metaDataNameSpaces;
+	public LiteralMetadataEvent getLiteralWithoutXMLContent() {
+		return literalWithoutXMLContent;
+	}
+
+
+	public void setLiteralWithoutXMLContent(LiteralMetadataEvent literalWithoutXMLContent) {
+		this.literalWithoutXMLContent = literalWithoutXMLContent;
+	}
+
+
+	public Set<String> getNameSpaces() {
+		return nameSpaces;
+	}
+
+
+	public Set<String> getNamespacePrefixes() {
+		return namespacePrefixes;
+	}
+
+
+	public StringBuffer getCommentContent() {
+		return commentContent;
+	}
+
+
+	public boolean isLiteralContentIsContinued() {
+		return literalContentIsContinued;
+	}
+
+
+	public void setLiteralContentIsContinued(boolean literalContentIsContinued) {
+		this.literalContentIsContinued = literalContentIsContinued;
 	}
 
 
@@ -194,6 +219,26 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public void setAlignmentType(CharacterStateSetType alignmentType) throws JPhyloIOWriterException {
 		this.alignmentType = alignmentType;	
+	}
+
+
+	public boolean hasTokenDefinitionSet() {
+		return hasTokenDefinitionSet;
+	}
+
+
+	public void setHasTokenDefinitionSet(boolean hasTokenDefinitionSet) {
+		this.hasTokenDefinitionSet = hasTokenDefinitionSet;
+	}
+
+
+	public boolean isNucleotideType() {
+		return isNucleotideType;
+	}
+
+
+	public void setNucleotideType(boolean isNucleotideType) {
+		this.isNucleotideType = isNucleotideType;
 	}
 
 
@@ -219,6 +264,16 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public Map<Long, String> getColumnIndexToStatesMap() {
 		return columnIndexToStatesMap;
+	}
+
+
+	public String getSingleToken() {
+		return singleToken;
+	}
+
+
+	public void setSingleToken(String singleToken) {
+		this.singleToken = singleToken;
 	}
 
 
@@ -251,9 +306,9 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		String id;
 		
 		do {
-			id = prefix + idIndex;
-			idIndex++;
-		} while (!getDocumentIDs().add(id));
+			id = prefix + getIdIndex();
+			setIdIndex(getIdIndex() + 1);
+		} while (getDocumentIDs().contains(id));
 		
 		return id;
 	}

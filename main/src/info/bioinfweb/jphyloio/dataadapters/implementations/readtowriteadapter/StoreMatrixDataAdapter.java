@@ -26,6 +26,8 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -129,31 +131,46 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements
 	
 
 	@Override
-	public LinkedLabeledIDEvent getSequenceStartEvent(String sequenceID) {
-		return matrix.getObjectStartEvent(sequenceID);
+	public LinkedLabeledIDEvent getSequenceStartEvent(String sequenceID) throws IllegalArgumentException {
+		if (matrix.getObjectMap().keyList().contains(sequenceID)) {
+			return matrix.getObjectStartEvent(sequenceID);
+		}
+		else {
+			throw new IllegalArgumentException("The alignment does not contain a sequence with the ID \"" + sequenceID +"\".");
+		}
 	}
 	
 
 	@Override
 	public long getSequenceLength(String sequenceID) throws IllegalArgumentException {
-		int sequenceLength = 0;
-		for (JPhyloIOEvent event : matrix.getObjectContent(sequenceID)) {
-			if (event.getType().getContentType().equals(EventContentType.SINGLE_SEQUENCE_TOKEN)) {
-				sequenceLength++;
+		if (matrix.getObjectMap().keyList().contains(sequenceID)) {
+			int sequenceLength = 0;
+			for (JPhyloIOEvent event : matrix.getObjectContent(sequenceID)) {
+				if (event.getType().equals(new EventType(EventContentType.SINGLE_SEQUENCE_TOKEN, EventTopologyType.START))) {
+					sequenceLength++;
+				}
+				else if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
+					sequenceLength += event.asSequenceTokensEvent().getCharacterValues().size();
+				}
 			}
-			else if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
-				sequenceLength += event.asSequenceTokensEvent().getCharacterValues().size();
-			}
+			return sequenceLength;
 		}
-		return sequenceLength;
+		else {
+			throw new IllegalArgumentException("The alignment does not contain a sequence with the ID \"" + sequenceID +"\".");
+		}
 	}
 	
 
 	@Override
 	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
 			long endColumn) throws IOException, IllegalArgumentException {
-		for (JPhyloIOEvent event : matrix.getObjectContent(sequenceID)) {
-			receiver.add(event);
+		if (matrix.getObjectMap().keyList().contains(sequenceID)) {
+			for (JPhyloIOEvent event : matrix.getObjectContent(sequenceID)) {
+				receiver.add(event);
+			}
 		}
+		else {
+			throw new IllegalArgumentException("The alignment does not contain a sequence with the ID \"" + sequenceID +"\".");
+		}		
 	}
 }

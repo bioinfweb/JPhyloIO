@@ -65,7 +65,7 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 	}
 	
 	
-	protected void writeToken(String token, String label) throws IOException {
+	protected void handleToken(String token, String label) throws IOException {
 		getWriter().write(token);
 		if (isLongTokens()) {
 			getWriter().write(' ');

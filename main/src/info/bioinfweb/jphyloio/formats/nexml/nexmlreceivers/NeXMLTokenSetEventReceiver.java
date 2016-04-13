@@ -121,7 +121,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
 		String tokenName = event.getTokenName();
 		String tokenSymbol = tokenName;
-		String label = null;
+		String label = event.getLabel();
 		
 		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
 			if (event.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
@@ -154,10 +154,10 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		getStreamDataProvider().getTokenTranslationMap().put(event.getTokenName(), tokenSymbol);
 		tokenNameToIDMap.put(tokenName, event.getID());
 		
-		getStreamDataProvider().writeLabeledIDAttributes(event);
+		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
 		
-		if ((event.getLabel() == null) && (label != null)) {
-			getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
+		if (label != null) {
+			getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label); //TODO if label was overwritten write it as meta data
 		}
 		
 		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);		
@@ -194,6 +194,10 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
 					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH) 
 							&& !tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {
+						
+						getStreamDataProvider().addToDocumentIDs(tokenDefinitionEvent.getID());
+						getStreamDataProvider().getTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
+						
 						switch (tokenDefinitionEvent.getTokenType()) {
 							case ATOMIC_STATE:
 								if (tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.GAP)) {

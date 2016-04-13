@@ -19,21 +19,21 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
+import java.io.IOException;
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
-
-import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLCharacterSetEventReceiver extends NeXMLMetaDataReceiver {
-	
+public class NeXMLSequenceMetaDataReceiver extends NeXMLMetaDataReceiver {
 
-	public NeXMLCharacterSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
+	
+	public NeXMLSequenceMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}
@@ -42,12 +42,9 @@ public class NeXMLCharacterSetEventReceiver extends NeXMLMetaDataReceiver {
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
-			case CHARACTER_SET_INTERVAL:
-				break;
 			default:
-				//TODO give exception if yet another event type occurs
 				break;
 		}
 		return true;
-	}
+	}	
 }

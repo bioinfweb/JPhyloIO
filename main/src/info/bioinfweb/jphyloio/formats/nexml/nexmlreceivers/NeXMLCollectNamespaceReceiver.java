@@ -25,7 +25,6 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -44,19 +43,13 @@ public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
 	
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-			getStreamDataProvider().addToDocumentIDs(event.getID());
-			getStreamDataProvider().getMetaDataNameSpaces().add(event.getPredicate().getNamespaceURI());
-		}
+		AbstractNeXMLDataReceiverMixin.checkLiteralMeta(getStreamDataProvider(), event);
 	}
 
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-			getStreamDataProvider().addToDocumentIDs(event.getID());
-			getStreamDataProvider().getMetaDataNameSpaces().add(event.getRel().getNamespaceURI());
-		}
+		AbstractNeXMLDataReceiverMixin.checkResourceMeta(getStreamDataProvider(), event);
 	}
 
 

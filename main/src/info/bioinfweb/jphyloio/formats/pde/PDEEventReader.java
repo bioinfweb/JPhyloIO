@@ -19,6 +19,24 @@
 package info.bioinfweb.jphyloio.formats.pde;
 
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
+import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +46,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -40,24 +57,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-
-import info.bioinfweb.commons.bio.CharacterStateSetType;
-import info.bioinfweb.commons.io.XMLUtils;
-import info.bioinfweb.commons.text.StringUtils;
-import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.PartEndEvent;
-import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
-import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
-import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 
 
 

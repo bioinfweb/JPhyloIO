@@ -40,21 +40,21 @@ public abstract class AbstractSequenceContentReceiver<W extends Object> extends 
 	}
 
 
-	protected abstract void writeToken(String token, String label) throws IOException, XMLStreamException;
+	protected abstract void handleToken(String token, String label) throws IOException, XMLStreamException;
 	
 
 	@Override
-	public boolean doAdd(JPhyloIOEvent event) throws XMLStreamException, IOException {
+	protected boolean doAdd(JPhyloIOEvent event) throws XMLStreamException, IOException {
 		switch (event.getType().getContentType()) {
 			case SINGLE_SEQUENCE_TOKEN:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {					
 					SingleSequenceTokenEvent tokenEvent = event.asSingleSequenceTokenEvent();
-					writeToken(tokenEvent.getToken(), tokenEvent.getLabel());					
+					handleToken(tokenEvent.getToken(), tokenEvent.getLabel());					
 				} // End events can be ignored here.
 				break;
 			case SEQUENCE_TOKENS:				
 				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
-					writeToken(token, null);
+					handleToken(token, null);
 				}				
 				break;
 			default:

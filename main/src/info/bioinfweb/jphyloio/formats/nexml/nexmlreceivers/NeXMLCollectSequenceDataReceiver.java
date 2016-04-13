@@ -19,38 +19,34 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+
 import java.io.IOException;
-import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import info.bioinfweb.commons.bio.CharacterStateSetType;
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 
+public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataReceiver {
 
-public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceReceiver {
-	private boolean nestedUnderSingleToken = false;
-	
 
-	public NeXMLCollectSequenceDataReceiver(XMLStreamWriter writer,	ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, streamDataProvider);
+	public NeXMLCollectSequenceDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
+			boolean longTokens, NeXMLWriterStreamDataProvider streamDataProvider) {
+		super(writer, parameterMap, longTokens, streamDataProvider);
 	}
-	
+
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		super.handleResourceMetaStart(event);
-		if (nestedUnderSingleToken) {
+		AbstractNeXMLDataReceiverMixin.checkResourceMeta(getStreamDataProvider(), event);
+		if (isNestedUnderSingleToken()) {
 			getStreamDataProvider().setWriteCellsTags(true);
 		}
 	}
@@ -58,8 +54,8 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceRecei
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		super.handleLiteralMetaStart(event);
-		if (nestedUnderSingleToken) {
+		AbstractNeXMLDataReceiverMixin.checkLiteralMeta(getStreamDataProvider(), event);
+		if (isNestedUnderSingleToken()) {
 			getStreamDataProvider().setWriteCellsTags(true);
 		}
 	}
@@ -67,13 +63,14 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceRecei
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (nestedUnderSingleToken) {
+		if (isNestedUnderSingleToken()) {
 			getStreamDataProvider().setWriteCellsTags(true);
 		}
 	}
 	
 	
-	private void checkToken(String token) throws JPhyloIOWriterException {
+	@Override
+	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
 		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
 			getStreamDataProvider().getTokenDefinitions().add(token);
 		}
@@ -85,33 +82,11 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLCollectNamespaceRecei
 				throw new JPhyloIOWriterException("All tokens in a continuous data characters tag must be numbers.");
 			}
 		}
-	}
-
-
-	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		switch (event.getType().getContentType()) {
-			case SINGLE_SEQUENCE_TOKEN:
-				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					checkToken(event.asSingleSequenceTokenEvent().getToken());
-					nestedUnderSingleToken = true;
-					if (event.asSingleSequenceTokenEvent().getLabel() != null) {
-						getStreamDataProvider().setWriteCellsTags(true);
-					}
-				}
-				else {
-					nestedUnderSingleToken = false;
-				}
-				break;
-			case SEQUENCE_TOKENS:
-				List<String> tokens = event.asSequenceTokensEvent().getCharacterValues();
-				for (String token : tokens) {
-					checkToken(token);
-				}				
-				break;
-			default:
-				break;
+		else {
+			if (!getStreamDataProvider().getTokenDefinitions().contains(token)) {
+				getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+				getStreamDataProvider().getTokenDefinitions().add(token);
+			}
 		}
-		return true;
-	}	
+	}
 }

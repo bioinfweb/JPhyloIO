@@ -19,81 +19,80 @@
 package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
 
 
-import java.io.IOException;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+
+import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {
-	private NeXMLWriterStreamDataProvider streamDataProvider;
-	
-	
-	public NeXMLSequenceContentReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens, 
+public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver {
+
+
+	public NeXMLSequenceTokensReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, longTokens);
-		
-		this.streamDataProvider = streamDataProvider;
+		super(writer, parameterMap, longTokens, streamDataProvider);
 	}
-	
+
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleLiteralMeta(streamDataProvider, event);
+		if (isNestedUnderSingleToken()) {
+			AbstractNeXMLDataReceiverMixin.handleLiteralMeta(getStreamDataProvider(), event);
+		}
 	}
 
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(streamDataProvider, event);
+		if (isNestedUnderSingleToken()) {
+			AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(getStreamDataProvider(), event);
+		}
 	}
 
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleResourceMeta(streamDataProvider, event);
+		if (isNestedUnderSingleToken()) {
+			AbstractNeXMLDataReceiverMixin.handleResourceMeta(getStreamDataProvider(), event);
+		}
 	}
 	
 	
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleMetaEndEvent(streamDataProvider, event);
+		if (isNestedUnderSingleToken()) {
+			AbstractNeXMLDataReceiverMixin.handleMetaEndEvent(getStreamDataProvider(), event);
+		}
 	}
 
 
 	@Override
-	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleComment(streamDataProvider, event);
-	}
-	
-	
-	public NeXMLWriterStreamDataProvider getStreamDataProvider() {
-		return streamDataProvider;
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException { //TODO write if parent was null?
+		if (!isNestedUnderSingleToken()) {
+			AbstractNeXMLDataReceiverMixin.handleComment(getStreamDataProvider(), event);
+		}
 	}
 
 
 	@Override
-	protected void writeToken(String token, String label) throws XMLStreamException {
+	protected void handleToken(String token, String label) throws XMLStreamException {
 		String translatedToken = getStreamDataProvider().getTokenTranslationMap().get(token);
 		
-		if (streamDataProvider.isWriteCellsTags()) {
+		if (getStreamDataProvider().isWriteCellsTags()) {
 			getWriter().writeStartElement(TAG_CELL.getLocalPart());
 			if (label != null) {
 				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
-			} 
-			getWriter().writeCharacters(translatedToken);
-			getWriter().writeEndElement();
+			}
+			getStreamDataProvider().setSingleToken(translatedToken);
 		}		
 		else {
 			getWriter().writeCharacters(translatedToken);
@@ -101,5 +100,18 @@ public class NeXMLSequenceContentReceiver extends AbstractSequenceContentReceive
 				getWriter().writeCharacters(" ");
 			}
 		}			
+	}
+
+
+	@Override
+	protected void handleTokenEnd() throws XMLStreamException {
+		if (getStreamDataProvider().isWriteCellsTags()) {
+			String token = getStreamDataProvider().getSingleToken();			
+			if (token != null) {
+				getWriter().writeCharacters(token);
+				getStreamDataProvider().setSingleToken(null);
+			}			
+			getWriter().writeEndElement();
+		}		
 	}
 }
