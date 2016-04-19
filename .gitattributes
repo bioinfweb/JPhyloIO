@@ -375,6 +375,7 @@ test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipEventWriterTest.java -text
 test/src/info/bioinfweb/jphyloio/formats/phylip/PhylipFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGFactoryTest.java -text svneol=unset#text/plain
