@@ -48,6 +48,7 @@ public interface PhyloXMLConstants {
 	public static final QName TAG_BRANCH_COLOR = new QName(NAMESPACE_URI, "color");	
 	
 	public static final QName ATTR_BRANCH_LENGTH = new QName("branch_length");
+	public static final QName ATTR_BRANCH_LENGTH_UNIT = new QName("branch_length_unit");
 	public static final QName ATTR_ROOTED = new QName("rooted");
 	public static final QName ATTR_TYPE = new QName("type");	
 }
