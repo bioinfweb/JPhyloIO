@@ -58,7 +58,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 					"The specified matrix (matrices) will not be written, since the Newick/NHX format does not support such data."); 
 		}
 		
-		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = document.getTreeNetworkGroupIterator();		
+		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = document.getTreeNetworkGroupIterator();
 		while (treeNetworkGroupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
 			OTUListDataAdapter otuList = getReferencedOTUList(document, treeNetworkGroup);

@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,13 +33,13 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 
 public class StoreTreeNetworkGroupDataAdapter extends StoreAnnotatedDataAdapter implements TreeNetworkGroupDataAdapter {
-	private StoreLinkedOTUsDataAdapter treeGroupAdapter;
-	private List<TreeNetworkDataAdapter> treesAndNetworks;
+	private StoreLinkedDataAdapter treeGroupAdapter;
+	private List<TreeNetworkDataAdapter> treesAndNetworks = new ArrayList<TreeNetworkDataAdapter>();
 	
 	
 	public StoreTreeNetworkGroupDataAdapter(List<JPhyloIOEvent> annotations, LinkedLabeledIDEvent treeOrNetworkStartEvent) {
 		super(annotations);
-		this.treeGroupAdapter = new StoreLinkedOTUsDataAdapter(treeOrNetworkStartEvent);
+		this.treeGroupAdapter = new StoreLinkedDataAdapter(treeOrNetworkStartEvent);
 	}
 
 

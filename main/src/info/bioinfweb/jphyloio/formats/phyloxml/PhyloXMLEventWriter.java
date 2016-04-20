@@ -77,16 +77,33 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 		this.logger = parameters.getLogger(); //TODO Move to superclass (also used by NexusEventWriter)?
 		this.document = document;
 		
-		//TODO do start and end document have to be written?
-		getWriter().writeStartElement(TAG_ROOT.getLocalPart());		
-		
-		getWriter().writeDefaultNamespace(NAMESPACE_URI);
-		getWriter().writeNamespace("xsi", NAMESPACE_URI_XSI);
-//		TODO write namespaces collected in document
-		
-		writePhylogenyTags();
-		
-		getWriter().writeEndElement();
+		//TODO why is XML tag always written to the file?
+		if (documentHasTree(document)) { //empty documents are not written
+			getWriter().writeStartElement(TAG_ROOT.getLocalPart());		
+			
+			getWriter().writeDefaultNamespace(NAMESPACE_URI);
+			getWriter().writeNamespace("xsi", NAMESPACE_URI_XSI);
+	//		TODO write namespaces collected in document
+			
+			writePhylogenyTags();
+			
+			getWriter().writeEndElement();
+		}
+		else {
+			logger.addWarning("Since no trees were contained in the document information, no file could be written.");
+		}
+	}
+	
+	
+	protected boolean documentHasTree(DocumentDataAdapter document) {
+		Iterator<TreeNetworkGroupDataAdapter> treeGroups = document.getTreeNetworkGroupIterator();
+		while (treeGroups.hasNext()) {
+			Iterator<TreeNetworkDataAdapter> trees = treeGroups.next().getTreeNetworkIterator();
+			if (trees.hasNext()) {
+				return true;
+			}
+		}		
+		return false;
 	}
 	
 	

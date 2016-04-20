@@ -50,7 +50,7 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/UndefinedOTUListDa
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreAnnotatedDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreDocumentDataAdapter.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreLinkedOTUsDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreLinkedDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreMatrixDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreOTUListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectData.java -text svneol=unset#text/plain

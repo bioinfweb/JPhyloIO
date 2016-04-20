@@ -35,7 +35,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter implements TreeNetworkDataAdapter {
-	private StoreLinkedOTUsDataAdapter storeLinkedOTUsAdapter;
+	private StoreLinkedDataAdapter storeLinkedDataAdapter;
 	private boolean isTree;
 	private boolean considerRooted;
 	private ListOrderedMap<String, StoreObjectData<LinkedLabeledIDEvent>> nodes = null;
@@ -45,7 +45,7 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter imple
 	public StoreTreeNetworkDataAdapter(List<JPhyloIOEvent> annotations, LinkedLabeledIDEvent treeOrNetworkStartEvent, 
 			boolean isTree, boolean considerRooted) {
 		super(annotations);
-		this.storeLinkedOTUsAdapter = new StoreLinkedOTUsDataAdapter(treeOrNetworkStartEvent);
+		this.storeLinkedDataAdapter = new StoreLinkedDataAdapter(treeOrNetworkStartEvent);
 		this.isTree = isTree;
 		this.considerRooted = considerRooted;
 	}
@@ -70,12 +70,7 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter imple
 	
 
 	public LabeledIDEvent getStartEvent() {
-		return storeLinkedOTUsAdapter.getStartEvent();
-	}
-
-
-	public void setStartEvent(LinkedLabeledIDEvent startEvent) {
-		storeLinkedOTUsAdapter.setStartEvent(startEvent);
+		return storeLinkedDataAdapter.getStartEvent();
 	}
 
 

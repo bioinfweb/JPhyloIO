@@ -21,11 +21,11 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 import info.bioinfweb.jphyloio.dataadapters.LinkedDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
-public class StoreLinkedOTUsDataAdapter implements LinkedDataAdapter {
+public class StoreLinkedDataAdapter implements LinkedDataAdapter {
 	private LinkedLabeledIDEvent startEvent;
 	
 	
-	public StoreLinkedOTUsDataAdapter(LinkedLabeledIDEvent startEvent) {
+	public StoreLinkedDataAdapter(LinkedLabeledIDEvent startEvent) {
 		super();
 		this.startEvent = startEvent;
 	}
@@ -34,10 +34,5 @@ public class StoreLinkedOTUsDataAdapter implements LinkedDataAdapter {
 	@Override
 	public LinkedLabeledIDEvent getStartEvent() {
 		return startEvent;
-	}
-
-
-	public void setStartEvent(LinkedLabeledIDEvent startEvent) {
-		this.startEvent = startEvent;
 	}
 }

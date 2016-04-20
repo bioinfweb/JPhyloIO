@@ -36,7 +36,7 @@ import java.util.List;
 
 
 public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements MatrixDataAdapter {
-	private StoreLinkedOTUsDataAdapter storeLinkedOTUsAdapter;
+	private StoreLinkedDataAdapter storeLinkedOTUsAdapter;
 	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> matrix = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	private StoreObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = new StoreObjectListDataAdapter<TokenSetDefinitionEvent>();
 	private StoreObjectListDataAdapter<LabeledIDEvent> characterSets = new StoreObjectListDataAdapter<LabeledIDEvent>();
@@ -45,7 +45,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements
 	
 	public StoreMatrixDataAdapter(List<JPhyloIOEvent> annotations, LinkedLabeledIDEvent alignmentStartEvent, boolean longTokens) {
 		super(annotations);
-		this.storeLinkedOTUsAdapter = new StoreLinkedOTUsDataAdapter(alignmentStartEvent);
+		this.storeLinkedOTUsAdapter = new StoreLinkedDataAdapter(alignmentStartEvent);
 		this.longTokens = longTokens;
 	}
 
@@ -70,11 +70,6 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements
 
 	public LinkedLabeledIDEvent getStartEvent() {
 		return storeLinkedOTUsAdapter.getStartEvent();
-	}
-
-
-	public void setStartEvent(LinkedLabeledIDEvent startEvent) {
-		storeLinkedOTUsAdapter.setStartEvent(startEvent);
 	}
 
 
