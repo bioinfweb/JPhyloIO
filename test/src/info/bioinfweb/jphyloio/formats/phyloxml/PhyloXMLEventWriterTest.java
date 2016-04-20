@@ -19,33 +19,25 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import static org.junit.Assert.assertEquals;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
-import info.bioinfweb.jphyloio.test.dataadapters.TestTreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.namespace.QName;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.junit.Test;
 
 
 
 public class PhyloXMLEventWriterTest {
-	private StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 	private long idIndex = 0;
 	
 	
@@ -54,54 +46,188 @@ public class PhyloXMLEventWriterTest {
 		idIndex++;
 		return index;
 	}
-
 	
-	protected void createTestDocument() {
-		for (JPhyloIOEvent event : createMetaData("document")) {
-			document.getAnnotations().add(event);
-		}
-//		String taxaID = ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + getIdIndex();
-//		document.getOTUListsMap().put(taxaID, createOTUList(taxaID));
-//		document.getMatrices().add(createMatrix(taxaID));
-		document.getTreesNetworks().add(createTrees(""));
-	}
-
 	
-	protected List<JPhyloIOEvent> createMetaData(String about) {
-		List<JPhyloIOEvent> metaData = new ArrayList<JPhyloIOEvent>();
-		URI example = null;
-		
-		try {
-			example = new URI("somePath/#fragment");
-		} 
-		catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		
-		metaData.add(new ResourceMetadataEvent("meta" + getIdIndex(), "ResourceMeta", new QName("http://meta.net/", "relations"), 
-				example, null));
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		
-		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new QName("http://meta.net/", "predicate"), "literal value", LiteralContentSequenceType.SIMPLE));
-		metaData.add(new LiteralMetadataContentEvent(NeXMLConstants.TYPE_STRING, "My literal value", true));
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
-		
-		return metaData;
+	private void writeDocument(StoreDocumentDataAdapter document, File file) throws IOException {
+		PhyloXMLEventWriter writer = new PhyloXMLEventWriter();		
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();		
+		writer.writeDocument(document, file, parameters);	
 	}
 	
-	private TestTreeNetworkGroupDataAdapter createTrees(String prefix) {
-		String treeID = ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex();
-		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter(treeID, null, "nodeEdgeID");
-		trees.setLinkedOTUsID(prefix);
-		return trees;
-	}
+	
+//	@Test
+//	public void createSingleTreeDocument() throws IOException {
+//		// Write file
+//		File file = new File("data/testOutput/PhyloXMLTest.xml");
+//		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+//		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
+//				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));
+//		
+//		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+//		document.getTreesNetworks().add(trees);
+//		
+//		writeDocument(document, file);
+//		
+//		// Validate file:
+//		BufferedReader reader = new BufferedReader(new FileReader(file));
+//		try {
+////			assertEquals("<?xml version=\"1.0\" ?>", reader.readLine());
+////			assertEquals("<phyloxml xmlns=\"http://www.phyloxml.org\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">", reader.readLine());
+////			assertEquals("<phylogeny rooted=\"true\" branch_length_unit=\"xs:double\">", reader.readLine());
+////			assertEquals("<id>tree1</id>", reader.readLine());
+////			assertEquals("<clade>", reader.readLine());
+//			
+////			assertEquals(-1, reader.read());
+//		}
+//		finally {
+//			reader.close();
+//			file.delete();
+//		}
+//	}
+	
+	
+//	@Test
+//	public void createSingleTreeDocumentWithMetadata() throws IOException {
+//		// Write file
+//		File file = new File("data/testOutput/PhyloXMLTest.xml");
+//		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+//		URI example = null;
+//		
+//		try {
+//			example = new URI("somePath/#fragment");
+//		} 
+//		catch (URISyntaxException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		document.getAnnotations().add(new ResourceMetadataEvent("meta" + getIdIndex(), "ResourceMeta", new QName("http://meta.net/", "relations"), 
+//				example, null));
+//		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+//		
+//		document.getAnnotations().add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new QName("http://meta.net/", "predicate"), "literal value", LiteralContentSequenceType.SIMPLE));
+//		document.getAnnotations().add(new LiteralMetadataContentEvent(NeXMLConstants.TYPE_STRING, "My literal value", true));
+//		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+//		
+//		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
+//				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));
+//		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+//		document.getTreesNetworks().add(trees);
+//		
+//		writeDocument(document, file);
+//		
+//// Validate file:
+//		BufferedReader reader = new BufferedReader(new FileReader(file));
+//		try {
+////			assertEquals("", reader.readLine());			
+////			assertEquals(-1, reader.read());
+//		}
+//		finally {
+//			reader.close();
+//			file.delete();
+//		}
+//	}
 	
 	
 	@Test
-	public void test_writeDocument() throws Exception {
-		createTestDocument();
-		PhyloXMLEventWriter writer = new PhyloXMLEventWriter();		
-		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-		writer.writeDocument(document, new File("data/testOutput/PhyloXMLTest.xml"), parameters);
+	public void createEmptyDocument() throws IOException {
+		// Write file
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		
+		writeDocument(document, file);
+		
+// Validate file:
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		try {		
+			assertEquals(-1, reader.read());
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
 	}
+	
+	
+//	@Test
+//	public void createNoTreesDocument() throws IOException {
+//		// Write file
+//		File file = new File("data/testOutput/PhyloXMLTest.xml");
+//		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+//		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
+//				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));		
+//		
+//		document.getTreesNetworks().add(trees);
+//		
+//		writeDocument(document, file);
+//		
+//// Validate file:
+//		BufferedReader reader = new BufferedReader(new FileReader(file));
+//		try {
+////			assertEquals("", reader.readLine());			
+////			assertEquals(-1, reader.read());
+//		}
+//		finally {
+//			reader.close();
+//			file.delete();
+//		}
+//	}
+//	
+//	
+//	@Test
+//	public void createMultipleTreesDocument() throws IOException {
+//		// Write file
+//		File file = new File("data/testOutput/PhyloXMLTest.xml");
+//		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+//		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
+//				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));
+//		
+//		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+//		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+//		document.getTreesNetworks().add(trees);
+//		
+//		writeDocument(document, file);
+//		
+//// Validate file:
+//		BufferedReader reader = new BufferedReader(new FileReader(file));
+//		try {
+////			assertEquals("", reader.readLine());			
+////			assertEquals(-1, reader.read());
+//		}
+//		finally {
+//			reader.close();
+//			file.delete();
+//		}
+//	}
+//	
+//	
+//	@Test
+//	public void createMultipleTreegroupsDocument() throws IOException {
+//		// Write file
+//		File file = new File("data/testOutput/PhyloXMLTest.xml");
+//		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+//		
+//		StoreTreeNetworkGroupDataAdapter trees1 = new StoreTreeNetworkGroupDataAdapter(null, 
+//				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));		
+//		trees1.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));		
+//		
+//		StoreTreeNetworkGroupDataAdapter trees2 = new StoreTreeNetworkGroupDataAdapter(null, 
+//				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));		
+//		trees1.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+//		
+//		document.getTreesNetworks().add(trees1);
+//		document.getTreesNetworks().add(trees2);
+//		
+//		writeDocument(document, file);
+//		
+//// Validate file:
+//		BufferedReader reader = new BufferedReader(new FileReader(file));
+//		try {
+////			assertEquals("", reader.readLine());			
+////			assertEquals(-1, reader.read());
+//		}
+//		finally {
+//			reader.close();
+//			file.delete();
+//		}
+//	}
 }
