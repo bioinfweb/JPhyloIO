@@ -86,7 +86,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter {
 
 	
 	@Override
-	public LabeledIDEvent getListStartEvent() {
+	public LabeledIDEvent getStartEvent() {
 		return new LabeledIDEvent(EventContentType.OTU_LIST, UNDEFINED_OTUS_ID, "undefined taxa");
 	}	
 }

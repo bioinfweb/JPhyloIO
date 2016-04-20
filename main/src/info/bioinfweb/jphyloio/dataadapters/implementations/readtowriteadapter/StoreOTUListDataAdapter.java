@@ -42,7 +42,7 @@ public class StoreOTUListDataAdapter extends StoreObjectListDataAdapter<LabeledI
 	
 	
 	@Override
-	public LabeledIDEvent getListStartEvent() {
+	public LabeledIDEvent getStartEvent() {
 		return listStartEvent;
 	}
 

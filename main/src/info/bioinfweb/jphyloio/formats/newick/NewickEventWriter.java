@@ -27,7 +27,9 @@ import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -48,6 +50,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
 		ApplicationLogger logger = parameters.getLogger();
+		int treeCount = 0;
 		
 		logIngnoredOTULists(document, logger, "Newick/NHX", "tree nodes"); 
 		if (document.getMatrixIterator().hasNext()) {
@@ -55,17 +58,22 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 					"The specified matrix (matrices) will not be written, since the Newick/NHX format does not support such data."); 
 		}
 		
-		Iterator<TreeNetworkDataAdapter> treeNetworkIterator = document.getTreeNetworkIterator();
-		if (treeNetworkIterator.hasNext()) {
+		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = document.getTreeNetworkGroupIterator();		
+		while (treeNetworkGroupIterator.hasNext()) {
+			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
+			OTUListDataAdapter otuList = getReferencedOTUList(document, treeNetworkGroup);
+			
+			Iterator<TreeNetworkDataAdapter> treeNetworkIterator = treeNetworkGroup.getTreeNetworkIterator();
 			while (treeNetworkIterator.hasNext()) {
+				treeCount++;
 				TreeNetworkDataAdapter treeNetwork = treeNetworkIterator.next();
-				new NewickStringWriter(writer, treeNetwork, new DefaultNewickWriterNodeLabelProcessor(
-						getReferencedOTUList(document, treeNetwork), parameters), parameters).write();
-			}
+				new NewickStringWriter(writer, treeNetwork, new DefaultNewickWriterNodeLabelProcessor(otuList, parameters), parameters).write();
+			}			
 		}
-		else {
+		
+		if (treeCount == 0) {
 			logger.addWarning(
-					"An empty document was written, since no tree definitions were affered by the specified document adapter.");  //TODO Use message, that would be more understandable by application users (which does not use library-specific terms)?
+					"An empty document was written, since no tree definitions were offered by the specified document adapter.");  //TODO Use message, that would be more understandable by application users (which does not use library-specific terms)?
 		}
 	}
 }

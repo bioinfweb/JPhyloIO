@@ -28,9 +28,14 @@ import javax.xml.stream.XMLStreamWriter;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.newick.DefaultNewickWriterNodeLabelProcessor;
+import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 
 
@@ -86,23 +91,28 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	
 	
 	private void writePhylogenyTags() throws XMLStreamException {
-		Iterator<TreeNetworkDataAdapter> treeIterator = document.getTreeNetworkIterator();
-		while (treeIterator.hasNext()) {
-			TreeNetworkDataAdapter tree = treeIterator.next();
+		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = document.getTreeNetworkGroupIterator();		
+		while (treeNetworkGroupIterator.hasNext()) {
+			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
+			
+			Iterator<TreeNetworkDataAdapter> treeNetworkIterator = treeNetworkGroup.getTreeNetworkIterator();
+			while (treeNetworkIterator.hasNext()) {
+				TreeNetworkDataAdapter tree = treeNetworkIterator.next();
 
-			if (tree.isTree()) { //networks can not be written to PhyloXML
-				writePhylogenyTag(tree);
-			}
-			else { //TODO can networks be written using the CladeRelation tag?
-				logger.addWarning("A provided network definition with the ID \"" + tree.getStartEvent().getID() 
-						+ "\" was ignored, because the PhyloXML format only supports trees.");
-			}
-		}
+				if (tree.isTree()) { //networks can not be written to PhyloXML
+					writePhylogenyTag(tree);
+				}
+				else { //TODO can networks be written using the CladeRelation tag?
+					logger.addWarning("A provided network definition with the ID \"" + tree.getStartEvent().getID() 
+							+ "\" was ignored, because the PhyloXML format only supports trees.");
+				}
+			}	
+		}		
 	}
 	
 	
 	private void writePhylogenyTag(TreeNetworkDataAdapter tree) throws XMLStreamException {
-		LinkedLabeledIDEvent startEvent = tree.getStartEvent();
+		LabeledIDEvent startEvent = tree.getStartEvent();
 		Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs();
 		boolean rooted = rootEdgeIterator.hasNext();
 		getWriter().writeStartElement(TAG_PHYLOGENY.getLocalPart());

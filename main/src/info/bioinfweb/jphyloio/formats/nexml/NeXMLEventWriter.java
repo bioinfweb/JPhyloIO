@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -95,29 +96,20 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 
 	private void writeTreesTags(DocumentDataAdapter document) throws XMLStreamException, IOException {
-		streamDataProvider.setIdIndex(0);
-		
-		if (!streamDataProvider.getPhylogenyLinkedOtusIDs().isEmpty()) {
-			for (String otusID : streamDataProvider.getPhylogenyLinkedOtusIDs()) {
-				writeTreesTag(document, otusID);
-			}
+		Iterator<TreeNetworkGroupDataAdapter> treeAndNetworkGroupIterator = document.getTreeNetworkGroupIterator();		
+		while (treeAndNetworkGroupIterator.hasNext()) {
+			writeTreesTag(treeAndNetworkGroupIterator.next());
 		}
-		else {
-			writeTreesTag(document, null);
-		}		
 	}
 	
 	
-	private void writeTreesTag(DocumentDataAdapter document, String linkedOTUs) throws XMLStreamException, IOException {		
+	private void writeTreesTag(TreeNetworkGroupDataAdapter treeOrNetworkGroup) throws XMLStreamException, IOException {
 		getWriter().writeStartElement(TAG_TREES.getLocalPart());
-		streamDataProvider.writeLinkedLabeledIDAttributes(new LinkedLabeledIDEvent(EventContentType.TREE, 
-				streamDataProvider.createNewID(ReadWriteConstants.DEFAULT_TREES_ID_PREFIX), null, linkedOTUs), TAG_OTUS, true); //TODO Use ID from new TreeGroupEvent
-		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = document.getTreeNetworkIterator();
+		streamDataProvider.writeLinkedLabeledIDAttributes(treeOrNetworkGroup.getStartEvent(), TAG_OTUS, true);
+		
+		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = treeOrNetworkGroup.getTreeNetworkIterator();
 		while (treesAndNetworksIterator.hasNext()) {
-			TreeNetworkDataAdapter treeOrNetwork = treesAndNetworksIterator.next();
-			if ((linkedOTUs == null) || treeOrNetwork.getStartEvent().getLinkedID().equals(linkedOTUs)) {
-				writeTreeOrNetworkTag(treeOrNetwork);
-			}
+			writeTreeOrNetworkTag(treesAndNetworksIterator.next());			
 		}
 		getWriter().writeEndElement();
 	}
@@ -180,8 +172,23 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void checkTreesAndNetworks(DocumentDataAdapter document) throws IOException {
-		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = document.getTreeNetworkIterator();
+	private void checkTreeAndNetworkGroups(DocumentDataAdapter document) throws IOException {
+		Iterator<TreeNetworkGroupDataAdapter> treeAndNetworkGroupIterator = document.getTreeNetworkGroupIterator();		
+		while (treeAndNetworkGroupIterator.hasNext()) {
+			checkTreesAndNetworkGroup(treeAndNetworkGroupIterator.next());
+		}
+	}
+	
+	
+	private void checkTreesAndNetworkGroup(TreeNetworkGroupDataAdapter treesAndNetworks) throws IOException {
+		String linkedOTUs = treesAndNetworks.getStartEvent().getLinkedID();		
+		streamDataProvider.addToDocumentIDs(treesAndNetworks.getStartEvent().getID());
+		
+		if (linkedOTUs == null) {
+			streamDataProvider.setWriteUndefinedOtuList(true);
+		}
+		
+		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = treesAndNetworks.getTreeNetworkIterator();
 		while (treesAndNetworksIterator.hasNext()) {
 			checkTreeOrNetwork(treesAndNetworksIterator.next());	
 		}
@@ -192,16 +199,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, streamDataProvider);
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork);		
 		Set<String> referencedNodeIDs = new HashSet<String>();
-		String linkedOTUs = treeOrNetwork.getStartEvent().getLinkedID();
 		
 		streamDataProvider.addToDocumentIDs(treeOrNetwork.getStartEvent().getID());
-		
-		if (linkedOTUs == null) {
-			streamDataProvider.setWriteUndefinedOtuList(true);
-		}
-		else {
-			streamDataProvider.getPhylogenyLinkedOtusIDs().add(linkedOTUs);
-		}
 
 		if (treeOrNetwork.hasMetadata()) {
 			treeOrNetwork.writeMetadata(receiver);
@@ -603,7 +602,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeOTUSTag(OTUListDataAdapter otuList) throws IOException, XMLStreamException {		
 		getWriter().writeStartElement(TAG_OTUS.getLocalPart());		
 		
-		streamDataProvider.writeLabeledIDAttributes(otuList.getListStartEvent());	
+		streamDataProvider.writeLabeledIDAttributes(otuList.getStartEvent());	
 
 		writeOrCheckMetaData(otuList, false);
 		
@@ -643,7 +642,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void checkOTUsTag(OTUListDataAdapter otuList) throws IOException {
-		streamDataProvider.addToDocumentIDs(otuList.getListStartEvent().getID());
+		streamDataProvider.addToDocumentIDs(otuList.getStartEvent().getID());
 		writeOrCheckMetaData(otuList, true);
 		
 		Iterator<String> otuIDIterator = otuList.getIDIterator();
@@ -715,8 +714,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			checkCharactersTags(document);
 		}
 		
-		if (document.getTreeNetworkIterator().hasNext()) {
-			checkTreesAndNetworks(document);
+		if (document.getTreeNetworkGroupIterator().hasNext()) {
+			checkTreeAndNetworkGroups(document);
 		}
 	}
 	

@@ -75,10 +75,10 @@ public interface DocumentDataAdapter extends AnnotatedDataAdapter {
 	public Iterator<MatrixDataAdapter> getMatrixIterator();
 
 	/**
-	 * Returns an iterator providing access to all trees and networks contained in the 
+	 * Returns an iterator providing access to all trees and network groups contained in the 
 	 * document to be written. 
 	 * 
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
-	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator();
+	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator();
 }

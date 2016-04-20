@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben StÃ¶ver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -19,16 +19,17 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
-import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 
 
 
-/**
- * Allows to access data from the application business model that make up an OTU list. 
- * 
- * @author Ben St&ouml;ver
- * @see DocumentDataAdapter
- * @see JPhyloIOEventWriter
- */
-public interface OTUListDataAdapter extends ObjectListDataAdapter<LabeledIDEvent>, LabeledIDAdapter {}
+public interface LabeledIDAdapter extends AnnotatedDataAdapter {
+	
+	/**
+	 * Returns an event describing the object modeled by this instance. This event allows
+	 * to specify a label and an ID, which will be used by some writers.
+	 * 
+	 * @return an event describing the object
+	 */
+	public LabeledIDEvent getStartEvent();
+}

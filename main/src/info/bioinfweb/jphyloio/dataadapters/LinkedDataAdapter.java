@@ -31,7 +31,7 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
  */
 public interface LinkedDataAdapter {
 	/**
-	 * Returns the start event of this data element (usually a matrix, tree or network). The returned
+	 * Returns the start event of this data element (usually a matrix or a tree or network group). The returned
 	 * event can be used to determine the label and ID of the modeled data element and an optionally linked
 	 * data element. 
 	 * 

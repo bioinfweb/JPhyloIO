@@ -77,8 +77,6 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	
 	private String singleToken = null;
 	
-	private Set<String> phylogenyLinkedOtusIDs = new HashSet<String>();
-	
 	
 	@SuppressWarnings("serial")
 	private static Map<QName,Class<?>> classForXsdType = new HashMap<QName, Class<?>>() {{
@@ -294,11 +292,6 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public void setWriteUndefinedOtuList(boolean writeUndefinedOtuList) {
 		this.writeUndefinedOtuList = writeUndefinedOtuList;
-	}
-
-
-	public Set<String> getPhylogenyLinkedOtusIDs() {
-		return phylogenyLinkedOtusIDs;
 	}
 	
 	

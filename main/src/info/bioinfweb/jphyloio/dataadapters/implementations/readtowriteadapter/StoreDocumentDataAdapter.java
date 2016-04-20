@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 import java.util.ArrayList;
@@ -36,11 +36,11 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter implements DocumentDataAdapter {
 	private ListOrderedMap<String, OTUListDataAdapter> otuListsMap;
 	private List<MatrixDataAdapter> matrices;
-	private List<TreeNetworkDataAdapter> treesNetworks;
+	private List<TreeNetworkGroupDataAdapter> treeNetworkGroups;
 	
 	
 	public StoreDocumentDataAdapter(ListOrderedMap<String, OTUListDataAdapter> otusMap, List<MatrixDataAdapter> matrices,
-			List<TreeNetworkDataAdapter> treesNetworks, List<JPhyloIOEvent> annotations) {		
+			List<TreeNetworkGroupDataAdapter> treeNetworkGroups, List<JPhyloIOEvent> annotations) {		
 		super(annotations);
 		
 		if (otusMap == null) {
@@ -57,11 +57,11 @@ public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter implemen
 			this.matrices = matrices;
 		}
 		
-		if (treesNetworks == null) {
-			this.treesNetworks = new ArrayList<TreeNetworkDataAdapter>();
+		if (treeNetworkGroups == null) {
+			this.treeNetworkGroups = new ArrayList<TreeNetworkGroupDataAdapter>();
 		}
 		else {
-			this.treesNetworks = treesNetworks;
+			this.treeNetworkGroups = treeNetworkGroups;
 		}
 	}
 	
@@ -87,8 +87,8 @@ public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter implemen
 	}
 
 
-	public List<TreeNetworkDataAdapter> getTreesNetworks() {
-		return treesNetworks;
+	public List<TreeNetworkGroupDataAdapter> getTreesNetworks() {
+		return treeNetworkGroups;
 	}
 
 
@@ -117,7 +117,7 @@ public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter implemen
 
 	
 	@Override
-	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator() {
-		return treesNetworks.iterator();
+	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator() {
+		return treeNetworkGroups.iterator();
 	}
 }

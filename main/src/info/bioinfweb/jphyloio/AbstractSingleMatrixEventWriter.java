@@ -122,8 +122,8 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 					" file was written since the specified document adapter contained contained no matrices.");
 		}
 		
-		if (document.getTreeNetworkIterator().hasNext()) {
-			logger.addWarning("The specified tree or network definitions(s) will not be written, since the " + formatName + 
+		if (document.getTreeNetworkGroupIterator().hasNext()) {
+			logger.addWarning("The specified tree or network definitions will not be written, since the " + formatName + 
 					" format does not support this."); 
 		}
 	}	

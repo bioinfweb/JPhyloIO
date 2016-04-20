@@ -225,7 +225,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeBlockStart(BLOCK_NAME_TAXA);
 			increaseIndention();
 			
-			writeTitleCommand(otuList.getListStartEvent());
+			writeTitleCommand(otuList.getStartEvent());
 			
 			writeLineStart(writer, COMMAND_NAME_DIMENSIONS);
 			writer.write(' ');

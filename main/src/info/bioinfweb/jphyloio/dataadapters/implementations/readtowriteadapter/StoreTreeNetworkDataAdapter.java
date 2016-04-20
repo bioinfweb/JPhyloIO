@@ -23,6 +23,7 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter imple
 	}
 	
 
-	public LinkedLabeledIDEvent getStartEvent() {
+	public LabeledIDEvent getStartEvent() {
 		return storeLinkedOTUsAdapter.getStartEvent();
 	}
 
