@@ -62,7 +62,7 @@ import org.junit.Test;
 
 
 
-public class NeXMLStoreDataAdapterTest {
+public class NeXMLEventWriterTest {
 	private StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 	private List<List<String>> sequences = new ArrayList<List<String>>();
 	private long idIndex = 0;
