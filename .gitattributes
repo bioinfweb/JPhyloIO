@@ -365,7 +365,6 @@ test/src/info/bioinfweb/jphyloio/formats/newick/NewickEventWriterTest.java -text
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/newick/NewickScannerTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLStoreDataAdapterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReaderTest.java -text svneol=unset#text/plain
@@ -390,6 +389,7 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/TestMatrixDataAdapter.java -t
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestOTUListDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestSingleTokenSetAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestTreeDataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/dataadapters/TestTreeNetworkGroupDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/URITest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/WhiteSpaceTest.java -text svneol=unset#text/plain

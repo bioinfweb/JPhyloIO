@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -42,7 +43,6 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter {
 	private String id = null;
 	private String label = null;
-	private String linkedOTUsID = null;
 	private String nodeEdgeIDPrefix = "";
 	private String[] linkedOTUs;
 	
@@ -54,18 +54,15 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 		if (linkedOTUs.length != 3) {
 			throw new IllegalArgumentException("Invalid number of linked OTUs (" + linkedOTUs.length + ").");
 		}
+		else {
+			this.linkedOTUs = linkedOTUs;
+		}
 		this.nodeEdgeIDPrefix = nodeEdgeIDPrefix;
-		this.linkedOTUs = linkedOTUs;
 	}
 
 
 	public TestTreeDataAdapter(String id, String label, String nodeEdgeIDPrefix) {
 		this(id, label, nodeEdgeIDPrefix, new String[]{null, null, null});
-	}
-	
-	
-	public void setLinkedOTUsID(String linkedOTUsID) {
-		this.linkedOTUsID = linkedOTUsID;
 	}
 
 
@@ -75,8 +72,8 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 
 
 	@Override
-	public LinkedLabeledIDEvent getStartEvent() {
-		return new LinkedLabeledIDEvent(EventContentType.TREE, id, label, linkedOTUsID);
+	public LabeledIDEvent getStartEvent() {
+		return new LabeledIDEvent(EventContentType.TREE, id, label);
 	}
 
 

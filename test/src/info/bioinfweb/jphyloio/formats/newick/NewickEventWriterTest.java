@@ -19,19 +19,19 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
-import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestTreeNetworkGroupDataAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import org.junit.*;
+import org.junit.Test;
 
 
 
@@ -42,8 +42,8 @@ public class NewickEventWriterTest {
 		
 		// Write file:
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
-		document.getTreesNetworks().add(new TestTreeDataAdapter("tree0", "first tree", "t0"));
-		document.getTreesNetworks().add(new TestTreeDataAdapter("tree1", "second tree", "t1"));
+		document.getTreeNetworkGroups().add(new TestTreeNetworkGroupDataAdapter("tree0", "first tree", "t0"));
+		document.getTreeNetworkGroups().add(new TestTreeNetworkGroupDataAdapter("tree1", "second tree", "t1"));
 		NewickEventWriter writer = new NewickEventWriter();
 		writer.writeDocument(document, file, new ReadWriteParameterMap());
 		
@@ -72,12 +72,12 @@ public class NewickEventWriterTest {
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "label1"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", null),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "otu0"));
-		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
 		
-		document.getTreesNetworks().add(new TestTreeDataAdapter("tree0", "first tree", "t0"));
-		TestTreeDataAdapter tree = new TestTreeDataAdapter("tree1", "second tree", "t1", new String[]{"otu0", "otu1", "otu2"});
-		tree.setLinkedOTUsID("otus0");
-		document.getTreesNetworks().add(tree);
+		document.getTreeNetworkGroups().add(new TestTreeNetworkGroupDataAdapter("tree0", "first tree", "t0"));
+		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter("tree1", "second tree", "t1", new String[]{"otu0", "otu1", "otu2"});		
+		trees.setLinkedOTUsID("otus0");
+		document.getTreeNetworkGroups().add(trees);
 		
 		NewickEventWriter writer = new NewickEventWriter();
 		writer.writeDocument(document, file, new ReadWriteParameterMap());

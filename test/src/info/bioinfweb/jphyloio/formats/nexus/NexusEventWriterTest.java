@@ -77,7 +77,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter("matrix0", "a matrix", true, 
 				"Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
 		TestOTUListDataAdapter otuList = matrix.createAccordingOTUList(0); 
-		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
 		document.getMatrices().add(matrix);
 		
 		String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + "2";
@@ -196,7 +196,7 @@ public class NexusEventWriterTest implements NexusConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu7", null),
 				new LabeledIDEvent(EventContentType.OTU, "otu8", "otu9_label1"),
 				new LabeledIDEvent(EventContentType.OTU, "otu9", "label1"));  // Test if ID is removed again, before index is appended.
-		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
 		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter("matrix0", "a matrix", false, 
 				"ACGT", "ACCT", "AC-T", "AGGT", "AG-T", "TCGT", "CCGT", "GCGT");
 		matrix.setLinkedOTUsID("otus0");
@@ -292,7 +292,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
 		TestOTUListDataAdapter otuList = new TestOTUListDataAdapter(0, 
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "someOTU"));
-		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
 		SharedOTUTestMatrixAdapter matrix = new SharedOTUTestMatrixAdapter("matrix0", "a matrix", "otu0", false, 
 				"ACGT", "ACCT");
 		matrix.setLinkedOTUsID("otus0");
@@ -356,7 +356,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		TestOTUListDataAdapter otuList = new TestOTUListDataAdapter(0, 
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "long"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", "short"));
-		document.getOTUListsMap().put(otuList.getListStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
 		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter("matrix0", "a matrix", false, "A-CGTT", "ACCT");
 		matrix.setLinkedOTUsID("otus0");
 		document.getMatrices().add(matrix);

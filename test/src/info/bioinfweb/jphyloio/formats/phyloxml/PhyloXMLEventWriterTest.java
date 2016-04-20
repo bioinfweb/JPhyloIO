@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
-import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.TestTreeNetworkGroupDataAdapter;
 
 import java.io.File;
 import java.net.URI;
@@ -63,7 +63,7 @@ public class PhyloXMLEventWriterTest {
 //		String taxaID = ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + getIdIndex();
 //		document.getOTUListsMap().put(taxaID, createOTUList(taxaID));
 //		document.getMatrices().add(createMatrix(taxaID));
-		document.getTreesNetworks().add(createTree(""));
+		document.getTreesNetworks().add(createTrees(""));
 	}
 
 	
@@ -89,12 +89,11 @@ public class PhyloXMLEventWriterTest {
 		return metaData;
 	}
 	
-	
-	private TestTreeDataAdapter createTree(String prefix) {
+	private TestTreeNetworkGroupDataAdapter createTrees(String prefix) {
 		String treeID = ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex();
-		TestTreeDataAdapter tree = new TestTreeDataAdapter(treeID, null, prefix);
-		tree.setLinkedOTUsID(null);
-		return tree;
+		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter(treeID, null, "nodeEdgeID");
+		trees.setLinkedOTUsID(prefix);
+		return trees;
 	}
 	
 	
