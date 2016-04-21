@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import static org.junit.Assert.assertEquals;
+import info.bioinfweb.commons.testing.TestXMLEvents;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
@@ -28,16 +28,19 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
 
 
 
-public class PhyloXMLEventWriterTest {
+public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	private long idIndex = 0;
 	
 	
@@ -55,35 +58,70 @@ public class PhyloXMLEventWriterTest {
 	}
 	
 	
-//	@Test
-//	public void createSingleTreeDocument() throws IOException {
-//		// Write file
-//		File file = new File("data/testOutput/PhyloXMLTest.xml");
-//		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
-//		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
-//				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));
-//		
-//		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
-//		document.getTreesNetworks().add(trees);
-//		
-//		writeDocument(document, file);
-//		
-//		// Validate file:
-//		BufferedReader reader = new BufferedReader(new FileReader(file));
-//		try {
-////			assertEquals("<?xml version=\"1.0\" ?>", reader.readLine());
-////			assertEquals("<phyloxml xmlns=\"http://www.phyloxml.org\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">", reader.readLine());
-////			assertEquals("<phylogeny rooted=\"true\" branch_length_unit=\"xs:double\">", reader.readLine());
-////			assertEquals("<id>tree1</id>", reader.readLine());
-////			assertEquals("<clade>", reader.readLine());
-//			
-////			assertEquals(-1, reader.read());
-//		}
-//		finally {
-//			reader.close();
-//			file.delete();
-//		}
-//	}
+	@Test
+	public void createSingleTreeDocument() throws IOException, XMLStreamException {
+		// Write file
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));
+		
+		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+		document.getTreesNetworks().add(trees);
+		
+		writeDocument(document, file);
+		
+		// Validate file:
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader(file));
+		try {
+			TestXMLEvents.assertStartDocument(reader);
+			
+			TestXMLEvents.assertStartElement(TAG_ROOT, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_PHYLOGENY, reader);			
+			TestXMLEvents.assertShortElement(TAG_ID, "tree1", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node '_1", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			TestXMLEvents.assertEndElement(TAG_PHYLOGENY, reader);
+			TestXMLEvents.assertEndElement(TAG_ROOT, reader);			
+			
+			TestXMLEvents.assertEndDocument(reader);
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
 	
 	
 //	@Test
@@ -129,17 +167,18 @@ public class PhyloXMLEventWriterTest {
 	
 	
 	@Test
-	public void createEmptyDocument() throws IOException {
+	public void createEmptyDocument() throws IOException, XMLStreamException {
 		// Write file
 		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
 		writeDocument(document, file);
 		
-// Validate file:
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		try {		
-			assertEquals(-1, reader.read());
+		// Validate file:
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader(file));
+		try {
+			TestXMLEvents.assertStartDocument(reader); //TODO does the xml tag have an end element?
+//			TestXMLEvents.assertEndDocument(reader);
 		}
 		finally {
 			reader.close();
@@ -173,33 +212,110 @@ public class PhyloXMLEventWriterTest {
 //	}
 //	
 //	
-//	@Test
-//	public void createMultipleTreesDocument() throws IOException {
-//		// Write file
-//		File file = new File("data/testOutput/PhyloXMLTest.xml");
-//		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
-//		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
-//				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));
-//		
-//		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
-//		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
-//		document.getTreesNetworks().add(trees);
-//		
-//		writeDocument(document, file);
-//		
-//// Validate file:
-//		BufferedReader reader = new BufferedReader(new FileReader(file));
-//		try {
-////			assertEquals("", reader.readLine());			
-////			assertEquals(-1, reader.read());
-//		}
-//		finally {
-//			reader.close();
-//			file.delete();
-//		}
-//	}
-//	
-//	
+	@Test
+	public void createMultipleTreesDocument() throws IOException, XMLStreamException {
+		// Write file
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));
+		
+		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+		document.getTreesNetworks().add(trees);
+		
+		writeDocument(document, file);
+		
+// Validate file:
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader(file));
+		try {
+			TestXMLEvents.assertStartDocument(reader);
+			
+			TestXMLEvents.assertStartElement(TAG_ROOT, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_PHYLOGENY, reader);			
+			TestXMLEvents.assertShortElement(TAG_ID, "tree1", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node '_1", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			TestXMLEvents.assertEndElement(TAG_PHYLOGENY, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_PHYLOGENY, reader);			
+			TestXMLEvents.assertShortElement(TAG_ID, "tree2", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node '_1", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertStartElement(TAG_CLADE, reader);
+			TestXMLEvents.assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+			TestXMLEvents.assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+			TestXMLEvents.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			
+			TestXMLEvents.assertEndElement(TAG_CLADE, reader);
+			TestXMLEvents.assertEndElement(TAG_PHYLOGENY, reader);
+			
+			TestXMLEvents.assertEndElement(TAG_ROOT, reader);			
+			
+			TestXMLEvents.assertEndDocument(reader);
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
 //	@Test
 //	public void createMultipleTreegroupsDocument() throws IOException {
 //		// Write file
