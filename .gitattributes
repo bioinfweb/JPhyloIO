@@ -55,7 +55,6 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreOTUListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectListDataAdapter.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreTreeNetworkDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreTreeNetworkGroupDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/AbstractSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/BasicEventReceiver.java -text svneol=unset#text/plain
