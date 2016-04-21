@@ -19,19 +19,17 @@
 package info.bioinfweb.jphyloio.test.dataadapters;
 
 
-import java.io.IOException;
-import java.util.Iterator;
-
-import org.apache.commons.collections4.map.ListOrderedMap;
-
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+
+import java.io.IOException;
+import java.util.Iterator;
+
+import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
