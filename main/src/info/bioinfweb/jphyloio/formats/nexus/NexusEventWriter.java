@@ -38,6 +38,7 @@ import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -586,7 +587,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private String getOTUsIDForTree(LinkedLabeledIDEvent event) {
+	private String getOTUsIDForTreeGroup(LinkedLabeledIDEvent event) {
 		if (event.hasLink()) {
 			return event.getLinkedID();
 		}
@@ -596,7 +597,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private String createUniqueTreeLabel(LinkedLabeledIDEvent event, final Set<String> usedLabels) {
+	private String createUniqueTreeLabel(LabeledIDEvent event, final Set<String> usedLabels) {
 		String result = createUniqueLabel(
 				parameters, 
 				new NoEditUniqueLabelHandler() {
@@ -655,98 +656,173 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeTreesBlocks(DocumentDataAdapter document) throws IOException {
-		Set<String> processedOTUsIDs = new HashSet<String>();
-		boolean treeWritten;
-		long skippedNetworks;
-		do {
-			String currentOTUsID = null;
+		long skippedNetworks = 0;
+		Iterator<TreeNetworkGroupDataAdapter> groupIterator = document.getTreeNetworkGroupIterator();
+		while (groupIterator.hasNext()) {
+			TreeNetworkGroupDataAdapter group = groupIterator.next();
+			LinkedLabeledIDEvent groupStartEvent = group.getStartEvent();
+			String currentOTUsID = getOTUsIDForTreeGroup(groupStartEvent);
 			OTUListDataAdapter currentOTUList = null;
-			treeWritten = false;
-			skippedNetworks = 0;
+			if (!UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
+				currentOTUList = document.getOTUList(currentOTUsID);
+			}
+			else if (document.getOTUListCount() > 1) {
+				parameters.getLogger().addWarning("One or more trees were written to the Nexus document, which do not reference "
+						+ "any TAXA block. Since the created Nexus document contains more than one TAXA block, this file may not be "
+						+ "readable by some applications.");
+			}
+
+			// Write block start:
+			writeBlockStart(BLOCK_NAME_TREES);
+			increaseIndention();
+			if (UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
+				writeTitleCommand("Trees linked to no TAXA block");
+			}
+			else {
+				writeTitleCommand("Trees linked to " + parameters.getLabelEditingReporter().getEditedLabel(
+						EventContentType.OTU_LIST, groupStartEvent.getLinkedID()));
+			}
+			writeLinkTaxaCommand(groupStartEvent);  // Writes only if a block is linked.
+			
+			// Write trees:
 			Set<String> usedLabels = new HashSet<String>();
-			Iterator<TreeNetworkDataAdapter> iterator = document.getTreeNetworkIterator();
-			while (iterator.hasNext()) {
-				TreeNetworkDataAdapter treeNetwork = iterator.next();
-				if (treeNetwork.isTree()) {
-					LinkedLabeledIDEvent startEvent = treeNetwork.getStartEvent();
+			Iterator<TreeNetworkDataAdapter> treeIterator = group.getTreeNetworkIterator();
+			while (treeIterator.hasNext()) {
+				Map<String, Long> indexMap = null;
+				if (currentOTUList != null) {
+					boolean translate = parameters.getBoolean(ReadWriteParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, false);
+					boolean alwaysUseLabels = parameters.getBoolean(ReadWriteParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, false);
+					if (translate || !alwaysUseLabels) {
+						indexMap = createOTUIndexMap(currentOTUList);
+					}
+					if (translate) {  //TODO If no user defined translation labels are possible, the TRANSLATE command is unnecessary, since using the indices of the TAXA block is anyway possible.
+						writeTranslateCommand(indexMap);  // Always writes translation table for all taxa, event if they are not contained in the trees of this block.
+					}
+					if (alwaysUseLabels) {
+						indexMap = null;  // Delete possibly generated index map again.
+					}
+				}
 				
-					// The following code ensures that trees referencing different TAXA blocks are written in separate TREES blocks:
-					if (currentOTUsID == null) {
-						currentOTUsID = getOTUsIDForTree(startEvent);
-						if (!UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
-							currentOTUList = document.getOTUList(currentOTUsID);
-						}
-						else if (document.getOTUListCount() > 1) {
-							parameters.getLogger().addWarning("One or more trees were written to the Nexus document, which do not reference "
-									+ "any TAXA block. Since the created Nexus document contains more than one TAXA block, this file may not be "
-									+ "readable by some applications.");
-						}
-						if (processedOTUsIDs.contains(currentOTUsID)) {
-							currentOTUsID = null;
-							currentOTUList = null;
-						}
-						else {
-							processedOTUsIDs.add(currentOTUsID);
-						}
-					}
-					
-					if ((currentOTUsID != null) && (currentOTUsID.equals(getOTUsIDForTree(startEvent)))) {
-						Map<String, Long> indexMap = null;
-						if (!treeWritten) {
-							writeBlockStart(BLOCK_NAME_TREES);
-							increaseIndention();
-							
-							if (UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
-								writeTitleCommand("Trees linked to no TAXA block");
-							}
-							else {
-								writeTitleCommand("Trees linked to " + parameters.getLabelEditingReporter().getEditedLabel(
-										EventContentType.OTU_LIST, startEvent.getLinkedID()));
-							}
-							writeLinkTaxaCommand(startEvent);  // Writes only if a block is linked.
-							
-							if (currentOTUList != null) {
-								boolean translate = parameters.getBoolean(ReadWriteParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, false);
-								boolean alwaysUseLabels = parameters.getBoolean(ReadWriteParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, false);
-								if (translate || !alwaysUseLabels) {
-									indexMap = createOTUIndexMap(currentOTUList);
-								}
-								if (translate) {  //TODO If no user defined translation labels are possible, the TRANSLATE command is unnecessary, since using the indices of the TAXA block is anyway possible.
-									writeTranslateCommand(indexMap);  // Always writes translation table for all taxa, event if they are not contained in the trees of this block.
-								}
-								if (alwaysUseLabels) {
-									indexMap = null;  // Delete possibly generated index map again.
-								}
-							}
-						}
-						
-						writeLineStart(writer, COMMAND_NAME_TREE);
-						writer.write(' ');
-						writer.write(formatToken(createUniqueTreeLabel(startEvent, usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
-						writer.write(' ');
-						writer.write(KEY_VALUE_SEPARATOR);
-						writer.write(' ');
-						new NewickStringWriter(writer, treeNetwork, new NexusNewickWriterNodeLabelProcessor(
-								currentOTUList, indexMap, parameters), parameters).write();  // Also writes line break. indexMap may be null.
-						
-						treeWritten = true;
-					}
+				TreeNetworkDataAdapter treeNetwork = treeIterator.next();
+				if (treeNetwork.isTree()) {
+					writeLineStart(writer, COMMAND_NAME_TREE);
+					writer.write(' ');
+					writer.write(formatToken(createUniqueTreeLabel(treeNetwork.getStartEvent(), usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
+					writer.write(' ');
+					writer.write(KEY_VALUE_SEPARATOR);
+					writer.write(' ');
+					new NewickStringWriter(writer, treeNetwork, new NexusNewickWriterNodeLabelProcessor(
+							currentOTUList, indexMap, parameters), parameters).write();  // Also writes line break. indexMap may be null.
 				}
 				else {
 					skippedNetworks += 1;
 				}
 			}
 			
-			if (treeWritten) {
-				decreaseIndention();
-				writeBlockEnd();
-			}
-		} while (treeWritten);
+			// Write block end:
+			decreaseIndention();
+			writeBlockEnd();
+		}
 		
 		if (skippedNetworks > 0)  {
 			parameters.getLogger().addWarning("The document data contained " + skippedNetworks + 
 					" phylogenetic network definitions, which have not been written to the Nexus document, since it only supports trees.");
 		}
+
+		
+		
+//		Set<String> processedOTUsIDs = new HashSet<String>();
+//		boolean treeWritten;
+//		long skippedNetworks;
+//		do {
+//			String currentOTUsID = null;
+//			OTUListDataAdapter currentOTUList = null;
+//			treeWritten = false;
+//			skippedNetworks = 0;
+//			Set<String> usedLabels = new HashSet<String>();
+//			Iterator<TreeNetworkDataAdapter> iterator = document.getTreeNetworkIterator();
+//			while (iterator.hasNext()) {
+//				TreeNetworkDataAdapter treeNetwork = iterator.next();
+//				if (treeNetwork.isTree()) {
+//					LinkedLabeledIDEvent startEvent = treeNetwork.getStartEvent();
+//				
+//					// The following code ensures that trees referencing different TAXA blocks are written in separate TREES blocks:
+//					if (currentOTUsID == null) {
+//						currentOTUsID = getOTUsIDForTreeGroup(startEvent);
+//						if (!UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
+//							currentOTUList = document.getOTUList(currentOTUsID);
+//						}
+//						else if (document.getOTUListCount() > 1) {
+//							parameters.getLogger().addWarning("One or more trees were written to the Nexus document, which do not reference "
+//									+ "any TAXA block. Since the created Nexus document contains more than one TAXA block, this file may not be "
+//									+ "readable by some applications.");
+//						}
+//						if (processedOTUsIDs.contains(currentOTUsID)) {
+//							currentOTUsID = null;
+//							currentOTUList = null;
+//						}
+//						else {
+//							processedOTUsIDs.add(currentOTUsID);
+//						}
+//					}
+//					
+//					if ((currentOTUsID != null) && (currentOTUsID.equals(getOTUsIDForTreeGroup(startEvent)))) {
+//						Map<String, Long> indexMap = null;
+//						if (!treeWritten) {
+//							writeBlockStart(BLOCK_NAME_TREES);
+//							increaseIndention();
+//							
+//							if (UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
+//								writeTitleCommand("Trees linked to no TAXA block");
+//							}
+//							else {
+//								writeTitleCommand("Trees linked to " + parameters.getLabelEditingReporter().getEditedLabel(
+//										EventContentType.OTU_LIST, startEvent.getLinkedID()));
+//							}
+//							writeLinkTaxaCommand(startEvent);  // Writes only if a block is linked.
+//							
+//							if (currentOTUList != null) {
+//								boolean translate = parameters.getBoolean(ReadWriteParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, false);
+//								boolean alwaysUseLabels = parameters.getBoolean(ReadWriteParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, false);
+//								if (translate || !alwaysUseLabels) {
+//									indexMap = createOTUIndexMap(currentOTUList);
+//								}
+//								if (translate) {  //TODO If no user defined translation labels are possible, the TRANSLATE command is unnecessary, since using the indices of the TAXA block is anyway possible.
+//									writeTranslateCommand(indexMap);  // Always writes translation table for all taxa, event if they are not contained in the trees of this block.
+//								}
+//								if (alwaysUseLabels) {
+//									indexMap = null;  // Delete possibly generated index map again.
+//								}
+//							}
+//						}
+//						
+//						writeLineStart(writer, COMMAND_NAME_TREE);
+//						writer.write(' ');
+//						writer.write(formatToken(createUniqueTreeLabel(startEvent, usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
+//						writer.write(' ');
+//						writer.write(KEY_VALUE_SEPARATOR);
+//						writer.write(' ');
+//						new NewickStringWriter(writer, treeNetwork, new NexusNewickWriterNodeLabelProcessor(
+//								currentOTUList, indexMap, parameters), parameters).write();  // Also writes line break. indexMap may be null.
+//						
+//						treeWritten = true;
+//					}
+//				}
+//				else {
+//					skippedNetworks += 1;
+//				}
+//			}
+//			
+//			if (treeWritten) {
+//				decreaseIndention();
+//				writeBlockEnd();
+//			}
+//		} while (treeWritten);
+//		
+//		if (skippedNetworks > 0)  {
+//			parameters.getLogger().addWarning("The document data contained " + skippedNetworks + 
+//					" phylogenetic network definitions, which have not been written to the Nexus document, since it only supports trees.");
+//		}
 	}
 	
 	
