@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -19,35 +19,20 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
+
 import java.io.IOException;
 import java.util.Iterator;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
-import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
-import info.bioinfweb.jphyloio.formats.newick.DefaultNewickWriterNodeLabelProcessor;
-import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
-import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 
 
 
 public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements PhyloXMLConstants {
-	private XMLStreamWriter writer;
-	private ReadWriteParameterMap parameters;
-	private ApplicationLogger logger;
-
-	private DocumentDataAdapter document;
-	
-	
 	public PhyloXMLEventWriter() {
 		super();
 	}
@@ -59,56 +44,24 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	}
 
 	
-	public XMLStreamWriter getWriter() {
-		return writer;
-	}
-	
-
-	public ReadWriteParameterMap getParameters() {
-		return parameters;
-	}
-	
-
 	@Override
-	protected void doWriteDocument(DocumentDataAdapter document, XMLStreamWriter writer, ReadWriteParameterMap parameters)
-			throws IOException, XMLStreamException {
-		this.writer = writer; //TODO Move to superclass?
-		this.parameters = parameters; //TODO Move to superclass (also used by NexusEventWriter)?
-		this.logger = parameters.getLogger(); //TODO Move to superclass (also used by NexusEventWriter)?
-		this.document = document;
+	protected void doWriteDocument() throws IOException, XMLStreamException {
+		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());		
 		
-		//TODO why is XML tag always written to the file?
-		if (documentHasTree(document)) { //empty documents are not written
-			getWriter().writeStartElement(TAG_ROOT.getLocalPart());		
-			
-			getWriter().writeDefaultNamespace(NAMESPACE_URI);
-			getWriter().writeNamespace("xsi", NAMESPACE_URI_XSI);
-	//		TODO write namespaces collected in document
-			
-			writePhylogenyTags();
-			
-			getWriter().writeEndElement();
-		}
-		else {
-			logger.addWarning("Since no trees were contained in the document information, no file could be written.");
-		}
-	}
-	
-	
-	protected boolean documentHasTree(DocumentDataAdapter document) {
-		Iterator<TreeNetworkGroupDataAdapter> treeGroups = document.getTreeNetworkGroupIterator();
-		while (treeGroups.hasNext()) {
-			Iterator<TreeNetworkDataAdapter> trees = treeGroups.next().getTreeNetworkIterator();
-			if (trees.hasNext()) {
-				return true;
-			}
-		}		
-		return false;
+		getXMLWriter().writeDefaultNamespace(NAMESPACE_URI);
+		getXMLWriter().writeNamespace("xsi", NAMESPACE_URI_XSI);
+//		TODO write namespaces collected in document
+
+		writePhylogenyTags();
+		
+		//TODO write document metadata
+		
+		getXMLWriter().writeEndElement();
 	}
 	
 	
 	private void writePhylogenyTags() throws XMLStreamException {
-		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = document.getTreeNetworkGroupIterator();		
+		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = getDocument().getTreeNetworkGroupIterator();		
 		while (treeNetworkGroupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
 			
@@ -116,15 +69,15 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 			while (treeNetworkIterator.hasNext()) {
 				TreeNetworkDataAdapter tree = treeNetworkIterator.next();
 
-				if (tree.isTree()) { //networks can not be written to PhyloXML
+				if (tree.isTree()) {
 					writePhylogenyTag(tree);
 				}
 				else { //TODO can networks be written using the CladeRelation tag?
-					logger.addWarning("A provided network definition with the ID \"" + tree.getStartEvent().getID() 
+					getLogger().addWarning("A provided network definition with the ID \"" + tree.getStartEvent().getID() 
 							+ "\" was ignored, because the PhyloXML format only supports trees.");
 				}
 			}	
-		}		
+		}
 	}
 	
 	
@@ -132,9 +85,9 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 		LabeledIDEvent startEvent = tree.getStartEvent();
 		Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs();
 		boolean rooted = rootEdgeIterator.hasNext();
-		getWriter().writeStartElement(TAG_PHYLOGENY.getLocalPart());
-		getWriter().writeAttribute(ATTR_ROOTED.getLocalPart(), Boolean.toString(rooted));
-		getWriter().writeAttribute(ATTR_BRANCH_LENGTH_UNIT.getLocalPart(), "xs:double"); //TODO write value with correct namespace prefix
+		getXMLWriter().writeStartElement(TAG_PHYLOGENY.getLocalPart());
+		getXMLWriter().writeAttribute(ATTR_ROOTED.getLocalPart(), Boolean.toString(rooted));
+		getXMLWriter().writeAttribute(ATTR_BRANCH_LENGTH_UNIT.getLocalPart(), "xs:double"); //TODO write value with correct namespace prefix
 		
 		writeSimpleTag(TAG_NAME.getLocalPart(), startEvent.getLabel());
 		writeSimpleTag(TAG_ID.getLocalPart(), startEvent.getID());
@@ -142,27 +95,27 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 		if (rooted) {
 			String rootEdgeID = rootEdgeIterator.next();
 			if (rootEdgeIterator.hasNext()) {
-				logger.addWarning("A tree definition contains more than one root edge, which is not supported "
+				getLogger().addWarning("A tree definition contains more than one root edge, which is not supported "
 						+ "by the PhyloXML format. Only the first root edge will be considered.");
 			}
 			writeCladeTag(tree, rootEdgeID);
 		}
 		else {
-			logger.addWarning("A specified tree does not specify any root edge. (Event unrooted trees need a "
+			getLogger().addWarning("A specified tree does not specify any root edge. (Event unrooted trees need a "
 					+ "root edge definition defining the edge to start writing tree to the PhyloXML format.) No "
 					+ "tree was written.");
 		}
 		
 		//TODO write meta data
 		
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 	}
 	
 	
 	private void writeCladeTag(TreeNetworkDataAdapter tree, String rootEdgeID) throws XMLStreamException {
 		String nodeID = tree.getEdgeStartEvent(rootEdgeID).getTargetID();
 		
-		getWriter().writeStartElement(TAG_CLADE.getLocalPart());
+		getXMLWriter().writeStartElement(TAG_CLADE.getLocalPart());
 		
 		writeSimpleTag(TAG_NAME.getLocalPart(), tree.getNodeStartEvent(nodeID).getLabel());
 		writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(tree.getEdgeStartEvent(rootEdgeID).getLength()));
@@ -178,16 +131,16 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 		
 //	TODO Write meta data (edge or node content or both?)
 		
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 
 	}
 	
 	
 	private void writeSimpleTag(String tagName, String characters) throws XMLStreamException {
 		if ((characters != null) && !characters.isEmpty()) {
-			getWriter().writeStartElement(tagName);		
-			getWriter().writeCharacters(characters);
-			getWriter().writeEndElement();
+			getXMLWriter().writeStartElement(tagName);		
+			getXMLWriter().writeCharacters(characters);
+			getXMLWriter().writeEndElement();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
@@ -34,16 +35,45 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 public abstract class AbstractXMLEventWriter extends AbstractEventWriter {
-	protected abstract void doWriteDocument(DocumentDataAdapter document, XMLStreamWriter writer, ReadWriteParameterMap parameters) 
-			throws IOException, XMLStreamException;
+	private XMLStreamWriter xmlWriter;
+	private ReadWriteParameterMap parameters;
+	private ApplicationLogger logger;
+	private DocumentDataAdapter document;
+
+
+	protected XMLStreamWriter getXMLWriter() {
+		return xmlWriter;
+	}
+
+
+	protected ReadWriteParameterMap getParameters() {
+		return parameters;
+	}
+
+
+	protected ApplicationLogger getLogger() {
+		return logger;
+	}
+
+
+	protected DocumentDataAdapter getDocument() {
+		return document;
+	}
+
+
+	protected abstract void doWriteDocument()	throws IOException, XMLStreamException;
 	
 	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
 		try {
-			XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
+			this.xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
+			this.parameters = parameters;
+			this.logger = parameters.getLogger();
+			this.document = document;
+
 			xmlWriter.writeStartDocument();
-			doWriteDocument(document, xmlWriter, parameters);
+			doWriteDocument();
 			xmlWriter.writeEndDocument();
 		}
 		catch (XMLStreamException e) {

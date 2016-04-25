@@ -20,9 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
-import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -61,37 +59,22 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLConstants {
-	private XMLStreamWriter writer;
-	private ReadWriteParameterMap parameters;
-	private ApplicationLogger logger;
-	
+public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLConstants {	
 	private NeXMLWriterStreamDataProvider streamDataProvider;
 	
 	
 	public NeXMLEventWriter() {
 		super();
-		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this);
+		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this, getXMLWriter());
 	}
 
 
 	@Override
 	public String getFormatID() {
 		return JPhyloIOFormatIDs.NEXML_FORMAT_ID;
-	}
-	
-	
-	public XMLStreamWriter getWriter() {
-		return writer;
-	}
-	
-	
-	public ReadWriteParameterMap getParameters() {
-		return parameters;
 	}
 
 
@@ -104,29 +87,29 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void writeTreesTag(TreeNetworkGroupDataAdapter treeOrNetworkGroup) throws XMLStreamException, IOException {
-		getWriter().writeStartElement(TAG_TREES.getLocalPart());
+		getXMLWriter().writeStartElement(TAG_TREES.getLocalPart());
 		streamDataProvider.writeLinkedLabeledIDAttributes(treeOrNetworkGroup.getStartEvent(), TAG_OTUS, true);
 		
 		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = treeOrNetworkGroup.getTreeNetworkIterator();
 		while (treesAndNetworksIterator.hasNext()) {
 			writeTreeOrNetworkTag(treesAndNetworksIterator.next());			
 		}
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 	}
 	
 	
 	private void writeTreeOrNetworkTag(TreeNetworkDataAdapter treeOrNetwork) throws XMLStreamException, IOException {		
-		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(writer, parameters, streamDataProvider);
+		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		
 		if (treeOrNetwork.isTree()) {
-			getWriter().writeStartElement(TAG_TREE.getLocalPart());
+			getXMLWriter().writeStartElement(TAG_TREE.getLocalPart());
 			streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent());
-			getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_TREE); //trees are always written as float trees
+			getXMLWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_TREE); //trees are always written as float trees
 		}
 		else {
-			getWriter().writeStartElement(TAG_NETWORK.getLocalPart());
+			getXMLWriter().writeStartElement(TAG_NETWORK.getLocalPart());
 			streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent());
-			getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_NETWORK); //networks are always written as float networks
+			getXMLWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_NETWORK); //networks are always written as float networks
 		}		
 		
 		if (treeOrNetwork.hasMetadata()) {
@@ -136,39 +119,39 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork);
 		
 		for (String nodeID : lister.getNodeIDs()) {
-			getWriter().writeStartElement(TAG_NODE.getLocalPart());
+			getXMLWriter().writeStartElement(TAG_NODE.getLocalPart());
 			streamDataProvider.writeLinkedLabeledIDAttributes(treeOrNetwork.getNodeStartEvent(nodeID), TAG_OTU, false);
 			treeOrNetwork.writeNodeContentData(receiver, nodeID);
-			getWriter().writeEndElement();
+			getXMLWriter().writeEndElement();
 		}
 		
 		for (String edgeID : lister.getEdgeIDs()) {
 			writeEdgeOrRootedgeTag(treeOrNetwork, treeOrNetwork.getEdgeStartEvent(edgeID));
 		}
 		
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 	}
 	
 	
 	private void writeEdgeOrRootedgeTag(TreeNetworkDataAdapter tree, EdgeEvent edge) throws XMLStreamException, IllegalArgumentException, IOException {
-		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(writer, parameters, streamDataProvider);
+		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		
 		if (edge.isRoot()) {
-			getWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart()); //TODO check if tree.isConsideredRooted(), always write a rootedge if thats true?
+			getXMLWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart()); //TODO check if tree.isConsideredRooted(), always write a rootedge if thats true?
 		}
 		else {
-			getWriter().writeStartElement(TAG_EDGE.getLocalPart());
-			getWriter().writeAttribute(ATTR_SOURCE.getLocalPart(), edge.getSourceID());
+			getXMLWriter().writeStartElement(TAG_EDGE.getLocalPart());
+			getXMLWriter().writeAttribute(ATTR_SOURCE.getLocalPart(), edge.getSourceID());
 		}
-		getWriter().writeAttribute(ATTR_TARGET.getLocalPart(), edge.getTargetID());
+		getXMLWriter().writeAttribute(ATTR_TARGET.getLocalPart(), edge.getTargetID());
 		streamDataProvider.writeLabeledIDAttributes(edge);
 		
 		if (edge.getLength() != Double.NaN) {
-			getWriter().writeAttribute(ATTR_LENGTH.getLocalPart(), Double.toString(edge.getLength()));
+			getXMLWriter().writeAttribute(ATTR_LENGTH.getLocalPart(), Double.toString(edge.getLength()));
 		}
 		
 		tree.writeEdgeContentData(receiver, edge.getID());
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 	}
 	
 	
@@ -196,7 +179,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void checkTreeOrNetwork(TreeNetworkDataAdapter treeOrNetwork) throws IOException {
-		NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, streamDataProvider);
+		NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork);		
 		Set<String> referencedNodeIDs = new HashSet<String>();
 		
@@ -252,7 +235,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void writeCharactersTag(MatrixDataAdapter alignment) throws IOException, XMLStreamException {
-		getWriter().writeStartElement(TAG_CHARACTERS.getLocalPart());
+		getXMLWriter().writeStartElement(TAG_CHARACTERS.getLocalPart());
 		streamDataProvider.writeLinkedLabeledIDAttributes(alignment.getStartEvent(), TAG_OTUS, true);
 		String alignmentType = null;
 		
@@ -302,11 +285,11 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			}			
 		}
 		
-		getWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), alignmentType);
+		getXMLWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), alignmentType);
 		
 		writeFormatTag(alignment);
 		
-		getWriter().writeStartElement(TAG_MATRIX.getLocalPart()); //tag does not have any attributes
+		getXMLWriter().writeStartElement(TAG_MATRIX.getLocalPart()); //tag does not have any attributes
 		
 		writeOrCheckMetaData(alignment, false);
 		
@@ -315,29 +298,29 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			writeRowTag(alignment.getSequenceStartEvent(sequenceIDIterator.next()), alignment);
 		}		
 		
-		getWriter().writeEndElement();
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 		
 		streamDataProvider.setAlignmentType(null);
 	}
 	
 	
 	private void writeFormatTag(MatrixDataAdapter alignment) throws XMLStreamException, IllegalArgumentException, IOException {
-		getWriter().writeStartElement(TAG_FORMAT.getLocalPart());
+		getXMLWriter().writeStartElement(TAG_FORMAT.getLocalPart());
 				
 		writeTokenSetDefinitions(alignment.getTokenSets()); //only in case of discrete data		
 		
 		writeCharacterSets(alignment);
 		
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 	}
 	
 	
 	private void writeTokenSetDefinitions(ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSetDefinitions) throws XMLStreamException, IllegalArgumentException, IOException {
 		Iterator<String> tokenSetDefinitionIDs = tokenSetDefinitions.getIDIterator();
-		NeXMLTokenSetEventReceiver receiver = new NeXMLTokenSetEventReceiver(writer, parameters, streamDataProvider);
+		NeXMLTokenSetEventReceiver receiver = new NeXMLTokenSetEventReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		NeXMLMolecularDataTokenDefinitionReceiver molecularDataReceiver = 
-				new NeXMLMolecularDataTokenDefinitionReceiver(writer, parameters, streamDataProvider);
+				new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		streamDataProvider.setIdIndex(0);
 		
 		if (streamDataProvider.hasTokenDefinitionSet()) {
@@ -350,52 +333,52 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					case NUCLEOTIDE: //should not occur
 						break;
 					case DNA:
-						getWriter().writeStartElement(TAG_STATES.getLocalPart());
+						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						streamDataProvider.writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(molecularDataReceiver, tokenSetID);
 						molecularDataReceiver.addRemainingEvents(CharacterStateSetType.DNA);
-						getWriter().writeEndElement();
+						getXMLWriter().writeEndElement();
 						break;
 					case RNA:
-						getWriter().writeStartElement(TAG_STATES.getLocalPart());
+						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						streamDataProvider.writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(molecularDataReceiver, tokenSetID);
 						molecularDataReceiver.addRemainingEvents(CharacterStateSetType.RNA);
-						getWriter().writeEndElement();
+						getXMLWriter().writeEndElement();
 						break;
 					case AMINO_ACID:
-						getWriter().writeStartElement(TAG_STATES.getLocalPart());
+						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						streamDataProvider.writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(molecularDataReceiver, tokenSetID);
 						molecularDataReceiver.addRemainingEvents(CharacterStateSetType.AMINO_ACID);
-						getWriter().writeEndElement();
+						getXMLWriter().writeEndElement();
 						break;
 					default: //discrete data
-						getWriter().writeStartElement(TAG_STATES.getLocalPart());
+						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						streamDataProvider.writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(receiver, tokenSetID);
 						streamDataProvider.getTokenDefinitions().removeAll(streamDataProvider.getTokenTranslationMap().keySet());
 						if (!streamDataProvider.getTokenDefinitions().isEmpty()) {
 							receiver.writeRemainingStandardTokenDefinitions();
 						}
-						getWriter().writeEndElement();
+						getXMLWriter().writeEndElement();
 				}
 			}
 		}
 		else if (!streamDataProvider.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-			getWriter().writeStartElement(TAG_STATES.getLocalPart());
+			getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 			streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, DEFAULT_TOKEN_DEFINITION_SET_ID, null));
 			if (!streamDataProvider.getTokenDefinitions().isEmpty()) {
 				receiver.writeRemainingStandardTokenDefinitions();
 			}
-			getWriter().writeEndElement();
+			getXMLWriter().writeEndElement();
 		}
 	}
 	
 	
 	private void writeCharacterSets(MatrixDataAdapter alignment) throws IllegalArgumentException, XMLStreamException, IOException {
 		Iterator<String> characterSetIDs = alignment.getCharacterSets().getIDIterator();
-		NeXMLCharacterSetEventReceiver receiver = new NeXMLCharacterSetEventReceiver(writer, parameters, streamDataProvider);
+		NeXMLCharacterSetEventReceiver receiver = new NeXMLCharacterSetEventReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		Map<Long, String> columnIndexToIDMap = new HashMap<Long, String>();
 		
 		streamDataProvider.setIdIndex(0);
@@ -405,18 +388,18 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			columnIndexToIDMap.put(i, charID);
 			streamDataProvider.addToDocumentIDs(charID);
 			
-			getWriter().writeEmptyElement(TAG_CHAR.getLocalPart());
+			getXMLWriter().writeEmptyElement(TAG_CHAR.getLocalPart());
 			
-			getWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
+			getXMLWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
 			if (!streamDataProvider.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-				getWriter().writeAttribute(ATTR_STATES.getLocalPart(), streamDataProvider.getColumnIndexToStatesMap().get(i));
+				getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), streamDataProvider.getColumnIndexToStatesMap().get(i));
 			}
 		}
 		
 		while (characterSetIDs.hasNext()) {
 			String charSetID = characterSetIDs.next();			
 			
-			getWriter().writeStartElement(TAG_SET.getLocalPart());
+			getXMLWriter().writeStartElement(TAG_SET.getLocalPart());
 			
 			StringBuffer value = new StringBuffer();			
 			for (long columnIndex : streamDataProvider.getCharSets().get(charSetID)) {
@@ -424,13 +407,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				value.append(" ");
 			}
 			
-			getWriter().writeAttribute(ATTR_CHAR.getLocalPart(), value.toString());
+			getXMLWriter().writeAttribute(ATTR_CHAR.getLocalPart(), value.toString());
 			
 			streamDataProvider.writeLabeledIDAttributes(alignment.getCharacterSets().getObjectStartEvent(charSetID));
 			
 			alignment.getCharacterSets().writeContentData(receiver, charSetID);
 			
-			getWriter().writeEndElement();
+			getXMLWriter().writeEndElement();
 		}
 	}
 	
@@ -443,10 +426,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			longTokens = true;
 		}
 		
-		NeXMLSequenceTokensReceiver tokenReceiver = new NeXMLSequenceTokensReceiver(writer, parameters, longTokens, streamDataProvider);
-		NeXMLSequenceMetaDataReceiver metaDataReceiver = new NeXMLSequenceMetaDataReceiver(writer, parameters, streamDataProvider);
+		NeXMLSequenceTokensReceiver tokenReceiver = new NeXMLSequenceTokensReceiver(getXMLWriter(), getParameters(), longTokens, streamDataProvider);
+		NeXMLSequenceMetaDataReceiver metaDataReceiver = new NeXMLSequenceMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		
-		getWriter().writeStartElement(TAG_ROW.getLocalPart());
+		getXMLWriter().writeStartElement(TAG_ROW.getLocalPart());
 		streamDataProvider.writeLinkedLabeledIDAttributes(sequenceEvent, TAG_OTU, true);
 		
 		alignment.writeSequencePartContentData(metaDataReceiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));
@@ -455,12 +438,12 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			alignment.writeSequencePartContentData(tokenReceiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));		
 		}
 		else {
-			getWriter().writeStartElement(TAG_SEQ.getLocalPart());
+			getXMLWriter().writeStartElement(TAG_SEQ.getLocalPart());
 			alignment.writeSequencePartContentData(tokenReceiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(sequenceEvent.getID()));
-			getWriter().writeEndElement();			
+			getXMLWriter().writeEndElement();			
 		}
 		
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 	}
 	
 	
@@ -479,7 +462,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void checkMatrix(MatrixDataAdapter alignment) throws IllegalArgumentException, IOException {
-		NeXMLCollectSequenceDataReceiver receiver = new NeXMLCollectSequenceDataReceiver(writer, parameters, false, streamDataProvider);  //also collects metadata namespaces
+		NeXMLCollectSequenceDataReceiver receiver = new NeXMLCollectSequenceDataReceiver(getXMLWriter(), getParameters(), false, streamDataProvider);  //also collects metadata namespaces
 		
 		streamDataProvider.addToDocumentIDs(alignment.getStartEvent().getID());
 		
@@ -507,7 +490,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void checkTokenSets(ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets) throws IllegalArgumentException, IOException {
-		NeXMLCollectTokenSetDefinitionDataReceiver receiver = new NeXMLCollectTokenSetDefinitionDataReceiver(writer, parameters, streamDataProvider);
+		NeXMLCollectTokenSetDefinitionDataReceiver receiver = new NeXMLCollectTokenSetDefinitionDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		Iterator<String> tokenSetDefinitionIDs = tokenSets.getIDIterator();
 		
 		if (tokenSets.getCount() == 0) {
@@ -559,7 +542,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		while (charSetIDs.hasNext()) {
 			String charSetID = charSetIDs.next();
-			NeXMLCollectCharSetDataReceiver receiver = new NeXMLCollectCharSetDataReceiver(writer, parameters, streamDataProvider, charSetID);			
+			NeXMLCollectCharSetDataReceiver receiver = new NeXMLCollectCharSetDataReceiver(getXMLWriter(), getParameters(), streamDataProvider, charSetID);			
 			String referencedTokenSetID = streamDataProvider.getCharSetToTokenSetMap().get(charSetID);
 			streamDataProvider.addToDocumentIDs(charSetID);
 			
@@ -600,7 +583,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void writeOTUSTag(OTUListDataAdapter otuList) throws IOException, XMLStreamException {		
-		getWriter().writeStartElement(TAG_OTUS.getLocalPart());		
+		getXMLWriter().writeStartElement(TAG_OTUS.getLocalPart());		
 		
 		streamDataProvider.writeLabeledIDAttributes(otuList.getStartEvent());	
 
@@ -612,19 +595,19 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			String otuID = otuIDIterator.next();
 			otuIDs.add(otuID);
 			
-			getWriter().writeStartElement(TAG_OTU.getLocalPart());
+			getXMLWriter().writeStartElement(TAG_OTU.getLocalPart());
 			streamDataProvider.writeLabeledIDAttributes(otuList.getObjectStartEvent(otuID));
 			writeOrCheckObjectMetaData(otuList, otuID, false);
-			getWriter().writeEndElement();
+			getXMLWriter().writeEndElement();
 		}
 		
 		if (streamDataProvider.isWriteUndefinedOTU() && (!otuIDs.contains(UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID))) {		
-			getWriter().writeStartElement(TAG_OTU.getLocalPart());
+			getXMLWriter().writeStartElement(TAG_OTU.getLocalPart());
 			streamDataProvider.writeLabeledIDAttributes(new LabeledIDEvent(EventContentType.OTU, UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID, "undefined taxon"));
-			getWriter().writeEndElement();
+			getXMLWriter().writeEndElement();
 		}
 		
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 	}
 	
 	
@@ -655,12 +638,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	@Override
-	protected void doWriteDocument(DocumentDataAdapter document, XMLStreamWriter writer, ReadWriteParameterMap parameters)
-			throws IOException, XMLStreamException {
-		this.writer = writer; //TODO Move to superclass?
-		this.parameters = parameters; //TODO Move to superclass (also used by NexusEventWriter)?
-		logger = parameters.getLogger(); //TODO Move to superclass (also used by NexusEventWriter)?	
-
+	protected void doWriteDocument() throws IOException, XMLStreamException {
 		streamDataProvider.getNameSpaces().add(NAMESPACE_NEXML);
 		streamDataProvider.getNamespacePrefixes().add(NEX_PRE);
 		
@@ -673,29 +651,29 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		streamDataProvider.getNameSpaces().add(NAMESPACE_RDF);
 		streamDataProvider.getNamespacePrefixes().add(RDF_PRE);
 		
-		checkDocument(document);
+		checkDocument(getDocument());
 		
-		getWriter().writeStartElement(TAG_ROOT.getLocalPart());
+		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
 		
-		getWriter().writeAttribute(ATTR_VERSION.getLocalPart(), NEXML_VERSION);
-		getWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), getClass().getName());
+		getXMLWriter().writeAttribute(ATTR_VERSION.getLocalPart(), NEXML_VERSION);
+		getXMLWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), getClass().getName());
 
-		getWriter().setPrefix(NEX_PRE, NAMESPACE_NEXML);
-		getWriter().setPrefix(XSI_PRE, NAMESPACE_XSI);
-		getWriter().setPrefix(XSD_PRE, NAMESPACE_XS);
-		getWriter().setPrefix(RDF_PRE, NAMESPACE_RDF);
+		getXMLWriter().setPrefix(NEX_PRE, NAMESPACE_NEXML);
+		getXMLWriter().setPrefix(XSI_PRE, NAMESPACE_XSI);
+		getXMLWriter().setPrefix(XSD_PRE, NAMESPACE_XS);
+		getXMLWriter().setPrefix(RDF_PRE, NAMESPACE_RDF);
 		
 		for (String nameSpace : streamDataProvider.getNameSpaces()) {
-			getWriter().writeNamespace(getWriter().getPrefix(nameSpace), nameSpace);
+			getXMLWriter().writeNamespace(getXMLWriter().getPrefix(nameSpace), nameSpace);
 		}
 		
-		writeOrCheckMetaData(document, false);
+		writeOrCheckMetaData(getDocument(), false);
 		
-		writeOTUSTags(document);
-		writeCharactersTags(document);
-		writeTreesTags(document);
+		writeOTUSTags(getDocument());
+		writeCharactersTags(getDocument());
+		writeTreesTags(getDocument());
 		
-		getWriter().writeEndElement();
+		getXMLWriter().writeEndElement();
 	}
 	
 	
@@ -724,10 +702,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		JPhyloIOEventReceiver receiver;
 		
 		if (check) {
-			receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, streamDataProvider);
+			receiver = new NeXMLCollectNamespaceReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		}
 		else {
-			receiver = new NeXMLMetaDataReceiver(writer, parameters, streamDataProvider);
+			receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		}
 		
 		if (adapter.hasMetadata()) {				
@@ -740,10 +718,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		AbstractNeXMLDataReceiver receiver;
 		
 		if (check) {
-			receiver = new NeXMLCollectNamespaceReceiver(writer, parameters, streamDataProvider);
+			receiver = new NeXMLCollectNamespaceReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		}
 		else {
-			receiver = new NeXMLMetaDataReceiver(writer, parameters, streamDataProvider);
+			receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		}
 		
 		if (objectID != null) {

@@ -170,7 +170,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
 						+ "event was marked to be continued in a subsequent event.");
 			}
-		}		
+		}
 		
 		streamDataProvider.getXMLStreamWriter().writeEndElement();
 	}

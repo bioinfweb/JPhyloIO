@@ -37,5 +37,5 @@ public enum TokenTranslationStrategy {
 	/** 
 	 * Symbols are translated to according labels, if no labels are present IDs are used.
 	 */
-	SYMBOL_TO_LABEL
+	SYMBOL_TO_LABEL;
 }

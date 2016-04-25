@@ -48,6 +48,7 @@ import javax.xml.transform.Source;
 
 public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private NeXMLEventWriter eventWriter;
+	private XMLStreamWriter writer;
 	
 	private Set<String> documentIDs = new HashSet<String>();
 	private int idIndex = 0;
@@ -112,14 +113,15 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}};
 	
 	
-	public NeXMLWriterStreamDataProvider(NeXMLEventWriter eventWriter) {
+	public NeXMLWriterStreamDataProvider(NeXMLEventWriter eventWriter, XMLStreamWriter writer) {
 		super();
 		this.eventWriter = eventWriter;
+		this.writer = writer;
 	}
 
 
 	public XMLStreamWriter getXMLStreamWriter() {
-		return eventWriter.getWriter();
+		return writer;
 	}
 
 
@@ -313,14 +315,14 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 
 	public void writeLabeledIDAttributes(LabeledIDEvent event, String about) throws XMLStreamException, JPhyloIOWriterException {
-		getEventWriter().getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
+		getXMLStreamWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
 		
 		if (about != null) {
-			getEventWriter().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + about);
+			getXMLStreamWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + about);
 		}
 		
 		if (event.hasLabel()) {
-			getEventWriter().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
+			getXMLStreamWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
 		}
 	}
 	
@@ -332,7 +334,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 				if (!getDocumentIDs().contains(event.getLinkedID())) {
 					throw new InconsistentAdapterDataException("An element links to a non-existent OTU list or OTU.");
 				}
-				getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
+				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
 			}
 			else {
 				throw new InconsistentAdapterDataException("An element links to an OTU list or OTU though no OTU list exists in the document.");
@@ -340,10 +342,10 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		}
 		else if (forceOTULink) {
 			if (linkAttribute.equals(TAG_OTUS)) {				
-				getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTUS_ID);			
+				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTUS_ID);			
 			}
 			else if (linkAttribute.equals(TAG_OTU)) {			
-				getEventWriter().getWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID);
+				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID);
 			}
 		}
 	}
