@@ -68,20 +68,34 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter impleme
 	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException {
 		if (id.equals("tokenSet0")) {			
 			IntegerIDManager idManager = new IntegerIDManager();
+			
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "-", 
 					CharacterSymbolMeaning.GAP, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+			
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "?", 
 					CharacterSymbolMeaning.MISSING, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+					
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, ".", 
 					CharacterSymbolMeaning.MATCH, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+					
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "A", 
 					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+					
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "T", 
 					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+					
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "C", 
 					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+					
 			receiver.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + idManager.createNewID(), null, "G", 
 					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 			
 			receiver.add(new MetaInformationEvent("someKey", "someType", "someValue"));
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));

@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
@@ -116,7 +117,9 @@ public class FASTAEventWriterLogTest {
 	@Test
 	public void test_writeDocument_logTreeNetworkWarning() throws Exception {
 		ListBasedDocumentDataAdapter document = createTestDocument("ATG", "CGT");
-		document.getTreesNetworks().add(new TreeNetworkDataAdapter() {
+		StoreTreeNetworkGroupDataAdapter treeGroup = new StoreTreeNetworkGroupDataAdapter(null, null);
+		
+		treeGroup.getTreesAndNetworks().add(new TreeNetworkDataAdapter() {
 			@Override
 			public void writeMetadata(JPhyloIOEventReceiver writer) {}
 			
@@ -166,7 +169,10 @@ public class FASTAEventWriterLogTest {
 				return Collections.emptyIterator();
 			}
 		});
+		
+		document.getTreeNetworkGroups().add(treeGroup);
+		
 		testLogMessage(document, false, ApplicationLoggerMessageType.WARNING, 
-				"The specified tree or network definitions(s) will not be written, since the FASTA format does not support this.");
+				"The specified tree or network definitions will not be written, since the FASTA format does not support this.");
 	}
 }

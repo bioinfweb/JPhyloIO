@@ -25,7 +25,9 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.SharedOTUTestMatrixAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
@@ -86,11 +88,17 @@ public class NexusEventWriterTest implements NexusConstants {
 		matrix.setLinkedOTUsID("otus0");
 		matrix.setTokenSets(new TestSingleTokenSetAdapter());
 		
-		document.getTreesNetworks().add(new TestTreeDataAdapter("tree0", "tree", "t0"));
-		TestTreeDataAdapter tree = new TestTreeDataAdapter("tree1", "tree", "t1", new String[]{"otu0", "otu1", "otu2"});
-		tree.setLinkedOTUsID("otus0");
-		document.getTreesNetworks().add(tree);
-		document.getTreesNetworks().add(new TestTreeDataAdapter("tree2", "tree", "t2"));
+		StoreTreeNetworkGroupDataAdapter treeGroup1 = new StoreTreeNetworkGroupDataAdapter(null, 
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX, null, null));
+		StoreTreeNetworkGroupDataAdapter treeGroup2 = new StoreTreeNetworkGroupDataAdapter(null, 
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX, null, "otus0"));
+		
+		treeGroup1.getTreesAndNetworks().add(new TestTreeDataAdapter("tree0", "tree", "t0"));
+		treeGroup2.getTreesAndNetworks().add(new TestTreeDataAdapter("tree1", "tree", "t1", new String[]{"otu0", "otu1", "otu2"}));
+		treeGroup1.getTreesAndNetworks().add(new TestTreeDataAdapter("tree2", "tree", "t2"));
+		
+		document.getTreeNetworkGroups().add(treeGroup1);
+		document.getTreeNetworkGroups().add(treeGroup2);
 		
 		NexusEventWriter writer = new NexusEventWriter();
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
