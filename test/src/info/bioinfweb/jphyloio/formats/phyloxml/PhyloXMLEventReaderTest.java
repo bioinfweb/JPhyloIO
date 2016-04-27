@@ -23,14 +23,13 @@ import static org.junit.Assert.fail;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.io.File;
 
-import org.junit.Test;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.events.XMLEvent;
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+import org.junit.Test;
 
 
 
@@ -38,23 +37,18 @@ public class PhyloXMLEventReaderTest {
 	@Test
 	public void testOutputPhyloXML() {
 		try {
-//			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/PhyloXMLDocument.xml"));
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/IDsAndLabels.xml"), new ReadWriteParameterMap());
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/PhyloXMLDocument.xml"), new ReadWriteParameterMap());
+//			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/IDsAndLabels.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-//					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
-					if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
-//						System.out.println("Key: " + event.asMetaInformationEvent().getKey());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.TREE, EventTopologyType.START))) {
-//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-//						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
+					System.out.println(event.getType());
+					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+						if (event.asLiteralMetadataContentEvent().getObjectValue() instanceof XMLEvent) {
+							if (event.asLiteralMetadataContentEvent().getXMLEvent().getEventType() == XMLStreamConstants.CHARACTERS) {
+								System.out.println(event.asLiteralMetadataContentEvent().getXMLEvent().asCharacters().getData());
+							}
+						}
 					}
 				}
 			}

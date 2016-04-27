@@ -37,6 +37,7 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.PredicateInfo;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.SystemOutEventReceiver;
 import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
@@ -197,7 +198,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		List<JPhyloIOEvent> leadingEvents = matrix.getMatrix().get("seq0").leadingEvents;
 		leadingEvents.add(new CommentEvent("com", true));
 		leadingEvents.add(new CommentEvent("ment 1", false));
-		leadingEvents.add(new LiteralMetadataEvent("meta1", null, new QName("http://example.org/", "somePredicate"), "someKey", 
+		leadingEvents.add(new LiteralMetadataEvent("meta1", null, new PredicateInfo(null, new QName("http://example.org/", "somePredicate")), "someKey", 
 				LiteralContentSequenceType.SIMPLE));
 		leadingEvents.add(new LiteralMetadataContentEvent(null, "someValue", false));
 		leadingEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
