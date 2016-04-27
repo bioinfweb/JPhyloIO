@@ -388,7 +388,7 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/TestMatrixDataAdapter.java -t
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestOTUListDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestSingleTokenSetAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestTreeNetworkGroupDataAdapter.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/TestTreeDataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/EdgeAndNodeMetaDataTree.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/URITest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/WhiteSpaceTest.java -text svneol=unset#text/plain

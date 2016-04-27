@@ -31,7 +31,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.PredicateInfo;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.TestTreeDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
 
 import java.io.File;
 import java.io.FileReader;
@@ -157,7 +157,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		
 		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
 				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + getIdIndex(), null, null));		
-		trees.getTreesAndNetworks().add(new TestTreeDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
+		trees.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
 		document.getTreesNetworks().add(trees);
 		
 		writeDocument(document, file);

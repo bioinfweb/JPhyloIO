@@ -19,13 +19,6 @@
 package info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters;
 
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-
-import javax.xml.namespace.QName;
-
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
@@ -38,18 +31,24 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.PredicateInfo;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+
+import javax.xml.namespace.QName;
 
 
 
-public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter {
+public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter {
 	private String id = null;
 	private String label = null;
 	private String nodeEdgeIDPrefix = "";
 	private String[] linkedOTUs;
 	
 	
-	public TestTreeDataAdapter(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
+	public EdgeAndNodeMetaDataTree(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
 		super();
 		this.id = id;
 		this.label = label;
@@ -63,7 +62,7 @@ public class TestTreeDataAdapter extends EmptyAnnotatedDataAdapter implements Tr
 	}
 
 
-	public TestTreeDataAdapter(String id, String label, String nodeEdgeIDPrefix) {
+	public EdgeAndNodeMetaDataTree(String id, String label, String nodeEdgeIDPrefix) {
 		this(id, label, nodeEdgeIDPrefix, new String[]{null, null, null});
 	}
 

@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.tools;
 
 import java.util.Iterator;
 
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.TestTreeDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
 
 import org.junit.* ;
 
@@ -32,7 +32,7 @@ import static org.junit.Assert.* ;
 public class NodeEdgeIDListerTest {
 	@Test
 	public void test() {
-		NodeEdgeIDLister lister = new NodeEdgeIDLister(new TestTreeDataAdapter("tree0", "first tree", ""));
+		NodeEdgeIDLister lister = new NodeEdgeIDLister(new EdgeAndNodeMetaDataTree("tree0", "first tree", ""));
 		
 		Iterator<String> iterator = lister.getEdgeIDs().iterator();
 		assertEquals("eRoot", iterator.next());
