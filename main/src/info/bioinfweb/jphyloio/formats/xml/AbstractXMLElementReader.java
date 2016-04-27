@@ -18,12 +18,17 @@
  */
 package info.bioinfweb.jphyloio.formats.xml;
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.util.Iterator;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
@@ -41,8 +46,12 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 		Iterator<Attribute> attributes = element.getAttributes();
 		while (attributes.hasNext()) {
 			Attribute attribute = attributes.next();
-			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key + "." + attribute.getName(), null, attribute.getValue()));
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
+			
+			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+					null, new UriOrStringIdentifier(null, new QName(key + "." + attribute.getName())), null, LiteralContentSequenceType.SIMPLE));
+			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new UriOrStringIdentifier("string", new QName("string")), 
+					attribute.getValue(), null));
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		}
 	}
 	

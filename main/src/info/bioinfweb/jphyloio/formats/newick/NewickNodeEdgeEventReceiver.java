@@ -119,7 +119,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 				
 				String key = event.getKey();
 				if (key == null) {
-					key = event.getPredicate().getLocalPart();  //TODO Should this be handled this way?
+					key = event.getPredicate().getURI().getLocalPart();  //TODO Should this be handled this way?
 				}
 				metadataList.add(new Metadata(key));
 				//TODO Add values later. Possibly throw exception e.g. in handleMetaEndEvent, if no value was specified or allow empty annotations.

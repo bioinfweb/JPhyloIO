@@ -33,6 +33,9 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	private String format;	
 	private String parentName;
 	private String elementName;
+	
+	private Stack<String> nestedMetaNames = new Stack<String>();  
+	
 	private String incompleteToken = null;
 	
 	private Stack<NodeEdgeInfo> sourceNode = new Stack<NodeEdgeInfo>();
@@ -78,7 +81,12 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 
 	public void setElementName(String elementName) {
 		this.elementName = elementName;
-	}	
+	}
+
+
+	public Stack<String> getNestedMetaNames() {
+		return nestedMetaNames;
+	}
 	
 	
 	public boolean hasIncompleteToken() {

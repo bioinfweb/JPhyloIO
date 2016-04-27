@@ -59,10 +59,10 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		streamDataProvider.writeLabeledIDAttributes(event, null); //TODO are there any cases where an about-attribute should be written?
 		
 		if (event.getPredicate() != null) {
-			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), event.getPredicate().getLocalPart()); //TODO make sure predicate is valid CURIE
+			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), event.getPredicate().getURI().getLocalPart());
 		}
 		else {
-			throw new InternalError("Literal meta should have a predicate that is a QName.");
+			throw new InternalError("Literal meta needs to have a predicate.");
 		}
 		
 		if (objectType != null) {
@@ -83,19 +83,21 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 			streamDataProvider.addToDocumentIDs(event.getID());
 			
-			String nameSpace = event.getPredicate().getNamespaceURI();
-			if (streamDataProvider.getXMLStreamWriter().getPrefix(nameSpace) == null) {
-				String prefix = "defaultNamespacePrefix";
-				String nameSpacePrefix;
-				int index = 0;
-				
-				do {
-					nameSpacePrefix = prefix + index;
-					index++;
-				} while (!streamDataProvider.getNamespacePrefixes().add(nameSpacePrefix));
-				
-				streamDataProvider.getXMLStreamWriter().setPrefix(nameSpacePrefix, nameSpace);
-				streamDataProvider.getNameSpaces().add(nameSpace);
+			if (event.getPredicate().getURI() != null) {
+				String nameSpace = event.getPredicate().getURI().getNamespaceURI();
+				if (streamDataProvider.getXMLStreamWriter().getPrefix(nameSpace) == null) {
+					String prefix = "defaultNamespacePrefix";
+					String nameSpacePrefix;
+					int index = 0;
+					
+					do {
+						nameSpacePrefix = prefix + index;
+						index++;
+					} while (!streamDataProvider.getNamespacePrefixes().add(nameSpacePrefix));
+					
+					streamDataProvider.getXMLStreamWriter().setPrefix(nameSpacePrefix, nameSpace);
+					streamDataProvider.getNameSpaces().add(nameSpace);
+				}
 			}
 		}
 	}
@@ -142,7 +144,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	public static void handleResourceMeta(NeXMLWriterStreamDataProvider streamDataProvider, ResourceMetadataEvent event) throws ClassCastException, XMLStreamException, JPhyloIOWriterException {
 		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();
 					
-		writer.writeStartElement(TAG_META.getLocalPart());		
+		writer.writeStartElement(TAG_META.getLocalPart());
 		
 		streamDataProvider.writeLabeledIDAttributes(event, event.getAbout());
 		

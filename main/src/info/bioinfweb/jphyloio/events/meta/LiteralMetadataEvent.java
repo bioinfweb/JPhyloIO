@@ -22,8 +22,6 @@ package info.bioinfweb.jphyloio.events.meta;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
-import javax.xml.namespace.QName;
-
 
 
 /**
@@ -36,13 +34,13 @@ import javax.xml.namespace.QName;
 public class LiteralMetadataEvent extends LabeledIDEvent {
 	//TODO This class shall replace the current MetaInformationEvent implementation as soon as the metadata concept is finally approved.
 
-	private QName predicate;
+	private UriOrStringIdentifier predicate;
 	private String key;  //TODO Should the predicate be compulsory, while the string key is optional? (A string may be combined with a default (or even any?) predicate then.) 
 	                     //     (May also depend on where the string key will be stored in NeXML.)
 	private LiteralContentSequenceType sequenceType;
 	
 	
-	public LiteralMetadataEvent(String id, String label, QName predicate, String key, LiteralContentSequenceType sequenceType) {
+	public LiteralMetadataEvent(String id, String label, UriOrStringIdentifier predicate, String key, LiteralContentSequenceType sequenceType) {
 		super(EventContentType.META_LITERAL, id, label);
 		this.predicate = predicate;
 		this.key = key;
@@ -50,7 +48,7 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 	}
 
 
-	public QName getPredicate() {
+	public UriOrStringIdentifier getPredicate() {
 		return predicate;
 	}
 

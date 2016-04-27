@@ -51,7 +51,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	private String stringValue;
 	private Object objectValue;
 	private String alternativeStringValue = null;
-	private String originalType;
+	private UriOrStringIdentifier originalType;
 
 	
 	/**
@@ -62,7 +62,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
 	 *        its value and more events are ahead or {@code false otherwise}.
 	 */
-	public LiteralMetadataContentEvent(String originalType, String stringValue, boolean continuedInNextEvent) {
+	public LiteralMetadataContentEvent(UriOrStringIdentifier originalType, String stringValue, boolean continuedInNextEvent) {
 		this(originalType, stringValue, stringValue, null, continuedInNextEvent);
 	}
 	
@@ -74,17 +74,17 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * @param stringValue the string value of the meta information.
 	 * @param objectValue the object value of the meta information.
 	 */
-	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue) {
+	public LiteralMetadataContentEvent(UriOrStringIdentifier originalType, String stringValue, Object objectValue) {
 		this(originalType, stringValue, objectValue, null, false);
 	}
 	
 	
-	public LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue) {
+	public LiteralMetadataContentEvent(UriOrStringIdentifier originalType, String stringValue, Object objectValue, String alternativeStringValue) {
 		this(originalType, stringValue, objectValue, alternativeStringValue, false);
 	}
 	
 	
-	public LiteralMetadataContentEvent(String originalType, String stringValue, String alternativeStringValue) {
+	public LiteralMetadataContentEvent(UriOrStringIdentifier originalType, String stringValue, String alternativeStringValue) {
 		this(originalType, stringValue, stringValue, alternativeStringValue, false);
 	}
 	
@@ -101,7 +101,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 *        its value and more events are ahead or {@code false otherwise}.
 	 * @throws NullPointerException if {@code stringValue} is {@code null} and {@code alternativeStringValue} is not
 	 */
-	private LiteralMetadataContentEvent(String originalType, String stringValue, Object objectValue, String alternativeStringValue, 
+	private LiteralMetadataContentEvent(UriOrStringIdentifier originalType, String stringValue, Object objectValue, String alternativeStringValue, 
 			boolean continuedInNextEvent) {
 		
 		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
@@ -174,7 +174,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	}
 
 
-	public String getOriginalType() {
+	public UriOrStringIdentifier getOriginalType() {
 		return originalType;
 	}
 	

@@ -36,6 +36,7 @@ public interface ReadWriteConstants {
 	public static final String META_KEY_DISPLAY_TREE_ROOTED = "info.bioinfweb.jphyloio.displayTreeRooted";
 	//TODO Replace these keys by URLs? (Depends on the ontology modeling classes to be added.)
 	
+	public static final String DEFAULT_META_ID_PREFIX = "meta";
 	public static final String DEFAULT_OTU_LIST_ID_PREFIX = "otus";
 	public static final String DEFAULT_OTU_ID_PREFIX = "otu";
 	public static final String DEFAULT_MATRIX_ID_PREFIX = "matrix";

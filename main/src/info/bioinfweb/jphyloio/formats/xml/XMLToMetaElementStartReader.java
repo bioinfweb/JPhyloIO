@@ -19,11 +19,14 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+
 import java.io.IOException;
 
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
-
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -36,20 +39,14 @@ public class XMLToMetaElementStartReader extends AbstractXMLElementReader {
 	@Override
 	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 		StartElement element = event.asStartElement();
-		String elementName = element.getName().getLocalPart();
-		XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
-		String value = null;
-				
-		if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
-			String characterData = nextEvent.asCharacters().getData();
-			if (!characterData.matches("\\s+")) {
-				value = characterData;
-			}
+		
+		if (streamDataProvider.getNestedMetaNames().isEmpty()) {
+			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+					null, new UriOrStringIdentifier(null, element.getName()), null, LiteralContentSequenceType.XML));
 		}
 		
-		streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(streamDataProvider.getFormat() 
-				+ "." + streamDataProvider.getParentName() + "." + elementName, null, value));
+		streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));
 		
-		readAttributes(streamDataProvider, element);
+		streamDataProvider.getNestedMetaNames().add(element.getName().getLocalPart());
 	}
 }

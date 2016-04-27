@@ -82,6 +82,7 @@ main/src/info/bioinfweb/jphyloio/events/meta/LiteralContentSequenceType.java -te
 main/src/info/bioinfweb/jphyloio/events/meta/LiteralMetadataContentEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/meta/LiteralMetadataEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/meta/ResourceMetadataEvent.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/events/meta/UriOrStringIdentifier.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/EventContentType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/EventTopologyType.java -text svneol=unset#text/plain
@@ -208,7 +209,9 @@ main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLConstants.java -text s
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLFactory.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLMetaDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLReaderStreamDataProvider.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/phyloxml/PropertyOwner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/AbstractTextEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/KeyValueInformation.java -text svneol=unset#text/plain
