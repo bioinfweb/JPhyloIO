@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.tools;
 
 import java.util.Iterator;
 
-import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.TestTreeDataAdapter;
 
 import org.junit.* ;
 

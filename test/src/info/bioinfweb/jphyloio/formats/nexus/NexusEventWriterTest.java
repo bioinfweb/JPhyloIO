@@ -34,7 +34,7 @@ import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapte
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestSingleTokenSetAdapter;
-import info.bioinfweb.jphyloio.test.dataadapters.TestTreeDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.TestTreeDataAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;

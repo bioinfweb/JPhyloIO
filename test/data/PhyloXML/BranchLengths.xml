@@ -13,7 +13,7 @@
                 <clade branch_length="0.9">                    
 					<node_id>B</node_id>
                 </clade>
-                <clade branch_length="0.6">   
+                <clade branch_length="0.6">
 					<node_id>C</node_id>
                 </clade>
             </clade>
