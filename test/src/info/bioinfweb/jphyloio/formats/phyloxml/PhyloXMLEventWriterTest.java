@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import info.bioinfweb.commons.testing.XMLTestTools;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
@@ -29,7 +28,7 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.PredicateInfo;
+import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
 
@@ -37,13 +36,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.StartElement;
 
 import org.junit.Test;
 
@@ -151,8 +148,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		// Write file
 		idIndex = 1;
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
-		document.getAnnotations().add(new LiteralMetadataEvent("meta0", null, new PredicateInfo(null, new QName("meta")), "meta", LiteralContentSequenceType.SIMPLE));
-		document.getAnnotations().add(new LiteralMetadataContentEvent(new PredicateInfo(null, new QName("string")), "myValue", "myValue"));
+		document.getAnnotations().add(new LiteralMetadataEvent("meta0", null, new UriOrStringIdentifier(null, new QName("meta")), "meta", LiteralContentSequenceType.SIMPLE));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName("string")), "myValue", "myValue"));
 		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
 		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 

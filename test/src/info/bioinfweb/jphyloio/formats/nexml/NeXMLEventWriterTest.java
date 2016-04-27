@@ -41,8 +41,8 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.PredicateInfo;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.TestTreeNetworkGroupDataAdapter;
 
@@ -113,8 +113,8 @@ public class NeXMLEventWriterTest {
 				example, null));
 		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
-		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new PredicateInfo(null, new QName("http://meta.net/", "predicate")), "literal value", LiteralContentSequenceType.SIMPLE));
-		metaData.add(new LiteralMetadataContentEvent(new PredicateInfo(null, new QName(NeXMLConstants.TYPE_STRING)), "My literal value", true));
+		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new UriOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), "literal value", LiteralContentSequenceType.SIMPLE));
+		metaData.add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName(NeXMLConstants.TYPE_STRING)), "My literal value", true));
 		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
 		
 		return metaData;
@@ -197,8 +197,8 @@ public class NeXMLEventWriterTest {
 		
 		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent(null, "T"));
 		
-		singleTokens.getObjectContent().add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new PredicateInfo(null, new QName("http://meta.net/", "predicate")), "literal value", LiteralContentSequenceType.SIMPLE));
-		singleTokens.getObjectContent().add(new LiteralMetadataContentEvent(new PredicateInfo(null, new QName(NeXMLConstants.TYPE_STRING)), "My literal value", true));
+		singleTokens.getObjectContent().add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new UriOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), "literal value", LiteralContentSequenceType.SIMPLE));
+		singleTokens.getObjectContent().add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName(NeXMLConstants.TYPE_STRING)), "My literal value", true));
 		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
 		
 		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));

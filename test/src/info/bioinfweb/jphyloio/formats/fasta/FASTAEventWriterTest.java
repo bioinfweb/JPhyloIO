@@ -19,15 +19,12 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.createSingleTokenTestDocument;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.createTestDocument;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.createTestDocumentWithLabels;
+import static org.junit.Assert.assertEquals;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -37,17 +34,21 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.PredicateInfo;
+import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.SystemOutEventReceiver;
 import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 
-import org.junit.* ;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.List;
 
-import static org.junit.Assert.* ;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+import javax.xml.namespace.QName;
+
+import org.junit.Test;
 
 
 
@@ -198,7 +199,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		List<JPhyloIOEvent> leadingEvents = matrix.getMatrix().get("seq0").leadingEvents;
 		leadingEvents.add(new CommentEvent("com", true));
 		leadingEvents.add(new CommentEvent("ment 1", false));
-		leadingEvents.add(new LiteralMetadataEvent("meta1", null, new PredicateInfo(null, new QName("http://example.org/", "somePredicate")), "someKey", 
+		leadingEvents.add(new LiteralMetadataEvent("meta1", null, new UriOrStringIdentifier(null, new QName("http://example.org/", "somePredicate")), "someKey", 
 				LiteralContentSequenceType.SIMPLE));
 		leadingEvents.add(new LiteralMetadataContentEvent(null, "someValue", false));
 		leadingEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
