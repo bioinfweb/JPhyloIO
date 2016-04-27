@@ -64,7 +64,7 @@ public interface ObjectListDataAdapter<E extends JPhyloIOEvent> {
 	public Iterator<String> getIDIterator();
 	
 	/**
-	 * Writes the events describing the specified object, including possible nested objects.
+	 * Writes the nested events in the specified object describing its contents.
 	 * 
 	 * @param receiver the receiver for the events
 	 * @param nodeID the ID of the requested node

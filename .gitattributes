@@ -38,6 +38,7 @@ main/src/info/bioinfweb/jphyloio/dataadapters/JPhyloIOEventReceiver.java -text s
 main/src/info/bioinfweb/jphyloio/dataadapters/LabeledIDAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/LinkedDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/MatrixDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/MetadataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/OTUListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/ObjectListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/TreeNetworkDataAdapter.java -text svneol=unset#text/plain
