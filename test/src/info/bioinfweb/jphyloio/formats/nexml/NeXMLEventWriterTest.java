@@ -73,9 +73,9 @@ public class NeXMLEventWriterTest {
 
 
 	protected void createTestDocument() {
-		for (JPhyloIOEvent event : createMetaData("document")) {
-			document.getAnnotations().add(event);
-		}
+//		for (JPhyloIOEvent event : createMetaData("document")) {
+//			document.getAnnotations().add(event);
+//		}
 		String taxaID = ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + getIdIndex();
 		document.getOTUListsMap().put(taxaID, createOTUList(taxaID));
 		document.getMatrices().add(createMatrix(taxaID));
@@ -83,51 +83,50 @@ public class NeXMLEventWriterTest {
 	}
 	
 	
-	protected List<JPhyloIOEvent> createMetaData(String about) {
-		List<JPhyloIOEvent> metaData = new ArrayList<JPhyloIOEvent>();
-		URI example = null;
-		
-		try {
-			example = new URI("somePath/#fragment");
-		} 
-		catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		
-//		metaData.add(new ResourceMetadataEvent("meta" + getIdIndex(), "ResourceMeta", new QName("http://meta.net/", "relations"), example, about));
+//	protected List<JPhyloIOEvent> createMetaData(String about) {
+//		List<JPhyloIOEvent> metaData = new ArrayList<JPhyloIOEvent>();
+//		URI example = null;
 //		
-//		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new QName("http://meta.net/", "predicate"), "literal value", LiteralContentSequenceType.SIMPLE));
+//		try {
+//			example = new URI("somePath/#fragment");
+//		} 
+//		catch (URISyntaxException e) {
+//			e.printStackTrace();
+//		}
 //		
-//		metaData.add(new CommentEvent("This is a ", true));
-//		metaData.add(new CommentEvent("divided comment.", false));
+////		metaData.add(new ResourceMetadataEvent("meta" + getIdIndex(), "ResourceMeta", new QName("http://meta.net/", "relations"), example, about));
+////		
+////		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new QName("http://meta.net/", "predicate"), "literal value", LiteralContentSequenceType.SIMPLE));
+////		
+////		metaData.add(new CommentEvent("This is a ", true));
+////		metaData.add(new CommentEvent("divided comment.", false));
+////		
+////		metaData.add(new LiteralMetadataContentEvent(NeXMLConstants.TYPE_STRING, "This is a long ", true));
+////		metaData.add(new LiteralMetadataContentEvent(NeXMLConstants.TYPE_STRING, "literal text", false));
+////		
+////		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+////		
+////		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 //		
-//		metaData.add(new LiteralMetadataContentEvent(NeXMLConstants.TYPE_STRING, "This is a long ", true));
-//		metaData.add(new LiteralMetadataContentEvent(NeXMLConstants.TYPE_STRING, "literal text", false));
 //		
-//		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-//		
+//		metaData.add(new ResourceMetadataEvent("meta" + getIdIndex(), "ResourceMeta", new QName("http://meta.net/", "relations"), 
+//				example, null));
 //		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		
-		
-		metaData.add(new ResourceMetadataEvent("meta" + getIdIndex(), "ResourceMeta", new QName("http://meta.net/", "relations"), 
-				example, null));
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		
-		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new UriOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), "literal value", LiteralContentSequenceType.SIMPLE));
-		metaData.add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName(NeXMLConstants.TYPE_STRING)), "My literal value", true));
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
-		
-		return metaData;
-	}
+//		
+//		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new UriOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), "literal value", LiteralContentSequenceType.SIMPLE));
+//		metaData.add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName(NeXMLConstants.TYPE_STRING)), "My literal value", true));
+//		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+//		
+//		return metaData;
+//	}
 	
 	
 	protected StoreOTUListDataAdapter createOTUList(String id) {
-		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, id, "taxa label"), 
-				createMetaData(id));
+		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, id, "taxa label"), null);
 		
 		for (int i = 0; i < 5; i++) {
 			String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + getIdIndex();
-			otuList.getObjectMap().put(otuID, createOTU(otuID));
+			otuList.getOtus().getObjectMap().put(otuID, createOTU(otuID));
 		}
 		
 		return otuList;
@@ -145,7 +144,7 @@ public class NeXMLEventWriterTest {
 	protected StoreMatrixDataAdapter createMatrix(String otusID) {
 		String matrixID = ReadWriteConstants.DEFAULT_MATRIX_ID_PREFIX + getIdIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "matrix", otusID);
-		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(createMetaData(matrixID), startEvent, false);
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
 		
 		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
 		List<String> tokens = StringUtils.charSequenceToStringList("AGTCTTGCGCTTAGCAGTCGAC");
@@ -180,9 +179,9 @@ public class NeXMLEventWriterTest {
 		
 		sequence.getObjectContent().add(new SequenceTokensEvent(tokens));
 		
-		for (JPhyloIOEvent event : createMetaData(id)) {
-			sequence.getObjectContent().add(event);
-		}
+//		for (JPhyloIOEvent event : createMetaData(id)) {
+//			sequence.getObjectContent().add(event);
+//		}
 		
 		return sequence;
 	}
@@ -246,9 +245,9 @@ public class NeXMLEventWriterTest {
 	}
 	
 	
-	protected StoreObjectData<LabeledIDEvent> createCharSet(String id, boolean multipleIntervals) {	
-		StoreObjectData<LabeledIDEvent> charSet = new StoreObjectData<LabeledIDEvent>(
-				new LabeledIDEvent(EventContentType.CHARACTER_SET, id, "char set label"), new ArrayList<JPhyloIOEvent>());		
+	protected StoreObjectData<LinkedLabeledIDEvent> createCharSet(String id, boolean multipleIntervals) {	
+		StoreObjectData<LinkedLabeledIDEvent> charSet = new StoreObjectData<LinkedLabeledIDEvent>(
+				new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, id, "char set label", null), new ArrayList<JPhyloIOEvent>());		
 		
 		if (multipleIntervals) {
 			charSet.getObjectContent().add(new CharacterSetIntervalEvent(0, 5));
@@ -262,7 +261,7 @@ public class NeXMLEventWriterTest {
 	}
 	
 	
-	private TestTreeNetworkGroupDataAdapter createTrees(String prefix) {
+	protected TestTreeNetworkGroupDataAdapter createTrees(String prefix) {
 		String treeID = ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex();
 		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter(treeID, null, "nodeEdgeID");
 		trees.setLinkedOTUsID(prefix);
@@ -273,7 +272,7 @@ public class NeXMLEventWriterTest {
 	@Test
 	public void test_writeDocument() throws Exception {
 		createTestDocument();
-		NeXMLEventWriter writer = new NeXMLEventWriter();		
+		NeXMLEventWriter writer = new NeXMLEventWriter();
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		writer.writeDocument(document, new File("data/testOutput/NeXMLTest.xml"), parameters);
 	}

@@ -19,31 +19,41 @@
 package info.bioinfweb.jphyloio.test.dataadapters;
 
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-
 import info.bioinfweb.commons.IntegerIDManager;
-import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+
+import javax.xml.namespace.QName;
 
 
-public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter implements ObjectListDataAdapter, ReadWriteConstants {	
+
+public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter<ConcreteJPhyloIOEvent> implements ObjectListDataAdapter<TokenSetDefinitionEvent>, ReadWriteConstants {	
 	@Override
 	public long getCount() {
 		return 1;
+	}
+
+
+	@Override
+	public ConcreteJPhyloIOEvent getStartEvent() {
+		return null;
 	}
 
 
@@ -54,7 +64,7 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter impleme
 
 	
 	@Override
-	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException {
+	public TokenSetDefinitionEvent getObjectStartEvent(String id) throws IllegalArgumentException {
 		if (id.equals("tokenSet0")) {
 			return new TokenSetDefinitionEvent(CharacterStateSetType.DNA, "tokenSet0", "Some token set");
 		}
@@ -97,8 +107,10 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter impleme
 					CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 			
-			receiver.add(new MetaInformationEvent("someKey", "someType", "someValue"));
-			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
+			receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + idManager.createNewID(), "someLabel", 
+					new UriOrStringIdentifier(null, new QName("somePredicate")), "someKey", LiteralContentSequenceType.SIMPLE));
+			receiver.add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName("string")), "someValue", false));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 		}

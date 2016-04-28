@@ -19,9 +19,6 @@
 package info.bioinfweb.jphyloio.test.dataadapters;
 
 
-import java.util.Arrays;
-import java.util.Iterator;
-
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
@@ -30,9 +27,12 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
 
+import java.util.Arrays;
+import java.util.Iterator;
 
 
-public class TestTreeNetworkGroupDataAdapter extends EmptyAnnotatedDataAdapter implements TreeNetworkGroupDataAdapter {
+
+public class TestTreeNetworkGroupDataAdapter extends EmptyAnnotatedDataAdapter<LinkedLabeledIDEvent> implements TreeNetworkGroupDataAdapter {
 	private String id = null;
 	private String label = null;
 	private String linkedOTUsID = null;

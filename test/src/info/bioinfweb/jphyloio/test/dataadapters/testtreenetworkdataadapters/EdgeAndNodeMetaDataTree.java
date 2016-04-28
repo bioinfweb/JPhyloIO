@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 
 
 
-public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter {
+public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements TreeNetworkDataAdapter {
 	private String id = null;
 	private String label = null;
 	private String nodeEdgeIDPrefix = "";

@@ -34,7 +34,7 @@ import java.util.Iterator;
 
 
 
-public class NoAnnotationsTree extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter {
+public class NoAnnotationsTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements TreeNetworkDataAdapter {
 	private String id = null;
 	private String label = null;
 	private String nodeEdgeIDPrefix = "";

@@ -33,7 +33,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
-public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter implements OTUListDataAdapter {
+public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements OTUListDataAdapter {
 	private int indexOfList;
 	private ListOrderedMap<String, LabeledIDEvent> otus = new ListOrderedMap<String, LabeledIDEvent>();
 	

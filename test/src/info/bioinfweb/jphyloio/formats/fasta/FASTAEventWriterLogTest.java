@@ -29,6 +29,7 @@ import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
@@ -121,16 +122,13 @@ public class FASTAEventWriterLogTest {
 		
 		treeGroup.getTreesAndNetworks().add(new TreeNetworkDataAdapter() {
 			@Override
-			public void writeMetadata(JPhyloIOEventReceiver writer) {}
-			
-			@Override
-			public LinkedLabeledIDEvent getStartEvent() {
+			public MetadataAdapter getMetadataAdapter() {
 				return null;
 			}
 
 			@Override
-			public boolean hasMetadata() {
-				return false;
+			public LinkedLabeledIDEvent getStartEvent() {
+				return null;
 			}
 
 			@Override

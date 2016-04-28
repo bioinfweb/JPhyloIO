@@ -34,7 +34,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
-public class MultipleRootEdgesTree extends EmptyAnnotatedDataAdapter implements TreeNetworkDataAdapter  {
+public class MultipleRootEdgesTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements TreeNetworkDataAdapter  {
 	private String id = null;
 	private String label = null;
 	private String nodeEdgeIDPrefix = "";

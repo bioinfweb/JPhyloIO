@@ -26,7 +26,6 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsMatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -61,7 +60,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	private String linkedOTUsID = null;
 	private ListOrderedMap<String, SequenceData> matrix = new ListOrderedMap<>();
 	private ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = null;
-	private ObjectListDataAdapter<LabeledIDEvent> characterSets = null;
+	private ObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = null;
 	private long columnCount;
 	private boolean longTokens;
 
@@ -235,7 +234,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 
 
 	@Override
-	public ObjectListDataAdapter<LabeledIDEvent> getCharacterSets() {
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets() {
 		if (characterSets == null) {
 			return super.getCharacterSets();
 		}
@@ -245,7 +244,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	}
 
 	
-	public void setCharacterSets(ObjectListDataAdapter<LabeledIDEvent> characterSets) {
+	public void setCharacterSets(ObjectListDataAdapter<LinkedLabeledIDEvent> characterSets) {
 		this.characterSets = characterSets;
 	}
 }
