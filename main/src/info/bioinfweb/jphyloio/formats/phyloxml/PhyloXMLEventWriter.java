@@ -55,8 +55,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 
 		writePhylogenyTags();
 		
-		if (getDocument().hasMetadata()) {
-			getDocument().writeMetadata(receiver);
+		if (getDocument().getMetadataAdapter() != null) {
+//			getDocument().writeMetadata(receiver); //TODO use new metadata structure
 		}
 		
 		getXMLWriter().writeEndElement();
@@ -81,7 +81,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 				}
 			}
 			
-			if (treeNetworkGroup.hasMetadata()) {
+			if (treeNetworkGroup.getMetadataAdapter() != null) {
 				getLogger().addWarning("No metadata for the tree or network group with the ID \"" + treeNetworkGroup.getStartEvent().getID() + "\" was written, "
 						+ "because the PhyloXML format does not support this.");
 			}
@@ -116,8 +116,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 					+ "tree was written.");
 		}
 		
-		if (tree.hasMetadata()) {
-			tree.writeMetadata(receiver);
+		if (tree.getMetadataAdapter() != null) {
+//			tree.writeMetadata(receiver); //TODO use new metadata structure
 		}
 		
 		getXMLWriter().writeEndElement();

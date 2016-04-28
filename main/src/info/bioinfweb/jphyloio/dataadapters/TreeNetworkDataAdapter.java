@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.tools.NodeEdgeIDLister;
 
@@ -35,7 +36,7 @@ import java.util.Iterator;
  * @since 0.0.0
  * @see NodeEdgeIDLister
  */
-public interface TreeNetworkDataAdapter extends LabeledIDAdapter {
+public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter<LabeledIDEvent> {
 	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition. Alternative iterators or returning events in WLR order may solve the problem.
 	
 	/**

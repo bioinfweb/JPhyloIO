@@ -30,6 +30,9 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 
 
@@ -45,7 +48,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
  * 
  * @author Ben St&ouml;ver
  */
-public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter implements DocumentDataAdapter {
+public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter<ConcreteJPhyloIOEvent> implements DocumentDataAdapter {
 	private ListOrderedMap<String, OTUListDataAdapter> otuListsMap;
 	private List<MatrixDataAdapter> matrices;
 	private List<TreeNetworkGroupDataAdapter> treeNetworkGroups;
@@ -97,6 +100,12 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter impl
 	}
 	
 	
+	@Override
+	public ConcreteJPhyloIOEvent getStartEvent() {
+		return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
+	}
+
+
 	public ListOrderedMap<String, OTUListDataAdapter> getOTUListsMap() {
 		return otuListsMap;
 	}

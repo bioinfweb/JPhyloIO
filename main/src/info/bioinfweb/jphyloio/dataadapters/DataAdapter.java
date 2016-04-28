@@ -16,23 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
-
-import info.bioinfweb.jphyloio.dataadapters.LinkedDataAdapter;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-
-public class StoreLinkedDataAdapter implements LinkedDataAdapter {
-	private LinkedLabeledIDEvent startEvent;
-	
-	
-	public StoreLinkedDataAdapter(LinkedLabeledIDEvent startEvent) {
-		super();
-		this.startEvent = startEvent;
-	}
+package info.bioinfweb.jphyloio.dataadapters;
 
 
-	@Override
-	public LinkedLabeledIDEvent getStartEvent() {
-		return startEvent;
-	}
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+
+
+
+public interface DataAdapter<E extends JPhyloIOEvent> {
+	/**
+	 * Returns the start event of this data element. The returned event can be used to determine the label and ID 
+	 * of the modeled data element or an optionally linked data element.
+	 * 
+	 * @return the start event of this data element
+	 */
+	public E getStartEvent();
 }

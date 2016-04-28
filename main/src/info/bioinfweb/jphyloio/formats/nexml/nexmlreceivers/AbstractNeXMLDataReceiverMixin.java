@@ -56,13 +56,13 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		
 		writer.writeStartElement(TAG_META.getLocalPart());
 		
-		streamDataProvider.writeLabeledIDAttributes(event, null); //TODO are there any cases where an about-attribute should be written?
+		streamDataProvider.writeLabeledIDAttributes(event, null);
 		
-		if (event.getPredicate() != null) {
+		if ((event.getPredicate() != null) && (event.getPredicate().getURI() != null)) {
 			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), event.getPredicate().getURI().getLocalPart());
 		}
 		else {
-			throw new InternalError("Literal meta needs to have a predicate.");
+			throw new InternalError("Literal meta needs to have a predicate that is a QName.");
 		}
 		
 		if (objectType != null) {

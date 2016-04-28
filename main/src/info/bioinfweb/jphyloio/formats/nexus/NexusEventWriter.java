@@ -140,7 +140,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void logIgnoredMetadata(AnnotatedDataAdapter adapter, String objectName) {
-		if (adapter.hasMetadata()) {
+		if (adapter.getMetadataAdapter() != null) {
 			logger.addWarning(objectName + 
 					" is annotated directly with metadata, which have been ignored, since the Nexus format does not support this.");
 		}

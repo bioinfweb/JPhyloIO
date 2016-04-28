@@ -19,10 +19,9 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
-import java.io.IOException;
-
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
@@ -32,24 +31,15 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
  * 
  * @author Ben St&ouml;ver
  */
-public class EmptyAnnotatedDataAdapter implements AnnotatedDataAdapter {
+public abstract class EmptyAnnotatedDataAdapter<E extends JPhyloIOEvent> implements AnnotatedDataAdapter<E> {
+
 	/**
 	 * This default implementation is empty and can be overwritten by inherited classes if necessary.
 	 * 
-	 * @see info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter#writeMetadata(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver)
+	 * @see info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter#getMetadataAdapter(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver)
 	 */
 	@Override
-	public void writeMetadata(JPhyloIOEventReceiver writer) throws IOException {}
-
-	
-	/**
-	 * This default implementation always returns {@code false}. It must be overwritten to return {@code true} by 
-	 * inherited classes, if {@link #writeMetadata(JPhyloIOEventReceiver)} is implemented. 
-	 * 
-	 * @see info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter#hasMetadata()
-	 */
-	@Override
-	public boolean hasMetadata() {
-		return false;
+	public MetadataAdapter getMetadataAdapter() {
+		return null;
 	}
 }

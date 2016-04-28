@@ -25,9 +25,9 @@ import org.semanticweb.owlapi.io.XMLUtils;
 
 
 
-public class UriOrStringIdentifier {  //TODO Rename to allow use as datatype
+public class UriOrStringIdentifier {
 	private String stringRepresentation;
-	private QName predicate;
+	private QName uri;
 	
 	
 	public UriOrStringIdentifier(String alternativeStringRepresentation, QName predicate) {
@@ -36,7 +36,7 @@ public class UriOrStringIdentifier {  //TODO Rename to allow use as datatype
 		
 		if ((predicate.getPrefix() == null || XMLUtils.isNCName(predicate.getPrefix())) //TODO is the prefix allowed to be an empty string?
 				&& (predicate.getLocalPart() != null && XMLUtils.isNCName(predicate.getLocalPart()))) {
-			this.predicate = predicate;
+			this.uri = predicate;
 		}
 		else { //predicate is not a valid QName
 			//TODO throw exception?
@@ -50,6 +50,6 @@ public class UriOrStringIdentifier {  //TODO Rename to allow use as datatype
 
 
 	public QName getURI() {
-		return predicate;
+		return uri;
 	}
 }

@@ -19,20 +19,11 @@
 package info.bioinfweb.jphyloio;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Iterator;
-
 import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
+import info.bioinfweb.jphyloio.dataadapters.DataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.LinkedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -41,6 +32,15 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Iterator;
 
 
 
@@ -183,7 +183,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 * @return the referenced list or {@code null}, if the specified event does not reference any OTU
 	 * @throws IllegalArgumentException if no OTU list with the specified ID is available in {@code document}
 	 */
-	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, LinkedDataAdapter source) {
+	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, DataAdapter<LinkedLabeledIDEvent> source) {
 		OTUListDataAdapter result = null;
 		String otuListID = source.getStartEvent().getLinkedID();
 		if (otuListID != null) {

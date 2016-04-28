@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -36,6 +37,10 @@ import javax.xml.namespace.QName;
 /**
  * Models metadata associated with a data object (which is provided by the same data adapter as the instance implementing this 
  * interface).
+ * <p>
+ * Note that this adapter contains all methods necessary to access metadata associated with the parent data object (characterized by the parent
+ * adapter). In contrast to many other adapters, therefore this interface does not correspond to a grammar node (of the grammar defined in the 
+ * documentation of {@link JPhyloIOEventReader}).
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0

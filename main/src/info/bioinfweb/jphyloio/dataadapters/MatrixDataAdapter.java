@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
@@ -41,7 +40,7 @@ import java.util.Iterator;
  * 
  * @author Ben St&ouml;ver
  */
-public interface MatrixDataAdapter extends AnnotatedDataAdapter, LinkedDataAdapter {
+public interface MatrixDataAdapter extends AnnotatedDataAdapter<LinkedLabeledIDEvent> {
   //TODO If token and character sets are modeled in here, does this cause problems when writing to a single SETS block in Nexus?
 	
 	/**
@@ -78,7 +77,7 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter, LinkedDataAdapt
 	 * 
 	 * @return a (possibly empty) list of character sets
 	 */
-	public ObjectListDataAdapter<LabeledIDEvent> getCharacterSets();
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets();
 	
 	/**
 	 * Returns a list of token sets defined for the matrix modeled by this instance.

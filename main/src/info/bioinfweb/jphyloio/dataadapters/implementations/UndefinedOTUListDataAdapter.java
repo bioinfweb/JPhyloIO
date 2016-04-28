@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -76,15 +77,11 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter {
 
 	
 	@Override
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {}
-
-	
-	@Override
-	public boolean hasMetadata() {
-		return false;
+	public MetadataAdapter getMetadataAdapter() {
+		return null;
 	}
 
-	
+
 	@Override
 	public LabeledIDEvent getStartEvent() {
 		return new LabeledIDEvent(EventContentType.OTU_LIST, UNDEFINED_OTUS_ID, "undefined taxa");

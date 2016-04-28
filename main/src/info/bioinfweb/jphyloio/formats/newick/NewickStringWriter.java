@@ -180,7 +180,7 @@ public class NewickStringWriter implements NewickConstants {
 	public void write() throws IOException {
 		ApplicationLogger logger = parameters.getLogger();
 		if (tree.isTree()) {
-			if (tree.hasMetadata()) {
+			if (tree.getMetadataAdapter() != null) {
 				logger.addWarning(
 						"A tree definition contains tree metadata, which cannot be written to Newick/NHX and is therefore ignored.");
 			}

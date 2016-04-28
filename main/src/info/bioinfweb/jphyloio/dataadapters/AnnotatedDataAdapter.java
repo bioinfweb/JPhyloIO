@@ -18,8 +18,7 @@
  */
 package info.bioinfweb.jphyloio.dataadapters;
 
-import java.io.IOException;
-
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 /**
@@ -27,19 +26,11 @@ import java.io.IOException;
  * 
  * @author Ben St&ouml;ver
  */
-public interface AnnotatedDataAdapter {
-	/**
-	 * Writes events describing the metadata associated with the object represented by this instance.
-	 * 
-	 * @param receiver the writer accepting the events
-	 */
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException;
+public interface AnnotatedDataAdapter<E extends JPhyloIOEvent> extends DataAdapter<E> {
 	
 	/**
-	 * Indicates whether this data adapter provides metadata via {@link #writeMetadata(JPhyloIOEventReceiver)}.
-	 * 
-	 * @return {@code true} if metadata will be written in calls of {@link #writeMetadata(JPhyloIOEventReceiver)}
-	 *         or {@code false} otherwise
-	 */
-	public boolean hasMetadata();
+	* Returns the metadata adapter associated with the object represented by this instance.
+	* 
+	*/
+	public MetadataAdapter getMetadataAdapter();
 }

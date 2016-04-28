@@ -21,8 +21,8 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -31,46 +31,29 @@ import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 
 
 
-public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements MatrixDataAdapter {
-	private StoreLinkedDataAdapter storeLinkedOTUsAdapter;
+public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabeledIDEvent> implements MatrixDataAdapter {
+	private LinkedLabeledIDEvent startEvent;
 	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> matrix = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	private StoreObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = new StoreObjectListDataAdapter<TokenSetDefinitionEvent>();
-	private StoreObjectListDataAdapter<LabeledIDEvent> characterSets = new StoreObjectListDataAdapter<LabeledIDEvent>();
+	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	private boolean longTokens;
 	
 	
-	public StoreMatrixDataAdapter(List<JPhyloIOEvent> annotations, LinkedLabeledIDEvent alignmentStartEvent, boolean longTokens) {
+	public StoreMatrixDataAdapter(MetadataAdapter annotations, LinkedLabeledIDEvent alignmentStartEvent, boolean longTokens) {
 		super(annotations);
-		this.storeLinkedOTUsAdapter = new StoreLinkedDataAdapter(alignmentStartEvent);
+		this.startEvent = alignmentStartEvent;
 		this.longTokens = longTokens;
 	}
 
 
 	@Override
-	public List<JPhyloIOEvent> getAnnotations() {
-		return super.getAnnotations();
-	}	
-	
-
-	@Override
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {
-		super.writeMetadata(receiver);
-	}
-
-
-	@Override
-	public boolean hasMetadata() {
-		return super.hasMetadata();
-	}
-	
-
 	public LinkedLabeledIDEvent getStartEvent() {
-		return storeLinkedOTUsAdapter.getStartEvent();
+		return startEvent;
 	}
+
 
 
 	@Override
@@ -108,7 +91,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter implements
 
 
 	@Override
-	public StoreObjectListDataAdapter<LabeledIDEvent> getCharacterSets() {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets() {
 		return characterSets;
 	}
 	

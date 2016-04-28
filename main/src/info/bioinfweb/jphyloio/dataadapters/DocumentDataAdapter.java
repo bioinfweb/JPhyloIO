@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 
 import java.util.Iterator;
 
@@ -41,7 +42,7 @@ import java.util.Iterator;
  * @see MatrixDataAdapter
  * @see TreeNetworkDataAdapter
  */
-public interface DocumentDataAdapter extends AnnotatedDataAdapter {
+public interface DocumentDataAdapter extends AnnotatedDataAdapter<ConcreteJPhyloIOEvent> {
 	/**
 	 * Returns an iterator providing access to all OTU lists contained in the document
 	 * to be written. 

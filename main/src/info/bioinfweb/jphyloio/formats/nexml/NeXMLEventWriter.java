@@ -68,7 +68,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	public NeXMLEventWriter() {
 		super();
-		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this, getXMLWriter());
 	}
 
 
@@ -112,8 +111,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			getXMLWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_NETWORK); //networks are always written as float networks
 		}		
 		
-		if (treeOrNetwork.hasMetadata()) {
-			treeOrNetwork.writeMetadata(receiver);
+		if (treeOrNetwork.getMetadataAdapter() != null) {
+//			treeOrNetwork.writeMetadata(receiver); //TODO use new metadata structure
 		}
 		
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork);
@@ -185,8 +184,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		streamDataProvider.addToDocumentIDs(treeOrNetwork.getStartEvent().getID());
 
-		if (treeOrNetwork.hasMetadata()) {
-			treeOrNetwork.writeMetadata(receiver);
+		if (treeOrNetwork.getMetadataAdapter() != null) {
+//			treeOrNetwork.writeMetadata(receiver); //TODO use new metadata structure
 		}
 		
 		for (String edgeID : lister.getEdgeIDs()) {
@@ -537,7 +536,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void checkCharacterSets(ObjectListDataAdapter<LabeledIDEvent> charSets, long columnCount) throws IllegalArgumentException, IOException {
+	private void checkCharacterSets(ObjectListDataAdapter<LinkedLabeledIDEvent> charSets, long columnCount) throws IllegalArgumentException, IOException {
 		Iterator<String> charSetIDs = charSets.getIDIterator();
 		
 		while (charSetIDs.hasNext()) {
@@ -583,8 +582,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void writeOTUSTag(OTUListDataAdapter otuList) throws IOException, XMLStreamException {		
-		getXMLWriter().writeStartElement(TAG_OTUS.getLocalPart());		
-		
+		getXMLWriter().writeStartElement(TAG_OTUS.getLocalPart());	
+
 		streamDataProvider.writeLabeledIDAttributes(otuList.getStartEvent());	
 
 		writeOrCheckMetaData(otuList, false);
@@ -639,6 +638,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	@Override
 	protected void doWriteDocument() throws IOException, XMLStreamException {
+		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this, getXMLWriter());
+		
 		streamDataProvider.getNameSpaces().add(NAMESPACE_NEXML);
 		streamDataProvider.getNamespacePrefixes().add(NEX_PRE);
 		
@@ -708,8 +709,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		}
 		
-		if (adapter.hasMetadata()) {				
-			adapter.writeMetadata(receiver);
+		if (adapter.getMetadataAdapter() != null) {				
+//			adapter.writeMetadata(receiver); //TODO use new metadata structure
 		}		
 	}
 	

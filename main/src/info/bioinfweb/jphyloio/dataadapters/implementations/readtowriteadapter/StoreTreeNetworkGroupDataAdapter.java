@@ -19,52 +19,33 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
-import java.io.IOException;
+import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 
-
-public class StoreTreeNetworkGroupDataAdapter extends StoreAnnotatedDataAdapter implements TreeNetworkGroupDataAdapter {
-	private StoreLinkedDataAdapter treeGroupAdapter;
+public class StoreTreeNetworkGroupDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabeledIDEvent> implements TreeNetworkGroupDataAdapter {
+	private LinkedLabeledIDEvent startEvent;
 	private List<TreeNetworkDataAdapter> treesAndNetworks = new ArrayList<TreeNetworkDataAdapter>();
 	
 	
-	public StoreTreeNetworkGroupDataAdapter(List<JPhyloIOEvent> annotations, LinkedLabeledIDEvent treeOrNetworkGroupStartEvent) {
+	public StoreTreeNetworkGroupDataAdapter(MetadataAdapter annotations, LinkedLabeledIDEvent treeOrNetworkGroupStartEvent) {
 		super(annotations);
-		this.treeGroupAdapter = new StoreLinkedDataAdapter(treeOrNetworkGroupStartEvent);
+		this.startEvent = treeOrNetworkGroupStartEvent;
 	}
 
-
-	@Override
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {
-		super.writeMetadata(receiver);
-	}
-	
-
-	@Override
-	public boolean hasMetadata() {
-		return super.hasMetadata();
-	}
-	
-	
-	@Override
-	public List<JPhyloIOEvent> getAnnotations() {
-		return super.getAnnotations();
-	}
-	
 
 	@Override
 	public LinkedLabeledIDEvent getStartEvent() {
-		return treeGroupAdapter.getStartEvent();
+		return startEvent;
 	}
+
 
 	@Override
 	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator() {

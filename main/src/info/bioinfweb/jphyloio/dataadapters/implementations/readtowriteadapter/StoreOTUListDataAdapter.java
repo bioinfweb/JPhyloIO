@@ -20,24 +20,24 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Iterator;
 
 
 
-public class StoreOTUListDataAdapter extends StoreObjectListDataAdapter<LabeledIDEvent> implements OTUListDataAdapter {
+public class StoreOTUListDataAdapter extends StoreAnnotatedDataAdapter<LabeledIDEvent> implements OTUListDataAdapter {
 	private LabeledIDEvent listStartEvent;
-	private StoreAnnotatedDataAdapter annotationAdapter;
+	private StoreObjectListDataAdapter<LabeledIDEvent> otus;
 
 
-	public StoreOTUListDataAdapter(LabeledIDEvent listStartEvent, List<JPhyloIOEvent> annotations) {
-		super();
+	public StoreOTUListDataAdapter(LabeledIDEvent listStartEvent, MetadataAdapter annotations) {
+		super(annotations);
 		this.listStartEvent = listStartEvent;
-		annotationAdapter = new StoreAnnotatedDataAdapter(annotations);
+		this.otus = new StoreObjectListDataAdapter<LabeledIDEvent>();
 	}
 	
 	
@@ -52,17 +52,31 @@ public class StoreOTUListDataAdapter extends StoreObjectListDataAdapter<LabeledI
 	}
 
 
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {
-		annotationAdapter.writeMetadata(receiver);
+	public StoreObjectListDataAdapter<LabeledIDEvent> getOtus() {
+		return otus;
 	}
 
 
-	public boolean hasMetadata() {
-		return annotationAdapter.hasMetadata();
+	@Override
+	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException {
+		return otus.getObjectStartEvent(id);
 	}
 
 
-	public List<JPhyloIOEvent> getAnnotations() {
-		return annotationAdapter.getAnnotations();
+	@Override
+	public long getCount() {
+		return otus.getCount();
+	}
+
+
+	@Override
+	public Iterator<String> getIDIterator() {
+		return otus.getIDIterator();
+	}
+
+
+	@Override
+	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
+		otus.writeContentData(receiver, id);
 	}
 }

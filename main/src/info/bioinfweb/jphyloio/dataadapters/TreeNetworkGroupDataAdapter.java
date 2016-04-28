@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -19,12 +19,13 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+
 import java.util.Iterator;
 
 
 
-public interface TreeNetworkGroupDataAdapter extends AnnotatedDataAdapter, LinkedDataAdapter {
-	
+public interface TreeNetworkGroupDataAdapter extends AnnotatedDataAdapter<LinkedLabeledIDEvent> {	
 	
 	/**
 	 * Returns an iterator providing access to all trees and networks contained in the 

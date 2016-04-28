@@ -21,9 +21,12 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,14 +36,14 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
-public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter implements DocumentDataAdapter {
+public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter<ConcreteJPhyloIOEvent> implements DocumentDataAdapter {
 	private ListOrderedMap<String, OTUListDataAdapter> otuListsMap;
 	private List<MatrixDataAdapter> matrices;
 	private List<TreeNetworkGroupDataAdapter> treeNetworkGroups;
 	
 	
 	public StoreDocumentDataAdapter(ListOrderedMap<String, OTUListDataAdapter> otusMap, List<MatrixDataAdapter> matrices,
-			List<TreeNetworkGroupDataAdapter> treeNetworkGroups, List<JPhyloIOEvent> annotations) {		
+			List<TreeNetworkGroupDataAdapter> treeNetworkGroups, MetadataAdapter annotations) {		
 		super(annotations);
 		
 		if (otusMap == null) {
@@ -119,5 +122,11 @@ public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter implemen
 	@Override
 	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator() {
 		return treeNetworkGroups.iterator();
+	}
+
+
+	@Override
+	public ConcreteJPhyloIOEvent getStartEvent() {
+		return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
 	}
 }
