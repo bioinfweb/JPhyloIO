@@ -91,6 +91,7 @@ main/src/info/bioinfweb/jphyloio/exception/IllegalEventException.java -text svne
 main/src/info/bioinfweb/jphyloio/exception/InconsistentAdapterDataException.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/exception/JPhyloIOReaderException.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/exception/JPhyloIOWriterException.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/exception/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/AbstractSingleReaderWriterFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/AbstractStartStringSingleFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/JPhyloIOContentExtensionFileFilter.java -text svneol=unset#text/plain
@@ -227,6 +228,8 @@ main/src/info/bioinfweb/jphyloio/formats/xml/XMLElementReaderKey.java -text svne
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLReaderStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLToMetaElementStartReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/translate/InvalidObjectSourceDataException.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/translate/ObjectTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xtg/XTGConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xtg/XTGFactory.java -text svneol=unset#text/plain
