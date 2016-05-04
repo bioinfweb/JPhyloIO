@@ -23,6 +23,7 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -36,6 +37,11 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -49,6 +55,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +67,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -120,64 +130,78 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 	    	StartElement element = event.asStartElement();
+	    	LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+	    	readNamespaceDefinitions(streamDataProvider, element);
 	    	String type = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
-	  		String key = null;	
-	  		String stringValue = null;
-	  		Object objectValue = null;
-	  		String dataType = null;
+	    	UriOrStringIdentifier predicate;
 	  		
-	  		if (type.equals(TYPE_LITERAL_META)) {
-	  			key = XMLUtils.readStringAttr(element, ATTR_PROPERTY, null);
-	  			stringValue = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
-	  			dataType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null);
-	  			//TODO Delegate java object construction to ontology definition instance, which is able to convert a QName to a Java class.
-	  		}
-	  		else if (type.equals(TYPE_RESOURCE_META)) {
-	  			key = XMLUtils.readStringAttr(element, ATTR_REL, null);
-	  			stringValue = XMLUtils.readStringAttr(element, ATTR_HREF, null);
-	  			//TODO Create XMLStreamReader instance here, if nested XML is present.
-	  			try {
-	  				objectValue = new URL(stringValue);
-	  			} 
-	  			catch (MalformedURLException e) {}
-	  			dataType = type;
-	  		}
-	  		else {
-	  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + 
-	  					TYPE_RESOURCE_META + "\".", element.getLocation());
-	  		}
-	   		
-	   		if (stringValue != null && objectValue != null) {
-	   			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key, dataType, stringValue, objectValue));
-	   		}
-	   		else if (stringValue != null) {
-	   			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(key, dataType, stringValue));
-	   		}
-	   		else { //TODO content attribute is optional
-	   			throw new JPhyloIOReaderException("Meta tag must either have an attribute called \"" + ATTR_CONTENT + "\" or \"" + 
-	   					ATTR_HREF + "\".", element.getLocation());
-	   		}
-	   		
-	   		String id = XMLUtils.readStringAttr(element, ATTR_ID, null);
-	  		if (id != null) {
-	  			streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent("id", null, id));
-	  			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
-	  		}
+	    	if ((info.id != null) && !info.id.equals("")) {
+		  		if (type.equals(TYPE_LITERAL_META)) {
+		  			streamDataProvider.setMetaType(EventContentType.META_LITERAL);
+		  			predicate = new UriOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null)));
+		  			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
+		  			String[] dataType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null).split(":");
+		  			UriOrStringIdentifier originalType = new UriOrStringIdentifier(null, new QName(streamDataProvider.getNamespaceMap().get(dataType[0]), dataType[1], dataType[0]));
+		  			streamDataProvider.setMetaContentDataType(originalType);
+		  			
+		  			LiteralContentSequenceType contentType = null;
+		  			if (streamDataProvider.getNamespaceMap().get(dataType[0]).equals(XMLConstants.W3C_XML_SCHEMA_NS_URI + "#")) { //TODO is this okay? What about the '#'?
+		  				contentType = LiteralContentSequenceType.SIMPLE;
+		  			}
+		  			else {
+		  				contentType = LiteralContentSequenceType.XML;
+		  			}
+		  			
+		  			//TODO Delegate java object construction to ontology definition instance, which is able to convert a QName to a Java class.		  			
+		  			
+		  			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, null, contentType));
+		  			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, content, false));
+		  		}
+		  		else if (type.equals(TYPE_RESOURCE_META)) {
+		  			streamDataProvider.setMetaType(EventContentType.META_RESOURCE);
+		  			predicate = new UriOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_REL, null)));
+		  			String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
+		  			URI href = null;
+		  			try {
+		  				href = new URI(XMLUtils.readStringAttr(element, ATTR_HREF, null));
+		  			} 
+		  			catch (URISyntaxException e) {}	  			
+		  			
+		  			streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(info.id, info.label, predicate.getURI(), href, about));	  			
+		  		}
+		  		else {
+		  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + 
+		  					TYPE_RESOURCE_META + "\".", element.getLocation());
+		  		}
+	    	}
+	    	
+	    	//TODO Create XMLStreamReader instance here, if nested XML is present.
 			}
 		};
 		
-		AbstractNeXMLElementReader readMetaEnd = new AbstractNeXMLElementReader() {			
+		AbstractNeXMLElementReader readMetaEnd = new AbstractNeXMLElementReader() {
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
+				EventContentType type = streamDataProvider.getMetaType();
+				
+				if (type != null) {
+					if (type.equals(EventContentType.META_LITERAL)) {
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					}
+					else if (type.equals(EventContentType.META_RESOURCE)) {
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+					}					
+					streamDataProvider.setMetaType(null);
+				}
 			}
 		};
 		
 		AbstractNeXMLElementReader readNodeStart = new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();				
+				StartElement element = event.asStartElement();
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
 				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NODE, info.id,	info.label, info.otuOrOtusID));
 			}
 		};
@@ -192,7 +216,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		AbstractNeXMLElementReader readEdgeStart = new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();		
+				StartElement element = event.asStartElement();
+				readNamespaceDefinitions(streamDataProvider, element);
 				try {
 					String edgeID = XMLUtils.readStringAttr(element, ATTR_ID, null);
 					String targetID = XMLUtils.readStringAttr(element, ATTR_TARGET, null);
@@ -230,6 +255,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
 				String symbol = XMLUtils.readStringAttr(element, ATTR_SYMBOL, null);
 				String translation = symbol;
 				
@@ -303,7 +329,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		AbstractNeXMLElementReader readMemberStart = new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();				
+				StartElement element = event.asStartElement();
 				String state = XMLUtils.readStringAttr(element, ATTR_STATE, null);
 				streamDataProvider.getConstituents().add(streamDataProvider.getTokenDefinitionIDToSymbolMap().get(state));
 			}
@@ -343,6 +369,20 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_EDGE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_EDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		
+		putElementReader(new XMLElementReaderKey(TAG_META, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
+			@Override
+			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+				String content = event.asCharacters().getData();
+				
+				if (!content.matches("\\s+")) {
+					if (streamDataProvider.getMetaType().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events
+						boolean isContinued = streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS);
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(streamDataProvider.getMetaContentDataType(), content, isContinued));
+					}
+				}
+			}
+		});
 
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new AbstractNeXMLElementReader() {			
 			@Override
@@ -358,11 +398,19 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			}
 		});
 		
+		putElementReader(new XMLElementReaderKey(null, TAG_ROOT, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
+			@Override
+			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+				readNamespaceDefinitions(streamDataProvider, event.asStartElement());
+			}
+		});
+		
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_OTUS, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
 				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU_LIST, info.id,	info.label));
 			}
 		});
@@ -378,7 +426,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
-				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);		
+				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
 				
 				streamDataProvider.getOtuIDToLabelMap().put(info.id, info.label);
 				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, info.id, info.label));
@@ -397,6 +446,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
 				
 				String tokenSetType = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);			
 				if (tokenSetType == null) {
@@ -536,6 +586,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
+				
 				String charIDs = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
 				
 				String[] charIDArray = charIDs.split(" "); //IDs are not allowed to contain spaces
@@ -578,6 +630,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
+				
 				if (info.label == null) {
 					info.label = streamDataProvider.getCharacterSetType().toString();
 				}
@@ -622,6 +676,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
 				String states =	XMLUtils.readStringAttr(element, ATTR_STATES, null);
 				
 				streamDataProvider.getCharIDs().add(info.id);
@@ -634,6 +689,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				OTUorOTUSEventInformation otuInfo = getOTUorOTUSEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
+				
 	  		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, otuInfo.id, otuInfo.label, otuInfo.otuOrOtusID));
 			}
 		});
@@ -649,6 +706,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
+				readNamespaceDefinitions(streamDataProvider, element);
+				
 				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 				String token = XMLUtils.readStringAttr(element, ATTR_STATE, null);
 				String character = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
@@ -685,9 +744,10 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_TREES, TAG_TREE, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();
-				
+				StartElement element = event.asStartElement();				
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
+				
 				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, info.id,	info.label, info.otuOrOtusID));
 				
 	  		String branchLengthsFormat = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
@@ -713,6 +773,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				OTUorOTUSEventInformation otuInfo = getOTUorOTUSEventInformation(streamDataProvider, element);
+				readNamespaceDefinitions(streamDataProvider, element);
+				
 	  		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NETWORK, otuInfo.id, otuInfo.label, otuInfo.otuOrOtusID));
 			}
 		});

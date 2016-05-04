@@ -19,20 +19,24 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
-import java.util.Stack;
-
-import javax.xml.stream.XMLEventReader;
-
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+
+import javax.xml.stream.XMLEventReader;
+
 
 
 public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLReaderStreamDataProvider<R>>> extends ReaderStreamDataProvider<R> {	
-	private String format;	
+	private String format;
 	private String parentName;
 	private String elementName;
+	
+	private Map<String, String> namespaceMap = new HashMap<String, String>();
 	
 	private Stack<String> nestedMetaNames = new Stack<String>();  
 	
@@ -81,6 +85,11 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 
 	public void setElementName(String elementName) {
 		this.elementName = elementName;
+	}
+
+
+	public Map<String, String> getNamespaceMap() {
+		return namespaceMap;
 	}
 
 

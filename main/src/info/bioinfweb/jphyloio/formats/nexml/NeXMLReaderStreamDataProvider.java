@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexml.AbstractNeXMLElementReader.LabeledIDEventInformation;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
@@ -32,6 +34,9 @@ import java.util.TreeMap;
 
 public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<NeXMLEventReader> {	
 	private boolean allowLongTokens;
+	
+	private EventContentType metaType;
+	private UriOrStringIdentifier metaContentDataType;
 	
 	private String tokenSetID = null;
 	private LabeledIDEventInformation tokenDefinitionInfo = null;
@@ -58,6 +63,26 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	@Override
 	public NeXMLEventReader getEventReader() {
 		return (NeXMLEventReader)super.getEventReader();
+	}
+
+
+	public EventContentType getMetaType() {
+		return metaType;
+	}
+
+
+	public void setMetaType(EventContentType metaType) {
+		this.metaType = metaType;
+	}
+
+
+	public UriOrStringIdentifier getMetaContentDataType() {
+		return metaContentDataType;
+	}
+
+
+	public void setMetaContentDataType(UriOrStringIdentifier metaContentDataType) {
+		this.metaContentDataType = metaContentDataType;
 	}
 
 
