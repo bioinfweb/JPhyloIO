@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9"
+    xmlns:foo="http://example.org/test/" >
+    
+  <otus id="otus1" label="Taxon list">
+    <otu id="otu1" label="Taxon 1">
+      <meta datatype="xsd:integer" id="meta1" property="foo:#start'" content="95" xsi:type="nex:LiteralMeta" />
+      <meta datatype="xsd:integer" id="meta1" property="foo:xforms+or+'xml+forms'" content="95" xsi:type="nex:LiteralMeta" />
+      <meta datatype="xsd:integer" id="meta1" property="foo:'" content="95" xsi:type="nex:LiteralMeta" />
+    </otu>
+  </otus>
+</nex:nexml>
