@@ -133,7 +133,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 				currentSequenceName = getReader().readLine().getSequence().toString();
 			  //TODO Optionally an additional OTU event with an ID could be generated here.
 				getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
-						DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(),	currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
+						DEFAULT_SEQUENCE_ID_PREFIX + getIDManager().createNewID(), currentSequenceName, null));  // This event may remain in the queue in addition to the upcoming characters event, since it will not consume much memory.
 				int maxCommentLength = getParameters().getMaxCommentLength();
 				while (getReader().peekChar() == COMMENT_START_CHAR) {
 					getReader().read();  // Consume ';'.
@@ -238,7 +238,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 					}
 					PeekReader.ReadResult lineResult = getReader().readLine(getParameters().getMaxTokensToRead());
 					List<String> tokenList = new ArrayList<String>(lineResult.getSequence().length());
-					for (int i = 0; i < lineResult.getSequence().length(); i++) {
+					for (int i = 0; i < lineResult.getSequence().length(); i++) {  //TODO Support tokens longer then one character.
 						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
 					}
 					lineConsumed = lineResult.isCompletelyRead();
