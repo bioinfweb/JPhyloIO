@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
@@ -56,6 +55,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	
 	
 	protected void readNamespaceDefinitions(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) {
+		@SuppressWarnings("unchecked")
 		Iterator<Namespace> namespaceIterator = element.getNamespaces();
 		while (namespaceIterator.hasNext()) {
 			Namespace namespace = namespaceIterator.next();
@@ -90,7 +90,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	 		}
 			lastToken = currentToken;
 			
-			if (!Character.isWhitespace(sequence.charAt(sequence.length() - 1))) {				
+			if (!Character.isWhitespace(sequence.charAt(sequence.length() - 1))) {
 				try {
 					XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
 					if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {

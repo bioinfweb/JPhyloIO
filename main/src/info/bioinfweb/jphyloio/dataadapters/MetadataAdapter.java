@@ -62,14 +62,15 @@ public interface MetadataAdapter {
 	 */
 	public Iterator<String> getChildElementIDs(String parentID);
 	
+	//TODO Adjust comment main text
 	/**
 	 * Returns the ID of a metaevent in this adapter that is associated with the specified predicate (as the default or any 
 	 * alternative predicate). 
 	 * 
 	 * @param predicate the predicates linking the returned metadata item to its parent data object (RDF subject).
-	 * @return the ID of the metaevent or {@code null} if no metaevent in this adapter is linked using the specified predicate
+	 * @return an iterator over all IDs of the metaevents using the specified predicate or an empty iterator
 	 */
-	public String getIDByPredicate(QName predicate);  //TODO Would that also be needed for string keys?
+	public Iterator<String> getIDsByPredicate(QName predicate);  //TODO Would that also be needed for string keys?
 	
 	/**
 	 * Iterates over all alternative predicates or string identifier that would be valid for the specified metadata item.

@@ -18,6 +18,8 @@
  */
 package info.bioinfweb.jphyloio;
 
+import javax.xml.namespace.QName;
+
 
 
 /**
@@ -30,9 +32,22 @@ public interface ReadWriteConstants {
 	public static final int DEFAULT_MAX_TOKENS_TO_READ = 2048;
 	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
 	
+	public static final String PREDICATE_PART_SEPERATOR = "."; //TODO better use '-' instead?
 	
+	public static final String JPHYLOIO_NAMESPACE_PREFIX = "http://bioinfweb.info/xmlns/JPhyloIO/";
+	
+	public static final String JPHYLOIO_PREDICATE_NAMESPACE = JPHYLOIO_NAMESPACE_PREFIX + "General/Predicates/";
+	
+	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata");
+	public static final QName PREDICATE_HAS_RESOURCE_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasResourceMetadata");
+	
+	@Deprecated
 	public static final String META_KEY_SEQUENCE_COUNT = "info.bioinfweb.jphyloio.sequenceCount";
+	 
+	@Deprecated
 	public static final String META_KEY_CHARACTER_COUNT = "info.bioinfweb.jphyloio.characterCount";
+	 
+	@Deprecated
 	public static final String META_KEY_DISPLAY_TREE_ROOTED = "info.bioinfweb.jphyloio.displayTreeRooted";
 	//TODO Replace these keys by URLs? (Depends on the ontology modeling classes to be added.)
 	

@@ -34,7 +34,7 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 
-public abstract class AbstractXMLEventWriter extends AbstractEventWriter {
+public abstract class AbstractXMLEventWriter extends AbstractEventWriter {	
 	private XMLStreamWriter xmlWriter;
 	private ReadWriteParameterMap parameters;
 	private ApplicationLogger logger;

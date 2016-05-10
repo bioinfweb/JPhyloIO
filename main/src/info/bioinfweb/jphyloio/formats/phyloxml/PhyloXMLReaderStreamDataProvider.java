@@ -21,24 +21,15 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 
 
 public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<PhyloXMLEventReader>  {
-	private Map<String, String> prefixToNamespaceMap = new HashMap<String, String>();
 	private boolean rooted;	
 	private String treeLabel;
 	
 
 	public PhyloXMLReaderStreamDataProvider(PhyloXMLEventReader eventReader) {
 		super(eventReader);
-	}	
-
-
-	protected Map<String, String> getPrefixToNamespaceMap() {
-		return prefixToNamespaceMap;
 	}
 
 

@@ -24,10 +24,12 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
+import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 
 import java.io.IOException;
 import java.util.Iterator;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 
 
@@ -49,14 +51,14 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), PropertyOwner.OTHER);
 		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());		
 		
-		getXMLWriter().writeDefaultNamespace(NAMESPACE_URI);
-		getXMLWriter().writeNamespace("xsi", NAMESPACE_XSI);
+		getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);
+		getXMLWriter().writeNamespace(XMLReadWriteUtils.XSI_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
 //		TODO write namespaces collected in document
 
 		writePhylogenyTags();
 		
 		if (getDocument().getMetadataAdapter() != null) {
-//			getDocument().writeMetadata(receiver); //TODO use new metadata structure
+			getLogger().addWarning("The document contained document meta data which could not be written since the PhyloXML format does not support this.");
 		}
 		
 		getXMLWriter().writeEndElement();
@@ -117,7 +119,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 		}
 		
 		if (tree.getMetadataAdapter() != null) {
-//			tree.writeMetadata(receiver); //TODO use new metadata structure
+//			tree.getMetadataAdapter(); //TODO use new metadata structure
 		}
 		
 		getXMLWriter().writeEndElement();

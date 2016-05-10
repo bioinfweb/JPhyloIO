@@ -35,6 +35,9 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
+import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.PhyloXMLCharactersElementReader;
+import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.PhyloXMLEndElementReader;
+import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.PhyloXMLStartElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
@@ -49,7 +52,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -104,36 +106,36 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 	@SuppressWarnings("unchecked")
 	protected void fillMap() {
 		XMLElementReader<PhyloXMLReaderStreamDataProvider> cladeEndReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
-				@Override
-				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-					if (streamDataProvider.hasSpecialEventCollection()) {
-						streamDataProvider.resetCurrentEventCollection();
-					}
-					NodeEdgeInfo nodeInfo = streamDataProvider.getSourceNode().pop();
-					NodeEdgeInfo edgeInfo = streamDataProvider.getEdgeInfos().pop();
-					
-					String nodeID = getID(nodeInfo.getID(), EventContentType.NODE);
-					nodeInfo.setID(nodeID);
-					edgeInfo.setTarget(nodeID);					
-					
-					createNodeEvents(nodeInfo);
-					createEdgeEvents(edgeInfo);		
+			@Override
+			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+				if (streamDataProvider.hasSpecialEventCollection()) {
+					streamDataProvider.resetCurrentEventCollection();
 				}
+				NodeEdgeInfo nodeInfo = streamDataProvider.getSourceNode().pop();
+				NodeEdgeInfo edgeInfo = streamDataProvider.getEdgeInfos().pop();
+				
+				String nodeID = getID(nodeInfo.getID(), EventContentType.NODE);
+				nodeInfo.setID(nodeID);
+				edgeInfo.setTarget(nodeID);					
+				
+				createNodeEvents(nodeInfo);
+				createEdgeEvents(edgeInfo);		
+			}
 		};
 			
 		XMLElementReader<PhyloXMLReaderStreamDataProvider> branchMetaStartReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
-				@Override
-				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-					StartElement element = event.asStartElement();					
-					streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
-					
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-							null, new UriOrStringIdentifier(null, element.getName()), null, LiteralContentSequenceType.XML));
-					
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));
-					
-					streamDataProvider.getNestedMetaNames().add(element.getName().getLocalPart());
-				}
+			@Override
+			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+				StartElement element = event.asStartElement();					
+				streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
+				
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+						null, new UriOrStringIdentifier(null, element.getName()), null, LiteralContentSequenceType.XML));
+				
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));
+				
+				streamDataProvider.getNestedMetaNames().add(element.getName().getLocalPart());
+			}
 		};
 			
 		XMLElementReader<PhyloXMLReaderStreamDataProvider> branchMetaEndReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
@@ -160,7 +162,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 					streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-					streamDataProvider.setFormat(PHYLO_XML);
 				}
 		});
 		
@@ -185,7 +186,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					streamDataProvider.setRooted(rooted);
 					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
-					readAttributes(streamDataProvider, element); //TODO do not read root attribute again here
+//					readAttributes(streamDataProvider, element); //TODO do not read root attribute again here
 				}
 		});
 		
@@ -209,11 +210,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, treeID, treeLabel, null));
 					
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-							null, new UriOrStringIdentifier(null, new QName(META_KEY_DISPLAY_TREE_ROOTED)), null, LiteralContentSequenceType.SIMPLE));
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new UriOrStringIdentifier("boolean", new QName(NAMESPACE_XSI, "boolean", XSD_PRE)), 
-							Boolean.toString(streamDataProvider.isRooted()), ((Boolean)streamDataProvider.isRooted())));
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL)); 
+//					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+//							null, new UriOrStringIdentifier(null, new QName(META_KEY_DISPLAY_TREE_ROOTED)), null, LiteralContentSequenceType.SIMPLE));
+//					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new UriOrStringIdentifier("boolean", new QName(NAMESPACE_XSI, "boolean", XSD_PRE)), 
+//							Boolean.toString(streamDataProvider.isRooted()), ((Boolean)streamDataProvider.isRooted())));
+//					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL)); 
 					
 					for (JPhyloIOEvent nextEvent : nestedEvents) {
 						streamDataProvider.getCurrentEventCollection().add(nextEvent);
@@ -327,22 +328,67 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_CLADE, XMLStreamConstants.END_ELEMENT), cladeEndReader);
 		
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new XMLToMetaElementStartReader());
+//		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new XMLToMetaElementStartReader());
 		
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), 
-				new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
-					@Override
-					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));
-						streamDataProvider.getNestedMetaNames().pop();
-						
-						if (streamDataProvider.getNestedMetaNames().isEmpty()) {
-							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-						}
-					}
-			});
+//		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), 
+//				new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
+//					@Override
+//					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+//						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));
+//						streamDataProvider.getNestedMetaNames().pop();
+//						
+//						if (streamDataProvider.getNestedMetaNames().isEmpty()) {
+//							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+//						}
+//					}
+//			});
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
+		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_TAXONOMY, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY, false, true, ATTR_ID_SOURCE, PREDICATE_TAXONOMY_ATTR_ID_SOURCE));
+		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_ID, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY_ID, true, true, ATTR_ID_PROVIDER, PREDICATE_TAXONOMY_ID_ATTR_PROVIDER));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_ID, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_ID, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(false, true));
+		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_CODE, XMLStreamConstants.START_ELEMENT),
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY_CODE, true, false));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_CODE, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_CODE, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_SCI_NAME, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY_SCI_NAME, true, false));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_SCI_NAME, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_SCI_NAME, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_AUTHORITY, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY_AUTHORITY, true, false));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_AUTHORITY, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_AUTHORITY, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_COMMON_NAME, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY_COMMON_NAME, true, false));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_COMMON_NAME, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_COMMON_NAME, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_SYNONYM, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY_SYNONYM, true, false));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_SYNONYM, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_SYNONYM, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_RANK, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY_RANK, true, false));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_RANK, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_RANK, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_URI, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_TAXONOMY_URI, true, true, ATTR_DESC, PREDICATE_TAXONOMY_URI_ATTR_DESC, ATTR_TYPE, PREDICATE_TAXONOMY_URI_ATTR_TYPE));		
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_URI, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_URI, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(false, true));
+		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_TAXONOMY, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(false, true));
 	}
 	
 	

@@ -32,7 +32,6 @@ import javax.xml.stream.XMLEventReader;
 
 
 public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLReaderStreamDataProvider<R>>> extends ReaderStreamDataProvider<R> {	
-	private String format;
 	private String parentName;
 	private String elementName;
 	
@@ -55,16 +54,6 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	
 	public XMLEventReader getXMLReader() {
 		return getEventReader().getXMLReader();
-	}
-
-
-	public String getFormat() {
-		return format;
-	}
-
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
 

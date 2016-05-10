@@ -123,7 +123,6 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-						streamDataProvider.setFormat(PDE);
 					}
 			});
 			

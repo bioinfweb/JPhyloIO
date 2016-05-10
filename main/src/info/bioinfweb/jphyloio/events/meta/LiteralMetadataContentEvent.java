@@ -134,6 +134,11 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 *         was not a characters event 
 	 */
 	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent) {
+		this(xmlEvent, continuedInNextEvent, null);
+	}
+	
+	
+	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent, String alternativeStringValue) {
 		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
 		
 		if (!xmlEvent.isCharacters() && continuedInNextEvent) {
@@ -142,6 +147,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 		}
 		else {
 			this.stringValue = null;
+			this.alternativeStringValue = alternativeStringValue;
 			this.objectValue = xmlEvent;
 			this.originalType = null;  //TODO Should something else be stored here (e.g. the XML event type)?
 		}

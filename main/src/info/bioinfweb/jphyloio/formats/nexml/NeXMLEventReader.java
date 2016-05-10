@@ -23,7 +23,6 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.io.XMLUtils;
-import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -31,7 +30,6 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
@@ -54,10 +52,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,7 +63,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
@@ -132,50 +127,54 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	    	StartElement element = event.asStartElement();
 	    	LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
 	    	readNamespaceDefinitions(streamDataProvider, element);
-	    	String type = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
+	    	String typeWithPrefix = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
 	    	UriOrStringIdentifier predicate;
-	  		
+					
 	    	if ((info.id != null) && !info.id.equals("")) {
-		  		if (type.equals(TYPE_LITERAL_META)) {
-		  			streamDataProvider.setMetaType(EventContentType.META_LITERAL);
-		  			predicate = new UriOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null)));
-		  			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
-		  			String[] dataType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null).split(":");
-		  			UriOrStringIdentifier originalType = new UriOrStringIdentifier(null, new QName(streamDataProvider.getNamespaceMap().get(dataType[0]), dataType[1], dataType[0]));
-		  			streamDataProvider.setMetaContentDataType(originalType);
-		  			
-		  			LiteralContentSequenceType contentType = null;
-		  			if (streamDataProvider.getNamespaceMap().get(dataType[0]).equals(XMLConstants.W3C_XML_SCHEMA_NS_URI + "#")) { //TODO is this okay? What about the '#'?
-		  				contentType = LiteralContentSequenceType.SIMPLE;
-		  			}
-		  			else {
-		  				contentType = LiteralContentSequenceType.XML;
-		  			}
-		  			
-		  			//TODO Delegate java object construction to ontology definition instance, which is able to convert a QName to a Java class.		  			
-		  			
-		  			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, null, contentType));
-		  			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, content, false));
-		  		}
-		  		else if (type.equals(TYPE_RESOURCE_META)) {
-		  			streamDataProvider.setMetaType(EventContentType.META_RESOURCE);
-		  			predicate = new UriOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_REL, null)));
-		  			String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
-		  			URI href = null;
-		  			try {
-		  				href = new URI(XMLUtils.readStringAttr(element, ATTR_HREF, null));
-		  			} 
-		  			catch (URISyntaxException e) {}	  			
-		  			
-		  			streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(info.id, info.label, predicate.getURI(), href, about));	  			
-		  		}
-		  		else {
-		  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + 
-		  					TYPE_RESOURCE_META + "\".", element.getLocation());
-		  		}
+	    		if (typeWithPrefix != null) {
+	    			String type = typeWithPrefix.split(":")[typeWithPrefix.split(":").length - 1];
+			  		if (type.equals(TYPE_LITERAL_META)) {
+			  			streamDataProvider.setMetaType(EventContentType.META_LITERAL);
+			  			predicate = new UriOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null)));
+			  			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
+			  			streamDataProvider.setAlternativeStringRepresentation(content);
+			  			
+			  			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, null, LiteralContentSequenceType.XML));
+	
+	//		  			String[] dataType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null).split(":");
+	//		  			UriOrStringIdentifier originalType = new UriOrStringIdentifier(null, new QName(streamDataProvider.getNamespaceMap().get(dataType[0]), dataType[1], dataType[0]));	  			
+			  			
+	//		  			LiteralContentSequenceType contentType = null;
+	//		  			if (streamDataProvider.getNamespaceMap().get(dataType[0]).equals(XMLConstants.W3C_XML_SCHEMA_NS_URI) 
+	//		  					|| streamDataProvider.getNamespaceMap().get(dataType[0]).equals(XMLConstants.W3C_XML_SCHEMA_NS_URI + "#")) { //TODO is this okay? What about the '#'?
+	//		  				contentType = LiteralContentSequenceType.SIMPLE; //TODO Delegate java object construction to ontology definition instance, which is able to convert a QName to a Java class.		
+	//		  			}
+	//		  			else {
+	//		  				contentType = LiteralContentSequenceType.XML;
+	//		  				//TODO Create XMLStreamReader instance here, if nested XML is present.
+	//			  		}
+			  		}
+			  		else if (type.equals(TYPE_RESOURCE_META)) {
+			  			streamDataProvider.setMetaType(EventContentType.META_RESOURCE);
+			  			predicate = new UriOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_REL, null)));
+			  			String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
+			  			URI href = null;
+			  			try {
+			  				href = new URI(XMLUtils.readStringAttr(element, ATTR_HREF, null));
+			  			} 
+			  			catch (URISyntaxException e) {}
+			  			
+			  			streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(info.id, info.label, predicate.getURI(), href, about));	  			
+			  		}
+			  		else {
+			  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + 
+			  					TYPE_RESOURCE_META + "\".", element.getLocation());
+			  		}
+		    	}
+	    		else {
+						throw new JPhyloIOReaderException("Meta tag must have an attribute called \"" + ATTR_XSI_TYPE + "\".", element.getLocation());
+					}
 	    	}
-	    	
-	    	//TODO Create XMLStreamReader instance here, if nested XML is present.
 			}
 		};
 		
@@ -370,16 +369,36 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_EDGE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_EDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
-		putElementReader(new XMLElementReaderKey(TAG_META, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				String content = event.asCharacters().getData();
-				
-				if (!content.matches("\\s+")) {
-					if (streamDataProvider.getMetaType().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events
+				if ((streamDataProvider.getMetaType() != null) && streamDataProvider.getMetaType().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events					
+					streamDataProvider.getCurrentEventCollection().add(
+							new LiteralMetadataContentEvent(event.asStartElement(), false, streamDataProvider.getAlternativeStringRepresentation()));
+				}
+			}
+		});
+		
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
+			@Override
+			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {				
+				if ((streamDataProvider.getMetaType() != null) && streamDataProvider.getMetaType().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events
+					String content = event.asCharacters().getData();
+					if (!content.matches("\\s+")) {
 						boolean isContinued = streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS);
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(streamDataProvider.getMetaContentDataType(), content, isContinued));
+						streamDataProvider.getCurrentEventCollection().add(
+								new LiteralMetadataContentEvent(event.asCharacters(), isContinued, streamDataProvider.getAlternativeStringRepresentation()));
 					}
+				}
+			}
+		});
+		
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
+			@Override
+			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+				if ((streamDataProvider.getMetaType() != null) && streamDataProvider.getMetaType().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events					
+					streamDataProvider.getCurrentEventCollection().add(
+							new LiteralMetadataContentEvent(event.asEndElement(), false, streamDataProvider.getAlternativeStringRepresentation()));
 				}
 			}
 		});
@@ -448,12 +467,15 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
 				readNamespaceDefinitions(streamDataProvider, element);
 				
-				String tokenSetType = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);			
-				if (tokenSetType == null) {
+				String tokenSetTypeWithPrefix = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);			
+				
+				if (tokenSetTypeWithPrefix == null) {
 					throw new JPhyloIOReaderException("Character tag must have an attribute called \"" + ATTR_XSI_TYPE + "\".", element.getLocation());
 				}
 				else {
-					CharacterStateSetType setType = null;				
+					String tokenSetType = tokenSetTypeWithPrefix.split(":")[tokenSetTypeWithPrefix.split(":").length - 1];
+					CharacterStateSetType setType = null;
+					
 					if (tokenSetType.equals(TYPE_DNA_SEQS) || tokenSetType.equals(TYPE_DNA_CELLS)) {
 						info.label = "DNA";
 						setType = CharacterStateSetType.DNA; //standard IUPAC nucleotide symbols
@@ -749,14 +771,20 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				readNamespaceDefinitions(streamDataProvider, element);
 				
 				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, info.id,	info.label, info.otuOrOtusID));
-				
-	  		String branchLengthsFormat = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
-				if (branchLengthsFormat.equals(null)) {}
-				else if (branchLengthsFormat.equals(TYPE_FLOAT_TREE)) {
-					streamDataProvider.setBranchLengthsFormat(TYPE_FLOAT_TREE);
+					
+	  		String branchLengthsFormatWithPrefix = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
+	  		
+				if (branchLengthsFormatWithPrefix == null) {
+					throw new JPhyloIOReaderException("Tree tag must have an attribute called \"" + ATTR_XSI_TYPE + "\".", element.getLocation());
 				}
-				else if (branchLengthsFormat.equals(TYPE_INT_TREE)) {
-					streamDataProvider.setBranchLengthsFormat(TYPE_INT_TREE);
+				else {
+					String branchLengthsFormat = branchLengthsFormatWithPrefix.split(":")[branchLengthsFormatWithPrefix.split(":").length - 1];
+					if (branchLengthsFormat.equals(TYPE_FLOAT_TREE)) {
+						streamDataProvider.setBranchLengthsFormat(TYPE_FLOAT_TREE);
+					}
+					else if (branchLengthsFormat.equals(TYPE_INT_TREE)) {
+						streamDataProvider.setBranchLengthsFormat(TYPE_INT_TREE);
+					}
 				}
 			}
 		});

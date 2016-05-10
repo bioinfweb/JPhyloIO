@@ -50,7 +50,7 @@ public interface ObjectTranslator<O> {
 	//TODO Should it be possible to support more than one class?
 	
 	/**
-	 * Determines whether the objects handles by this instance have a simple string representation or need a more complex
+	 * Determines whether the objects handled by this instance have a simple string representation or need a more complex
 	 * XML representation.
 	 * <p>
 	 * Instances that return {@code false here} will throw an {@link UnsupportedOperationException}, if 
@@ -76,7 +76,7 @@ public interface ObjectTranslator<O> {
 	/**
 	 * Writes the XML representation of the specified object into the specified XML writer.
 	 * <p>
-	 * If {@link #hasStringRepresentation()} if this instance returns {@code true}, the XML representation will only contain characters
+	 * If {@link #hasStringRepresentation()} of this instance returns {@code true}, the XML representation will only contain characters
 	 * and no tags.
 	 * 
 	 * @param writer the writer to be used to write the XML representation
@@ -87,7 +87,7 @@ public interface ObjectTranslator<O> {
 	public void writeXMLRepresentation(XMLStreamWriter writer, O object) throws IOException, XMLStreamException;
 	
 	/**
-	 * Converts the specified string representation to new instance of the according Java object.
+	 * Converts the specified string representation to a new instance of the according Java object.
 	 * <p>
 	 * If {@link #getClass()} returns an interface for this instance, the concrete class of the returned object may 
 	 * depend on the representation. 

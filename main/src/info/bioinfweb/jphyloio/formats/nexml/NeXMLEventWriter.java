@@ -49,6 +49,7 @@ import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceMetaDat
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLSequenceTokensReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers.NeXMLTokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
+import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.tools.NodeEdgeIDLister;
 
 import java.io.IOException;
@@ -58,6 +59,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 
 
@@ -99,17 +101,22 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	private void writeTreeOrNetworkTag(TreeNetworkDataAdapter treeOrNetwork) throws XMLStreamException, IOException {		
 		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
+		StringBuffer treeType = new StringBuffer();
+		treeType.append(streamDataProvider.getNexPrefix());
+		treeType.append(":");
 		
 		if (treeOrNetwork.isTree()) {
-			getXMLWriter().writeStartElement(TAG_TREE.getLocalPart());
-			streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent());
-			getXMLWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_TREE); //trees are always written as float trees
+			getXMLWriter().writeStartElement(TAG_TREE.getLocalPart());			
+			treeType.append(TYPE_FLOAT_TREE);
 		}
 		else {
-			getXMLWriter().writeStartElement(TAG_NETWORK.getLocalPart());
-			streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent());
-			getXMLWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), TYPE_FLOAT_NETWORK); //networks are always written as float networks
-		}		
+			getXMLWriter().writeStartElement(TAG_NETWORK.getLocalPart());			
+			treeType.append(TYPE_FLOAT_NETWORK);
+		}
+		
+		streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent());
+		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
+				ATTR_XSI_TYPE.getLocalPart(), treeType.toString()); //trees and networks are always written as float type
 		
 		if (treeOrNetwork.getMetadataAdapter() != null) {
 //			treeOrNetwork.writeMetadata(receiver); //TODO use new metadata structure
@@ -236,26 +243,28 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeCharactersTag(MatrixDataAdapter alignment) throws IOException, XMLStreamException {
 		getXMLWriter().writeStartElement(TAG_CHARACTERS.getLocalPart());
 		streamDataProvider.writeLinkedLabeledIDAttributes(alignment.getStartEvent(), TAG_OTUS, true);
-		String alignmentType = null;
+		StringBuffer alignmentType = new StringBuffer();
+		alignmentType.append(streamDataProvider.getNexPrefix());
+		alignmentType.append(":");
 		
 		if (streamDataProvider.isWriteCellsTags()) {
 			switch (streamDataProvider.getAlignmentType()) {
 				case NUCLEOTIDE:
 				case DNA:
-					alignmentType = TYPE_DNA_CELLS;
+					alignmentType.append(TYPE_DNA_CELLS);
 					break;
 				case RNA:
-					alignmentType = TYPE_RNA_CELLS;
+					alignmentType.append(TYPE_RNA_CELLS);
 					break;
 				case AMINO_ACID:
-					alignmentType = TYPE_PROTEIN_CELLS;
+					alignmentType.append(TYPE_PROTEIN_CELLS);
 					break;
 				case CONTINUOUS:
-					alignmentType = TYPE_CONTIN_CELLS;
+					alignmentType.append(TYPE_CONTIN_CELLS);
 					break;
 				case DISCRETE:
 				case UNKNOWN: //should not occur if previous code worked correctly
-					alignmentType = TYPE_STANDARD_CELLS;
+					alignmentType.append(TYPE_STANDARD_CELLS);
 					break;
 				default:
 					break;
@@ -264,27 +273,28 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		else {
 			switch (streamDataProvider.getAlignmentType()) {
 				case DNA:
-					alignmentType = TYPE_DNA_SEQS;
+					alignmentType.append(TYPE_DNA_SEQS);
 					break;
 				case RNA:
-					alignmentType = TYPE_RNA_SEQS;
+					alignmentType.append(TYPE_RNA_SEQS);
 					break;
 				case AMINO_ACID:
-					alignmentType = TYPE_PROTEIN_SEQS;
+					alignmentType.append(TYPE_PROTEIN_SEQS);
 					break;
 				case CONTINUOUS:
-					alignmentType = TYPE_CONTIN_SEQ;
+					alignmentType.append(TYPE_CONTIN_SEQ);
 					break;
 				case DISCRETE:
 				case UNKNOWN: //should not occur if previous code worked correctly
-					alignmentType = TYPE_STANDARD_SEQ;
+					alignmentType.append(TYPE_STANDARD_SEQ);
 					break;
 				default:
 					break;
 			}			
 		}
 		
-		getXMLWriter().writeAttribute(ATTR_XSI_TYPE.getLocalPart(), alignmentType);
+		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), 
+				ATTR_XSI_TYPE.getNamespaceURI(), ATTR_XSI_TYPE.getLocalPart(), alignmentType.toString());
 		
 		writeFormatTag(alignment);
 		
@@ -640,17 +650,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	protected void doWriteDocument() throws IOException, XMLStreamException {
 		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this, getXMLWriter());
 		
-		streamDataProvider.getNameSpaces().add(NAMESPACE_NEXML);
-		streamDataProvider.getNamespacePrefixes().add(NEX_PRE);
-		
-		streamDataProvider.getNameSpaces().add(NAMESPACE_XSI);
-		streamDataProvider.getNamespacePrefixes().add(XSI_PRE);
-		
-		streamDataProvider.getNameSpaces().add(NAMESPACE_XS);
-		streamDataProvider.getNamespacePrefixes().add(XSD_PRE);
-		
-		streamDataProvider.getNameSpaces().add(NAMESPACE_RDF);
-		streamDataProvider.getNamespacePrefixes().add(RDF_PRE);
+		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(NEXML_NAMESPACE), NEXML_DEFAULT_PRE, NEXML_NAMESPACE);
+		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI), 
+				XMLReadWriteUtils.XSI_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(XMLConstants.W3C_XML_SCHEMA_NS_URI), 
+				XMLReadWriteUtils.XSD_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(XMLReadWriteUtils.NAMESPACE_RDF), 
+				XMLReadWriteUtils.RDF_DEFAULT_PRE, XMLReadWriteUtils.NAMESPACE_RDF);
 		
 		checkDocument(getDocument());
 		
@@ -658,11 +664,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		getXMLWriter().writeAttribute(ATTR_VERSION.getLocalPart(), NEXML_VERSION);
 		getXMLWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), getClass().getName());
-
-		getXMLWriter().setPrefix(NEX_PRE, NAMESPACE_NEXML);
-		getXMLWriter().setPrefix(XSI_PRE, NAMESPACE_XSI);
-		getXMLWriter().setPrefix(XSD_PRE, NAMESPACE_XS);
-		getXMLWriter().setPrefix(RDF_PRE, NAMESPACE_RDF);
 		
 		for (String nameSpace : streamDataProvider.getNameSpaces()) {
 			getXMLWriter().writeNamespace(getXMLWriter().getPrefix(nameSpace), nameSpace);
@@ -728,5 +729,5 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		if (objectID != null) {
 			adapter.writeContentData(receiver, objectID);
 		}			
-	}	
+	}
 }

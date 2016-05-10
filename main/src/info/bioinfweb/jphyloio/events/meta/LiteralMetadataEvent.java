@@ -35,8 +35,7 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 	//TODO This class shall replace the current MetaInformationEvent implementation as soon as the metadata concept is finally approved.
 
 	private UriOrStringIdentifier predicate;
-	private String key;  //TODO Should the predicate be compulsory, while the string key is optional? (A string may be combined with a default (or even any?) predicate then.) 
-	                     //     (May also depend on where the string key will be stored in NeXML.)
+	private String key;  //TODO remove when Nexus and other text formats are adjusted to new predicate object
 	private LiteralContentSequenceType sequenceType;
 	
 	

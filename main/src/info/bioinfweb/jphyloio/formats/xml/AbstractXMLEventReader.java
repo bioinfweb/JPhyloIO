@@ -180,7 +180,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	protected String getID(String id, EventContentType type) { //TODO handle possible conflicts between upcoming IDs and new IDs generated here that may arise in some of the classes using this method
+	public String getID(String id, EventContentType type) { //TODO handle possible conflicts between upcoming IDs and new IDs generated here that may arise in some of the classes using this method
 		String result = id;
 		if ((result == null) || result.equals("")) {
 			if (type.equals(EventContentType.ALIGNMENT)) {
@@ -203,6 +203,10 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 			}
 			else if (type.equals(EventContentType.CHARACTER_SET)) {
 				result = DEFAULT_CHAR_SET_ID_PREFIX;
+			}
+			else if (type.equals(EventContentType.META_RESOURCE) || type.equals(EventContentType.META_LITERAL) 
+					|| type.equals(EventContentType.META_LITERAL_CONTENT)) {
+				result = DEFAULT_META_ID_PREFIX;
 			}
 			
 			result += getStreamDataProvider().getIDManager().createNewID();

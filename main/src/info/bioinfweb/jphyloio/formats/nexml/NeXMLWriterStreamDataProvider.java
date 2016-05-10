@@ -27,22 +27,15 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Date;
-import java.time.Duration;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.Source;
 
 
 
@@ -79,40 +72,6 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private String singleToken = null;
 	
 	
-	@SuppressWarnings("serial")
-	private static Map<QName,Class<?>> classForXsdType = new HashMap<QName, Class<?>>() {{
-		put(new QName(NAMESPACE_XS, "decimal", XSD_PRE), BigDecimal.class);
-		put(new QName(NAMESPACE_XS, "integer", XSD_PRE), BigInteger.class);
-		put(new QName(NAMESPACE_XS, "boolean", XSD_PRE), Boolean.class);
-		put(new QName(NAMESPACE_XS, "byte", XSD_PRE), Byte.class);
-		put(new QName(NAMESPACE_XS, "QName", XSD_PRE), QName.class);		
-		put(new QName(NAMESPACE_XS, "double", XSD_PRE), Double.class);
-		put(new QName(NAMESPACE_XS, "float", XSD_PRE), Float.class);
-		put(new QName(NAMESPACE_XS, "long", XSD_PRE), Long.class);
-		put(new QName(NAMESPACE_XS, "short", XSD_PRE), Short.class);		
-		put(new QName(NAMESPACE_XS, "string",XSD_PRE), String.class);
-		put(new QName(NAMESPACE_XS, "char", XSD_PRE), Character.class);
-		put(new QName(NAMESPACE_XS, "dateTime", XSD_PRE), Date.class);
-		put(new QName(NAMESPACE_XS, "duration", XSD_PRE), Duration.class);		
-	}};
-	
-	
-	@SuppressWarnings("serial")
-	private static Map<Class<?>,QName> xsdTypeForClass = new HashMap<Class<?>,QName>() {{
-		for ( QName xsdType : classForXsdType.keySet() ) {
-			put(classForXsdType.get(xsdType), xsdType);
-		}	
-		put(Integer.class,new QName(NAMESPACE_XS, "integer", XSD_PRE));
-		put(Date.class, new QName(NAMESPACE_XS, "dateTime", XSD_PRE));
-		put(Calendar.class, new QName(NAMESPACE_XS, "dateTime", XSD_PRE));
-		put(UUID.class, new QName(NAMESPACE_XS, "string", XSD_PRE));
-		put(java.awt.Image.class, new QName(NAMESPACE_XS, "base64Binary", XSD_PRE));
-		put(Duration.class, new QName(NAMESPACE_XS, "duration", XSD_PRE));
-		put(java.lang.Character.class, new QName(NAMESPACE_XS, "char", XSD_PRE));
-		put(Source.class, new QName(NAMESPACE_XS, "base64Binary", XSD_PRE));
-	}};
-	
-	
 	public NeXMLWriterStreamDataProvider(NeXMLEventWriter eventWriter, XMLStreamWriter writer) {
 		super();
 		this.eventWriter = eventWriter;
@@ -129,6 +88,15 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		return eventWriter;
 	}
 	
+	
+	public String getNexPrefix() throws XMLStreamException {
+		String prefix = getXMLStreamWriter().getPrefix(NEXML_NAMESPACE);
+		if (prefix == null) { //TODO should not happen, leave out this part?
+			prefix = NEXML_DEFAULT_PRE;
+		}
+		return prefix;
+	}
+
 	
 	public Set<String> getDocumentIDs() {
 		return documentIDs;
@@ -152,9 +120,9 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public static Map<Class<?>, QName> getXsdTypeForClass() {
-		return xsdTypeForClass;
-	}
+//	public static Map<Class<?>, QName> getXsdTypeForClass() {
+//		return xsdTypeForClass;
+//	}
 
 
 	public boolean hasOTUList() {
@@ -346,6 +314,35 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 			}
 			else if (linkAttribute.equals(TAG_OTU)) {			
 				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID);
+			}
+		}
+	}
+	
+	
+	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
+		setNamespacePrefix(prefix, "defaultNamespacePrefix", namespace);
+	}
+	
+	
+	public void setNamespacePrefix(String prefix, String defaultPrefix, String namespace) throws XMLStreamException {				
+		if (namespace != null) {
+			if (prefix == null) {
+				prefix = defaultPrefix;
+			}
+		
+			if (getXMLStreamWriter().getPrefix(namespace) == null) {
+				String nameSpacePrefix = prefix;
+				int index = 0;
+				
+				if (!getNamespacePrefixes().add(nameSpacePrefix)) {
+					do {
+						nameSpacePrefix = prefix + index;
+						index++;
+					} while (!getNamespacePrefixes().add(nameSpacePrefix));
+				}
+				
+				getXMLStreamWriter().setPrefix(nameSpacePrefix, namespace);
+				getNameSpaces().add(namespace);
 			}
 		}
 	}

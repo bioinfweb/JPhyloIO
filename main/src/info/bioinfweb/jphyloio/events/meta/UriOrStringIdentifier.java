@@ -21,8 +21,6 @@ package info.bioinfweb.jphyloio.events.meta;
 
 import javax.xml.namespace.QName;
 
-import org.semanticweb.owlapi.io.XMLUtils;
-
 
 
 public class UriOrStringIdentifier {
@@ -33,14 +31,7 @@ public class UriOrStringIdentifier {
 	public UriOrStringIdentifier(String alternativeStringRepresentation, QName predicate) {
 		super();
 		this.stringRepresentation = alternativeStringRepresentation;		
-		
-		if ((predicate.getPrefix() == null || XMLUtils.isNCName(predicate.getPrefix())) //TODO is the prefix allowed to be an empty string?
-				&& (predicate.getLocalPart() != null && XMLUtils.isNCName(predicate.getLocalPart()))) {
-			this.uri = predicate;
-		}
-		else { //predicate is not a valid QName
-			//TODO throw exception?
-		}
+		this.uri = predicate;		
 	}
 
 

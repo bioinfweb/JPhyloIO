@@ -33,9 +33,9 @@ import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
-import info.bioinfweb.jphyloio.formats.xml.XMLToMetaElementStartReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.XMLToMetaElementStartReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -156,7 +156,6 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-				streamDataProvider.setFormat(XTG);
 			}
 		});
 		
@@ -229,7 +228,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				streamDataProvider.getEdgeInfos().peek().setLabel(label); //TODO which text is used as a label if more than one text labels exist?
 				
-				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(streamDataProvider.getFormat() + "." + streamDataProvider.getParentName() 
+				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(getFormatID() + "." + streamDataProvider.getParentName() 
 						+ "." + element.getName().getLocalPart(), null, null));
 			}
 		});

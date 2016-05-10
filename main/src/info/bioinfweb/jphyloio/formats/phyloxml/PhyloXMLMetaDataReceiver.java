@@ -37,8 +37,6 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.semanticweb.owlapi.io.XMLUtils;
-
 
 
 public class PhyloXMLMetaDataReceiver extends BasicEventReceiver<XMLStreamWriter> implements PhyloXMLConstants {
