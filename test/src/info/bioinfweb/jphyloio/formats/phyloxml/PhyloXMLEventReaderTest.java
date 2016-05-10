@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.io.File;
 
@@ -37,17 +38,39 @@ public class PhyloXMLEventReaderTest {
 	@Test
 	public void testOutputPhyloXML() {
 		try {
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/PhyloXMLDocument.xml"), new ReadWriteParameterMap());
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/ShortPhyloXML.xml"), new ReadWriteParameterMap());
 //			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/IDsAndLabels.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType());
+//					System.out.println(event.getType());
 					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
-						if (event.asLiteralMetadataContentEvent().getObjectValue() instanceof XMLEvent) {
-							if (event.asLiteralMetadataContentEvent().getXMLEvent().getEventType() == XMLStreamConstants.CHARACTERS) {
-								System.out.println(event.asLiteralMetadataContentEvent().getXMLEvent().asCharacters().getData());
+						System.out.println("Content: " +event.asLiteralMetadataContentEvent().getStringValue());
+					}
+					else if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+							if (event.asLiteralMetadataEvent().getPredicate() != null) {
+								if (event.asLiteralMetadataEvent().getPredicate().getURI() != null) {
+									System.out.println("Literal: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
+								}
+								else {
+									System.out.println("URI null");
+								}
 							}
+							else {
+								System.out.println("predicate null");
+							}
+						}
+						else {
+							System.out.println("Literal end");
+						}
+					}
+					else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
+						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart());
+						}
+						else {
+							System.out.println("Resource end");
 						}
 					}
 				}

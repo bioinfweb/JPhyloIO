@@ -349,6 +349,7 @@ test/data/PhyloXML/BranchLengths.xml.gz -text
 test/data/PhyloXML/IDsAndLabels.xml -text svneol=unset#text/plain
 test/data/PhyloXML/MultipleTrees.xml -text svneol=unset#text/plain
 test/data/PhyloXML/PhyloXMLDocument.xml -text svneol=unset#text/plain
+test/data/PhyloXML/ShortPhyloXML.xml -text svneol=unset#text/plain
 test/data/XML/Invalid.xml -text svneol=unset#text/plain
 test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml -text svneol=unset#text/plain

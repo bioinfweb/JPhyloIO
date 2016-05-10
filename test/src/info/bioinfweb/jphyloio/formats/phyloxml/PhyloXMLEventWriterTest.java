@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.MultipleRootEdgesTree;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
@@ -96,8 +97,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
 			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_URI, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_XSI, XMLConstants.XMLNS_ATTRIBUTE, "xsi"), element);
+			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			validateSingleTree("tree2", reader);
 			
@@ -140,8 +142,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
 			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_URI, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_XSI, XMLConstants.XMLNS_ATTRIBUTE, "xsi"), element);
+			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			validateSingleTree("tree2", reader);
 			
@@ -259,8 +262,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			StartElement element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
 			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_URI, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_XSI, XMLConstants.XMLNS_ATTRIBUTE, "xsi"), element);			
+			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);		
 			
 			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
 			
@@ -293,8 +297,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			StartElement element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
 			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_URI, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_XSI, XMLConstants.XMLNS_ATTRIBUTE, "xsi"), element);			
+			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
 			
@@ -332,8 +337,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
 			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_URI, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_XSI, XMLConstants.XMLNS_ATTRIBUTE, "xsi"), element);
+			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			validateSingleTree("tree2", reader);
 			
@@ -380,8 +386,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
 			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_URI, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(NAMESPACE_XSI, XMLConstants.XMLNS_ATTRIBUTE, "xsi"), element);
+			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			validateSingleTree("tree2", reader);
 			

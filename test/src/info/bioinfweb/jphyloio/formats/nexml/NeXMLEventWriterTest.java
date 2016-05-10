@@ -197,7 +197,7 @@ public class NeXMLEventWriterTest {
 		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent(null, "T"));
 		
 		singleTokens.getObjectContent().add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new UriOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), "literal value", LiteralContentSequenceType.SIMPLE));
-		singleTokens.getObjectContent().add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName(NeXMLConstants.TYPE_STRING)), "My literal value", true));
+		singleTokens.getObjectContent().add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName("string")), "My literal value", true));
 		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
 		
 		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
