@@ -181,6 +181,7 @@ public interface PhyloXMLConstants {
 	
 	public static final QName PREDICATE_TAXONOMY = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy");
 	public static final QName PREDICATE_TAXONOMY_ID = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID");
+	public static final QName PREDICATE_TAXONOMY_ID_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_TAXONOMY_ID_ATTR_PROVIDER = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Provider");
 	public static final QName PREDICATE_TAXONOMY_CODE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Code");
 	public static final QName PREDICATE_TAXONOMY_SCI_NAME = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ScientificName");
@@ -189,6 +190,7 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_TAXONOMY_SYNONYM = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Synonym");
 	public static final QName PREDICATE_TAXONOMY_RANK = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Rank");
 	public static final QName PREDICATE_TAXONOMY_URI = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI");
+	public static final QName PREDICATE_TAXONOMY_URI_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_TAXONOMY_URI_ATTR_DESC = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Desc");
 	public static final QName PREDICATE_TAXONOMY_URI_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");	
 	public static final QName PREDICATE_TAXONOMY_ATTR_ID_SOURCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDSource");

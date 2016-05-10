@@ -31,8 +31,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import org.semanticweb.owlapi.io.XMLUtils;
-
 
 
 public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXMLReaderStreamDataProvider> {
@@ -40,19 +38,13 @@ public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXM
 	
 	
 	public PhyloXMLCharactersElementReader(QName datatype) {
-		super();
-		if (XMLUtils.isNCName(datatype.getPrefix()) && XMLUtils.isNCName(datatype.getLocalPart())) { //TODO check beforehand if one of these properties is null
-			this.datatype = datatype;
-		}
-		else {
-			//TODO throw exception
-		}
+		super();		
+		this.datatype = datatype;
 	}
 
 
 	@Override
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-		System.out.println("Reading characters.");
 		//TODO CAVE: Multiple character events may occur, resulting in multiple (unterminated) content events.
 		boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 		streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(

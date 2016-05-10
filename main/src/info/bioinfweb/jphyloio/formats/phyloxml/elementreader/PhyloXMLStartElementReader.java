@@ -42,22 +42,21 @@ import javax.xml.stream.events.XMLEvent;
 
 
 public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLReaderStreamDataProvider> {
-	private QName predicate;
+	private QName literalPredicate;
+	private QName resourcePredicate;
 	private Map<QName, QName> attributeToPredicateMap;
-	private boolean simpleTag;
-	private boolean hasAttributes;
+	
 
 	
-	public PhyloXMLStartElementReader(QName predicate, boolean simpleTag, boolean hasAttributes, QName... mappings) {
+	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, QName... mappings) {
 		super();
-		this.predicate = predicate;
-		this.simpleTag = simpleTag;
-		this.hasAttributes = hasAttributes;
+		this.literalPredicate = literalPredicate;
+		this.resourcePredicate = resourcePredicate;
 		
 		if (mappings.length % 2 != 0) {
-			throw new IllegalArgumentException("...");
+			throw new IllegalArgumentException("..."); //TODO give exception message
 		}
-		else if (hasAttributes) {
+		else if (mappings.length >= 2) {
 			attributeToPredicateMap = new HashMap<QName, QName>();
 			for (int i  = 0; i  < mappings.length; i += 2) {
 				attributeToPredicateMap.put(mappings[i], mappings[i + 1]);
@@ -66,55 +65,42 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 	}
 	
 	
-	public PhyloXMLStartElementReader(QName predicate, boolean simpleTag, boolean hasAttributes, Map<QName, QName> attributeToPredicateMap) {
+	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, Map<QName, QName> attributeToPredicateMap) {
 		super();
-		this.predicate = predicate;
-		this.simpleTag = simpleTag;
-		this.hasAttributes = hasAttributes;
-		
-		if (hasAttributes) {
-			this.attributeToPredicateMap = attributeToPredicateMap;
-		}
+		this.literalPredicate = literalPredicate;
+		this.resourcePredicate = resourcePredicate;
+		this.attributeToPredicateMap = attributeToPredicateMap;		
 	}
 
 
 	@Override
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
-		if (hasAttributes) {
+		if (resourcePredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
-					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, predicate, null, null));
+					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, resourcePredicate, null, null));
 			
-			Iterator<Attribute> attributes = event.asStartElement().getAttributes();
-			while (attributes.hasNext()) {
-				Attribute attribute = attributes.next();
-				streamDataProvider.getCurrentEventCollection().add(
-						new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-						new UriOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
-						attributeToPredicateMap.get(attribute.getName()).getLocalPart(), LiteralContentSequenceType.SIMPLE));
+			if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
+				Iterator<Attribute> attributes = event.asStartElement().getAttributes();
+				while (attributes.hasNext()) {
+					Attribute attribute = attributes.next();
+					streamDataProvider.getCurrentEventCollection().add(
+							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+							new UriOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
+							attributeToPredicateMap.get(attribute.getName()).getLocalPart(), LiteralContentSequenceType.SIMPLE));
 
-				streamDataProvider.getCurrentEventCollection().add(
-						new LiteralMetadataContentEvent(null, event.asStartElement().getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object
-						
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-			}
-			
-			if (simpleTag) {
-				streamDataProvider.getCurrentEventCollection().add(
-						new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-						new UriOrStringIdentifier(null, predicate), predicate.getLocalPart(), LiteralContentSequenceType.SIMPLE));
+					streamDataProvider.getCurrentEventCollection().add(
+							new LiteralMetadataContentEvent(null, event.asStartElement().getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object
+							
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				}
 			}
 		}
-		else {		
-			if (simpleTag) {
-				streamDataProvider.getCurrentEventCollection().add(
-						new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-						new UriOrStringIdentifier(null, predicate), predicate.getLocalPart(), LiteralContentSequenceType.SIMPLE));
-			}
-			else {
-				streamDataProvider.getCurrentEventCollection().add(
-						new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, predicate, null, null));
-			}
+		
+		if (literalPredicate != null) {
+			streamDataProvider.getCurrentEventCollection().add(
+					new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+					new UriOrStringIdentifier(null, literalPredicate), literalPredicate.getLocalPart(), LiteralContentSequenceType.SIMPLE));
 		}
 	}
 }
