@@ -51,6 +51,7 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/package-info.java 
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreAnnotatedDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreDocumentDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreMatrixDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreMetadataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreOTUListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectListDataAdapter.java -text svneol=unset#text/plain
