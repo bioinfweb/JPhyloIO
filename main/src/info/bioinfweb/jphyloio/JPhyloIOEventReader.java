@@ -52,14 +52,14 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * TokenSetDefinitionContent = SingleTokenDefinition | MetaInformation;
  * SingleTokenDefinition = "SINGLE_TOKEN_DEFINITION.START", {MetaInformation,} "SINGLE_TOKEN_DEFINITION.END";
  * 
- * SequencePart = "SEQUENCE.START", {SequencePartContent,}, "SEQUENCE.END";
+ * SequencePart = "SEQUENCE.START", {SequencePartContent,} "SEQUENCE.END";
  * SequencePartContent = "SEQUENCE_TOKENS.SOLE" | SingleSequenceToken | MetaInformation;
  * SingleSequenceToken = "SINGLE_SEQUENCE_TOKEN.START", {MetaInformation,} "SINGLE_SEQUENCE_TOKEN.END";
  * 
  * CharacterSetPart = "CHARACTER_SET.START", {CharacterSetPartContent,} "CHARACTER_SET.END";
  * CharacterSetPartContent = "CHARACTER_SET_PART.SOLE" | MetaInformation;
  * 
- * TreeNetworkGroup = TREE_NETWORK_GROUP.START, {TreeNetworkGroupContent,} TREE_NETWORK_GROUP.END;
+ * TreeNetworkGroup = "TREE_NETWORK_GROUP.START", {TreeNetworkGroupContent,} "TREE_NETWORK_GROUP.END";
  * TreeNetworkGroupContent = Tree | Network;
  * Tree = "TREE.START", {TreeOrNetworkContent,} "TREE.END";
  * Network = "NETWORK.START", {TreeOrNetworkContent,} "NETWORK.END";
