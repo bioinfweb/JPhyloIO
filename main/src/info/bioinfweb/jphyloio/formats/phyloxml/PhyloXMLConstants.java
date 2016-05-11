@@ -130,17 +130,19 @@ public interface PhyloXMLConstants {
 	public static final QName ATTR_ABSENT_COUNT = new QName("absent_count");	
 	
 	
-	public static final String PHYLOXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PhyloXML" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "";
+	public static final String PHYLOXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/PhyloXML/";
 	
-	public static final String PHYLOXML_PREDICATE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "Predicates" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "";
+	public static final String PHYLOXML_PREDICATE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "Predicates/";
 	
 	public static final QName PREDICATE_PHYLOGENY = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny");
 	public static final QName PREDICATE_PHYLOGENY_NAME = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Name");
 	public static final QName PREDICATE_PHYLOGENY_ID = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID");
-	public static final QName PREDICATE_PHYLOGENY_ATTR_ID_PROVIDER = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Provider");
+	public static final QName PREDICATE_PHYLOGENY_ID_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
+	public static final QName PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Provider");
 	public static final QName PREDICATE_PHYLOGENY_DESCRIPTION = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Description");
 	public static final QName PREDICATE_PHYLOGENY_DATE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Date");
 	public static final QName PREDICATE_PHYLOGENY_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence");
+	public static final QName PREDICATE_PHYLOGENY_CONFIDENCE_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_PHYLOGENY_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	public static final QName PREDICATE_PHYLOGENY_ATTR_REROOTABLE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Rerootable");
 	public static final QName PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BranchLengthUnit");
@@ -152,6 +154,7 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_CLADE_REL_ATTR_DISTANCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "CladeRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Distance");
 	public static final QName PREDICATE_CLADE_REL_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "CladeRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	public static final QName PREDICATE_CLADE_REL_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "CladeRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence");
+	public static final QName PREDICATE_CLADE_REL_CONFIDENCE_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "CladeRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_CLADE_REL_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "CladeRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");	
 	
 	public static final QName PREDICATE_SEQ_REL = new QName(PHYLOXML_PREDICATE_NAMESPACE, "SequenceRelation");
@@ -160,15 +163,18 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_SEQ_REL_ATTR_DISTANCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "SequenceRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Distance");
 	public static final QName PREDICATE_SEQ_REL_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "SequenceRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	public static final QName PREDICATE_SEQ_REL_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "SequenceRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence");
+	public static final QName PREDICATE_SEQ_REL_CONFIDENCE_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "SequenceRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_SEQ_REL_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "SequenceRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	
 	public static final QName PREDICATE_CLADE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade");
 	public static final QName PREDICATE_CLADE_NAME = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Name");
 	public static final QName PREDICATE_CLADE_BRANCH_LENGTH = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BranchLength");	
 	public static final QName PREDICATE_CLADE_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence");
+	public static final QName PREDICATE_CLADE_CONFIDENCE_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_CLADE_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");	
 	public static final QName PREDICATE_CLADE_WIDTH = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Width");	
 	public static final QName PREDICATE_CLADE_NODE_ID = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "NodeID");
+	public static final QName PREDICATE_CLADE_NODE_ID_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "NodeID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_CLADE_NODE_ID_ATTR_PROVIDER = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "NodeID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Provider");	
 	public static final QName PREDICATE_CLADE_ATTR_BRANCH_LENGTH = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BranchLength");
 	public static final QName PREDICATE_CLADE_ATTR_ID_SOURCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDSource");	

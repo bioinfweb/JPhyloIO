@@ -97,7 +97,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 							attributeToPredicateMap.get(attribute.getName()).getLocalPart(), LiteralContentSequenceType.SIMPLE));
 
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataContentEvent(null, event.asStartElement().getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object
+							new LiteralMetadataContentEvent(null, event.asStartElement().getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object or as a parameter
 							
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				}

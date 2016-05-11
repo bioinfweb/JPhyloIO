@@ -136,7 +136,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					if (currentNodeLabel == null) {
 						currentNode.setLabel(value);
 					}
-				}
+				}				
 				
 				boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
@@ -247,9 +247,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						String value = event.asCharacters().getData();
 						String parentName = streamDataProvider.getParentName();
+						boolean useAsMeta = true;
 						
 						if (parentName.equals(TAG_PHYLOGENY.getLocalPart())) {
 							streamDataProvider.setTreeLabel(value);
+							useAsMeta = false;
 						}
 						else if (!streamDataProvider.getSourceNode().isEmpty()) {
 							NodeEdgeInfo currentNode = streamDataProvider.getSourceNode().peek();
@@ -257,17 +259,21 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 							
 							if (parentName.equals(TAG_CLADE.getLocalPart())) {
 								currentNode.setLabel(value);
+								useAsMeta = false;
 							}
-							else if (parentName.equals(TAG_SEQUENCE.getLocalPart())) {								
+							else if (parentName.equals(TAG_SEQUENCE.getLocalPart())) {
+								useAsMeta = false;
 								if (currentNodeLabel == null) {
 									currentNode.setLabel(value);
 								}
 							}							
 						}
 						
-						boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-								new UriOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
+						if (useAsMeta) {
+							boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
+									new UriOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
+						}
 					}
 		});
 		
@@ -280,22 +286,102 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						if (!streamDataProvider.getEdgeInfos().isEmpty()) {
 							NodeEdgeInfo currentEdge = streamDataProvider.getEdgeInfos().peek();
 							double currentEdgeLength = currentEdge.getLength();
+							double newEdgeLength;
 							
-							if (currentEdgeLength == Double.NaN) {
-								try {
-									currentEdge.setLength(Double.parseDouble(value));
-								}
-								catch (NumberFormatException e) {
-									throw new JPhyloIOReaderException("The branch length must be of type double.", event.getLocation());
-								}
+							try {
+								newEdgeLength = Double.parseDouble(value);
+							}
+							catch (NumberFormatException e) {
+								throw new JPhyloIOReaderException("The branch length must be of type double.", event.getLocation());
+							}
+							
+							if (currentEdgeLength == Double.NaN) {								
+								currentEdge.setLength(newEdgeLength);								
+							}
+							else if (newEdgeLength != currentEdgeLength) {
+								getParameters().getLogger().addWarning("Two different branch lengths of \"" + currentEdgeLength + "\" and \"" + newEdgeLength 
+										+ "\" are present for the same branch in the document.");
 							}
 						}
-						
-						boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-								new UriOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
 					}
 		});
+		
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_ID, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_PHYLOGENY_ID_VALUE, PREDICATE_PHYLOGENY_ID, false, ATTR_ID_PROVIDER, PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER));
+		putElementReader(new XMLElementReaderKey(TAG_ID, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_ID, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_DESCRIPTION, XMLStreamConstants.START_ELEMENT),
+				new PhyloXMLStartElementReader(PREDICATE_PHYLOGENY_DESCRIPTION, null, false));
+		putElementReader(new XMLElementReaderKey(TAG_DESCRIPTION, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_DESCRIPTION, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_DATE, XMLStreamConstants.START_ELEMENT),
+				new PhyloXMLStartElementReader(PREDICATE_PHYLOGENY_DATE, null, false));
+		putElementReader(new XMLElementReaderKey(TAG_DATE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO type xs:dateTime
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_DATE, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_PHYLOGENY_CONFIDENCE_VALUE, PREDICATE_PHYLOGENY_CONFIDENCE, false, ATTR_TYPE, PREDICATE_PHYLOGENY_CONFIDENCE_ATTR_TYPE));
+		putElementReader(new XMLElementReaderKey(TAG_CONFIDENCE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO type xs:double
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CLADE_RELATION, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(null, PREDICATE_CLADE_REL, false, ATTR_ID_REF_0, PREDICATE_CLADE_REL_ATTR_IDREF0, ATTR_ID_REF_1, PREDICATE_CLADE_REL_ATTR_IDREF1, 
+						ATTR_DISTANCE, PREDICATE_CLADE_REL_ATTR_DISTANCE, ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE));
+		putElementReader(new XMLElementReaderKey(TAG_CLADE_RELATION, null, XMLStreamConstants.CHARACTERS), new PhyloXMLNoCharactersAllowedElementReader());
+		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE_RELATION, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_CLADE_REL_CONFIDENCE_VALUE, PREDICATE_CLADE_REL_CONFIDENCE, false, ATTR_TYPE, PREDICATE_CLADE_REL_CONFIDENCE_ATTR_TYPE));		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE_RELATION, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CLADE_RELATION, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(false, true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_SEQUENCE_RELATION, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(null, PREDICATE_SEQ_REL, false, ATTR_ID_REF_0, PREDICATE_SEQ_REL_ATTR_IDREF0, ATTR_ID_REF_1, PREDICATE_SEQ_REL_ATTR_IDREF1, 
+						ATTR_DISTANCE, PREDICATE_SEQ_REL_ATTR_DISTANCE, ATTR_TYPE, PREDICATE_SEQ_REL_ATTR_TYPE));
+		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE_RELATION, null, XMLStreamConstants.CHARACTERS), new PhyloXMLNoCharactersAllowedElementReader());
+		
+		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE_RELATION, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_SEQ_REL_CONFIDENCE_VALUE, PREDICATE_SEQ_REL_CONFIDENCE, false, ATTR_TYPE, PREDICATE_SEQ_REL_CONFIDENCE_ATTR_TYPE));		
+		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE_RELATION, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_SEQUENCE_RELATION, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(false, true, false));
+		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_CLADE_CONFIDENCE_VALUE, PREDICATE_CLADE_CONFIDENCE, true, ATTR_TYPE, PREDICATE_CLADE_CONFIDENCE_ATTR_TYPE));		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, true, true));
+		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_WIDTH, XMLStreamConstants.START_ELEMENT),
+				new PhyloXMLStartElementReader(PREDICATE_CLADE_WIDTH, null, true));
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_WIDTH, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO type xs:double
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_WIDTH, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
+		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_COLOR, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(null, PREDICATE_COLOR, true));
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, null, XMLStreamConstants.CHARACTERS), new PhyloXMLNoCharactersAllowedElementReader());
+		
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_RED, XMLStreamConstants.START_ELEMENT),
+				new PhyloXMLStartElementReader(PREDICATE_COLOR_RED, null, true));
+		putElementReader(new XMLElementReaderKey(TAG_RED, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_RED, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
+		
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_GREEN, XMLStreamConstants.START_ELEMENT),
+				new PhyloXMLStartElementReader(PREDICATE_COLOR_GREEN, null, true));
+		putElementReader(new XMLElementReaderKey(TAG_GREEN, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_GREEN, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
+		
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_BLUE, XMLStreamConstants.START_ELEMENT),
+				new PhyloXMLStartElementReader(PREDICATE_COLOR_BLUE, null, true));
+		putElementReader(new XMLElementReaderKey(TAG_BLUE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_BLUE, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
+		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_COLOR, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(false, true, true));
+		
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_NODE_ID, XMLStreamConstants.START_ELEMENT), 
+				new PhyloXMLStartElementReader(PREDICATE_CLADE_NODE_ID_VALUE, PREDICATE_CLADE_NODE_ID, false, ATTR_ID_PROVIDER, PREDICATE_CLADE_NODE_ID_ATTR_PROVIDER));
+		putElementReader(new XMLElementReaderKey(TAG_NODE_ID, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN));
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_NODE_ID, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, true, false));		
 		
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_TAXONOMY, XMLStreamConstants.START_ELEMENT), 
 				new PhyloXMLStartElementReader(null, PREDICATE_TAXONOMY, false, ATTR_ID_SOURCE, PREDICATE_TAXONOMY_ATTR_ID_SOURCE));
