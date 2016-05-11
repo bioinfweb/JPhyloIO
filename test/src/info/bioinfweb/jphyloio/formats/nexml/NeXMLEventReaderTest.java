@@ -42,27 +42,25 @@ public class NeXMLEventReaderTest {
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MultipleCharactersTags.xml"), parameters);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MetaCustomXML.xml"), parameters);
+//			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MetaElements.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-//					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
+					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 					
-					if (event.getType().equals(new EventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.START))) {
-	//						System.out.println("Character State Type: " + event.asTokenSetDefinitionEvent().getSetType());
+					if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
+//						System.out.println(event.asLiteralMetadataContentEvent().getStringValue());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-		//					System.out.println(event.asLinkedOTUEvent().getID() + ", " + event.asLinkedOTUEvent().getLabel());
+//						System.out.println(event.asLinkedOTUEvent().getID() + ", " + event.asLinkedOTUEvent().getLabel());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-		//					System.out.println(event.asEdgeEvent().getLength() + ", " + event.asEdgeEvent().getSourceID() + ", " + event.asEdgeEvent().getTargetID());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
-//							System.out.println("ID: " + event.asMetaInformationEvent().getStringValue());
+//						System.out.println(event.asEdgeEvent().getLength() + ", " + event.asEdgeEvent().getSourceID() + ", " + event.asEdgeEvent().getTargetID());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.CHARACTER_SET, EventTopologyType.START))) {						
-//					System.out.println("ID: " + event.asLabeledIDEvent().getID());
-				}
+//						System.out.println("ID: " + event.asLabeledIDEvent().getID());
+					}
 					else if (event.getType().equals(new EventType(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE))) {
 //						System.out.println("Start: " + event.asCharacterSetEvent().getStart() + " End: " + event.asCharacterSetEvent().getEnd());
 					}

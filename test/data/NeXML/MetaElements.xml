@@ -7,7 +7,7 @@
       </meta>
     </meta>
   </meta>
-  <meta content="Mycologia" datatype="xsd:string" id="meta17" property="dc:publisher" xsi:type="nex:LiteralMeta"/>
+  <meta datatype="xsd:string" id="meta17" property="dc:publisher" xsi:type="nex:LiteralMeta">Mycologia</meta>
   <otus id="Tls10691" label="TaxonLabelSet10691" xml:base="http://purl.org/phylo/treebase/phylows/taxon/TB2:">
     <otu about="#Tl126179" id="Tl126179" label="Grifola sordulenta">
       <meta content="29804" datatype="xsd:long" id="meta23" property="tb:identifier.taxonVariant" xsi:type="nex:LiteralMeta"/>

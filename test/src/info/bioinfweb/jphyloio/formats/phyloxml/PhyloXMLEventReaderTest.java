@@ -27,9 +27,6 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.io.File;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.events.XMLEvent;
-
 import org.junit.Test;
 
 
@@ -43,7 +40,7 @@ public class PhyloXMLEventReaderTest {
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-//					System.out.println(event.getType());
+					System.out.println(event.getType());
 					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
 						System.out.println("Content: " +event.asLiteralMetadataContentEvent().getStringValue());
 					}
@@ -52,25 +49,29 @@ public class PhyloXMLEventReaderTest {
 							if (event.asLiteralMetadataEvent().getPredicate() != null) {
 								if (event.asLiteralMetadataEvent().getPredicate().getURI() != null) {
 									System.out.println("Literal: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
-								}
-								else {
-									System.out.println("URI null");
-								}
-							}
-							else {
-								System.out.println("predicate null");
-							}
+								}								
+							}							
 						}
-						else {
-							System.out.println("Literal end");
-						}
+//						else {
+//							System.out.println("Literal end");
+//						}
 					}
 					else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart());
 						}
-						else {
-							System.out.println("Resource end");
+//						else {
+//							System.out.println("Resource end");
+//						}
+					}
+					else if (event.getType().getContentType().equals(EventContentType.TREE)) {
+						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+//							System.out.println("TreeLabel: " + event.asLabeledIDEvent().getLabel());
+						}
+					}
+					else if (event.getType().getContentType().equals(EventContentType.NODE)) {
+						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+//							System.out.println("NodeLabel: " + event.asLabeledIDEvent().getLabel());
 						}
 					}
 				}

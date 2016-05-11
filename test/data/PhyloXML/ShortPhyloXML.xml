@@ -4,9 +4,9 @@
    xmlns="http://www.phyloxml.org">
 <phylogeny rooted="true">
       <name>similar example, with more detailed sequence data</name>
-      <clade>
+      <clade id_source="example1">
          <clade>
-            <clade>
+            <clade id_source="example2">
                <taxonomy>
                   <id provider="NCBI">6645</id>
                   <code>OCTVU</code>

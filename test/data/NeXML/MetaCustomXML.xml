@@ -2,14 +2,15 @@
 <nex:nexml xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:kt="http://example.org/knownTypes"
 		xmlns:cx="http://bioinfweb.info/xmlns/Example/customXML" 
 		xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9">
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9"
+		xmlns:ex="http://www.example.org/">
 		
   <otus id="otus1" label="some OTUs">
     <otu about="#otu2" id="otu2" label="some OTU">
-      <meta datatype="rdf:Literal" id="meta6" property="kt:hasCustomXML" xsi:type="nex:LiteralMeta">
+      <meta datatype="rdf:Literal" id="meta6" property="kt:hasCustomXML" xsi:type="nex:LiteralMeta" ex:test="0">
         <cx:customTag>some <cx:nestedTag /> characters</cx:customTag>
       </meta>
     </otu>
   </otus>
+  <newtag>new content</newtag>
 </nex:nexml>
-
