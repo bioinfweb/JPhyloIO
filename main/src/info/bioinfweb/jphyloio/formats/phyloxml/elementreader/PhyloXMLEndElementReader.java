@@ -32,28 +32,32 @@ import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
 
 public class PhyloXMLEndElementReader implements XMLElementReader<PhyloXMLReaderStreamDataProvider> {
-	private boolean isLiteralEnd;
-	private boolean hasAttributes;
+	private boolean createLiteralEnd;
+	private boolean createResourceEnd;
+	private boolean isEdgeMeta;
 	
 	
-	public PhyloXMLEndElementReader(boolean isLiteralEnd, boolean hasAttributes) {
+	public PhyloXMLEndElementReader(boolean createLiteralEnd, boolean createResourceEnd, boolean isEdgeMeta) {
 		super();
-		this.isLiteralEnd = isLiteralEnd;
-		this.hasAttributes = hasAttributes;
+		this.createLiteralEnd = createLiteralEnd;
+		this.createResourceEnd = createResourceEnd;
+		this.isEdgeMeta = isEdgeMeta;
 	}
 
 
 	@Override
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
-		if (isLiteralEnd) {
+		if (createLiteralEnd) {
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-			if (hasAttributes) {
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-			}
 		}
-		else {
+		
+		if (createResourceEnd) {
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		}
+		
+		if (isEdgeMeta) {
+			streamDataProvider.resetCurrentEventCollection();
 		}
 	}	
 }

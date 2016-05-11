@@ -44,14 +44,16 @@ import javax.xml.stream.events.XMLEvent;
 public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLReaderStreamDataProvider> {
 	private QName literalPredicate;
 	private QName resourcePredicate;
+	private boolean isEdgeMeta;
 	private Map<QName, QName> attributeToPredicateMap;
 	
 
 	
-	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, QName... mappings) {
+	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, boolean isEdgeMeta, QName... mappings) {
 		super();
 		this.literalPredicate = literalPredicate;
 		this.resourcePredicate = resourcePredicate;
+		this.isEdgeMeta = isEdgeMeta;
 		
 		if (mappings.length % 2 != 0) {
 			throw new IllegalArgumentException("..."); //TODO give exception message
@@ -65,10 +67,11 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 	}
 	
 	
-	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, Map<QName, QName> attributeToPredicateMap) {
+	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, boolean isEdgeMeta, Map<QName, QName> attributeToPredicateMap) {
 		super();
 		this.literalPredicate = literalPredicate;
 		this.resourcePredicate = resourcePredicate;
+		this.isEdgeMeta = isEdgeMeta;
 		this.attributeToPredicateMap = attributeToPredicateMap;		
 	}
 
@@ -76,6 +79,10 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 	@Override
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
+		if (isEdgeMeta) {
+			streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
+		}
+		
 		if (resourcePredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
 					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, resourcePredicate, null, null));

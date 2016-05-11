@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
-import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -27,47 +26,52 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 
 
 
 public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>>
 		implements XMLElementReader<P> {
 	
-	protected void readAttributes(P streamDataProvider, StartElement element) {
-		String key = streamDataProvider.getEventReader().getFormatID() + "." + streamDataProvider.getParentName() + "." + element.getName().getLocalPart();
-		@SuppressWarnings("unchecked")
-		Iterator<Attribute> attributes = element.getAttributes();
-		while (attributes.hasNext()) {
-			Attribute attribute = attributes.next();
-			
-			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-					null, new UriOrStringIdentifier(null, new QName(key + "." + attribute.getName())), null, LiteralContentSequenceType.SIMPLE));
-			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new UriOrStringIdentifier("string", new QName("string")), 
-					attribute.getValue(), null));
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+	
+	protected void readAttributes(P streamDataProvider, StartElement element, QName... mappings) {
+		if (mappings.length % 2 != 0) {
+			throw new IllegalArgumentException("..."); //TODO give exception message
+		}
+		else if (mappings.length >= 2) {
+			Map<QName, QName> attributeToPredicateMap = new HashMap<QName, QName>();
+			for (int i  = 0; i  < mappings.length; i += 2) {
+				attributeToPredicateMap.put(mappings[i], mappings[i + 1]);
+			}
+			readAttributes(streamDataProvider, element, attributeToPredicateMap);
 		}
 	}
 	
 	
-	protected String readCharacterData(P streamDataProvider, StartElement element) throws XMLStreamException {
-		XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();
-		String value = null;
-		
-		if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
-			String characterData = nextEvent.asCharacters().getData();
-			if (!characterData.matches("\\s+")) {
-				value = characterData;
+	protected void readAttributes(P streamDataProvider, StartElement element, Map<QName, QName> attributeToPredicateMap) {
+		if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
+			@SuppressWarnings("unchecked")
+			Iterator<Attribute> attributes = element.getAttributes();
+			while (attributes.hasNext()) {
+				Attribute attribute = attributes.next();
+				if (attributeToPredicateMap.containsKey(attribute.getName())) { //allows to ignore certain attributes (e.g. branch length of a clade tag)
+					streamDataProvider.getCurrentEventCollection().add(
+							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+							new UriOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
+							attributeToPredicateMap.get(attribute.getName()).getLocalPart(), LiteralContentSequenceType.SIMPLE));
+	
+					streamDataProvider.getCurrentEventCollection().add(
+							new LiteralMetadataContentEvent(null, element.getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object
+							
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				}
 			}
 		}
-		
-		return value;
 	}
 }

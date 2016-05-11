@@ -41,6 +41,8 @@ public interface ReadWriteConstants {
 	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata");
 	public static final QName PREDICATE_HAS_RESOURCE_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasResourceMetadata");
 	
+	public static final QName PREDICATE_DISPLAY_TREE_ROOTED = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "displayTreeRooted");
+	
 	@Deprecated
 	public static final String META_KEY_SEQUENCE_COUNT = "info.bioinfweb.jphyloio.sequenceCount";
 	 

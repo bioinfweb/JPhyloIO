@@ -142,7 +142,6 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_PHYLOGENY_DATE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Date");
 	public static final QName PREDICATE_PHYLOGENY_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence");
 	public static final QName PREDICATE_PHYLOGENY_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
-	public static final QName PREDICATE_PHYLOGENY_ATTR_ROOTED = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Rooted");
 	public static final QName PREDICATE_PHYLOGENY_ATTR_REROOTABLE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Rerootable");
 	public static final QName PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BranchLengthUnit");
 	public static final QName PREDICATE_PHYLOGENY_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");

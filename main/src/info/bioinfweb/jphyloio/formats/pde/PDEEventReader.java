@@ -223,7 +223,16 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						StartElement element = event.asStartElement();
 						int id = XMLUtils.readIntAttr(element, ATTR_ID, 0);
-						String value = readCharacterData(streamDataProvider, element);
+						String value = null;
+						XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();						
+						
+						if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
+							String characterData = nextEvent.asCharacters().getData();
+							if (!characterData.matches("\\s+")) {
+								value = characterData;
+							}
+						}
+						
 						int index = streamDataProvider.getCurrentSequenceIndex();
 						
 						streamDataProvider.getSequenceInformations().get(index).put(id, value);

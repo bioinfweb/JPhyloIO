@@ -24,22 +24,11 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 
 public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<PhyloXMLEventReader>  {
-	private boolean rooted;	
 	private String treeLabel;
 	
 
 	public PhyloXMLReaderStreamDataProvider(PhyloXMLEventReader eventReader) {
 		super(eventReader);
-	}
-
-
-	public boolean isRooted() {
-		return rooted;
-	}
-
-
-	public void setRooted(boolean rooted) {
-		this.rooted = rooted;
 	}
 
 
