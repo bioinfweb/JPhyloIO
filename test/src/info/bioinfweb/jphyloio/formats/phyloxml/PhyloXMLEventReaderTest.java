@@ -42,7 +42,7 @@ public class PhyloXMLEventReaderTest {
 					JPhyloIOEvent event = reader.next();
 					System.out.println(event.getType());
 					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
-						System.out.println("Content: " +event.asLiteralMetadataContentEvent().getStringValue());
+//						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
 					}
 					else if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
@@ -58,7 +58,7 @@ public class PhyloXMLEventReaderTest {
 					}
 					else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart());
+//							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart());
 						}
 //						else {
 //							System.out.println("Resource end");
@@ -71,6 +71,7 @@ public class PhyloXMLEventReaderTest {
 					}
 					else if (event.getType().getContentType().equals(EventContentType.NODE)) {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+//							System.out.println("NodeID: " + event.asLabeledIDEvent().getID());
 //							System.out.println("NodeLabel: " + event.asLabeledIDEvent().getLabel());
 						}
 					}
