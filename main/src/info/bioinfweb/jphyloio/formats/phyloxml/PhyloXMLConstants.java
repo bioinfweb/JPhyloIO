@@ -67,7 +67,8 @@ public interface PhyloXMLConstants {
 	public static final QName TAG_LOCATION = new QName(PHYLOXML_NAMESPACE, "location");
 	public static final QName TAG_MOL_SEQ = new QName(PHYLOXML_NAMESPACE, "mol_seq");
 	public static final QName TAG_ANNOTATION = new QName(PHYLOXML_NAMESPACE, "annotation");
-	public static final QName TAG_DOMAIN_ARCHITECTURE = new QName(PHYLOXML_NAMESPACE, "domain_architecture");	
+	public static final QName TAG_DOMAIN_ARCHITECTURE = new QName(PHYLOXML_NAMESPACE, "domain_architecture");
+	public static final QName TAG_DOMAIN = new QName(PHYLOXML_NAMESPACE, "domain");
 	
 	public static final QName TAG_EVENTS = new QName(PHYLOXML_NAMESPACE, "events");
 	public static final QName TAG_TYPE = new QName(PHYLOXML_NAMESPACE, "type");
@@ -123,11 +124,17 @@ public interface PhyloXMLConstants {
 	public static final QName ATTR_LENGTH = new QName("length");
 	public static final QName ATTR_GEO_DATUM = new QName("geodetic_datum");
 	public static final QName ATTR_ALT_UNIT = new QName("alt_unit");
+	public static final QName ATTR_DOI = new QName("doi");
 	
 	public static final QName ATTR_GAINED_COUNT = new QName("gained_count");
 	public static final QName ATTR_LOST_COUNT = new QName("lost_count");
 	public static final QName ATTR_PRESENT_COUNT = new QName("present_count");
-	public static final QName ATTR_ABSENT_COUNT = new QName("absent_count");	
+	public static final QName ATTR_ABSENT_COUNT = new QName("absent_count");
+	
+	public static final QName ATTR_FROM = new QName("from");
+	public static final QName ATTR_TO = new QName("to");
+	public static final QName ATTR_CONFIDENCE = new QName("confidence");
+	public static final QName ATTR_ID = new QName("id");
 	
 	
 	public static final String PHYLOXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/PhyloXML/";
@@ -203,17 +210,24 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_SEQUENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence");
 	public static final QName PREDICATE_SEQUENCE_SYMBOL = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Symbol");
 	public static final QName PREDICATE_SEQUENCE_ACCESSION = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession");
+	public static final QName PREDICATE_SEQUENCE_ACCESSION_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_SEQUENCE_ACCESSION_ATTR_SOURCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Source");
 	public static final QName PREDICATE_SEQUENCE_NAME = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Name");
 	public static final QName PREDICATE_SEQUENCE_LOCATION = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Location");
 	public static final QName PREDICATE_SEQUENCE_MOL_SEQ = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MolSeq");
+	public static final QName PREDICATE_SEQUENCE_MOL_SEQ_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MolSeq" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_SEQUENCE_MOL_SEQ_ATTR_IS_ALIGNED = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MolSeq" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IsAligned");
 	public static final QName PREDICATE_SEQUENCE_URI = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI");
+	public static final QName PREDICATE_SEQUENCE_URI_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_SEQUENCE_URI_ATTR_DESC = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Desc");
 	public static final QName PREDICATE_SEQUENCE_URI_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
+	public static final QName PREDICATE_SEQUENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
+	public static final QName PREDICATE_SEQUENCE_ATTR_ID_SOURCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDSource");
+	public static final QName PREDICATE_SEQUENCE_ATTR_ID_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDRef");
 	
 	public static final QName PREDICATE_DOMAIN_ARCHITECTURE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "DomainArchitecture");
 	public static final QName PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN = new QName(PHYLOXML_PREDICATE_NAMESPACE, "DomainArchitecture" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Domain");
+	public static final QName PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "DomainArchitecture" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Domain" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_FROM = new QName(PHYLOXML_PREDICATE_NAMESPACE, "DomainArchitecture" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Domain" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "From");
 	public static final QName PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_TO = new QName(PHYLOXML_PREDICATE_NAMESPACE, "DomainArchitecture" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Domain" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "To");
 	public static final QName PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "DomainArchitecture" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Domain" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence");
@@ -223,6 +237,7 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_ANNOTATION = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation");
 	public static final QName PREDICATE_ANNOTATION_DESC = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Desc");
 	public static final QName PREDICATE_ANNOTATION_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence");
+	public static final QName PREDICATE_ANNOTATION_CONFIDENCE_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_ANNOTATION_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	public static final QName PREDICATE_ANNOTATION_PROPERTY = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Property");
 	public static final QName PREDICATE_ANNOTATION_PROPERTY_ATTR_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Ref");
@@ -231,6 +246,7 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_ANNOTATION_PROPERTY_ATTR_APPLIES_TO = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AppliesTo");
 	public static final QName PREDICATE_ANNOTATION_PROPERTY_ATTR_ID_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDRef");	
 	public static final QName PREDICATE_ANNOTATION_URI = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI");
+	public static final QName PREDICATE_ANNOTATION_URI_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_ANNOTATION_URI_ATTR_DESC = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Desc");
 	public static final QName PREDICATE_ANNOTATION_URI_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	public static final QName PREDICATE_ANNOTATION_ATTR_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Annotation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Ref");
@@ -244,6 +260,7 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_EVENTS_SPECIATIONS = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Events" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Speciations");
 	public static final QName PREDICATE_EVENTS_LOSSES = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Events" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Losses");
 	public static final QName PREDICATE_EVENTS_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Events" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence");
+	public static final QName PREDICATE_EVENTS_CONFIDENCE_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Events" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_EVENTS_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Events" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	
 	public static final QName PREDICATE_BINARY_CHARACTERS = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BinaryCharacters");
@@ -286,6 +303,7 @@ public interface PhyloXMLConstants {
 	
 	public static final QName PREDICATE_REFERENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Reference");	
 	public static final QName PREDICATE_REFERENCE_DESC = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Reference" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Desc");
+	public static final QName PREDICATE_REFERENCE_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Reference" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_REFERENCE_ATTR_DOI = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Reference" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "DOI");
 	
 	public static final QName PREDICATE_PROPERTY = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property");
@@ -294,10 +312,10 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_PROPERTY_ATTR_DATATYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Datatype");
 	public static final QName PREDICATE_PROPERTY_ATTR_APPLIES_TO = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AppliesTo");
 	public static final QName PREDICATE_PROPERTY_ATTR_ID_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDRef");
-	
-	
 
-	public static final String PHYLOXML_DATA_TYPE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "DataTypes" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "";
+
+	public static final String PHYLOXML_DATA_TYPE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "DataTypes/";
+	
 	public static final QName DATA_TYPE_TOKEN = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Token");
 	public static final QName DATA_TYPE_APPLIES_TO = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AppliesTo");
 	public static final QName DATA_TYPE_EVENTTYPE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Event" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "EventType");

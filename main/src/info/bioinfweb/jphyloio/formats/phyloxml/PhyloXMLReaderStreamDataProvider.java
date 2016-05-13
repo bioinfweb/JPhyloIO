@@ -19,12 +19,18 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 
 
 public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<PhyloXMLEventReader>  {
 	private String treeLabel;
+	private boolean createNodeStart;
+	private String lastNodeID;
+	private Map<String, String> cladeIDToNodeEventIDMap = new HashMap<String, String>();
 	
 
 	public PhyloXMLReaderStreamDataProvider(PhyloXMLEventReader eventReader) {
@@ -39,5 +45,30 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	public void setTreeLabel(String treeLabel) {
 		this.treeLabel = treeLabel;
+	}
+
+
+	public boolean isCreateNodeStart() {
+		return createNodeStart;
+	}
+
+
+	public void setCreateNodeStart(boolean createNodeStart) {
+		this.createNodeStart = createNodeStart;
+	}
+
+
+	public String getLastNodeID() {
+		return lastNodeID;
+	}
+
+
+	public void setLastNodeID(String lastNodeID) {
+		this.lastNodeID = lastNodeID;
+	}
+
+
+	protected Map<String, String> getCladeIDToNodeEventIDMap() {
+		return cladeIDToNodeEventIDMap;
 	}
 }
