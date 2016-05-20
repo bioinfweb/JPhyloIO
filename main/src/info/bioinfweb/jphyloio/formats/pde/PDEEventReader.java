@@ -78,10 +78,10 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 	
 
 	private static XMLEventReader createXMLEventReader(InputStream stream) throws XMLStreamException, IOException {
-		try {			
+		try {  //TODO Check whether this is still necessary or if the implementation in according factory methods is already sufficient.
 			stream = new BufferedInputStream(stream);
 			stream.mark(1024);
-			stream = new GZIPInputStream(stream);
+			stream = new GZIPInputStream(stream);  // If an exception occurs here, stream is not set and still references the BufferedInputStream.
 		}
 		catch (ZipException e) { //read uncompressed files
 			stream.reset();
