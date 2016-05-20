@@ -25,7 +25,7 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -82,7 +82,7 @@ public interface MetadataAdapter {
 	 * @return an iterator returning at least one element
 	 * @throws IllegalArgumentException if no event with the specified ID is present in this adapter
 	 */
-	public Iterator<UriOrStringIdentifier> getAlternativeIdentifiers(String id);
+	public Iterator<URIOrStringIdentifier> getAlternativeIdentifiers(String id);
 	
 	/**
 	 * Returns the resource or literal meta start event identified by the specified ID.  

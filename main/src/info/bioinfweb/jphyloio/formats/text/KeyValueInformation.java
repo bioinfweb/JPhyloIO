@@ -27,30 +27,18 @@ package info.bioinfweb.jphyloio.formats.text;
  * @author Ben St&ouml;ver
  */
 public class KeyValueInformation {
-	private String key;
 	private String originalKey;
 	private String value;
 	private char delimiter;
 	
 	
-	public KeyValueInformation(String prefix, String key, String value, char delimiter) {
+	public KeyValueInformation(String originalKey, String value, char delimiter) {
 		super();
-		this.key = prefix + key;
-		this.originalKey = key;
+		this.originalKey = originalKey;
 		this.value = value;
 		this.delimiter = delimiter;
 	}
 	
-	
-	/**
-	 * Returns the lower case version of the key.
-	 * 
-	 * @return the lower case key
-	 */
-	public String getKey() {
-		return key;
-	}
-
 	
 	/**
 	 * Returns the key as it was written from the source stream (file).

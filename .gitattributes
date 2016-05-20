@@ -82,7 +82,7 @@ main/src/info/bioinfweb/jphyloio/events/meta/LiteralContentSequenceType.java -te
 main/src/info/bioinfweb/jphyloio/events/meta/LiteralMetadataContentEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/meta/LiteralMetadataEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/meta/ResourceMetadataEvent.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/events/meta/UriOrStringIdentifier.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/events/meta/URIOrStringIdentifier.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/EventContentType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/type/EventTopologyType.java -text svneol=unset#text/plain

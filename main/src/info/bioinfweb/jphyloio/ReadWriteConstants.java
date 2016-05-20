@@ -32,11 +32,12 @@ public interface ReadWriteConstants {
 	public static final int DEFAULT_MAX_TOKENS_TO_READ = 2048;
 	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
 	
-	public static final String PREDICATE_PART_SEPERATOR = "."; //TODO better use '-' instead?
+	public static final String PREDICATE_PART_SEPERATOR = ".";
+	public static final String PREDICATE_NAMESPACE_FOLDER = "Predicates";
 	
 	public static final String JPHYLOIO_NAMESPACE_PREFIX = "http://bioinfweb.info/xmlns/JPhyloIO/";
 	
-	public static final String JPHYLOIO_PREDICATE_NAMESPACE = JPHYLOIO_NAMESPACE_PREFIX + "General/Predicates/";
+	public static final String JPHYLOIO_PREDICATE_NAMESPACE = JPHYLOIO_NAMESPACE_PREFIX + "General/" + PREDICATE_NAMESPACE_FOLDER + "/";
 	
 	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata");
 	public static final QName PREDICATE_HAS_RESOURCE_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasResourceMetadata");

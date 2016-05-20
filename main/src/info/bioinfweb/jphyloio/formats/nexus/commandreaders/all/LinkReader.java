@@ -87,7 +87,7 @@ public class LinkReader extends AbstractKeyValueCommandReader implements NexusCo
 	
 	
 	public LinkReader(NexusReaderStreamDataProvider nexusDocument) {
-		super(COMMAND_NAME_LINK, new String[0], nexusDocument, "");
+		super(COMMAND_NAME_LINK, new String[0], nexusDocument);
 	}
 	
 	
@@ -98,15 +98,16 @@ public class LinkReader extends AbstractKeyValueCommandReader implements NexusCo
 			value = value.replace(NewickConstants.FREE_NAME_BLANK, ' ');
 		}
 		
-		if (BLOCK_NAMES_WITH_EVENTS.contains(info.getKey().toUpperCase())) {
+		String key = info.getOriginalKey().toUpperCase();
+		if (BLOCK_NAMES_WITH_EVENTS.contains(key)) {
 			String nexusBlockLabel = value;  // Save undelimited value for possible error message.
-			value = getStreamDataProvider().getBlockTitleToIDMap().getID(info.getKey().toUpperCase(), value);
+			value = getStreamDataProvider().getBlockTitleToIDMap().getID(key, value);
 			if (value == null) {
-				throw new JPhyloIOReaderException("The linked Nexus " + info.getKey().toUpperCase() + " block with the label \"" + 
+				throw new JPhyloIOReaderException("The linked Nexus " + key + " block with the label \"" + 
 						nexusBlockLabel +	"\" was not previously declared unsing a TITLE command.", getStreamDataProvider().getDataReader());
 			}
 		}
-		getStreamDataProvider().getBlockLinks().put(info.getKey().toUpperCase(), value);
+		getStreamDataProvider().getBlockLinks().put(key, value);
 		return false;
 	}
 	

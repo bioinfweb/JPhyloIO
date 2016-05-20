@@ -28,16 +28,22 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.namespace.QName;
+
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -54,7 +60,9 @@ import info.bioinfweb.jphyloio.tools.IDToNameManager;
  * 
  * @author Ben St&ouml;ver
  */
-public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDataProvider<MEGAEventReader>> implements MEGAConstants {
+public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDataProvider<MEGAEventReader>> 
+		implements MEGAConstants, ReadWriteConstants {
+	
 	private static final Pattern READ_COMMAND_PATTERN = 
 			Pattern.compile(".+(\\" + COMMENT_START + "|\\" + COMMAND_END + ")", Pattern.DOTALL);
 	private static final Pattern SEQUENCE_NAME_PATTERN = Pattern.compile(".+\\s+");
@@ -65,8 +73,6 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	private static final Pattern DOMAIN_COMMAND_PATTERN = 
 			Pattern.compile(".*" + COMMAND_NAME_DOMAIN + GENE_DONAIN_COMMAND_PATTERN_SUFFIX, Pattern.CASE_INSENSITIVE);
 
-	public static final String FORMAT_KEY_PREFIX = "info.bioinfweb.jphyloio.formats.mega.format.";
-	
 	
 	private String currentSequenceName = null;
 	private String firstSequenceName = null;
@@ -139,7 +145,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	
 	
 	private void processFormatSubcommand(String key, String value) {
-		if (key.substring(FORMAT_KEY_PREFIX.length()).toUpperCase().equals(FORMAT_SUBCOMMAND_IDENTICAL)) {
+		if (key.toUpperCase().equals(FORMAT_SUBCOMMAND_IDENTICAL)) {
 			getSequenceTokensEventManager().setMatchToken(value);  //TODO The generation of an according meta event could be suppressed, since match characters are anyway replaced by JPhyloIO (and the according event would be a SingleTokenDefinitionEvent).
 		}
 	}
@@ -150,20 +156,19 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 			getReader().skip(COMMAND_NAME_FORMAT.length());  // Consume command name.
 			consumeWhiteSpaceAndComments(COMMAND_START, COMMENT_END);
 			
-			boolean eventAdded = false;
 			while (getReader().peekChar() != COMMAND_END) {
-				KeyValueInformation info = readKeyValueInformation(FORMAT_KEY_PREFIX, COMMAND_END, COMMENT_START, COMMENT_END, '=');
-				processFormatSubcommand(info.getKey(), info.getValue());
-				getCurrentEventCollection().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
-				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-				eventAdded = true;
+				KeyValueInformation info = readKeyValueInformation(COMMAND_END, COMMENT_START, COMMENT_END, '=');
+				processFormatSubcommand(info.getOriginalKey(), info.getValue());
+				
+				getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
+						getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), 
+								new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + info.getOriginalKey().toUpperCase())),  //TODO Should the predicate really be in upper case? 
+						LiteralContentSequenceType.SIMPLE));
+				getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, info.getValue(), false));
+				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			}
 			
 			getReader().skip(1); // Consume ';'.
-			if (!eventAdded) {  // No content found.
-				getCurrentEventCollection().add(new MetaInformationEvent(COMMAND_NAME_FORMAT, null, ""));
-				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-			}
 		}
 		catch (EOFException e) {
 			throw new JPhyloIOReaderException("Unexpected end of file in " + COMMAND_NAME_FORMAT + " command.", getReader(), e);
@@ -171,14 +176,28 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	}
 	
 	
-	private MetaInformationEvent createMetaInformationEventFromCommand(String content) throws IOException {
+	private URIOrStringIdentifier createCommandPredicate(String commandName) {
+		return new URIOrStringIdentifier(commandName, new QName(MEGA_PREDICATE_NAMESPACE, commandName.toLowerCase()));
+	}
+	
+	
+	private void addMetaEventsFromUnknownCommand(String content) throws IOException {
 		int afterNameIndex = StringUtils.indexOfWhiteSpace(content);
 		if (afterNameIndex < 1) {
-			return new MetaInformationEvent("", null, content);
+			getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
+					getStreamDataProvider().getIDManager().createNewID(), null, new URIOrStringIdentifier(null, PREDICATE_HAS_LITERAL_METADATA), 
+					LiteralContentSequenceType.SIMPLE));
 		}
 		else {
-			return new MetaInformationEvent(content.substring(0, afterNameIndex).toLowerCase(), null, content.substring(afterNameIndex).trim());
+			String commandName = content.substring(0, afterNameIndex);
+			content = content.substring(afterNameIndex).trim();
+			getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
+					getStreamDataProvider().getIDManager().createNewID(), commandName, createCommandPredicate(commandName), 
+					LiteralContentSequenceType.SIMPLE));
 		}
+		
+		getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, content, false));
+		getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 	}
 	
 	
@@ -292,8 +311,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 					currentGeneOrDomainStart = charactersRead;
 				}
 				else {
-					getCurrentEventCollection().add(createMetaInformationEventFromCommand(content));
-					getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+					addMetaEventsFromUnknownCommand(content);
 					result = true;
 				}
 			}
@@ -352,7 +370,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 				case SEQUENCE:
 				case SEQUENCE_TOKENS:
 				case CHARACTER_SET:
-				case META_INFORMATION:
+				case META_LITERAL:
 				case COMMENT:
 					// Read commands:
 					readCommand();

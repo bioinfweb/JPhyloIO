@@ -261,8 +261,8 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 	}
 	
 	
-	protected KeyValueInformation readKeyValueInformation(String keyPrefix, char commandEnd, char commentStart, 
-			char commentEnd, char keyValueSeparator) throws IOException {
+	protected KeyValueInformation readKeyValueInformation(char commandEnd, char commentStart,	char commentEnd, char keyValueSeparator) 
+			throws IOException {
 		
 		PeekReader reader = getReader();
 		
@@ -294,7 +294,7 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 			}
 			consumeWhiteSpaceAndComments(commentStart, commentEnd);
 		}
-		return new KeyValueInformation(keyPrefix, key, value, valueDelimiter);
+		return new KeyValueInformation(key, value, valueDelimiter);
 	}
 	
 	

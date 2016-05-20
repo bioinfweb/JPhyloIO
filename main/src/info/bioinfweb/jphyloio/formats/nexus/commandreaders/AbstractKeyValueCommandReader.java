@@ -31,19 +31,8 @@ import java.io.IOException;
 
 
 public abstract class AbstractKeyValueCommandReader extends AbstractNexusCommandEventReader implements NexusConstants {
-	private String keyPrefix;
-	
-	
-	public AbstractKeyValueCommandReader(String commandName, String[] validBlocks, NexusReaderStreamDataProvider nexusDocument,
-			String keyPrefix) {
-		
+	public AbstractKeyValueCommandReader(String commandName, String[] validBlocks, NexusReaderStreamDataProvider nexusDocument) {
 		super(commandName, validBlocks, nexusDocument);
-		this.keyPrefix = keyPrefix;
-	}
-
-
-	protected String getKeyPrefix() {
-		return keyPrefix;
 	}
 
 
@@ -74,7 +63,7 @@ public abstract class AbstractKeyValueCommandReader extends AbstractNexusCommand
 		try {
 			while (reader.peekChar() != COMMAND_END) {
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				KeyValueInformation info = getStreamDataProvider().readKeyValueMetaInformation(getKeyPrefix());
+				KeyValueInformation info = getStreamDataProvider().readKeyValueMetaInformation();
 				if (processSubcommand(info)) {
 					return true;
 				}

@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.namespace.QName;
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -34,10 +36,13 @@ import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -54,8 +59,6 @@ import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
  * @author Ben St&ouml;ver
  */
 public class FormatReader extends AbstractKeyValueCommandReader implements NexusConstants, ReadWriteConstants {
-	public static final String KEY_PREFIX = "info.bioinfweb.jphyloio.formats.nexus.format.";
-	
 	public static final String INFO_KEY_TOKENS_FORMAT = "info.bioinfweb.jphyloio.nexus.tokens";
 	public static final String INFO_KEY_INTERLEAVE = "info.bioinfweb.jphyloio.nexus.interleave";
 	public static final String INFO_KEY_LABELS = "info.bioinfweb.jphyloio.nexus.labels";
@@ -73,8 +76,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	
 	
 	public FormatReader(NexusReaderStreamDataProvider nexusDocument) {
-		super(COMMAND_NAME_FORMAT, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, 
-				nexusDocument, KEY_PREFIX);
+		super(COMMAND_NAME_FORMAT, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument);
 	}
 	
 	
@@ -214,9 +216,13 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 		}
 		
 		if (!eventCreated) {
-			getStreamDataProvider().getCurrentEventCollection().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
-			getStreamDataProvider().getCurrentEventCollection().add(
-					new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+			Collection<JPhyloIOEvent> events = getStreamDataProvider().getCurrentEventCollection();
+			events.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+					info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), 
+					new QName(NEXUS_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + key)),  //TODO Should the predicate really be in upper case? 
+					LiteralContentSequenceType.SIMPLE));
+			events.add(new LiteralMetadataContentEvent(null, info.getValue(), false));
+			events.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			eventAddedToQueue = true;
 		}
 		return eventAddedToQueue;

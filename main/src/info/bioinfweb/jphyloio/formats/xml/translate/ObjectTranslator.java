@@ -25,7 +25,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 
 
 
@@ -38,7 +38,7 @@ import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
  * @param <O> the type of Java object this translator instance is able to handle
  */
 public interface ObjectTranslator<O> {
-	public UriOrStringIdentifier getDataType();
+	public URIOrStringIdentifier getDataType();
 	
 	/**
 	 * Returns the Java class or interface the objects handled by this instance have.

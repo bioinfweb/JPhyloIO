@@ -23,7 +23,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 				if (attributeToPredicateMap.containsKey(attribute.getName())) { //allows to ignore certain attributes (e.g. branch length of a clade tag)
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-							new UriOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
+							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
 							attributeToPredicateMap.get(attribute.getName()).getLocalPart(), LiteralContentSequenceType.SIMPLE));
 	
 					streamDataProvider.getCurrentEventCollection().add(

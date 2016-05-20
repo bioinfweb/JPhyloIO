@@ -29,7 +29,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
@@ -93,7 +93,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 					Attribute attribute = attributes.next();
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-							new UriOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
+							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
 							attributeToPredicateMap.get(attribute.getName()).getLocalPart(), LiteralContentSequenceType.SIMPLE));
 
 					streamDataProvider.getCurrentEventCollection().add(
@@ -107,7 +107,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		if (literalPredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
 					new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-					new UriOrStringIdentifier(null, literalPredicate), literalPredicate.getLocalPart(), LiteralContentSequenceType.SIMPLE));
+					new URIOrStringIdentifier(null, literalPredicate), literalPredicate.getLocalPart(), LiteralContentSequenceType.SIMPLE));
 		}
 	}
 }

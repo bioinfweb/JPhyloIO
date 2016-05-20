@@ -139,7 +139,7 @@ public interface PhyloXMLConstants {
 	
 	public static final String PHYLOXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/PhyloXML/";
 	
-	public static final String PHYLOXML_PREDICATE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "Predicates/";
+	public static final String PHYLOXML_PREDICATE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 	
 	public static final QName PREDICATE_PHYLOGENY = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny");
 	public static final QName PREDICATE_PHYLOGENY_NAME = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Phylogeny" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Name");

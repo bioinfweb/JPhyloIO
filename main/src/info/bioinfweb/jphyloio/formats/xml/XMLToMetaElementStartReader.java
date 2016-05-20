@@ -23,7 +23,7 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 
 import java.io.IOException;
 
@@ -42,7 +42,7 @@ public class XMLToMetaElementStartReader extends AbstractXMLElementReader {
 		
 		if (streamDataProvider.getNestedMetaNames().isEmpty()) {
 			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-					null, new UriOrStringIdentifier(null, element.getName()), null, LiteralContentSequenceType.XML));
+					null, new URIOrStringIdentifier(null, element.getName()), null, LiteralContentSequenceType.XML));
 		}
 		
 		streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));

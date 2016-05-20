@@ -18,6 +18,10 @@
  */
 package info.bioinfweb.jphyloio.formats.mega;
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
+
+import javax.xml.namespace.QName;
+
 
 
 public interface MEGAConstants {
@@ -41,4 +45,7 @@ public interface MEGAConstants {
 	public static final String FORMAT_SUBCOMMAND_IDENTICAL = "IDENTICAL";
 
 	public static final String LABEL_CHAR_SET_ID = "MEGALabelCharacterSet";
+
+	public static final String MEGA_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/MEGA/";
+	public static final String MEGA_PREDICATE_NAMESPACE = MEGA_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 }

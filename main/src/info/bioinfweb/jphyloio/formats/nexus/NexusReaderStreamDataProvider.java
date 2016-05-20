@@ -87,8 +87,8 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
-	public KeyValueInformation readKeyValueMetaInformation(String keyPrefix) throws IOException {
-		return getEventReader().readKeyValueMetaInformation(keyPrefix);
+	public KeyValueInformation readKeyValueMetaInformation() throws IOException {
+		return getEventReader().readKeyValueMetaInformation();
 	}
 	
 	

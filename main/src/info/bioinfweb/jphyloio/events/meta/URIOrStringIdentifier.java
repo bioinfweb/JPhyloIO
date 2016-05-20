@@ -23,12 +23,12 @@ import javax.xml.namespace.QName;
 
 
 
-public class UriOrStringIdentifier {
+public class URIOrStringIdentifier {
 	private String stringRepresentation;
 	private QName uri;
 	
 	
-	public UriOrStringIdentifier(String alternativeStringRepresentation, QName predicate) {
+	public URIOrStringIdentifier(String alternativeStringRepresentation, QName predicate) {
 		super();
 		this.stringRepresentation = alternativeStringRepresentation;		
 		this.uri = predicate;		
@@ -42,5 +42,40 @@ public class UriOrStringIdentifier {
 
 	public QName getURI() {
 		return uri;
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((stringRepresentation == null) ? 0 : stringRepresentation.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		URIOrStringIdentifier other = (URIOrStringIdentifier) obj;
+		if (stringRepresentation == null) {
+			if (other.stringRepresentation != null)
+				return false;
+		} else if (!stringRepresentation.equals(other.stringRepresentation))
+			return false;
+		if (uri == null) {
+			if (other.uri != null)
+				return false;
+		} else if (!uri.equals(other.uri))
+			return false;
+		return true;
 	}
 }

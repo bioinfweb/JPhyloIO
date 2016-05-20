@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formats.phyloxml.elementreader;
 
 
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
@@ -48,6 +48,6 @@ public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXM
 		//TODO CAVE: Multiple character events may occur, resulting in multiple (unterminated) content events.
 		boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 		streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-				new UriOrStringIdentifier(null, datatype), event.asCharacters().getData(), isContinued));
+				new URIOrStringIdentifier(null, datatype), event.asCharacters().getData(), isContinued));
 	}
 }

@@ -90,6 +90,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		return XMLInputFactory.newInstance().createXMLEventReader(stream);
 	}
 
+	
 	public PDEEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
 		this(new FileInputStream(file), parameters);
 	}

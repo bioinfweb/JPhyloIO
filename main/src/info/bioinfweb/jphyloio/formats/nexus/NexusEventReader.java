@@ -248,8 +248,8 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	}
 	
 	
-	protected KeyValueInformation readKeyValueMetaInformation(String keyPrefix) throws IOException {
-		return readKeyValueInformation(keyPrefix, COMMAND_END, COMMENT_START, COMMENT_END, KEY_VALUE_SEPARATOR);
+	protected KeyValueInformation readKeyValueMetaInformation() throws IOException {
+		return readKeyValueInformation(COMMAND_END, COMMENT_START, COMMENT_END, KEY_VALUE_SEPARATOR);
 	}
 	
 	

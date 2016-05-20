@@ -20,11 +20,18 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 
 import java.io.IOException;
+import java.util.Collection;
 
+import javax.xml.namespace.QName;
+
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
@@ -33,16 +40,13 @@ import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 
 
 
-public class DimensionsReader extends AbstractKeyValueCommandReader implements NexusConstants {
-	public static final String KEY_PREFIX = "info.bioinfweb.jphyloio.formats.nexus.dimensions.";
-	
+public class DimensionsReader extends AbstractKeyValueCommandReader implements NexusConstants, ReadWriteConstants {
 	public static final String INFO_KEY_NTAX = "info.bioinfweb.jphyloio.nexus.ntax";
 	public static final String INFO_KEY_CHAR = "info.bioinfweb.jphyloio.nexus.ntax";
 	
 	
 	public DimensionsReader(NexusReaderStreamDataProvider nexusDocument) {
-		super(COMMAND_NAME_DIMENSIONS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, 
-				nexusDocument, KEY_PREFIX);
+		super(COMMAND_NAME_DIMENSIONS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument);
 		//TODO In the UNALIGNED block NCHAR is invalid.
 	}
 
@@ -55,26 +59,34 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 		}
 		catch (NumberFormatException e) {}  // Nothing to do.
 		
+		Collection<JPhyloIOEvent> events = getStreamDataProvider().getCurrentEventCollection();
 		String key = info.getOriginalKey().toUpperCase();
+		QName genericPredicate = new QName(NEXUS_PREDICATE_NAMESPACE, COMMAND_NAME_DIMENSIONS + PREDICATE_PART_SEPERATOR + key);  //TODO Should the predicate really be in upper case?
 		if (longValue > 0) {
+			QName predicate = genericPredicate;
 			if (DIMENSIONS_SUBCOMMAND_NTAX.equals(key)) {
 				getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_NTAX, longValue);
+				predicate = PREDICATE_CHARACTER_COUNT;
 			}
 			else if (DIMENSIONS_SUBCOMMAND_NCHAR.equals(key)) {
 				getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_CHAR, longValue);
+				predicate = PREDICATE_SEQUENCE_COUNT;  // This predicate may need to be changed, if a DIMENSION command outside of alignment blocks is read here. 
 			}
 			
-			getStreamDataProvider().getCurrentEventCollection().add(new MetaInformationEvent(info.getKey(), null, info.getValue(), longValue));  //TODO Does a type need to specified, if an object value is provided?
+			events.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+					info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), predicate), LiteralContentSequenceType.SIMPLE));
+			events.add(new LiteralMetadataContentEvent(null, info.getValue(), longValue));
 		}
 		else if (DIMENSIONS_SUBCOMMAND_NTAX.equals(key) || DIMENSIONS_SUBCOMMAND_NCHAR.equals(key)) {
 			throw new JPhyloIOReaderException("\"" + info.getValue() + "\" is not a valid positive integer. Only positive integer "
 					+ "values are valid for NTAX or NCHAR in the Nexus DIMENSIONS command.", getStreamDataProvider().getDataReader());  //TODO Is the position of the reader too far behind?
 		}
-		else {  // Possible unknown subcommand
-			getStreamDataProvider().getCurrentEventCollection().add(new MetaInformationEvent(info.getKey(), null, info.getValue()));
+		else {  // Possible unknown subcommand with a non-long value
+			events.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
+					info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), genericPredicate), LiteralContentSequenceType.SIMPLE));
+			events.add(new LiteralMetadataContentEvent(null, info.getValue(), false));
 		}
-		getStreamDataProvider().getCurrentEventCollection().add(
-				new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+		events.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
 		return true;  // An event is added to the queue in every case.
 	}

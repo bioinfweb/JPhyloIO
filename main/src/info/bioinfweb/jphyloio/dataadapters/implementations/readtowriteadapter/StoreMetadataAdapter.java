@@ -30,7 +30,7 @@ import javax.xml.namespace.QName;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 
 
 
@@ -66,7 +66,7 @@ public class StoreMetadataAdapter implements MetadataAdapter{
 	
 
 	@Override
-	public Iterator<UriOrStringIdentifier> getAlternativeIdentifiers(String id) {
+	public Iterator<URIOrStringIdentifier> getAlternativeIdentifiers(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

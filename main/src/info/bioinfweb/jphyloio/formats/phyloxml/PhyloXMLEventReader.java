@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -139,7 +139,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				
 				boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-						new UriOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
+						new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
 			}
 		};
 		
@@ -160,7 +160,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					namespaceURI = streamDataProvider.getNamespaceMap().get(prefix);
 				}
 				
-				UriOrStringIdentifier predicate = new UriOrStringIdentifier(null, new QName(namespaceURI, localPart, prefix));				
+				URIOrStringIdentifier predicate = new URIOrStringIdentifier(null, new QName(namespaceURI, localPart, prefix));				
 				
 				if (applies_to.equals("edge")) { //TODO create constants for AppliesTo values
 					streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
@@ -331,7 +331,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						if (useAsMeta) {
 							boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-									new UriOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
+									new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
 						}
 					}
 			});		
@@ -493,7 +493,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-							new UriOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
+							new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
 				}
 			});
 		
@@ -815,7 +815,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					if (streamDataProvider.getNestedMetaNames().isEmpty()) {
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-								null, new UriOrStringIdentifier(null, element.getName()), null, LiteralContentSequenceType.XML));
+								null, new URIOrStringIdentifier(null, element.getName()), null, LiteralContentSequenceType.XML));
 					}
 					
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));

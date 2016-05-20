@@ -39,7 +39,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.UriOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -128,14 +128,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	    	LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
 	    	readNamespaceDefinitions(streamDataProvider, element);
 	    	String typeWithPrefix = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
-	    	UriOrStringIdentifier predicate;
+	    	URIOrStringIdentifier predicate;
 					
 	    	if ((info.id != null) && !info.id.equals("")) {
 	    		if (typeWithPrefix != null) {
 	    			String type = typeWithPrefix.split(":")[typeWithPrefix.split(":").length - 1];
 			  		if (type.equals(TYPE_LITERAL_META)) {
 			  			streamDataProvider.setMetaType(EventContentType.META_LITERAL);
-			  			predicate = new UriOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null)));
+			  			predicate = new URIOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null)));
 			  			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
 			  			streamDataProvider.setAlternativeStringRepresentation(content);
 			  			
@@ -156,7 +156,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			  		}
 			  		else if (type.equals(TYPE_RESOURCE_META)) {
 			  			streamDataProvider.setMetaType(EventContentType.META_RESOURCE);
-			  			predicate = new UriOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_REL, null)));
+			  			predicate = new URIOrStringIdentifier(null, new QName(XMLUtils.readStringAttr(element, ATTR_REL, null)));
 			  			String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
 			  			URI href = null;
 			  			try {
