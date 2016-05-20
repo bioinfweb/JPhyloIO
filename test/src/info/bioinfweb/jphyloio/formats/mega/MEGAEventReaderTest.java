@@ -50,6 +50,7 @@ public class MEGAEventReaderTest implements MEGAConstants {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
+			//assertLiteralMetaEvent(expectedPredicate, expectedOriginalType, expectedStringValue, expectedAlternativeStringValue, expectedObjectValue, testEndEvent, reader)
 			assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", 
 					true, false, reader);
 			assertMetaEvent(MEGAEventReader.COMMAND_NAME_DESCRIPTION, 

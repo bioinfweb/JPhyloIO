@@ -40,6 +40,10 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
@@ -191,6 +195,43 @@ public class JPhyloIOTestTools {
   }  
 	
 	
+  public static String assertLiteralMetaEvent(URIOrStringIdentifier expectedPredicate, URIOrStringIdentifier expectedOriginalType, 
+  		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testEndEvent, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEventType(EventContentType.META_LITERAL, EventTopologyType.START, event);
+		LiteralMetadataEvent metaInformationEvent = event.asLiteralMetadataEvent();
+		assertEquals(LiteralContentSequenceType.SIMPLE, metaInformationEvent.getSequenceType());  //TODO Also check other types?
+		assertEquals(expectedPredicate, metaInformationEvent.getPredicate());
+		
+		assertTrue(reader.hasNextEvent());
+		event = reader.next();
+		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.START, event);  //TODO Also allow empty contents?
+		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
+		assertEquals(expectedOriginalType, contentEvent.getOriginalType());
+		assertEquals(expectedStringValue, contentEvent.getStringValue());
+		if (expectedObjectValue == null) {
+			assertEquals(expectedStringValue, contentEvent.getObjectValue());  //TODO Are there cases, where the object value is really null (and the string value "null")?
+		}
+		else {
+			assertEquals(expectedObjectValue, contentEvent.getObjectValue());
+		}
+		if (expectedAlternativeStringValue != null) {
+			assertEquals(expectedAlternativeStringValue, contentEvent.getAlternativeStringValue());
+		}
+		//TODO Handle contents that are separated among separate events?
+		
+		if (testEndEvent) {
+			assertEndEvent(EventContentType.META_LITERAL, reader);
+		}
+		
+		return metaInformationEvent.getID();
+  }
+  
+  
+  @Deprecated
   public static MetaInformationEvent assertMetaEvent(String expectedKey, String expectedValue, boolean testEndEvent, 
   		boolean keyCaseSensitive, JPhyloIOEventReader reader) throws Exception {
   	
@@ -216,6 +257,7 @@ public class JPhyloIOTestTools {
   }
   
   
+  @Deprecated
   public static void assertMetaEvent(String expectedKey, String expectedValue, String expectedOriginalType, 
   		Object expectedObjectValue, boolean testEndEvent,	boolean keyCaseSensitive,	JPhyloIOEventReader reader) throws Exception {
   	
