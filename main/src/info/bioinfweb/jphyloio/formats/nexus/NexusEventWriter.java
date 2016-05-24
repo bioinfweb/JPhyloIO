@@ -374,7 +374,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					writer.write(FORMAT_SUBCOMMAND_TOKENS);
 				}
 				else {
-					writer.write(FORMAT_SUBCOMMAND_NOTOKENS);
+					writer.write(FORMAT_SUBCOMMAND_NO_TOKENS);
 				}
 			}
 			else {  // MrBayes extension (or exception if according parameter is set?)
