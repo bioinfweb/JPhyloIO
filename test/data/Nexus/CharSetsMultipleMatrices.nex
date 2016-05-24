@@ -1,7 +1,7 @@
 #NEXUS
 
 BEGIN TAXA;
-	DIMENSIONS NTAX = 5;
+	DIMENSIONS NTAX = 3;
 	TAXLABELS 
 		A
 		B
@@ -17,12 +17,6 @@ BEGIN Characters;
          C CG-TC-T;
 END;
 
-BEGIN Sets;
-  TITLE sets1;
-  LINK CHARACTERS=matrix1;
-	CharSet set01 = 2-4 6;
-END;
-
 BEGIN Characters;
   Title matrix2;
   Dimensions NTax=3 NChar=7;
@@ -30,6 +24,12 @@ BEGIN Characters;
   Matrix A AGGT-AT
          B AC-GCTC 
          C AG-TC-T;
+END;
+
+BEGIN Sets;
+  TITLE sets1;
+  LINK CHARACTERS=matrix1;
+	CharSet set01 = 2-4 6;
 END;
 
 BEGIN Sets;

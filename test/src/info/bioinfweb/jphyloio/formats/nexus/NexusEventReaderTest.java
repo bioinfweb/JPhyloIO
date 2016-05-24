@@ -26,6 +26,7 @@ import info.bioinfweb.commons.testing.TestTools;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -35,6 +36,8 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatRea
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import org.junit.* ;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
@@ -42,7 +45,7 @@ import static org.junit.Assert.* ;
 
 
 
-public class NexusEventReaderTest {
+public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants {
 	public NexusEventReaderTest() {
 		super();
 	}
@@ -179,9 +182,12 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "transpose", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nolabels", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_NO_LABELS)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("interleave", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_INTERLEAVE)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("transpose", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_TRANSPOSE)), null, "", null, null, true, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -212,10 +218,14 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "transpose", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "tokens", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nolabels", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_NO_LABELS)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("interleave", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_INTERLEAVE)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("transpose", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_TRANSPOSE)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("tokens", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_TOKENS)), null, "", null, null, true, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -246,9 +256,12 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "transpose", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nolabels", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_NO_LABELS)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("interleave", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_INTERLEAVE)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("transpose", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_TRANSPOSE)), null, "", null, null, true, reader);
 
 			assertTokenSetDefinitionEvent(CharacterStateSetType.CONTINUOUS, "Continuous", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -304,8 +317,8 @@ public class NexusEventReaderTest {
 			
 			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "someMatrix", null, reader);  //TODO Check linkes OTU ID
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "4", null, new Long(4), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "4", null, new Long(4), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
 
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -349,10 +362,11 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "3", null, new Long(3), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "3", null, new Long(3), true, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "tokens", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("tokens", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_TOKENS)), null, "", null, null, true, reader);
 
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -392,8 +406,8 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "3", null, new Long(3), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "3", null, new Long(3), true, reader);
 
 			assertTokenSetDefinitionEvent(CharacterStateSetType.CONTINUOUS, "continuous", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -433,8 +447,8 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
 
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -474,10 +488,12 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "3", null, new Long(3), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "3", null, new Long(3), true, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "tokens", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("tokens", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_TOKENS)), null, "", null, null, true, reader);
+			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
@@ -516,10 +532,11 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "14", null, new Long(14), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "14", null, new Long(14), true, reader);
 
-			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("interleave", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_INTERLEAVE)), null, "", null, null, true, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -571,11 +588,12 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "14", null, new Long(14), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "14", null, new Long(14), true, reader);
 
-			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
-
+			assertLiteralMetaEvent(new URIOrStringIdentifier("interleave", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_INTERLEAVE)), null, "", null, null, true, reader);
+			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
@@ -631,10 +649,11 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "14", null, new Long(14), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "14", null, new Long(14), true, reader);
 
-			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("interleave", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_INTERLEAVE)), null, "", null, null, true, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -715,9 +734,12 @@ public class NexusEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "interleave", "", true, true, reader);
-			assertMetaEvent(FormatReader.KEY_PREFIX + "transpose", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nolabels", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_NO_LABELS)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("interleave", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_INTERLEAVE)), null, "", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("transpose", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_TRANSPOSE)), null, "", null, null, true, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "Standard", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -906,10 +928,12 @@ public class NexusEventReaderTest {
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "5", null, new Long(5), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", null, "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nolabels", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_NO_LABELS)), null, "", null, null, true, reader);
+
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
@@ -965,10 +989,12 @@ public class NexusEventReaderTest {
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "5", null, new Long(5), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", null, "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nolabels", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_NO_LABELS)), null, "", null, null, true, reader);
+
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
@@ -1363,10 +1389,12 @@ public class NexusEventReaderTest {
 			// CHARACTERS:
 			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "someMatrix", otusID, reader);
 			
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-			assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "5", null, new Long(5), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "5", null, new Long(5), true, reader);
 			
-			assertMetaEvent(FormatReader.KEY_PREFIX + "nolabels", "", true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nolabels", new QName(NEXUS_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + FORMAT_SUBCOMMAND_NO_LABELS)), null, "", null, null, true, reader);
+
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);

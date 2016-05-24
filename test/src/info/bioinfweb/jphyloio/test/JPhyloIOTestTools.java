@@ -208,7 +208,7 @@ public class JPhyloIOTestTools {
 		
 		assertTrue(reader.hasNextEvent());
 		event = reader.next();
-		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.START, event);  //TODO Also allow empty contents?
+		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);  //TODO Also allow empty contents?
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 		assertEquals(expectedOriginalType, contentEvent.getOriginalType());
 		assertEquals(expectedStringValue, contentEvent.getStringValue());
