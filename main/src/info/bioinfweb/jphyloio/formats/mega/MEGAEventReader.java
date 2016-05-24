@@ -159,12 +159,48 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 			while (getReader().peekChar() != COMMAND_END) {
 				KeyValueInformation info = readKeyValueInformation(COMMAND_END, COMMENT_START, COMMENT_END, '=');
 				processFormatSubcommand(info.getOriginalKey(), info.getValue());
+				String key = info.getOriginalKey().toUpperCase();
 				
-				getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
-						getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), 
-								new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + info.getOriginalKey().toUpperCase())),  //TODO Should the predicate really be in upper case? 
-						LiteralContentSequenceType.SIMPLE));
-				getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, info.getValue(), false));
+				Long longValue;
+				try {
+					longValue = Long.parseLong(info.getValue());
+				}
+				catch (NumberFormatException e) {
+					longValue = null;
+				}
+				
+				if (FORMAT_SUBCOMMAND_NSITES.equals(key)) {
+					if (longValue == null) {
+						throw new JPhyloIOReaderException("The column count (NSITES) found in the document (\"" + info.getValue() + 
+								"\") is not a valid integer.", getReader());
+					}
+					else {
+						getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
+								getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), 
+								new URIOrStringIdentifier(info.getOriginalKey(), PREDICATE_CHARACTER_COUNT), LiteralContentSequenceType.SIMPLE));
+						getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, info.getValue(), longValue));
+					}
+				}
+				else if (FORMAT_SUBCOMMAND_NTAXA.equals(key)) {
+					if (longValue == null) {
+						throw new JPhyloIOReaderException("The sequence count (NTAX) found in the document (\"" + info.getValue() + 
+								"\") is not a valid integer.", getReader());
+					}
+					else {
+						getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
+								getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), 
+								new URIOrStringIdentifier(info.getOriginalKey(), PREDICATE_SEQUENCE_COUNT), LiteralContentSequenceType.SIMPLE));
+						getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, info.getValue(), longValue));
+					}
+				}
+				else {
+					getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
+							getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), 
+									new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + info.getOriginalKey().toUpperCase())),  //TODO Should the predicate really be in upper case? 
+							LiteralContentSequenceType.SIMPLE));
+					getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, info.getValue(), false));
+				}
+				
 				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			}
 			
@@ -177,11 +213,11 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	
 	
 	private URIOrStringIdentifier createCommandPredicate(String commandName) {
-		return new URIOrStringIdentifier(commandName, new QName(MEGA_PREDICATE_NAMESPACE, commandName.toLowerCase()));
+		return new URIOrStringIdentifier(commandName, new QName(MEGA_PREDICATE_NAMESPACE, commandName.toUpperCase()));
 	}
 	
 	
-	private void addMetaEventsFromUnknownCommand(String content) throws IOException {
+	private void addMetaEventsFromCommand(String content) throws IOException {
 		int afterNameIndex = StringUtils.indexOfWhiteSpace(content);
 		if (afterNameIndex < 1) {
 			getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
@@ -311,7 +347,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 					currentGeneOrDomainStart = charactersRead;
 				}
 				else {
-					addMetaEventsFromUnknownCommand(content);
+					addMetaEventsFromCommand(content);
 					result = true;
 				}
 			}

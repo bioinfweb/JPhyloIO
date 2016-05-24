@@ -18,9 +18,8 @@
  */
 package info.bioinfweb.jphyloio.formats.mega;
 
-import info.bioinfweb.jphyloio.ReadWriteConstants;
 
-import javax.xml.namespace.QName;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 
 
 
@@ -42,6 +41,8 @@ public interface MEGAConstants {
 	public static final String COMMAND_NAME_GENE = "GENE";
 	public static final String COMMAND_NAME_DOMAIN = "DOMAIN";
 
+	public static final String FORMAT_SUBCOMMAND_NTAXA = "NTAXA";
+	public static final String FORMAT_SUBCOMMAND_NSITES = "NSITES";
 	public static final String FORMAT_SUBCOMMAND_IDENTICAL = "IDENTICAL";
 
 	public static final String LABEL_CHAR_SET_ID = "MEGALabelCharacterSet";
