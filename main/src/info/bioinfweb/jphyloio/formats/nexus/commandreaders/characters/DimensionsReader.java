@@ -66,11 +66,11 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 			QName predicate = genericPredicate;
 			if (DIMENSIONS_SUBCOMMAND_NTAX.equals(key)) {
 				getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_NTAX, longValue);
-				predicate = PREDICATE_CHARACTER_COUNT;
+				predicate = PREDICATE_SEQUENCE_COUNT;
 			}
 			else if (DIMENSIONS_SUBCOMMAND_NCHAR.equals(key)) {
 				getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_CHAR, longValue);
-				predicate = PREDICATE_SEQUENCE_COUNT;  // This predicate may need to be changed, if a DIMENSION command outside of alignment blocks is read here. 
+				predicate = PREDICATE_CHARACTER_COUNT;  // This predicate may need to be changed, if a DIMENSION command outside of alignment blocks is read here. 
 			}
 			
 			events.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
