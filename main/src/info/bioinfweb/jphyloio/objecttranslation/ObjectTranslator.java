@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xml.translate;
+package info.bioinfweb.jphyloio.objecttranslation;
 
 
 import java.io.IOException;
@@ -38,6 +38,10 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
  * @param <O> the type of Java object this translator instance is able to handle
  */
 public interface ObjectTranslator<O> {
+	//TODO How are object values represented in events, of they are read from a whole sequence of XML-events?
+	//     Is it an alternative to either output the XMLEvents as objects values or directly parse them to output one single object value
+	//     or should parsing of XML not at all be supported? => Probably the first alternative.
+	
 	public URIOrStringIdentifier getDataType();
 	
 	/**
@@ -71,7 +75,7 @@ public interface ObjectTranslator<O> {
 	 *         interface
 	 * @see #hasStringRepresentation()
 	 */
-	public String javaToStringRepresentation(Object object) throws UnsupportedOperationException, ClassCastException;
+	public String javaToStringRepresentation(O object) throws UnsupportedOperationException, ClassCastException;
 	
 	/**
 	 * Writes the XML representation of the specified object into the specified XML writer.
@@ -84,7 +88,7 @@ public interface ObjectTranslator<O> {
 	 * @throws IOException if an I/O error occurs while trying to write to the specified writer
 	 * @throws XMLStreamException if an XML stream exception occurs while trying to write to the specified writer
 	 */
-	public void writeXMLRepresentation(XMLStreamWriter writer, Object object) throws IOException, XMLStreamException;
+	public void writeXMLRepresentation(XMLStreamWriter writer, O object) throws IOException, XMLStreamException;
 	
 	/**
 	 * Converts the specified string representation to a new instance of the according Java object.
