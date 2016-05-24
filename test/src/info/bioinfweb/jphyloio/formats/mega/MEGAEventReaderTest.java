@@ -21,7 +21,11 @@ package info.bioinfweb.jphyloio.formats.mega;
 
 import java.io.File;
 
+import javax.xml.namespace.QName;
+
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.mega.MEGAEventReader;
@@ -33,7 +37,7 @@ import static org.junit.Assert.* ;
 
 
 
-public class MEGAEventReaderTest implements MEGAConstants {
+public class MEGAEventReaderTest implements MEGAConstants, ReadWriteConstants {
 //  @Test  // READ_COMMAND_PATTERN needs to be set public to run this test.
 //  public void test_READ_COMMAND_PATTERN() {
 //  	assertTrue(MEGAEventReader.READ_COMMAND_PATTERN.matcher("SomeCommand [").matches());
@@ -50,20 +54,25 @@ public class MEGAEventReaderTest implements MEGAConstants {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			//assertLiteralMetaEvent(expectedPredicate, expectedOriginalType, expectedStringValue, expectedAlternativeStringValue, expectedObjectValue, testEndEvent, reader)
-			assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", 
-					true, false, reader);
-			assertMetaEvent(MEGAEventReader.COMMAND_NAME_DESCRIPTION, 
-					"Extracellular domains 1, 2, and 3 are marked. Antigen recognition sites\r\n(ARS) are shown by plus sign", 
-					true, false,  reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE", "Nucleotide", true, false, reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT", "Interleaved", true, false, reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA", "3", true, false, reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES", "822", true, false, reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL", ".", true, false, reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING", "?", true, false, reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", true, false, reader);
-			assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", true, false, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("Title", new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_TITLE)), 
+					null, "Nucleotide sequences of three human class I HLA-A alleles", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("Description", new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_DESCRIPTION)), 
+					null, "Extracellular domains 1, 2, and 3 are marked. Antigen recognition sites\r\n(ARS) are shown by plus sign", 
+					null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("datatype", new QName(MEGA_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "DATATYPE")), null, "Nucleotide", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("dataformat", new QName(MEGA_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "DATAFORMAT")), null, "Interleaved", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntaxa", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nsites", PREDICATE_CHARACTER_COUNT), null, "822", null, new Long(822), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("identical", new QName(MEGA_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "IDENTICAL")), null, ".", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("missing", new QName(MEGA_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "MISSING")), null, "?", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("indel", new QName(MEGA_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "INDEL")), null, "-", null, null, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("codetable", new QName(MEGA_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "CODETABLE")), null, "Standard", null, null, true, reader);
 			
 			assertCommentEvent("Nested [comment]", reader);
 			assertCommentEvent("[Nested] comment", reader);
@@ -190,17 +199,23 @@ public class MEGAEventReaderTest implements MEGAConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(MEGAEventReader.COMMAND_NAME_TITLE, "Nucleotide sequences of three human class I HLA-A alleles", 
-						true, false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATATYPE", "Nucleotide", true, false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "DATAFORMAT", "Interleaved", true, false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NTAXA", "3", true, false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "NSITES", "18", true, false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "IDENTICAL", "i", true, false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "MISSING", "?", true, false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "INDEL", "-", true, false, reader);
-				assertMetaEvent(MEGAEventReader.FORMAT_KEY_PREFIX.toUpperCase() + "CODETABLE", "Standard", true, false, reader);
-				
+				assertLiteralMetaEvent(new URIOrStringIdentifier("Title", new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_TITLE)), 
+						null, "Nucleotide sequences of three human class I HLA-A alleles", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("datatype", new QName(MEGA_PREDICATE_NAMESPACE, 
+						COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "DATATYPE")), null, "Nucleotide", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("dataformat", new QName(MEGA_PREDICATE_NAMESPACE, 
+						COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "DATAFORMAT")), null, "Interleaved", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("ntaxa", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("nsites", PREDICATE_CHARACTER_COUNT), null, "18", null, new Long(18), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("identical", new QName(MEGA_PREDICATE_NAMESPACE, 
+						COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "IDENTICAL")), null, "i", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("missing", new QName(MEGA_PREDICATE_NAMESPACE, 
+						COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "MISSING")), null, "?", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("indel", new QName(MEGA_PREDICATE_NAMESPACE, 
+						COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "INDEL")), null, "-", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("codetable", new QName(MEGA_PREDICATE_NAMESPACE, 
+						COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "CODETABLE")), null, "Standard", null, null, true, reader);
+
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", null, reader);
 				assertCharactersEvent("TATTTCTCC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
