@@ -141,7 +141,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						StartElement element = event.asStartElement();
 						String tokenSetType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null);
-						int alignmentLength = XMLUtils.readIntAttr(element, ATTR_ALIGNEMNT_LENGTH, 0);
+						int alignmentLength = XMLUtils.readIntAttr(element, ATTR_ALIGNMENT_LENGTH, 0);
 						
 						CharacterStateSetType type = null;
 						
@@ -192,7 +192,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						offset = matcher.end();
 					}
 					
-					data = data.substring(offset);  //TODO Can an IndexOutOfBoundsException happen?
+					data = data.substring(offset); //TODO Can an IndexOutOfBoundsException happen?
 					
 					if (data.length() > 0) {
 						if (streamDataProvider.getXMLReader().peek().isCharacters()) {
@@ -223,9 +223,9 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						StartElement element = event.asStartElement();
-						int id = XMLUtils.readIntAttr(element, ATTR_ID, 0);
+						int metaColumnID = XMLUtils.readIntAttr(element, ATTR_ID, 0);
 						String value = null;
-						XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();						
+						XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();
 						
 						if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
 							String characterData = nextEvent.asCharacters().getData();
@@ -236,12 +236,12 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						
 						int index = streamDataProvider.getCurrentSequenceIndex();
 						
-						streamDataProvider.getSequenceInformations().get(index).put(id, value);
+						streamDataProvider.getSequenceInformations().get(index).put(metaColumnID, value);
 						
-						if (id == META_ID_SEQUENCE_LABEL) {
-							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, DEFAULT_OTU_ID_PREFIX + index, value)); //TODO maybe give meta information for OTU here?
+						if (metaColumnID == META_ID_SEQUENCE_LABEL) {
+							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, getID(DEFAULT_OTU_ID_PREFIX + index, EventContentType.OTU), value)); //TODO maybe give meta information for OTU here?
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.OTU));
-						}						
+						}
 					}
 			});
 		
@@ -266,7 +266,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						
 						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
 						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
-								DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, streamDataProvider.getSequenceInformations().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
+								getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE), streamDataProvider.getSequenceInformations().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
 					}
 			});
 		

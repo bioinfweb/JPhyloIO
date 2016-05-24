@@ -139,7 +139,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			  			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
 			  			streamDataProvider.setAlternativeStringRepresentation(content);
 			  			
-			  			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, null, LiteralContentSequenceType.XML));
+			  			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, LiteralContentSequenceType.XML));
 	
 	//		  			String[] dataType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null).split(":");
 	//		  			UriOrStringIdentifier originalType = new UriOrStringIdentifier(null, new QName(streamDataProvider.getNamespaceMap().get(dataType[0]), dataType[1], dataType[0]));	  			

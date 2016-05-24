@@ -19,9 +19,12 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 
@@ -29,8 +32,13 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<PhyloXMLEventReader>  {
 	private String treeLabel;
 	private boolean createNodeStart;
+	
 	private String lastNodeID;
 	private Map<String, String> cladeIDToNodeEventIDMap = new HashMap<String, String>();
+	
+	private List<JPhyloIOEvent> propertyEvents = new ArrayList<JPhyloIOEvent>();
+	private String currentPropertyDatatype;
+	private boolean propertyHasResource;
 	
 
 	public PhyloXMLReaderStreamDataProvider(PhyloXMLEventReader eventReader) {
@@ -70,5 +78,30 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	protected Map<String, String> getCladeIDToNodeEventIDMap() {
 		return cladeIDToNodeEventIDMap;
+	}
+
+
+	protected List<JPhyloIOEvent> getPropertyEvents() {
+		return propertyEvents;
+	}
+
+
+	protected String getCurrentPropertyDatatype() {
+		return currentPropertyDatatype;
+	}
+
+
+	protected void setCurrentPropertyDatatype(String currentPropertydatatype) {
+		this.currentPropertyDatatype = currentPropertydatatype;
+	}
+
+
+	protected boolean isPropertyHasResource() {
+		return propertyHasResource;
+	}
+
+
+	protected void setPropertyHasResource(boolean propertyHasResource) {
+		this.propertyHasResource = propertyHasResource;
 	}
 }

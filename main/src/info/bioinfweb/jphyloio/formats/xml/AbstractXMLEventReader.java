@@ -37,8 +37,10 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
+import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 
@@ -177,6 +179,21 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 			}
 		}
 		return result;
+	}
+	
+	
+	public URIOrStringIdentifier predicateFromString(String curie, Map<String, String> prefixToNamespaceMap) { //TODO use streamDataProvider instead of giving map here
+		String[] refParts = curie.split(":");
+		String localPart = refParts[refParts.length - 1]; //TODO is the local part always the last element?
+		String prefix = null;
+		String namespaceURI = null;
+		
+		if (refParts.length == 2) {
+			prefix = refParts[0];
+			namespaceURI = prefixToNamespaceMap.get(prefix);
+		}
+		
+		return new URIOrStringIdentifier(null, new QName(namespaceURI, localPart, prefix));
 	}
 	
 	

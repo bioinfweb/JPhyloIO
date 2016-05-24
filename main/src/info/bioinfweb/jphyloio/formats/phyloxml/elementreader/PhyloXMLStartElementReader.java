@@ -88,13 +88,13 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, resourcePredicate, null, null));
 			
 			if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
+				@SuppressWarnings("unchecked")
 				Iterator<Attribute> attributes = event.asStartElement().getAttributes();
 				while (attributes.hasNext()) {
 					Attribute attribute = attributes.next();
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
-							attributeToPredicateMap.get(attribute.getName()).getLocalPart(), LiteralContentSequenceType.SIMPLE));
+							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataContentEvent(null, event.asStartElement().getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object or as a parameter
@@ -107,7 +107,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		if (literalPredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
 					new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-					new URIOrStringIdentifier(null, literalPredicate), literalPredicate.getLocalPart(), LiteralContentSequenceType.SIMPLE));
+					new URIOrStringIdentifier(null, literalPredicate), LiteralContentSequenceType.SIMPLE));
 		}
 	}
 }

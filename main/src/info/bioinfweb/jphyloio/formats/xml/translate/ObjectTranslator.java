@@ -71,7 +71,7 @@ public interface ObjectTranslator<O> {
 	 *         interface
 	 * @see #hasStringRepresentation()
 	 */
-	public String javaToStringRepresentation(O object) throws UnsupportedOperationException, ClassCastException;
+	public String javaToStringRepresentation(Object object) throws UnsupportedOperationException, ClassCastException;
 	
 	/**
 	 * Writes the XML representation of the specified object into the specified XML writer.
@@ -84,7 +84,7 @@ public interface ObjectTranslator<O> {
 	 * @throws IOException if an I/O error occurs while trying to write to the specified writer
 	 * @throws XMLStreamException if an XML stream exception occurs while trying to write to the specified writer
 	 */
-	public void writeXMLRepresentation(XMLStreamWriter writer, O object) throws IOException, XMLStreamException;
+	public void writeXMLRepresentation(XMLStreamWriter writer, Object object) throws IOException, XMLStreamException;
 	
 	/**
 	 * Converts the specified string representation to a new instance of the according Java object.
