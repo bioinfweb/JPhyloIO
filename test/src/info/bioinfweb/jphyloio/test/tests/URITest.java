@@ -19,8 +19,12 @@
 package info.bioinfweb.jphyloio.test.tests;
 
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 
@@ -29,16 +33,45 @@ public class URITest {
 		try {
 			URI relativeURI = new URI("docs/guide/collections/designfaq.html#28");
 			URI absoluteURI = new URI("http://java.sun.com/j2se/1.3/");
-			URI resolvedURI = absoluteURI.resolve(relativeURI);
+			URI resolvedURI = absoluteURI.resolve(relativeURI);			
 			
 			System.out.println(relativeURI.toString());
-
 			System.out.println(absoluteURI.toString());			
-			
-			System.out.println(resolvedURI.toString());
+			System.out.println(resolvedURI.toString());			
 			
 			new URI("http://java.sun.com/j2se:a/1.3/");
-		} 
+			
+			URI URIFromFilePath = new URI("file:///Users/sarah/FileTest.java");
+			System.out.println(URIFromFilePath.toString());
+			
+			System.out.println();
+			
+			File file = new File("D:\\LocalUserData\\example.txt");
+			System.out.println(file.getPath() + " " + file.toURI() + " " + file.isAbsolute());
+			file = new File((String)null, "Ordner\\example.txt");
+			System.out.println(file.getPath() + " " + file.toURI() + " " + file.isAbsolute());
+			file = new File("/Users/sarah/FileTest.java");
+			System.out.println(file.getPath() + " " + file.toURI() + " " + file.isAbsolute());
+			
+			System.out.println();
+			
+			System.out.println(FileSystems.getDefault().getPath("D:\\LocalUserData\\example.txt")); //also: Paths.get(URI uri) or Paths.get(String first, String... more) for all segments of the path
+			System.out.println(FileSystems.getDefault().getPath("Ordner\\example.txt"));
+			System.out.println(FileSystems.getDefault().getPath("/Users/sarah/FileTest.java"));
+			
+			System.out.println();
+			
+			Path path = Paths.get("/Users/sarah/FileTest.java");
+			System.out.println(path.toUri());
+			System.out.println(path.toAbsolutePath());
+			System.out.println(path.getFileSystem());			
+			
+			System.out.println();
+			
+			URIFromFilePath = URI.create("/Users/sarah/FileTest.java");
+			System.out.println(URIFromFilePath.toString());
+			
+		}
 		catch (URISyntaxException e) {
 			System.out.println("Syntax exception");
 			e.printStackTrace();

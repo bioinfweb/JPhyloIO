@@ -36,11 +36,11 @@ public class PhyloXMLEventReaderTest {
 	public void testOutputPhyloXML() {
 		try {
 			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/ShortPhyloXML.xml"), new ReadWriteParameterMap());
-//			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/IDsAndLabels.xml"), new ReadWriteParameterMap());
+//			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/BigPhyloXMLExample.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType());
+//					System.out.println(event.getType());
 					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
 //						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
 					}
@@ -48,21 +48,15 @@ public class PhyloXMLEventReaderTest {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 							if (event.asLiteralMetadataEvent().getPredicate() != null) {
 								if (event.asLiteralMetadataEvent().getPredicate().getURI() != null) {
-									System.out.println("Literal: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
-								}								
-							}							
+//									System.out.println("Literal: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
+								}
+							}
 						}
-//						else {
-//							System.out.println("Literal end");
-//						}
 					}
 					else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 //							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart());
 						}
-//						else {
-//							System.out.println("Resource end");
-//						}
 					}
 					else if (event.getType().getContentType().equals(EventContentType.TREE)) {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
@@ -71,8 +65,14 @@ public class PhyloXMLEventReaderTest {
 					}
 					else if (event.getType().getContentType().equals(EventContentType.NODE)) {
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-//							System.out.println("NodeID: " + event.asLabeledIDEvent().getID());
-//							System.out.println("NodeLabel: " + event.asLabeledIDEvent().getLabel());
+							System.out.println("NodeID: " + event.asLabeledIDEvent().getID());
+							System.out.println("NodeLabel: " + event.asLabeledIDEvent().getLabel());
+						}
+					}
+					else if (event.getType().getContentType().equals(EventContentType.EDGE)) {
+						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+							System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " " + "Target: " + event.asEdgeEvent().getTargetID());
+							System.out.println();
 						}
 					}
 				}

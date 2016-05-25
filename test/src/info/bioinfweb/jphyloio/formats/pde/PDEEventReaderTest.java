@@ -34,11 +34,32 @@ public class PDEEventReaderTest {
 	@Test
 	public void testOutputPDE() {
 		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/sequenceWithUnknownTokens.pde"), new ReadWriteParameterMap());
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/CharSets.pde"), new ReadWriteParameterMap());
+//			PDEEventReader reader = new PDEEventReader(new File("data/PDE/sequencesWithCustomMeta.pde"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-//					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());					
+					System.out.println(event.getType());
+//					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+////						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
+//					}
+//					else if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+//						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+//							if (event.asLiteralMetadataEvent().getPredicate() != null) {
+//								if (event.asLiteralMetadataEvent().getPredicate().getURI() != null) {
+////									System.out.println("Literal: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
+//								}
+//							}
+//						}
+//					}
+//					else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
+//						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+////							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart() + ", " + event.asResourceMetadataEvent().getHRef().toString());
+//						}
+//					}
+//					else if (event.getType().getContentType().equals(EventContentType.CHARACTER_SET_INTERVAL)) {
+////						System.out.println(event.asCharacterSetEvent().getStart() + " " + event.asCharacterSetEvent().getEnd());
+//					}
 				}
 			}
 			finally {
@@ -55,7 +76,7 @@ public class PDEEventReaderTest {
 	@Test
 	public void readDNASequences() {
 		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/shortSequences.pde"), new ReadWriteParameterMap());
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/SimpleDNASeq.pde"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
@@ -105,7 +126,7 @@ public class PDEEventReaderTest {
 	@Test
 	public void readAminoSequences() {
 		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/shortAminoSequences.pde"), new ReadWriteParameterMap());
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/SimpleProteinSeq.pde"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus0", null, reader);
@@ -151,28 +172,28 @@ public class PDEEventReaderTest {
 	}
 	
 	
-	@Test
-	public void readCompressedFile() {
-		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/compressedPDE.pde.gz"), new ReadWriteParameterMap()); //TODO choose simpler file and write asserts
-			try {
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);		
-			}
-			finally {
-				reader.close();
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
-		}
-	}
+//	@Test
+//	public void readCompressedFile() {
+//		try {
+//			PDEEventReader reader = new PDEEventReader(new File("data/PDE/compressedPDE.pde.gz"), new ReadWriteParameterMap()); //TODO choose simpler file and write asserts
+//			try {
+//				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+//			}
+//			finally {
+//				reader.close();
+//			}
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//			fail(e.getLocalizedMessage());
+//		}
+//	}
 	
 	
 	@Test
 	public void readSequencesWithCustomMeta() {
 		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/sequencesWithCustomMeta.pde"), new ReadWriteParameterMap());
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/customMetaDNASeq.pde"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus0", null, reader);
@@ -221,7 +242,7 @@ public class PDEEventReaderTest {
 	@Test
 	public void readSequenceWithMatchTokens() {
 		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/sequenceWithMatchTokens.pde"), new ReadWriteParameterMap());
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/DNASeqMatchToken.pde"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus0", null, reader);
@@ -270,7 +291,7 @@ public class PDEEventReaderTest {
 	@Test
 	public void readSequenceWithUnknownTokens() {
 		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/sequenceWithUnknownTokens.pde"), new ReadWriteParameterMap());
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/DNASeqMissingToken.pde"), new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus0", null, reader);
