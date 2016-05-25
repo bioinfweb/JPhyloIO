@@ -39,6 +39,7 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 	private int currentSequenceIndex;
 	
 	private String otuListID;	
+	private Map<Integer, String> sequenceIndexToOTUID = new HashMap<Integer, String>();
 	
 	private List<Map<Integer, String>> sequenceInformations = new ArrayList<Map<Integer,String>>();	
 	private Map<Long, PDEMetaColumnDefintion> metaColumns = new HashMap<Long, PDEMetaColumnDefintion>();
@@ -66,6 +67,11 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 
 	public void setOtuListID(String otuListID) {
 		this.otuListID = otuListID;
+	}
+
+
+	public Map<Integer, String> getSequenceIndexToOTUID() {
+		return sequenceIndexToOTUID;
 	}
 
 

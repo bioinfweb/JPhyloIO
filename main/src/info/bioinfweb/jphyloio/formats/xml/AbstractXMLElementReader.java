@@ -60,11 +60,10 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 			Iterator<Attribute> attributes = element.getAttributes();
 			while (attributes.hasNext()) {
 				Attribute attribute = attributes.next();
-				if (attributeToPredicateMap.containsKey(attribute.getName())) { //allows to ignore certain attributes (e.g. branch length of a clade tag)
+				if (attributeToPredicateMap.containsKey(attribute.getName())) { //allows to ignore certain attributes
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
-							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), 
-							attributeToPredicateMap.get(attribute.getName()).getLocalPart(), LiteralContentSequenceType.SIMPLE));
+							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 	
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataContentEvent(null, element.getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object

@@ -61,7 +61,7 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 	
 	@Override
 	public JPhyloIOEventWriter getWriter() {
-		return null;  //TODO Add reader when implemented.
+		return null;
 	}
 
 	

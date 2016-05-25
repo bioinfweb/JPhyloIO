@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.pde;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
+
 import javax.xml.namespace.QName;
 
 
@@ -29,50 +31,28 @@ public interface PDEConstants {
 
 	public static final QName TAG_ROOT = new QName("phyde");
 	public static final QName TAG_DESCRIPTION = new QName("description");
-	public static final QName TAG_ALIGNMENT = new QName("alignment");
-	
+	public static final QName TAG_ALIGNMENT = new QName("alignment");	
 	public static final QName TAG_HEADER = new QName("header");
-	public static final QName TAG_META_TYPE_DEFINITIONS = new QName("entries");
-	
+	public static final QName TAG_META_TYPE_DEFINITIONS = new QName("entries");	
 	public static final QName TAG_SEQUENCE_INFORMATION = new QName("seq");
-	public static final QName TAG_SEQUENCE_NAME = new QName("name");
-	public static final QName TAG_SEQUENCE_COMMENT = new QName("cmt");
-	public static final QName TAG_SEQUENCE_META_INFORMATION = new QName("e");
-	public static final QName TAG_SEQ_TAXONSETS = new QName("txsets");
-	public static final QName TAG_SWITCHES = new QName("switches");
-	public static final QName TAG_PHEROGRAM = new QName("pher");
-	public static final QName TAG_ACC = new QName("acc"); //TODO what does this stand for?
-	
+	public static final QName TAG_SEQUENCE_META_INFORMATION = new QName("e");	
 	public static final QName TAG_MATRIX = new QName("matrix");
 	public static final QName TAG_BLOCK = new QName("block");
 	
 	public static final QName TAG_CHARSETS = new QName("CharSets");
 	public static final QName TAG_CHARSET = new QName("charset");
-	public static final QName TAG_GENCHARSET = new QName("gencharset");
-	
-	public static final QName TAG_LABELS = new QName("Labels");
-	public static final QName TAG_LABEL = new QName("label");
-	
-	public static final QName TAG_TAXONSETS = new QName("TaxonSets");
 	
 	public static final QName ATTR_DATATYPE = new QName("datatype");
 	public static final QName ATTR_ALIGNMENT_LENGTH = new QName("width");
 	public static final QName ATTR_SEQUENCE_COUNT = new QName("height");
-	public static final QName ATTR_GENCODE = new QName("gencode");
-	public static final QName ATTR_OFFSET = new QName("offset");
 	
 	public static final QName ATTR_SEQUENCE_INDEX = new QName("idx");
 	public static final QName ATTR_ID = new QName("id");
 	public static final QName ATTR_VERSION = new QName("version");	
-	public static final QName ATTR_NAME = new QName("name");
+	public static final QName ATTR_CHARSET_LABEL = new QName("name");
 	public static final QName ATTR_VISIBILITY = new QName("vis");
-	public static final QName ATTR_LEVEL = new QName("level");
+	public static final QName ATTR_COLOR = new QName("col");
 	
-	public static final QName ATTR_X = new QName("x");
-	public static final QName ATTR_Y = new QName("y");
-	public static final QName ATTR_W = new QName("w");	
-	public static final QName ATTR_H = new QName("h");
-	// Attribute missing here: cs1
 	
 	public static final String META_TYPE_STRING = "STRING";
 	public static final String META_TYPE_NUMBER = "NUMBER";
@@ -88,5 +68,16 @@ public interface PDEConstants {
 	public static final int META_ID_LINKED_FILE = 2;
 	public static final int META_ID_ACCESS_NUMBER = 3;
 	public static final int META_ID_COMMENT = 4;
-	public static final int FIRST_CUSTOM_META_ID = 32;	
+	public static final int FIRST_CUSTOM_META_ID = 32;
+	
+	
+	public static final String PDE_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/PDE/";	
+	public static final String PDE_PREDICATE_NAMESPACE = PDE_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
+	
+	public static final QName PREDICATE_LINKED_FILE = new QName(PDE_PREDICATE_NAMESPACE, "LinkedFile");
+	public static final QName PREDICATE_ACCESS_NUMBER = new QName(PDE_PREDICATE_NAMESPACE, "SequenceAccessNumber");
+	public static final QName PREDICATE_COMMENT = new QName(PDE_PREDICATE_NAMESPACE, "SequenceComment");
+	public static final QName PREDICATE_DESCRIPTION = new QName(PDE_PREDICATE_NAMESPACE, "Description");
+	public static final QName PREDICATE_CHARSET_VISIBILITY = new QName(PDE_PREDICATE_NAMESPACE, "CharSetVisibility");
+	public static final QName PREDICATE_CHARSET_COLOR = new QName(PDE_PREDICATE_NAMESPACE, "CharSetColor");
 }
