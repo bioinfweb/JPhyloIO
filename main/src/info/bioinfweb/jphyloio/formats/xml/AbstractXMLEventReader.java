@@ -19,6 +19,12 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import info.bioinfweb.jphyloio.AbstractEventReader;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -36,13 +42,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-
-import info.bioinfweb.commons.io.XMLUtils;
-import info.bioinfweb.jphyloio.AbstractEventReader;
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 
 
 
@@ -182,7 +181,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	public URIOrStringIdentifier predicateFromString(String curie, Map<String, String> prefixToNamespaceMap) { //TODO use streamDataProvider instead of giving map here
+	public URIOrStringIdentifier predicateFromString(String curie, P streamDataProvider) {
 		String[] refParts = curie.split(":");
 		String localPart = refParts[refParts.length - 1]; //TODO is the local part always the last element?
 		String prefix = null;
@@ -190,7 +189,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		
 		if (refParts.length == 2) {
 			prefix = refParts[0];
-			namespaceURI = prefixToNamespaceMap.get(prefix);
+			namespaceURI = streamDataProvider.getNamespaceMap().get(prefix);
 		}
 		
 		return new URIOrStringIdentifier(null, new QName(namespaceURI, localPart, prefix));

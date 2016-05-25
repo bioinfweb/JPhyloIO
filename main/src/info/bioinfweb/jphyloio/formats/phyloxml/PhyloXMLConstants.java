@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 
@@ -310,6 +309,7 @@ public interface PhyloXMLConstants {
 	public static final String PHYLOXML_DATA_TYPE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "DataTypes/";
 	
 	public static final QName DATA_TYPE_TOKEN = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Token");
+	
 	public static final QName DATA_TYPE_APPLIES_TO = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AppliesTo");
 	public static final QName DATA_TYPE_EVENTTYPE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Event" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "EventType");
 	public static final QName DATA_TYPE_PROPERTY_DATATYPE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PropertyDataType");

@@ -123,7 +123,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.getPropertyEvents().clear();
 				}
 				
-				System.out.println("pop");
 				streamDataProvider.getSourceNode().pop();
 				streamDataProvider.setLastNodeID(null);
 				streamDataProvider.setCreateNodeStart(true);
@@ -157,7 +156,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				String parentTag = streamDataProvider.getParentName();
 				
 				String applies_to = XMLUtils.readStringAttr(element, ATTR_APPLIES_TO, null);
-				URIOrStringIdentifier predicate = predicateFromString(XMLUtils.readStringAttr(element, ATTR_REF, null), streamDataProvider.getNamespaceMap());
+				URIOrStringIdentifier predicate = predicateFromString(XMLUtils.readStringAttr(element, ATTR_REF, null), streamDataProvider);
 				
 				boolean appliesToAsAttribute = false;
 				boolean resetEventCollection = false;				
@@ -172,7 +171,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						resetEventCollection = true;
 					}
 					else if (applies_to.equals("clade")) {
-						//TODO change predicate to "hasCladeLiteralMeta"? 
+						//TODO change predicate to "hasCladeLiteralMeta"?
 						//-> nested under ResourceMeta or equal to case "node" (losing the "clade" information, because the "ref"-predicate is then used instead)?
 					}
 					else if (applies_to.equals("node")) {}
@@ -286,7 +285,6 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 					streamDataProvider.getSourceNode().clear();
-					System.out.println("clear");
 					streamDataProvider.getEdgeInfos().clear();
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));			
 				}
@@ -308,9 +306,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					}
 					
 					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), ATTR_BRANCH_LENGTH, Double.NaN);	
-					streamDataProvider.getSourceNode().add(new NodeEdgeInfo(null, Double.NaN, new ArrayList<JPhyloIOEvent>()));
+					streamDataProvider.getSourceNode().add(new NodeEdgeInfo(getID(null, EventContentType.NODE), Double.NaN, new ArrayList<JPhyloIOEvent>()));
 					streamDataProvider.setCreateNodeStart(true);
-					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(null, branchLength, new ArrayList<JPhyloIOEvent>()));
+					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(getID(null, EventContentType.EDGE), branchLength, new ArrayList<JPhyloIOEvent>()));
 					streamDataProvider.getEdgeInfos().peek().setSource(null);
 					
 					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
@@ -329,14 +327,15 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 					String parentID = streamDataProvider.getSourceNode().peek().getID();
+					
 					if (streamDataProvider.hasSpecialEventCollection()) {
 						streamDataProvider.resetCurrentEventCollection();
 					}
 					
 					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), ATTR_BRANCH_LENGTH, Double.NaN);	
-					streamDataProvider.getSourceNode().add(new NodeEdgeInfo(null, Double.NaN, new ArrayList<JPhyloIOEvent>()));
+					streamDataProvider.getSourceNode().add(new NodeEdgeInfo(getID(null, EventContentType.NODE), Double.NaN, new ArrayList<JPhyloIOEvent>()));
 					streamDataProvider.setCreateNodeStart(true);
-					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(null, branchLength, new ArrayList<JPhyloIOEvent>()));
+					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(getID(null, EventContentType.EDGE), branchLength, new ArrayList<JPhyloIOEvent>()));
 					streamDataProvider.getEdgeInfos().peek().setSource(parentID);
 					
 					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
@@ -405,13 +404,13 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		//Phylogeny.Date
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_DATE, XMLStreamConstants.START_ELEMENT),
 				new PhyloXMLStartElementReader(PREDICATE_PHYLOGENY_DATE, null, false));
-		putElementReader(new XMLElementReaderKey(TAG_DATE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO type xs:dateTime
+		putElementReader(new XMLElementReaderKey(TAG_DATE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO use constant for dateTime data type
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_DATE, XMLStreamConstants.END_ELEMENT), literalEndReader);
 		
 		//Phylogeny.Confidence
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
 				new PhyloXMLStartElementReader(PREDICATE_CONFIDENCE_VALUE, PREDICATE_CONFIDENCE, false, ATTR_TYPE, PREDICATE_CONFIDENCE_ATTR_TYPE));
-		putElementReader(new XMLElementReaderKey(TAG_CONFIDENCE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO type xs:double
+		putElementReader(new XMLElementReaderKey(TAG_CONFIDENCE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO use constant for double data type
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);		
 		
 		//Phylogeny.CladeRelation
@@ -433,7 +432,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 							getStreamDataProvider().getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.EDGE));
 						}
 					}
-					//TODO throw exception if no valid edge is referenced?
+					else {
+						throw new JPhyloIOReaderException("No valid edge was referenced by a clade relation element. Both the source and target node must not be null.", event.getLocation());
+					}
 					
 					streamDataProvider.getCurrentEventCollection().add(
 							new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, PREDICATE_CLADE_REL, null, null));
@@ -472,7 +473,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					@Override
 					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {					
 						boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
-						URIOrStringIdentifier datatype = predicateFromString(streamDataProvider.getCurrentPropertyDatatype(), streamDataProvider.getNamespaceMap());
+						URIOrStringIdentifier datatype = predicateFromString(streamDataProvider.getCurrentPropertyDatatype(), streamDataProvider);
 						
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(datatype, event.asCharacters().getData(), isContinued));
 					}
@@ -528,7 +529,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		//Clade.Width
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_WIDTH, XMLStreamConstants.START_ELEMENT),
 				new PhyloXMLStartElementReader(PREDICATE_WIDTH, null, true));
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH_WIDTH, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO type xs:double
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH_WIDTH, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(DATA_TYPE_TOKEN)); //TODO use constant for double data type
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_WIDTH, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
 		
 		//Clade.Color
@@ -620,20 +621,28 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-					String value = event.asCharacters().getData();
+					String uri = event.asCharacters().getData();
+					boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 					URI externalResource = null;
 					
-					try {
-						externalResource = new URI(value);
-						streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(getID(null, EventContentType.META_RESOURCE), null, 
-								PREDICATE_TAXONOMY_URI_VALUE, externalResource, null));
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-	  			} 
-	  			catch (URISyntaxException e) {
-	  				throw new JPhyloIOReaderException("", event.getLocation()); //TODO message
-	  			}
+					if (streamDataProvider.getIncompleteToken() != null) {
+						uri = streamDataProvider.getIncompleteToken() + uri;
+					}
 					
-//						boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS); //TODO handle extremely long URLs?					
+					if (!isContinued) {
+						try {
+							externalResource = new URI(uri);
+							streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(getID(null, EventContentType.META_RESOURCE), null, 
+									PREDICATE_TAXONOMY_URI_VALUE, externalResource, null));
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		  			}
+		  			catch (URISyntaxException e) {
+		  				throw new JPhyloIOReaderException("A URI element must specify a valid URI. Instead the string\"" + uri + "\" was given.", event.getLocation());
+		  			}
+					}
+					else {					
+						streamDataProvider.setIncompleteToken(uri);
+					}
 				}
 			});
 		
@@ -968,10 +977,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		if (streamDataProvider.isCreateNodeStart()) {
 			NodeEdgeInfo nodeInfo = streamDataProvider.getSourceNode().peek();
-			String nodeID = getID(null, EventContentType.NODE);
 			
-			streamDataProvider.getCladeIDToNodeEventIDMap().put(streamDataProvider.getLastNodeID(), nodeID);
-			nodeInfo.setID(nodeID);
+			streamDataProvider.getCladeIDToNodeEventIDMap().put(streamDataProvider.getLastNodeID(), nodeInfo.getID());
 			
 			getStreamDataProvider().getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NODE, nodeInfo.getID(), nodeInfo.getLabel(), null));
 			for (JPhyloIOEvent nextEvent : nodeInfo.getNestedEvents()) {
@@ -985,11 +992,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		NodeEdgeInfo edgeInfo = streamDataProvider.getEdgeInfos().pop();
 		edgeInfo.setTarget(streamDataProvider.getSourceNode().peek().getID());
 		
-		if (edgeInfo.getSource() == null) {
-			edgeInfo.setSource(TAG_PARENT_OF_ROOT.getLocalPart());	
-		}
-		
-		getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(getID(edgeInfo.getID(), EventContentType.EDGE), edgeInfo.getLabel(), edgeInfo.getSource(), 
+		getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(edgeInfo.getID(), edgeInfo.getLabel(), edgeInfo.getSource(), 
 				edgeInfo.getTarget(), edgeInfo.getLength()));
 		for (JPhyloIOEvent nextEvent : edgeInfo.getNestedEvents()) {
 			getStreamDataProvider().getCurrentEventCollection().add(nextEvent);

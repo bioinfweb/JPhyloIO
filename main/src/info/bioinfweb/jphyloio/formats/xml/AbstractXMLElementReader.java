@@ -42,7 +42,7 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 	
 	protected void readAttributes(P streamDataProvider, StartElement element, QName... mappings) {
 		if (mappings.length % 2 != 0) {
-			throw new IllegalArgumentException("..."); //TODO give exception message
+			throw new IllegalArgumentException("Attributes and predicates need to be given in pairs, but an uneven number of arguments was found.");
 		}
 		else if (mappings.length >= 2) {
 			Map<QName, QName> attributeToPredicateMap = new HashMap<QName, QName>();
@@ -66,7 +66,7 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 	
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataContentEvent(null, element.getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object
+							new LiteralMetadataContentEvent(null, element.getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object or as a parameter?
 							
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				}

@@ -56,7 +56,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		this.isEdgeMeta = isEdgeMeta;
 		
 		if (mappings.length % 2 != 0) {
-			throw new IllegalArgumentException("..."); //TODO give exception message
+			throw new IllegalArgumentException("Attributes and predicates need to be given in pairs, but an uneven number of arguments was found.");
 		}
 		else if (mappings.length >= 2) {
 			attributeToPredicateMap = new HashMap<QName, QName>();

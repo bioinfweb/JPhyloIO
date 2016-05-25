@@ -48,11 +48,6 @@ public class NodeEdgeInfo {
 		}
 		
 
-		public void setID(String id) {
-			this.id = id;
-		}
-		
-
 		public String getLabel() {
 			return label;
 		}

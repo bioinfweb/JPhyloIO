@@ -45,7 +45,6 @@ public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXM
 
 	@Override
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-		//TODO CAVE: Multiple character events may occur, resulting in multiple (unterminated) content events.
 		boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 		streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
 				new URIOrStringIdentifier(null, datatype), event.asCharacters().getData(), isContinued));

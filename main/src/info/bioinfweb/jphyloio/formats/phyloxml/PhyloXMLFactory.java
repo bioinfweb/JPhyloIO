@@ -36,7 +36,7 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
 
 /**
- * Reader and writer factory for the <a href="http://bioinfweb.info/xmlns/xtg">XTG</a> format.
+ * Reader and writer factory for the <a href="http://bioinfweb.info/xmlns/xtg">PhyloXML</a> format.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
@@ -61,7 +61,7 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 	
 	@Override
 	public JPhyloIOEventWriter getWriter() {
-		return null;  //TODO Add reader when implemented.
+		return null;
 	}
 
 	
