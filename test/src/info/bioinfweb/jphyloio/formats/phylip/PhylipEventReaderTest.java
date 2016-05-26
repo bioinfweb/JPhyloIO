@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.phylip;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
@@ -34,7 +35,7 @@ import static org.junit.Assert.* ;
 
 
 
-public class PhylipEventReaderTest {
+public class PhylipEventReaderTest implements ReadWriteConstants {
 	@Test
 	public void testReadingNonInterleavedExactLength() {
 		try {
@@ -45,8 +46,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "10", null, new Long(10), true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -94,8 +95,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "10", null, new Long(10), true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -143,8 +144,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "10", null, new Long(10), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "10", null, new Long(10), true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T-", reader);
@@ -227,8 +228,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "20", null, new Long(20), true, reader);
 				
 				String id1 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -296,8 +297,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "20", null, new Long(20), true, reader);
 				
 				String id1 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -365,8 +366,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "20", null, new Long(20), true, reader);
 				
 				String id1 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T-", reader);
@@ -443,8 +444,8 @@ public class PhylipEventReaderTest {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 
-			assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-			assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "20", null, new Long(20), true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 			assertCharactersEvent("ATG-T", reader);
@@ -517,8 +518,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "25", null, new Long(25), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "25", null, new Long(25), true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -607,8 +608,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "5", null, new Long(5), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "25", null, new Long(25), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "5", null, new Long(5), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "25", null, new Long(25), true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
@@ -694,8 +695,8 @@ public class PhylipEventReaderTest {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
-				assertMetaEvent(ReadWriteConstants.META_KEY_SEQUENCE_COUNT, "3", null, new Long(3), true, true, reader);
-				assertMetaEvent(ReadWriteConstants.META_KEY_CHARACTER_COUNT, "20", null, new Long(20), true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "20", null, new Long(20), true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCharactersEvent("ATG-T--CCG", reader);
