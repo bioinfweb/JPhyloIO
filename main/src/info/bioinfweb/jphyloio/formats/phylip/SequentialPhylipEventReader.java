@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -135,7 +134,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextR
 				case ALIGNMENT:  // Only for the END case. START cannot happen, because it is directly followed by metaevents.
 					getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 					break;
-				case META_INFORMATION:
+				case META_LITERAL:
 					if (getSequenceCount() == 0) {  // Empty alignment:
 						getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 						break;
@@ -150,7 +149,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextR
 							currentSequenceName = readSequenceName();
 							charactersRead = 0;
 							
-							if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_INFORMATION)) {
+							if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_LITERAL)) {
 								getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, 
 										getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
 							}
