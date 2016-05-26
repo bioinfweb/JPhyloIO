@@ -195,19 +195,27 @@ public class JPhyloIOTestTools {
   }  
 	
 	
-  public static String assertLiteralMetaEvent(URIOrStringIdentifier expectedPredicate, URIOrStringIdentifier expectedOriginalType, 
-  		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testEndEvent, 
+  public static String assertLiteralMetaStartEvent(URIOrStringIdentifier expectedPredicate, LiteralContentSequenceType expectedSequenceType,  
   		JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEventType(EventContentType.META_LITERAL, EventTopologyType.START, event);
+		
 		LiteralMetadataEvent metaInformationEvent = event.asLiteralMetadataEvent();
-		assertEquals(LiteralContentSequenceType.SIMPLE, metaInformationEvent.getSequenceType());  //TODO Also check other types?
+		assertEquals(expectedSequenceType, metaInformationEvent.getSequenceType());  //TODO Also check other types?
 		assertEquals(expectedPredicate, metaInformationEvent.getPredicate());
 		
+		return metaInformationEvent.getID();
+  }
+  
+  	
+  public static void assertLiteralMetaContentEvent(URIOrStringIdentifier expectedOriginalType, 
+  		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testEndEvent, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
 		assertTrue(reader.hasNextEvent());
-		event = reader.next();
+		JPhyloIOEvent event = reader.next();
 		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);  //TODO Also allow empty contents?
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 		assertEquals(expectedOriginalType, contentEvent.getOriginalType());
@@ -226,8 +234,16 @@ public class JPhyloIOTestTools {
 		if (testEndEvent) {
 			assertEndEvent(EventContentType.META_LITERAL, reader);
 		}
-		
-		return metaInformationEvent.getID();
+  }
+  
+  
+  public static String assertLiteralMetaEvent(URIOrStringIdentifier expectedPredicate, URIOrStringIdentifier expectedOriginalType, 
+  		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testEndEvent, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+		String result = assertLiteralMetaStartEvent(expectedPredicate, LiteralContentSequenceType.SIMPLE, reader);
+  	assertLiteralMetaContentEvent(expectedOriginalType, expectedStringValue, expectedAlternativeStringValue, expectedObjectValue, testEndEvent, reader);		
+		return result;
   }
   
   
