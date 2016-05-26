@@ -19,14 +19,20 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 
 import java.util.Collection;
 import java.util.LinkedList;
+
+import javax.xml.namespace.QName;
 
 
 
@@ -35,7 +41,7 @@ import java.util.LinkedList;
  * 
  * @author Ben St&ouml;ver
  */
-public class HotCommentDataReader implements NewickConstants {
+public class HotCommentDataReader implements NewickConstants, ReadWriteConstants {
 	private static class Value {
 		public String stringValue;
 		public Object objectValue;
@@ -113,11 +119,21 @@ public class HotCommentDataReader implements NewickConstants {
 	}
 	
 	
-	private void addMetaInformation(String key, Value value, Collection<JPhyloIOEvent> eventQueue, boolean addEndEvent) {
-		eventQueue.add(new MetaInformationEvent(key, null, value.stringValue, value.objectValue));
-		if (addEndEvent) {
-			eventQueue.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
-		}
+	private void addLiteralMetaStart(String key, QName predicate, LiteralContentSequenceType sequenceType, 
+			TextReaderStreamDataProvider<?> streamDataProvider, Collection<JPhyloIOEvent> eventQueue) {
+		
+		eventQueue.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
+				streamDataProvider.getIDManager().createNewID(), key, new URIOrStringIdentifier(key, predicate), sequenceType));
+	}
+	
+	
+	private void addLiteralMetaContent(Value value, Collection<JPhyloIOEvent> eventQueue) {
+		eventQueue.add(new LiteralMetadataContentEvent(null, value.stringValue, value.objectValue));
+	}
+	
+	
+	private void addLiteralMetaEnd(Collection<JPhyloIOEvent> eventQueue) {
+		eventQueue.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 	}
 	
 	
@@ -128,7 +144,9 @@ public class HotCommentDataReader implements NewickConstants {
 	 * @param comment
 	 * @param eventQueue
 	 */
-	private void processMetacomments(final String comment, Collection<JPhyloIOEvent> eventQueue) {
+	private void processMetacomments(final String comment, TextReaderStreamDataProvider<?> streamDataProvider, 
+			Collection<JPhyloIOEvent> eventQueue) {
+		
 		int start = 1;
 		int end = findAllocationEnd(comment, start);  //TODO Is this still necessary? (Comes from TG implementation.)
 		while (end != -1) {
@@ -142,16 +160,19 @@ public class HotCommentDataReader implements NewickConstants {
 					if (parts[1].endsWith("" + FIELD_END_SYMBOL)) {
 						String[] values = parts[1].substring(1, parts[1].length() - 1).split(
 								"" + FIELD_VALUE_SEPARATOR_SYMBOL);
-						addMetaInformation(parts[0], new Value(null), eventQueue, false);
+						addLiteralMetaStart(parts[0], PREDICATE_HAS_LITERAL_METADATA, LiteralContentSequenceType.SIMPLE_ARRAY, streamDataProvider, 
+								eventQueue);
 						for (int j = 0; j < values.length; j++) {
-							addMetaInformation(parts[0] + INDEX_START_SYMBOL + j + INDEX_END_SYMBOL,  //TODO Use different key here? 
-									readTextElementData(values[j].trim()), eventQueue, true);
+							addLiteralMetaContent(readTextElementData(values[j].trim()), eventQueue);
 						}
-						eventQueue.add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+						addLiteralMetaEnd(eventQueue);
 					}
+					//TODO Should really nothing happen in the else part?
 				}
 				else {
-					addMetaInformation(parts[0], readTextElementData(parts[1]), eventQueue, true);
+					addLiteralMetaStart(parts[0], PREDICATE_HAS_LITERAL_METADATA, LiteralContentSequenceType.SIMPLE, streamDataProvider, eventQueue);
+					addLiteralMetaContent(readTextElementData(parts[1]), eventQueue);
+					addLiteralMetaEnd(eventQueue);
 				}
 			}
 			
@@ -165,17 +186,20 @@ public class HotCommentDataReader implements NewickConstants {
 	 * Processed comments according to 
 	 * <a href="https://sites.google.com/site/cmzmasek/home/software/forester/nhx">this</a> definition.
 	 * 
-	 * @param comment
-	 * @param eventQueue
+	 * @param comment the text of the hot comment without the comment start or end tokens
+	 * @param streamDataProvider the stream data provider associated with the parent event reader
 	 */
-	private void processNHX(final String comment, Collection<JPhyloIOEvent> eventQueue) {
+	private void processNHX(final String comment, TextReaderStreamDataProvider<?> streamDataProvider, Collection<JPhyloIOEvent> eventQueue) {
 		Collection<JPhyloIOEvent> newEvents = new LinkedList<JPhyloIOEvent>();
+		//TODO Was it necessary to buffer events?
 		String[] parts = comment.substring(NHX_START.length()).split("" + NHX_VALUE_SEPARATOR_SYMBOL);
 		for (int i = 0; i < parts.length; i++) {
 			int splitPos = parts[i].indexOf(ALLOCATION_SYMBOL);
 			if (splitPos > 0) {
-				addMetaInformation(NHX_KEY_PREFIX + parts[i].substring(0, splitPos), 
-						readTextElementData(parts[i].substring(splitPos + 1, parts[i].length())), newEvents, true);  //TODO Modify key, e.g. using the analog from phyloXML?
+				String key = parts[i].substring(0, splitPos);
+				addLiteralMetaStart(NHX_KEY_PREFIX + key, NHXTools.getInstance().predicateByKey(key), LiteralContentSequenceType.SIMPLE, streamDataProvider, newEvents);
+				addLiteralMetaContent(readTextElementData(parts[i].substring(splitPos + 1, parts[i].length())), newEvents);
+				addLiteralMetaEnd(newEvents);
 			}
 			else {  // If the part starts with '=' or there is no '='.
 				throw new IllegalArgumentException("\"" + parts[i] + "\" is not a legal NHX metadata definition.");
@@ -192,17 +216,17 @@ public class HotCommentDataReader implements NewickConstants {
 	 * Array values are translated to nested metaevents.
 	 * 
 	 * @param comment the text of the hot comment without the comment start or end tokens
-	 * @param eventQueue the event queue to add generated metaevents to
+	 * @param streamDataProvider the stream data provider associated with the parent event reader
 	 * @param isOnNode Specifies {@code true} here, if the hot comment was attached to a node or
 	 *        {@code false} if it was attached to an edge
 	 * @throws IllegalArgumentException if the specified comment cannot be parsed in the TreeAnnotator or the NHX format.
 	 */
-	public void read(String comment, Collection<JPhyloIOEvent> eventQueue, boolean isOnNode) throws IllegalArgumentException {
+	public void read(String comment, TextReaderStreamDataProvider<?> streamDataProvider, Collection<JPhyloIOEvent> eventQueue, boolean isOnNode) throws IllegalArgumentException {
 		if (comment.startsWith(NHX_START)) {  // Needs to be checked first.
-			processNHX(comment, eventQueue);
+			processNHX(comment, streamDataProvider, eventQueue);
 		}
 		else if (comment.startsWith("" + HOT_COMMENT_START_SYMBOL)) {
-			processMetacomments(comment, eventQueue);
+			processMetacomments(comment, streamDataProvider, eventQueue);
 		}
 		// The following case is currently unused, because JPhyloIO creates comment events from unnamed hot comments 
 		// and its up to the application, whether these shall be interpreted as metainformation or not.

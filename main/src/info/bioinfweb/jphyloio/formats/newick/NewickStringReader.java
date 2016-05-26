@@ -26,6 +26,10 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -131,7 +135,7 @@ public class NewickStringReader implements ReadWriteConstants {
 		for (NewickToken token : tokens) {
 			if (token.getText().trim().startsWith("" + HotCommentDataReader.HOT_COMMENT_START_SYMBOL)) {  // Condition works for both the TreeAnnotator and the NHX format.
 				try {
-					hotCommentDataReader.read(token.getText(), result, isOnNode);
+					hotCommentDataReader.read(token.getText(), streamDataProvider, result, isOnNode);
 				}
 				catch (IllegalArgumentException e) {  // Add as comment, if it could not be parsed.
 					result.add(new CommentEvent(token.getText(), false));  //TODO Log warning, when logger is available.
@@ -384,9 +388,12 @@ public class NewickStringReader implements ReadWriteConstants {
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 						boolean currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 						scanner.nextToken();  // Skip rooted token.
-						streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(META_KEY_DISPLAY_TREE_ROOTED, null, 
-								Boolean.toString(currentTreeRooted), new Boolean(currentTreeRooted)));
-						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
+								streamDataProvider.getIDManager().createNewID(), null, 
+								new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), LiteralContentSequenceType.SIMPLE));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
+								null, Boolean.toString(currentTreeRooted), new Boolean(currentTreeRooted)));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 					}
 					passedSubnodes.add(new ArrayDeque<NodeEdgeInfo>());  // Add queue for top level.
 					
