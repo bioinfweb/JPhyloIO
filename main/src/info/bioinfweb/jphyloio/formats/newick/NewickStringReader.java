@@ -65,6 +65,10 @@ import java.util.regex.Pattern;
  * any numeric or string value in any combination. Whitespace between tokens of a hot comment is allowed but not
  * necessary.
  * <p>
+ * In addition, <a href="http://sites.google.com/site/cmzmasek/home/software/forester/nhx">NHX hot comments</a> can be read and 
+ * are associated with according PhyloXML predicates, of possible. Note that the NHX key {@value NewickConstants#NHX_KEY_EVENT} 
+ * is not converted, since there is no directly equivalent PhyloXML predicate.
+ * <p>
  * Hot comments following a node name or a subtree are considered a metadata attached to a node and hot comments 
  * following a branch length definition are considered to be attached to an edge (branch). Subsequent hot comments
  * are combined, with the exception that a branch length definition is omitted. In such a case, the first hot 
