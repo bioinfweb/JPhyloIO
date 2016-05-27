@@ -140,8 +140,8 @@ public class NexusEventWriterTest implements NexusConstants {
 
 			assertEquals("BEGIN TREES;", reader.readLine());
 			assertEquals("\tTITLE Trees_linked_to_no_TAXA_block;", reader.readLine());
-			assertEquals("\tTREE tree = [&R] ((Node_t0nA:1.1[&annotation=100], Node_t0nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t0nC:2.0)Node_t0nRoot:1.5;", reader.readLine());
-			assertEquals("\tTREE 'tree2_tree' = [&R] ((Node_t2nA:1.1[&annotation=100], Node_t2nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t2nC:2.0)Node_t2nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE tree = [&R] ((Node_t0nA:1.1[&splitString='ABCDEF', array={100, 'abc'}], Node_t0nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t0nC:2.0)Node_t0nRoot:1.5;", reader.readLine());
+			assertEquals("\tTREE 'tree2_tree' = [&R] ((Node_t2nA:1.1[&splitString='ABCDEF', array={100, 'abc'}], Node_t2nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t2nC:2.0)Node_t2nRoot:1.5;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			assertEquals("", reader.readLine());
 			
@@ -155,10 +155,10 @@ public class NexusEventWriterTest implements NexusConstants {
 				assertEquals("\t\t\t3 otu2;", reader.readLine());
 			}
 			if (writeNodeLabels) {
-				assertEquals("\tTREE tree = [&R] ((OTU_otu0:1.1[&annotation=100], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_t1nRoot:1.5;", reader.readLine());
+				assertEquals("\tTREE tree = [&R] ((OTU_otu0:1.1[&splitString='ABCDEF', array={100, 'abc'}], OTU_otu1:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, otu2:2.0)Node_t1nRoot:1.5;", reader.readLine());
 			}
 			else {
-				assertEquals("\tTREE tree = [&R] ((1:1.1[&annotation=100], 2:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, 3:2.0)Node_t1nRoot:1.5;", reader.readLine());
+				assertEquals("\tTREE tree = [&R] ((1:1.1[&splitString='ABCDEF', array={100, 'abc'}], 2:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, 3:2.0)Node_t1nRoot:1.5;", reader.readLine());
 			}
 			assertEquals("END;", reader.readLine());
 			
