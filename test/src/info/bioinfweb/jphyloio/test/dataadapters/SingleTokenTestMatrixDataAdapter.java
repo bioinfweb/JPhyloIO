@@ -59,7 +59,7 @@ public class SingleTokenTestMatrixDataAdapter extends TestMatrixDataAdapter {
 			
 			receiver.add(new SingleSequenceTokenEvent(null, getMatrix().get(firstID).tokens.get(SINGLE_TOKEN_INDEX)));
 			receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + SINGLE_TOKEN_INDEX, "someLabel", 
-					new URIOrStringIdentifier(null, new QName("somePredicate")), LiteralContentSequenceType.SIMPLE));
+					new URIOrStringIdentifier("someKey", new QName("somePredicate")), LiteralContentSequenceType.SIMPLE));
 			receiver.add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, new QName("string")), "someValue", false));
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
