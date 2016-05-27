@@ -19,9 +19,8 @@
 package info.bioinfweb.jphyloio.test;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
@@ -247,43 +246,6 @@ public class JPhyloIOTestTools {
   }
   
   
-  @Deprecated
-  public static MetaInformationEvent assertMetaEvent(String expectedKey, String expectedValue, boolean testEndEvent, 
-  		boolean keyCaseSensitive, JPhyloIOEventReader reader) throws Exception {
-  	
-		assertTrue(reader.hasNextEvent());
-		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.META_INFORMATION, EventTopologyType.START, event);
-		
-		MetaInformationEvent metaInformationEvent = event.asMetaInformationEvent();
-		if (keyCaseSensitive == true) {			
-			assertEquals(expectedKey, metaInformationEvent.getKey());
-			assertEquals(expectedValue, metaInformationEvent.getStringValue());
-		}
-		else {
-			assertEquals(expectedKey.toUpperCase(), metaInformationEvent.getKey().toUpperCase());
-			assertEquals(expectedValue.toUpperCase(), metaInformationEvent.getStringValue().toUpperCase());
-		}
-		
-		if (testEndEvent) {
-			assertEndEvent(EventContentType.META_INFORMATION, reader);
-		}
-		
-		return metaInformationEvent;
-  }
-  
-  
-  @Deprecated
-  public static void assertMetaEvent(String expectedKey, String expectedValue, String expectedOriginalType, 
-  		Object expectedObjectValue, boolean testEndEvent,	boolean keyCaseSensitive,	JPhyloIOEventReader reader) throws Exception {
-  	
-  	MetaInformationEvent metaInformationEvent = 
-  			assertMetaEvent(expectedKey, expectedValue, testEndEvent, keyCaseSensitive, reader);
-  	assertEquals(expectedOriginalType, metaInformationEvent.getOriginalType());
-  	assertEquals(expectedObjectValue, metaInformationEvent.getObjectValue());
-  }
-	
-	
   public static void assertTokenSetDefinitionEvent(CharacterStateSetType expectedType, String expectedParsedName, 
   		JPhyloIOEventReader reader) throws Exception {
   	
