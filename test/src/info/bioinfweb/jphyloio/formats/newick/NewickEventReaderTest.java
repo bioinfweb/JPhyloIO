@@ -533,7 +533,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 
 			assertEdgeEvent(idN2, idN1, 0.05, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:S", PREDICATE_TAXONOMY_SCIENTIFIC_NAME), null, "primates", null, "primates", true, reader);
-			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:D", PREDICATE_EVENTS_TYPE), null, "Y", null, "Y", true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:D", PREDICATE_HAS_LITERAL_METADATA), null, "Y", null, "Y", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:B", PREDICATE_CONFIDENCE_VALUE), null, "100", null, new Double(100), true, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			assertEdgeEvent(idN2, idADHX, 0.12, reader);
@@ -543,12 +543,12 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			String idADH3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "ADH3", null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			String idN3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
-			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:D", PREDICATE_EVENTS_TYPE), null, "N", null, "N", true, reader);  // This metadata should theoretically be associated with the root branch, since NHX does not offer attaching data to nodes instead of branches.
+			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:D", PREDICATE_HAS_LITERAL_METADATA), null, "N", null, "N", true, reader);  // This metadata should theoretically be associated with the root branch, since NHX does not offer attaching data to nodes instead of branches.
 			assertEndEvent(EventContentType.NODE, reader);
 
 			assertEdgeEvent(idN3, idN2, 0.1, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:S", PREDICATE_TAXONOMY_SCIENTIFIC_NAME), null, "metazoa", null, "metazoa", true, reader);
-			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:D", PREDICATE_EVENTS_TYPE), null, "N", null, "N", true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:D", PREDICATE_HAS_LITERAL_METADATA), null, "N", null, "N", true, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			assertEdgeEvent(idN3, idADH3, 0.1, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:S", PREDICATE_TAXONOMY_SCIENTIFIC_NAME), null, "Fungi", null, "Fungi", true, reader);
