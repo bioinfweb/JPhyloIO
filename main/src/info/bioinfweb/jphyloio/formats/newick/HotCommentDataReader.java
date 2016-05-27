@@ -210,10 +210,7 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 	
 	
 	/**
-	 * Reads metadata from the specified hot comment and adds according {@link MetaInformationEvent}s
-	 * to the queue.
-	 * <p>
-	 * Array values are translated to nested metaevents.
+	 * Reads metadata from the specified hot comment and adds according events to the queue.
 	 * 
 	 * @param comment the text of the hot comment without the comment start or end tokens
 	 * @param streamDataProvider the stream data provider associated with the parent event reader

@@ -32,8 +32,6 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * @since 0.0.0
  */
 public class LiteralMetadataEvent extends LabeledIDEvent {
-	//TODO This class shall replace the current MetaInformationEvent implementation as soon as the metadata concept is finally approved.
-
 	private URIOrStringIdentifier predicate;
 	private String key;  //TODO remove when Nexus and other text formats are adjusted to new predicate object
 	private LiteralContentSequenceType sequenceType;

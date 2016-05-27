@@ -81,9 +81,9 @@ public class IgnoreObjectListMetadataReceiver implements JPhyloIOEventReceiver {
 	/**
 	 * Indicates whether any metadata was ignored.
 	 * 
-	 * @return {@code true} if at least one element with the content type {@link EventContentType#META_INFORMATION}
-	 *         was specified to {@link #add(JPhyloIOEvent)}, since the construction of this instance or {@code false}
-	 *         otherwise
+	 * @return {@code true} if at least one element with the content type {@link EventContentType#META_LITERAL} or 
+	 *         {@link EventContentType#META_RESOURCE} was encountered by {@link #add(JPhyloIOEvent)}, since the construction of this 
+	 *         instance or {@code false} otherwise
 	 */
 	public boolean isIgnoredMetadata() {
 		return ignoredMetadata;
@@ -100,7 +100,8 @@ public class IgnoreObjectListMetadataReceiver implements JPhyloIOEventReceiver {
 
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IllegalArgumentException, ClassCastException, IOException {
-		if (event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
+		EventContentType contentType = event.getType().getContentType(); 
+		if (contentType.equals(EventContentType.META_LITERAL) || contentType.equals(EventContentType.META_RESOURCE)) {
 			if (!ignoredMetadata && (logger != null)) {
 				logger.addWarning("Metadata attached to " + objectName + " was ignored, since the " + formatName + 
 						" format does not support this.");

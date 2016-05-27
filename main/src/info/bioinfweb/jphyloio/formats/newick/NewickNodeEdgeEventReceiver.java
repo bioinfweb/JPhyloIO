@@ -31,13 +31,10 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 
 
@@ -100,17 +97,6 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	}
 	
 	
-	private String createValue(MetaInformationEvent event) {
-		if (event.getObjectValue() instanceof Number) {
-			return event.getStringValue();  // Do not enclose numbers in string delimiters.
-		}
-		else {
-			return NAME_DELIMITER + 
-					event.getStringValue().replaceAll("\\" + NAME_DELIMITER, "" + NAME_DELIMITER + NAME_DELIMITER) + NAME_DELIMITER;
-		}
-	}
-
-
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		if (getParentEvents().isEmpty()) {
