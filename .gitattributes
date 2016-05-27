@@ -336,7 +336,6 @@ test/data/Nexus/TitleLink.nex -text
 test/data/Nexus/TreesMetadata.nex -text
 test/data/Nexus/TreesNumericName.nex -text
 test/data/Nexus/TreesTranslate.nex -text
-test/data/PDE/CharSets.pde -text
 test/data/PDE/DNASeqMatchToken.pde -text
 test/data/PDE/DNASeqMissingToken.pde -text
 test/data/PDE/Label.pde -text
@@ -344,9 +343,10 @@ test/data/PDE/MissingEndToken.pde -text
 test/data/PDE/MissingHeader.pde -text
 test/data/PDE/MissingMatrix.pde -text
 test/data/PDE/MissingMetaDefinition.pde -text
-test/data/PDE/SimpleCharSet.pde -text
+test/data/PDE/SimpleCharSet.pde -text svneol=unset#application/octet-stream
 test/data/PDE/SimpleDNASeq.pde -text
 test/data/PDE/SimpleProteinSeq.pde -text
+test/data/PDE/TaxonSet.pde -text
 test/data/PDE/UnequalSequenceLength.pde -text
 test/data/PDE/customMetaDNASeq.pde -text
 test/data/Phylip/Interleaved.phy -text

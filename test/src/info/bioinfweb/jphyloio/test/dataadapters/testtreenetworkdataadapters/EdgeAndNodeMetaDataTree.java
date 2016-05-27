@@ -124,6 +124,7 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 	public void writeNodeContentData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			if(nodeID.substring(nodeEdgeIDPrefix.length()).equals("n1")) {
+
 				receiver.add(new LiteralMetadataEvent("n1meta1", null, new URIOrStringIdentifier("a1", new QName("http://example.org/", "somePredicate")), 
 						LiteralContentSequenceType.SIMPLE));
 				receiver.add(new LiteralMetadataContentEvent(null, "100", new Integer(100)));

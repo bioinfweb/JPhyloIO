@@ -21,6 +21,8 @@ package info.bioinfweb.jphyloio.test;
 
 import static org.junit.Assert.*;
 
+import java.net.URI;
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
@@ -42,6 +44,7 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -243,6 +246,24 @@ public class JPhyloIOTestTools {
 		String result = assertLiteralMetaStartEvent(expectedPredicate, LiteralContentSequenceType.SIMPLE, reader);
   	assertLiteralMetaContentEvent(expectedOriginalType, expectedStringValue, expectedAlternativeStringValue, expectedObjectValue, testEndEvent, reader);		
 		return result;
+  }
+  
+  
+  public static String assertResourceMetaEvent(URIOrStringIdentifier expectedRel, URI expectedHref, String expectedAbout, boolean testEndEvent, JPhyloIOEventReader reader) throws Exception {
+  	assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEventType(EventContentType.META_RESOURCE, EventTopologyType.START, event);
+		
+		ResourceMetadataEvent metaInformationEvent = event.asResourceMetadataEvent();
+		assertEquals(expectedRel, metaInformationEvent.getRel());
+		assertEquals(expectedHref, metaInformationEvent.getHRef());
+		assertEquals(expectedAbout, metaInformationEvent.getAbout());
+  	
+  	if (testEndEvent) {
+			assertEndEvent(EventContentType.META_RESOURCE, reader);
+		}
+  	
+  	return metaInformationEvent.getID();
   }
   
   
