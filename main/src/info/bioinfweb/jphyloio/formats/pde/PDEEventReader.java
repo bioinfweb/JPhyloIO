@@ -51,19 +51,15 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -182,11 +178,10 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						StartElement element = event.asStartElement();
 						String tokenSetType = XMLUtils.readStringAttr(element, ATTR_DATATYPE, null);
-						int alignmentLength = XMLUtils.readIntAttr(element, ATTR_ALIGNMENT_LENGTH, 0);
 						
 						CharacterStateSetType type = null;
 						
-						if (tokenSetType.equals(DNA_TYPE)) {
+						if ((tokenSetType != null) && tokenSetType.equals(DNA_TYPE)) {
 							type = CharacterStateSetType.DNA;
 						}
 						else {
@@ -194,7 +189,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						}						
 						
 						streamDataProvider.setCharacterSetType(type);
-						streamDataProvider.setAlignmentLength(alignmentLength);
+						streamDataProvider.setAlignmentLength(XMLUtils.readIntAttr(element, ATTR_ALIGNMENT_LENGTH, 0));
 					}
 			});
 		
@@ -309,7 +304,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), LiteralContentSequenceType.SIMPLE));		
 							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataContentEvent(null, Boolean.toString(visibility), visibility)); //TODO use constant for boolean data type
+									new LiteralMetadataContentEvent(null, Boolean.toString(visibility), visibility, null)); //TODO use constant for boolean data type
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 						
@@ -446,7 +441,13 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						for (int i = 0; i < sequenceData.length(); i++) {
 							Character nextChar = sequenceData.charAt(i);
 							if (!nextChar.equals('\\') && specialToken.isEmpty()) {
-								sequence.add(Character.toString(nextChar));
+								if (sequence.size() < streamDataProvider.getAlignmentLength()) {
+									sequence.add(Character.toString(nextChar));
+								}
+								else {
+									throw new JPhyloIOReaderException("A sequence was found that was longer than the specified alignment length. "
+											+ "This is not allowed in PDE files.", event.getLocation());
+								}
 							}
 							else {
 								while ((i < sequenceData.length()) && (sequenceData.charAt(i) != ':') 
@@ -567,7 +568,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							resource = new URI(file.getPath());
 						}
 
-						getCurrentEventCollection().add(new ResourceMetadataEvent(getID(null, EventContentType.META_RESOURCE), null, predicate.getURI(), resource, null)); //TODO use custom meta identifier instead of predicate when resource meta event has been refactored
+						getCurrentEventCollection().add(new ResourceMetadataEvent(getID(null, EventContentType.META_RESOURCE), null, predicate, resource, null)); //TODO use custom meta identifier instead of predicate when resource meta event has been refactored
 						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 					}
 					catch (URISyntaxException e) {}

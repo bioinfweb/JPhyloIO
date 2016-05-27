@@ -24,8 +24,6 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.net.URI;
 
-import javax.xml.namespace.QName;
-
 
 
 /**
@@ -37,12 +35,12 @@ import javax.xml.namespace.QName;
  * @since 0.0.0
  */
 public class ResourceMetadataEvent extends LabeledIDEvent {
-	private QName rel;
+	private URIOrStringIdentifier rel;
 	private URI hRef;
 	private String about;
 	
 	
-	public ResourceMetadataEvent(String id, String label, QName rel, URI hRef, String about) {
+	public ResourceMetadataEvent(String id, String label, URIOrStringIdentifier rel, URI hRef, String about) {
 		super(EventContentType.META_RESOURCE, id, label);
 		this.rel = rel;
 		this.hRef = hRef;
@@ -50,7 +48,7 @@ public class ResourceMetadataEvent extends LabeledIDEvent {
 	}
 
 
-	public QName getRel() {
+	public URIOrStringIdentifier getRel() {
 		return rel;
 	}
 

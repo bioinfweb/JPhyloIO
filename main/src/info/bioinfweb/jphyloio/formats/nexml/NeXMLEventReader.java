@@ -164,7 +164,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			  			} 
 			  			catch (URISyntaxException e) {}
 			  			
-			  			streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(info.id, info.label, predicate.getURI(), href, about));	  			
+			  			streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(info.id, info.label, predicate, href, about));	  			
 			  		}
 			  		else {
 			  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + 

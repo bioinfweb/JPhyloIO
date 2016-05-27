@@ -130,7 +130,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			streamDataProvider.addToDocumentIDs(event.getID());
 			
 			if (event.getRel() != null) {
-				streamDataProvider.setNamespacePrefix(event.getRel().getPrefix(), event.getRel().getNamespaceURI());
+				streamDataProvider.setNamespacePrefix(event.getRel().getURI().getPrefix(), event.getRel().getURI().getNamespaceURI());
 			}
 		}
 	}
@@ -145,7 +145,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		streamDataProvider.writeLabeledIDAttributes(event, event.getAbout());
 		
 		if (event.getRel() != null) {
-			writer.writeAttribute(ATTR_REL.getLocalPart(), event.getRel().getLocalPart());		
+			writer.writeAttribute(ATTR_REL.getLocalPart(), event.getRel().getURI().getLocalPart());		
 		}
 		else {
 			throw new InternalError("Resource meta should have a predicate that is a QName.");

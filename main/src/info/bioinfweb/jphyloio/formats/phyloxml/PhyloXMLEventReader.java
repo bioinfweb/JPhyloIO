@@ -194,7 +194,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				
 				if ((XMLUtils.readStringAttr(element, ATTR_UNIT, null) != null) || (XMLUtils.readStringAttr(element, ATTR_ID_REF, null) != null) || appliesToAsAttribute == true) {
 					streamDataProvider.getCurrentEventCollection().add(
-							new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, predicate.getURI(), null, null));					
+							new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, predicate, null, null));					
 					streamDataProvider.setPropertyHasResource(true);
 					
 					if (appliesToAsAttribute) {
@@ -437,7 +437,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					}
 					
 					streamDataProvider.getCurrentEventCollection().add(
-							new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, PREDICATE_CLADE_REL, null, null));
+							new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, new URIOrStringIdentifier(null, PREDICATE_CLADE_REL), null, null));
 					
 					readAttributes(streamDataProvider, event.asStartElement(), ATTR_DISTANCE, PREDICATE_CLADE_REL_ATTR_DISTANCE, ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE);					
 				}
@@ -633,7 +633,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						try {
 							externalResource = new URI(uri);
 							streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(getID(null, EventContentType.META_RESOURCE), null, 
-									PREDICATE_TAXONOMY_URI_VALUE, externalResource, null));
+									new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_VALUE), externalResource, null));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		  			}
 		  			catch (URISyntaxException e) {

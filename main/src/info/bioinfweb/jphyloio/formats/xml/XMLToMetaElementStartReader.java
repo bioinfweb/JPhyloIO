@@ -42,7 +42,7 @@ public class XMLToMetaElementStartReader extends AbstractXMLElementReader {
 		
 		if (streamDataProvider.getNestedMetaNames().isEmpty()) {
 			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-					null, new URIOrStringIdentifier(null, element.getName()), null, LiteralContentSequenceType.XML));
+					null, new URIOrStringIdentifier(null, element.getName()), LiteralContentSequenceType.XML));
 		}
 		
 		streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));

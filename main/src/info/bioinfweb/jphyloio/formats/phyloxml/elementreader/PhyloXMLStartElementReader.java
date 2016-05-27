@@ -85,7 +85,8 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		
 		if (resourcePredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
-					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, resourcePredicate, null, null));
+					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, 
+							new URIOrStringIdentifier(null, resourcePredicate), null, null));
 			
 			if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
 				@SuppressWarnings("unchecked")

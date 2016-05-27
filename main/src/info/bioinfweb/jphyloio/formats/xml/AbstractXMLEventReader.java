@@ -228,7 +228,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 			result += getStreamDataProvider().getIDManager().createNewID();
 		}
 		
-		return result;
+		return result; //TODO check if ID is unique
 	}
 	
 	

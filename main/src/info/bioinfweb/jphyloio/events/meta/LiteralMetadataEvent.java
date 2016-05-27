@@ -33,34 +33,18 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  */
 public class LiteralMetadataEvent extends LabeledIDEvent {
 	private URIOrStringIdentifier predicate;
-	private String key;  //TODO remove when Nexus and other text formats are adjusted to new predicate object
 	private LiteralContentSequenceType sequenceType;
 	
 	
 	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, LiteralContentSequenceType sequenceType) {
 		super(EventContentType.META_LITERAL, id, label);
 		this.predicate = predicate;
-		this.key = predicate.getStringRepresentation();  //TODO Remove, when key property is removed.
-		this.sequenceType = sequenceType;
-	}
-
-
-	@Deprecated
-	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, String key, LiteralContentSequenceType sequenceType) {
-		super(EventContentType.META_LITERAL, id, label);
-		this.predicate = predicate;
-		this.key = key;
 		this.sequenceType = sequenceType;
 	}
 
 
 	public URIOrStringIdentifier getPredicate() {
 		return predicate;
-	}
-
-
-	public String getKey() {
-		return key;
 	}
 
 
