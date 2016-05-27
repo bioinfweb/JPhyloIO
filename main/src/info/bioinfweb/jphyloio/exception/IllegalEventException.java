@@ -57,7 +57,7 @@ public class IllegalEventException extends InconsistentAdapterDataException {
 		String message;
 		if (parentEvent == null) {
 			message = "An event of the type " + invalidEvent.getType().getContentType() + " was encountered under the root event of this receiver " + 
-					" which is invalid in this receiver.";
+					"which is invalid here.";
 		}
 		else {
 			message = "An event of the type " + invalidEvent.getType().getContentType() + " was encountered under an event of the type " + 
