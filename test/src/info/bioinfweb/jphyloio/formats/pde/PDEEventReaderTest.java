@@ -35,59 +35,62 @@ import static org.junit.Assert.fail;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.test.JPhyloIOTestTools;
 
 import java.awt.Color;
 import java.io.File;
+import java.net.URI;
 
 import org.junit.Test;
 
 
 
 public class PDEEventReaderTest implements PDEConstants {
-//	@Test
-//	public void testOutputPDE() {
-//		try {
-//			PDEEventReader reader = new PDEEventReader(new File("data/PDE/SimpleCharSet.pde"), new ReadWriteParameterMap());
-//			try {
-//				while (reader.hasNextEvent()) {
-//					JPhyloIOEvent event = reader.next();
-//					System.out.println(event.getType());
-////					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
-//////						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
-////					}
-////					else if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
-////						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-////							if (event.asLiteralMetadataEvent().getPredicate() != null) {
-////								if (event.asLiteralMetadataEvent().getPredicate().getURI() != null) {
-//////									System.out.println("Literal: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
-////								}
-////							}
-////						}
-////					}
-////					else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
-////						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-//////							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart() + ", " + event.asResourceMetadataEvent().getHRef().toString());
-////						}
-////					}
-////					else if (event.getType().getContentType().equals(EventContentType.CHARACTER_SET_INTERVAL)) {
-//////						System.out.println(event.asCharacterSetEvent().getStart() + " " + event.asCharacterSetEvent().getEnd());
-////					}
-//				}
-//			}
-//			finally {
-//				reader.close();
-//			}
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//			fail(e.getLocalizedMessage());
-//		}
-//	}
+	@Test
+	public void testOutputPDE() {
+		try {
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/MissingMatrix.pde"), new ReadWriteParameterMap());
+			try {
+				while (reader.hasNextEvent()) {
+					JPhyloIOEvent event = reader.next();
+					System.out.println(event.getType());
+//					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+////						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
+//					}
+//					else if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+//						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+//							if (event.asLiteralMetadataEvent().getPredicate() != null) {
+//								if (event.asLiteralMetadataEvent().getPredicate().getURI() != null) {
+////									System.out.println("Literal: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
+//								}
+//							}
+//						}
+//					}
+//					else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
+//						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+////							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart() + ", " + event.asResourceMetadataEvent().getHRef().toString());
+//						}
+//					}
+//					else if (event.getType().getContentType().equals(EventContentType.CHARACTER_SET_INTERVAL)) {
+////						System.out.println(event.asCharacterSetEvent().getStart() + " " + event.asCharacterSetEvent().getEnd());
+//					}
+				}
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 	
 	
 	@Test
@@ -129,7 +132,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier("string", null), "some sequence", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("TT-ACGATGAATTGCTGGCA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -147,6 +150,74 @@ public class PDEEventReaderTest implements PDEConstants {
 			fail(e.getLocalizedMessage());
 		}
 	}
+	
+	
+	@Test
+	public void readNoAlignment() {
+		try {
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/MissingMatrix.pde"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, reader);
+				assertEndEvent(EventContentType.META_LITERAL, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu0", "A", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+//	@Test
+//	public void readNoAlignmentAndNoHeader() {
+//		try {
+//			PDEEventReader reader = new PDEEventReader(new File("data/PDE/MissingMatrix.pde"), new ReadWriteParameterMap());
+//			try {
+//				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+//				
+//				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, reader);
+//				assertEndEvent(EventContentType.META_LITERAL, reader);
+//				
+//				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
+//				assertLabeledIDEvent(EventContentType.OTU, "otu0", null, reader);
+//				assertEndEvent(EventContentType.OTU, reader);
+//				assertLabeledIDEvent(EventContentType.OTU, "otu1", null, reader);
+//				assertEndEvent(EventContentType.OTU, reader);
+//				assertLabeledIDEvent(EventContentType.OTU, "otu2", null, reader);
+//				assertEndEvent(EventContentType.OTU, reader);
+//				assertEndEvent(EventContentType.OTU_LIST, reader);
+//				
+//				assertEndEvent(EventContentType.DOCUMENT, reader);
+//				
+//				assertFalse(reader.hasNextEvent());
+//			}
+//			finally {
+//				reader.close();
+//			}
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//			fail(e.getLocalizedMessage());
+//		}
+//	}
 	
 	
 	@Test
@@ -194,6 +265,123 @@ public class PDEEventReaderTest implements PDEConstants {
 	
 	
 	@Test
+	public void readUnequalSequenceLength() throws Exception {
+		PDEEventReader reader = new PDEEventReader(new File("data/PDE/UnequalSequenceLength.pde"), new ReadWriteParameterMap());
+		try {
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, reader);
+				assertEndEvent(EventContentType.META_LITERAL, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet3", null, reader);
+				assertCharacterSetEvent(0, 20, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet3", reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertCharactersEvent("ACGTCGCTCGAG-CTGATCG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				
+				fail("Exception not thrown");
+			}
+			catch (JPhyloIOReaderException e) {
+				assertEquals(e.getMessage(), "A sequence was found that was shorter than the specified alignment length. This is not allowed in PDE files.");
+			}
+		}
+		finally {
+			reader.close();
+		}		
+	}
+	
+	
+	@Test
+	public void readMissingMetaDefinitions() throws Exception {
+		try {
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/MissingMetaDefinition.pde"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, reader);
+				assertEndEvent(EventContentType.META_LITERAL, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu0", "A", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet3", null, reader);
+				assertCharacterSetEvent(0, 23, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet3", reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "23", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "A", "otu0", reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);	
+				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new URI("someFile.scf"), null, true, reader);
+				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new URI("someFile.scf"), null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ACCESS_NUMBER), new URIOrStringIdentifier(META_TYPE_NUMBER, null), "45", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some comment", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("testNumber", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), new URIOrStringIdentifier(META_TYPE_NUMBER, null), 
+						"18", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("33", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), null, "some String", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("34", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), null, "someFile.txt", null, null, true, reader);
+				assertCharactersEvent("ACTGACTGACAACTGACTGACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "C", "otu2", reader);
+				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new File("\\\\nwz.wwu.de\\dfs\\home\\s\\s_wiec03\\Desktop\\sample.scf").toURI(), null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some comment", null, null, true, reader);				
+				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
 	public void readLabeledAlignment() {
 		try {
 			PDEEventReader reader = new PDEEventReader(new File("data/PDE/Label.pde"), new ReadWriteParameterMap());
@@ -232,7 +420,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier("string", null), "some sequence", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("TT-ACGATGAATTGCTGGCA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -291,7 +479,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier("string", null), "some sequence", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -367,7 +555,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier("string", null), "some sequence", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -426,7 +614,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier("string", null), "some sequence", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("ATWSATWSATWSATWSATWS", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -446,55 +634,73 @@ public class PDEEventReaderTest implements PDEConstants {
 	}
 	
 	
-//	@Test
-//	public void readSequencesWithCustomMeta() { //TODO create assertResourceMeta()
-//		try {
-//			PDEEventReader reader = new PDEEventReader(new File("data/PDE/customMetaDNASeq.pde"), new ReadWriteParameterMap());
-//			try {
-//				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-//				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus0", null, reader);
-//				assertLabeledIDEvent(EventContentType.OTU, "otu0", "sequence1", reader);
-//				assertEndEvent(EventContentType.OTU, reader);
-//				assertLabeledIDEvent(EventContentType.OTU, "otu1", "sequence2", reader);
-//				assertEndEvent(EventContentType.OTU, reader);
-//				assertLabeledIDEvent(EventContentType.OTU, "otu2", "sequence3", reader);
-//				assertEndEvent(EventContentType.OTU, reader);
-//				assertEndEvent(EventContentType.OTU_LIST, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix1", null, "otus0", reader);
-//				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet2", null, reader);
-//				assertCharacterSetEvent(0, 20, reader);
-//				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
-//				
-//				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet2", reader);
-//				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "sequence1", "otu0", reader);
-//				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
-//				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "sequence2", "otu1", reader);
-//				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
-//				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "sequence3", "otu2", reader);
-//				assertCharactersEvent("ACTGACTGACTGACTGACTG", reader);
-//				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//				
-//				assertEndEvent(EventContentType.ALIGNMENT, reader);
-//				assertEndEvent(EventContentType.DOCUMENT, reader);
-//	
-//				assertFalse(reader.hasNextEvent());
-//			}
-//			finally {
-//				reader.close();
-//			}
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//			fail(e.getLocalizedMessage());
-//		}
-//	}
+	@Test
+	public void readSequencesWithCustomMeta() {
+		try {
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/customMetaDNASeq.pde"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, reader);
+				assertEndEvent(EventContentType.META_LITERAL, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu0", "A", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet3", null, reader);
+				assertCharacterSetEvent(0, 23, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, "charSet3", reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "23", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "A", "otu0", reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);	
+				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new URI("someFile.scf"), null, true, reader);
+				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new URI("someFile.scf"), null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ACCESS_NUMBER), new URIOrStringIdentifier(META_TYPE_NUMBER, null), "45", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some comment", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("testNumber", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), new URIOrStringIdentifier(META_TYPE_NUMBER, null), 
+						"18", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier("testString", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), new URIOrStringIdentifier(META_TYPE_STRING, null), "some String", null, null, true, reader);
+				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier("testFile", ReadWriteConstants.PREDICATE_HAS_RESOURCE_METADATA), new URI("someFile.txt"), null, true, reader);
+				assertCharactersEvent("ACTGACTGACAACTGACTGACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "C", "otu2", reader);
+				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new File("\\\\nwz.wwu.de\\dfs\\home\\s\\s_wiec03\\Desktop\\sample.scf").toURI(), null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some comment", null, null, true, reader);				
+				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 	
 	
 	@Test
@@ -536,7 +742,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier("string", null), "some sequence", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -557,7 +763,7 @@ public class PDEEventReaderTest implements PDEConstants {
 	
 	
 	@Test
-	public void readSequenceWithUnknownTokens() { //TODO PhyDE uses wrong match tokens
+	public void readSequenceWithUnknownTokens() {
 		try {
 			PDEEventReader reader = new PDEEventReader(new File("data/PDE/DNASeqMissingToken.pde"), new ReadWriteParameterMap());
 			try {
@@ -595,7 +801,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier("string", null), "some sequence", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("AAAAGTGATAACTT???????????", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
