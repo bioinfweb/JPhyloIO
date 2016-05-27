@@ -41,14 +41,6 @@ public interface JPhyloIOEvent {
 	public EventType getType();
 	
 	/**
-	 * Casts this event to a meta information event.
-	 * 
-	 * @return a reference to this event as a meta information event
-	 * @throws ClassCastException if this event is not an instance of {@link MetaInformationEvent}
-	 */
-	public MetaInformationEvent asMetaInformationEvent() throws ClassCastException;
-	
-	/**
 	 * Casts this event to a resource metadata event.
 	 * 
 	 * @return a reference to this event as a resource metadata event

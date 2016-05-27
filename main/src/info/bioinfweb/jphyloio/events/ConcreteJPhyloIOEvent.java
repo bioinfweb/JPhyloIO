@@ -70,12 +70,6 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
-	public MetaInformationEvent asMetaInformationEvent() throws ClassCastException {
-		return (MetaInformationEvent)this;
-	}
-
-
-	@Override
 	public ResourceMetadataEvent asResourceMetadataEvent() throws ClassCastException {
 		return (ResourceMetadataEvent)this;
 	}
