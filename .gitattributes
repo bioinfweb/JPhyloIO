@@ -260,6 +260,7 @@ test/data/Fasta/Comment.fasta -text
 test/data/Fasta/Comment.fasta.gz -text
 test/data/Fasta/Indices.fasta -text
 test/data/Fasta/MatchToken.fasta -text
+test/data/Fasta/MatchTokenUnequalSequenceLength.txt -text svneol=unset#text/plain
 test/data/Fasta/OutputTestException.fasta -text
 test/data/Fasta/OutputTestLongTokens.fasta -text
 test/data/Fasta/OutputTestShortTokens.fasta -text
@@ -342,6 +343,7 @@ test/data/PDE/MissingEndToken.pde -text
 test/data/PDE/MissingHeader.pde -text
 test/data/PDE/MissingMatrix.pde -text
 test/data/PDE/MissingMetaDefinition.pde -text
+test/data/PDE/SimpleCharSet.pde -text
 test/data/PDE/SimpleDNASeq.pde -text
 test/data/PDE/SimpleProteinSeq.pde -text
 test/data/PDE/UnequalSequenceLength.pde -text

@@ -14,10 +14,9 @@ Wed May 25 15:44:41 CEST 2016  -->
 </seq>
 </header>
 <matrix><block x="0" y="0" width="20" height="3">
-ACGTCGCTCGAG-CTGATCGGGGT
-CACGGTG--CTAG.A.....
-\FF
-TT-ACGATGA.TTG.A
+ACGTCGCTCGAG-CTGATCG
+GGGTCACGGTG--CTAG.A.\FF
+....TT-ACGATGA.TTG.A
 </block>
 </matrix></alignment>
 </phyde>
