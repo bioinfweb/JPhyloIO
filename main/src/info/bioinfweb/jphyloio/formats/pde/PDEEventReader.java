@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -66,6 +67,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+
+import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
@@ -159,8 +162,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-								new URIOrStringIdentifier(null, null), event.asCharacters().getData(), isContinued)); //TODO use constant for string data type
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, event.asCharacters().getData(), isContinued));
 					}
 			});
 		
@@ -224,7 +226,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						Matcher matcher = META_DEFINITION_PATTERN.matcher(data);
 						int offset = 0;
 						while (matcher.find(offset)) {
-							long index = Long.parseLong(matcher.group(1));
+							int index = Integer.parseInt(matcher.group(1));
 							streamDataProvider.getMetaColumns().put(index, new PDEMetaColumnDefintion(
 									index, matcher.group(2), PDEMetaColumnType.parseColumnType(matcher.group(3))));
 							offset = matcher.end();
@@ -253,7 +255,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.setCurrentSequenceIndex(XMLUtils.readIntAttr(event.asStartElement(), ATTR_SEQUENCE_INDEX, -1));
-						streamDataProvider.getSequenceInformations().add(new HashMap<Integer, String>());
+						streamDataProvider.getSequenceInformations().add(new ListOrderedMap<Integer, String>());
 					}
 			});
 		
@@ -264,7 +266,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						StartElement element = event.asStartElement();
 						int metaColumnID = XMLUtils.readIntAttr(element, ATTR_ID, 0);
 						String value = null;
-						XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();
+						XMLEvent nextEvent = streamDataProvider.getEventReader().getXMLReader().peek();						
 						
 						if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
 							String characterData = nextEvent.asCharacters().getData();
@@ -283,7 +285,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							streamDataProvider.getSequenceIndexToOTUID().put(index, otuID);
 							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, otuID, value));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.OTU));
-						}
+						}						
 					}
 			});
 		
@@ -304,7 +306,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), LiteralContentSequenceType.SIMPLE));		
 							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataContentEvent(null, Boolean.toString(visibility), visibility, null)); //TODO use constant for boolean data type
+									new LiteralMetadataContentEvent(null, Boolean.toString(visibility), visibility, null));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 						
@@ -315,7 +317,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), LiteralContentSequenceType.SIMPLE));		
 							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataContentEvent(null, charSetColor.toString(), charSetColor)); //TODO use constant for color data type								
+									new LiteralMetadataContentEvent(null, charSetColor.toString(), charSetColor));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 					}
@@ -424,6 +426,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
 						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
 								getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE), streamDataProvider.getSequenceInformations().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
+						streamDataProvider.setCurrentSequenceLength(0);
 						addSequenceMetaData(streamDataProvider);
 					}
 			});
@@ -465,9 +468,17 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 										if (sequence.size() != 0) {
 											streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
 													streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+											streamDataProvider.setCurrentSequenceLength(streamDataProvider.getCurrentSequenceLength() + sequence.size());
 											sequence = new ArrayList<String>();
 										}
-										streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+										
+										if (streamDataProvider.getCurrentSequenceLength() == streamDataProvider.getAlignmentLength()) {
+											streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+										}
+										else {
+											throw new JPhyloIOReaderException("A sequence was found that was shorter than the specified alignment length. "
+													+ "This is not allowed in PDE files.", event.getLocation());
+										}
 										
 										int seqIndex = streamDataProvider.getCurrentSequenceIndex() + 1;
 										
@@ -477,6 +488,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 											streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
 													getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE), streamDataProvider.getSequenceInformations().get(seqIndex).get(1), 
 													streamDataProvider.getSequenceIndexToOTUID().get(seqIndex)));
+											streamDataProvider.setCurrentSequenceLength(0);
 											addSequenceMetaData(streamDataProvider);
 										}
 									}
@@ -488,6 +500,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 										}
 										streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
 												streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+										streamDataProvider.setCurrentSequenceLength(streamDataProvider.getCurrentSequenceLength() + sequence.size());
 										sequence = new ArrayList<String>();
 									}
 									
@@ -499,26 +512,38 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							
 						if (sequence.size() != 0) {
 							streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+							streamDataProvider.setCurrentSequenceLength(streamDataProvider.getCurrentSequenceLength() + sequence.size());
+							
+							if (streamDataProvider.getXMLReader().peek().getEventType() != XMLStreamConstants.CHARACTERS ) {
+								if (streamDataProvider.getCurrentSequenceLength() == streamDataProvider.getAlignmentLength()) {
+									streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+								}
+								else {
+									throw new JPhyloIOReaderException("A sequence was found that was shorter than the specified alignment length. "
+											+ "This is not allowed in PDE files.", event.getLocation());
+								}
+							}							
 						}
 					}
 			});
 	}
 	
 	
-	private void addSequenceMetaData(PDEReaderStreamDataProvider streamDataProvider) {
-		Map<Integer, String> sequenceInfo = streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex());	
+	private void addSequenceMetaData(PDEReaderStreamDataProvider streamDataProvider) throws JPhyloIOReaderException {
+		Map<Integer, String> sequenceInfo = streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex());
 		URIOrStringIdentifier datatype = null;
-		URIOrStringIdentifier predicate = null;
+		URIOrStringIdentifier predicate;
+		String columnLabel = null;
 		
 		for (int key : sequenceInfo.keySet()) {
-			PDEMetaColumnDefintion metaColumn = streamDataProvider.getMetaColumns().get(((long)key));
+			PDEMetaColumnDefintion metaColumn = streamDataProvider.getMetaColumns().get(key);
 			
 			if (key == META_ID_ACCESS_NUMBER) {
-				datatype = new URIOrStringIdentifier("int", null); //TODO use constant for int data type
+				datatype = new URIOrStringIdentifier(META_TYPE_NUMBER, null);
 				predicate = new URIOrStringIdentifier(null, PREDICATE_ACCESS_NUMBER);
 			}
 			else if (key == META_ID_COMMENT) {
-				datatype = new URIOrStringIdentifier("string", null); //TODO use constant for string data type
+				datatype = new URIOrStringIdentifier(META_TYPE_STRING, null);
 				predicate = new URIOrStringIdentifier(null, PREDICATE_COMMENT);
 			}
 			else if (key == META_ID_SEQUENCE_LABEL) {
@@ -530,28 +555,28 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				predicate = new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE);
 			}
 			else {
+				predicate = new URIOrStringIdentifier(Integer.toString(key), PREDICATE_HAS_LITERAL_METADATA);
+				datatype = null;
+				columnLabel = Integer.toString(key);
+				
 				if (metaColumn != null) {
-					predicate = new URIOrStringIdentifier(metaColumn.getName(), PREDICATE_HAS_LITERAL_METADATA);
+					predicate = new URIOrStringIdentifier(metaColumn.getName(), PREDICATE_HAS_LITERAL_METADATA);					
+					columnLabel = metaColumn.getName();
 					
 					switch (metaColumn.getType()) {
-						case UNKNOWN:
-						case STRING:
-							datatype = new URIOrStringIdentifier("string", null); //TODO use constant for string data type
-							break;
-						case NUMBER:
-							datatype = new URIOrStringIdentifier("int", null); //TODO use constant for int data type
-							break;
 						case FILE:
-							datatype = null;
 							predicate = new URIOrStringIdentifier(metaColumn.getName(), PREDICATE_HAS_RESOURCE_METADATA);
 							break;
+						default:
+							datatype = new URIOrStringIdentifier(metaColumn.getType().toString(), null);
+							break;
 					}					
-				}
+				}				
 			}
-				
+			
 			if (predicate != null) {
-				if (datatype != null) {
-					getCurrentEventCollection().add(new LiteralMetadataEvent(getID(null, EventContentType.META_LITERAL), null, 
+				if (!predicate.getURI().equals(PREDICATE_HAS_RESOURCE_METADATA) && !predicate.getURI().equals(PREDICATE_LINKED_FILE)) {
+					getCurrentEventCollection().add(new LiteralMetadataEvent(getID(null, EventContentType.META_LITERAL), columnLabel, 
 							predicate, LiteralContentSequenceType.SIMPLE));
 					getCurrentEventCollection().add(new LiteralMetadataContentEvent(datatype, sequenceInfo.get(key), false));
 					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
@@ -568,7 +593,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							resource = new URI(file.getPath());
 						}
 
-						getCurrentEventCollection().add(new ResourceMetadataEvent(getID(null, EventContentType.META_RESOURCE), null, predicate, resource, null)); //TODO use custom meta identifier instead of predicate when resource meta event has been refactored
+						getCurrentEventCollection().add(new ResourceMetadataEvent(getID(null, EventContentType.META_RESOURCE), columnLabel, predicate, resource, null));
 						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 					}
 					catch (URISyntaxException e) {}

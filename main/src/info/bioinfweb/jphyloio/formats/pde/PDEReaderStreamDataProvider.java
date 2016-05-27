@@ -37,12 +37,13 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDEEventReader>{
 	private int alignmentLength;
 	private int currentSequenceIndex;
+	private int currentSequenceLength;
 	
 	private String otuListID;	
 	private Map<Integer, String> sequenceIndexToOTUID = new HashMap<Integer, String>();
 	
 	private List<Map<Integer, String>> sequenceInformations = new ArrayList<Map<Integer,String>>();	
-	private Map<Long, PDEMetaColumnDefintion> metaColumns = new HashMap<Long, PDEMetaColumnDefintion>();
+	private Map<Integer, PDEMetaColumnDefintion> metaColumns = new HashMap<Integer, PDEMetaColumnDefintion>();
 	
 	
 	public PDEReaderStreamDataProvider(PDEEventReader eventReader) {
@@ -85,12 +86,22 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 	}
 
 
+	protected int getCurrentSequenceLength() {
+		return currentSequenceLength;
+	}
+
+
+	protected void setCurrentSequenceLength(int currentSequenceLength) {
+		this.currentSequenceLength = currentSequenceLength;
+	}
+
+
 	public List<Map<Integer, String>> getSequenceInformations() {
 		return sequenceInformations;
 	}
 
 
-	public Map<Long, PDEMetaColumnDefintion> getMetaColumns() {
+	public Map<Integer, PDEMetaColumnDefintion> getMetaColumns() {
 		return metaColumns;
 	}
 }
