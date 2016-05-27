@@ -260,7 +260,7 @@ test/data/Fasta/Comment.fasta -text
 test/data/Fasta/Comment.fasta.gz -text
 test/data/Fasta/Indices.fasta -text
 test/data/Fasta/MatchToken.fasta -text
-test/data/Fasta/MatchTokenUnequalSequenceLength.txt -text svneol=unset#text/plain
+test/data/Fasta/MatchTokenUnequalSequenceLength.fasta -text svneol=unset#text/plain
 test/data/Fasta/OutputTestException.fasta -text
 test/data/Fasta/OutputTestLongTokens.fasta -text
 test/data/Fasta/OutputTestShortTokens.fasta -text
