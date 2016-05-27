@@ -42,9 +42,14 @@ public class ResourceMetadataEvent extends LabeledIDEvent {
 	
 	public ResourceMetadataEvent(String id, String label, URIOrStringIdentifier rel, URI hRef, String about) {
 		super(EventContentType.META_RESOURCE, id, label);
-		this.rel = rel;
-		this.hRef = hRef;
-		this.about = about;
+		if (rel == null) {
+			throw new NullPointerException("\"rel\" must not be null.");
+		}
+		else {
+			this.rel = rel;
+			this.hRef = hRef;
+			this.about = about;
+		}
 	}
 
 

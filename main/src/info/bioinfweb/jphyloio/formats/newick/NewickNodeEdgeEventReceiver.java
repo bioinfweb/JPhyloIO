@@ -36,6 +36,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 
@@ -105,7 +106,12 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 				
 				String key = event.getPredicate().getStringRepresentation();
 				if (key == null) {
-					key = event.getPredicate().getURI().getLocalPart();  //TODO Should this be handled this way?
+					if (event.getPredicate().getURI() == null) {
+						throw new JPhyloIOWriterException("A literal metadata event without predicate or alternative string representation was encountered.");  // Should not happen, since this was already checked in the constructor of URIOrStringIdentifier.
+					}
+					else {
+						key = event.getPredicate().getURI().getLocalPart();  // uri cannot be null, if stringRepresentation was null. 
+					}
 				}
 				metadataList.add(new Metadata(key));
 				//TODO Add values later. Possibly throw exception e.g. in handleMetaEndEvent, if no value was specified or allow empty annotations.

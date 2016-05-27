@@ -38,8 +38,16 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 	
 	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, LiteralContentSequenceType sequenceType) {
 		super(EventContentType.META_LITERAL, id, label);
-		this.predicate = predicate;
-		this.sequenceType = sequenceType;
+		if (predicate == null) {
+			throw new NullPointerException("The predicate must not be null.");
+		}
+		else if (sequenceType == null) {
+			throw new NullPointerException("The sequence type must not be null.");
+		}
+		else {
+			this.predicate = predicate;
+			this.sequenceType = sequenceType;
+		}
 	}
 
 

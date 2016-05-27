@@ -28,10 +28,15 @@ public class URIOrStringIdentifier {
 	private QName uri;
 	
 	
-	public URIOrStringIdentifier(String alternativeStringRepresentation, QName predicate) {
+	public URIOrStringIdentifier(String stringRepresentation, QName predicate) {
 		super();
-		this.stringRepresentation = alternativeStringRepresentation;		
-		this.uri = predicate;		
+		if ((stringRepresentation == null) && (predicate == null)) {
+			throw new IllegalArgumentException("At least one of \"predicate\" or \"stringRepresentation\" must be different from null.");
+		}
+		else {
+			this.stringRepresentation = stringRepresentation;		
+			this.uri = predicate;
+		}
 	}
 
 
