@@ -273,6 +273,7 @@ test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
 test/data/NeXML/EmptyCURIEPrefix.xml -text svneol=unset#text/plain
 test/data/NeXML/LargeSequences.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaCustomXML.xml -text svneol=unset#text/plain
+test/data/NeXML/MetaCustomXMLforJAXB.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml.gz -text
 test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
