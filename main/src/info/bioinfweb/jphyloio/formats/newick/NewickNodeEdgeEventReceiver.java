@@ -103,7 +103,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 			if (event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE) || 
 					event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE_ARRAY)) {
 				
-				String key = event.getKey();
+				String key = event.getPredicate().getStringRepresentation();
 				if (key == null) {
 					key = event.getPredicate().getURI().getLocalPart();  //TODO Should this be handled this way?
 				}
