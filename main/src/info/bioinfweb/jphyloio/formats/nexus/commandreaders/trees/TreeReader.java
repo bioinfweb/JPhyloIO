@@ -53,7 +53,6 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 				if (reader.peekChar() == KEY_VALUE_SEPARATOR) {
 					reader.read();  // Skip KEY_VALUE_SEPARATOR.
 					newickStringReader = new NewickStringReader(getStreamDataProvider(), label, 
-							getStreamDataProvider().getBlockLinks().get(BLOCK_NAME_TAXA),
 							new NexusNewickReaderNodeLabelProcessor(getStreamDataProvider()));
 				}
 				else {

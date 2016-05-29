@@ -19,13 +19,18 @@
 package info.bioinfweb.jphyloio.formats.nexus.blockhandlers;
 
 
+import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
 
 
-public class TreesBlockHandler extends AbstractNexusBlockHandler implements NexusBlockHandler, NexusConstants {
+public class TreesBlockHandler extends AbstractNexusBlockHandler implements NexusBlockHandler, NexusConstants, ReadWriteConstants {
 	public TreesBlockHandler() {
 		super(new String[]{BLOCK_NAME_TREES});
 	}
@@ -33,16 +38,29 @@ public class TreesBlockHandler extends AbstractNexusBlockHandler implements Nexu
 
 	@Override
 	public void handleBegin(NexusReaderStreamDataProvider streamDataProvider) {
-		streamDataProvider.getTreesTranslationTable().clear();  // Usually not necessary. Just to make sure, that no other classes left any data in it. 
+		streamDataProvider.getTreesTranslationTable().clear();  // Usually not necessary. Just to make sure, that no other classes left any data in it.
+		streamDataProvider.getSharedInformationMap().put(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID, 
+				DEFAULT_TREES_ID_PREFIX + streamDataProvider.getIDManager().createNewID());
 	}
 
 	
 	@Override
 	public void handleEnd(NexusReaderStreamDataProvider streamDataProvider) {
+		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE_NETWORK_GROUP));
 		streamDataProvider.getTreesTranslationTable().clear();  // Clear for another possible upcoming TREES block.
 	}
 
 
 	@Override
-	public void beforeCommand(NexusReaderStreamDataProvider streamDataProvider,	String commandName, NexusCommandEventReader commandReader) {}
+	public void beforeCommand(NexusReaderStreamDataProvider streamDataProvider,	String commandName, NexusCommandEventReader commandReader) {
+		ParameterMap map = streamDataProvider.getSharedInformationMap();
+		if (!map.getBoolean(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, false) 
+				&& (commandName.equals(COMMAND_NAME_TREE))) {  // Fire start event, as soon as one of these commands is encountered.
+			
+			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, 
+					map.getString(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID),	
+					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));  //TODO The default OTUs ID for TREES blocks without LINK commands does not seem to be returned here.
+			map.put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
+		}
+	}
 }

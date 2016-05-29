@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -84,7 +85,6 @@ public class NewickStringReader implements ReadWriteConstants {
 	
 	private TextReaderStreamDataProvider<?> streamDataProvider;
 	private String treeLabel;
-	private String linkedOTUsID;
 	private NewickReaderNodeLabelProcessor nodeLabelProcessor;
 	private NewickScanner scanner;
 	private Stack<Queue<NodeEdgeInfo>> passedSubnodes;
@@ -101,12 +101,10 @@ public class NewickStringReader implements ReadWriteConstants {
 	 *        from the underlying reader. If a string is specified, only one tree is read and the specified label is used for it.
 	 *        If {@code null} is specified, multiple trees are read until the end of the file is reached. None of them gets a
 	 *        defined label.)
-	 * @param linkedOTUsID the ID of the OTU list associated with the tree to be read (Maybe {@code null} if no OTU list is
-	 *        associated.)
 	 * @param nodeLabelProcessor the node label processor to be used to possibly translate node labels in Newick strings
 	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
-	public NewickStringReader(TextReaderStreamDataProvider<?> streamDataProvider, String treeLabel, String linkedOTUsID,
+	public NewickStringReader(TextReaderStreamDataProvider<?> streamDataProvider, String treeLabel, 
 			NewickReaderNodeLabelProcessor nodeLabelProcessor) {
 		
 		super();
@@ -120,7 +118,6 @@ public class NewickStringReader implements ReadWriteConstants {
 		
 		this.streamDataProvider = streamDataProvider;
 		this.treeLabel = treeLabel;
-		this.linkedOTUsID = linkedOTUsID;
 		this.nodeLabelProcessor = nodeLabelProcessor;
 		
 		scanner = new NewickScanner(streamDataProvider.getDataReader(), treeLabel == null);
@@ -386,8 +383,8 @@ public class NewickStringReader implements ReadWriteConstants {
 					addCommentEvent(scanner.nextToken());
 				}
 				else {
-					streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, 
-							DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), treeLabel, linkedOTUsID));
+					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, 
+							DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), treeLabel));
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 						boolean currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 						scanner.nextToken();  // Skip rooted token.
