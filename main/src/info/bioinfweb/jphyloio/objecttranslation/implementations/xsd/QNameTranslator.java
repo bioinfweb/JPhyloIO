@@ -44,6 +44,7 @@ public class QNameTranslator extends SimpleValueTranslator<QName> {
 	
 	@Override
 	public QName representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
+		//TODO Also use DatatypeConverter here instead.
 		int splitPos = representation.indexOf(XMLUtils.QNAME_SEPARATOR);
 		if (splitPos == -1) {
 			return new QName(representation);
@@ -54,12 +55,12 @@ public class QNameTranslator extends SimpleValueTranslator<QName> {
 		}
 		//TODO Should any additional validation (e.g. of NCNames) be done in here?
 		//TODO Should parsing QNames including "{namespaceURI} also be supported?
-		//TODO Possibly move this implementation to XMLUtils
 	}
 
 
 	@Override
 	public String javaToRepresentation(QName object) throws UnsupportedOperationException, ClassCastException {
+		//TODO Also use DatatypeConverter here instead.
 		if ("".equals(object.getPrefix())) {  // Constructing instances with null is not possible.
 			return object.getLocalPart();
 		}
