@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 import java.io.IOException;
 
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -31,6 +32,15 @@ import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataExceptio
 
 
 
+/**
+ * Abstract base class for converting simple types that can be described by strings and do not need a more complex
+ * XML representation.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ *
+ * @param <O> the type of Java object this translator instance is able to handle
+ */
 public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<O> {
 	public static final int MAX_STRING_REPRESENTATION_LENGTH = 16 * 1024;
 	
@@ -42,8 +52,10 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	
 
 	/**
+	 * Converts the object by invoking its {@link Object#toString()} method.
 	 * 
-	 * 
+	 * @param object the object to be converted
+	 * @return the string representation of the object 
 	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#javaToStringRepresentation(java.lang.Object)
 	 */
 	@Override
@@ -52,12 +64,30 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	}
 	
 
+	/**
+	 * Writes the string representation of the specified object to an XML stream. (Calls {@link #javaToStringRepresentation(Object)} 
+	 * internally.)
+	 * 
+	 * @param writer the XML stream writer
+	 * @param object the object to be converted
+	 */
 	@Override
 	public void writeXMLRepresentation(XMLStreamWriter writer, O object) throws IOException, XMLStreamException {
 		writer.writeCharacters(javaToStringRepresentation(object));
 	}
 
 	
+	/**
+	 * Reads an object from the character data available at the current position of the XML reader. Character data is consumed until
+	 * an event different from {@link XMLStreamConstants#CHARACTERS} is consumed. If no event of this type is available, parsing the 
+	 * empty string is tried. (Calls {@link #representationToJava(String)} internally.)
+	 * 
+	 * @param reader the XML event reader to read the data from
+	 * @return the parsed object
+	 * 
+	 * @throws JPhyloIOReaderException if the textual data found at the current position is longer than 
+	 *         {@link #MAX_STRING_REPRESENTATION_LENGTH}
+	 */
 	@Override
 	public O readXMLRepresentation(XMLEventReader reader) throws IOException,	XMLStreamException, InvalidObjectSourceDataException {
 		StringBuilder text = new StringBuilder();
