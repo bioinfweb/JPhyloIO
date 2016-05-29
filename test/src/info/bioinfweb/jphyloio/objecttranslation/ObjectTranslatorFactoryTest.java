@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.objecttranslation;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.BooleanTranslator;
 
+
 import org.junit.* ;
 
 import static org.junit.Assert.* ;

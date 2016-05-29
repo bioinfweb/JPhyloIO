@@ -43,6 +43,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
@@ -87,6 +88,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertEndEvent(EventContentType.EDGE, reader);			
 
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -102,6 +104,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String id1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
@@ -134,6 +137,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -149,6 +153,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String id1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
@@ -181,6 +186,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -196,6 +202,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String id1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
@@ -228,6 +235,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -239,10 +247,11 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 	
 	@Test
 	public void test_readNextEvent_NoTrees() throws Exception {
-		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NoTrees.nwk"),
-				new ReadWriteParameterMap());
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/NoTrees.nwk"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
+			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -258,6 +267,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
@@ -355,6 +365,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertNotEquals(idN1, idN2);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -370,6 +381,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
@@ -406,6 +418,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -421,6 +434,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			String id1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
@@ -495,6 +509,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertEndEvent(EventContentType.EDGE, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -510,6 +525,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String idADH2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "ADH2", null, reader);
@@ -580,6 +596,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertNotEquals(idADH3, idN3);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -595,6 +612,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 //			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
@@ -604,6 +622,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 //			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -619,6 +638,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
@@ -628,6 +648,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -643,6 +664,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
@@ -653,6 +675,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -668,6 +691,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 				new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
 			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
@@ -678,6 +702,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, PhyloXMLConsta
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertCommentEvent("comment", reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
