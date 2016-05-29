@@ -256,6 +256,7 @@ main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/xsd/IntTransl
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/xsd/IntegerTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/xsd/LongTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/xsd/ShortTranslator.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/xsd/StringTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/xsd/UnsignedByteTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/xsd/UnsignedIntTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/xsd/UnsignedShortTranslator.java -text svneol=unset#text/plain

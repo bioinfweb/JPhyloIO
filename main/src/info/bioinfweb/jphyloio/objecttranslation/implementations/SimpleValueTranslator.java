@@ -56,16 +56,16 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	 * 
 	 * @param object the object to be converted
 	 * @return the string representation of the object 
-	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#javaToStringRepresentation(java.lang.Object)
+	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#javaToRepresentation(java.lang.Object)
 	 */
 	@Override
-	public String javaToStringRepresentation(O object) throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(O object) throws UnsupportedOperationException, ClassCastException {
 		return object.toString();
 	}
 	
 
 	/**
-	 * Writes the string representation of the specified object to an XML stream. (Calls {@link #javaToStringRepresentation(Object)} 
+	 * Writes the string representation of the specified object to an XML stream. (Calls {@link #javaToRepresentation(Object)} 
 	 * internally.)
 	 * 
 	 * @param writer the XML stream writer
@@ -73,7 +73,7 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	 */
 	@Override
 	public void writeXMLRepresentation(XMLStreamWriter writer, O object) throws IOException, XMLStreamException {
-		writer.writeCharacters(javaToStringRepresentation(object));
+		writer.writeCharacters(javaToRepresentation(object));
 	}
 
 	

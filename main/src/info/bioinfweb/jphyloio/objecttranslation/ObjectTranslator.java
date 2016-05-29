@@ -57,7 +57,7 @@ public interface ObjectTranslator<O> {
 	 * XML representation.
 	 * <p>
 	 * Instances that return {@code false here} will throw an {@link UnsupportedOperationException}, if 
-	 * {@link #javaToStringRepresentation(Object)} is called.
+	 * {@link #javaToRepresentation(Object)} is called.
 	 * 
 	 * @return {@code true} if handled objects have a simple string representation or {@code false} if XML is necessary to
 	 *         represent the handled objects
@@ -74,7 +74,7 @@ public interface ObjectTranslator<O> {
 	 *         interface
 	 * @see #hasStringRepresentation()
 	 */
-	public String javaToStringRepresentation(O object) throws UnsupportedOperationException, ClassCastException;
+	public String javaToRepresentation(O object) throws UnsupportedOperationException, ClassCastException;
 	
 	/**
 	 * Writes the XML representation of the specified object into the specified XML writer.
