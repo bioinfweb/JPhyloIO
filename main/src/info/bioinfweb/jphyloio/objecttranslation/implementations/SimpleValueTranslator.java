@@ -26,12 +26,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
-import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 
 
-public abstract class SimpleValueTranslator<O> implements ObjectTranslator<O> {
+public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<O> {
 	public static final int MAX_STRING_REPRESENTATION_LENGTH = 16 * 1024;
 	
 	
@@ -69,5 +69,5 @@ public abstract class SimpleValueTranslator<O> implements ObjectTranslator<O> {
 			text.append(reader.nextEvent().asCharacters().getData());
 		}
 		return representationToJava(text.toString());
-	}	
+	}
 }

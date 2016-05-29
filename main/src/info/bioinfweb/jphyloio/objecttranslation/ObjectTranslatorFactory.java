@@ -28,59 +28,55 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Factory to create instances of {@link ObjectTranslator} to be used with readers and writers of <i>JPhyloIO</i>.
+ * <p>
+ * After creation this factory is empty. New translators can be added to this factory using 
+ * {@link #addTranslator(ObjectTranslator, boolean)}. A default set of translators for XSD types can be added by calling
+ * {@link #addXDSTranslators(boolean)}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class ObjectTranslatorFactory {
-	private class MapEntry {
-		public ObjectTranslator<?> defaultTranslator;
-		public Map<Class<?>, ObjectTranslator<?>> alternatives;
-		
-		
-		public MapEntry(ObjectTranslator<?> defaultTranslator, ObjectTranslator<?>... alternatives) {
-			super();
-			this.defaultTranslator = defaultTranslator;
-			if (alternatives.length > 0) {
-				this.alternatives = new HashMap<Class<?>, ObjectTranslator<?>>(alternatives.length);
-				for (int i = 0; i < alternatives.length; i++) {
-					this.alternatives.put(alternatives[i].getObjectClass(), alternatives[i]);
-				}
-			}
+	private Map<TranslatorMapKey, ObjectTranslator<?>> translatorMap = new HashMap<TranslatorMapKey, ObjectTranslator<?>>();
+	
+	
+	/**
+	 * Registers a new translator in this factory.
+	 * 
+	 * @param translator the translator to be registered
+	 * @param asDefault Determines whether this translator shall become the default translator for its data type. (It will
+	 *        always become the default, if no other translator is currently registered for this data type.)
+	 */
+	public void addTranslator(ObjectTranslator<?> translator, boolean asDefault) {
+		translatorMap.put(new TranslatorMapKey(translator.getDataType(), translator.getObjectClass()), translator);
+		if (asDefault || (getDefaultTranslator(translator.getDataType()) == null)) {
+			translatorMap.put(new TranslatorMapKey(translator.getDataType(), null), translator);
 		}
 	}
 	
 	
-	private Map<QName, MapEntry> translatorMap = new HashMap<QName, ObjectTranslatorFactory.MapEntry>();
-	
-	
-	public void addTranslator(ObjectTranslator<?> translator) {
-		translatorMap.put(translator.getDataType(), new MapEntry(translator));
-	}
-	
-	
-	public void addXDSTranslators() {
-		addTranslator(new BooleanTranslator());
+	/**
+	 * Adds all translators for XSD types available in <i>JPhyloIO</i>.
+	 * 
+	 *  @param asDefault Determines whether the added translators shall become the default translators for their data type, 
+	 *         if another default instance is already registered. (If {@code true} is specified, previous defaults will be
+	 *         overwritten. If {@code false} is specified, previous defaults will be maintained. In all cases previous entries
+	 *         will remain in the factory, of they have a different object type and will be completely overwritten if they have 
+	 *         the same.)  
+	 */
+	public void addXDSTranslators(boolean asDefault) {
+		addTranslator(new BooleanTranslator(), asDefault);
 	}
 	
 	
 	public <O> ObjectTranslator<O> getTranslator(QName dataType, Class<O> objectClass) {
-		MapEntry entry = translatorMap.get(dataType);
-		if (entry != null) {
-			if (entry.defaultTranslator.getObjectClass().equals(objectClass)) {
-				return (ObjectTranslator<O>)entry.defaultTranslator;
-			}
-			else if (entry.alternatives != null) {
-				return (ObjectTranslator<O>)entry.alternatives.get(objectClass);
-			}
-		}
-		return null;
+		return (ObjectTranslator<O>)translatorMap.get(new TranslatorMapKey(dataType, objectClass));
 	}
 
 	
 	public ObjectTranslator<?> getDefaultTranslator(QName dataType) {
-		MapEntry entry = translatorMap.get(dataType);
-		if (entry != null) {
-			return entry.defaultTranslator;
-		}
-		else {
-			return null;
-		}
+		return getTranslator(dataType, null);
 	}
 }
