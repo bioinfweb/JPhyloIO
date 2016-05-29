@@ -21,11 +21,10 @@ package info.bioinfweb.jphyloio.objecttranslation;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 
 
 
@@ -42,7 +41,7 @@ public interface ObjectTranslator<O> {
 	//     Is it an alternative to either output the XMLEvents as objects values or directly parse them to output one single object value
 	//     or should parsing of XML not at all be supported? => Probably the first alternative.
 	
-	public URIOrStringIdentifier getDataType();
+	public QName getDataType();
 	
 	/**
 	 * Returns the Java class or interface the objects handled by this instance have.

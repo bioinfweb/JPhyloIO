@@ -19,7 +19,9 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
 
 
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
+import javax.xml.namespace.QName;
+
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.SimpleValueTranslator;
 
@@ -27,22 +29,19 @@ import info.bioinfweb.jphyloio.objecttranslation.implementations.SimpleValueTran
 
 public class BooleanTranslator extends SimpleValueTranslator<Boolean> {
 	@Override
-	public URIOrStringIdentifier getDataType() {
-		// TODO Auto-generated method stub
-		return null;
+	public QName getDataType() {
+		return W3CXSConstants.DATA_TYPE_BOOLEAN;
 	}
 	
 
 	@Override
 	public Class<Boolean> getObjectClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return Boolean.class;
 	}
 
 	
 	@Override
 	public Boolean representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
-		// TODO Auto-generated method stub
-		return null;
+		return Boolean.parseBoolean(representation);
 	}
 }
