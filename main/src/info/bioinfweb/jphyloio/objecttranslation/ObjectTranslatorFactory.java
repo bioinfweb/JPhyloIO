@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.objecttranslation;
 
 
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.AnyURITranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.Base64BinaryTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.BooleanTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.ByteTranslator;
@@ -86,8 +87,10 @@ public class ObjectTranslatorFactory {
 	 */
 	public void addXDSTranslators(boolean asDefault) {
 		addTranslator(new StringTranslator(), asDefault);
-		addTranslator(new QNameTranslator(), asDefault);
 		addTranslator(new BooleanTranslator(), asDefault);
+
+		addTranslator(new QNameTranslator(), asDefault);
+		addTranslator(new AnyURITranslator(), asDefault);
 		
 		addTranslator(new ByteTranslator(), asDefault);
 		addTranslator(new ShortTranslator(), asDefault);
