@@ -73,7 +73,7 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 		}
 		else {
 			try {  //TODO Should parsing a long be tried before?
-				return new Value (text, new Double(text));
+				return new Value(text, new Double(text));
 			}
 			catch (NumberFormatException e) {
 				return new Value(text);
