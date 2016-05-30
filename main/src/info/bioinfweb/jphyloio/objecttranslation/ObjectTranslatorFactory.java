@@ -19,7 +19,25 @@
 package info.bioinfweb.jphyloio.objecttranslation;
 
 
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.Base64BinaryTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.BooleanTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.ByteTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.DateTimeTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.DateTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.DecimalTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.DoubleTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.FloatTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.HexBinaryTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.IntTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.IntegerTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.LongTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.QNameTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.ShortTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.StringTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.TimeTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.UnsignedByteTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.UnsignedIntTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.UnsignedShortTranslator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +85,28 @@ public class ObjectTranslatorFactory {
 	 *        the same.)  
 	 */
 	public void addXDSTranslators(boolean asDefault) {
+		addTranslator(new StringTranslator(), asDefault);
+		addTranslator(new QNameTranslator(), asDefault);
 		addTranslator(new BooleanTranslator(), asDefault);
+		
+		addTranslator(new ByteTranslator(), asDefault);
+		addTranslator(new ShortTranslator(), asDefault);
+		addTranslator(new IntTranslator(), asDefault);
+		addTranslator(new LongTranslator(), asDefault);
+		addTranslator(new IntegerTranslator(), asDefault);
+		addTranslator(new FloatTranslator(), asDefault);
+		addTranslator(new DoubleTranslator(), asDefault);
+		addTranslator(new DecimalTranslator(), asDefault);
+		addTranslator(new UnsignedByteTranslator(), asDefault);
+		addTranslator(new UnsignedShortTranslator(), asDefault);
+		addTranslator(new UnsignedIntTranslator(), asDefault);
+
+		addTranslator(new DateTimeTranslator(), asDefault);
+		addTranslator(new DateTranslator(), asDefault);
+		addTranslator(new TimeTranslator(), asDefault);
+
+		addTranslator(new Base64BinaryTranslator(), asDefault);
+		addTranslator(new HexBinaryTranslator(), asDefault);
 	}
 	
 	

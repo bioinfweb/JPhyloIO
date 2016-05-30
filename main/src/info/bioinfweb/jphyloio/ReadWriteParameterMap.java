@@ -29,6 +29,7 @@ import info.bioinfweb.jphyloio.formats.nexml.TokenTranslationStrategy;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 
 
 
@@ -257,6 +258,15 @@ public class ReadWriteParameterMap extends ParameterMap {
 	 */
 	public static final String KEY_LABEL_EDITING_REPORTER = KEY_PREFIX + "labelEditingReporter";
 	
+	/**
+	 * This parameter can be used to specify a custom instance of {@link ObjectTranslatorFactory} that is used by some
+	 * readers to create literal meta object values. Specifying a custom factory allows to provide translators for custom
+	 * data types or to overwrite default translators for common types.
+	 * 
+	 * @see #getObjectTranslatorFactory()
+	 */
+	public static final String KEY_OBJECT_TRANSLATOR_FACTORY = KEY_PREFIX + "objectTranslatorFactory";
+	
 	
 	public ApplicationLogger getLogger() {
 		return getApplicationLogger(KEY_LOGGER);
@@ -303,5 +313,24 @@ public class ReadWriteParameterMap extends ParameterMap {
 	public TokenTranslationStrategy getTranslateTokens() {
 		return getObject(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, 
 				TokenTranslationStrategy.SYMBOL_TO_LABEL, TokenTranslationStrategy.class);
+	}
+
+
+	/**
+	 * Returns the object translator factory stored under {@link #KEY_OBJECT_TRANSLATOR_FACTORY}. If no object for 
+	 * this key is present in this instance, a new one is created, added to this instance and returned. The same is done, 
+	 * if an object which is not an instance of {@link LabelEditingReporter} is found for this key. The created default
+	 * instance will contain all default translators provided with <i>JPhyloIO</i>.
+	 * 
+	 * @return the factory instance
+	 */
+	public ObjectTranslatorFactory getObjectTranslatorFactory() {
+		Object result = get(KEY_OBJECT_TRANSLATOR_FACTORY);
+		if (!(result instanceof ObjectTranslatorFactory)) {  // Also checks for null.
+			result = new ObjectTranslatorFactory();
+			((ObjectTranslatorFactory)result).addXDSTranslators(true);
+			put(KEY_OBJECT_TRANSLATOR_FACTORY, result);
+		}
+		return (ObjectTranslatorFactory)result;
 	}
 }
