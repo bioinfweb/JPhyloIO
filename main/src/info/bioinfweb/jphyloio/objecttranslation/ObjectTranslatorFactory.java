@@ -60,11 +60,11 @@ public class ObjectTranslatorFactory {
 	/**
 	 * Adds all translators for XSD types available in <i>JPhyloIO</i>.
 	 * 
-	 *  @param asDefault Determines whether the added translators shall become the default translators for their data type, 
-	 *         if another default instance is already registered. (If {@code true} is specified, previous defaults will be
-	 *         overwritten. If {@code false} is specified, previous defaults will be maintained. In all cases previous entries
-	 *         will remain in the factory, of they have a different object type and will be completely overwritten if they have 
-	 *         the same.)  
+	 * @param asDefault Determines whether the added translators shall become the default translators for their data type, 
+	 *        if another default instance is already registered. (If {@code true} is specified, previous defaults will be
+	 *        overwritten. If {@code false} is specified, previous defaults will be maintained. In all cases previous entries
+	 *        will remain in the factory, of they have a different object type and will be completely overwritten if they have 
+	 *        the same.)  
 	 */
 	public void addXDSTranslators(boolean asDefault) {
 		addTranslator(new BooleanTranslator(), asDefault);

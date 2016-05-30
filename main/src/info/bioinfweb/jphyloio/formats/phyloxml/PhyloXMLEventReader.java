@@ -155,42 +155,37 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				StartElement element = event.asStartElement();
 				String parentTag = streamDataProvider.getParentName();
 				
-				String applies_to = XMLUtils.readStringAttr(element, ATTR_APPLIES_TO, null);
+				String appliesTo = XMLUtils.readStringAttr(element, ATTR_APPLIES_TO, null);
 				URIOrStringIdentifier predicate = predicateFromString(XMLUtils.readStringAttr(element, ATTR_REF, null), streamDataProvider);
 				
-				boolean appliesToAsAttribute = false;
+				boolean appliesToAsAttribute = true;
 				boolean resetEventCollection = false;				
 				
 				if (parentTag.equals(TAG_CLADE.getLocalPart())) {
-					if (applies_to.equals("parent_branch")) { //TODO create constants for AppliesTo values and use switch
+					if (appliesTo.equals("parent_branch")) { //TODO create constants for AppliesTo values and use switch
 						streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
 						resetEventCollection = true;
+						appliesToAsAttribute = false;
 					}
-					else if (applies_to.equals("phylogeny")) {
+					else if (appliesTo.equals("phylogeny")) {
 						streamDataProvider.setCurrentEventCollection(streamDataProvider.getPropertyEvents());
 						resetEventCollection = true;
+						appliesToAsAttribute = false;
 					}
-					else if (applies_to.equals("clade")) {
-						//TODO change predicate to "hasCladeLiteralMeta"?
-						//-> nested under ResourceMeta or equal to case "node" (losing the "clade" information, because the "ref"-predicate is then used instead)?
-					}
-					else if (applies_to.equals("node")) {}
-					else { // "annotation" or "other"
-						appliesToAsAttribute = true;
+					else if (appliesTo.equals("node")) {
+						appliesToAsAttribute = false;
 					}
 				}
 				else if (parentTag.equals(TAG_PHYLOGENY.getLocalPart())) {
-					if (applies_to.equals("phylogeny")) {}
-					else {
-						appliesToAsAttribute = true;
+					if (appliesTo.equals("phylogeny")) {
+						appliesToAsAttribute = false;
 					}
 				}
 				else if (parentTag.equals(TAG_ANNOTATION.getLocalPart())) {
-					if (applies_to.equals("annotation")) {}
-					else {
-						appliesToAsAttribute = true;
+					if (appliesTo.equals("annotation")) {
+						appliesToAsAttribute = false;
 					}
-				}				
+				}
 				
 				if ((XMLUtils.readStringAttr(element, ATTR_UNIT, null) != null) || (XMLUtils.readStringAttr(element, ATTR_ID_REF, null) != null) || appliesToAsAttribute == true) {
 					streamDataProvider.getCurrentEventCollection().add(
@@ -214,7 +209,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				
 				streamDataProvider.setCurrentPropertyDatatype(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null));
 				
-				if (resetEventCollection) {
+				if (resetEventCollection && streamDataProvider.hasSpecialEventCollection()) {
 					streamDataProvider.resetCurrentEventCollection();
 				}
 			}
@@ -296,19 +291,20 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {					
 					String treeID = getID(null, EventContentType.TREE);
-					String treeLabel = streamDataProvider.getTreeLabel();					
-					Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
+					String treeLabel = streamDataProvider.getTreeLabel();
 					
+					Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 					streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, treeID, treeLabel, null));
 					
 					for (JPhyloIOEvent nextEvent : nestedEvents) {
 						streamDataProvider.getCurrentEventCollection().add(nextEvent);
 					}
 					
-					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), ATTR_BRANCH_LENGTH, Double.NaN);	
 					streamDataProvider.getSourceNode().add(new NodeEdgeInfo(getID(null, EventContentType.NODE), Double.NaN, new ArrayList<JPhyloIOEvent>()));
 					streamDataProvider.setCreateNodeStart(true);
-					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(getID(null, EventContentType.EDGE), branchLength, new ArrayList<JPhyloIOEvent>()));
+					
+					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(getID(null, EventContentType.EDGE), 
+							XMLUtils.readDoubleAttr(event.asStartElement(), ATTR_BRANCH_LENGTH, Double.NaN), new ArrayList<JPhyloIOEvent>()));
 					streamDataProvider.getEdgeInfos().peek().setSource(null);
 					
 					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
@@ -331,11 +327,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					if (streamDataProvider.hasSpecialEventCollection()) {
 						streamDataProvider.resetCurrentEventCollection();
 					}
-					
-					double branchLength = XMLUtils.readDoubleAttr(event.asStartElement(), ATTR_BRANCH_LENGTH, Double.NaN);	
+
 					streamDataProvider.getSourceNode().add(new NodeEdgeInfo(getID(null, EventContentType.NODE), Double.NaN, new ArrayList<JPhyloIOEvent>()));
 					streamDataProvider.setCreateNodeStart(true);
-					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(getID(null, EventContentType.EDGE), branchLength, new ArrayList<JPhyloIOEvent>()));
+					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(getID(null, EventContentType.EDGE), 
+							XMLUtils.readDoubleAttr(event.asStartElement(), ATTR_BRANCH_LENGTH, Double.NaN), new ArrayList<JPhyloIOEvent>()));
 					streamDataProvider.getEdgeInfos().peek().setSource(parentID);
 					
 					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
@@ -372,14 +368,14 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 								useAsMeta = false;
 							}
 							else if (parentName.equals(TAG_SEQUENCE.getLocalPart())) {
-								useAsMeta = false;
+								useAsMeta = true;
 								if (currentNodeLabel == null) {
 									currentNode.setLabel(value);
 								}
 							}
 						}
 						
-						if (useAsMeta) {
+						if (useAsMeta) {							
 							boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
 									new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
@@ -505,12 +501,12 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						}
 						catch (NumberFormatException e) {
 							throw new JPhyloIOReaderException("The branch length must be of type double.", event.getLocation());
-						}
+						}						
 						
-						if (currentEdgeLength == Double.NaN) {								
-							currentEdge.setLength(newEdgeLength);								
+						if (Double.isNaN(currentEdgeLength)) {								
+							currentEdge.setLength(newEdgeLength);
 						}
-						else if (newEdgeLength != currentEdgeLength) {
+						else if (Double.compare(newEdgeLength, currentEdgeLength) != 0) {
 							getParameters().getLogger().addWarning("Two different branch lengths of \"" + currentEdgeLength + "\" and \"" + newEdgeLength 
 									+ "\" are present for the same branch in the document.");
 						}
@@ -533,6 +529,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_WIDTH, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
 		
 		//Clade.Color
+		//TODO Read single Color object (Possibly use PhyloXML specific object translator.)
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_COLOR, XMLStreamConstants.START_ELEMENT), 
 				new PhyloXMLStartElementReader(null, PREDICATE_COLOR, true));
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, null, XMLStreamConstants.CHARACTERS), new PhyloXMLNoCharactersAllowedElementReader());

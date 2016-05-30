@@ -27,21 +27,17 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 /**
  * Event that indicates that a (predefined) definition of a character state set was found in the parsed file.
  * <p>
- * This event is not used to indicate subsets of states of certain characters as allowed e.g. in the SETS block 
- * of a Nexus file, but it defines all possible states of a character (although the concrete symbols are not 
- * enumerated by this event object).
- * <p>
- * This event may or may not occur in combination with {@link SingleTokenDefinitionEvent}, which 
- * might e.g. specify the gap character to be used with the standard set, depending on the parsed file. 
+ * This event may or may not occur in combination with one or more {@link SingleTokenDefinitionEvent}, which 
+ * define single tokens (e.g. nucleotides or the gap character) used in this set. If no or only a few of the tokens 
+ * implied by the return value of {@link #getSetType()} are defined by nested events, the remaining one are still 
+ * assumed to be part of the tokens set.
  * <p>
  * JPhyloIO enumerates some standard token sets in {@link TokenSetType}. Some formats might define additional
  * sets which would be represented as {@link TokenSetType#UNKNOWN}. Application developers would have to rely on 
- * {@link #getParsedName()} in such cases, to determine the meaning.
- * <p>
- * This event will always be followed by one or more events of the type {@link CharacterSetIntervalEvent} 
- * that specify the columns of the alignment in which this token set is valid.
+ * {@link #getLabel()} in such cases, to determine the meaning.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
  */
 public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	private CharacterStateSetType setType;
@@ -50,9 +46,6 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	
 	/**
 	 * Creates a new instance of this class.
-	 * <p>
-	 * If {@code null} is specified as {@code parseName}, {@link #getParsedName()} will return the empty
-	 * string ("").
 	 * 
 	 * @param type the meaning of the token set as defined by {@link TokenSetType}
 	 * @param id the document-wide unique ID associated with the represented token set (Must be a valid
@@ -74,9 +67,6 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	
 	/**
 	 * Creates a new instance of this class.
-	 * <p>
-	 * If {@code null} is specified as {@code parseName}, {@link #getParsedName()} will return the empty
-	 * string ("").
 	 * 
 	 * @param type the meaning of the token set as defined by {@link TokenSetType}
 	 * @param id a document-wide unique ID identifying this token set

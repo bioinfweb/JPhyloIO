@@ -49,9 +49,8 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * MatrixContent = TokenSetDefinition | SequencePart | CharacterSetPart | MetaInformation;
  * 
  * TokenSetDefinition = "TOKEN_SET_DEFINITION.START", {TokenSetDefinitionContent,} "TOKEN_SET_DEFINITION.END";
- * TokenSetDefinitionContent = SingleTokenDefinition | CharacterSetIntervals | MetaInformation;
+ * TokenSetDefinitionContent = "CHARACTER_SET_INTERVAL.SOLE" | SingleTokenDefinition | MetaInformation;
  * SingleTokenDefinition = "SINGLE_TOKEN_DEFINITION.START", {MetaInformation,} "SINGLE_TOKEN_DEFINITION.END";
- * CharacterSetIntervals = "CHARACTER_SET_INTERVAL.SOLE" | {"CHARACTER_SET_INTERVAL.SOLE"}
  * 
  * SequencePart = "SEQUENCE.START", {SequencePartContent,} "SEQUENCE.END";
  * SequencePartContent = "SEQUENCE_TOKENS.SOLE" | SingleSequenceToken | MetaInformation;
