@@ -107,7 +107,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * 
 	 * @return the current read ahead limit
 	 */
-	public int getReadAheahLimit() {
+	public int getReadAheadLimit() {
 		readAheahLimitLock.readLock().lock();
 		try {
 			return readAheahLimit;
@@ -122,7 +122,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * Allows to specify the maximal number of bytes this factory will read to determine the format of an input
 	 * in the {@code #guess*()} methods.
 	 * <p>
-	 * This method is thread save a secured with an {@link ReadWriteLock} together with {@link #getReadAheahLimit()}.
+	 * This method is thread save a secured with an {@link ReadWriteLock} together with {@link #getReadAheadLimit()}.
 	 * 
 	 * @param readAheahLimit the new read ahead limit
 	 */
@@ -222,8 +222,8 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(Reader reader, ReadWriteParameterMap parameters) throws Exception {
-		LimitedReader limitedReader = new LimitedReader(new BufferedReader(reader, getReadAheahLimit()), getReadAheahLimit());
-		limitedReader.mark(getReadAheahLimit());
+		LimitedReader limitedReader = new LimitedReader(new BufferedReader(reader, getReadAheadLimit()), getReadAheadLimit());
+		limitedReader.mark(getReadAheadLimit());
 		limitedReader.setAllowClose(false);  // Disallow closing, to avoid that XMLEventReaders close this reader, if they encounter an incomplete tag, because of the read limit. (Some implementations of XMLEventReader close the underlying stream, if they encounter an eof while trying to produce the next event.)
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
 			boolean formatFound;
@@ -291,13 +291,13 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @see #guessReader(InputStream, ReadWriteParameterMap)
 	 */
 	public String guessFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
-		return guessFormatFromLimitedStream(new LimitedInputStream(new BufferedInputStream(stream, getReadAheahLimit()), 
-				getReadAheahLimit()), parameters);
+		return guessFormatFromLimitedStream(new LimitedInputStream(new BufferedInputStream(stream, getReadAheadLimit()), 
+				getReadAheadLimit()), parameters);
 	}
 	
 	
 	private String guessFormatFromLimitedStream(LimitedInputStream limitedStream, ReadWriteParameterMap parameters) throws Exception {
-		limitedStream.mark(getReadAheahLimit());  // Will also mark the decorated stream.
+		limitedStream.mark(getReadAheadLimit());  // Will also mark the decorated stream.
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
 			boolean formatFound = factory.checkFormat(limitedStream, parameters);
 			limitedStream.reset();  // Will also reset the decorated stream.
@@ -377,12 +377,12 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 */
 	public JPhyloIOEventReader guessReader(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		// Buffer stream for testing:
-		LimitedInputStream limitedStream = new LimitedInputStream(new BufferedInputStream(stream, getReadAheahLimit()), getReadAheahLimit());
-		limitedStream.mark(getReadAheahLimit());
+		LimitedInputStream limitedStream = new LimitedInputStream(new BufferedInputStream(stream, getReadAheadLimit()), getReadAheadLimit());
+		limitedStream.mark(getReadAheadLimit());
 		
 	  // Try if the input is GZIPed:
 		try {
-			limitedStream = new LimitedInputStream(new BufferedInputStream(new GZIPInputStream(limitedStream), getReadAheahLimit()), getReadAheahLimit());  //TODO Is there a more efficient solution than using 5 decorators here?
+			limitedStream = new LimitedInputStream(new BufferedInputStream(new GZIPInputStream(limitedStream), getReadAheadLimit()), getReadAheadLimit());  //TODO Is there a more efficient solution than using 5 decorators here?
 		}
 		catch (ZipException e) {
 			limitedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, bufferedStream was not set in the try block.)

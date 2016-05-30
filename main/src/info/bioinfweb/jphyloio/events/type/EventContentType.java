@@ -174,7 +174,7 @@ public enum EventContentType {
 	
 	/** 
 	 * Indicates a single interval of a character set. Such events are nested 
-	 * in {@link #CHARACTER_SET}.
+	 * in {@link #CHARACTER_SET} and {@link #TOKEN_SET_DEFINITION}.
 	 * <p>
 	 * Events of this type are instances of {@link CharacterSetIntervalEvent} and always have the
 	 * topology type {@link EventTopologyType#SOLE}. 
@@ -198,7 +198,7 @@ public enum EventContentType {
 	 * Start events of this type are instances of {@link SingleTokenDefinitionEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}.
 	 * <p>
-	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}.
 	 */
 	SINGLE_TOKEN_DEFINITION,
 	

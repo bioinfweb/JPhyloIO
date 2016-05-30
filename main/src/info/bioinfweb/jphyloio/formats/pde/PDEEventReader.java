@@ -52,10 +52,8 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -192,6 +190,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						
 						streamDataProvider.setCharacterSetType(type);
 						streamDataProvider.setAlignmentLength(XMLUtils.readIntAttr(element, ATTR_ALIGNMENT_LENGTH, 0));
+						streamDataProvider.setSequenceCount(XMLUtils.readIntAttr(element, ATTR_SEQUENCE_COUNT, 0));
 					}
 			});
 		
@@ -240,7 +239,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							}
 							else {
 								throw new JPhyloIOReaderException("Invalid meta column definition in " + TAG_META_TYPE_DEFINITIONS.getLocalPart() 
-										+ " tag ending with \"" + data + "\" found.", event.getLocation());  //TODO Shorten data strings which are too long?
+										+ " tag ending with \"" + data + "\" found.", event.getLocation());  //TODO Shorten data strings which are too long
 							}
 						}
 						else {
@@ -395,13 +394,9 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, getID(null, EventContentType.ALIGNMENT), null, 
 								streamDataProvider.getOtuListID()));
 						
-						String charSetID = getID(null, EventContentType.CHARACTER_SET);
-						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, charSetID, null));
-						streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, streamDataProvider.getAlignmentLength()));  //TODO interval shall be part of token set definition event as soon as these changes are implemented
-						streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
-						
 						streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(streamDataProvider.getCharacterSetType(), 
-								getID(null, EventContentType.TOKEN_SET_DEFINITION), null, charSetID));
+								getID(null, EventContentType.TOKEN_SET_DEFINITION), null));
+						streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, streamDataProvider.getAlignmentLength()));
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 						
 						streamDataProvider.setCurrentSequenceIndex(0);
@@ -424,10 +419,22 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						readAttributes(streamDataProvider, event.asStartElement(), ATTR_ALIGNMENT_LENGTH, PREDICATE_CHARACTER_COUNT, ATTR_SEQUENCE_COUNT, PREDICATE_SEQUENCE_COUNT);
 						
 						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
+						streamDataProvider.setCurrentSequenceID(getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE));
+						
+						String label = null;
+						boolean infoPresent = (seqIndex < streamDataProvider.getSequenceInformations().size());
+						
+						if (infoPresent) {
+							label = streamDataProvider.getSequenceInformations().get(seqIndex).get(1);
+						}
+						
 						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
-								getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE), streamDataProvider.getSequenceInformations().get(seqIndex).get(1), DEFAULT_OTU_ID_PREFIX + seqIndex));
+								streamDataProvider.getCurrentSequenceID(), label, streamDataProvider.getSequenceIndexToOTUID().get(seqIndex)));
 						streamDataProvider.setCurrentSequenceLength(0);
-						addSequenceMetaData(streamDataProvider);
+						
+						if (infoPresent) {
+							addSequenceMetaData(streamDataProvider);
+						}
 					}
 			});
 		
@@ -437,6 +444,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {						
 						String sequenceData = event.asCharacters().getData().replaceAll("\\s", "");						
 						String specialToken = streamDataProvider.getIncompleteToken();
+						String label = null;
 						
 						List<String> sequence = new ArrayList<String>();
 						Character previousChar = ' ';
@@ -448,7 +456,8 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									sequence.add(Character.toString(nextChar));
 								}
 								else {
-									throw new JPhyloIOReaderException("A sequence was found that was longer than the specified alignment length. "
+									throw new JPhyloIOReaderException("The sequence with the index \"" + streamDataProvider.getCurrentSequenceIndex() + "\" was found to be longer"
+											+ " than the specified alignment length of " + streamDataProvider.getAlignmentLength() + ". "
 											+ "This is not allowed in PDE files.", event.getLocation());
 								}
 							}
@@ -466,8 +475,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 								else {
 									if (specialToken.equals("\\F")) {
 										if (sequence.size() != 0) {
-											streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
-													streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+											streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getCurrentSequenceID(), sequence));
 											streamDataProvider.setCurrentSequenceLength(streamDataProvider.getCurrentSequenceLength() + sequence.size());
 											sequence = new ArrayList<String>();
 										}
@@ -476,20 +484,30 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 											streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 										}
 										else {
-											throw new JPhyloIOReaderException("A sequence was found that was shorter than the specified alignment length. "
+											throw new JPhyloIOReaderException("The sequence with the index \"" + streamDataProvider.getCurrentSequenceIndex() + "\" was found to be shorter"
+													+ " than the specified alignment length of " + streamDataProvider.getAlignmentLength() + ". "
 													+ "This is not allowed in PDE files.", event.getLocation());
 										}
 										
 										int seqIndex = streamDataProvider.getCurrentSequenceIndex() + 1;
 										
-										if (seqIndex < streamDataProvider.getSequenceInformations().size()) {
+										if (seqIndex < streamDataProvider.getSequenceCount()) {
 											streamDataProvider.setCurrentSequenceIndex(seqIndex);
+											streamDataProvider.setCurrentSequenceID(getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE));
+											
+											boolean infoPresent = (seqIndex < streamDataProvider.getSequenceInformations().size());
+											
+											if (infoPresent) {
+												label = streamDataProvider.getSequenceInformations().get(seqIndex).get(1);
+											}
 											
 											streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
-													getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE), streamDataProvider.getSequenceInformations().get(seqIndex).get(1), 
-													streamDataProvider.getSequenceIndexToOTUID().get(seqIndex)));
+													streamDataProvider.getCurrentSequenceID(), label, streamDataProvider.getSequenceIndexToOTUID().get(seqIndex)));
 											streamDataProvider.setCurrentSequenceLength(0);
-											addSequenceMetaData(streamDataProvider);
+											
+											if (infoPresent) {
+												addSequenceMetaData(streamDataProvider);
+											}
 										}
 									}
 									else if (specialToken.contains("\\FE")) {
@@ -498,8 +516,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 										for (int j = 0; j < Integer.parseInt(StringUtils.invert(specialToken)); j++) {
 											sequence.add("?");
 										}
-										streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(
-												streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+										streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getCurrentSequenceID(), sequence));
 										streamDataProvider.setCurrentSequenceLength(streamDataProvider.getCurrentSequenceLength() + sequence.size());
 										sequence = new ArrayList<String>();
 									}
@@ -511,7 +528,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						}
 							
 						if (sequence.size() != 0) {
-							streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex()).get(1), sequence));
+							streamDataProvider.getCurrentEventCollection().add(getSequenceTokensEventManager().createEvent(streamDataProvider.getCurrentSequenceID(), sequence));
 							streamDataProvider.setCurrentSequenceLength(streamDataProvider.getCurrentSequenceLength() + sequence.size());
 							
 							if (streamDataProvider.getXMLReader().peek().getEventType() != XMLStreamConstants.CHARACTERS ) {
@@ -519,7 +536,8 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
 								}
 								else {
-									throw new JPhyloIOReaderException("A sequence was found that was shorter than the specified alignment length. "
+									throw new JPhyloIOReaderException("The sequence with the index \"" + streamDataProvider.getCurrentSequenceIndex() + "\" was found to be shorter"
+											+ " than the specified alignment length of " + streamDataProvider.getAlignmentLength() + ". "
 											+ "This is not allowed in PDE files.", event.getLocation());
 								}
 							}							
@@ -529,7 +547,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 	}
 	
 	
-	private void addSequenceMetaData(PDEReaderStreamDataProvider streamDataProvider) throws JPhyloIOReaderException {
+	private void addSequenceMetaData(PDEReaderStreamDataProvider streamDataProvider) throws JPhyloIOReaderException {		
 		Map<Integer, String> sequenceInfo = streamDataProvider.getSequenceInformations().get(streamDataProvider.getCurrentSequenceIndex());
 		URIOrStringIdentifier datatype = null;
 		URIOrStringIdentifier predicate;

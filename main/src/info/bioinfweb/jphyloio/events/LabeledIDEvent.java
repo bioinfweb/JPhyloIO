@@ -19,11 +19,9 @@
 package info.bioinfweb.jphyloio.events;
 
 
-import javax.xml.namespace.QName;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import org.semanticweb.owlapi.io.XMLUtils;
-
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 

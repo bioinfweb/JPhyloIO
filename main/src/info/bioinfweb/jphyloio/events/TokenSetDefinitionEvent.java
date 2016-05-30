@@ -32,22 +32,20 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * enumerated by this event object).
  * <p>
  * This event may or may not occur in combination with {@link SingleTokenDefinitionEvent}, which 
- * might e.g. specify the gap character to used with the standard set, depending on the parsed file. 
+ * might e.g. specify the gap character to be used with the standard set, depending on the parsed file. 
  * <p>
  * JPhyloIO enumerates some standard token sets in {@link TokenSetType}. Some formats might define additional
  * sets which would be represented as {@link TokenSetType#UNKNOWN}. Application developers would have to rely on 
  * {@link #getParsedName()} in such cases, to determine the meaning.
  * <p>
- * If this token set should only be valid for some columns of the alignment, a character set (defined by a
- * {@link CharacterSetIntervalEvent}) will be referenced by the return value of {@link #getCharacterSetID()} (which
- * should not be mixed up with {@link #getParsedName()} which is just the string representation of this token
- * set as it was given in the parsed file.)
+ * This event will always be followed by one or more events of the type {@link CharacterSetIntervalEvent} 
+ * that specify the columns of the alignment in which this token set is valid.
  * 
  * @author Ben St&ouml;ver
  */
 public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	private CharacterStateSetType setType;
-	private String characterSetID = null;
+	private String characterSetID = null; //TODO remove when readers and writers have been adjusted
 	
 	
 	/**
@@ -57,15 +55,22 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 * string ("").
 	 * 
 	 * @param type the meaning of the token set as defined by {@link TokenSetType}
-	 * @param id the unique ID associated with the represented token set (Must be a valid
+	 * @param id the document-wide unique ID associated with the represented token set (Must be a valid
 	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
 	 * @param label a name describing this token set
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
 	public TokenSetDefinitionEvent(CharacterStateSetType type, String id, String label) {
-		this (type, id, label, null);
+		super(EventContentType.TOKEN_SET_DEFINITION, id, label);
+
+		if (type == null) {
+			throw new NullPointerException("The set type must not be null.");
+		}
+		else {
+			this.setType = type;
+		}
 	}
-	
+
 	
 	/**
 	 * Creates a new instance of this class.
@@ -82,6 +87,7 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 *        previously fired events.)
 	 * @throws NullPointerException if {@code null} is specified for {@code type} 
 	 */
+	@Deprecated
 	public TokenSetDefinitionEvent(CharacterStateSetType type, String id, String label, String linkedCharacterSetID) {
 		super(EventContentType.TOKEN_SET_DEFINITION, id, label);
 
@@ -94,6 +100,7 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 		}
 	}
 
+	
 
 	/**
 	 * Returns the meaning of the the new character state set.
@@ -113,6 +120,7 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 *         referenced in the parsed file (e.g. because this character state set shall be 
 	 *         valid for the whole alignment)
 	 */
+	@Deprecated
 	public String getCharacterSetID() {
 		return characterSetID;
 	}
@@ -127,6 +135,7 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 *         referenced in the parsed file (e.g. because this character state set shall be 
 	 *         valid for the whole alignment) 
 	 */
+	@Deprecated
 	public boolean hasLinkedCharacterSet() {
 		return characterSetID != null;
 	}

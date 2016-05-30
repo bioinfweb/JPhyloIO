@@ -36,10 +36,12 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
  */
 public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDEEventReader>{
 	private int alignmentLength;
+	private int sequenceCount;
 	private int currentSequenceIndex;
 	private int currentSequenceLength;
 	
-	private String otuListID;	
+	private String otuListID;
+	private String currentSequenceID;
 	private Map<Integer, String> sequenceIndexToOTUID = new HashMap<Integer, String>();
 	
 	private List<Map<Integer, String>> sequenceInformations = new ArrayList<Map<Integer,String>>();	
@@ -61,6 +63,16 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 	}
 
 
+	protected int getSequenceCount() {
+		return sequenceCount;
+	}
+
+
+	protected void setSequenceCount(int sequenceCount) {
+		this.sequenceCount = sequenceCount;
+	}
+
+
 	public String getOtuListID() {
 		return otuListID;
 	}
@@ -68,6 +80,16 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 
 	public void setOtuListID(String otuListID) {
 		this.otuListID = otuListID;
+	}
+
+
+	protected String getCurrentSequenceID() {
+		return currentSequenceID;
+	}
+
+
+	protected void setCurrentSequenceID(String currentSequenceID) {
+		this.currentSequenceID = currentSequenceID;
 	}
 
 

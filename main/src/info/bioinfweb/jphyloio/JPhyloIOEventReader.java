@@ -49,15 +49,16 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * MatrixContent = TokenSetDefinition | SequencePart | CharacterSetPart | MetaInformation;
  * 
  * TokenSetDefinition = "TOKEN_SET_DEFINITION.START", {TokenSetDefinitionContent,} "TOKEN_SET_DEFINITION.END";
- * TokenSetDefinitionContent = SingleTokenDefinition | MetaInformation;
+ * TokenSetDefinitionContent = SingleTokenDefinition | CharacterSetIntervals | MetaInformation;
  * SingleTokenDefinition = "SINGLE_TOKEN_DEFINITION.START", {MetaInformation,} "SINGLE_TOKEN_DEFINITION.END";
+ * CharacterSetIntervals = "CHARACTER_SET_INTERVAL.SOLE" | {"CHARACTER_SET_INTERVAL.SOLE"}
  * 
  * SequencePart = "SEQUENCE.START", {SequencePartContent,} "SEQUENCE.END";
  * SequencePartContent = "SEQUENCE_TOKENS.SOLE" | SingleSequenceToken | MetaInformation;
  * SingleSequenceToken = "SINGLE_SEQUENCE_TOKEN.START", {MetaInformation,} "SINGLE_SEQUENCE_TOKEN.END";
  * 
  * CharacterSetPart = "CHARACTER_SET.START", {CharacterSetPartContent,} "CHARACTER_SET.END";
- * CharacterSetPartContent = "CHARACTER_SET_PART.SOLE" | MetaInformation;
+ * CharacterSetPartContent = "CHARACTER_SET_INTERVAL.SOLE" | MetaInformation;
  * 
  * TreeNetworkGroup = "TREE_NETWORK_GROUP.START", {TreeNetworkGroupContent,} "TREE_NETWORK_GROUP.END";
  * TreeNetworkGroupContent = Tree | Network;
