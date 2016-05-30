@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 
 
 /**
- * Translator between the type {@code xsd:int} and {@link Integer}. 
+ * Translator between the type <a href="https://www.w3.org/TR/xmlschema11-2/#int">{@code xsd:int}</a> and {@link Integer}. 
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
