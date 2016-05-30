@@ -267,13 +267,20 @@ public class JPhyloIOTestTools {
   }
   
   
-  public static void assertTokenSetDefinitionEvent(CharacterStateSetType expectedType, String expectedParsedName, 
+  public static void assertTokenSetDefinitionEvent(CharacterStateSetType expectedType, String expectedLabel, 
   		JPhyloIOEventReader reader) throws Exception {
   	
-  	assertTokenSetDefinitionEvent(expectedType, expectedParsedName, null, reader);
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEventType(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.START, event);
+		
+		TokenSetDefinitionEvent tokenSetEvent = event.asTokenSetDefinitionEvent();
+		assertEquals(expectedType, tokenSetEvent.getSetType());
+		assertEquals(expectedLabel, tokenSetEvent.getLabel());
   }
   
   
+  @Deprecated
   public static void assertTokenSetDefinitionEvent(CharacterStateSetType expectedType, String expectedLabel, 
   		String expectedCharSetID, JPhyloIOEventReader reader) throws Exception {
   	
@@ -285,7 +292,7 @@ public class JPhyloIOTestTools {
 		assertEquals(expectedType, tokenSetEvent.getSetType());
 		assertEquals(expectedLabel, tokenSetEvent.getLabel());
 		assertEquals(expectedCharSetID, tokenSetEvent.getCharacterSetID());
-  }  
+  }
 	
 	
   public static void assertSingleTokenDefinitionEvent(String expectedTokenName, 
