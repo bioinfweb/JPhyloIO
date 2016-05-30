@@ -2,12 +2,11 @@
 <nex:nexml xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:kt="http://example.org/knownTypes"
 		xmlns:cx="http://bioinfweb.info/xmlns/Example/customXML" 
 		xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9"
-		xmlns:ex="http://www.example.org/">
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9">
 		
   <otus id="otus1" label="some OTUs">
     <otu about="#otu2" id="otu2" label="some OTU">
-      <meta datatype="rdf:Literal" id="meta6" property="kt:hasCustomXML" xsi:type="nex:LiteralMeta" ex:test="0">
+      <meta datatype="rdf:Literal" id="meta6" property="kt:hasCustomXML" xsi:type="nex:LiteralMeta">
         <cx:customObject id="someID">
           <cx:stringProperty>some string</cx:stringProperty>
           <cx:numericProperty>18.5</cx:numericProperty>
