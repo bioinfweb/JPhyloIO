@@ -129,7 +129,7 @@ public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamD
 			case START:
 				state = State.IN_DOCUMENT;
 				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-				getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, DEFAULT_TREES_ID_PREFIX + 
+				getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + 
 						getStreamDataProvider().getIDManager().createNewID(), null, null));
 				//TODO Empty files define a tree group as well this way. This could be avoided, if the first event produced by NewickStringReader would be buffered in a different event queue. Then the group start event could be fired depending on the first return value of addNextEvents() below.
 				break;

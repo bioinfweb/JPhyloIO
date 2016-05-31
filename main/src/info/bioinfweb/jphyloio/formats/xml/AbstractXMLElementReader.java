@@ -62,7 +62,7 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 				Attribute attribute = attributes.next();
 				if (attributeToPredicateMap.containsKey(attribute.getName())) { //allows to ignore certain attributes
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
 							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 	
 					streamDataProvider.getCurrentEventCollection().add(

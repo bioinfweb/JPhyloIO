@@ -150,7 +150,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(
-								new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+								new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
 								new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE));						
 					}
 			});
@@ -198,7 +198,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						String otuListID = getID(null, EventContentType.OTU_LIST);
+						String otuListID = getID(EventContentType.OTU_LIST);
 						streamDataProvider.setOtuListID(otuListID);
 						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU_LIST, otuListID, null));
 					}
@@ -279,7 +279,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						streamDataProvider.getSequenceInformations().get(index).put(metaColumnID, value);
 						
 						if (metaColumnID == META_ID_SEQUENCE_LABEL) {
-							String otuID = getID(DEFAULT_OTU_ID_PREFIX + index, EventContentType.OTU);
+							String otuID = getID(EventContentType.OTU);
 							
 							streamDataProvider.getSequenceIndexToOTUID().put(index, otuID);
 							streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, otuID, value));
@@ -296,13 +296,13 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						String label = XMLUtils.readStringAttr(element, ATTR_CHARSET_LABEL, null);
 						String hexColor = element.getAttributeByName(ATTR_COLOR).getValue();
 						
-						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, getID(null, EventContentType.CHARACTER_SET), label));						
+						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, getID(EventContentType.CHARACTER_SET), label));						
 						
 						if (element.getAttributeByName(ATTR_VISIBILITY) != null) {
 							boolean visibility = XMLUtils.readBooleanAttr(element, ATTR_VISIBILITY, false);
 							
 							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+									new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), LiteralContentSequenceType.SIMPLE));		
 							streamDataProvider.getCurrentEventCollection().add(
 									new LiteralMetadataContentEvent(null, Boolean.toString(visibility), visibility, null));
@@ -313,7 +313,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							Color charSetColor = Color.decode("#" + hexColor);
 									
 							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+									new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), LiteralContentSequenceType.SIMPLE));		
 							streamDataProvider.getCurrentEventCollection().add(
 									new LiteralMetadataContentEvent(null, hexColor, charSetColor));
@@ -391,11 +391,11 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, getID(null, EventContentType.ALIGNMENT), null, 
+						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, getID(EventContentType.ALIGNMENT), null, 
 								streamDataProvider.getOtuListID()));
 						
 						streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(streamDataProvider.getCharacterSetType(), 
-								getID(null, EventContentType.TOKEN_SET_DEFINITION), null));
+								getID(EventContentType.TOKEN_SET_DEFINITION), null));
 						streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, streamDataProvider.getAlignmentLength()));
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 						
@@ -419,7 +419,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						readAttributes(streamDataProvider, event.asStartElement(), ATTR_ALIGNMENT_LENGTH, PREDICATE_CHARACTER_COUNT, ATTR_SEQUENCE_COUNT, PREDICATE_SEQUENCE_COUNT);
 						
 						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
-						streamDataProvider.setCurrentSequenceID(getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE));
+						streamDataProvider.setCurrentSequenceID(getID(EventContentType.SEQUENCE));
 						
 						String label = null;
 						boolean infoPresent = (seqIndex < streamDataProvider.getSequenceInformations().size());
@@ -493,7 +493,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 										
 										if (seqIndex < streamDataProvider.getSequenceCount()) {
 											streamDataProvider.setCurrentSequenceIndex(seqIndex);
-											streamDataProvider.setCurrentSequenceID(getID(DEFAULT_SEQUENCE_ID_PREFIX + seqIndex, EventContentType.SEQUENCE));
+											streamDataProvider.setCurrentSequenceID(getID(EventContentType.SEQUENCE));
 											
 											boolean infoPresent = (seqIndex < streamDataProvider.getSequenceInformations().size());
 											
@@ -594,7 +594,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 			
 			if (predicate != null) {
 				if (!predicate.getURI().equals(PREDICATE_HAS_RESOURCE_METADATA) && !predicate.getURI().equals(PREDICATE_LINKED_FILE)) {
-					getCurrentEventCollection().add(new LiteralMetadataEvent(getID(null, EventContentType.META_LITERAL), columnLabel, 
+					getCurrentEventCollection().add(new LiteralMetadataEvent(getID(EventContentType.META_LITERAL), columnLabel, 
 							predicate, LiteralContentSequenceType.SIMPLE));
 					getCurrentEventCollection().add(new LiteralMetadataContentEvent(datatype, sequenceInfo.get(key), false));
 					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
@@ -611,7 +611,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							resource = new URI(file.getPath());
 						}
 
-						getCurrentEventCollection().add(new ResourceMetadataEvent(getID(null, EventContentType.META_RESOURCE), columnLabel, predicate, resource, null));
+						getCurrentEventCollection().add(new ResourceMetadataEvent(getID(EventContentType.META_RESOURCE), columnLabel, predicate, resource, null));
 						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 					}
 					catch (URISyntaxException e) {}

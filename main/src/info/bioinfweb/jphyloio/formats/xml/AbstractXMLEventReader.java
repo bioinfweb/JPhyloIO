@@ -196,39 +196,41 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	public String getID(String id, EventContentType type) { //TODO handle possible conflicts between upcoming IDs and new IDs generated here that may arise in some of the classes using this method
-		String result = id;
-		if ((result == null) || result.equals("")) {
-			if (type.equals(EventContentType.ALIGNMENT)) {
-				result = DEFAULT_MATRIX_ID_PREFIX;
-			}
-			else if (type.equals(EventContentType.TOKEN_SET_DEFINITION)) {
-				result = DEFAULT_TOKEN_SET_ID_PREFIX;
-			}
-			else if (type.equals(EventContentType.NODE)) {
-				result = DEFAULT_NODE_ID_PREFIX;
-			}
-			else if (type.equals(EventContentType.EDGE)) {
-				result = DEFAULT_EDGE_ID_PREFIX;
-			}
-			else if (type.equals(EventContentType.TREE)) {
-				result = DEFAULT_TREE_ID_PREFIX;
-			}
-			else if (type.equals(EventContentType.OTU_LIST)) {
-				result = DEFAULT_OTU_LIST_ID_PREFIX;
-			}
-			else if (type.equals(EventContentType.CHARACTER_SET)) {
-				result = DEFAULT_CHAR_SET_ID_PREFIX;
-			}
-			else if (type.equals(EventContentType.META_RESOURCE) || type.equals(EventContentType.META_LITERAL) 
-					|| type.equals(EventContentType.META_LITERAL_CONTENT)) {
-				result = DEFAULT_META_ID_PREFIX;
-			}
-			
-			result += getStreamDataProvider().getIDManager().createNewID();
+	public String getID(EventContentType type) { //TODO handle possible conflicts between upcoming IDs and new IDs generated here that may arise in some of the classes using this method
+		String result = "";
+	
+		if (type.equals(EventContentType.ALIGNMENT)) {
+			result = DEFAULT_MATRIX_ID_PREFIX;
+		}
+		else if (type.equals(EventContentType.TOKEN_SET_DEFINITION)) {
+			result = DEFAULT_TOKEN_SET_ID_PREFIX;
+		}
+		else if (type.equals(EventContentType.NODE)) {
+			result = DEFAULT_NODE_ID_PREFIX;
+		}
+		else if (type.equals(EventContentType.EDGE)) {
+			result = DEFAULT_EDGE_ID_PREFIX;
+		}
+		else if (type.equals(EventContentType.TREE)) {
+			result = DEFAULT_TREE_ID_PREFIX;
+		}
+		else if (type.equals(EventContentType.TREE_NETWORK_GROUP)) {
+			result = DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX;
+		}
+		else if (type.equals(EventContentType.OTU_LIST)) {
+			result = DEFAULT_OTU_LIST_ID_PREFIX;
+		}
+		else if (type.equals(EventContentType.CHARACTER_SET)) {
+			result = DEFAULT_CHAR_SET_ID_PREFIX;
+		}
+		else if (type.equals(EventContentType.META_RESOURCE) || type.equals(EventContentType.META_LITERAL) 
+				|| type.equals(EventContentType.META_LITERAL_CONTENT)) {
+			result = DEFAULT_META_ID_PREFIX;
 		}
 		
-		return result; //TODO check if ID is unique
+		result += getStreamDataProvider().getIDManager().createNewID();		
+		
+		return result;
 	}
 	
 	

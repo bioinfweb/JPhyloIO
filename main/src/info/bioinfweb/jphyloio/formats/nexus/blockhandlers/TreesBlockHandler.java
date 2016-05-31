@@ -40,7 +40,7 @@ public class TreesBlockHandler extends AbstractNexusBlockHandler implements Nexu
 	public void handleBegin(NexusReaderStreamDataProvider streamDataProvider) {
 		streamDataProvider.getTreesTranslationTable().clear();  // Usually not necessary. Just to make sure, that no other classes left any data in it.
 		streamDataProvider.getSharedInformationMap().put(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID, 
-				DEFAULT_TREES_ID_PREFIX + streamDataProvider.getIDManager().createNewID());
+				DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + streamDataProvider.getIDManager().createNewID());
 	}
 
 	

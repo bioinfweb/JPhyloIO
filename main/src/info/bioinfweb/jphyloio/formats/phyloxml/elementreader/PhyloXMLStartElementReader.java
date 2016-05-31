@@ -85,7 +85,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		
 		if (resourcePredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
-					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_RESOURCE), null, 
+					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_RESOURCE), null, 
 							new URIOrStringIdentifier(null, resourcePredicate), null, null));
 			
 			if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
@@ -94,7 +94,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 				while (attributes.hasNext()) {
 					Attribute attribute = attributes.next();
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
 							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 
 					streamDataProvider.getCurrentEventCollection().add(
@@ -107,7 +107,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		
 		if (literalPredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
-					new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(null, EventContentType.META_LITERAL), null, 
+					new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
 					new URIOrStringIdentifier(null, literalPredicate), LiteralContentSequenceType.SIMPLE));
 		}
 	}
