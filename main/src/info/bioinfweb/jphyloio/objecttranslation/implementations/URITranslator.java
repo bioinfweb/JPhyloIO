@@ -26,6 +26,12 @@ import java.net.URISyntaxException;
 
 
 
+/**
+ * An object translator from and to {@link URI}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class URITranslator extends SimpleValueTranslator<URI> {
 	@Override
 	public Class<URI> getObjectClass() {

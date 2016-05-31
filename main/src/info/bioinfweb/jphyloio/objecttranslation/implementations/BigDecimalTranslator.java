@@ -23,6 +23,13 @@ import java.math.BigDecimal;
 
 
 
+/**
+ * An object translator from and to {@link BigDecimal}. It can e.g. be used for the type 
+ * <a href="https://www.w3.org/TR/xmlschema11-2/#decimal">xsd:decimal</a>.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class BigDecimalTranslator extends NumericValueTranslator<BigDecimal> {
 	@Override
 	public Class<BigDecimal> getObjectClass() {

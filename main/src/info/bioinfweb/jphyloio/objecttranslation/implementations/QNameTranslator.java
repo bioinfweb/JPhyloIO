@@ -27,6 +27,12 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * An object translator from and to {@link QName}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class QNameTranslator extends SimpleValueTranslator<QName> {
 	@Override
 	public Class<QName> getObjectClass() {

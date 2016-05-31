@@ -23,6 +23,12 @@ import javax.xml.bind.DatatypeConverter;
 
 
 
+/**
+ * An object translator between {@code byte[]} and <a href="https://www.w3.org/TR/xmlschema11-2/#hexBinary">xsd:hexBinary</a>. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class HexBinaryTranslator extends IllegalArgumentExceptionSimpleValueTranslator<byte[]> {
 	@Override
 	public Class<byte[]> getObjectClass() {

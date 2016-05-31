@@ -19,11 +19,17 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
-import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
+import javax.xml.bind.DatatypeConverter;
 
 
 
-public class BooleanTranslator extends SimpleValueTranslator<Boolean> {
+/**
+ * An object translator between {link {@link Boolean}} and <a href="https://www.w3.org/TR/xmlschema11-2/#boolean">xsd:boolean</a>. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
+public class BooleanTranslator extends IllegalArgumentExceptionSimpleValueTranslator<Boolean> {
 	@Override
 	public Class<Boolean> getObjectClass() {
 		return Boolean.class;
@@ -31,7 +37,7 @@ public class BooleanTranslator extends SimpleValueTranslator<Boolean> {
 
 	
 	@Override
-	public Boolean representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
-		return Boolean.parseBoolean(representation);
+	protected Boolean parseValue(String representation)	throws IllegalArgumentException {
+		return DatatypeConverter.parseBoolean(representation);  // Boolean.parseBoolean() cannot be used here, since it does not support '1' as true.
 	}
 }

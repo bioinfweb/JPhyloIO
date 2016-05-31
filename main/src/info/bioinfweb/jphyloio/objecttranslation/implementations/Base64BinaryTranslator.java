@@ -23,6 +23,12 @@ import javax.xml.bind.DatatypeConverter;
 
 
 
+/**
+ * An object translator between {@code byte[]} and <a href="https://www.w3.org/TR/xmlschema11-2/#base64Binary">xsd:base64Binary</a>. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class Base64BinaryTranslator extends IllegalArgumentExceptionSimpleValueTranslator<byte[]> {
 	@Override
 	public Class<byte[]> getObjectClass() {

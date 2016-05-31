@@ -23,6 +23,13 @@ import java.math.BigInteger;
 
 
 
+/**
+ * An object translator from and to {@link BigInteger}. It can e.g. be used for the type 
+ * <a href="https://www.w3.org/TR/xmlschema11-2/#integer">xsd:integer</a>.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class BigIntegerTranslator extends NumericValueTranslator<BigInteger> {
 	@Override
 	public Class<BigInteger> getObjectClass() {

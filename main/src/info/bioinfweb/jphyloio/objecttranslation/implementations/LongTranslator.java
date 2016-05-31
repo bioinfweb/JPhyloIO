@@ -20,8 +20,12 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 
-
-
+/**
+ * An object translator from and to {@link Long}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class LongTranslator extends NumericValueTranslator<Long> {
 	@Override
 	public Class<Long> getObjectClass() {

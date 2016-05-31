@@ -25,6 +25,12 @@ import javax.xml.bind.DatatypeConverter;
 
 
 
+/**
+ * An object translator between {link {@link Calendar}} and <a href="https://www.w3.org/TR/xmlschema11-2/#date">xsd:date</a>. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class DateTranslator extends IllegalArgumentExceptionSimpleValueTranslator<Calendar> {
 	@Override
 	public Class<Calendar> getObjectClass() {

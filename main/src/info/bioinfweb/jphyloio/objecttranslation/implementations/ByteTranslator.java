@@ -20,8 +20,12 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 
-
-
+/**
+ * An object translator from and to {@link Byte}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class ByteTranslator extends NumericValueTranslator<Byte> {
 	@Override
 	public Class<Byte> getObjectClass() {

@@ -19,12 +19,13 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
-import info.bioinfweb.commons.io.W3CXSConstants;
 
-import javax.xml.namespace.QName;
-
-
-
+/**
+ * An object translator from and to {@link Short}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class ShortTranslator extends NumericValueTranslator<Short> {
 	@Override
 	public Class<Short> getObjectClass() {

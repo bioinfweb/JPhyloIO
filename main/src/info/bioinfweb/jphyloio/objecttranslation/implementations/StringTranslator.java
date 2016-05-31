@@ -23,6 +23,13 @@ import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataExceptio
 
 
 
+/**
+ * An object translator from and to {@link String}. Both {@link #representationToJava(String)} and {@link #javaToRepresentation(String)}
+ * return the specified string instance unchanged.  
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class StringTranslator extends SimpleValueTranslator<String> {
 	@Override
 	public Class<String> getObjectClass() {

@@ -23,7 +23,7 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 /**
- * Translator between the type <a href="https://www.w3.org/TR/xmlschema11-2/#int">{@code xsd:int}</a> and {@link Integer}. 
+ * An object translator from and to {@link Integer}. 
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
