@@ -59,7 +59,7 @@ public class PDEEventReaderTest implements PDEConstants {
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType());
+//					System.out.println(event.getType());
 				}
 			}
 			finally {
@@ -84,15 +84,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 								
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 20, reader);
@@ -101,15 +101,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "C", "otu2", reader);
 				assertCharactersEvent("ACGTCGCTCGAG-CTGATCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq10", "B", "otu3", reader);
 				assertCharactersEvent("CACGGTG--CTAGCAGATCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq11", "A", "otu4", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("TT-ACGATGAATTGCTGGCA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -141,11 +141,11 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
@@ -183,15 +183,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", null, null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq5", null, null, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", null, null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq6", null, null, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", null, null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq7", null, null, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -222,11 +222,11 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix3", null, "otus1", reader);
 								
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 20, reader);
@@ -235,15 +235,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq7", "C", "otu2", reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", null, null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq8", null, null, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", null, null, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", null, null, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -299,15 +299,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 20, reader);
@@ -342,15 +342,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 20, reader);
@@ -359,11 +359,11 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "C", "otu2", reader);
 				assertCharactersEvent("ACGTCGCTCGAG-CTGATCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq10", "B", "otu3", reader);
 				
 				fail("Exception not thrown");
 			}
@@ -389,15 +389,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 23, reader);
@@ -406,13 +406,13 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "23", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "A", "otu0", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "A", "otu2", reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);	
 				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new URI("someFile.scf"), null, true, reader);
 				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq12", "B", "otu3", reader);
 				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new URI("someFile.scf"), null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ACCESS_NUMBER), new URIOrStringIdentifier(META_TYPE_NUMBER, null), "45", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some comment", null, null, true, reader);
@@ -423,7 +423,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharactersEvent("ACTGACTGACAACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "C", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq19", "C", "otu4", reader);
 				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new File("\\\\nwz.wwu.de\\dfs\\home\\s\\s_wiec03\\Desktop\\sample.scf").toURI(), null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some comment", null, null, true, reader);				
 				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
@@ -456,15 +456,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 20, reader);
@@ -473,15 +473,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "C", "otu2", reader);
 				assertCharactersEvent("ACGTCGCTCGAG-CTGATCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq10", "B", "otu3", reader);
 				assertCharactersEvent("CACGGTG--CTAGCAGATCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq11", "A", "otu4", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("TT-ACGATGAATTGCTGGCA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -513,15 +513,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 20, reader);
@@ -530,15 +530,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "C", "otu2", reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq10", "B", "otu3", reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq11", "A", "otu4", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -570,32 +570,32 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet2", "charSet1", reader);				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet5", "charSet1", reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), null, "true", null, true, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), null, Color.decode("#FC3D33").toString(), null, Color.decode("#FC3D33"), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), null, "FC3D33", null, Color.decode("#FC3D33"), true, reader);
 				assertCharacterSetEvent(2, 2, reader);
 				assertCharacterSetEvent(4, 14, reader);
 				assertCharacterSetEvent(16, 18, reader);
 				assertCharacterSetEvent(20, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet5", "charSet2", reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet8", "charSet2", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), null, "false", null, false, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), null, Color.decode("#FFFF33").toString(), null, Color.decode("#FFFF33"), true, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), null, "FFFF33", null, Color.decode("#FFFF33"), true, reader);				
 				assertCharacterSetEvent(5, 9, reader);
 				assertCharacterSetEvent(11, 11, reader);
 				assertCharacterSetEvent(13, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix8", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix11", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 20, reader);
@@ -604,15 +604,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq15", "C", "otu2", reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq16", "B", "otu3", reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq17", "A", "otu4", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -644,15 +644,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 20, reader);
@@ -661,15 +661,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "C", "otu2", reader);
 				assertCharactersEvent("ATWSATWSATWSATWSATWS", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq10", "B", "otu3", reader);
 				assertCharactersEvent("ATWSATWSATWSATWSATWS", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq11", "A", "otu4", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("ATWSATWSATWSATWSATWS", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -701,15 +701,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 23, reader);
@@ -718,13 +718,13 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "23", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "A", "otu0", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "A", "otu2", reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);	
 				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new URI("someFile.scf"), null, true, reader);
 				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq12", "B", "otu3", reader);
 				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new URI("someFile.scf"), null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ACCESS_NUMBER), new URIOrStringIdentifier(META_TYPE_NUMBER, null), "45", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some comment", null, null, true, reader);
@@ -735,7 +735,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharactersEvent("ACTGACTGACAACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "C", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq19", "C", "otu4", reader);
 				JPhyloIOTestTools.assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINKED_FILE), new File("\\\\nwz.wwu.de\\dfs\\home\\s\\s_wiec03\\Desktop\\sample.scf").toURI(), null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some comment", null, null, true, reader);				
 				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
@@ -768,15 +768,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 23, reader);
@@ -785,15 +785,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "23", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "C", "otu2", reader);
 				assertCharactersEvent("ACTGACTGAC-A-TGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq10", "B", "otu3", reader);
 				assertCharactersEvent("ACTGACTGACAACTGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq11", "A", "otu4", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("ACTGACTGAC---TGACTGACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -825,15 +825,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU_LIST, "otus1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu0", "C", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu2", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu1", "B", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu3", "B", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "otu2", "A", reader);
+				assertLabeledIDEvent(EventContentType.OTU, "otu4", "A", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix2", null, "otus1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
 				assertCharacterSetEvent(0, 25, reader);
@@ -842,15 +842,15 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "25", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq9", "C", "otu2", reader);
 				assertCharactersEvent("AAAAGTGATAA-CTTTCAAATTCAG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq1", "B", "otu1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq10", "B", "otu3", reader);
 				assertCharactersEvent("????????????CTTTCAAATTCAG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq2", "A", "otu2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq11", "A", "otu4", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, null, true, reader);
 				assertCharactersEvent("AAAAGTGATAACTT???????????", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);

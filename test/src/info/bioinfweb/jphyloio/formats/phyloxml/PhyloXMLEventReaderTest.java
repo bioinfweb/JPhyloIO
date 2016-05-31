@@ -49,7 +49,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 	@Test
 	public void testOutputPhyloXML() {
 		try {
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/CustomXML.xml"), new ReadWriteParameterMap());
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/Property.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
