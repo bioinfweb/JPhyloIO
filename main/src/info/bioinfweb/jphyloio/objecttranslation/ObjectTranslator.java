@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.objecttranslation;
 
 import java.io.IOException;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;

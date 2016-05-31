@@ -51,7 +51,7 @@ public abstract class AbstractObjectTranslator<O> implements ObjectTranslator<O>
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractObjectTranslator other = (AbstractObjectTranslator) obj;
+		AbstractObjectTranslator<?> other = (AbstractObjectTranslator<?>) obj;
 		if (hasStringRepresentation() != other.hasStringRepresentation())
 			return false;
 		if (getObjectClass() == null) {

@@ -110,6 +110,7 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public <O> ObjectTranslator<O> getTranslator(QName dataType, Class<O> objectClass) {
 		return (ObjectTranslator<O>)translatorMap.get(new TranslatorMapKey(dataType, objectClass));
 	}
