@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.factory;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
@@ -26,10 +28,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import java.io.File;
 import java.io.FileReader;
 
-import org.junit.* ;
-
-import static org.junit.Assert.* ;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+import org.junit.Test;
 
 
 
@@ -44,7 +43,7 @@ public class JPhyloIOReaderWriterFactoryTest implements JPhyloIOFormatIDs {
 		assertEquals(NEWICK_FORMAT_ID, factory.guessFormat(new File("data/Newick/OneNodeLength.nwk")));
 		assertEquals(NEXML_FORMAT_ID, factory.guessFormat(new File("data/NeXML/MetaElements.xml")));
 		assertEquals(NEXUS_FORMAT_ID, factory.guessFormat(new File("data/Nexus/Matrix.nex")));
-		assertEquals(PDE_FORMAT_ID, factory.guessFormat(new File("data/PDE/shortSequences.pde")));
+		assertEquals(PDE_FORMAT_ID, factory.guessFormat(new File("data/PDE/SimpleDNASeq.pde")));
 		assertEquals(PHYLIP_FORMAT_ID, factory.guessFormat(new File("data/Phylip/Interleaved.phy")));
 		assertEquals(PHYLOXML_FORMAT_ID, factory.guessFormat(new File("data/PhyloXML/BranchLengths.xml")));
 		assertEquals(XTG_FORMAT_ID, factory.guessFormat(new File("data/XTG/ExampleXTGDocument.xml")));
@@ -71,7 +70,7 @@ public class JPhyloIOReaderWriterFactoryTest implements JPhyloIOFormatIDs {
 		testGuessFormatReader(NEWICK_FORMAT_ID, factory, "data/Newick/OneNodeLength.nwk");
 		testGuessFormatReader(NEXML_FORMAT_ID, factory, "data/NeXML/MetaElements.xml");
 		testGuessFormatReader(NEXUS_FORMAT_ID, factory, "data/Nexus/Matrix.nex");
-		testGuessFormatReader(PDE_FORMAT_ID, factory, "data/PDE/shortSequences.pde");
+		testGuessFormatReader(PDE_FORMAT_ID, factory, "data/PDE/SimpleDNASeq.pde");
 		testGuessFormatReader(PHYLIP_FORMAT_ID, factory, "data/Phylip/Interleaved.phy");
 		testGuessFormatReader(PHYLOXML_FORMAT_ID, factory, "data/PhyloXML/BranchLengths.xml");
 		testGuessFormatReader(XTG_FORMAT_ID, factory, "data/XTG/ExampleXTGDocument.xml");
@@ -105,7 +104,7 @@ public class JPhyloIOReaderWriterFactoryTest implements JPhyloIOFormatIDs {
 		testGuessReader(NEWICK_FORMAT_ID, factory, "data/Newick/OneNodeLength.nwk");
 		testGuessReader(NEXML_FORMAT_ID, factory, "data/NeXML/MetaElements.xml");
 		testGuessReader(NEXUS_FORMAT_ID, factory, "data/Nexus/Matrix.nex");
-		testGuessReader(PDE_FORMAT_ID, factory, "data/PDE/shortSequences.pde");
+		testGuessReader(PDE_FORMAT_ID, factory, "data/PDE/SimpleDNASeq.pde");
 		testGuessReader(PHYLIP_FORMAT_ID, factory, "data/Phylip/Interleaved.phy");
 		testGuessReader(PHYLOXML_FORMAT_ID, factory, "data/PhyloXML/BranchLengths.xml");
 		testGuessReader(XTG_FORMAT_ID, factory, "data/XTG/ExampleXTGDocument.xml");
@@ -121,7 +120,7 @@ public class JPhyloIOReaderWriterFactoryTest implements JPhyloIOFormatIDs {
 		testGuessReader(NEWICK_FORMAT_ID, factory, "data/Newick/OneNodeLength.nwk.gz");
 		testGuessReader(NEXML_FORMAT_ID, factory, "data/NeXML/MetaElements.xml.gz");
 		testGuessReader(NEXUS_FORMAT_ID, factory, "data/Nexus/Matrix.nex.gz");
-		testGuessReader(PDE_FORMAT_ID, factory, "data/PDE/compressedPDE.pde.gz");
+		testGuessReader(PDE_FORMAT_ID, factory, "data/PDE/SimpleDNASeq.pde.gz");
 		testGuessReader(PHYLIP_FORMAT_ID, factory, "data/Phylip/Interleaved.phy.gz");
 		testGuessReader(PHYLOXML_FORMAT_ID, factory, "data/PhyloXML/BranchLengths.xml.gz");
 		testGuessReader(XTG_FORMAT_ID, factory, "data/XTG/ExampleXTGDocument.xml.gz");

@@ -19,11 +19,26 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEdgeEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEndEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLinkedLabeledIDEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertResourceMetaEvent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
+import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
+import info.bioinfweb.commons.log.MessageListApplicationLogger;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.io.File;
 
@@ -31,50 +46,19 @@ import org.junit.Test;
 
 
 
-public class PhyloXMLEventReaderTest {
+public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 	@Test
 	public void testOutputPhyloXML() {
 		try {
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/ShortPhyloXML.xml"), new ReadWriteParameterMap());
-//			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/BigPhyloXMLExample.xml"), new ReadWriteParameterMap());
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/NodeLabels.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
 //					System.out.println(event.getType());
-					if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
-//						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
-					}
-					else if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
-						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-							if (event.asLiteralMetadataEvent().getPredicate() != null) {
-								if (event.asLiteralMetadataEvent().getPredicate().getURI() != null) {
-//									System.out.println("Literal: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
-								}
-							}
-						}
-					}
-					else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
-						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-//							System.out.println("Resource: " + event.asResourceMetadataEvent().getRel().getLocalPart());
-						}
-					}
-					else if (event.getType().getContentType().equals(EventContentType.TREE)) {
-						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-//							System.out.println("TreeLabel: " + event.asLabeledIDEvent().getLabel());
-						}
-					}
-					else if (event.getType().getContentType().equals(EventContentType.NODE)) {
-						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-							System.out.println("NodeID: " + event.asLabeledIDEvent().getID());
-							System.out.println("NodeLabel: " + event.asLabeledIDEvent().getLabel());
-						}
-					}
-					else if (event.getType().getContentType().equals(EventContentType.EDGE)) {
-						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-							System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " " + "Target: " + event.asEdgeEvent().getTargetID());
-							System.out.println();
-						}
-					}
+					
+					if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
+//						System.out.println(event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
+					}					
 				}
 			}
 			finally {
@@ -88,182 +72,367 @@ public class PhyloXMLEventReaderTest {
 	}
 	
 	
-//	@Test
-//	public void testReadingIDsAndLabels() {
-//		try {
-//			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/IDsAndLabels.xml"), new ReadWriteParameterMap());
-//			try {
-//				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree0", "Test Tree", null, reader);
-//				assertMetaEvent("info.bioinfweb.jphyloio.displayTreeRooted", "true", true, true, reader);
-//				assertMetaEvent("phyloXML.phyloxml.phylogeny.rooted", "true", true, true, reader);
-//				assertMetaEvent("phyloXML.phylogeny.name", "Test Tree", true, true, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "N1", "AA bb", null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "N1", true, true, reader);
-//				assertMetaEvent("phyloXML.clade.taxonomy", null, false, true, reader);
-//				assertMetaEvent("phyloXML.taxonomy.id", "taxonomy ID", true, true, reader);
-//				assertMetaEvent("phyloXML.taxonomy.scientific_name", "AA bb", true, true, reader);
-//				assertMetaEvent("phyloXML.taxonomy.common_name", "common name", true, true, reader);
-//				assertEndEvent(EventContentType.META_INFORMATION, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("internal1", "N1", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n2", "BB cc", null, reader);
-//				assertMetaEvent("phyloXML.clade.sequence", null, false, true, reader);
-//				assertMetaEvent("phyloXML.sequence.name", "BB cc", true, true, reader);
-//				assertEndEvent(EventContentType.META_INFORMATION, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("N2", "n2", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n4", null, null, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("N2", "n4", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);			
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "N2", "internal2", null, reader);
-//				assertMetaEvent("phyloXML.clade.taxonomy", null, false, true, reader);
-//				assertMetaEvent("phyloXML.taxonomy.id", "N2", true, true, reader);
-//				assertMetaEvent("phyloXML.taxonomy.common_name", "internal2", true, true, reader);
-//				assertEndEvent(EventContentType.META_INFORMATION, reader);
-//				assertMetaEvent("phyloXML.clade.sequence", null, false, true, reader);
-//				assertMetaEvent("phyloXML.sequence.name", "sequence name", true, true, reader);
-//				assertEndEvent(EventContentType.META_INFORMATION, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("internal1", "N2", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);				
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "internal1", "internalNode1", null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "internal1", true, true, reader);
-//				assertMetaEvent("phyloXML.clade.name", "internalNode1", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("root", "internal1", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertEndEvent(EventContentType.TREE, reader);
-//				
-//				assertEndEvent(EventContentType.DOCUMENT, reader);
-//			}
-//			finally {
-//				reader.close();
-//			}			
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//			fail(e.getLocalizedMessage());
-//		}
-//	}
-//	
-//	
-//	@Test
-//	public void testReadingMultipleTrees() {
-//		try {
-//			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/MultipleTrees.xml"), new ReadWriteParameterMap());
-//			try {
-//				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);				
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree0", "Tree 1", null, reader);
-//				assertMetaEvent("info.bioinfweb.jphyloio.displayTreeRooted", "true", true, true, reader);
-//				assertMetaEvent("phyloXML.phyloxml.phylogeny.rooted", "true", true, true, reader);
-//				assertMetaEvent("phyloXML.phylogeny.name", "Tree 1", true, true, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n1", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "A", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("n9", "n1", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n3", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "B", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("n7", "n3", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "C", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("n7", "n5", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n7", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "2", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("n9", "n7", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "n9", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "1", true, true, reader);				
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("root", "n9", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);				
-//				
-//				assertEndEvent(EventContentType.TREE, reader);
-//				
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree6", "Tree 2", null, reader);
-//				assertMetaEvent("info.bioinfweb.jphyloio.displayTreeRooted", "false", true, true, reader);
-//				assertMetaEvent("phyloXML.phyloxml.phylogeny.rooted", "false", true, true, reader);
-//				assertMetaEvent("phyloXML.phylogeny.name", "Tree 2", true, true, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "A", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "A", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("2", "A", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "B", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "B", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("2", "B", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "2", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "2", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("1", "2", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "C", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "C", true, true, reader);
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("1", "C", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);				
-//				
-//				assertLinkedLabeledIDEvent(EventContentType.NODE, "1", null, null, reader);
-//				assertMetaEvent("phyloXML.clade.node_id", "1", true, true, reader);				
-//				assertEndEvent(EventContentType.NODE, reader);
-//				
-//				assertEdgeEvent("root", "1", reader);
-//				assertEndEvent(EventContentType.EDGE, reader);	
-//				
-//				assertEndEvent(EventContentType.TREE, reader);
-//				
-//				assertEndEvent(EventContentType.DOCUMENT, reader);
-//			}
-//			finally {
-//				reader.close();
-//			}			
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//			fail(e.getLocalizedMessage());
-//		}
-//	}
+	@Test
+	public void testReadingSingleTree() {
+		try {
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/SingleTree.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree1", "Tree 1", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n4", "A", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n4", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n8", "B", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n6", "n8", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n10", "C", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n6", "n10", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n6", "2", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n6", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n2", "1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n2", reader);
+				assertEndEvent(EventContentType.EDGE, reader);				
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingMultipleTrees() {
+		try {
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/MultipleTrees.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree1", "Tree 1", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n4", "A", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n4", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n8", "B", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n6", "n8", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n10", "C", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n6", "n10", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n6", "2", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n6", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n2", "1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n2", reader);
+				assertEndEvent(EventContentType.EDGE, reader);				
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree13", "Tree 2", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n18", "y1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n16", "n18", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n16", "x1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n14", "n16", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n22", "y2", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n20", "n22", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n20", "x2", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n14", "n20", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n14", "x", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n14", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingBranchLengths() {
+		try {
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			MessageListApplicationLogger logger = new MessageListApplicationLogger();
+			parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/BranchLengths.xml"), parameters);
+			
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree1", "Tree 1", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n4", "A", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n4", 0.8, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n8", "B", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n6", "n8", 0.6, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n10", "C", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n6", "n10", Double.NaN, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n6", "2", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n6", 0.4, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n2", "1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n2", 0.6, reader);
+				assertEndEvent(EventContentType.EDGE, reader);				
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+				
+				assertEquals(1, logger.getMessageList().size());
+				assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
+				assertEquals("Two different branch lengths of \"0.6\" and \"0.9\" are present for the same branch in the document.", logger.getMessageList().get(0).getMessage());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingCladeRelations() {
+		try {
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/CladeRelation.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree1", "Tree 1", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n4", "A", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n4", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n8", "B", null, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID_VALUE), new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), 
+						"ID1", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n6", "n8", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n12", "C", null, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID_VALUE), new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), 
+						"ID2", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n6", "n12", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n6", "2", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n6", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n2", "1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n2", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("n8", "n12", reader);
+				assertEndEvent(EventContentType.EDGE, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_TYPE), null, 
+						"extraEdge", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingNodeLabels() {
+		try {
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/NodeLabels.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree1", "Tree 1", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n4", "Name A", null, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY), null, null, false, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_SCIENTIFIC_NAME), new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), 
+						"Sci Name A", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_COMMON_NAME), new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), 
+						"Com Name A", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n4", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n15", "Com Name B", null, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY), null, null, false, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_COMMON_NAME), new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), 
+						"Com Name B", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n9", "n15", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n19", "Seq Name C", null, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE), null, null, false, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_NAME), new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), 
+						"Seq Name C", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n9", "n19", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n9", "Sci Name 2", null, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY), null, null, false, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_SCIENTIFIC_NAME), new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), 
+						"Sci Name 2", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE), null, null, false, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_NAME), new URIOrStringIdentifier(null, DATA_TYPE_TOKEN), 
+						"Seq Name 2", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n2", "n9", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n2", "Name 1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n2", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 }

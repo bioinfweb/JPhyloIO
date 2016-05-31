@@ -2,17 +2,17 @@
     <phylogeny rooted="true">
         <name>Tree 1</name>
         <clade>	
-			<node_id>1</node_id>			
+			<name>1</name>
             <clade>
-                <node_id>A</node_id>
+                <name>A</name>
             </clade>
             <clade>
-				<node_id>2</node_id>
+				<name>2</name>
                 <clade>                    
-					<node_id>B</node_id>
+					<name>B</name>
                 </clade>
-                <clade>   
-					<node_id>C</node_id>
+                <clade>
+					<name>C</name>
                 </clade>
             </clade>
         </clade>
@@ -20,19 +20,19 @@
 	<phylogeny rooted="false">
         <name>Tree 2</name>
         <clade>	
-			<node_id>1</node_id>			
+			<name>x</name>
             <clade>
-                <node_id>2</node_id>
-				<clade>                    
-					<node_id>A</node_id>
+                <name>x1</name>
+				<clade>
+					<name>y1</name>
 				</clade>
-				<clade>                    
-					<node_id>B</node_id>
-				</clade>
-            </clade>			
-            <clade>
-				<node_id>C</node_id>                
             </clade>
-        </clade>
+			<clade>                    
+				<name>x2</name>				
+				<clade>
+					<name>y2</name>
+				</clade>
+			</clade>
+		</clade>
     </phylogeny>
 </phyloxml>

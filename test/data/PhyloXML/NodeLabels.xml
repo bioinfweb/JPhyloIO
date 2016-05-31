@@ -1,0 +1,33 @@
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+    <phylogeny rooted="true">
+        <name>Tree 1</name>
+        <clade>	
+			<name>Name 1</name>
+            <clade>
+                <name>Name A</name>
+				<taxonomy>
+					<scientific_name>Sci Name A</scientific_name>
+					<common_name>Com Name A</common_name>
+                </taxonomy>
+            </clade>
+            <clade>
+				<taxonomy>
+                    <scientific_name>Sci Name 2</scientific_name>
+                </taxonomy>
+				<sequence>                        
+                    <name>Seq Name 2</name>
+                </sequence>
+                <clade>                    
+					<taxonomy>
+						<common_name>Com Name B</common_name>					
+					</taxonomy>
+                </clade>
+                <clade>
+					<sequence>                        
+                        <name>Seq Name C</name>
+                    </sequence>
+                </clade>
+            </clade>
+        </clade>
+    </phylogeny>
+</phyloxml>
