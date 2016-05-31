@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderStreamDataProvider;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
@@ -41,6 +43,8 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 
@@ -130,7 +134,9 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 						elementTag = null;
 						break;
 					case XMLStreamConstants.START_ELEMENT:
-						elementTag = xmlEvent.asStartElement().getName();
+						StartElement element = xmlEvent.asStartElement();
+						elementTag = element.getName();
+						readNamespaceDefinitions(element, getStreamDataProvider());
 						break;
 					case XMLStreamConstants.END_ELEMENT:
 						getEncounteredTags().pop();
@@ -181,7 +187,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	public URIOrStringIdentifier predicateFromString(String curie, P streamDataProvider) {
+	public QName qNameFromCURIE(String curie, P streamDataProvider) {
 		String[] refParts = curie.split(":");
 		String localPart = refParts[refParts.length - 1]; //TODO is the local part always the last element?
 		String prefix = null;
@@ -189,10 +195,20 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		
 		if (refParts.length == 2) {
 			prefix = refParts[0];
-			namespaceURI = streamDataProvider.getNamespaceMap().get(prefix);
+			namespaceURI = streamDataProvider.getPrefixToNamespaceMap().get(prefix);
 		}
 		
-		return new URIOrStringIdentifier(null, new QName(namespaceURI, localPart, prefix));
+		return new QName(namespaceURI, localPart, prefix);
+	}
+	
+	
+	protected void readNamespaceDefinitions(StartElement element, P streamDataProvider) {
+		@SuppressWarnings("unchecked")
+		Iterator<Namespace> namespaceIterator = element.getNamespaces();
+		while (namespaceIterator.hasNext()) {
+			Namespace namespace = namespaceIterator.next();
+			streamDataProvider.getPrefixToNamespaceMap().put(namespace.getPrefix(), namespace.getNamespaceURI());
+		}
 	}
 	
 	

@@ -157,7 +157,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				String parentTag = streamDataProvider.getParentName();
 				
 				String appliesTo = XMLUtils.readStringAttr(element, ATTR_APPLIES_TO, null);
-				URIOrStringIdentifier predicate = predicateFromString(XMLUtils.readStringAttr(element, ATTR_REF, null), streamDataProvider);
+				URIOrStringIdentifier predicate = new URIOrStringIdentifier(null, qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_REF, null), streamDataProvider));
 				
 				boolean appliesToAsAttribute = true;
 				boolean resetEventCollection = false;				
@@ -472,7 +472,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					@Override
 					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {					
 						boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
-						URIOrStringIdentifier datatype = predicateFromString(streamDataProvider.getCurrentPropertyDatatype(), streamDataProvider);
+						URIOrStringIdentifier datatype = new URIOrStringIdentifier(null, qNameFromCURIE(streamDataProvider.getCurrentPropertyDatatype(), streamDataProvider));
 						
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(datatype, event.asCharacters().getData(), isContinued));
 					}

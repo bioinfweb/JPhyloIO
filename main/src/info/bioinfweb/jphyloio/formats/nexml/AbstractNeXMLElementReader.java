@@ -25,11 +25,9 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -51,16 +49,6 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	
 	protected static class OTUorOTUSEventInformation extends LabeledIDEventInformation {
 		public String otuOrOtusID;
-	}
-	
-	
-	protected void readNamespaceDefinitions(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) {
-		@SuppressWarnings("unchecked")
-		Iterator<Namespace> namespaceIterator = element.getNamespaces();
-		while (namespaceIterator.hasNext()) {
-			Namespace namespace = namespaceIterator.next();
-			streamDataProvider.getNamespaceMap().put(namespace.getPrefix(), namespace.getNamespaceURI());
-		}
 	}
 	
 	

@@ -35,7 +35,7 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	private String parentName;
 	private String elementName;
 	
-	private Map<String, String> namespaceMap = new HashMap<String, String>();
+	private Map<String, String> prefixToNamespaceMap = new HashMap<String, String>();
 	
 	private Stack<String> nestedMetaNames = new Stack<String>();  
 	
@@ -77,8 +77,8 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	}
 
 
-	public Map<String, String> getNamespaceMap() {
-		return namespaceMap;
+	public Map<String, String> getPrefixToNamespaceMap() {
+		return prefixToNamespaceMap;
 	}
 
 
