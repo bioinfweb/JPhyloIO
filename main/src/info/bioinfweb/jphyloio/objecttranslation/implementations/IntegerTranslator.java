@@ -16,31 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
-
-
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.NumericValueTranslator;
-
-import javax.xml.namespace.QName;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 
-public class LongTranslator extends NumericValueTranslator<Long> {
+
+
+/**
+ * Translator between the type <a href="https://www.w3.org/TR/xmlschema11-2/#int">{@code xsd:int}</a> and {@link Integer}. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
+public class IntegerTranslator extends NumericValueTranslator<Integer> {
 	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_LONG;
-	}
-	
-
-	@Override
-	public Class<Long> getObjectClass() {
-		return Long.class;
+	public Class<Integer> getObjectClass() {
+		return Integer.class;
 	}
 
 
 	@Override
-	protected Long parseValue(String representation) throws NumberFormatException {
-		return Long.parseLong(representation);
+	protected Integer parseValue(String representation) throws NumberFormatException {
+		return Integer.parseInt(representation);
 	}
 }

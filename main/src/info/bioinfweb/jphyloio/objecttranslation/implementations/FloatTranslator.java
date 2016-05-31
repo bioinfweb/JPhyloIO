@@ -16,33 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
-
-
-import java.math.BigInteger;
-
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.NumericValueTranslator;
-
-import javax.xml.namespace.QName;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 
-public class IntegerTranslator extends NumericValueTranslator<BigInteger> {
+
+
+public class FloatTranslator extends NumericValueTranslator<Float> {
 	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_INTEGER;
-	}
-	
-
-	@Override
-	public Class<BigInteger> getObjectClass() {
-		return BigInteger.class;
+	public Class<Float> getObjectClass() {
+		return Float.class;
 	}
 
 
 	@Override
-	protected BigInteger parseValue(String representation) throws NumberFormatException {
-		return new BigInteger(representation);
+	protected Float parseValue(String representation) throws NumberFormatException {
+		return Float.parseFloat(representation);
 	}
 }

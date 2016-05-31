@@ -16,26 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
-
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.IllegalArgumentExceptionSimpleValueTranslator;
 
 import java.util.Calendar;
 
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.namespace.QName;
 
 
 
-public class TimeTranslator extends IllegalArgumentExceptionSimpleValueTranslator<Calendar> {
-	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_TIME;
-	}
-	
-
+public class DateTranslator extends IllegalArgumentExceptionSimpleValueTranslator<Calendar> {
 	@Override
 	public Class<Calendar> getObjectClass() {
 		return Calendar.class;
@@ -44,12 +34,12 @@ public class TimeTranslator extends IllegalArgumentExceptionSimpleValueTranslato
 
 	@Override
 	protected Calendar parseValue(String representation) throws IllegalArgumentException {
-		return DatatypeConverter.parseTime(representation);
+		return DatatypeConverter.parseDate(representation);
 	}
 
 
 	@Override
 	public String javaToRepresentation(Calendar object)	throws UnsupportedOperationException, ClassCastException {
-		return DatatypeConverter.printTime(object);
+		return DatatypeConverter.printDate(object);
 	}
 }

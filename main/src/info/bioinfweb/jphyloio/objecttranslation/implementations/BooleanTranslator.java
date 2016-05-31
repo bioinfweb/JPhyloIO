@@ -16,31 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.NumericValueTranslator;
-
-import javax.xml.namespace.QName;
+import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 
 
-public class UnsignedIntTranslator extends NumericValueTranslator<Long> {
+public class BooleanTranslator extends SimpleValueTranslator<Boolean> {
 	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_UNSIGNED_INT;
+	public Class<Boolean> getObjectClass() {
+		return Boolean.class;
 	}
+
 	
-
 	@Override
-	public Class<Long> getObjectClass() {
-		return Long.class;
-	}
-
-
-	@Override
-	protected Long parseValue(String representation) throws NumberFormatException {
-		return Long.parseLong(representation);
+	public Boolean representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
+		return Boolean.parseBoolean(representation);
 	}
 }

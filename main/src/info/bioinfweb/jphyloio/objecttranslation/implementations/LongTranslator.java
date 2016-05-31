@@ -16,31 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
-
-
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.NumericValueTranslator;
-
-import javax.xml.namespace.QName;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 
-public class UnsignedByteTranslator extends NumericValueTranslator<Short> {
+
+
+public class LongTranslator extends NumericValueTranslator<Long> {
 	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_UNSIGNED_INT;
-	}
-	
-
-	@Override
-	public Class<Short> getObjectClass() {
-		return Short.class;
+	public Class<Long> getObjectClass() {
+		return Long.class;
 	}
 
 
 	@Override
-	protected Short parseValue(String representation) throws NumberFormatException {
-		return Short.parseShort(representation);
+	protected Long parseValue(String representation) throws NumberFormatException {
+		return Long.parseLong(representation);
 	}
 }

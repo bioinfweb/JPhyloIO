@@ -16,27 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
+
+import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.xml.namespace.QName;
-
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.SimpleValueTranslator;
 
 
-
-public class AnyURITranslator extends SimpleValueTranslator<URI> {
-	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_ANY_URI;
-	}
-
-	
+public class URITranslator extends SimpleValueTranslator<URI> {
 	@Override
 	public Class<URI> getObjectClass() {
 		return URI.class;

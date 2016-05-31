@@ -16,24 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.namespace.QName;
-
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.IllegalArgumentExceptionSimpleValueTranslator;
 
 
 
-public class Base64BinaryTranslator extends IllegalArgumentExceptionSimpleValueTranslator<byte[]> {
-	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_BASE_64_BINARY;
-	}
-	
-
+public class HexBinaryTranslator extends IllegalArgumentExceptionSimpleValueTranslator<byte[]> {
 	@Override
 	public Class<byte[]> getObjectClass() {
 		return byte[].class;
@@ -42,12 +32,12 @@ public class Base64BinaryTranslator extends IllegalArgumentExceptionSimpleValueT
 
 	@Override
 	protected byte[] parseValue(String representation) throws IllegalArgumentException {
-		return DatatypeConverter.parseBase64Binary(representation);
+		return DatatypeConverter.parseHexBinary(representation);
 	}
 
 
 	@Override
 	public String javaToRepresentation(byte[] object)	throws UnsupportedOperationException, ClassCastException {
-		return DatatypeConverter.printBase64Binary(object);
+		return DatatypeConverter.printHexBinary(object);
 	}
 }

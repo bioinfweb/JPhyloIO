@@ -16,31 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.NumericValueTranslator;
+import java.util.Calendar;
 
-import javax.xml.namespace.QName;
-
+import javax.xml.bind.DatatypeConverter;
 
 
-public class ShortTranslator extends NumericValueTranslator<Short> {
+
+public class TimeTranslator extends IllegalArgumentExceptionSimpleValueTranslator<Calendar> {
 	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_SHORT;
+	public Class<Calendar> getObjectClass() {
+		return Calendar.class;
 	}
 	
 
 	@Override
-	public Class<Short> getObjectClass() {
-		return Short.class;
+	protected Calendar parseValue(String representation) throws IllegalArgumentException {
+		return DatatypeConverter.parseTime(representation);
 	}
 
 
 	@Override
-	protected Short parseValue(String representation) throws NumberFormatException {
-		return Short.parseShort(representation);
+	public String javaToRepresentation(Calendar object)	throws UnsupportedOperationException, ClassCastException {
+		return DatatypeConverter.printTime(object);
 	}
 }

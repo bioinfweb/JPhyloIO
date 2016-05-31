@@ -41,8 +41,6 @@ public interface ObjectTranslator<O> {
 	//     Is it an alternative to either output the XMLEvents as objects values or directly parse them to output one single object value
 	//     or should parsing of XML not at all be supported? => Probably the first alternative.
 	
-	public QName getDataType();
-	
 	/**
 	 * Returns the Java class or interface the objects handled by this instance have.
 	 * 

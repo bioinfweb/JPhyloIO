@@ -16,23 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.NumericValueTranslator;
-
-import javax.xml.namespace.QName;
 
 
 
 public class DoubleTranslator extends NumericValueTranslator<Double> {
-	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_INT;
-	}
-	
-
 	@Override
 	public Class<Double> getObjectClass() {
 		return Double.class;

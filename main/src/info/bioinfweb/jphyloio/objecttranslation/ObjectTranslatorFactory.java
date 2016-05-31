@@ -19,26 +19,8 @@
 package info.bioinfweb.jphyloio.objecttranslation;
 
 
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.AnyURITranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.Base64BinaryTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.BooleanTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.ByteTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.DateTimeTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.DateTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.DecimalTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.DoubleTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.FloatTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.HexBinaryTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.IntTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.IntegerTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.LongTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.QNameTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.ShortTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.StringTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.TimeTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.UnsignedByteTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.UnsignedIntTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.xsd.UnsignedShortTranslator;
+import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,24 +39,42 @@ import javax.xml.namespace.QName;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class ObjectTranslatorFactory {
+public class ObjectTranslatorFactory implements W3CXSConstants {
 	private Map<TranslatorMapKey, ObjectTranslator<?>> translatorMap = new HashMap<TranslatorMapKey, ObjectTranslator<?>>();
 	
 	
 	/**
-	 * Registers a new translator in this factory.
+	 * Registers a new translator in this factory for a single data type.
 	 * 
 	 * @param translator the translator to be registered
 	 * @param asDefault Determines whether this translator shall become the default translator for its data type. (It will
 	 *        always become the default, if no other translator is currently registered for this data type.)
+	 * @param dataType the data type to be associated with this translator
 	 */
-	public void addTranslator(ObjectTranslator<?> translator, boolean asDefault) {
-		translatorMap.put(new TranslatorMapKey(translator.getDataType(), translator.getObjectClass()), translator);
-		if (asDefault || (getDefaultTranslator(translator.getDataType()) == null)) {
-			translatorMap.put(new TranslatorMapKey(translator.getDataType(), null), translator);
+	private void addTranslator(ObjectTranslator<?> translator, boolean asDefault, QName dataType) {
+		translatorMap.put(new TranslatorMapKey(dataType, translator.getObjectClass()), translator);
+		if (asDefault || (getDefaultTranslator(dataType) == null)) {
+			translatorMap.put(new TranslatorMapKey(dataType, null), translator);
 		}
 	}
+
 	
+	/**
+	 * Registers a new translator in this factory for one or more data types.
+	 * 
+	 * @param translator the translator to be registered
+	 * @param asDefault Determines whether this translator shall become the default translator for its data type. (It will
+	 *        always become the default, if no other translator is currently registered for this data type.)
+	 * @param dataType the data type to be associated with this translator
+	 * @param additionalDataTypes additional data types for which the specified translator is also valid
+	 */
+	public void addTranslator(ObjectTranslator<?> translator, boolean asDefault, QName dataType, QName... additionalDataTypes) {
+		addTranslator(translator, asDefault, dataType);
+		for (int i = 0; i < additionalDataTypes.length; i++) {
+			addTranslator(translator, asDefault, additionalDataTypes[i]);
+		}
+	}
+
 	
 	/**
 	 * Adds all translators for XSD types available in <i>JPhyloIO</i>.
@@ -86,30 +86,27 @@ public class ObjectTranslatorFactory {
 	 *        the same.)  
 	 */
 	public void addXDSTranslators(boolean asDefault) {
-		addTranslator(new StringTranslator(), asDefault);
-		addTranslator(new BooleanTranslator(), asDefault);
+		addTranslator(new StringTranslator(), asDefault, DATA_TYPE_STRING);
+		addTranslator(new BooleanTranslator(), asDefault, DATA_TYPE_BOOLEAN);
 
-		addTranslator(new QNameTranslator(), asDefault);
-		addTranslator(new AnyURITranslator(), asDefault);
+		addTranslator(new QNameTranslator(), asDefault, DATA_TYPE_QNAME);
+		addTranslator(new URITranslator(), asDefault, DATA_TYPE_ANY_URI);
 		
-		addTranslator(new ByteTranslator(), asDefault);
-		addTranslator(new ShortTranslator(), asDefault);
-		addTranslator(new IntTranslator(), asDefault);
-		addTranslator(new LongTranslator(), asDefault);
-		addTranslator(new IntegerTranslator(), asDefault);
-		addTranslator(new FloatTranslator(), asDefault);
-		addTranslator(new DoubleTranslator(), asDefault);
-		addTranslator(new DecimalTranslator(), asDefault);
-		addTranslator(new UnsignedByteTranslator(), asDefault);
-		addTranslator(new UnsignedShortTranslator(), asDefault);
-		addTranslator(new UnsignedIntTranslator(), asDefault);
+		addTranslator(new ByteTranslator(), asDefault, DATA_TYPE_BYTE);
+		addTranslator(new ShortTranslator(), asDefault, DATA_TYPE_SHORT, DATA_TYPE_UNSIGNED_BYTE);
+		addTranslator(new IntegerTranslator(), asDefault, DATA_TYPE_INT, DATA_TYPE_UNSIGNED_SHORT);
+		addTranslator(new LongTranslator(), asDefault, DATA_TYPE_LONG, DATA_TYPE_UNSIGNED_INT);
+		addTranslator(new BigIntegerTranslator(), asDefault, DATA_TYPE_INTEGER);
+		addTranslator(new FloatTranslator(), asDefault, DATA_TYPE_FLOAT);
+		addTranslator(new DoubleTranslator(), asDefault, DATA_TYPE_DOUBLE);
+		addTranslator(new BigDecimalTranslator(), asDefault, DATA_TYPE_DECIMAL);
 
-		addTranslator(new DateTimeTranslator(), asDefault);
-		addTranslator(new DateTranslator(), asDefault);
-		addTranslator(new TimeTranslator(), asDefault);
+		addTranslator(new DateTimeTranslator(), asDefault, DATA_TYPE_DATE_TIME);
+		addTranslator(new DateTranslator(), asDefault, DATA_TYPE_DATE);
+		addTranslator(new TimeTranslator(), asDefault, DATA_TYPE_TIME);
 
-		addTranslator(new Base64BinaryTranslator(), asDefault);
-		addTranslator(new HexBinaryTranslator(), asDefault);
+		addTranslator(new Base64BinaryTranslator(), asDefault, DATA_TYPE_BASE_64_BINARY);
+		addTranslator(new HexBinaryTranslator(), asDefault, DATA_TYPE_HEX_BINARY);
 	}
 	
 	

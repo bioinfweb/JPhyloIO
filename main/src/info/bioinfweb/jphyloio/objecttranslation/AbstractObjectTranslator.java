@@ -36,7 +36,6 @@ public abstract class AbstractObjectTranslator<O> implements ObjectTranslator<O>
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((getDataType() == null) ? 0 : getDataType().hashCode());
 		result = prime * result + (hasStringRepresentation() ? 1231 : 1237);
 		result = prime * result
 				+ ((getObjectClass() == null) ? 0 : getObjectClass().hashCode());
@@ -53,11 +52,6 @@ public abstract class AbstractObjectTranslator<O> implements ObjectTranslator<O>
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractObjectTranslator other = (AbstractObjectTranslator) obj;
-		if (getDataType() == null) {
-			if (other.getDataType() != null)
-				return false;
-		} else if (!getDataType().equals(other.getDataType()))
-			return false;
 		if (hasStringRepresentation() != other.hasStringRepresentation())
 			return false;
 		if (getObjectClass() == null) {

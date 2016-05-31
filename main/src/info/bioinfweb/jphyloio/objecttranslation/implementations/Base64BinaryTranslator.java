@@ -16,40 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
-
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.IllegalArgumentExceptionSimpleValueTranslator;
-
-import java.util.Calendar;
 
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.namespace.QName;
 
 
 
-public class DateTranslator extends IllegalArgumentExceptionSimpleValueTranslator<Calendar> {
+public class Base64BinaryTranslator extends IllegalArgumentExceptionSimpleValueTranslator<byte[]> {
 	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_DATE;
+	public Class<byte[]> getObjectClass() {
+		return byte[].class;
 	}
 	
 
 	@Override
-	public Class<Calendar> getObjectClass() {
-		return Calendar.class;
-	}
-	
-
-	@Override
-	protected Calendar parseValue(String representation) throws IllegalArgumentException {
-		return DatatypeConverter.parseDate(representation);
+	protected byte[] parseValue(String representation) throws IllegalArgumentException {
+		return DatatypeConverter.parseBase64Binary(representation);
 	}
 
 
 	@Override
-	public String javaToRepresentation(Calendar object)	throws UnsupportedOperationException, ClassCastException {
-		return DatatypeConverter.printDate(object);
+	public String javaToRepresentation(byte[] object)	throws UnsupportedOperationException, ClassCastException {
+		return DatatypeConverter.printBase64Binary(object);
 	}
 }

@@ -16,38 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.IllegalArgumentExceptionSimpleValueTranslator;
-
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.namespace.QName;
+import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 
 
-public class HexBinaryTranslator extends IllegalArgumentExceptionSimpleValueTranslator<byte[]> {
+public class StringTranslator extends SimpleValueTranslator<String> {
 	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_HEX_BINARY;
-	}
-	
-
-	@Override
-	public Class<byte[]> getObjectClass() {
-		return byte[].class;
-	}
-	
-
-	@Override
-	protected byte[] parseValue(String representation) throws IllegalArgumentException {
-		return DatatypeConverter.parseHexBinary(representation);
+	public Class<String> getObjectClass() {
+		return String.class;
 	}
 
 
 	@Override
-	public String javaToRepresentation(byte[] object)	throws UnsupportedOperationException, ClassCastException {
-		return DatatypeConverter.printHexBinary(object);
+	public String representationToJava(String representation)	throws InvalidObjectSourceDataException, UnsupportedOperationException {
+		return representation;
+	}
+
+
+	@Override
+	public String javaToRepresentation(String object)	throws UnsupportedOperationException, ClassCastException {
+		return object;
 	}
 }

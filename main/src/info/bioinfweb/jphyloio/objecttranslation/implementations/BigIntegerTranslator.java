@@ -16,32 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
-import java.math.BigDecimal;
 
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.NumericValueTranslator;
-
-import javax.xml.namespace.QName;
+import java.math.BigInteger;
 
 
 
-public class DecimalTranslator extends NumericValueTranslator<BigDecimal> {
+public class BigIntegerTranslator extends NumericValueTranslator<BigInteger> {
 	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_DECIMAL;
-	}
-	
-
-	@Override
-	public Class<BigDecimal> getObjectClass() {
-		return BigDecimal.class;
+	public Class<BigInteger> getObjectClass() {
+		return BigInteger.class;
 	}
 
 
 	@Override
-	protected BigDecimal parseValue(String representation) throws NumberFormatException {
-		return new BigDecimal(representation);
+	protected BigInteger parseValue(String representation) throws NumberFormatException {
+		return new BigInteger(representation);
 	}
 }

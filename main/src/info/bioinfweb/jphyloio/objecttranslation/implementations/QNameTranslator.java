@@ -16,26 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations.xsd;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
+
+import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.commons.io.XMLUtils;
-import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.SimpleValueTranslator;
-
 
 
 public class QNameTranslator extends SimpleValueTranslator<QName> {
-	@Override
-	public QName getDataType() {
-		return W3CXSConstants.DATA_TYPE_QNAME;
-	}
-
-	
 	@Override
 	public Class<QName> getObjectClass() {
 		return QName.class;
