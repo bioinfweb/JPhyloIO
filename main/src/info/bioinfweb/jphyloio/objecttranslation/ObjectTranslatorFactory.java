@@ -96,7 +96,8 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 		addTranslator(new ShortTranslator(), asDefault, DATA_TYPE_SHORT, DATA_TYPE_UNSIGNED_BYTE);
 		addTranslator(new IntegerTranslator(), asDefault, DATA_TYPE_INT, DATA_TYPE_UNSIGNED_SHORT);
 		addTranslator(new LongTranslator(), asDefault, DATA_TYPE_LONG, DATA_TYPE_UNSIGNED_INT);
-		addTranslator(new BigIntegerTranslator(), asDefault, DATA_TYPE_INTEGER);
+		addTranslator(new BigIntegerTranslator(), asDefault, DATA_TYPE_INTEGER, DATA_TYPE_NON_POSITIVE_INTEGER, DATA_TYPE_NEGATIVE_INTEGER, 
+				DATA_TYPE_NON_NEGATIVE_INTEGER, DATA_TYPE_UNSIGNED_LONG, DATA_TYPE_POSITIVE_INTEGER);
 		addTranslator(new FloatTranslator(), asDefault, DATA_TYPE_FLOAT);
 		addTranslator(new DoubleTranslator(), asDefault, DATA_TYPE_DOUBLE);
 		addTranslator(new BigDecimalTranslator(), asDefault, DATA_TYPE_DECIMAL);
@@ -112,7 +113,7 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 	
 	@SuppressWarnings("unchecked")
 	public <O> ObjectTranslator<O> getTranslator(QName dataType, Class<O> objectClass) {
-		return (ObjectTranslator<O>)translatorMap.get(new TranslatorMapKey(dataType, objectClass));
+		return (ObjectTranslator<O>)translatorMap.get(new TranslatorMapKey(dataType, objectClass));  // QName comparison works this way, since the prefix is not checked by QName.equals().
 	}
 
 	
