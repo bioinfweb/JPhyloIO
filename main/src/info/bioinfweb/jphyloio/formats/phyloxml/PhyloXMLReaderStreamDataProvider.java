@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<PhyloXMLEventReader>  {
 	private String treeLabel;
 	private boolean createNodeStart;
+	private boolean createTreeGroupEnd;
 	
 	private String lastNodeID;
 	private Map<String, String> cladeIDToNodeEventIDMap = new HashMap<String, String>();
@@ -63,6 +64,16 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	public void setCreateNodeStart(boolean createNodeStart) {
 		this.createNodeStart = createNodeStart;
+	}
+
+
+	protected boolean isCreateTreeGroupEnd() {
+		return createTreeGroupEnd;
+	}
+
+
+	protected void setCreateTreeGroupEnd(boolean createTreeGroupEnd) {
+		this.createTreeGroupEnd = createTreeGroupEnd;
 	}
 
 
