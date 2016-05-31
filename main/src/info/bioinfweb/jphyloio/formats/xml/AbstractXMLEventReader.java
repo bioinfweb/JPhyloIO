@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -194,8 +195,13 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		String namespaceURI = null;
 		
 		if (refParts.length == 2) {
-			prefix = refParts[0];
+			prefix = refParts[0];			
 			namespaceURI = streamDataProvider.getPrefixToNamespaceMap().get(prefix);
+			if (namespaceURI == null) {
+				if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
+					namespaceURI = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+				}
+			}
 		}
 		
 		return new QName(namespaceURI, localPart, prefix);
@@ -218,6 +224,9 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		if (type.equals(EventContentType.ALIGNMENT)) {
 			result = DEFAULT_MATRIX_ID_PREFIX;
 		}
+		else if (type.equals(EventContentType.SEQUENCE)) {
+			result = DEFAULT_SEQUENCE_ID_PREFIX;
+		}
 		else if (type.equals(EventContentType.TOKEN_SET_DEFINITION)) {
 			result = DEFAULT_TOKEN_SET_ID_PREFIX;
 		}
@@ -233,6 +242,9 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		else if (type.equals(EventContentType.TREE_NETWORK_GROUP)) {
 			result = DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX;
 		}
+		else if (type.equals(EventContentType.OTU)) {
+			result = DEFAULT_OTU_ID_PREFIX;
+		}
 		else if (type.equals(EventContentType.OTU_LIST)) {
 			result = DEFAULT_OTU_LIST_ID_PREFIX;
 		}
@@ -243,8 +255,11 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 				|| type.equals(EventContentType.META_LITERAL_CONTENT)) {
 			result = DEFAULT_META_ID_PREFIX;
 		}
+		else {
+			result = "id";
+		}
 		
-		result += getStreamDataProvider().getIDManager().createNewID();		
+		result += getStreamDataProvider().getIDManager().createNewID();
 		
 		return result;
 	}

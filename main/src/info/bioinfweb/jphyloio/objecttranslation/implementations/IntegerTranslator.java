@@ -37,6 +37,6 @@ public class IntegerTranslator extends NumericValueTranslator<Integer> {
 
 	@Override
 	protected Integer parseValue(String representation) throws NumberFormatException {
-		return Integer.parseInt(representation);
+		return Integer.parseInt(representation.trim());
 	}
 }

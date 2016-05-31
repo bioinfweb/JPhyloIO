@@ -35,6 +35,6 @@ public class FloatTranslator extends NumericValueTranslator<Float> {
 
 	@Override
 	protected Float parseValue(String representation) throws NumberFormatException {
-		return Float.parseFloat(representation);
+		return Float.parseFloat(representation.trim());
 	}
 }

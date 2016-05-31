@@ -35,6 +35,6 @@ public class ByteTranslator extends NumericValueTranslator<Byte> {
 
 	@Override
 	protected Byte parseValue(String representation) throws NumberFormatException {
-		return Byte.parseByte(representation);
+		return Byte.parseByte(representation.trim());
 	}
 }

@@ -63,7 +63,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 *        its value and more events are ahead or {@code false otherwise}.
 	 */
 	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, boolean continuedInNextEvent) {
-		this(originalType, stringValue, stringValue, null, continuedInNextEvent);
+		this(originalType, stringValue, null, null, continuedInNextEvent);
 	}
 	
 	
@@ -81,11 +81,6 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	
 	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, Object objectValue, String alternativeStringValue) {
 		this(originalType, stringValue, objectValue, alternativeStringValue, false);
-	}
-	
-	
-	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, String alternativeStringValue) {
-		this(originalType, stringValue, stringValue, alternativeStringValue, false);
 	}
 	
 	
@@ -146,7 +141,9 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 					+ "The specified event had the type " + xmlEvent.getEventType() + ".");
 		}
 		else {
-			this.stringValue = null;
+			if (xmlEvent.isCharacters()) {
+				this.stringValue = xmlEvent.asCharacters().getData();  //TODO Also store tags as string representations?
+			}
 			this.alternativeStringValue = alternativeStringValue;
 			this.objectValue = xmlEvent;
 			this.originalType = null;  //TODO Should something else be stored here (e.g. the XML event type)?

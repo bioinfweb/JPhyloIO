@@ -35,6 +35,6 @@ public class DoubleTranslator extends NumericValueTranslator<Double> {
 
 	@Override
 	protected Double parseValue(String representation) throws NumberFormatException {
-		return Double.parseDouble(representation);
+		return Double.parseDouble(representation.trim());
 	}
 }
