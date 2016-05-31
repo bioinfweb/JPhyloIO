@@ -167,27 +167,27 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				boolean resetEventCollection = false;				
 				
 				if (parentTag.equals(TAG_CLADE.getLocalPart())) {
-					if (appliesTo.equals("parent_branch")) { //TODO create constants for AppliesTo values and use switch
+					if (appliesTo.equals(APPLIES_TO_PARENT_BRANCH)) {
 						streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
 						resetEventCollection = true;
 						appliesToAsAttribute = false;
 					}
-					else if (appliesTo.equals("phylogeny")) {
+					else if (appliesTo.equals(APPLIES_TO_PHYLOGENY)) {
 						streamDataProvider.setCurrentEventCollection(streamDataProvider.getPropertyEvents());
 						resetEventCollection = true;
 						appliesToAsAttribute = false;
 					}
-					else if (appliesTo.equals("node")) {
+					else if (appliesTo.equals(APPLIES_TO_NODE)) {
 						appliesToAsAttribute = false;
 					}
 				}
 				else if (parentTag.equals(TAG_PHYLOGENY.getLocalPart())) {
-					if (appliesTo.equals("phylogeny")) {
+					if (appliesTo.equals(APPLIES_TO_PHYLOGENY)) {
 						appliesToAsAttribute = false;
 					}
 				}
 				else if (parentTag.equals(TAG_ANNOTATION.getLocalPart())) {
-					if (appliesTo.equals("annotation")) {
+					if (appliesTo.equals(APPLIES_TO_ANNOTATION)) {
 						appliesToAsAttribute = false;
 					}
 				}

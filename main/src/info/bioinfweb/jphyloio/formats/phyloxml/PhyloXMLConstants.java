@@ -136,6 +136,14 @@ public interface PhyloXMLConstants {
 	public static final QName ATTR_ID = new QName("id");
 	
 	
+	public static final String APPLIES_TO_PHYLOGENY = "phylogeny";
+	public static final String APPLIES_TO_CLADE = "clade";
+	public static final String APPLIES_TO_NODE = "node";
+	public static final String APPLIES_TO_ANNOTATION = "annotation";
+	public static final String APPLIES_TO_PARENT_BRANCH = "parent_branch";
+	public static final String APPLIES_TO_OTHER = "other";
+	
+	
 	public static final String PHYLOXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/PhyloXML/";
 	
 	public static final String PHYLOXML_PREDICATE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
