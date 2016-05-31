@@ -18,70 +18,75 @@
  */
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
+
 import java.awt.Color;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
-public class RGBColorTranslator extends AbstractObjectTranslator<Color> {
 
+
+/**
+ * Object translator between {@link Color} and the PhylXML complex type 
+ * <a href="http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h-1691165380">BranchColor</a>.
+ * 
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
+public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> implements PhyloXMLConstants {
+	//TODO Should this class be moved to the phyloxml package?
+	
 	@Override
 	public Class<Color> getObjectClass() {
 		return Color.class;
 	}
 
+	
 	@Override
 	public boolean hasStringRepresentation() {
-		return true;
+		return false;
 	}
 
+	
 	@Override
 	public String javaToRepresentation(Color object) throws UnsupportedOperationException, ClassCastException {
-		return object.toString();
+		throw new UnsupportedOperationException("PhyloXML color definitions can only be represented as structured XML.");
 	}
 
+	
 	@Override
 	public void writeXMLRepresentation(XMLStreamWriter writer, Color object) throws IOException, XMLStreamException {
-		writer.writeStartElement("red"); //TODO use constant
+		writer.writeStartElement(TAG_RED.getLocalPart());
 		writer.writeCharacters(Integer.toString(object.getRed()));
 		writer.writeEndElement();
 		
-		writer.writeStartElement("green"); //TODO use constant
+		writer.writeStartElement(TAG_GREEN.getLocalPart());
 		writer.writeCharacters(Integer.toString(object.getGreen()));
 		writer.writeEndElement();
 		
-		writer.writeStartElement("blue"); //TODO use constant
+		writer.writeStartElement(TAG_BLUE.getLocalPart());
 		writer.writeCharacters(Integer.toString(object.getBlue()));
 		writer.writeEndElement();		
 	}
 
+	
 	@Override
-	public Color representationToJava(String representation) throws InvalidObjectSourceDataException,
-			UnsupportedOperationException {
-		Color color = null;
-		
-		try {
-			color = Color.decode(representation);
-		}
-		catch (NumberFormatException e) {
-			throw new InvalidObjectSourceDataException("The string \"" + representation + "\" could not be parsed to a color object.");
-		}
-		
-		return color;
+	public Color representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
+		throw new UnsupportedOperationException("PhyloXML color definitions can only be read from structured XML.");
 	}
 
+	
 	@Override
 	public Color readXMLRepresentation(XMLEventReader reader) throws IOException, XMLStreamException,
 			InvalidObjectSourceDataException {
@@ -97,18 +102,19 @@ public class RGBColorTranslator extends AbstractObjectTranslator<Color> {
 			XMLEvent nextEvent = reader.nextEvent();
 			if (nextEvent.isStartElement()) {
 				QName elementName = nextEvent.asStartElement().getName();
-				if (elementName.equals(PhyloXMLConstants.TAG_RED)) {
+				if (elementName.equals(TAG_RED)) {
 					encounteredTags.add(elementName);
 					red = reader.getElementText();
 				}
-				else if (elementName.equals(PhyloXMLConstants.TAG_GREEN)) {
+				else if (elementName.equals(TAG_GREEN)) {
 					encounteredTags.add(elementName);
 					green = reader.getElementText();
 				}
-				else if (elementName.equals(PhyloXMLConstants.TAG_BLUE)) {
+				else if (elementName.equals(TAG_BLUE)) {
 					encounteredTags.add(elementName);
 					blue = reader.getElementText();
 				}
+				//TODO Consume possible other tags (trees) using XMLUtils.reachElementEnd().
 			}
 			
 			event = reader.peek();
@@ -125,5 +131,4 @@ public class RGBColorTranslator extends AbstractObjectTranslator<Color> {
 		
 		return color;
 	}
-	
 }

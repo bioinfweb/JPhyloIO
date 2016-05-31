@@ -49,7 +49,7 @@ import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.RGBColorTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.PhyloXMLColorTranslator;
 
 import java.awt.Color;
 import java.io.File;
@@ -581,7 +581,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {					
-					ObjectTranslator<Color> translator = new RGBColorTranslator();
+					ObjectTranslator<Color> translator = new PhyloXMLColorTranslator();
 					Color color = null;
 					
 					try {
