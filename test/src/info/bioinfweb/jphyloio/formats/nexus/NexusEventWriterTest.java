@@ -89,9 +89,9 @@ public class NexusEventWriterTest implements NexusConstants {
 		matrix.setTokenSets(new TestSingleTokenSetAdapter());
 		
 		StoreTreeNetworkGroupDataAdapter treeGroup1 = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX, null, null));
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX, null, null));
 		StoreTreeNetworkGroupDataAdapter treeGroup2 = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREES_ID_PREFIX, null, "otus0"));
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX, null, "otus0"));
 		
 		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree0", "tree", "t0"));
 		treeGroup2.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree1", "tree", "t1", new String[]{"otu0", "otu1", "otu2"}));

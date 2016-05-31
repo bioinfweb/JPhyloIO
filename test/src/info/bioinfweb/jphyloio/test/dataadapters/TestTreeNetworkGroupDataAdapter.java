@@ -41,7 +41,7 @@ public class TestTreeNetworkGroupDataAdapter extends EmptyAnnotatedDataAdapter<L
 	
 	public TestTreeNetworkGroupDataAdapter(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
 		super();
-		this.id = ReadWriteConstants.DEFAULT_TREES_ID_PREFIX + id;
+		this.id = ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + id;
 		this.label = null;
 		if (linkedOTUs.length != 3) {
 			throw new IllegalArgumentException("Invalid number of linked OTUs (" + linkedOTUs.length + ").");

@@ -384,14 +384,12 @@ test/data/Phylip/RelaxedInterleaved3Blocks.phy -text
 test/data/Phylip/RelaxedSequential.phy -text
 test/data/Phylip/Sequential.phy -text
 test/data/Phylip/TooManyCounts.phy -text
-test/data/PhyloXML/BigPhyloXMLExample.xml -text svneol=unset#text/plain
 test/data/PhyloXML/BranchLengths.xml -text svneol=unset#text/plain
 test/data/PhyloXML/BranchLengths.xml.gz -text
 test/data/PhyloXML/CladeRelation.xml -text svneol=unset#text/plain
+test/data/PhyloXML/CustomXML.xml -text svneol=unset#text/plain
 test/data/PhyloXML/MultipleTrees.xml -text svneol=unset#text/plain
 test/data/PhyloXML/NodeLabels.xml -text svneol=unset#text/plain
-test/data/PhyloXML/PhyloXMLDocument.xml -text svneol=unset#text/plain
-test/data/PhyloXML/ShortPhyloXML.xml -text svneol=unset#text/plain
 test/data/PhyloXML/SingleTree.xml -text svneol=unset#text/plain
 test/data/XML/Invalid.xml -text svneol=unset#text/plain
 test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
