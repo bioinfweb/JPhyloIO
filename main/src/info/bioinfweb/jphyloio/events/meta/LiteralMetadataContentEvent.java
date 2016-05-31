@@ -23,6 +23,7 @@ import java.util.List;
 
 import info.bioinfweb.jphyloio.events.ContinuedEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 
 import javax.xml.stream.events.XMLEvent;
 
@@ -39,10 +40,15 @@ import javax.xml.stream.events.XMLEvent;
  *   <li>A sequence of events can represent a more complex XML representation of the literal value. In such cases one event 
  *       instance will represent each {@link XMLEvent} created from the encountered XML.</li>
  * </ul>
- * Note that large string values may additionally be separated along subsequent events (indicated by 
- * {@link #isContinuedInNextEvent()}) in all three cases. This is only possible if the object value is identical with its
- * string representation. This technique is not meant to split any other value (e.g. {@link List} instances) among separate
- * events.
+ * When readers create instances of this event, they try to create object values from their string representations using a
+ * translator returned by {@link ObjectTranslatorFactory}. If no according translator is available, the object value will be
+ * {@code null}.
+ * <p>
+ * If the declared data type is mapped to an instance of {@link String} (e.g. {@code xsd:string} or {@code xsd:token}) the object
+ * value and its string representation are the same {@link String} instance. Large strings may be separated among several events
+ * for performance reasons, while {@link #isContinuedInNextEvent()} will be {@code true} in all but the last event of such a 
+ * sequence. If a string is separated among multiple events, the object value in all of these events will be {@code null}. 
+ * (That is because only the whole string is considered as the object and not its parts.)
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
