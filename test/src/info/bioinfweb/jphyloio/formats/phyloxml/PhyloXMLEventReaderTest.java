@@ -49,18 +49,21 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 	@Test
 	public void testOutputPhyloXML() {
 		try {
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/Property.xml"), new ReadWriteParameterMap());
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/BranchColor.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
 //					System.out.println(event.getType());
 					
 					if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
-//						System.out.println(event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
+						System.out.println("Predicate: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
 						if (event.asLiteralMetadataContentEvent().hasXMLEventValue()) {
-//							System.out.println(event.asLiteralMetadataContentEvent().getXMLEvent());
+							System.out.println(event.asLiteralMetadataContentEvent().getXMLEvent());
+						}
+						else {
+							System.out.println(event.asLiteralMetadataContentEvent().getObjectValue());
 						}
 					}
 				}

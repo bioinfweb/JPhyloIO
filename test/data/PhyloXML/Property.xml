@@ -6,16 +6,16 @@
             <name>AB</name>
             <clade>
                <name>A</name>
-               <property datatype="xsd:integer" ref="NOAA:depth" applies_to="clade" unit="METRIC:m"> 1200 </property>
+               <property datatype="xsd:int" ref="NOAA:depth" applies_to="clade" unit="METRIC:m"> 1200 </property>
             </clade>
             <clade>
                <name>B</name>
-               <property datatype="xsd:integer" ref="NOAA:depth" applies_to="clade" unit="METRIC:m"> 2300 </property>
+               <property datatype="xsd:int" ref="NOAA:depth" applies_to="clade" unit="METRIC:m"> 2300 </property>
             </clade>
          </clade>
          <clade>
             <name>C</name>
-            <property datatype="xsd:integer" ref="NOAA:depth" applies_to="clade" unit="METRIC:m"> 200 </property>
+            <property datatype="xsd:string" ref="NOAA:depth" applies_to="clade" unit="METRIC:m">two-hundred</property>
          </clade>
       </clade>
    </phylogeny>
