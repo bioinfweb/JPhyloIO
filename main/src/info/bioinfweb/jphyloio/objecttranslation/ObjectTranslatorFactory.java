@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.objecttranslation.implementations.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 
 
@@ -103,11 +104,15 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 		addTranslator(new BigDecimalTranslator(), asDefault, DATA_TYPE_DECIMAL);
 
 		addTranslator(new DateTimeTranslator(), asDefault, DATA_TYPE_DATE_TIME);
+		//TODO Add translator for https://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/datatypes.html#dateTimeStamp
+		//     Parsing can be done using DatatypeConverter.parseDateTime() but printing must be different. Maybe XMLGregorianCalender can be used?
 		addTranslator(new DateTranslator(), asDefault, DATA_TYPE_DATE);
 		addTranslator(new TimeTranslator(), asDefault, DATA_TYPE_TIME);
 
 		addTranslator(new Base64BinaryTranslator(), asDefault, DATA_TYPE_BASE_64_BINARY);
 		addTranslator(new HexBinaryTranslator(), asDefault, DATA_TYPE_HEX_BINARY);
+		
+		//TODO Add support for additional XSD types.
 	}
 	
 	
