@@ -86,7 +86,7 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 	 *        the same.)  
 	 */
 	public void addXDSTranslators(boolean asDefault) {
-		addTranslator(new StringTranslator(), asDefault, DATA_TYPE_STRING);
+		addTranslator(new StringTranslator(), asDefault, DATA_TYPE_STRING, DATA_TYPE_TOKEN);
 		addTranslator(new BooleanTranslator(), asDefault, DATA_TYPE_BOOLEAN);
 
 		addTranslator(new QNameTranslator(), asDefault, DATA_TYPE_QNAME);
