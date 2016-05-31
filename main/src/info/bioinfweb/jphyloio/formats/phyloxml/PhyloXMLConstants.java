@@ -316,15 +316,8 @@ public interface PhyloXMLConstants {
 
 	public static final String PHYLOXML_DATA_TYPE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "DataTypes/";
 	
-	public static final QName DATA_TYPE_APPLIES_TO = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AppliesTo");
 	public static final QName DATA_TYPE_EVENTTYPE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Event" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "EventType");
-	public static final QName DATA_TYPE_PROPERTY_DATATYPE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PropertyDataType");
 	public static final QName DATA_TYPE_RANK = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Rank");
-	public static final QName DATA_TYPE_SEQUENCE_RELATION_TYPE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "SequenceRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "SequenceRelationType");
 	public static final QName DATA_TYPE_SEQUENCE_SYMBOL = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "SequenceSymbol");
-	public static final QName DATA_TYPE_SEQUENCE_TYPE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "SequenceType");
 	public static final QName DATA_TYPE_TAXONOMY_CODE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "TaxonomyCode");
-	public static final QName DATA_TYPE_ID_REF = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "id_ref");
-	public static final QName DATA_TYPE_ID_SOURCE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "id_source");
-	public static final QName DATA_TYPE_REF = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "ref");
 }
