@@ -45,7 +45,7 @@ public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXM
 
 	@Override
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-		boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
+		boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
 		streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
 				new URIOrStringIdentifier(null, datatype), event.asCharacters().getData(), isContinued));
 	}

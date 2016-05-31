@@ -259,6 +259,7 @@ main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/IntegerTransl
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/LongTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/NumericValueTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/QNameTranslator.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/RGBColorTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/ShortTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/SimpleValueTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/StringTranslator.java -text svneol=unset#text/plain

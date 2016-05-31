@@ -42,6 +42,7 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	private List<JPhyloIOEvent> propertyEvents = new ArrayList<JPhyloIOEvent>();
 	private QName currentPropertyDatatype;
 	private boolean propertyHasResource;
+	private boolean resetEventCollection;
 	private boolean isFirstContentEvent;
 	
 
@@ -117,6 +118,16 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	protected void setFirstContentEvent(boolean isFirstContentEvent) {
 		this.isFirstContentEvent = isFirstContentEvent;
+	}
+
+
+	protected boolean isResetEventCollection() {
+		return resetEventCollection;
+	}
+
+
+	protected void setResetEventCollection(boolean resetEventCollection) {
+		this.resetEventCollection = resetEventCollection;
 	}
 
 

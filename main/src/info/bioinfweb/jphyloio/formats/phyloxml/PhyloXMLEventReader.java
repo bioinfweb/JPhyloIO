@@ -49,7 +49,9 @@ import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.RGBColorTranslator;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,7 +155,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					}
 				}
 				
-				boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
+				boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
 				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
 			}
@@ -217,11 +219,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				streamDataProvider.getCurrentEventCollection().add(
 						new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, predicate, LiteralContentSequenceType.SIMPLE));
 				
-				streamDataProvider.setCurrentPropertyDatatype(qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), streamDataProvider));
-				
-				if (resetEventCollection && streamDataProvider.hasSpecialEventCollection()) { //TODO erst nach end event resetten
-					streamDataProvider.resetCurrentEventCollection();
-				}
+				streamDataProvider.setCurrentPropertyDatatype(qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), streamDataProvider));				
+				streamDataProvider.setResetEventCollection(resetEventCollection);
 				
 				QName datatype = qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), streamDataProvider);
 				ObjectTranslator<?> translator = getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);				
@@ -232,11 +231,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					if (propertyValue != null) {
 						try {
-							objectValue = translator.representationToJava(propertyValue);
+							objectValue = translator.representationToJava(propertyValue);							
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), propertyValue, objectValue));
 						}
 						catch (InvalidObjectSourceDataException e) {
-							throw new JPhyloIOReaderException("The object value could not be parsed.", event.getLocation()); //TODO message
+							throw new JPhyloIOReaderException("The content of this property tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
 						}
 					}
 				}
@@ -271,6 +270,10 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				
 				if (streamDataProvider.isPropertyHasResource()) {
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+				}
+				
+				if (streamDataProvider.isResetEventCollection()) {
+					streamDataProvider.resetCurrentEventCollection();
 				}
 			}
 		};
@@ -432,7 +435,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						}
 						
 						if (useAsMeta) {							
-							boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
+							boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
 									new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
 						}
@@ -574,27 +577,25 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_WIDTH, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
 		
 		//Clade.Color
-		//TODO Read single Color object (Possibly use PhyloXML specific object translator.)
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_COLOR, XMLStreamConstants.START_ELEMENT), 
-				new PhyloXMLStartElementReader(null, PREDICATE_COLOR, true));
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, null, XMLStreamConstants.CHARACTERS), new PhyloXMLNoCharactersAllowedElementReader());
+			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
+				@Override
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {					
+					ObjectTranslator<Color> translator = new RGBColorTranslator();
+					Color color = null;
+					
+					try {
+						color = translator.readXMLRepresentation(getXMLReader());
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, DATA_TYPE_BRANCH_COLOR),
+								translator.javaToRepresentation(color), color));
+					}
+					catch (InvalidObjectSourceDataException e) {
+						throw new JPhyloIOReaderException("The content of this property tag could not be parsed to class color.", event.getLocation());
+					}
+				}
+		});
 		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_RED, XMLStreamConstants.START_ELEMENT),
-				new PhyloXMLStartElementReader(PREDICATE_COLOR_RED, null, true));
-		putElementReader(new XMLElementReaderKey(TAG_RED, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_UNSIGNED_BYTE));
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_RED, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
-		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_GREEN, XMLStreamConstants.START_ELEMENT),
-				new PhyloXMLStartElementReader(PREDICATE_COLOR_GREEN, null, true));
-		putElementReader(new XMLElementReaderKey(TAG_GREEN, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_UNSIGNED_BYTE));
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_GREEN, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
-		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_BLUE, XMLStreamConstants.START_ELEMENT),
-				new PhyloXMLStartElementReader(PREDICATE_COLOR_BLUE, null, true));
-		putElementReader(new XMLElementReaderKey(TAG_BLUE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_UNSIGNED_BYTE));
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH_COLOR, TAG_BLUE, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
-		
-		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_COLOR, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(false, true, true));
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_COLOR, XMLStreamConstants.END_ELEMENT), new PhyloXMLEndElementReader(true, false, true));
 		
 		//Clade.NodeID
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_NODE_ID, XMLStreamConstants.START_ELEMENT), 
@@ -608,7 +609,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					streamDataProvider.setLastNodeID(value);
 					
-					boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
+					boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
 							new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
 				}
@@ -664,7 +665,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 					String uri = event.asCharacters().getData();
-					boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
+					boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
 					URI externalResource = null;
 					
 					if (streamDataProvider.getIncompleteToken() != null) {
@@ -992,7 +993,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						String value = event.asCharacters().getData();
 						
 						if (!value.matches("\\s+")) {
-							boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
+							boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, isContinued));
 						}
 					}

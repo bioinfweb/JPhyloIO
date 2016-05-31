@@ -316,6 +316,8 @@ public interface PhyloXMLConstants {
 
 	public static final String PHYLOXML_DATA_TYPE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "DataTypes/";
 	
+	public static final QName DATA_TYPE_BRANCH_COLOR = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Color");
+	
 	public static final QName DATA_TYPE_EVENTTYPE = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Event" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "EventType");
 	public static final QName DATA_TYPE_RANK = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Rank");
 	public static final QName DATA_TYPE_SEQUENCE_SYMBOL = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "SequenceSymbol");

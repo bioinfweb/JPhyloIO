@@ -159,7 +159,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						boolean isContinued = streamDataProvider.getEventReader().peek().getType().equals(XMLStreamConstants.CHARACTERS);
+						boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, event.asCharacters().getData(), isContinued));
 					}
 			});
