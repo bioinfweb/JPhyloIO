@@ -18,14 +18,22 @@
  */
 package info.bioinfweb.jphyloio;
 
+
 import javax.xml.namespace.QName;
 
 
 
 /**
  * Provides general constants for reading and writing phylogenetic file formats.
+ * <p>
+ * The {@code DEFAULT_XXX_PREFIX} constants are used by some reader implementations to generate event IDs.
+ * Their value may change any time without further notice. Such a change would not be considered as an API
+ * change and would not be reflected in a major version number increase. Application developers should never
+ * rely on expecting specfic prefixes for event IDs.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
+ * @since 0.0.0
  */
 public interface ReadWriteConstants {
 	public static final String DEFAULT_MATCH_TOKEN = ".";
