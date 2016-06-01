@@ -165,7 +165,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				String parentTag = streamDataProvider.getParentName();
 				
 				String appliesTo = XMLUtils.readStringAttr(element, ATTR_APPLIES_TO, null);
-				URIOrStringIdentifier predicate = new URIOrStringIdentifier(null, qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_REF, null), streamDataProvider));
+				URIOrStringIdentifier predicate = new URIOrStringIdentifier(null, qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_REF, null), element));
 				
 				boolean appliesToAsAttribute = true;
 				boolean resetEventCollection = false;				
@@ -213,14 +213,14 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.setPropertyHasResource(false);
 				}
 				
+				QName datatype = qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);
+				ObjectTranslator<?> translator = getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
+				
 				streamDataProvider.getCurrentEventCollection().add(
 						new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, predicate, LiteralContentSequenceType.SIMPLE));
 				
-				streamDataProvider.setCurrentPropertyDatatype(qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), streamDataProvider));				
-				streamDataProvider.setResetEventCollection(resetEventCollection);
-				
-				QName datatype = qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), streamDataProvider);
-				ObjectTranslator<?> translator = getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);				
+				streamDataProvider.setCurrentPropertyDatatype(datatype);				
+				streamDataProvider.setResetEventCollection(resetEventCollection);				
 				
 				if (!datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
 					Object objectValue = null;

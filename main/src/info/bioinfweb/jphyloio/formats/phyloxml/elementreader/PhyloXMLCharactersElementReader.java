@@ -27,7 +27,6 @@ import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import java.io.IOException;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 

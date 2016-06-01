@@ -21,10 +21,7 @@ package info.bioinfweb.jphyloio.formats.xml;
 
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderStreamDataProvider;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,17 +31,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -66,6 +62,8 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	private Map<XMLElementReaderKey, XMLElementReader<P>> elementReaderMap = new HashMap<XMLElementReaderKey, XMLElementReader<P>>();
 	private XMLEventReader xmlReader;
 	private Stack<QName> encounteredTags = new Stack<QName>();
+	
+	private NamespaceContext namespaceContext = null;
 	
 	
 	public AbstractXMLEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
@@ -137,7 +135,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 					case XMLStreamConstants.START_ELEMENT:
 						StartElement element = xmlEvent.asStartElement();
 						elementTag = element.getName();
-						readNamespaceDefinitions(element, getStreamDataProvider());
+						namespaceContext = element.getNamespaceContext();
 						break;
 					case XMLStreamConstants.END_ELEMENT:
 						getEncounteredTags().pop();
@@ -188,7 +186,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	public QName qNameFromCURIE(String curie, P streamDataProvider) {
+	public QName qNameFromCURIE(String curie, StartElement element) {
 		String[] refParts = curie.split(":");
 		String localPart = refParts[refParts.length - 1]; //TODO is the local part always the last element?
 		String prefix = null;
@@ -196,7 +194,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		
 		if (refParts.length == 2) {
 			prefix = refParts[0];
-			namespaceURI = streamDataProvider.getPrefixToNamespaceMap().get(prefix);
+			namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
 			if (namespaceURI == null) {
 				if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
 					namespaceURI = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
@@ -205,16 +203,6 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		}
 		
 		return new QName(namespaceURI, localPart, prefix);
-	}
-	
-	
-	protected void readNamespaceDefinitions(StartElement element, P streamDataProvider) {
-		@SuppressWarnings("unchecked")
-		Iterator<Namespace> namespaceIterator = element.getNamespaces();
-		while (namespaceIterator.hasNext()) {
-			Namespace namespace = namespaceIterator.next();
-			streamDataProvider.getPrefixToNamespaceMap().put(namespace.getPrefix(), namespace.getNamespaceURI());
-		}
 	}
 	
 	
@@ -237,6 +225,15 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	
 	protected Map<XMLElementReaderKey, XMLElementReader<P>> getElementReaderMap() {
 		return elementReaderMap;
+	}
+
+	/**
+	 * Returns the currently valid namespace context object or {@code null}, if the root element was not yet read.
+	 * 
+	 * @return the currently valid namespace context or {@code null}
+	 */
+	protected NamespaceContext getNamespaceContext() {
+		return namespaceContext;
 	}
 
 
