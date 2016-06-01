@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation.implementations;
+package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 import java.awt.Color;
@@ -30,14 +30,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
+import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 
 
 /**
- * Object translator between {@link Color} and the PhylXML complex type 
+ * Object translator between {@link Color} and the PhyloXML complex type 
  * <a href="http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h-1691165380">BranchColor</a>.
  * 
  * @author Sarah Wiechers
@@ -45,7 +45,7 @@ import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataExceptio
  * @since 0.0.0
  */
 public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> implements PhyloXMLConstants {
-	//TODO Should this class be moved to the phyloxml package?
+	
 	
 	@Override
 	public Class<Color> getObjectClass() {
@@ -100,21 +100,23 @@ public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> imp
 		
 		while (!(event.isEndElement() && !encounteredTags.contains(event.asEndElement().getName()))) {
 			XMLEvent nextEvent = reader.nextEvent();
+			
 			if (nextEvent.isStartElement()) {
 				QName elementName = nextEvent.asStartElement().getName();
+				encounteredTags.add(elementName);
+				
 				if (elementName.equals(TAG_RED)) {
-					encounteredTags.add(elementName);
 					red = reader.getElementText();
 				}
 				else if (elementName.equals(TAG_GREEN)) {
-					encounteredTags.add(elementName);
 					green = reader.getElementText();
 				}
 				else if (elementName.equals(TAG_BLUE)) {
-					encounteredTags.add(elementName);
 					blue = reader.getElementText();
 				}
-				//TODO Consume possible other tags (trees) using XMLUtils.reachElementEnd().
+				else {
+					XMLUtils.reachElementEnd(reader);
+				}
 			}
 			
 			event = reader.peek();

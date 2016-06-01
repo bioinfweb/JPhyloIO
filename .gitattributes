@@ -207,6 +207,7 @@ main/src/info/bioinfweb/jphyloio/formats/phylip/PhylipFactory.java -text svneol=
 main/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phylip/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLColorTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventWriter.java -text svneol=unset#text/plain
@@ -258,7 +259,6 @@ main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/IllegalArgume
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/IntegerTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/LongTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/NumericValueTranslator.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/PhyloXMLColorTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/QNameTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/ShortTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/SimpleValueTranslator.java -text svneol=unset#text/plain

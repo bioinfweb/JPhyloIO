@@ -49,7 +49,6 @@ import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.PhyloXMLColorTranslator;
 
 import java.awt.Color;
 import java.io.File;
@@ -587,7 +586,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					try {
 						color = translator.readXMLRepresentation(getXMLReader());
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, DATA_TYPE_BRANCH_COLOR),
-								translator.javaToRepresentation(color), color));
+								null, color));
 					}
 					catch (InvalidObjectSourceDataException e) {
 						throw new JPhyloIOReaderException("The content of this property tag could not be parsed to class color.", event.getLocation());
