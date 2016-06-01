@@ -267,6 +267,16 @@ public class ReadWriteParameterMap extends ParameterMap {
 	 */
 	public static final String KEY_OBJECT_TRANSLATOR_FACTORY = KEY_PREFIX + "objectTranslatorFactory";
 	
+	/**
+	 * This parameter will only be used by {@link PhyloXMLEventReader} and allows to define if trees read from a 
+	 * PhyloXML file should always be considered as trees or networks. In the first case, "clade relation" tags 
+	 * contained in a phylogeny will only be represented as meta information, not as additional edge events.
+	 * <p>
+	  * The value should have the type {@link Boolean}. If {@code false} or no value is specified, a phylogeny will 
+	  * always be considered as a network. If {@code true} is specified, it will always be considered as a tree. 
+	 */
+	public static final String KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE = KEY_PREFIX + "considerPhylogenyAsTree";
+	
 	
 	public ApplicationLogger getLogger() {
 		return getApplicationLogger(KEY_LOGGER);

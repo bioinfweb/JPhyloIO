@@ -54,6 +54,10 @@ public interface ReadWriteConstants {
 	public static final QName PREDICATE_SEQUENCE_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "sequenceCount");
 	public static final QName PREDICATE_CHARACTER_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "characterCount");
 	
+	public static final QName PREDICATE_EDGE_SOURCE_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeSourceNode");
+	public static final QName PREDICATE_EDGE_TARGET_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeTargetNode");
+	public static final QName PREDICATE_EDGE_LENGTH = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeLength");
+	
 	@Deprecated
 	public static final String META_KEY_SEQUENCE_COUNT = "info.bioinfweb.jphyloio.sequenceCount";
 	 
@@ -74,6 +78,7 @@ public interface ReadWriteConstants {
 	public static final String DEFAULT_TOKEN_SET_ID_PREFIX = "tokenSet";
 	public static final String DEFAULT_TOKEN_DEFINITION_ID_PREFIX = "tokenDefinition";
 	public static final String DEFAULT_TREE_ID_PREFIX = "tree";
+	public static final String DEFAULT_NETWORK_ID_PREFIX = "network";
 	public static final String DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX = "treesOrNetworks";
 	public static final String DEFAULT_NODE_ID_PREFIX = "n";
 	public static final String DEFAULT_EDGE_ID_PREFIX = "e";

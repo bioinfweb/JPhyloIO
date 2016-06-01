@@ -100,7 +100,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
-				String id = getID(EventContentType.NODE);
+				String id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
 				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NODE, id, label, null));
@@ -172,7 +172,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_TREE, XMLStreamConstants.START_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				String treeID = getID(EventContentType.TREE);							
+				String treeID = DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();							
 				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, treeID, null, null));		
 			}
 		});

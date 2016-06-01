@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -85,7 +86,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		
 		if (resourcePredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
-					new ResourceMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_RESOURCE), null, 
+					new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 							new URIOrStringIdentifier(null, resourcePredicate), null, null));
 			
 			if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
@@ -94,11 +95,11 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 				while (attributes.hasNext()) {
 					Attribute attribute = attributes.next();
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
+							new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataContentEvent(null, event.asStartElement().getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object or as a parameter
+							new LiteralMetadataContentEvent(null, event.asStartElement().getAttributeByName(attribute.getName()).getValue(), null));
 							
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				}
@@ -107,7 +108,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		
 		if (literalPredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
-					new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
+					new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 					new URIOrStringIdentifier(null, literalPredicate), LiteralContentSequenceType.SIMPLE));
 		}
 	}

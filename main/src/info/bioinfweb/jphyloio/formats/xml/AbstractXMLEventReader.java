@@ -195,7 +195,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		String namespaceURI = null;
 		
 		if (refParts.length == 2) {
-			prefix = refParts[0];			
+			prefix = refParts[0];
 			namespaceURI = streamDataProvider.getPrefixToNamespaceMap().get(prefix);
 			if (namespaceURI == null) {
 				if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
@@ -215,53 +215,6 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 			Namespace namespace = namespaceIterator.next();
 			streamDataProvider.getPrefixToNamespaceMap().put(namespace.getPrefix(), namespace.getNamespaceURI());
 		}
-	}
-	
-	
-	public String getID(EventContentType type) { //TODO handle possible conflicts between upcoming IDs and new IDs generated here that may arise in some of the classes using this method
-		String result = "";
-	
-		if (type.equals(EventContentType.ALIGNMENT)) {
-			result = DEFAULT_MATRIX_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.SEQUENCE)) {
-			result = DEFAULT_SEQUENCE_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.TOKEN_SET_DEFINITION)) {
-			result = DEFAULT_TOKEN_SET_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.NODE)) {
-			result = DEFAULT_NODE_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.EDGE)) {
-			result = DEFAULT_EDGE_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.TREE)) {
-			result = DEFAULT_TREE_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.TREE_NETWORK_GROUP)) {
-			result = DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.OTU)) {
-			result = DEFAULT_OTU_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.OTU_LIST)) {
-			result = DEFAULT_OTU_LIST_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.CHARACTER_SET)) {
-			result = DEFAULT_CHAR_SET_ID_PREFIX;
-		}
-		else if (type.equals(EventContentType.META_RESOURCE) || type.equals(EventContentType.META_LITERAL) 
-				|| type.equals(EventContentType.META_LITERAL_CONTENT)) {
-			result = DEFAULT_META_ID_PREFIX;
-		}
-		else {
-			result = "id";
-		}
-		
-		result += getStreamDataProvider().getIDManager().createNewID();
-		
-		return result;
 	}
 	
 	

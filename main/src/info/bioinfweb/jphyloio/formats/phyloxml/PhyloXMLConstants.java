@@ -175,7 +175,8 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_SEQ_REL_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "SequenceRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	
 	public static final QName PREDICATE_CLADENAME = new QName(PHYLOXML_PREDICATE_NAMESPACE, "CladeName");
-	public static final QName PREDICATE_WIDTH = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchWidth");	
+	public static final QName PREDICATE_WIDTH = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchWidth");
+	public static final QName PREDICATE_COLOR = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchColor");
 	public static final QName PREDICATE_ATTR_ID_SOURCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "NodeIDSource");	
 	
 	public static final QName PREDICATE_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Confidence");
@@ -185,11 +186,6 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_NODE_ID = new QName(PHYLOXML_PREDICATE_NAMESPACE, "NodeID");
 	public static final QName PREDICATE_NODE_ID_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "NodeID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_NODE_ID_ATTR_PROVIDER = new QName(PHYLOXML_PREDICATE_NAMESPACE, "NodeID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Provider");	
-	
-	public static final QName PREDICATE_COLOR = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Color");
-	public static final QName PREDICATE_COLOR_RED = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Color" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Red");
-	public static final QName PREDICATE_COLOR_GREEN = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Color" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Green");
-	public static final QName PREDICATE_COLOR_BLUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Color" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Blue");
 	
 	public static final QName PREDICATE_TAXONOMY = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy");
 	public static final QName PREDICATE_TAXONOMY_ID = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID");

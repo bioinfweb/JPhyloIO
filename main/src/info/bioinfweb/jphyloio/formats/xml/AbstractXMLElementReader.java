@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -62,11 +63,10 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 				Attribute attribute = attributes.next();
 				if (attributeToPredicateMap.containsKey(attribute.getName())) { //allows to ignore certain attributes
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataEvent(streamDataProvider.getEventReader().getID(EventContentType.META_LITERAL), null, 
+							new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 	
-					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataContentEvent(null, element.getAttributeByName(attribute.getName()).getValue(), null)); //TODO get ObjectValue and OriginalType from translator object or as a parameter?
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, element.getAttributeByName(attribute.getName()).getValue(), null));
 							
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				}
