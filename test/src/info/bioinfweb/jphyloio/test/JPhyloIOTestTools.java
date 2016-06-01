@@ -218,20 +218,12 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);  //TODO Also allow empty contents?
+		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 		assertEquals(expectedOriginalType, contentEvent.getOriginalType());
 		assertEquals(expectedStringValue, contentEvent.getStringValue());
-		if (expectedObjectValue == null) {
-			assertEquals(expectedStringValue, contentEvent.getObjectValue());  //TODO Are there cases, where the object value is really null (and the string value "null")?
-		}
-		else {
-			assertEquals(expectedObjectValue, contentEvent.getObjectValue());
-		}
-		if (expectedAlternativeStringValue != null) {
-			assertEquals(expectedAlternativeStringValue, contentEvent.getAlternativeStringValue());
-		}
-		//TODO Handle contents that are separated among separate events?
+		assertEquals(expectedObjectValue, contentEvent.getObjectValue());
+		assertEquals(expectedAlternativeStringValue, contentEvent.getAlternativeStringValue());
 		
 		if (testEndEvent) {
 			assertEndEvent(EventContentType.META_LITERAL, reader);
