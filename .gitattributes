@@ -451,6 +451,7 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/E
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/MultipleRootEdgesTree.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/NoAnnotationsTree.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/TestNetworkDataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/DataTypeConverterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/NamespaceContextTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/URITest.java -text svneol=unset#text/plain
