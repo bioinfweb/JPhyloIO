@@ -25,7 +25,6 @@ import info.bioinfweb.jphyloio.objecttranslation.implementations.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 
 

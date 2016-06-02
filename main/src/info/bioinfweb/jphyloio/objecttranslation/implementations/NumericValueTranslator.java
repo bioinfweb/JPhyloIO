@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 
@@ -37,7 +38,7 @@ public abstract class NumericValueTranslator<O extends Number> extends SimpleVal
 	
 	
 	@Override
-	public O representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
+	public O representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws InvalidObjectSourceDataException, UnsupportedOperationException {
 		try {
 			return parseValue(representation);
 		}

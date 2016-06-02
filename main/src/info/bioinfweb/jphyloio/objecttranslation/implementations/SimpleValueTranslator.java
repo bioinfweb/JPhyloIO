@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
@@ -80,7 +81,7 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	/**
 	 * Reads an object from the character data available at the current position of the XML reader. Character data is consumed until
 	 * an event different from {@link XMLStreamConstants#CHARACTERS} is consumed. If no event of this type is available, parsing the 
-	 * empty string is tried. (Calls {@link #representationToJava(String)} internally.)
+	 * empty string is tried. (Calls {@link #representationToJava(String, ReaderStreamDataProvider)} internally.)
 	 * 
 	 * @param reader the XML event reader to read the data from
 	 * @return the parsed object
@@ -89,7 +90,7 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	 *         {@link #MAX_STRING_REPRESENTATION_LENGTH}
 	 */
 	@Override
-	public O readXMLRepresentation(XMLEventReader reader) throws IOException,	XMLStreamException, InvalidObjectSourceDataException {
+	public O readXMLRepresentation(XMLEventReader reader, ReaderStreamDataProvider<?> streamDataProvider) throws IOException,	XMLStreamException, InvalidObjectSourceDataException {
 		StringBuilder text = new StringBuilder();
 		while (reader.peek().isCharacters()) {
 			if (text.length() > MAX_STRING_REPRESENTATION_LENGTH) {  // Avoid loading very large amounts of (invalid) data.
@@ -98,6 +99,6 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 			}
 			text.append(reader.nextEvent().asCharacters().getData());
 		}
-		return representationToJava(text.toString());
+		return representationToJava(text.toString(), streamDataProvider);
 	}
 }

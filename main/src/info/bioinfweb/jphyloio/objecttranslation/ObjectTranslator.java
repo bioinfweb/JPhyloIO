@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.objecttranslation;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 import java.io.IOException;
 
 import javax.xml.stream.XMLEventReader;
@@ -93,11 +95,13 @@ public interface ObjectTranslator<O> {
 	 * depend on the representation. 
 	 * 
 	 * @param representation the string representation of the object to be created
+	 * @param streamDataProvider the stream data provider of the calling reader (Maybe {@code null}. Some translators will use it to gain 
+	 *        additional status information required for translating, e.g. prefix to namespace mapping for creating QNames.)
 	 * @return the new object
 	 * @throws UnsupportedOperationException if objects handled by this instance can only be represented as XML
 	 * @throws InvalidObjectSourceDataException if the specified string representation cannot be parsed to a supported object
 	 */
-	public O representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException;
+	public O representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws InvalidObjectSourceDataException, UnsupportedOperationException;
 
 	/**
 	 * Tries to create a new instance of the handled object type from the data provided by the specified XML reader.
@@ -110,10 +114,11 @@ public interface ObjectTranslator<O> {
 	 * If this 
 	 * 
 	 * @param reader the XML reader providing the data to create a new object
+	 * @param streamDataProvider TODO
 	 * @return the new object
 	 * @throws IOException if an I/O error occurs while trying to read from the specified reader
 	 * @throws XMLStreamException if an XML stream exception occurs while trying to read from the specified reader
 	 * @throws InvalidObjectSourceDataException if an unexpected XML event was encountered or an XML event has unexpected contents
 	 */
-	public O readXMLRepresentation(XMLEventReader reader) throws IOException, XMLStreamException, InvalidObjectSourceDataException;  //TODO Is inversion of control necessary here instead (e.g. to consume the XML events elsewhere too)?
+	public O readXMLRepresentation(XMLEventReader reader, ReaderStreamDataProvider<?> streamDataProvider) throws IOException, XMLStreamException, InvalidObjectSourceDataException;  //TODO Is inversion of control necessary here instead (e.g. to consume the XML events elsewhere too)?
 }

@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
@@ -82,13 +83,13 @@ public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> imp
 
 	
 	@Override
-	public Color representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
+	public Color representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws InvalidObjectSourceDataException, UnsupportedOperationException {
 		throw new UnsupportedOperationException("PhyloXML color definitions can only be read from structured XML.");
 	}
 
 	
 	@Override
-	public Color readXMLRepresentation(XMLEventReader reader) throws IOException, XMLStreamException,
+	public Color readXMLRepresentation(XMLEventReader reader, ReaderStreamDataProvider<?> streamDataProvider) throws IOException, XMLStreamException,
 			InvalidObjectSourceDataException {
 		Color color = null;
 		String red = null;

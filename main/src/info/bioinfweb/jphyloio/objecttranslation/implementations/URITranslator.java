@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 import java.net.URI;
@@ -40,7 +41,7 @@ public class URITranslator extends SimpleValueTranslator<URI> {
 	
 
 	@Override
-	public URI representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
+	public URI representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws InvalidObjectSourceDataException, UnsupportedOperationException {
 		try {
 			return new URI(representation);
 		} 

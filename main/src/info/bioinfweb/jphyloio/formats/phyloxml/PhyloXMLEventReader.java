@@ -228,7 +228,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					if (propertyValue != null) {
 						try {
-							objectValue = translator.representationToJava(propertyValue);							
+							objectValue = translator.representationToJava(propertyValue, getStreamDataProvider());							
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), propertyValue, objectValue));
 						}
 						catch (InvalidObjectSourceDataException e) {
@@ -645,7 +645,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 							new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, new URIOrStringIdentifier(null, PREDICATE_COLOR), LiteralContentSequenceType.SIMPLE));
 					
 					try {
-						color = translator.readXMLRepresentation(getXMLReader());
+						color = translator.readXMLRepresentation(getXMLReader(), null);
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, DATA_TYPE_BRANCH_COLOR),
 								null, color));
 					}

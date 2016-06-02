@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 import javax.xml.XMLConstants;
@@ -41,7 +42,7 @@ public class QNameTranslator extends SimpleValueTranslator<QName> {
 
 	
 	@Override
-	public QName representationToJava(String representation) throws InvalidObjectSourceDataException, UnsupportedOperationException {
+	public QName representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws InvalidObjectSourceDataException, UnsupportedOperationException {
 		//TODO Also use DatatypeConverter here instead.
 		int splitPos = representation.indexOf(XMLUtils.QNAME_SEPARATOR);
 		if (splitPos == -1) {

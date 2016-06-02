@@ -19,12 +19,13 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 
 
 /**
- * An object translator from and to {@link String}. Both {@link #representationToJava(String)} and {@link #javaToRepresentation(String)}
+ * An object translator from and to {@link String}. Both {@link #representationToJava(String, ReaderStreamDataProvider)} and {@link #javaToRepresentation(String)}
  * return the specified string instance unchanged.  
  * 
  * @author Ben St&ouml;ver
@@ -38,7 +39,7 @@ public class StringTranslator extends SimpleValueTranslator<String> {
 
 
 	@Override
-	public String representationToJava(String representation)	throws InvalidObjectSourceDataException, UnsupportedOperationException {
+	public String representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider)	throws InvalidObjectSourceDataException, UnsupportedOperationException {
 		return representation;
 	}
 
