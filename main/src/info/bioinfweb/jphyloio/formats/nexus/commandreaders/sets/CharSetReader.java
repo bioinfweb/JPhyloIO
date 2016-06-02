@@ -27,7 +27,6 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -44,6 +43,9 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
  * @author Ben St&ouml;ver
  */
 public class CharSetReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
+	// No default SETS block is ever specified using BlockTitleToIDMap.putDefaultBlockID() since there is no JPhyloIO event that models
+	// a sets block.
+	
 	private String name = null;
 	private boolean isVectorFormat = false;
 	private long currentColumn = 0;
