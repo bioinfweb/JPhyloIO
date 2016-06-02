@@ -401,7 +401,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			
 			getXMLWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
 			if (!streamDataProvider.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-				getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), streamDataProvider.getColumnIndexToStatesMap().get(i));
+				getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), streamDataProvider.getColumnIndexToStatesMap().get(i));  //TODO streamDataProvider.getColumnIndexToStatesMap().get(i) seems to be null, when called from the EDITor.
 			}
 		}
 		
