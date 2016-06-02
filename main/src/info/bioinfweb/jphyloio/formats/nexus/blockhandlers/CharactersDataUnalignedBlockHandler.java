@@ -59,9 +59,13 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 				&& (commandName.equals(COMMAND_NAME_DIMENSIONS) || commandName.equals(COMMAND_NAME_FORMAT) 
 						|| commandName.equals(COMMAND_NAME_MATRIX))) {  // Fire start event, as soon as one of these commands is encountered.
 			
-			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, 
-					map.getString(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID),	
+			String blockID = map.getString(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID);
+			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, blockID, 
 					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getCurrentLinkedBlockID(BLOCK_NAME_TAXA)));
+			String blockTypeName = streamDataProvider.getEventReader().getCurrentBlockName();
+			if (!streamDataProvider.getBlockTitleToIDMap().hasDefaultBlockID(blockTypeName)) {				
+				streamDataProvider.getBlockTitleToIDMap().putDefaultBlockID(blockTypeName, blockID);  // Set first block as the default.
+			}
 			map.put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
 		}
 	}
