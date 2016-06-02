@@ -227,7 +227,13 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
-	//TODO Is this still necessary or is getCurrentLinkedBlockID() a general replacement for it? 
+	/**
+	 * Returns a map object that translates between a Nexus taxon name and the <i>JPhyloIO</i> ID of the according OTU event.
+	 * 
+	 * @param listID the <i>JPhyloIO</i> ID of the according OTU list start event
+	 * @return the map or {@code null} of no map is present for the specified OTU list ID
+	 * @throws NullPointerException if {@code listID is null}
+	 */
 	public Map<String, String> getTaxaToIDMap(String listID) {
 		if (listID == null) {
 			throw new NullPointerException("The specified listID must not be null.");
@@ -238,6 +244,12 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
+	/**
+	 * Returns the current Nexus translation table object. If none is present, a new empty instance will be created and stored in
+	 * the shared information map.
+	 * 
+	 * @return the current table
+	 */
 	public NexusTranslationTable getTreesTranslationTable() {
 		NexusTranslationTable result = (NexusTranslationTable)getSharedInformationMap().get(INFO_KEY_TREES_TRANSLATION);  // Casting null is possible.
 		if (result == null) {
