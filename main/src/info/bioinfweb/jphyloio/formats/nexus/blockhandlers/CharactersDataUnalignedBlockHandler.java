@@ -61,7 +61,7 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 			
 			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, 
 					map.getString(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID),	
-					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));
+					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getCurrentLinkedBlockID(BLOCK_NAME_TAXA)));
 			map.put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
 		}
 	}

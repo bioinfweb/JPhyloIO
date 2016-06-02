@@ -59,7 +59,7 @@ public class TreesBlockHandler extends AbstractNexusBlockHandler implements Nexu
 			
 			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, 
 					map.getString(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID),	
-					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getBlockLinks().get(BLOCK_NAME_TAXA)));  //TODO The default OTUs ID for TREES blocks without LINK commands does not seem to be returned here.
+					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getCurrentLinkedBlockID(BLOCK_NAME_TAXA)));
 			map.put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
 		}
 	}
