@@ -102,6 +102,15 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
+	/**
+	 * Returns the map that contains links to other blocks that are explicitly linked to this block.
+	 * <p>
+	 * The returned map is used internally in <i>JPhyloIO</i> to manage links of the current block that are defined with a 
+	 * {@code LINK} command. It should never be used to determine a currently linked block, but {@link #getCurrentLinkedBlockID(String)}
+	 * should be used instead. 
+	 * 
+	 * @return the map containing the blocks explicitly linked to the current block
+	 */
 	public Map<String, String> getBlockLinks() {
 		@SuppressWarnings("unchecked")
 		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(INFO_KEY_BLOCK_LINKS);  // Casting null is possible.
@@ -113,6 +122,13 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
+	/**
+	 * Returns the ID if a {@code CHARACTERS}, {@code DATA} or {@code UNALIGNED} block that is linked to the current block.
+	 * If none of these blocks is explicitly linked, returning a default linked block will be tried in this order. If no default
+	 * linked block is found, {@code null} will be returned. 
+	 * 
+	 * @return a linked block containing a sequence matrix or {@code null}
+	 */
 	public String getMatrixLink() {
 		Map<String, String> map = getBlockLinks();
 		String result = map.get(BLOCK_NAME_CHARACTERS);
@@ -122,11 +138,11 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 				result = map.get(BLOCK_NAME_UNALIGNED);  //TODO Can sets be defined for unaligned blocks?
 				
 				if (result == null) {
-					getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_CHARACTERS);
+					result = getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_CHARACTERS);
 					if (result == null) {
-						getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_DATA);
+						result = getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_DATA);
 						if (result == null) {
-							getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_UNALIGNED);  //TODO Can sets be defined for unaligned blocks?
+							result = getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_UNALIGNED);  //TODO Can sets be defined for unaligned blocks?
 						}
 					}
 				}
@@ -144,6 +160,13 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
+	/**
+	 * Gets a map object from the shared information map. If no such object if found, a new {@link HashMap} instance is stored under
+	 * the specified key and returned. 
+	 * 
+	 * @param key the key in the shared information map
+	 * @return the map object contained in the shared information map
+	 */
 	private Map<String, String> getMap(String key) {
 		@SuppressWarnings("unchecked")
 		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(key);  // Casting null is possible.
@@ -155,6 +178,12 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
+	/**
+	 * Returns a map object that can translate Nexus block titles to the IDs of the according <i>JPhyloIO</i> start events.
+	 * The returned object can also determine default block links.
+	 * 
+	 * @return the translation map
+	 */
 	public BlockTitleToIDMap getBlockTitleToIDMap() {
 		BlockTitleToIDMap result = getSharedInformationMap().getObject(INFO_KEY_BLOCK_ID_MAP, null, BlockTitleToIDMap.class);
 		if (result == null) {
@@ -165,6 +194,14 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
+	/**
+	 * Returns the <i>JPhyloIO</i> ID of the start event describing the Nexus block of the specified type that is linked to the current 
+	 * block. It will first look for an explicitly linked block in {@link #getBlockLinks()}. If no link is found, the default link
+	 * from {@link BlockTitleToIDMap#getDefaultBlockID(String)} will be returned.
+	 * 
+	 * @param blockTypeName the name of the Nexus block type that could be linked
+	 * @return the start event ID or {@code null} if no according block could be found
+	 */
 	public String getCurrentLinkedBlockID(String blockTypeName) {
 		String result = getBlockLinks().get(blockTypeName);
 		if (result == null) {
@@ -190,6 +227,7 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
+	//TODO Is this still necessary or is getCurrentLinkedBlockID() a general replacement for it? 
 	public Map<String, String> getTaxaToIDMap(String listID) {
 		if (listID == null) {
 			throw new NullPointerException("The specified listID must not be null.");
