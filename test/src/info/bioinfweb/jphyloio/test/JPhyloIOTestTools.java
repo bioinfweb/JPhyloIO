@@ -304,7 +304,7 @@ public class JPhyloIOTestTools {
   }  
 	
 	
-  public static void assertCharacterSetEvent(long expectedStart, long expectedEnd, 
+  public static void assertCharacterSetIntervalEvent(long expectedStart, long expectedEnd, 
   		JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());

@@ -339,7 +339,7 @@ public class NeXMLEventReaderTest {
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxa", reader);
 				
 				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet0", null, reader);
-				assertCharacterSetEvent(0, 2, reader);
+				assertCharacterSetIntervalEvent(0, 2, reader);
 				assertEndEvent(EventContentType.CHARACTER_SET, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", "charSet0", reader);

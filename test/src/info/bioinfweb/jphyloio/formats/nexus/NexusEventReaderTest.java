@@ -59,85 +59,85 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertCommentEvent("comment 1", reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", reader);
-			assertCharacterSetEvent(3, 6, reader);
-			assertCharacterSetEvent(9, 10, reader);
-			assertCharacterSetEvent(12, 17, reader);
+			assertCharacterSetIntervalEvent(3, 6, reader);
+			assertCharacterSetIntervalEvent(9, 10, reader);
+			assertCharacterSetIntervalEvent(12, 17, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertCommentEvent("comment 1a", reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set02", reader);
-			assertCharacterSetEvent(4, 10, reader);
+			assertCharacterSetIntervalEvent(4, 10, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertCommentEvent("comment 2", reader);
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set03", reader);
 			assertCommentEvent("comment 3", reader);
-			assertCharacterSetEvent(4, 7, reader);
-			assertCharacterSetEvent(12, 13, reader);
+			assertCharacterSetIntervalEvent(4, 7, reader);
+			assertCharacterSetIntervalEvent(12, 13, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set04", reader);
-			assertCharacterSetEvent(4, 7, reader);
+			assertCharacterSetIntervalEvent(4, 7, reader);
 			assertCommentEvent("comment 4", reader);
-			assertCharacterSetEvent(12, 13, reader);
+			assertCharacterSetIntervalEvent(12, 13, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set05", reader);
-			assertCharacterSetEvent(3, 4, reader);
-			assertCharacterSetEvent(5, 7, reader);
+			assertCharacterSetIntervalEvent(3, 4, reader);
+			assertCharacterSetIntervalEvent(5, 7, reader);
 			assertCommentEvent("comment 5", reader);
-			assertCharacterSetEvent(7, 8, reader);
-			assertCharacterSetEvent(9, 10, reader);
-			assertCharacterSetEvent(11, 13, reader);
+			assertCharacterSetIntervalEvent(7, 8, reader);
+			assertCharacterSetIntervalEvent(9, 10, reader);
+			assertCharacterSetIntervalEvent(11, 13, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set06", reader);
-			assertCharacterSetEvent(0, 1, reader);
-			assertCharacterSetEvent(2, 5, reader);
-			assertCharacterSetEvent(6, 7, reader);
-			assertCharacterSetEvent(8, 10, reader);
+			assertCharacterSetIntervalEvent(0, 1, reader);
+			assertCharacterSetIntervalEvent(2, 5, reader);
+			assertCharacterSetIntervalEvent(6, 7, reader);
+			assertCharacterSetIntervalEvent(8, 10, reader);
 			assertCommentEvent("comment 6", reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set07", reader);
-			assertCharacterSetEvent(0, 0, reader);
+			assertCharacterSetIntervalEvent(0, 0, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set08", reader);
-			assertCharacterSetEvent(0, 1, reader);
+			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set09", reader);
-			assertCharacterSetEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(1, 2, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set10", reader);
-			assertCharacterSetEvent(0, 0, reader);
+			assertCharacterSetIntervalEvent(0, 0, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set11", reader);
-			assertCharacterSetEvent(12, 18, reader);
+			assertCharacterSetIntervalEvent(12, 18, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set12", reader);
-			assertCharacterSetEvent(3, 4, reader);
+			assertCharacterSetIntervalEvent(3, 4, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.13", reader);
-			assertCharacterSetEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(1, 2, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.14", reader);
-			assertCharacterSetEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(1, 2, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set'15", reader);
-			assertCharacterSetEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(1, 2, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set 16;", reader);
-			assertCharacterSetEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(1, 2, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -818,11 +818,11 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
-			assertCharacterSetEvent(1, 1452, reader);
+			assertCharacterSetIntervalEvent(1, 1452, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
-			assertCharacterSetEvent(1452, 1549, reader);
+			assertCharacterSetIntervalEvent(1452, 1549, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
@@ -1456,84 +1456,92 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 	}
 	
 	
-//@Test
-//public void testCharSetsMultipleMatrices() throws Exception {
-//	NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetsMultipleMatrices.nex"), new ReadWriteParameterMap());
-//	try {
-//		assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-//		
-//		// TAXA:
-//		String otusID = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
-//		String otuIDA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
-//		assertEndEvent(EventContentType.OTU, reader);
-//		String otuIDB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
-//		assertEndEvent(EventContentType.OTU, reader);
-//		String otuIDC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
-//		assertEndEvent(EventContentType.OTU, reader);
-//		assertEndEvent(EventContentType.OTU_LIST, reader);
-//		
-//		// CHARACTERS 1:
-//		String matrixID1 = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "matrix1", otusID, reader);
-//		
-//		assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-//		assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
-//		
-//		assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
-//		assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
-//		assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
-//		assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
-//
-//		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
-//		assertCharactersEvent("CGGTCAT", reader);
-//		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//		
-//		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
-//		assertCharactersEvent("CG-TCTT", reader);
-//		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//		
-//		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
-//		assertCharactersEvent("CG-TC-T", reader);
-//		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//		
-//		assertEndEvent(EventContentType.ALIGNMENT, reader);
-//		
-//		
-//		// CHARACTERS 2:
-//		String matrixID2 = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "matrix2", otusID, reader);
-//		
-//		assertMetaEvent(DimensionsReader.KEY_PREFIX + "ntax", "3", null, new Long(3), true, true, reader);
-//		assertMetaEvent(DimensionsReader.KEY_PREFIX + "nchar", "7", null, new Long(7), true, true, reader);
-//		
-//		assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
-//		assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
-//		assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
-//		assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
-//
-//		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
-//		assertCharactersEvent("AGGT-AT", reader);
-//		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//		
-//		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
-//		assertCharactersEvent("AC-GCTC", reader);
-//		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//		
-//		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
-//		assertCharactersEvent("AG-TC-T", reader);
-//		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-//		
-//		assertEndEvent(EventContentType.ALIGNMENT, reader);
-//		
-//		
-//		// SETS 1:
-//		assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID1, reader);
-//		assertCharacterSetEvent(expectedStart, expectedEnd, reader);
-//		assertEndEvent(EventContentType.CHARACTER_SET, reader);
-//		
-//		assertEndEvent(EventContentType.DOCUMENT, reader);
-//		assertFalse(reader.hasNextEvent());
-//	}
-//	finally {
-//		reader.close();
-//	}
-//}
+@Test
+public void testCharSetsMultipleMatrices() throws Exception {
+	NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetsMultipleMatrices.nex"), new ReadWriteParameterMap());
+	try {
+		assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+		
+		// TAXA:
+		String otusID = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+		String otuIDA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+		assertEndEvent(EventContentType.OTU, reader);
+		String otuIDB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+		assertEndEvent(EventContentType.OTU, reader);
+		String otuIDC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
+		assertEndEvent(EventContentType.OTU, reader);
+		assertEndEvent(EventContentType.OTU_LIST, reader);
+		
+		// CHARACTERS 1:
+		String matrixID1 = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "matrix1", otusID, reader);
+		
+		assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+		assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
+		
+		assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+		assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+		assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+		assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+
+		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
+		assertCharactersEvent("CGGTCAT", reader);
+		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+		
+		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
+		assertCharactersEvent("CG-TCTT", reader);
+		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+		
+		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
+		assertCharactersEvent("CG-TC-T", reader);
+		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+		
+		assertEndEvent(EventContentType.ALIGNMENT, reader);
+		
+		
+		// CHARACTERS 2:
+		String matrixID2 = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "matrix2", otusID, reader);
+		
+		assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+		assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
+		
+		assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+		assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+		assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+		assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+
+		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
+		assertCharactersEvent("AGGT-AT", reader);
+		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+		
+		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
+		assertCharactersEvent("AC-GCTC", reader);
+		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+		
+		assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
+		assertCharactersEvent("AG-TC-T", reader);
+		assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+		
+		assertEndEvent(EventContentType.ALIGNMENT, reader);
+		
+		
+		// SETS 1:
+		assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID1, reader);
+		assertCharacterSetIntervalEvent(2, 5, reader);
+		assertCharacterSetIntervalEvent(6, 7, reader);
+		assertEndEvent(EventContentType.CHARACTER_SET, reader);
+		
+		
+		// SETS 2:
+		assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID2, reader);
+		assertCharacterSetIntervalEvent(1, 4, reader);
+		assertEndEvent(EventContentType.CHARACTER_SET, reader);
+		
+		
+		assertEndEvent(EventContentType.DOCUMENT, reader);
+		assertFalse(reader.hasNextEvent());
+	}
+	finally {
+		reader.close();
+	}
+}
 }

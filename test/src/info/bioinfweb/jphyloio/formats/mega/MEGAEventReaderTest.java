@@ -93,9 +93,9 @@ public class MEGAEventReaderTest implements MEGAConstants, ReadWriteConstants {
 			assertNotEquals(id2, id3);
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, Character.toString(DEFAULT_LABEL_CHAR), reader);
-			assertCharacterSetEvent(12, 15, reader);
-			assertCharacterSetEvent(18, 21, reader);
-			assertCharacterSetEvent(24, 27, reader);
+			assertCharacterSetIntervalEvent(12, 15, reader);
+			assertCharacterSetIntervalEvent(18, 21, reader);
+			assertCharacterSetIntervalEvent(24, 27, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
@@ -120,12 +120,12 @@ public class MEGAEventReaderTest implements MEGAConstants, ReadWriteConstants {
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, Character.toString(DEFAULT_LABEL_CHAR), reader);
-			assertCharacterSetEvent(60, 69, reader);
-			assertCharacterSetEvent(72, 81, reader);
+			assertCharacterSetIntervalEvent(60, 69, reader);
+			assertCharacterSetIntervalEvent(72, 81, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, COMMAND_NAME_DOMAIN + ".Alpha_1", 
 					"Domain=Alpha_1  Property=Coding", reader);
-			assertCharacterSetEvent(0, 81, reader);
+			assertCharacterSetIntervalEvent(0, 81, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
@@ -142,9 +142,9 @@ public class MEGAEventReaderTest implements MEGAConstants, ReadWriteConstants {
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, Character.toString(DEFAULT_LABEL_CHAR), reader);
 			assertCommentEvent("comment in label", reader);
-			assertCharacterSetEvent(93, 96, reader);
-			assertCharacterSetEvent(99, 102, reader);
-			assertCharacterSetEvent(105, 108, reader);
+			assertCharacterSetIntervalEvent(93, 96, reader);
+			assertCharacterSetIntervalEvent(99, 102, reader);
+			assertCharacterSetIntervalEvent(105, 108, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
@@ -162,7 +162,7 @@ public class MEGAEventReaderTest implements MEGAConstants, ReadWriteConstants {
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, COMMAND_NAME_DOMAIN + ".Alpha_2", 
 					"Domain=Alpha_2 Property=Coding", reader);
-			assertCharacterSetEvent(81, 123, reader);
+			assertCharacterSetIntervalEvent(81, 123, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id1, "A-2301", null, reader);
@@ -177,7 +177,7 @@ public class MEGAEventReaderTest implements MEGAConstants, ReadWriteConstants {
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, COMMAND_NAME_DOMAIN + ".Alpha_3", 
 					"Domain=Alpha_3 Property=Coding", reader);
-			assertCharacterSetEvent(123, 141, reader);
+			assertCharacterSetIntervalEvent(123, 141, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
