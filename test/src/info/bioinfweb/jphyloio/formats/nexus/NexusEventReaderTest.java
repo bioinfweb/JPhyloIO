@@ -1530,10 +1530,14 @@ public void testCharSetsMultipleMatrices() throws Exception {
 		assertCharacterSetIntervalEvent(6, 7, reader);
 		assertEndEvent(EventContentType.CHARACTER_SET, reader);
 		
-		
 		// SETS 2:
 		assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID2, reader);
 		assertCharacterSetIntervalEvent(1, 4, reader);
+		assertEndEvent(EventContentType.CHARACTER_SET, reader);
+		
+		// SETS 2:
+		assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID1, reader);
+		assertCharacterSetIntervalEvent(1, 3, reader);
 		assertEndEvent(EventContentType.CHARACTER_SET, reader);
 		
 		

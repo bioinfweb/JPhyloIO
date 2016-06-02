@@ -29,11 +29,16 @@ END;
 BEGIN Sets;
   TITLE sets1;
   LINK CHARACTERS=matrix1;
-	CharSet set01 = 2-4 6;
+  CharSet set01 = 2-4 6;
 END;
 
 BEGIN Sets;
   TITLE sets2;
   LINK CHARACTERS=matrix2;
-	CharSet set01 = 1-3;
+  CharSet set01 = 1-3;
+END;
+
+BEGIN Sets;
+  TITLE sets3;
+  CharSet set01 = 1-2;
 END;
