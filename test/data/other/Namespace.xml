@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<someRoot xmlns:ns1="http://example.org/NS1" xmlns:ns2="http://example.org/NS2">
+	<someTag xmlns:ns3="http://example.org/NS3">ABC</someTag>
+</someRoot>

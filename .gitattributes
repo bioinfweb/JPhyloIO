@@ -399,6 +399,7 @@ test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml.gz -text
 test/data/XTG/NoNamespaceShortened.xml -text
+test/data/other/Namespace.xml -text svneol=unset#text/plain
 test/data/other/Test.png -text
 test/data/other/Text.txt -text svneol=unset#text/plain
 test/data/other/Text.txt.gz -text
@@ -449,6 +450,7 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/E
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/MultipleRootEdgesTree.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/NoAnnotationsTree.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/TestNetworkDataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/NamespaceContextTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/URITest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/WhiteSpaceTest.java -text svneol=unset#text/plain
