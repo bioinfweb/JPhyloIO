@@ -53,7 +53,7 @@ import javax.xml.stream.events.XMLEvent;
  * @since 0.0.0
  */
 public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>>
-		extends AbstractEventReader<P> {
+		extends AbstractEventReader<P> implements JPhyloIOXMLEventReader {
 	
 	public static final String INTERNAL_USE_NAMESPACE = "http://bioinfweb.info/xmlns/JPhyloIO/internalUse";	
 	public static final QName TAG_PARENT_OF_ROOT = new QName(INTERNAL_USE_NAMESPACE, "root");
@@ -232,7 +232,8 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	 * 
 	 * @return the currently valid namespace context or {@code null}
 	 */
-	protected NamespaceContext getNamespaceContext() {
+	@Override
+	public NamespaceContext getNamespaceContext() {
 		return namespaceContext;
 	}
 
