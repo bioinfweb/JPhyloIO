@@ -18,6 +18,8 @@
  */
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 
 
 /**
@@ -34,7 +36,7 @@ public class ShortTranslator extends NumericValueTranslator<Short> {
 
 
 	@Override
-	protected Short parseValue(String representation) throws NumberFormatException {
+	protected Short parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws NumberFormatException {
 		return Short.parseShort(representation);
 	}
 }

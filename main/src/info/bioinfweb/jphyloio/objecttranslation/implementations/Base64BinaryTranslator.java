@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 import javax.xml.bind.DatatypeConverter;
 
 
@@ -37,7 +39,7 @@ public class Base64BinaryTranslator extends IllegalArgumentExceptionSimpleValueT
 	
 
 	@Override
-	protected byte[] parseValue(String representation) throws IllegalArgumentException {
+	protected byte[] parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws IllegalArgumentException {
 		return DatatypeConverter.parseBase64Binary(representation);
 	}
 

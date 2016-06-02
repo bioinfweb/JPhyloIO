@@ -34,13 +34,13 @@ import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataExceptio
  * @param <O> the type of Java object this translator instance is able to handle
  */
 public abstract class NumericValueTranslator<O extends Number> extends SimpleValueTranslator<O> {
-	protected abstract O parseValue(String representation) throws NumberFormatException;
+	protected abstract O parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws NumberFormatException;
 	
 	
 	@Override
 	public O representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws InvalidObjectSourceDataException, UnsupportedOperationException {
 		try {
-			return parseValue(representation);
+			return parseValue(representation, streamDataProvider);
 		}
 		catch (NumberFormatException e) {
 			throw new InvalidObjectSourceDataException(e);

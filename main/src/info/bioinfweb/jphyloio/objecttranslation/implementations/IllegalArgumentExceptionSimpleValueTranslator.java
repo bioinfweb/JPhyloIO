@@ -25,13 +25,13 @@ import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataExceptio
 
 
 public abstract class IllegalArgumentExceptionSimpleValueTranslator<O> extends SimpleValueTranslator<O> {
-	protected abstract O parseValue(String representation) throws IllegalArgumentException;
+	protected abstract O parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws IllegalArgumentException;
 	
 	
 	@Override
 	public O representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws InvalidObjectSourceDataException, UnsupportedOperationException {
 		try {
-			return parseValue(representation);
+			return parseValue(representation, streamDataProvider);
 		}
 		catch (IllegalArgumentException e) {
 			throw new InvalidObjectSourceDataException(e);

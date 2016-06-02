@@ -21,20 +21,24 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 
 
 
 /**
- * An object translator from and to {@link QName}. 
+ * An object translator from and to {@link QName}. If an instance of {@link XMLReaderStreamDataProvider} is specified when calling a
+ * parser method, the namespace related to a possible prefix will be determined. Otherwise {@link XMLConstants#NULL_NS_URI} will be
+ * set by default.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class QNameTranslator extends SimpleValueTranslator<QName> {
+public class QNameTranslator extends IllegalArgumentExceptionSimpleValueTranslator<QName> {
 	@Override
 	public Class<QName> getObjectClass() {
 		return QName.class;
@@ -42,18 +46,21 @@ public class QNameTranslator extends SimpleValueTranslator<QName> {
 
 	
 	@Override
-	public QName representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws InvalidObjectSourceDataException, UnsupportedOperationException {
-		//TODO Also use DatatypeConverter here instead.
-		int splitPos = representation.indexOf(XMLUtils.QNAME_SEPARATOR);
-		if (splitPos == -1) {
-			return new QName(representation);
+	protected QName parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider)	throws IllegalArgumentException {
+		if (streamDataProvider instanceof XMLReaderStreamDataProvider<?>) {
+			return DatatypeConverter.parseQName(representation,  ((JPhyloIOXMLEventReader)streamDataProvider.getEventReader()).getNamespaceContext());
 		}
 		else {
-			return new QName(XMLConstants.NULL_NS_URI, representation.substring(splitPos + 1), representation.substring(0, splitPos));
-					//TODO Should/can a prefix dependent namespace be resolved somehow?
+			int splitPos = representation.indexOf(XMLUtils.QNAME_SEPARATOR);
+			if (splitPos == -1) {
+				return new QName(representation);
+			}
+			else {
+				return new QName(XMLConstants.NULL_NS_URI, representation.substring(splitPos + 1), representation.substring(0, splitPos));
+			}
+			//TODO Should any additional validation (e.g. of NCNames) be done in here?
+			//TODO Should parsing QNames including "{namespaceURI} also be supported?
 		}
-		//TODO Should any additional validation (e.g. of NCNames) be done in here?
-		//TODO Should parsing QNames including "{namespaceURI} also be supported?
 	}
 
 

@@ -18,6 +18,8 @@
  */
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 
 
 /**
@@ -34,7 +36,7 @@ public class DoubleTranslator extends NumericValueTranslator<Double> {
 
 
 	@Override
-	protected Double parseValue(String representation) throws NumberFormatException {
+	protected Double parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws NumberFormatException {
 		return Double.parseDouble(representation.trim());
 	}
 }

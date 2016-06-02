@@ -18,6 +18,8 @@
  */
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 
 
 /**
@@ -34,7 +36,7 @@ public class LongTranslator extends NumericValueTranslator<Long> {
 
 
 	@Override
-	protected Long parseValue(String representation) throws NumberFormatException {
+	protected Long parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws NumberFormatException {
 		return Long.parseLong(representation);
 	}
 }

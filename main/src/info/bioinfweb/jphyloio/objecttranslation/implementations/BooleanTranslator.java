@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 import javax.xml.bind.DatatypeConverter;
 
 
@@ -37,7 +39,7 @@ public class BooleanTranslator extends IllegalArgumentExceptionSimpleValueTransl
 
 	
 	@Override
-	protected Boolean parseValue(String representation)	throws IllegalArgumentException {
+	protected Boolean parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider)	throws IllegalArgumentException {
 		return DatatypeConverter.parseBoolean(representation);  // Boolean.parseBoolean() cannot be used here, since it does not support '1' as true.
 	}
 }

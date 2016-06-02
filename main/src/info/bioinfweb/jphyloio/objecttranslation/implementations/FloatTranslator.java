@@ -18,6 +18,8 @@
  */
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 
 
 /**
@@ -34,7 +36,7 @@ public class FloatTranslator extends NumericValueTranslator<Float> {
 
 
 	@Override
-	protected Float parseValue(String representation) throws NumberFormatException {
+	protected Float parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws NumberFormatException {
 		return Float.parseFloat(representation.trim());
 	}
 }

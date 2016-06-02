@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 import java.math.BigInteger;
 
 
@@ -38,7 +40,7 @@ public class BigIntegerTranslator extends NumericValueTranslator<BigInteger> {
 
 
 	@Override
-	protected BigInteger parseValue(String representation) throws NumberFormatException {
+	protected BigInteger parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws NumberFormatException {
 		return new BigInteger(representation);
 	}
 }

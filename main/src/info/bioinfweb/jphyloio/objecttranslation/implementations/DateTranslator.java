@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 import java.util.Calendar;
 
 import javax.xml.bind.DatatypeConverter;
@@ -39,7 +41,7 @@ public class DateTranslator extends IllegalArgumentExceptionSimpleValueTranslato
 	
 
 	@Override
-	protected Calendar parseValue(String representation) throws IllegalArgumentException {
+	protected Calendar parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws IllegalArgumentException {
 		return DatatypeConverter.parseDate(representation);
 	}
 

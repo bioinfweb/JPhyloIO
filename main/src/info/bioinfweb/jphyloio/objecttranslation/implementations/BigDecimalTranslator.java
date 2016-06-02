@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+
 import java.math.BigDecimal;
 
 
@@ -38,7 +40,7 @@ public class BigDecimalTranslator extends NumericValueTranslator<BigDecimal> {
 
 
 	@Override
-	protected BigDecimal parseValue(String representation) throws NumberFormatException {
+	protected BigDecimal parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider) throws NumberFormatException {
 		return new BigDecimal(representation);
 	}
 }
