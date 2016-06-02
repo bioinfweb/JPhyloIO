@@ -1138,6 +1138,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 
 			assertCommentEvent("comment 2", reader);
+			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());
 		}
@@ -1163,6 +1164,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEndEvent(EventContentType.OTU_LIST, reader);
 
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, otusID, reader);
+			assertLabeledIDEvent(EventContentType.TREE, null, "tree", reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, new Boolean(false), true, reader);
 			
 			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", otuIDA, reader);
@@ -1329,8 +1331,8 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEdgeEvent(null, nodeIDN2, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 
-			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
 			
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());
