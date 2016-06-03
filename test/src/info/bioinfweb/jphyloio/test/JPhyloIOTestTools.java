@@ -25,6 +25,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.events.XMLEvent;
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.io.PeekReader;
@@ -230,6 +234,40 @@ public class JPhyloIOTestTools {
 		if (testLiteralEndEvent) {
 			assertEndEvent(EventContentType.META_LITERAL, reader);
 		}
+  }
+  
+  
+  public static XMLEvent assertXMLContentEvent(URIOrStringIdentifier expectedOriginalType, 
+  		String expectedStringValue, String expectedAlternativeStringValue, int expectedEventType, QName expectedEventName, String expectedCharacterContent, boolean testLiteralEndEvent, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);
+		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
+		assertEquals(expectedOriginalType, contentEvent.getOriginalType());
+		assertEquals(expectedStringValue, contentEvent.getStringValue());
+		
+		assertTrue(contentEvent.hasXMLEventValue());
+		assertEquals(expectedEventType, contentEvent.getXMLEvent().getEventType());
+		
+		if (expectedEventType == XMLStreamConstants.CHARACTERS) {
+			assertEquals(expectedCharacterContent, contentEvent.getXMLEvent().asCharacters().getData());
+		}
+		else if (expectedEventType == XMLStreamConstants.START_ELEMENT) {
+			assertEquals(expectedEventName, contentEvent.getXMLEvent().asStartElement().getName());
+		}
+		else if (expectedEventType == XMLStreamConstants.END_ELEMENT) {
+			assertEquals(expectedEventName, contentEvent.getXMLEvent().asEndElement().getName());
+		}		
+		
+		assertEquals(expectedAlternativeStringValue, contentEvent.getAlternativeStringValue());
+		
+		if (testLiteralEndEvent) {
+			assertEndEvent(EventContentType.META_LITERAL, reader);
+		}
+		
+		return contentEvent.getXMLEvent();
   }
   
   

@@ -19,7 +19,7 @@
 					<width> 0.5 </width>
 					<color>
 						<red>60</red>
-						<green>255<green>
+						<green>255</green>
 						<blue>155</blue>
 						<alpha>70</alpha>
 					</color>
@@ -31,7 +31,7 @@
 						<uri type="exampleURL" desc="example">http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h-676012345</uri>
 						<color>
 							<red>60</red>
-							<green>255<green>
+							<green>255</green>
 							<blue>155</blue>
 						</color>
 					</taxonomy>

@@ -1,7 +1,7 @@
 <phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
     <align:alignment xmlns:align="http://example.org/align">
-		<seq name="A">acgtcgcggcccgtggaagtcctctcct</seq>
-		<seq name="B">aggtcgcggcctgtggaagtcctctcct</seq>
-		<seq name="C">taaatcgc--cccgtgg-agtccc-cct</seq>
+		<align:seq name="A">acgtcgcggcccgtggaagtcctctcct</align:seq>
+		<align:seq name="B">aggtcgcggcctgtggaagtcctctcct</align:seq>
+		<align:seq name="C">taaatcgc--cccgtgg-agtccc-cct</align:seq>
 	</align:alignment>
 </phyloxml>

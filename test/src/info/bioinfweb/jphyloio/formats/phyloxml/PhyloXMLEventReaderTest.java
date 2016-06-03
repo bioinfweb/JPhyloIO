@@ -19,10 +19,22 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEdgeEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEndEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLinkedLabeledIDEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaStartEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertResourceMetaEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSeparatedStringLiteralContentEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertXMLContentEvent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
+import info.bioinfweb.commons.testing.XMLTestTools;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -32,26 +44,19 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
-import info.bioinfweb.jphyloio.test.JPhyloIOTestTools;
-import info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 
+import java.awt.Color;
 import java.io.File;
-import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
+import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLEventFactory;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.Namespace;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.events.StartElement;
 
-import org.junit.* ;
-
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
-import static org.junit.Assert.* ;
+import org.junit.Test;
 
 
 
@@ -61,14 +66,14 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/LongString.xml"), parameters);
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/VariousMetaEventsFromPhyloXMLTags.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
 					System.out.println(event.getType());
 					
 					if (event instanceof LabeledIDEvent) {
-						System.out.println(event.asLabeledIDEvent().getID() + " " + event.asLabeledIDEvent().getLabel());
+//						System.out.println(event.asLabeledIDEvent().getID() + " " + event.asLabeledIDEvent().getLabel());
 					}
 					
 					if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
@@ -638,7 +643,106 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 	}
 	
 	
-	//TODO test various meta events from phyloXML tags
+	@Test
+	public void testReadingVariousMetaEvents() { //TODO
+		try {
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/VariousMetaEventsFromPhyloXMLTags.xml"), parameters);
+			
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_DESCRIPTION), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
+						"An example tree to test meta data event creation", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_DATE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DATE_TIME),
+						"2016-06-02T09:00:00", null, DatatypeConverter.parseDateTime("2016-06-02T09:00:00"), true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n10", null, null, reader);				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.phyloxml.org", "illegalValueTag")), LiteralContentSequenceType.XML, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://www.phyloxml.org", "illegalValueTag"), null, false, reader);
+				assertXMLContentEvent(null, "A", null, XMLStreamConstants.CHARACTERS, null, "A", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://www.phyloxml.org", "illegalValueTag"), null, true, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n5", "n10", reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_WIDTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.5", null, 
+						0.5, true, reader);				
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n16", "B", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n14", "n16", reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_WIDTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), " 0.5 ", null, 
+						0.5, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLOR), new URIOrStringIdentifier(null, DATA_TYPE_BRANCH_COLOR), null, null, 
+						new Color(60, 255, 155), true, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n20", "C", null, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_RANK), new URIOrStringIdentifier(null, DATA_TYPE_RANK), "phylum", null, null, true, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_ATTR_TYPE), null, "exampleURL", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_ATTR_DESC), null, "example", null, null, true, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_VALUE), new URI("http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h-676012345"), 
+						null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.phyloxml.org", "color")), LiteralContentSequenceType.XML, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://www.phyloxml.org", "color"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://www.phyloxml.org", "red"), null, false, reader);
+				assertXMLContentEvent(null, "60", null, XMLStreamConstants.CHARACTERS, null, "60", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://www.phyloxml.org", "red"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://www.phyloxml.org", "green"), null, false, reader);
+				assertXMLContentEvent(null, "255", null, XMLStreamConstants.CHARACTERS, null, "255", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://www.phyloxml.org", "green"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://www.phyloxml.org", "blue"), null, false, reader);
+				assertXMLContentEvent(null, "155", null, XMLStreamConstants.CHARACTERS, null, "155", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://www.phyloxml.org", "blue"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://www.phyloxml.org", "color"), null, true, reader);				
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n14", "n20", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n14", "2", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n5", "n14", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n5", reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), null, "bootstrap", null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
+						"56", null, 56.0, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);				
+				assertEndEvent(EventContentType.EDGE, reader);				
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 	
 	
 	@Test
@@ -728,44 +832,31 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 	@Test
 	public void testOnlyCustomXML() {
 		try {
-			XMLEventFactory eventFactory = XMLEventFactory.newInstance();
-			
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);
 			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/OnlyCustomXML.xml"), parameters);
 			
-			try {
-				StartElement element;
-				
+			try {				
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org/align", "alignment", "align")), LiteralContentSequenceType.XML, reader);
+
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org/align", "alignment", "align"), null, false, reader);				
 				
-				element = eventFactory.createStartElement(new QName("http://example.org/align", "alignment", "align"), 
-						null, Arrays.asList(new Namespace []{eventFactory.createNamespace("align", "http://example.org/align")}).iterator());
-				assertLiteralMetaContentEvent(null, null, null, element, false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org/align", "seq", "align"), null, false, reader);
+				assertXMLContentEvent(null, "acgtcgcggcccgtggaagtcctctcct", null, XMLStreamConstants.CHARACTERS, null, "acgtcgcggcccgtggaagtcctctcct", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org/align", "seq", "align"), null, false, reader);
 				
-				element = eventFactory.createStartElement(new QName("http://example.org/align", "seq", "align"), 
-						Arrays.asList(new Attribute []{eventFactory.createAttribute(new QName("http://example.org/align", "name", "align"), "A")}).iterator(), null);
-				assertLiteralMetaContentEvent(null, null, null, element, false, reader);
-				assertLiteralMetaContentEvent(null, null, null, eventFactory.createCharacters("acgtcgcggcccgtggaagtcctctcct"), false, reader);
-				assertLiteralMetaContentEvent(null, null, null, eventFactory.createEndElement("align", "http://example.org/align", "seq"), false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org/align", "seq", "align"), null, false, reader);
+				assertXMLContentEvent(null, "aggtcgcggcctgtggaagtcctctcct", null, XMLStreamConstants.CHARACTERS, null, "aggtcgcggcctgtggaagtcctctcct", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org/align", "seq", "align"), null, false, reader);
 				
-				element = eventFactory.createStartElement(new QName("http://example.org/align", "seq", "align"), 
-						Arrays.asList(new Attribute []{eventFactory.createAttribute(new QName("http://example.org/align", "name", "align"), "B")}).iterator(), null);
-				assertLiteralMetaContentEvent(null, null, null, element, false, reader);
-				assertLiteralMetaContentEvent(null, null, null, eventFactory.createCharacters("aggtcgcggcctgtggaagtcctctcct"), false, reader);
-				assertLiteralMetaContentEvent(null, null, null, eventFactory.createEndElement("align", "http://example.org/align", "seq"), false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org/align", "seq", "align"), null, false, reader);
+				assertXMLContentEvent(null, "taaatcgc--cccgtgg-agtccc-cct", null, XMLStreamConstants.CHARACTERS, null, "taaatcgc--cccgtgg-agtccc-cct", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org/align", "seq", "align"), null, false, reader);
 				
-				element = eventFactory.createStartElement(new QName("http://example.org/align", "seq", "align"), 
-						Arrays.asList(new Attribute []{eventFactory.createAttribute(new QName("http://example.org/align", "name", "align"), "C")}).iterator(), null);
-				assertLiteralMetaContentEvent(null, null, null, element, false, reader);
-				assertLiteralMetaContentEvent(null, null, null, eventFactory.createCharacters("taaatcgc--cccgtgg-agtccc-cct"), false, reader);
-				assertLiteralMetaContentEvent(null, null, null, eventFactory.createEndElement("align", "http://example.org/align", "seq"), false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org/align", "alignment", "align"), null, true, reader);
 				
-				assertLiteralMetaContentEvent(null, null, null, eventFactory.createEndElement("align", "http://example.org/align", "alignment"), false, reader);
-				
-				assertEndEvent(EventContentType.META_LITERAL, reader);
 				assertEndEvent(EventContentType.DOCUMENT, reader);
 				
 				assertFalse(reader.hasNextEvent());
@@ -875,6 +966,128 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 	
 	
 	@Test
+	public void testReadingCustomXML() {
+		try {
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/CustomXML.xml"), parameters);
+			
+			try {
+				StartElement element;
+				
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
+				
+				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
+				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "A", element);
+				assertXMLContentEvent(null, "example Text 1", null, XMLStreamConstants.CHARACTERS, null, "example Text 1", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n3", "n5", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n14", "B", null, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE), null, null, false, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_NAME), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
+						"ID1", null, null, true, reader);				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
+				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
+				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "C", element);
+				assertXMLContentEvent(null, "example Text 3", null, XMLStreamConstants.CHARACTERS, null, "example Text 3", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);				
+				assertEndEvent(EventContentType.META_RESOURCE, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n8", "n14", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n19", "C", null, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EVENTS), null, null, false, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EVENTS_DUPLICATIONS), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER), 
+						"50", null, new BigInteger("50"), true, reader);				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "illegalTag", "ex")), LiteralContentSequenceType.XML, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "illegalTag", "ex"), null, false, reader);
+				assertXMLContentEvent(null, "70", null, XMLStreamConstants.CHARACTERS, null, "70", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "illegalTag", "ex"), null, true, reader);				
+				assertEndEvent(EventContentType.META_RESOURCE, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n8", "n19", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n8", "2", null, reader);
+				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY), null, null, false, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_ID), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_ID_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
+						"ID1", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
+				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
+				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "B", element);
+				assertXMLContentEvent(null, "example Text 2", null, XMLStreamConstants.CHARACTERS, null, "example Text 2", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);				
+				assertEndEvent(EventContentType.META_RESOURCE, reader);				
+				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n3", "n8", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n3", "1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n3", reader);
+				assertEndEvent(EventContentType.EDGE, reader);				
+				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
+				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
+				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "D", element);
+				assertXMLContentEvent(null, "example Text 4", null, XMLStreamConstants.CHARACTERS, null, "example Text 4", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
+				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
+				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
+				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "E", element);
+				assertXMLContentEvent(null, "example Text 5", null, XMLStreamConstants.CHARACTERS, null, "example Text 5", false, reader);
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
+				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);				
+				
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
 	public void testReadingLongString() {
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
@@ -914,6 +1127,72 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.NODE, reader);
 				
 				assertEdgeEvent("n7", "n11", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n7", "2", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n3", "n7", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n3", "1", null, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "n3", reader);
+				assertEndEvent(EventContentType.EDGE, reader);				
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
+				assertEndEvent(EventContentType.DOCUMENT, reader);
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testReadingBranchColor() {
+		try {
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);
+			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/BranchColor.xml"), parameters);
+			
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n3", "n5", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n9", "B", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n7", "n9", reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLOR), new URIOrStringIdentifier(null, DATA_TYPE_BRANCH_COLOR), null, null, 
+						new Color(66, 255, 0), true, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "n12", "C", null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("n7", "n12", reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLOR), new URIOrStringIdentifier(null, DATA_TYPE_BRANCH_COLOR), null, null, 
+						new Color(255, 0, 0), true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n7", "2", null, reader);				
