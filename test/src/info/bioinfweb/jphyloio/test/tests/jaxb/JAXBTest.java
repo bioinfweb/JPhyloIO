@@ -60,23 +60,23 @@ public class JAXBTest {
 	}
 	
 	
-	@Test
-	public void testReadingCustomSimpleObject() throws FileNotFoundException, XMLStreamException, FactoryConfigurationError, JAXBException {
-		XMLEventReader reader = XMLInputFactory.newFactory().createXMLEventReader(new FileInputStream("data/NeXML/MetaJAXBSimpleValue.xml"));
-		
-		while(!reader.peek().isStartElement() || !reader.peek().asStartElement().getName().getLocalPart().equals("customObject")) {
-			reader.nextEvent();
-		}
-		
-		JAXBContext jc = JAXBContext.newInstance(CustomObject.class);
-		Unmarshaller unmarshaller = jc.createUnmarshaller();
-		JAXBElement<CustomObject> jb = unmarshaller.unmarshal(reader, CustomObject.class);
-		reader.close();
-		
-		CustomObject object = jb.getValue();
-		
-		assertEquals("someID", object.getID());
-		assertEquals("some string", object.getStringProperty());
-		assertEquals(18.5, object.getNumericProperty(), 0.00000001);
-	}
+//	@Test
+//	public void testReadingCustomSimpleObject() throws FileNotFoundException, XMLStreamException, FactoryConfigurationError, JAXBException {
+//		XMLEventReader reader = XMLInputFactory.newFactory().createXMLEventReader(new FileInputStream("data/NeXML/MetaJAXBSimpleValue.xml"));
+//		
+//		while(!reader.peek().isStartElement() || !reader.peek().asStartElement().getName().getLocalPart().equals("customObject")) {
+//			reader.nextEvent();
+//		}
+//		
+//		JAXBContext jc = JAXBContext.newInstance(CustomObject.class);
+//		Unmarshaller unmarshaller = jc.createUnmarshaller();
+//		JAXBElement<CustomObject> jb = unmarshaller.unmarshal(reader, CustomObject.class);
+//		reader.close();
+//		
+//		CustomObject object = jb.getValue();
+//		
+//		assertEquals("someID", object.getID());
+//		assertEquals("some string", object.getStringProperty());
+//		assertEquals(18.5, object.getNumericProperty(), 0.00000001);
+//	}
 }
