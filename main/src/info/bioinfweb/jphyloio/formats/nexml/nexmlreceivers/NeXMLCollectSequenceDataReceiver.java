@@ -1,18 +1,18 @@
 /*
- * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
+ * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats.
  * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
- * 
+ *
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This file is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,8 +35,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataReceiver {
-
-
 	public NeXMLCollectSequenceDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			boolean longTokens, NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, longTokens, streamDataProvider);
@@ -67,8 +65,8 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 			getStreamDataProvider().setWriteCellsTags(true);
 		}
 	}
-	
-	
+
+
 	@Override
 	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
 		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
@@ -76,7 +74,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 		}
 		else if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
 			try {
-				Double.parseDouble(token);
+				Double.parseDouble(token);  //TODO Should BigDecimal or some other test method be used here? (Otherwise values outside the range of double will not be accepted.)
 			}
 			catch (NumberFormatException e) {
 				throw new JPhyloIOWriterException("All tokens in a continuous data characters tag must be numbers.");
