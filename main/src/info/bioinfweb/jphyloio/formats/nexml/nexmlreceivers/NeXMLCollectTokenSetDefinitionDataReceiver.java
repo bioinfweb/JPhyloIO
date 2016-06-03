@@ -1,18 +1,18 @@
 /*
- * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
+ * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats.
  * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
- * 
+ *
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This file is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,17 +39,17 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectNamespaceReceiver {
-	
-	
+
+
 	public NeXMLCollectTokenSetDefinitionDataReceiver(XMLStreamWriter writer,
 			ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}
-	
-	
-	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {		
+
+
+	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {
 		switch (getStreamDataProvider().getAlignmentType()) {
-			case DNA:				
+			case DNA:
 				if (!isDNAToken(event)) {
 					if (getStreamDataProvider().isNucleotideType() && isRNAToken(event) && !getStreamDataProvider().getTokenDefinitions().contains("T")) {
 						getStreamDataProvider().setAlignmentType(CharacterStateSetType.RNA);
@@ -57,13 +57,12 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					else {
 						getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
 					}
-				}				
-				else
+				}
 				break;
 			case RNA:
 				if (!isRNAToken(event)) {
-					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);					
-				}
+					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
+				}  //TODO Is a switch to DNA (like above with RNA) not possible or are there any fall-throughs intended anywhere here?
 				break;
 			case NUCLEOTIDE:
 				if (isDNAToken(event)) {
@@ -71,7 +70,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				}
 				else if (isRNAToken(event)) {
 					getStreamDataProvider().setAlignmentType(CharacterStateSetType.RNA);
-				}			
+				}
 				else {
 					getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
 				}
@@ -83,10 +82,10 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				break;
 			default:
 				break;
-		}	
+		}
 	}
-	
-	
+
+
 	private boolean isDNAToken(SingleTokenDefinitionEvent event) {
 		if (event.getTokenName().length() == 1) {
 			char token = event.getTokenName().charAt(0);
@@ -99,7 +98,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 						return true;
 					}
 				}
-				else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
+				else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {
 					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
 						return checkConstituents(event.getConstituents(), SequenceUtils.nucleotideConstituents(token));
 					}
@@ -109,11 +108,11 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	private boolean isRNAToken(SingleTokenDefinitionEvent event) {
 		if (event.getTokenName().length() == 1) {
 			char token = event.getTokenName().charAt(0);
@@ -126,8 +125,8 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 						return true;
 					}
 				}
-				else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
-					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {		
+				else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {
+					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
 						return checkConstituents(event.getConstituents(), SequenceUtils.rnaConstituents(token));
 					}
 					else if (isGapChar(event)) {
@@ -136,30 +135,30 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	private boolean isAAToken(SingleTokenDefinitionEvent event) {
 		String token = event.getTokenName();
 
 		if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
 			if (SequenceUtils.isNonAmbiguityAminoAcid(token)) {
 				return true;
-			}				
+			}
 			else if (isMissingChar(event) || isGapChar(event)) {
 				return true;
 			}
 			else if (event.getMeaning().equals(CharacterSymbolMeaning.OTHER) && token.equals(SequenceUtils.STOP_CODON_CHAR)) { //TODO maybe create new CharacterSymbolMeaning?
 				return true;
 			}
-		}		
-		else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {	
+		}
+		else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {
 			if (SequenceUtils.isAminoAcidAmbiguityCode(token)) {
 				if (!(token.equals("J") || token.equals("Xle"))) {
 					Collection<String> constituents = event.getConstituents();
-					
+
 					if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(token.charAt(0))) {
 						checkConstituents(constituents, SequenceUtils.oneLetterAminoAcidConstituents(token));
 					}
@@ -172,12 +171,12 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			else if (isGapChar(event)) {
 				return true;
 			}
-		}		
-		
+		}
+
 		return false;
 	}
-	
-	
+
+
 	private boolean isGapChar(SingleTokenDefinitionEvent event) {
 		if (event.getMeaning().equals(CharacterSymbolMeaning.GAP) && event.getTokenName().equals(SequenceUtils.GAP_CHAR)) {
 			return true;
@@ -186,8 +185,8 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			return false;
 		}
 	}
-	
-	
+
+
 	private boolean isMissingChar(SingleTokenDefinitionEvent event) {
 		if (event.getMeaning().equals(CharacterSymbolMeaning.MISSING) && event.getTokenName().equals(SequenceUtils.MISSING_DATA_CHAR)) {
 			return true;
@@ -196,19 +195,19 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			return false;
 		}
 	}
-	
-	
+
+
 	private boolean checkConstituents(Collection<String> constituents, char[] expectedConstituents) {
 		String[] expectedConstituentsString = new String[expectedConstituents.length];
-		
+
 		for (int i = 0; i < expectedConstituents.length; i++) {
 			expectedConstituentsString[i] = Character.toString(expectedConstituents[i]);
 		}
-		
+
 		return checkConstituents(constituents, expectedConstituentsString);
 	}
-	
-	
+
+
 	private boolean checkConstituents(Collection<String> constituents, String[] expectedConstituents) {
 		if (!constituents.isEmpty()) {
 			if (constituents.size() == expectedConstituents.length) {
@@ -227,10 +226,10 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 		else {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
@@ -241,7 +240,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH)) {
 						checkSingleTokenDefinition(tokenDefinitionEvent);
 						getStreamDataProvider().getTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
-					}					
+					}
 				}
 				break;
 			default:
