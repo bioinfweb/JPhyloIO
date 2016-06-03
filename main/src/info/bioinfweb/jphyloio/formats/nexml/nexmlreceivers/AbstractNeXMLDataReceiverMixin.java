@@ -52,7 +52,7 @@ import javax.xml.stream.XMLStreamWriter;
 public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	
 	
-	private static void writeLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event, Class<? extends Object> objectType) throws XMLStreamException, JPhyloIOWriterException {
+	private static void writeLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event, Object object) throws XMLStreamException, JPhyloIOWriterException {
 		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();
 		String metaType = streamDataProvider.getNexPrefix() + ":" + TYPE_LITERAL_META;
 		
@@ -69,8 +69,8 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			throw new InternalError("Literal meta needs to have a predicate.");
 		}
 		
-		if (objectType != null) { //TODO use object translator
-//			writer.writeAttribute(ATTR_DATATYPE.getLocalPart(), XSD_PRE + ":" + NeXMLWriterStreamDataProvider.getXsdTypeForClass().get(objectType).getLocalPart());
+		if (object != null) { //TODO use object translator
+//			writer.writeAttribute(ATTR_DATATYPE.getLocalPart(), XSD_PRE + ":" + NeXMLWriterStreamDataProvider.getXsdTypeForClass().get(object.getClass()).getLocalPart());
 		}
 		
 		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getXMLStreamWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
@@ -107,7 +107,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 
 	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException, JPhyloIOWriterException {		
 		if (streamDataProvider.getLiteralWithoutXMLContent() != null) {
-			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(), event.getObjectValue().getClass()); //TODO should getOriginalType() be used here?
+			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(),	event.getObjectValue());
 			streamDataProvider.setLiteralWithoutXMLContent(null);
 		}
 		

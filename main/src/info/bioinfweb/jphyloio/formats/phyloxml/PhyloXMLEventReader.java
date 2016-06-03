@@ -441,39 +441,40 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						String value = event.asCharacters().getData();
-						String parentName = streamDataProvider.getParentName();
-						boolean useAsMeta = true;
+						String value = event.asCharacters().getData() + XMLUtils.readCharactersAsString(getXMLReader());
 						
-						if (parentName.equals(TAG_PHYLOGENY.getLocalPart())) {
-							streamDataProvider.setTreeLabel(value);
+						if (!value.matches("\\s+")) {
+							String parentName = streamDataProvider.getParentName();
+							boolean useAsMeta = true;
 							
-							if (streamDataProvider.isCreatePhylogenyStart()) {
-								createPhylogenyStart(streamDataProvider);
-							}
-							
-							useAsMeta = false;
-						}
-						else if (!streamDataProvider.getSourceNode().isEmpty()) {
-							NodeEdgeInfo currentNode = streamDataProvider.getSourceNode().peek();
-							String currentNodeLabel = currentNode.getLabel();
-							
-							if (parentName.equals(TAG_CLADE.getLocalPart())) {
-								currentNode.setLabel(value);
+							if (parentName.equals(TAG_PHYLOGENY.getLocalPart())) {
+								streamDataProvider.setTreeLabel(value);
+								if (streamDataProvider.isCreatePhylogenyStart()) {
+									createPhylogenyStart(streamDataProvider);
+								}
+								
 								useAsMeta = false;
 							}
-							else if (parentName.equals(TAG_SEQUENCE.getLocalPart())) {
-								useAsMeta = true;
-								if (currentNodeLabel == null) {
+							else if (!streamDataProvider.getSourceNode().isEmpty()) {
+								NodeEdgeInfo currentNode = streamDataProvider.getSourceNode().peek();
+								String currentNodeLabel = currentNode.getLabel();
+								
+								if (parentName.equals(TAG_CLADE.getLocalPart())) {
 									currentNode.setLabel(value);
+									useAsMeta = false;
+								}
+								else if (parentName.equals(TAG_SEQUENCE.getLocalPart())) {
+									useAsMeta = true;
+									if (currentNodeLabel == null) {
+										currentNode.setLabel(value);
+									}
 								}
 							}
-						}
-						
-						if (useAsMeta) {							
-							boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-									new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), event.asCharacters().getData(), isContinued));
+							
+							if (useAsMeta) {								
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
+										new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), value, false));
+							}
 						}
 					}
 			});		
@@ -495,7 +496,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		//Phylogeny.Date
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_DATE, XMLStreamConstants.START_ELEMENT),
 				new PhyloXMLStartElementReader(PREDICATE_PHYLOGENY_DATE, null, false));
-		putElementReader(new XMLElementReaderKey(TAG_DATE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_DATE_TIME));
+		putElementReader(new XMLElementReaderKey(TAG_DATE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_DATE_TIME)); //TODO might lead to unspecific exceptions if an illegal characters event is encountered under Clade.Date
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_DATE, XMLStreamConstants.END_ELEMENT), literalEndReader);
 		
 		//Phylogeny.Confidence
@@ -674,11 +675,13 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					ObjectTranslator<Color> translator = new PhyloXMLColorTranslator();
 					Color color = null;
 					
+					streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
+					
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, new URIOrStringIdentifier(null, PREDICATE_COLOR), LiteralContentSequenceType.SIMPLE));
 					
 					try {
-						color = translator.readXMLRepresentation(getXMLReader(), null);
+						color = translator.readXMLRepresentation(getXMLReader(), streamDataProvider);
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, DATA_TYPE_BRANCH_COLOR),
 								null, color));
 					}
@@ -1011,7 +1014,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		//Clade.Date
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_DATE, XMLStreamConstants.START_ELEMENT), 
 				new PhyloXMLStartElementReader(null, PREDICATE_DATE, false, ATTR_UNIT, PREDICATE_DATE_ATTR_UNIT));
-		putElementReader(new XMLElementReaderKey(TAG_DATE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLNoCharactersAllowedElementReader());
+		//Element reader for character content of Clade.Date tag can not be registered here, because the character reader for Phylogeny.Date would be overwritten
 		
 		putElementReader(new XMLElementReaderKey(TAG_DATE, TAG_DESC, XMLStreamConstants.START_ELEMENT),
 				new PhyloXMLStartElementReader(PREDICATE_DATE_DESC, null, false));
@@ -1147,7 +1150,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			
 			getStreamDataProvider().getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NODE, nodeInfo.getID(), nodeInfo.getLabel(), null));
 			for (JPhyloIOEvent nextEvent : nodeInfo.getNestedEvents()) {
-				getStreamDataProvider().getCurrentEventCollection().add(nextEvent);
+				getStreamDataProvider().getCurrentEventCollection().add(nextEvent); //might lead to an exception, if nodeInfo.getNestedEvents() is the currentEventCollection at the time this method is called
 			}
 		}		
 	}

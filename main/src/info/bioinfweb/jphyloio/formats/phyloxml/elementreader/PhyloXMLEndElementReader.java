@@ -56,7 +56,7 @@ public class PhyloXMLEndElementReader implements XMLElementReader<PhyloXMLReader
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		}
 		
-		if (isEdgeMeta && !streamDataProvider.hasSpecialEventCollection()) {
+		if (isEdgeMeta && streamDataProvider.hasSpecialEventCollection()) {
 			streamDataProvider.resetCurrentEventCollection();
 		}
 	}	

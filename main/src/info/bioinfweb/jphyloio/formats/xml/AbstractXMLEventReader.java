@@ -166,7 +166,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 			}
 		}
 		catch (XMLStreamException e) {
-			throw new JPhyloIOReaderException("The underlying XML reader throw an exception, when trying read the next event.", e);
+			throw new JPhyloIOReaderException("The underlying XML reader threw an exception, when trying to read the next event.", e);
 		}
 	}
 	

@@ -394,6 +394,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		streamDataProvider.setIdIndex(0);
 
+		//TODO alignment.getColumnCount() may be -1 if sequences have various length
+		
 		for (long i = 0; i < alignment.getColumnCount(); i++) {
 			String charID = streamDataProvider.createNewID(ReadWriteConstants.DEFAULT_CHAR_ID_PREFIX);
 			columnIndexToIDMap.put(i, charID);
@@ -481,7 +483,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			streamDataProvider.setWriteUndefinedOtuList(true);
 		}
 
+		//TODO alignment.getColumnCount() may be -1 if sequences have various length
+		//TODO different alignments might have different data (token sets, alignment length, ...) therefore data collected here might be invalid or overwritten when the alignment data is actually written to the file
+		
 		checkTokenSets(alignment.getTokenSets());
+		
+		
+		
 		checkCharacterSets(alignment.getCharacterSets(), alignment.getColumnCount());
 
 		Iterator<String> sequenceIDs = alignment.getSequenceIDIterator();

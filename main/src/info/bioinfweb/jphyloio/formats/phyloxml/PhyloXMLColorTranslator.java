@@ -116,7 +116,7 @@ public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> imp
 					blue = reader.getElementText();
 				}
 				else {
-					XMLUtils.reachElementEnd(reader);
+					XMLUtils.reachElementEnd(reader);				
 				}
 			}
 			

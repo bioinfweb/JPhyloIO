@@ -40,7 +40,8 @@ public class PhyloXMLNoCharactersAllowedElementReader implements XMLElementReade
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
 		if (!event.asCharacters().getData().matches("\\s+")) {
-			throw new JPhyloIOReaderException("No character data is allowed under the element \"" + streamDataProvider.getParentName() + "\".", event.getLocation());
+			throw new JPhyloIOReaderException("No character data is allowed under the element \"" + streamDataProvider.getElementName()
+					+ "\", but the string " + event.asCharacters().getData() + " was found.", event.getLocation());
 		}
 	}
 }
