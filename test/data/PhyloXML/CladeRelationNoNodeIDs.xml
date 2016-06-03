@@ -10,17 +10,12 @@
 				<name>2</name>
                 <clade>
 					<name>B</name>
-					<node_id>ID1</node_id>
                 </clade>
                 <clade>
 					<name>C</name>
-					<node_id>ID2</node_id>
                 </clade>
             </clade>
-        </clade>
-		<clade_relation id_ref_0="ID1" id_ref_1="ID2" distance="0.5" type="extraEdge">
-			<confidence type="bootstrap">78.0</confidence>
-		</clade_relation>
-		<clade_relation id_ref_0="ID2" id_ref_1="ID1" type="extraEdge"/>
+        </clade>		
+		<clade_relation id_ref_0="ID1" id_ref_1="ID2" distance="0.5" type="extraEdge"/>
     </phylogeny>
 </phyloxml>

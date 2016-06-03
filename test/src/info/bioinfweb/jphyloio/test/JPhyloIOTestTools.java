@@ -213,7 +213,7 @@ public class JPhyloIOTestTools {
   
   	
   public static void assertLiteralMetaContentEvent(URIOrStringIdentifier expectedOriginalType, 
-  		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testEndEvent, 
+  		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testLiteralEndEvent, 
   		JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
@@ -225,7 +225,7 @@ public class JPhyloIOTestTools {
 		assertEquals(expectedObjectValue, contentEvent.getObjectValue());
 		assertEquals(expectedAlternativeStringValue, contentEvent.getAlternativeStringValue());
 		
-		if (testEndEvent) {
+		if (testLiteralEndEvent) {
 			assertEndEvent(EventContentType.META_LITERAL, reader);
 		}
   }

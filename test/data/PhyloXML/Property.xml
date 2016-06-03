@@ -1,22 +1,34 @@
-<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd" xmlns:ex="http://example.org">
     <phylogeny rooted="true">
-      <name>same example, using property elements to indicate a "depth" value for marine organisms</name>
+      <name>Tree 1</name>
       <clade>
+      	<name>1</name>
          <clade>
-            <name>AB</name>
+            <name>2</name>
+			<property datatype="xsd:string" ref="ex:predicate" applies_to="node">two-hundred</property>
             <clade>
                <name>A</name>
-               <property datatype="xsd:int" ref="NOAA:depth" applies_to="clade" unit="METRIC:m"> 1200 </property>
+               <property datatype="xsd:int" ref="ex:predicate" applies_to="clade">1200</property>
+               <property datatype="xsd:int" ref="ex:predicate" applies_to="node" unit="METRIC:m">1200</property>
             </clade>
             <clade>
                <name>B</name>
-               <property datatype="xsd:int" ref="NOAA:depth" applies_to="clade" unit="METRIC:m"> 2300 </property>
+			   <property datatype="xsd:double" ref="ex:predicate" applies_to="parent_branch" unit="METRIC:m">400.0</property>
+			   <property datatype="xsd:date" ref="ex:predicate" applies_to="phylogeny" unit="METRIC:m">2016-05-31</property>
             </clade>
          </clade>
          <clade>
             <name>C</name>
-            <property datatype="xsd:string" ref="NOAA:depth" applies_to="clade" unit="METRIC:m">two-hundred</property>
+			<sequence>
+				<annotation>
+					<property datatype="xsd:QName" ref="ex:predicate" applies_to="annotation">ex:name</property>
+					<property datatype="xsd:anyURI" ref="ex:predicate" applies_to="node" unit="METRIC:m">http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h-676012345</property>
+				</annotation>
+			</sequence>
+            <property datatype="xsd:boolean" ref="ex:predicate" applies_to="other" unit="METRIC:m">true</property>
          </clade>
       </clade>
+	  <property datatype="xsd:int" ref="ex:predicate" applies_to="phylogeny"> 1 </property>
+	  <property datatype="ex:newType" ref="ex:predicate" applies_to="node" unit="METRIC:m">-0.545</property>
    </phylogeny>
 </phyloxml>

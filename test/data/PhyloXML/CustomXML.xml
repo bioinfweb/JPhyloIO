@@ -1,25 +1,45 @@
-<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd" xmlns:ex="http://example.org">
     <phylogeny rooted="true">
         <name>Tree 1</name>
         <clade>	
 			<name>1</name>
             <clade>
                 <name>A</name>
+				<ex:exampleTag>
+					<subTag attr="A">example Text 1</subTag>
+				</ex:exampleTag>
             </clade>
             <clade>
 				<name>2</name>
+				<taxonomy>
+					<id>ID1</id>
+					<ex:exampleTag>
+						<subTag attr="B">example Text 2</subTag>
+					</ex:exampleTag>
+				</taxonomy>
                 <clade>                    
 					<name>B</name>
+					<sequence>
+						<name>ID1</name>
+						<ex:exampleTag>
+							<subTag attr="C">example Text 3</subTag>
+						</ex:exampleTag>
+					</sequence>
                 </clade>
                 <clade>
 					<name>C</name>
+					<events>
+						<duplications>50</red>						
+						<ex:illegalTag>70</ex:illegalTag>
+					</events>
                 </clade>
             </clade>
         </clade>
+		<ex:exampleTag>
+			<subTag attr="D">example Text 4</subTag>
+		</ex:exampleTag>
     </phylogeny>
-	<align:alignment xmlns:align="http://example.org/align">
-		<seq name="A">acgtcgcggcccgtggaagtcctctcct</seq>
-		<seq name="B">aggtcgcggcctgtggaagtcctctcct</seq>
-		<seq name="C">taaatcgc--cccgtgg-agtccc-cct</seq>
-	</align:alignment>
+	<ex:exampleTag>
+		<subTag attr="E">example Text 5</subTag>
+	</ex:exampleTag>
 </phyloxml>

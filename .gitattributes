@@ -390,11 +390,16 @@ test/data/PhyloXML/BranchColor.xml -text svneol=unset#text/plain
 test/data/PhyloXML/BranchLengths.xml -text svneol=unset#text/plain
 test/data/PhyloXML/BranchLengths.xml.gz -text
 test/data/PhyloXML/CladeRelation.xml -text svneol=unset#text/plain
+test/data/PhyloXML/CladeRelationNoNodeIDs.xml -text svneol=unset#text/plain
 test/data/PhyloXML/CustomXML.xml -text svneol=unset#text/plain
+test/data/PhyloXML/EmptyPhylogeny.xml -text svneol=unset#text/plain
+test/data/PhyloXML/LongString.xml -text svneol=unset#text/plain
 test/data/PhyloXML/MultipleTrees.xml -text svneol=unset#text/plain
 test/data/PhyloXML/NodeLabels.xml -text svneol=unset#text/plain
+test/data/PhyloXML/OnlyCustomXML.xml -text svneol=unset#text/plain
 test/data/PhyloXML/Property.xml -text svneol=unset#text/plain
 test/data/PhyloXML/SingleTree.xml -text svneol=unset#text/plain
+test/data/PhyloXML/VariousMetaEventsFromPhyloXMLTags.xml -text svneol=unset#text/plain
 test/data/XML/Invalid.xml -text svneol=unset#text/plain
 test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml -text svneol=unset#text/plain

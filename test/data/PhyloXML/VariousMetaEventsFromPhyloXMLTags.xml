@@ -1,0 +1,42 @@
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+    <phylogeny rooted="true">
+        <name>Tree 1</name>
+		<description>An example tree to test meta data event creation</description>
+		<date>2016-06-02T09:00:00</date>
+        <clade>	
+			<name>1</name>
+			<confidence type="bootstrap">56</confidence>
+            <clade>
+                <name>
+					<illegalValueTag>A</illegalValueTag>
+				</name>
+				<width>0.5</width>
+            </clade>
+            <clade>
+				<name illegalAttr="illegal">2</name>
+                <clade>                    
+					<name>B</name>
+					<width> 0.5 </width>
+					<color>
+						<red>60</red>
+						<green>255<green>
+						<blue>155</blue>
+						<alpha>70</alpha>
+					</color>
+                </clade>
+                <clade>
+					<name>C</name>
+					<taxonomy>
+						<rank>phylum</rank>
+						<uri type="exampleURL" desc="example">http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h-676012345</uri>
+						<color>
+							<red>60</red>
+							<green>255<green>
+							<blue>155</blue>
+						</color>
+					</taxonomy>
+                </clade>
+            </clade>
+        </clade>
+    </phylogeny>
+</phyloxml>
