@@ -58,7 +58,7 @@ public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXM
 			if (propertyValue != null) {
 				try {
 					objectValue = translator.representationToJava(propertyValue, streamDataProvider);
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), propertyValue, objectValue));
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), propertyValue, objectValue, null));
 				}
 				catch (InvalidObjectSourceDataException e) {
 					throw new JPhyloIOReaderException("The content of this tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());

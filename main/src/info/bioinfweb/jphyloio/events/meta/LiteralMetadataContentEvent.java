@@ -105,18 +105,23 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 		
 		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
 		
-		this.stringValue = stringValue;  //TODO Should an NPE be thrown if stringValue and objectValue are null?
-		if (!(objectValue instanceof String) && isContinuedInNextEvent()) {
-			throw new IllegalArgumentException("Only string values may be separated among continued events.");
+		if ((stringValue == null) && (objectValue == null)) {
+			throw new NullPointerException("Either stringValue or objectValue must be specified. If a literal meta event has no content, the content event should be omitted.");
 		}
 		else {
-			this.objectValue = objectValue;
-			this.originalType = originalType;
-			if ((stringValue == null) && (alternativeStringValue != null)) {
-				throw new NullPointerException("stringValue must not be null, if alternativeStringValue is provided.");
+			this.stringValue = stringValue;
+			if ((objectValue != null) && isContinuedInNextEvent()) {
+				throw new IllegalArgumentException("If a value is separated among several events no object value may be specified.");
 			}
 			else {
-				this.alternativeStringValue = alternativeStringValue;
+				this.objectValue = objectValue;
+				this.originalType = originalType;
+				if ((stringValue == null) && (alternativeStringValue != null)) {
+					throw new NullPointerException("stringValue must not be null, if alternativeStringValue is provided.");
+				}
+				else {
+					this.alternativeStringValue = alternativeStringValue;
+				}
 			}
 		}
 	}
