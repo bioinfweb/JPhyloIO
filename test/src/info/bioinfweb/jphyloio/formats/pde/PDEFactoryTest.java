@@ -34,7 +34,7 @@ import static org.junit.Assert.* ;
 public class PDEFactoryTest {
 	@Test
 	public void test_checkFormat() throws IOException {
-		Reader reader = new FileReader("data/PDE/shortSequences.pde");
+		Reader reader = new FileReader("data/PDE/SimpleDNASeq.pde");  // Unzipped file.
 		try {
 			assertTrue(new PDEFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
@@ -106,7 +106,7 @@ public class PDEFactoryTest {
 	
 	@Test
 	public void test_checkFormat_PhyloXML() throws IOException {
-		Reader reader = new FileReader("data/PhyloXML/PhyloXMLDocument.xml");
+		Reader reader = new FileReader("data/PhyloXML/VariousMetaEventsFromPhyloXMLTags.xml");
 		try {
 			assertFalse(new PDEFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
