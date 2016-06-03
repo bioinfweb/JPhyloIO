@@ -259,6 +259,10 @@ public class JPhyloIOTestTools {
 				}
   		}
   		assertEquals(-1, valueReader.read());  // Test if whole string has been found.
+  		
+  		if (testEndEvent) {
+  			assertEndEvent(EventContentType.META_LITERAL, eventReader);
+  		}
   	}
   	finally {
   		valueReader.close();
