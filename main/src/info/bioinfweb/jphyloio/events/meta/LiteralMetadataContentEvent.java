@@ -19,8 +19,6 @@
 package info.bioinfweb.jphyloio.events.meta;
 
 
-import java.util.List;
-
 import info.bioinfweb.jphyloio.events.ContinuedEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
@@ -109,7 +107,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 		
 		this.stringValue = stringValue;  //TODO Should an NPE be thrown if stringValue and objectValue are null?
 		if (!(objectValue instanceof String) && isContinuedInNextEvent()) {
-			throw new IllegalArgumentException("Only string values may be separated amoung continued events.");
+			throw new IllegalArgumentException("Only string values may be separated among continued events.");
 		}
 		else {
 			this.objectValue = objectValue;
@@ -164,12 +162,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 *         when nested metaevent will follow)
 	 */
 	public String getStringValue() {
-		if ((stringValue == null) && (getObjectValue() != null)) {
-			return getObjectValue().toString();
-		}
-		else {
-			return stringValue;
-		}
+		return stringValue;
 	}
 
 

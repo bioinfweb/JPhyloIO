@@ -197,7 +197,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 			namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
 			if (namespaceURI == null) {
 				if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
-					namespaceURI = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+					namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 				}
 			}
 		}

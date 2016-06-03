@@ -33,6 +33,9 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<PhyloXMLEventReader>  {
 	private String treeLabel;
+	
+	private boolean createTreeGroupStart;
+	private boolean createPhylogenyStart;
 	private boolean createNodeStart;
 	private boolean createTreeGroupEnd;
 	
@@ -42,6 +45,7 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	private List<JPhyloIOEvent> propertyEvents = new ArrayList<JPhyloIOEvent>();
 	private QName currentPropertyDatatype;
 	private boolean propertyHasResource;
+	private boolean propertyIsURI;
 	private boolean resetEventCollection;
 	private boolean isFirstContentEvent;
 	
@@ -61,6 +65,16 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	}
 
 
+	protected boolean isCreateTreeGroupStart() {
+		return createTreeGroupStart;
+	}
+
+
+	protected void setCreateTreeGroupStart(boolean createTreeGroupStart) {
+		this.createTreeGroupStart = createTreeGroupStart;
+	}
+
+
 	public boolean isCreateNodeStart() {
 		return createNodeStart;
 	}
@@ -68,6 +82,16 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	public void setCreateNodeStart(boolean createNodeStart) {
 		this.createNodeStart = createNodeStart;
+	}
+
+
+	protected boolean isCreatePhylogenyStart() {
+		return createPhylogenyStart;
+	}
+
+
+	protected void setCreatePhylogenyStart(boolean createPhylogenyStart) {
+		this.createPhylogenyStart = createPhylogenyStart;
 	}
 
 
@@ -138,5 +162,15 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	protected void setPropertyHasResource(boolean propertyHasResource) {
 		this.propertyHasResource = propertyHasResource;
+	}
+
+
+	protected boolean isPropertyIsURI() {
+		return propertyIsURI;
+	}
+
+
+	protected void setPropertyIsURI(boolean propertyIsURI) {
+		this.propertyIsURI = propertyIsURI;
 	}
 }

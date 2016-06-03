@@ -57,6 +57,8 @@ public interface ReadWriteConstants {
 	public static final QName PREDICATE_EDGE_SOURCE_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeSourceNode");
 	public static final QName PREDICATE_EDGE_TARGET_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeTargetNode");
 	public static final QName PREDICATE_EDGE_LENGTH = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeLength");
+	public static final QName PREDICATE_IS_CROSSLINK = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isCrosslink");
+	
 	
 	@Deprecated
 	public static final String META_KEY_SEQUENCE_COUNT = "info.bioinfweb.jphyloio.sequenceCount";
