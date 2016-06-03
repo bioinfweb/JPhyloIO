@@ -394,6 +394,7 @@ test/data/PhyloXML/CladeRelationNoNodeIDs.xml -text svneol=unset#text/plain
 test/data/PhyloXML/CustomXML.xml -text svneol=unset#text/plain
 test/data/PhyloXML/EmptyPhylogeny.xml -text svneol=unset#text/plain
 test/data/PhyloXML/LongString.xml -text svneol=unset#text/plain
+test/data/PhyloXML/LongString_expected.txt -text svneol=unset#text/plain
 test/data/PhyloXML/MultipleTrees.xml -text svneol=unset#text/plain
 test/data/PhyloXML/NodeLabels.xml -text svneol=unset#text/plain
 test/data/PhyloXML/OnlyCustomXML.xml -text svneol=unset#text/plain

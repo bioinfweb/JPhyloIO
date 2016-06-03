@@ -21,10 +21,13 @@ package info.bioinfweb.jphyloio.test;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileReader;
 import java.net.URI;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -35,7 +38,6 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
@@ -238,6 +240,29 @@ public class JPhyloIOTestTools {
 		String result = assertLiteralMetaStartEvent(expectedPredicate, LiteralContentSequenceType.SIMPLE, reader);
   	assertLiteralMetaContentEvent(expectedOriginalType, expectedStringValue, expectedAlternativeStringValue, expectedObjectValue, testEndEvent, reader);		
 		return result;
+  }
+  
+  
+  public static void assertSeparatedStringLiteralContentEvent(URIOrStringIdentifier expectedOriginalType,	String expectedStringValueFile, 
+  		boolean testEndEvent, JPhyloIOEventReader eventReader) throws Exception {
+  	
+  	FileReader valueReader = new FileReader(expectedStringValueFile);
+  	try {
+  		while (eventReader.hasNextEvent() && eventReader.peek().getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+  			LiteralMetadataContentEvent event = eventReader.next().asLiteralMetadataContentEvent();
+  			assertEquals(expectedOriginalType, event.getOriginalType());
+  			assertEquals(expectedOriginalType, event.getOriginalType());
+  			for (int i = 0; i < event.getStringValue().length(); i++) {
+  				int c = valueReader.read();
+  				assertNotEquals(-1, c);
+					assertEquals((char)c, event.getStringValue().charAt(i));
+				}
+  		}
+  		assertEquals(-1, valueReader.read());  // Test if whole string has been found.
+  	}
+  	finally {
+  		valueReader.close();
+  	}
   }
   
   
