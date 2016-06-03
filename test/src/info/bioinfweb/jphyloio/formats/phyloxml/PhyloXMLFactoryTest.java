@@ -34,7 +34,7 @@ import static org.junit.Assert.* ;
 public class PhyloXMLFactoryTest {
 	@Test
 	public void test_checkFormat() throws IOException {
-		Reader reader = new FileReader("data/PhyloXML/PhyloXMLDocument.xml");
+		Reader reader = new FileReader("data/PhyloXML/VariousMetaEventsFromPhyloXMLTags.xml");
 		try {
 			assertTrue(new PhyloXMLFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}

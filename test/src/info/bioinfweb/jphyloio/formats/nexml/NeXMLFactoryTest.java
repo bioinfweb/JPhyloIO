@@ -120,7 +120,7 @@ public class NeXMLFactoryTest {
 	
 	@Test
 	public void test_checkFormat_PhyloXML() throws IOException {
-		Reader reader = new FileReader("data/PhyloXML/PhyloXMLDocument.xml");
+		Reader reader = new FileReader("data/PhyloXML/VariousMetaEventsFromPhyloXMLTags.xml");
 		try {
 			assertFalse(new NeXMLFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
