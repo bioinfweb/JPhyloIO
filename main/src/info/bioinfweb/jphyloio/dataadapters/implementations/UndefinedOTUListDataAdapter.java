@@ -1,18 +1,18 @@
 /*
- * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
+ * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats.
  * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
- * 
+ *
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This file is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,14 +32,10 @@ import java.util.Iterator;
 
 
 
-public class UndefinedOTUListDataAdapter implements OTUListDataAdapter {
-	public static final String UNDEFINED_OTU_ID = "undefinedTaxon";
-	public static final String UNDEFINED_OTUS_ID = "undefinedTaxa";
-	
-	
-	private LabeledIDEvent undefinedOTU = new LabeledIDEvent(EventContentType.OTU, UNDEFINED_OTU_ID, "undefined taxon");
-	
-	
+public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLConstants {
+	private LabeledIDEvent undefinedOTU = new LabeledIDEvent(EventContentType.OTU, UNDEFINED_OTU_ID, UNDEFINED_OTU_LABEL);
+
+
 	public UndefinedOTUListDataAdapter() {
 		super();
 	}
@@ -53,29 +50,29 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter {
 			throw new IllegalArgumentException("No OTU with the ID \"" + id + "\" is offered by this adapter.");
 		}
 	}
-	
+
 
 	@Override
 	public long getCount() {
 		return 1;
 	}
 
-	
+
 	@Override
 	public Iterator<String> getIDIterator() {
 		return Arrays.asList(new String[]{UNDEFINED_OTU_ID}).iterator();
 	}
-	
-	
+
+
 	public String getUndefinedOtuID() {
 		return undefinedOTU.getID();
 	}
 
-	
+
 	@Override
 	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {}
 
-	
+
 	@Override
 	public MetadataAdapter getMetadataAdapter() {
 		return null;
@@ -84,6 +81,6 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter {
 
 	@Override
 	public LabeledIDEvent getStartEvent() {
-		return new LabeledIDEvent(EventContentType.OTU_LIST, UNDEFINED_OTUS_ID, "undefined taxa");
-	}	
+		return new LabeledIDEvent(EventContentType.OTU_LIST, UNDEFINED_OTUS_ID, UNDEFINED_OTUS_LABEL);
+	}
 }
