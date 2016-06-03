@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -36,7 +37,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
  *
  * @param <E>
  */
-public class StoreObjectListDataAdapter<E extends JPhyloIOEvent> implements ObjectListDataAdapter<E> {	
+public class StoreObjectListDataAdapter<E extends LabeledIDEvent> implements ObjectListDataAdapter<E> {	
 	private ListOrderedMap<String, StoreObjectData<E>> objectMap = new ListOrderedMap<String, StoreObjectData<E>>();
 	
 
@@ -51,8 +52,8 @@ public class StoreObjectListDataAdapter<E extends JPhyloIOEvent> implements Obje
 	}
 	
 	
-	public void setObjectStartEvent(String id, E event)	throws IllegalArgumentException {
-		objectMap.get(id).setObjectStartEvent(event);
+	public void setObjectStartEvent(E event)	throws IllegalArgumentException {
+		objectMap.get(event.getID()).setObjectStartEvent(event);
 	}
 	
 	
