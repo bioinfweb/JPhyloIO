@@ -33,7 +33,8 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 /**
- * @author s_wiec03
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
  *
  * @param <E>
  */
@@ -48,12 +49,25 @@ public class StoreObjectListDataAdapter<E extends LabeledIDEvent> implements Obj
 
 	@Override
 	public E getObjectStartEvent(String id)	throws IllegalArgumentException {
-		return objectMap.get(id).getObjectStartEvent();
+		StoreObjectData<E> data = objectMap.get(id);
+		if (data != null) {
+			return data.getObjectStartEvent();
+		}
+		else {
+			throw new IllegalArgumentException("No event with the ID \"" + id + "\" was found.");
+		}
 	}
 	
 	
 	public void setObjectStartEvent(E event)	throws IllegalArgumentException {
-		objectMap.get(event.getID()).setObjectStartEvent(event);
+		StoreObjectData<E> data = objectMap.get(event.getID());
+		if (data != null) {
+			data.setObjectStartEvent(event);
+		}
+		else {
+			data = new StoreObjectData<E>(event);
+			objectMap.put(event.getID(), data);
+		}
 	}
 	
 	
@@ -76,8 +90,14 @@ public class StoreObjectListDataAdapter<E extends LabeledIDEvent> implements Obj
 	
 	@Override
 	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
-		for (JPhyloIOEvent event : objectMap.get(id).getObjectContent()) {
-			receiver.add(event);
-		}		
+		StoreObjectData<E> data = objectMap.get(id);
+		if (data != null) {
+			for (JPhyloIOEvent event : objectMap.get(id).getObjectContent()) {
+				receiver.add(event);
+			}
+		}
+		else {
+			throw new IllegalArgumentException("No object with the ID \"" + id + "\" was found.");
+		}
 	}	
 }

@@ -31,6 +31,11 @@ public class StoreObjectData<E extends JPhyloIOEvent> {
 	private List<JPhyloIOEvent> objectContent = new ArrayList<JPhyloIOEvent>();
 	
 	
+	public StoreObjectData(E objectStartEvent) {
+		this(objectStartEvent, null);
+	}
+	
+	
 	public StoreObjectData(E objectStartEvent, List<JPhyloIOEvent> objectContent) {
 		super();
 		this.objectStartEvent = objectStartEvent;
