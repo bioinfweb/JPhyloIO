@@ -20,12 +20,13 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
 import static org.junit.Assert.*;
-
-
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 
 import java.io.IOException;
 
@@ -44,7 +45,7 @@ public class IgnoreObjectListMetadataReceiverTest {
 		assertFalse(receiver.isIgnoredMetadata());
 		assertTrue(logger.getMessageList().isEmpty());
 		
-		assertFalse(receiver.add(new MetaInformationEvent("someKey", "someType", "someValue")));
+		assertFalse(receiver.add(new LiteralMetadataEvent("someID", "someLabel", new URIOrStringIdentifier("someKey", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE)));
 		assertTrue(receiver.isIgnoredMetadata());
 		assertEquals(1, logger.getMessageList().size());
 		assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
