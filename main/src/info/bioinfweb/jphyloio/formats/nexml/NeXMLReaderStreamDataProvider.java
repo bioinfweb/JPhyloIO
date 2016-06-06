@@ -20,13 +20,12 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.nexml.AbstractNeXMLElementReader.LabeledIDEventInformation;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 
@@ -41,21 +40,18 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	private QName nestedMetaType;
 	private String alternativeStringRepresentation;
 	
-	private String tokenSetID = null;
-	private LabeledIDEventInformation tokenDefinitionInfo = null;
-	private String symbol = null;
-	private String branchLengthsFormat = null;
-	
-	private Collection<String> constituents;
-	
-	private Set<String> directCharSetIDs;
-	
-	private List<String> charIDs;
-	
-	private Map<String, String> charIDToStatesMap;
 	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();
-	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();	
-	private Map<String, String> tokenDefinitionIDToSymbolMap;	
+	
+	private String currentTokenSetID = null;
+	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();
+	private Map<String, String> tokenDefinitionIDToSymbolMap = new HashMap<String, String>();
+	private NeXMLSingleTokenDefinitionInformation currentSingleTokenDefinition;	
+
+	private Map<String, List<String>> tokenSetIDtoColumnsMap = new HashMap<String, List<String>>();
+	private List<String> charIDs = new ArrayList<String>();	
+	private Map<String, String> charIDToStatesMap = new HashMap<String, String>();
+	
+	private String branchLengthsFormat = null;
 	
 	
 	public NeXMLReaderStreamDataProvider(NeXMLEventReader nexmlEventReader) {
@@ -69,27 +65,27 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 
-	protected Stack<EventContentType> getMetaType() {
+	public Stack<EventContentType> getMetaType() {
 		return metaType;
 	}
 
 
-	protected QName getNestedMetaType() {
+	public QName getNestedMetaType() {
 		return nestedMetaType;
 	}
 
 
-	protected void setNestedMetaType(QName nestedMetaType) {
+	public void setNestedMetaType(QName nestedMetaType) {
 		this.nestedMetaType = nestedMetaType;
 	}
 
 
-	protected String getAlternativeStringRepresentation() {
+	public String getAlternativeStringRepresentation() {
 		return alternativeStringRepresentation;
 	}
 
 
-	protected void setAlternativeStringRepresentation(String alternativeStringRepresentation) {
+	public void setAlternativeStringRepresentation(String alternativeStringRepresentation) {
 		this.alternativeStringRepresentation = alternativeStringRepresentation;
 	}
 
@@ -99,23 +95,13 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 
-	public String getTokenSetID() {
-		return tokenSetID;
+	public String getCurrentTokenSetID() {
+		return currentTokenSetID;
 	}
 
 
-	public void setTokenSetID(String tokenSetID) {
-		this.tokenSetID = tokenSetID;
-	}
-
-
-	public LabeledIDEventInformation getTokenDefinitionInfo() {
-		return tokenDefinitionInfo;
-	}
-
-
-	public void setTokenDefinitionInfo(LabeledIDEventInformation tokenDefinitionInfo) {
-		this.tokenDefinitionInfo = tokenDefinitionInfo;
+	public void setCurrentTokenSetID(String tokenSetID) {
+		this.currentTokenSetID = tokenSetID;
 	}
 
 
@@ -134,33 +120,18 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 
-	public String getSymbol() {
-		return symbol;
-	}
-
-
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
-
-
 	public Map<String, String> getTokenDefinitionIDToSymbolMap() {
 		return tokenDefinitionIDToSymbolMap;
 	}
 
 
-	public void setTokenDefinitionIDToSymbolMap(Map<String, String> tokenDefinitionIDToSymbolMap) {
-		this.tokenDefinitionIDToSymbolMap = tokenDefinitionIDToSymbolMap;
+	public NeXMLSingleTokenDefinitionInformation getCurrentSingleTokenDefinition() {
+		return currentSingleTokenDefinition;
 	}
 
 
-	public Collection<String> getConstituents() {
-		return constituents;
-	}
-
-
-	public void setConstituents(Collection<String> constituents) {
-		this.constituents = constituents;
+	public void setCurrentSingleTokenDefinition(NeXMLSingleTokenDefinitionInformation currentSingleTokenDefinition) {
+		this.currentSingleTokenDefinition = currentSingleTokenDefinition;
 	}
 
 
@@ -168,29 +139,14 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 		return charIDs;
 	}
 
-
-	public void setCharIDs(List<String> charIDs) {
-		this.charIDs = charIDs;
-	}
-
-
+	
 	public Map<String, String> getCharIDToStatesMap() {
 		return charIDToStatesMap;
 	}
+	
 
-
-	public void setCharIDToStatesMap(Map<String, String> charIDToStatesMap) {
-		this.charIDToStatesMap = charIDToStatesMap;
-	}
-
-
-	public Set<String> getDirectCharSetIDs() {
-		return directCharSetIDs;
-	}
-
-
-	public void setDirectCharSetIDs(Set<String> directCharSets) {
-		this.directCharSetIDs = directCharSets;
+	public Map<String, List<String>> getTokenSetIDtoColumnsMap() {
+		return tokenSetIDtoColumnsMap;
 	}
 
 

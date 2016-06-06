@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
@@ -117,8 +118,31 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected LabeledIDEventInformation getLabeledIDEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, 
-			StartElement element) {
+	protected void createIntervalEvents(NeXMLReaderStreamDataProvider streamDataProvider, String[] charIDs) {
+		boolean[] charSets = new boolean[streamDataProvider.getCharIDs().size()];
+		for (String charID: charIDs) {	
+			charSets[streamDataProvider.getCharIDs().indexOf(charID)] = true;					
+		}
+		
+		int currentIndex = -1;
+		int startIndex = -1;
+		
+		for (int i = 0; i < charSets.length; i++) {
+			if (charSets[i]) {
+				currentIndex = i;
+			}
+			
+			if ((i == 0) || (charSets[i] && !charSets[i - 1])) {
+				startIndex = i;
+			}
+			else if (charSets[i] && ((i + 1 == charSets.length) || !charSets[i + 1])) {
+				streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex));
+			}
+		}
+	}
+	
+	
+	protected LabeledIDEventInformation getLabeledIDEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) {
 		LabeledIDEventInformation labeledIDEventInformation = new LabeledIDEventInformation();
 		labeledIDEventInformation.id = XMLUtils.readStringAttr(element, ATTR_ID, null);
 		labeledIDEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);

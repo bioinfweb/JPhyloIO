@@ -19,7 +19,9 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
@@ -31,12 +33,10 @@ public class NeXMLTokenSetInformation {
 	private String id = null;
 	private String label = null;
 	private CharacterStateSetType setType;
-	private String characterSetID = null;
 	
-	private Collection<JPhyloIOEvent> singleTokens;
-	private Collection<JPhyloIOEvent> charSetIntervals;
+	private Collection<JPhyloIOEvent> nestedEvents = new ArrayList<JPhyloIOEvent>();
 	
-	private Map<String, String> symbolTranslationMap;
+	private Map<String, String> symbolTranslationMap = new HashMap<String, String>();
 	
 	
 	public NeXMLTokenSetInformation(String id, String label, CharacterStateSetType setType) {
@@ -83,44 +83,14 @@ public class NeXMLTokenSetInformation {
 	public void setSetType(CharacterStateSetType setType) {
 		this.setType = setType;
 	}
-	
-	
-	public String getCharacterSetID() {
-		return characterSetID;
-	}
-	
-	
-	public void setCharacterSetID(String characterSetID) {
-		this.characterSetID = characterSetID;
-	}
 
 
-	public Collection<JPhyloIOEvent> getSingleTokens() {
-		return singleTokens;
-	}
-
-
-	public void setSingleTokens(Collection<JPhyloIOEvent> singleTokens) {
-		this.singleTokens = singleTokens;
-	}
-
-
-	public Collection<JPhyloIOEvent> getCharSetIntervals() {
-		return charSetIntervals;
-	}
-
-
-	public void setCharSetIntervals(Collection<JPhyloIOEvent> charSetIntervals) {
-		this.charSetIntervals = charSetIntervals;
+	protected Collection<JPhyloIOEvent> getNestedEvents() {
+		return nestedEvents;
 	}
 
 
 	public Map<String, String> getSymbolTranslationMap() {
 		return symbolTranslationMap;
-	}
-
-
-	public void setSymbolTranslationMap(Map<String, String> symbolToLabelMap) {
-		this.symbolTranslationMap = symbolToLabelMap;
 	}
 }
