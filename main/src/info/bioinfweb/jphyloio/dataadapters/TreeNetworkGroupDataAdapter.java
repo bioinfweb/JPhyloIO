@@ -26,7 +26,6 @@ import java.util.Iterator;
 
 
 public interface TreeNetworkGroupDataAdapter extends AnnotatedDataAdapter<LinkedLabeledIDEvent> {	
-	
 	/**
 	 * Returns an iterator providing access to all trees and networks contained in the 
 	 * document to be written. 
