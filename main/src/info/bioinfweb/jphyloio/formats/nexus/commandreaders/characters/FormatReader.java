@@ -46,6 +46,7 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLTokenSetInformation;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
@@ -67,11 +68,29 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	public static final Pattern MIXED_DATA_TYPE_VALUE_PATTERN = Pattern.compile(FORMAT_VALUE_MIXED_DATA_TYPE + "\\((.+)\\)", 
 			Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
 	public static final Pattern MIXED_DATA_TYPE_SINGLE_SET_PATTERN = Pattern.compile("(.+)\\:([0-9]+)\\-([0-9]+)");
-	public static final String DATA_TYPE_CHARACTER_SET_NAME_PREFIX = "DataTypeCharSet";
+	
+	
+	/**
+	 * Used to buffer information on token sets. The list of nested events is primarily meant for {@link CharacterSetIntervalEvent}s,
+	 * since  {@link SingleTokenDefinitionEvent}s are the same for all sets and are stored in a separate list.
+	 * 
+	 * @author Ben St&ouml;ver
+	 * @since 0.0.0
+	 * @see NeXMLTokenSetInformation
+	 */
+	private static class TokenSetInfo {
+		public TokenSetDefinitionEvent startEvent;
+		public List<JPhyloIOEvent> nestedEvents = new ArrayList<JPhyloIOEvent>();
+		
+		public TokenSetInfo(TokenSetDefinitionEvent startEvent) {
+			super();
+			this.startEvent = startEvent;
+		}
+	}
 	
 	
 	private boolean continuousData = false;
-	private List<TokenSetDefinitionEvent> tokenSetDefinitionEvents = new ArrayList<TokenSetDefinitionEvent>();
+	private List<TokenSetInfo> tokenSetInfos = new ArrayList<TokenSetInfo>();
 	private List<SingleTokenDefinitionEvent> singleTokenDefinitionEvents = new ArrayList<SingleTokenDefinitionEvent>();
 	
 	
@@ -108,30 +127,25 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	
 	private boolean parseMixedDataType(String content) {
 		String[] parts = content.split("\\,");
-		List<JPhyloIOEvent> charSetEvents = new ArrayList<JPhyloIOEvent>(parts.length * 3);
-		List<TokenSetDefinitionEvent> tokenSetEvents = new ArrayList<TokenSetDefinitionEvent>(parts.length);
+		List<TokenSetInfo> tokenSetInfoBuffer = new ArrayList<TokenSetInfo>(2 * parts.length);
 		for (int i = 0; i < parts.length; i++) {
 			Matcher matcher = MIXED_DATA_TYPE_SINGLE_SET_PATTERN.matcher(parts[i]);
 			if (matcher.matches()) {
-				String charSetName = DATA_TYPE_CHARACTER_SET_NAME_PREFIX + (i + 1);
+				TokenSetInfo info = new TokenSetInfo(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), 
+						DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),	matcher.group(1)));
 				try {
-					charSetEvents.add(new LabeledIDEvent(EventContentType.CHARACTER_SET, charSetName, charSetName));
-					charSetEvents.add(new CharacterSetIntervalEvent(Long.parseLong(matcher.group(2)), Long.parseLong(matcher.group(3)) + 1));
-					charSetEvents.add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+					info.nestedEvents.add(new CharacterSetIntervalEvent(Long.parseLong(matcher.group(2)), Long.parseLong(matcher.group(3)) + 1));
 				}
 				catch (NumberFormatException e) {
 					return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
 				}
-				tokenSetEvents.add(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), 
-						DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
-						matcher.group(1), charSetName));
+				tokenSetInfoBuffer.add(info);
 			}
 			else {
 				return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
 			}
 		}
-		getStreamDataProvider().getCurrentEventCollection().addAll(charSetEvents);  // Events are added to the queue when its sure that there was no parsing error.
-		tokenSetDefinitionEvents.addAll(tokenSetEvents);  // Save to nest single token symbol definitions later.
+		tokenSetInfos.addAll(tokenSetInfoBuffer);  // Save to nest single token symbol definitions later.
 		return true;
 	}
 	
@@ -164,10 +178,10 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 				}
 			}
 			else {
-				if (tokenSetDefinitionEvents.isEmpty()) {  // Only MrBayes extension allows to specify more than one token set.
-					tokenSetDefinitionEvents.add(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), 
+				if (tokenSetInfos.isEmpty()) {  // Only MrBayes extension allows to specify more than one token set.
+					tokenSetInfos.add(new TokenSetInfo(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), 
 							DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
-							info.getValue()));  // Since this token set shall be valid for the whole alignment, no interval events need to be created here.
+							info.getValue())));  // Since this token set shall be valid for the whole alignment, no interval events need to be created here.
 					eventCreated = true;
 				}
 				else {
@@ -254,23 +268,24 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	 */
 	@Override
 	protected boolean addStoredEvents() {
-		boolean result = !tokenSetDefinitionEvents.isEmpty();
+		boolean result = !tokenSetInfos.isEmpty();
 		if (result) {
 			Collection<JPhyloIOEvent> queue = getStreamDataProvider().getCurrentEventCollection();
-			if (tokenSetDefinitionEvents.size() > 1) {  // DATATYPE = MIXED
+			if (tokenSetInfos.size() > 1) {  // DATATYPE = MIXED
 				removeWaitingCharacterStateEvents();  // Possibly such events would not fit to all token sets.
 			}
 			
-			for (JPhyloIOEvent tokenSetEvent : tokenSetDefinitionEvents) {
-				queue.add(tokenSetEvent);
+			for (TokenSetInfo info : tokenSetInfos) {
+				queue.add(info.startEvent);
 				for (SingleTokenDefinitionEvent singleTokenDefinitionEvent : singleTokenDefinitionEvents) {
 					queue.add(singleTokenDefinitionEvent);
 					queue.add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END));
 				}
+				queue.addAll(info.nestedEvents);
 				queue.add(new ConcreteJPhyloIOEvent(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.END));
 			}
 	
-			tokenSetDefinitionEvents.clear();
+			tokenSetInfos.clear();
 			singleTokenDefinitionEvents.clear();
 		}
 		return result;
