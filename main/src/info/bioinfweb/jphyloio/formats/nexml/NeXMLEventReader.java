@@ -563,13 +563,10 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				while (tokenSetIDIterator.hasNext()) {
 					String tokenSetID = tokenSetIDIterator.next();
 					NeXMLTokenSetInformation info = streamDataProvider.getTokenSets().get(tokenSetID);
-					CharacterStateSetType type = info.getSetType();
-					String id = info.getID();
-					String label = info.getLabel();
 					String[] columnIDs; 
 					
 					if (!info.getNestedEvents().isEmpty()) {						
-						streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(type, id, label));						
+						streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(info.getSetType(), info.getID(), info.getLabel()));						
 						
 						for (JPhyloIOEvent nestedEvent : info.getNestedEvents()) {
 							streamDataProvider.getCurrentEventCollection().add(nestedEvent);

@@ -90,7 +90,6 @@ public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	 * under an implicit resource meta event. 
 	 */
 	
-	
 	/**
 	 * Checks if another event could be parsed from the underlying document.
 	 * 

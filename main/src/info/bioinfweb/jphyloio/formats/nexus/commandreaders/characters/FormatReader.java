@@ -167,7 +167,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 				if (tokenSetDefinitionEvents.isEmpty()) {  // Only MrBayes extension allows to specify more than one token set.
 					tokenSetDefinitionEvents.add(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), 
 							DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
-							info.getValue()));
+							info.getValue()));  // Since this token set shall be valid for the whole alignment, no interval events need to be created here.
 					eventCreated = true;
 				}
 				else {
