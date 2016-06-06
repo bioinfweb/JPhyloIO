@@ -59,17 +59,6 @@ public interface ReadWriteConstants {
 	public static final QName PREDICATE_EDGE_LENGTH = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeLength");
 	public static final QName PREDICATE_IS_CROSSLINK = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isCrosslink");
 	
-	
-	@Deprecated
-	public static final String META_KEY_SEQUENCE_COUNT = "info.bioinfweb.jphyloio.sequenceCount";
-	 
-	@Deprecated
-	public static final String META_KEY_CHARACTER_COUNT = "info.bioinfweb.jphyloio.characterCount";
-	 
-	@Deprecated
-	public static final String META_KEY_DISPLAY_TREE_ROOTED = "info.bioinfweb.jphyloio.displayTreeRooted";
-	//TODO Replace these keys by URLs? (Depends on the ontology modeling classes to be added.)
-	
 	public static final String DEFAULT_META_ID_PREFIX = "meta";
 	public static final String DEFAULT_OTU_LIST_ID_PREFIX = "otus";
 	public static final String DEFAULT_OTU_ID_PREFIX = "otu";
