@@ -532,7 +532,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					}
 				}
 
-				if (tokenSets.getObjectStartEvent(tokenSetID).getCharacterSetID() == null) {
+				if (tokenSets.getObjectStartEvent(tokenSetID).getCharacterSetID() == null) {  //TODO Refactor so that deprecated property can be removed.
 					if (streamDataProvider.getCharSetToTokenSetMap().get("general") == null) {
 						streamDataProvider.getCharSetToTokenSetMap().put("general", tokenSetID);
 					}

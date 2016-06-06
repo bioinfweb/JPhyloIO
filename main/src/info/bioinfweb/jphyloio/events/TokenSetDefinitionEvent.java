@@ -41,7 +41,6 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  */
 public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	private CharacterStateSetType setType;
-	private String characterSetID = null; //TODO remove when readers and writers have been adjusted
 	
 	
 	/**
@@ -66,33 +65,6 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 
 	
 	/**
-	 * Creates a new instance of this class.
-	 * 
-	 * @param type the meaning of the token set as defined by {@link TokenSetType}
-	 * @param id a document-wide unique ID identifying this token set
-	 * @param label a name describing this token set
-	 * @param linkedCharacterSetID the ID of the character set (set of alignment columns) this token set shall be valid 
-	 *        for. (Specify {@code null} here if this token set shall be valid for the whole alignment or the 
-	 *        columns are unknown. The referenced character set should have been defined by a
-	 *        previously fired events.)
-	 * @throws NullPointerException if {@code null} is specified for {@code type} 
-	 */
-	@Deprecated
-	public TokenSetDefinitionEvent(CharacterStateSetType type, String id, String label, String linkedCharacterSetID) {
-		super(EventContentType.TOKEN_SET_DEFINITION, id, label);
-
-		if (type == null) {
-			throw new NullPointerException("The set type must not be null.");
-		}
-		else {
-			this.setType = type;
-			this.characterSetID = linkedCharacterSetID;
-		}
-	}
-
-	
-
-	/**
 	 * Returns the meaning of the the new character state set.
 	 * 
 	 * @return the meaning of the token set as defined by {@link TokenSetType}
@@ -112,7 +84,7 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 */
 	@Deprecated
 	public String getCharacterSetID() {
-		return characterSetID;
+		return null;
 	}
 	
 	
@@ -127,6 +99,6 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	 */
 	@Deprecated
 	public boolean hasLinkedCharacterSet() {
-		return characterSetID != null;
+		return false;
 	}
 }
