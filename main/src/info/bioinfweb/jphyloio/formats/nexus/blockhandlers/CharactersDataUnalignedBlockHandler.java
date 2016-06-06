@@ -63,6 +63,7 @@ public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandl
 			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, blockID, 
 					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getCurrentLinkedBlockID(BLOCK_NAME_TAXA)));
 			String blockTypeName = streamDataProvider.getEventReader().getCurrentBlockName();
+			//TODO Output metadata whether sequences are aligned (with the same predicate as for the NeXML aligned attribute), depending on the block type name. (Is this already done somewhere else?)
 			if (!streamDataProvider.getBlockTitleToIDMap().hasDefaultBlockID(blockTypeName)) {				
 				streamDataProvider.getBlockTitleToIDMap().putDefaultBlockID(blockTypeName, blockID);  // Set first block as the default.
 			}
