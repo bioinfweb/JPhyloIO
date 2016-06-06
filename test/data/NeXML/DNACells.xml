@@ -14,9 +14,9 @@
         <state id="Guanine" symbol="G"/>
         <state id="Thymine" symbol="T"/>
       </states>
-      <char id="char1" states="states383"/>
-      <char id="char2" states="states383"/>
-      <char id="char3" states="states383"/>
+      <char id="char1" states="states"/>
+      <char id="char2" states="states"/>
+      <char id="char3" states="states"/>
     </format>
     <matrix>
       <row id="row1" otu="taxon1">

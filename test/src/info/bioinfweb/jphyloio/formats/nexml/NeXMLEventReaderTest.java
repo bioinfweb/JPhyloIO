@@ -42,15 +42,14 @@ public class NeXMLEventReaderTest {
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MetaCustomXML.xml"), parameters);
-//			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MetaElements.xml"), parameters);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/treebase-example.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
 					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
 					
 					if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
-//						System.out.println(event.asLiteralMetadataContentEvent().getStringValue());
+//						System.out.println(event.asLiteralMetadataContentEvent().getStringValue());						
 					}
 					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
 //						System.out.println(event.asLinkedOTUEvent().getID() + ", " + event.asLinkedOTUEvent().getLabel());

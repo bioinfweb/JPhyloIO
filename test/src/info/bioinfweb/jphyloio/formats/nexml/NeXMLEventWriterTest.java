@@ -212,7 +212,7 @@ public class NeXMLEventWriterTest {
 	protected StoreObjectData<TokenSetDefinitionEvent> createTokenSet(String id, CharacterStateSetType type) {		
 		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
 				new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "token set label"), new ArrayList<JPhyloIOEvent>());
-		
+
 		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
