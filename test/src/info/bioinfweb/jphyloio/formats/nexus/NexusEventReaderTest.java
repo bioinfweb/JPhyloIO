@@ -817,26 +817,20 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
-			assertCharacterSetIntervalEvent(1, 1452, reader);
-			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
-			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
-			assertCharacterSetIntervalEvent(1452, 1549, reader);
-			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
-			
-			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "1", reader);
+			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			if (testSingleDefs) {
 				assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
 				assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
 			}
+			assertCharacterSetIntervalEvent(1, 1452, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
-			assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "Standard", FormatReader.DATA_TYPE_CHARACTER_SET_NAME_PREFIX + "2", reader);
+			assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "Standard", reader);
 			if (testSingleDefs) {
 				assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
 				assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
 			}
+			assertCharacterSetIntervalEvent(1452, 1549, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
