@@ -62,7 +62,7 @@ public class NeXMLEventWriterTest {
 	private long idIndex = 0;
 	
 	
-	public long getIdIndex() {
+	public long getIDIndex() {
 		long index = idIndex;
 		idIndex++;
 		return index;
@@ -73,7 +73,7 @@ public class NeXMLEventWriterTest {
 //		for (JPhyloIOEvent event : createMetaData("document")) {
 //			document.getAnnotations().add(event);
 //		}
-		String taxaID = ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + getIdIndex();
+		String taxaID = ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + getIDIndex();
 		document.getOTUListsMap().put(taxaID, createOTUList(taxaID));
 		document.getMatrices().add(createMatrix(taxaID));
 		document.getTreesNetworks().add(createTrees(taxaID));
@@ -122,7 +122,7 @@ public class NeXMLEventWriterTest {
 		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, id, "taxa label"), null);
 		
 		for (int i = 0; i < 5; i++) {
-			String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + getIdIndex();
+			String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + getIDIndex();
 			otuList.getOtus().getObjectMap().put(otuID, createOTU(otuID));
 		}
 		
@@ -139,7 +139,7 @@ public class NeXMLEventWriterTest {
 	
 	
 	protected StoreMatrixDataAdapter createMatrix(String otusID) {
-		String matrixID = ReadWriteConstants.DEFAULT_MATRIX_ID_PREFIX + getIdIndex();
+		String matrixID = ReadWriteConstants.DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "matrix", otusID);
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
 		
@@ -148,22 +148,22 @@ public class NeXMLEventWriterTest {
 		sequences.add(tokens);
 		
 		while (iterator.hasNext()) {
-			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIdIndex();
+			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
 			matrix.getMatrix().getObjectMap().put(sequenceID, createSequence(sequenceID,
 					tokens, document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID()));
 //			matrix.getMatrix().getObjectMap().put(sequenceID, createSingleTokens(sequenceID, 
 //					document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID()));
 		}
 		
-		String undefinedOTUSequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIdIndex();
+		String undefinedOTUSequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
 		matrix.getMatrix().getObjectMap().put(undefinedOTUSequenceID, createSequence(undefinedOTUSequenceID, tokens, null));
 		
-		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIdIndex();
+		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
 		matrix.getTokenSets().getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA));
 		
-		String charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIdIndex();
+		String charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
 		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID, true));
-		charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIdIndex();
+		charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
 		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID, false));
 		
 		return matrix;
@@ -193,7 +193,7 @@ public class NeXMLEventWriterTest {
 		
 		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent(null, "T"));
 		
-		singleTokens.getObjectContent().add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new URIOrStringIdentifier("literal value", new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.SIMPLE));
+		singleTokens.getObjectContent().add(new LiteralMetadataEvent("meta" + getIDIndex(), "LiteralMeta", new URIOrStringIdentifier("literal value", new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.SIMPLE));
 		singleTokens.getObjectContent().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, new QName("string")), "My literal value", true));
 		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
 		
@@ -213,19 +213,19 @@ public class NeXMLEventWriterTest {
 		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
 				new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "token set label"), new ArrayList<JPhyloIOEvent>());
 		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Guanin", "G", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Guanin", "G", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Cytosin", "C", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Cytosin", "C", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), "Thymine", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Thymine", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
@@ -259,7 +259,7 @@ public class NeXMLEventWriterTest {
 	
 	
 	protected TestTreeNetworkGroupDataAdapter createTrees(String prefix) {
-		String treeID = ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex();
+		String treeID = ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex();
 		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter(treeID, null, "nodeEdgeID");
 		trees.setLinkedOTUsID(prefix);
 		return trees;
