@@ -27,14 +27,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeMap;
+
+import javax.xml.namespace.QName;
 
 
 
 public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<NeXMLEventReader> {	
 	private boolean allowLongTokens;
 	
-	private EventContentType metaType;
+	private Stack<EventContentType> metaType = new Stack<EventContentType>();
+	private QName nestedMetaType;
 	private String alternativeStringRepresentation;
 	
 	private String tokenSetID = null;
@@ -65,13 +69,18 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 
-	public EventContentType getMetaType() {
+	protected Stack<EventContentType> getMetaType() {
 		return metaType;
 	}
 
 
-	public void setMetaType(EventContentType metaType) {
-		this.metaType = metaType;
+	protected QName getNestedMetaType() {
+		return nestedMetaType;
+	}
+
+
+	protected void setNestedMetaType(QName nestedMetaType) {
+		this.nestedMetaType = nestedMetaType;
 	}
 
 
@@ -87,11 +96,6 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 
 	public Map<String, NeXMLTokenSetInformation> getTokenSets() {
 		return tokenSets;
-	}
-
-
-	public void setTokenSets(Map<String, NeXMLTokenSetInformation> tokenSets) {
-		this.tokenSets = tokenSets;
 	}
 
 
@@ -130,11 +134,6 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 
-	public void setOtuIDToLabelMap(Map<String, String> otuIDToLabelMap) {
-		this.otuIDToLabelMap = otuIDToLabelMap;
-	}
-
-
 	public String getSymbol() {
 		return symbol;
 	}
@@ -150,8 +149,7 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 
-	public void setTokenDefinitionIDToSymbolMap(
-			Map<String, String> tokenDefinitionIDToSymbolMap) {
+	public void setTokenDefinitionIDToSymbolMap(Map<String, String> tokenDefinitionIDToSymbolMap) {
 		this.tokenDefinitionIDToSymbolMap = tokenDefinitionIDToSymbolMap;
 	}
 

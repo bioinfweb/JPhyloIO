@@ -294,7 +294,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					break;
 			}
 		}
-
+		
 		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()),
 				ATTR_XSI_TYPE.getNamespaceURI(), ATTR_XSI_TYPE.getLocalPart(), alignmentType.toString());
 
@@ -333,7 +333,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLMolecularDataTokenDefinitionReceiver molecularDataReceiver =
 				new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		streamDataProvider.setIdIndex(0);
-
+		
 		if (streamDataProvider.hasTokenDefinitionSet()) {
 			while (tokenSetDefinitionIDs.hasNext()) {
 				String tokenSetID = tokenSetDefinitionIDs.next();
@@ -486,10 +486,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		//TODO alignment.getColumnCount() may be -1 if sequences have various length
 		//TODO different alignments might have different data (token sets, alignment length, ...) therefore data collected here might be invalid or overwritten when the alignment data is actually written to the file
 		
-		checkTokenSets(alignment.getTokenSets());
-		
-		
-		
+		checkTokenSets(alignment.getTokenSets());		
 		checkCharacterSets(alignment.getCharacterSets(), alignment.getColumnCount());
 
 		Iterator<String> sequenceIDs = alignment.getSequenceIDIterator();
@@ -549,7 +546,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				tokenSets.writeContentData(receiver, tokenSetID);
 			}
 		}
-
+		
 		if (streamDataProvider.getAlignmentType() == null || streamDataProvider.getAlignmentType().equals(CharacterStateSetType.UNKNOWN)) {
 			streamDataProvider.setAlignmentType(CharacterStateSetType.DISCRETE);
 		}

@@ -33,6 +33,8 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -186,23 +188,40 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	public QName qNameFromCURIE(String curie, StartElement element) {
-		String[] refParts = curie.split(":");
-		String localPart = refParts[refParts.length - 1]; //TODO is the local part always the last element?
+	public QName qNameFromCURIE(String curie, StartElement element) throws JPhyloIOReaderException {
 		String prefix = null;
+		String localPart = null;
 		String namespaceURI = null;
+		boolean invalidCurie = true;
 		
-		if (refParts.length == 2) {
-			prefix = refParts[0];
-			namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
-			if (namespaceURI == null) {
-				if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
-					namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+		if (curie != null) {
+			Pattern curiePattern = Pattern.compile("(\\w+):(\\w+)");
+			Matcher matcher = curiePattern.matcher(curie);
+			
+			invalidCurie = !matcher.find(); //if no match is found, the string does not represent a valid CURIE //TODO assume default namespace?
+			if (!invalidCurie) {
+				prefix = matcher.group(1);
+				localPart = matcher.group(2); //TODO check if local part and prefix are valid NCNames?
+				
+				invalidCurie = matcher.find(); //if another match is found in the same string, the string does not represent a valid CURIE
+			}		
+			
+			if (prefix != null) {
+				namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
+				if (namespaceURI == null) {
+					if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
+						namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+					}
 				}
 			}
 		}
 		
-		return new QName(namespaceURI, localPart, prefix);
+		if (!invalidCurie) {
+			return new QName(namespaceURI, localPart, prefix);
+		}
+		else {
+			throw new JPhyloIOReaderException("An invalid CURIE was encountered under the element \"" + element.getName().getLocalPart() + "\".", element.getLocation());
+		}
 	}
 	
 	

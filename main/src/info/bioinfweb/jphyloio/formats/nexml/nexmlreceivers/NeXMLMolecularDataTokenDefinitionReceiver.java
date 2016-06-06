@@ -68,7 +68,7 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 		List<String> states = new ArrayList<String>();
 		for (int i = 0; i < SequenceUtils.DNA_CHARS.length(); i++) {
 			states.add(Character.toString(SequenceUtils.DNA_CHARS.charAt(i)));
-		}
+		}  //TODO Default tokens should be added to the set in the stream data provider instead of just writing them to the file here.
 
 		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.DNA, states);
 	}
