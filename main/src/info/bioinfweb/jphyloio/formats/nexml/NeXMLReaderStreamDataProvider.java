@@ -19,11 +19,15 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
+import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +56,11 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	private List<String> charIDs = new ArrayList<String>();
 	private Map<String, Integer> charIDToIndexMap = new HashMap<String, Integer>();
 	private Map<String, String> charIDToStatesMap = new HashMap<String, String>();
+	
+	private Map<String, BufferedEventInfo<SingleSequenceTokenEvent>> currentCellsBuffer = new HashMap<String, BufferedEventInfo<SingleSequenceTokenEvent>>();
+	private Iterator<String> currentCharIDIterator = null;
+	private String currentExpectedCharID = null;
+	private boolean currentCellBuffered = false;
 	
 	private boolean isTrulyRooted = false;
 	private Set<String> rootNodeIDs;
@@ -220,8 +229,87 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	public Map<String, String> getCharIDToStatesMap() {
 		return charIDToStatesMap;
 	}	
+
+
+	/**
+	 * The returned map is used to buffer {@link SingleTokenDefinitionEvent}s and their nested events, in cases where the order of
+	 * {@code cell} tags does not match the order of the referenced columns.
+	 * 
+	 * @return the map instance to be used for buffering
+	 */
+	public Map<String, BufferedEventInfo<SingleSequenceTokenEvent>> getCurrentCellsBuffer() {
+		return currentCellsBuffer;
+	}
 	
 	
+	/**
+	 * Method used for reading cell tags that clears the map of buffered cell informations ({@link #getCurrentCellsBuffer()}) and resets
+	 * the columns ID iterator used by {@link #nextCharID()}.
+	 */
+	public void clearCurrentRowInformation() {
+		currentCharIDIterator = null;
+		currentExpectedCharID = null;
+		currentCellsBuffer.clear();
+	}
+	
+	
+	/**
+	 * Returns the next NeXML columns ID (ID of a {@code char} tag) at the current position of the underlying iterator and stores it
+	 * in the property {@link #getCurrentExpectedCharID()}.
+	 * <p>
+	 * If this method is called the first time after creation of this object or after a call of {@link #clearCurrentRowInformation()}
+	 * a new iterator will be created before returning an event.
+	 * 
+	 * @return the ID of the next {@code char} tag or {@code null} if no additional columns are available
+	 */
+	public String nextCharID() {
+		if (currentCharIDIterator == null) {
+			currentCharIDIterator = getCharIDs().iterator();
+		}
+		if (currentCharIDIterator.hasNext()) {
+			currentExpectedCharID = currentCharIDIterator.next();
+		}
+		else {
+			currentExpectedCharID = null;
+		}
+		return currentExpectedCharID;
+	}
+
+
+	/**
+	 * Returns the column ID that has been the result of the last call of {@link #nextCharID()}.
+	 * 
+	 * @return the currently expected column ID or {@code null} if no more IDs are to come
+	 */
+	public String getCurrentExpectedCharID() {
+		if (currentExpectedCharID == null) {
+			nextCharID();  // Set ID if iterator was not yet created. If the end of the list was reached, the value will remain null.
+		}
+		return currentExpectedCharID;
+	}
+
+
+	/**
+	 * Determines whether the contents of the current {@code cell} tag are buffered or not. Buffering becomes necessary, if the order
+	 * of {@code cell} tags differs from the order of column definitions from {@code char} tags.
+	 * 
+	 * @return {@code true} if the current cell is buffered or {@code false} otherwise
+	 */
+	public boolean isCurrentCellBuffered() {
+		return currentCellBuffered;
+	}
+
+
+	/**
+	 * Allow to specify whether the contents of the current {@code cell} tag are buffered or not.
+	 * 
+	 * @return Specify {@code true} if the current cell is buffered or {@code false} otherwise.
+	 */
+	public void setCurrentCellBuffered(boolean currentCellBuffered) {
+		this.currentCellBuffered = currentCellBuffered;
+	}
+
+
 	/**
 	 * Returns {@code true} if at least one node was encountered that specified {@code true} as the value of {@link NeXMLConstants.ATTR_ROOT}.
 	 * 

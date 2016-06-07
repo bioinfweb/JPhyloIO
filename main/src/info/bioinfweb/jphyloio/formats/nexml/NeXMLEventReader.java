@@ -42,6 +42,7 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
@@ -683,6 +684,15 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+				
+				// Related to handling cell tags that were not in the order of the columns:
+				if (!streamDataProvider.getCurrentCellsBuffer().isEmpty()) {
+					// All waiting events should have been consumed in the last call of the cell tag element reader.
+					throw new JPhyloIOReaderException(streamDataProvider.getCurrentCellsBuffer().size() + 
+							" cell tag(s) referencing an undeclared column ID was found.", event.getLocation());
+				}
+				//TODO Output gaps until the alignment length is reached somewhere or are different sequence lengths allowed?
+				streamDataProvider.clearCurrentRowInformation();
 			}
 		});
 		
@@ -693,26 +703,58 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 				String token = XMLUtils.readStringAttr(element, ATTR_STATE, null);
-				String character = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
+				String columnID = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
 				
 				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) 
 						&& !streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
 					
-					String currentStates = streamDataProvider.getCharIDToStatesMap().get(character);
+					String currentStates = streamDataProvider.getCharIDToStatesMap().get(columnID);
 		 	 		String translatedToken = streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(token);
 		 	 		if (translatedToken != null) {
 		 	 			token = translatedToken;
 		 	 		}
 		 		}
 				
-				streamDataProvider.getCurrentEventCollection().add(new SingleSequenceTokenEvent(label, token)); //TODO provide some information about the column in which this token belongs?
+				SingleSequenceTokenEvent currentTokenEvent = new SingleSequenceTokenEvent(label, token);
+				
+				// Handle cell tags that are not in the order of the columns:
+				String expectedID = streamDataProvider.getCurrentExpectedCharID();
+				if (expectedID == null) {
+					throw new JPhyloIOReaderException("A row contained more cell tags then previously declared columns.", event.getLocation());
+				}
+				else if (expectedID.equals(columnID)) {  // Fire the current event:
+					streamDataProvider.getCurrentEventCollection().add(currentTokenEvent);
+					expectedID = streamDataProvider.nextCharID();  // Move iterator forward for next call of this method.
+					streamDataProvider.setCurrentCellBuffered(false);
+				}
+				else {  // Buffer current events for later use:
+					BufferedEventInfo<SingleSequenceTokenEvent> info = new BufferedEventInfo<SingleSequenceTokenEvent>(currentTokenEvent);
+					streamDataProvider.getCurrentCellsBuffer().put(columnID, info);
+					streamDataProvider.setCurrentEventCollection(info.getNestedEvents());
+					streamDataProvider.setCurrentCellBuffered(true);
+				}
+				
+				// Fire all waiting events from the buffer that fit to the current position:
+				BufferedEventInfo<SingleSequenceTokenEvent> info = streamDataProvider.getCurrentCellsBuffer().get(expectedID);
+				while (info != null) {
+					streamDataProvider.getCurrentEventCollection().add(info.getStartEvent());
+					streamDataProvider.getCurrentEventCollection().addAll(info.getNestedEvents());
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
+					
+					info = streamDataProvider.getCurrentCellsBuffer().get(streamDataProvider.nextCharID());  // Move iterator forward for next iteration or next call of this method.
+				}
 			}
 		});
 		
 		putElementReader(new XMLElementReaderKey(TAG_ROW, TAG_CELL, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
+				if (streamDataProvider.isCurrentCellBuffered()) {
+					streamDataProvider.resetCurrentEventCollection();  // Remove current buffer list.
+				}
+				else {
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
+				}
 			}
 		});
 		
