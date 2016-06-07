@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 
@@ -48,10 +49,13 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	private NeXMLSingleTokenDefinitionInformation currentSingleTokenDefinition;	
 
 	private Map<String, List<String>> tokenSetIDtoColumnsMap = new HashMap<String, List<String>>();
-	private List<String> charIDs = new ArrayList<String>();	
+	private List<String> charIDs = new ArrayList<String>();
+	private Map<String, Integer> charIDToIndexMap = new HashMap<String, Integer>();
 	private Map<String, String> charIDToStatesMap = new HashMap<String, String>();
 	
 	private String branchLengthsFormat = null;
+	private boolean isTrulyRooted = false;
+	private Set<String> rootNodeIDs;
 	
 	
 	public NeXMLReaderStreamDataProvider(NeXMLEventReader nexmlEventReader) {
@@ -62,6 +66,16 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	@Override
 	public NeXMLEventReader getEventReader() {
 		return (NeXMLEventReader)super.getEventReader();
+	}
+	
+	
+	public boolean isAllowLongTokens() {
+		return allowLongTokens;
+	}
+
+
+	public void setAllowLongTokens(boolean allowLongTokens) {
+		this.allowLongTokens = allowLongTokens;
 	}
 
 
@@ -88,13 +102,13 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	public void setAlternativeStringRepresentation(String alternativeStringRepresentation) {
 		this.alternativeStringRepresentation = alternativeStringRepresentation;
 	}
-
-
-	public Map<String, NeXMLTokenSetInformation> getTokenSets() {
-		return tokenSets;
+	
+	
+	public Map<String, String> getOtuIDToLabelMap() {
+		return otuIDToLabelMap;
 	}
 
-
+	
 	public String getCurrentTokenSetID() {
 		return currentTokenSetID;
 	}
@@ -103,21 +117,11 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	public void setCurrentTokenSetID(String tokenSetID) {
 		this.currentTokenSetID = tokenSetID;
 	}
+	
 
-
-	public boolean isAllowLongTokens() {
-		return allowLongTokens;
-	}
-
-
-	public void setAllowLongTokens(boolean allowLongTokens) {
-		this.allowLongTokens = allowLongTokens;
-	}
-
-
-	public Map<String, String> getOtuIDToLabelMap() {
-		return otuIDToLabelMap;
-	}
+	public Map<String, NeXMLTokenSetInformation> getTokenSets() {
+		return tokenSets;
+	}	
 
 
 	public Map<String, String> getTokenDefinitionIDToSymbolMap() {
@@ -133,6 +137,11 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	public void setCurrentSingleTokenDefinition(NeXMLSingleTokenDefinitionInformation currentSingleTokenDefinition) {
 		this.currentSingleTokenDefinition = currentSingleTokenDefinition;
 	}
+	
+	
+	public Map<String, List<String>> getTokenSetIDtoColumnsMap() {
+		return tokenSetIDtoColumnsMap;
+	}	
 
 
 	public List<String> getCharIDs() {
@@ -140,14 +149,14 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 	
+	protected Map<String, Integer> getCharIDToIndexMap() {
+		return charIDToIndexMap;
+	}
+
+
 	public Map<String, String> getCharIDToStatesMap() {
 		return charIDToStatesMap;
-	}
-	
-
-	public Map<String, List<String>> getTokenSetIDtoColumnsMap() {
-		return tokenSetIDtoColumnsMap;
-	}
+	}	
 
 
 	public String getBranchLengthsFormat() {
@@ -157,5 +166,25 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 
 	public void setBranchLengthsFormat(String branchLengthsFormat) {
 		this.branchLengthsFormat = branchLengthsFormat;
+	}
+
+
+	protected Set<String> getRootNodeIDs() {
+		return rootNodeIDs;
+	}
+
+
+	protected boolean isTrulyRooted() {
+		return isTrulyRooted;
+	}
+
+
+	protected void setTrulyRooted(boolean isTrulyRooted) {
+		this.isTrulyRooted = isTrulyRooted;
+	}
+
+
+	protected void setRootNodeIDs(Set<String> rootNodeIDs) {
+		this.rootNodeIDs = rootNodeIDs;
 	}
 }

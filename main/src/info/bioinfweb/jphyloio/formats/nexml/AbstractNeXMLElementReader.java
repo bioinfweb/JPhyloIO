@@ -121,7 +121,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	protected void createIntervalEvents(NeXMLReaderStreamDataProvider streamDataProvider, String[] charIDs) {
 		boolean[] charSets = new boolean[streamDataProvider.getCharIDs().size()];
 		for (String charID: charIDs) {	
-			charSets[streamDataProvider.getCharIDs().indexOf(charID)] = true;					
+			charSets[streamDataProvider.getCharIDToIndexMap().get(charID)] = true;
 		}
 		
 		int currentIndex = -1;
