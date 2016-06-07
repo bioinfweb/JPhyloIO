@@ -100,6 +100,7 @@ main/src/info/bioinfweb/jphyloio/factory/JPhyloIOEventFactory.java -text svneol=
 main/src/info/bioinfweb/jphyloio/factory/JPhyloIOReaderWriterFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/SingleReaderWriterFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/BufferedEventInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/DefaultFormatInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/JPhyloIOFormatIDs.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/JPhyloIOFormatInfo.java -text svneol=unset#text/plain

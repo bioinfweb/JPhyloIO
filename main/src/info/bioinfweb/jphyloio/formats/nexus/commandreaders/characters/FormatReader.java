@@ -35,8 +35,6 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
@@ -46,7 +44,7 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLTokenSetInformation;
+import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractKeyValueCommandReader;
@@ -70,27 +68,8 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	public static final Pattern MIXED_DATA_TYPE_SINGLE_SET_PATTERN = Pattern.compile("(.+)\\:([0-9]+)\\-([0-9]+)");
 	
 	
-	/**
-	 * Used to buffer information on token sets. The list of nested events is primarily meant for {@link CharacterSetIntervalEvent}s,
-	 * since  {@link SingleTokenDefinitionEvent}s are the same for all sets and are stored in a separate list.
-	 * 
-	 * @author Ben St&ouml;ver
-	 * @since 0.0.0
-	 * @see NeXMLTokenSetInformation
-	 */
-	private static class TokenSetInfo {
-		public TokenSetDefinitionEvent startEvent;
-		public List<JPhyloIOEvent> nestedEvents = new ArrayList<JPhyloIOEvent>();
-		
-		public TokenSetInfo(TokenSetDefinitionEvent startEvent) {
-			super();
-			this.startEvent = startEvent;
-		}
-	}
-	
-	
 	private boolean continuousData = false;
-	private List<TokenSetInfo> tokenSetInfos = new ArrayList<TokenSetInfo>();
+	private List<BufferedEventInfo<TokenSetDefinitionEvent>> tokenSetInfos = new ArrayList<BufferedEventInfo<TokenSetDefinitionEvent>>();  // The list of nested events is primarily meant for {@link CharacterSetIntervalEvent}s, since {@link SingleTokenDefinitionEvent}s are the same for all sets and are stored in a separate list.
 	private List<SingleTokenDefinitionEvent> singleTokenDefinitionEvents = new ArrayList<SingleTokenDefinitionEvent>();
 	
 	
@@ -127,14 +106,14 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	
 	private boolean parseMixedDataType(String content) {
 		String[] parts = content.split("\\,");
-		List<TokenSetInfo> tokenSetInfoBuffer = new ArrayList<TokenSetInfo>(2 * parts.length);
+		List<BufferedEventInfo<TokenSetDefinitionEvent>> tokenSetInfoBuffer = new ArrayList<BufferedEventInfo<TokenSetDefinitionEvent>>(2 * parts.length);
 		for (int i = 0; i < parts.length; i++) {
 			Matcher matcher = MIXED_DATA_TYPE_SINGLE_SET_PATTERN.matcher(parts[i]);
 			if (matcher.matches()) {
-				TokenSetInfo info = new TokenSetInfo(new TokenSetDefinitionEvent(getTokenSetType(matcher.group(1).toUpperCase()), 
-						DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),	matcher.group(1)));
+				BufferedEventInfo<TokenSetDefinitionEvent> info = new BufferedEventInfo<TokenSetDefinitionEvent>(new TokenSetDefinitionEvent(
+						getTokenSetType(matcher.group(1).toUpperCase()), DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),	matcher.group(1)));
 				try {
-					info.nestedEvents.add(new CharacterSetIntervalEvent(Long.parseLong(matcher.group(2)), Long.parseLong(matcher.group(3)) + 1));
+					info.getNestedEvents().add(new CharacterSetIntervalEvent(Long.parseLong(matcher.group(2)), Long.parseLong(matcher.group(3)) + 1));
 				}
 				catch (NumberFormatException e) {
 					return false;  // Abort parsing and treat the whole string as a regular data type name.  //TODO Give warning or throw exception?
@@ -179,7 +158,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			}
 			else {
 				if (tokenSetInfos.isEmpty()) {  // Only MrBayes extension allows to specify more than one token set.
-					tokenSetInfos.add(new TokenSetInfo(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), 
+					tokenSetInfos.add(new BufferedEventInfo<TokenSetDefinitionEvent>(new TokenSetDefinitionEvent(getTokenSetType(upperCaseValue), 
 							DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(),
 							info.getValue())));  // Since this token set shall be valid for the whole alignment, no interval events need to be created here.
 					eventCreated = true;
@@ -275,13 +254,13 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 				removeWaitingCharacterStateEvents();  // Possibly such events would not fit to all token sets.
 			}
 			
-			for (TokenSetInfo info : tokenSetInfos) {
-				queue.add(info.startEvent);
+			for (BufferedEventInfo<TokenSetDefinitionEvent> info : tokenSetInfos) {
+				queue.add(info.getStartEvent());
 				for (SingleTokenDefinitionEvent singleTokenDefinitionEvent : singleTokenDefinitionEvents) {
 					queue.add(singleTokenDefinitionEvent);
 					queue.add(new ConcreteJPhyloIOEvent(EventContentType.SINGLE_TOKEN_DEFINITION, EventTopologyType.END));
 				}
-				queue.addAll(info.nestedEvents);
+				queue.addAll(info.getNestedEvents());
 				queue.add(new ConcreteJPhyloIOEvent(EventContentType.TOKEN_SET_DEFINITION, EventTopologyType.END));
 			}
 	
