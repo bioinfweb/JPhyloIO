@@ -627,20 +627,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				}
 
 				streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-	    			null, new URIOrStringIdentifier(null, PREDICATE_CHAR), null, null)); // ID conflict theoretically possible
-				
-				streamDataProvider.getCurrentEventCollection().add(
-						new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-						new URIOrStringIdentifier(null, PREDICATE_CHAR_ATTR_TOKENS), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, XMLUtils.readStringAttr(element, ATTR_TOKENS, null), null));						
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-				
-				streamDataProvider.getCurrentEventCollection().add(
-						new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-						new URIOrStringIdentifier(null, PREDICATE_CHAR_ATTR_CODON_POSITION), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, XMLUtils.readStringAttr(element, ATTR_CODON_POSITION, null), null));						
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-				
+	    			null, new URIOrStringIdentifier(null, PREDICATE_CHAR), null, null));  // ID conflict theoretically possible
+				fireAttributeAsLiteralMetaEvent(element, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, streamDataProvider);
+				fireAttributeAsLiteralMetaEvent(element, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION, streamDataProvider);
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 			}
 		});

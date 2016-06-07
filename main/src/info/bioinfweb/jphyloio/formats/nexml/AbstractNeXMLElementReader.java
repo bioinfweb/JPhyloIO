@@ -21,13 +21,21 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -40,7 +48,7 @@ import javax.xml.stream.events.XMLEvent;
  * @author Sarah Wiechers
  */
 public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReader<NeXMLReaderStreamDataProvider> 
-		implements XMLElementReader<NeXMLReaderStreamDataProvider>, NeXMLConstants {
+		implements XMLElementReader<NeXMLReaderStreamDataProvider>, NeXMLConstants, ReadWriteConstants {
 	
 	protected static class LabeledIDEventInformation {
 		public String id;
@@ -170,5 +178,19 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		}
 		
 		return otuEventInformation;
+	}
+	
+	
+	protected void fireAttributeAsLiteralMetaEvent(StartElement element, QName attributeName, QName predicate, 
+			NeXMLReaderStreamDataProvider streamDataProvider) {
+		
+		String value = XMLUtils.readStringAttr(element, attributeName, null);
+		if (value != null) {
+			streamDataProvider.getCurrentEventCollection().add(
+					new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+					new URIOrStringIdentifier(null, predicate), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
+			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, value, null));						
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		}
 	}
 }
