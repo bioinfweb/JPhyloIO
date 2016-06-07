@@ -28,6 +28,9 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.io.File;
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
 
@@ -320,54 +323,59 @@ public class NeXMLEventReaderTest {
 	
 	
 	@Test
-	public void testReadingDNACells() {
+	public void testReadingDNACellsOrdered() throws Exception {
+		testReadingDNACells("data/NeXML/DNACells.xml");
+	}
+	
+	
+	@Test
+	public void testReadingDNACellsUnordered() throws Exception {
+		testReadingDNACells("data/NeXML/DNACellsDifferentOrder.xml");
+	}
+	
+	
+	private void testReadingDNACells(String file) throws Exception {
+		NeXMLEventReader reader = new NeXMLEventReader(new File(file), new ReadWriteParameterMap());
 		try {
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/DNACells.xml"), new ReadWriteParameterMap());
-			try {
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
-				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
-				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", null, reader);
-				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
-				assertEndEvent(EventContentType.OTU, reader);
-				assertEndEvent(EventContentType.OTU_LIST, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxa", reader);
-				
-				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
-				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertCharacterSetIntervalEvent(0, 2, reader);
-				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
-				assertSingleTokenEvent("A", true, reader);
-				assertSingleTokenEvent("G", true, reader);
-				assertSingleTokenEvent("A", true, reader);
-				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
-				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "row2", "taxon2", reader);
-				assertSingleTokenEvent("A", true, reader);
-				assertSingleTokenEvent("G", true, reader);
-				assertSingleTokenEvent("T", true, reader);
-				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-				
-				assertEndEvent(EventContentType.ALIGNMENT, reader);
-				
-				assertEndEvent(EventContentType.DOCUMENT, reader);
-			}
-			finally {
-				reader.close();
-			}
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa", null, reader);
+			assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+			assertEndEvent(EventContentType.OTU, reader);
+			assertLabeledIDEvent(EventContentType.OTU, "taxon2", null, reader);
+			assertEndEvent(EventContentType.OTU, reader);
+			assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+			assertEndEvent(EventContentType.OTU, reader);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxa", reader);
+			
+			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+			assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+			assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+			assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+			assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+			assertCharacterSetIntervalEvent(0, 2, reader);
+			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+			assertSingleTokenEvent("A", true, reader);
+			assertSingleTokenEvent("G", true, reader);
+			assertSingleTokenEvent("A", true, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+			
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "row2", "taxon2", reader);
+			assertSingleTokenEvent("A", true, reader);
+			assertSingleTokenEvent("G", true, reader);
+			assertSingleTokenEvent("T", true, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertEndEvent(EventContentType.ALIGNMENT, reader);
+			
+			assertEndEvent(EventContentType.DOCUMENT, reader);
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
+		finally {
+			reader.close();
 		}
 	}
 }
