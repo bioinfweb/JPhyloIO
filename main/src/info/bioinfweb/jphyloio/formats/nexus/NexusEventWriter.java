@@ -207,15 +207,19 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeLinkTaxaCommand(LinkedLabeledIDEvent startEvent) throws IOException {
+	private void writeLinkCommand(String linkedID, String linkedBlockName, EventContentType linkedContentType) throws IOException {
+		writeLineStart(writer, COMMAND_NAME_LINK);
+		writer.write(' ');
+		writer.write(linkedBlockName);
+		writer.write(KEY_VALUE_SEPARATOR);
+		writer.write(formatToken(parameters.getLabelEditingReporter().getEditedLabel(linkedContentType, linkedID)));
+		writeCommandEnd();
+	}
+	
+	
+	private void writeLinkCommand(LinkedLabeledIDEvent startEvent, String linkedBlockName, EventContentType linkedContentType) throws IOException {
 		if (startEvent.hasLink()) {
-			writeLineStart(writer, COMMAND_NAME_LINK);
-			writer.write(' ');
-			writer.write(BLOCK_NAME_TAXA);
-			writer.write(KEY_VALUE_SEPARATOR);
-			writer.write(formatToken(parameters.getLabelEditingReporter().getEditedLabel(
-					EventContentType.OTU_LIST, startEvent.getLinkedID())));
-			writeCommandEnd();
+			writeLinkCommand(startEvent.getLinkedID(), linkedBlockName, linkedContentType);
 		}
 	}
 	
@@ -541,7 +545,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			
 			LinkedLabeledIDEvent startEvent = matrix.getStartEvent();
 			writeTitleCommand(startEvent);
-			writeLinkTaxaCommand(startEvent);
+			writeLinkCommand(startEvent, BLOCK_NAME_TAXA, EventContentType.OTU_LIST);
 			
 			writeMatrixDimensionsCommand(matrix, columnCount);
 			writeFormatCommand(matrix);
@@ -682,7 +686,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				writeTitleCommand("Trees linked to " + parameters.getLabelEditingReporter().getEditedLabel(
 						EventContentType.OTU_LIST, groupStartEvent.getLinkedID()));
 			}
-			writeLinkTaxaCommand(groupStartEvent);  // Writes only if a block is linked.
+			writeLinkCommand(groupStartEvent, BLOCK_NAME_TAXA, EventContentType.OTU_LIST);  // Writes only if a block is linked.
 			
 			// Write trees:
 			Set<String> usedLabels = new HashSet<String>();
@@ -729,6 +733,21 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					" phylogenetic network definitions, which have not been written to the Nexus document, since it only supports trees.");
 		}
 	}
+	
+	
+//	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
+//		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
+//		while (matrixIterator.hasNext()) {
+//			MatrixDataAdapter matrix = matrixIterator.next();
+//			ObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = matrix.getCharacterSets();
+//			Iterator<String> charSetIDIterator = characterSets.getIDIterator();
+//			if (charSetIDIterator.hasNext()) {
+//				
+//				writeBlockStart(BLOCK_NAME_SETS);
+//				writeLinkCommand(matrix.getStartEvent().getID(), BL, linkedContentType);
+//			}
+//		}
+//	}
 	
 	
 	@Override
