@@ -53,7 +53,6 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	private Map<String, Integer> charIDToIndexMap = new HashMap<String, Integer>();
 	private Map<String, String> charIDToStatesMap = new HashMap<String, String>();
 	
-	private String branchLengthsFormat = null;
 	private boolean isTrulyRooted = false;
 	private Set<String> rootNodeIDs;
 	
@@ -79,11 +78,21 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 
+	/**
+	 * Returns a stack of {@link EventContentType} that represents the currently encountered nested meta events. 
+	 * 
+	 * @return the stack of EventContentType representing the encountered meta events
+	 */
 	public Stack<EventContentType> getMetaType() {
 		return metaType;
 	}
 
 
+	/**
+	 * Returns the datatype of character content nested under the current literal meta element. 
+	 * 
+	 * @return the datatype of character content nested under the current literal meta element
+	 */
 	public QName getNestedMetaType() {
 		return nestedMetaType;
 	}
@@ -94,6 +103,12 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 
 
+	/**
+	 * Returns the value of the content attribute of the current literal meta element to be used as an alternative 
+	 * string representation by a following {@link LiteralMetadataContentEvent}.
+	 * 
+	 * @return the value of the content attribute of the current literal meta element
+	 */
 	public String getAlternativeStringRepresentation() {
 		return alternativeStringRepresentation;
 	}
@@ -104,11 +119,22 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 	
 	
+	/**
+	 * Returns a map that links a label to a certain OTU ID. This map is used to determine a sequence label 
+	 * from the OTU linked to it, in case no sequence label could be found.
+	 * 
+	 * @return the map linking a label to an OTU ID
+	 */
 	public Map<String, String> getOtuIDToLabelMap() {
 		return otuIDToLabelMap;
 	}
 
 	
+	/**
+	 * Returns the ID of the states element (representing a token set definition) that is currently read.
+	 * 
+	 * @return the current token set ID
+	 */
 	public String getCurrentTokenSetID() {
 		return currentTokenSetID;
 	}
@@ -118,17 +144,34 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 		this.currentTokenSetID = tokenSetID;
 	}
 	
-
+	/**
+	 * Returns a map that links a {@link NeXMLTokenSetInformation} to a certain token set ID. 
+	 * This is used to buffer information about the token set until the start event is created and to be able 
+	 * to find the right translation map when reading sequences.
+	 * 
+	 * @return the map linking a {@link NeXMLTokenSetInformation} to an token set ID
+	 */
 	public Map<String, NeXMLTokenSetInformation> getTokenSets() {
 		return tokenSets;
 	}	
 
 
+	/**
+	 * Returns a map that links a symbol (i.e. the name of a token definition like 'A' for Adenin) to a single token definition ID.
+	 * 
+	 * @return the map linking a symbol to a single token definition ID
+	 */
 	public Map<String, String> getTokenDefinitionIDToSymbolMap() {
 		return tokenDefinitionIDToSymbolMap;
 	}
 
 
+	/**
+	 * Returns the {@link NeXMLSingleTokenDefinitionInformation} instance of the currently read single token definition, 
+	 * e.g to add more constituents.
+	 * 
+	 * @return the {@link NeXMLSingleTokenDefinitionInformation} instance of the currently read single token definition
+	 */
 	public NeXMLSingleTokenDefinitionInformation getCurrentSingleTokenDefinition() {
 		return currentSingleTokenDefinition;
 	}
@@ -139,41 +182,51 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	}
 	
 	
+	/**
+	 * Returns a map that links a symbol (i.e. the name of a token definition like 'A' for Adenin) to a single token definition ID.
+	 * 
+	 * @return the map linking a symbol to a single token definition ID
+	 */
 	public Map<String, List<String>> getTokenSetIDtoColumnsMap() {
 		return tokenSetIDtoColumnsMap;
 	}	
 
 
+	/**
+	 * Returns a list of column IDs obtained from NeXML char elements.
+	 * 
+	 * @return a list of column IDs
+	 */
 	public List<String> getCharIDs() {
 		return charIDs;
 	}
 
 	
+	/**
+	 * Returns a map linking column indices to column IDs obtained from NeXML char elements.
+	 * 
+	 * @return a map linking column indices to column IDs
+	 */
 	protected Map<String, Integer> getCharIDToIndexMap() {
 		return charIDToIndexMap;
 	}
 
 
+	/**
+	 * Returns a map linking a token set definition ID to a column ID obtained from a NeXML char elements.
+	 * 
+	 * @return a map linking a token set definition ID to a column ID
+	 */
 	public Map<String, String> getCharIDToStatesMap() {
 		return charIDToStatesMap;
 	}	
-
-
-	public String getBranchLengthsFormat() {
-		return branchLengthsFormat;
-	}
-
-
-	public void setBranchLengthsFormat(String branchLengthsFormat) {
-		this.branchLengthsFormat = branchLengthsFormat;
-	}
-
-
-	protected Set<String> getRootNodeIDs() {
-		return rootNodeIDs;
-	}
-
-
+	
+	
+	/**
+	 * Returns {@code true} if at least one node was encountered that specified {@code true} as the value of {@link NeXMLConstants.ATTR_ROOT}.
+	 * 
+	 * @return {@code true} if at least one root node was encountered
+	 */
 	protected boolean isTrulyRooted() {
 		return isTrulyRooted;
 	}
@@ -183,6 +236,16 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 		this.isTrulyRooted = isTrulyRooted;
 	}
 
+
+	/**
+	 * Returns a list of all encountered nodes that specified {@code true} as the value of {@link NeXMLConstants.ATTR_ROOT}.
+	 * 
+	 * @return a list of all encountered root nodes
+	 */
+	protected Set<String> getRootNodeIDs() {
+		return rootNodeIDs;
+	}
+	
 
 	protected void setRootNodeIDs(Set<String> rootNodeIDs) {
 		this.rootNodeIDs = rootNodeIDs;

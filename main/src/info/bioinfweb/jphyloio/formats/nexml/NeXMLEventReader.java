@@ -614,7 +614,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
 				String states =	XMLUtils.readStringAttr(element, ATTR_STATES, null);
 				
-				streamDataProvider.getCharIDToIndexMap().put(info.id, streamDataProvider.getCharIDs().size()); //TODO start at 0 or 1?
+				streamDataProvider.getCharIDToIndexMap().put(info.id, streamDataProvider.getCharIDs().size());
 				streamDataProvider.getCharIDs().add(info.id);
 				streamDataProvider.getCharIDToStatesMap().put(info.id, states);
 				
@@ -625,7 +625,22 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					throw new JPhyloIOReaderException("The states element \"" + states + "\" was referenced in a char element, but it was not defined previously.", element.getLocation()); 
 				}
 
-				readAttributes(streamDataProvider, element, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION); //TODO ID conflict possible
+				streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+	    			null, new URIOrStringIdentifier(null, PREDICATE_CHAR), null, null)); // ID conflict theoretically possible
+				
+				streamDataProvider.getCurrentEventCollection().add(
+						new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+						new URIOrStringIdentifier(null, PREDICATE_CHAR_ATTR_TOKENS), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, XMLUtils.readStringAttr(element, ATTR_TOKENS, null), null));						
+				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				
+				streamDataProvider.getCurrentEventCollection().add(
+						new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+						new URIOrStringIdentifier(null, PREDICATE_CHAR_ATTR_CODON_POSITION), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, XMLUtils.readStringAttr(element, ATTR_CODON_POSITION, null), null));						
+				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				
+				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 			}
 		});
 		
@@ -739,20 +754,28 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				if (treeType == null) {
 					throw new JPhyloIOReaderException("Tree tag must have an attribute called \"" + ATTR_XSI_TYPE + "\".", element.getLocation());
 				}
-				else {
-					String branchLengthsFormat = qNameFromCURIE(treeType, element).getLocalPart();
-					if (branchLengthsFormat.equals(TYPE_FLOAT_TREE) || branchLengthsFormat.equals(TYPE_INT_TREE)) {
-						streamDataProvider.setBranchLengthsFormat(branchLengthsFormat);
-					}					
-				}
 			}
 		});
 		
 		putElementReader(new XMLElementReaderKey(TAG_TREES, TAG_TREE, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
-						null, new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), LiteralContentSequenceType.SIMPLE)); //TODO ID conflict possible
+				if (!streamDataProvider.getRootNodeIDs().isEmpty()) {
+					for (String rootNodeID : streamDataProvider.getRootNodeIDs()) {
+						streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(RESERVED_ID_PREFIX + DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
+								null, null, rootNodeID, Double.NaN)); //ID conflict theoretically possible
+	
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
+								null, new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), LiteralContentSequenceType.SIMPLE)); //ID conflict theoretically possible
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, Boolean.toString(true), true, null));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));				
+						
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.EDGE));
+					}
+				}
+				
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
+						null, new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), LiteralContentSequenceType.SIMPLE)); //ID conflict theoretically possible
 				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, Boolean.toString(streamDataProvider.isTrulyRooted()), 
 						streamDataProvider.isTrulyRooted(), null));
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
