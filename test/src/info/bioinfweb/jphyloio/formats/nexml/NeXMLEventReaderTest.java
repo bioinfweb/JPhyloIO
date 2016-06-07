@@ -337,15 +337,12 @@ public class NeXMLEventReaderTest {
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxa", reader);
 				
-				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet0", null, reader);
-				assertCharacterSetIntervalEvent(0, 2, reader);
-				assertEndEvent(EventContentType.CHARACTER_SET, reader);
-				
-				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", "charSet0", reader);
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
 				assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
 				assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
 				assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertCharacterSetIntervalEvent(0, 2, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
