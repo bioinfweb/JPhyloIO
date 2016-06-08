@@ -60,6 +60,12 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 	private long ignoredResourceMetadata = 0;
 	
 	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param writer the writer to write data to (e.g. an instance of {@link Writer} or {@link XMLStreamWriter})
+	 * @param parameterMap the parameter map of the event writer that will be using this receiver instance
+	 */
 	public BasicEventReceiver(W writer, ReadWriteParameterMap parameterMap) {
 		super();
 		this.writer = writer;

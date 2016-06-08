@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -32,17 +30,16 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
+import info.bioinfweb.jphyloio.formats.text.BasicCommentEventReceiver;
 
 
 
-public class TokenSetEventReceiver extends BasicEventReceiver<Writer> 
-		implements JPhyloIOEventReceiver, NexusConstants {
-
+public class TokenSetEventReceiver extends BasicCommentEventReceiver implements NexusConstants {
 	private StringBuilder singleTokens = new StringBuilder();
 	
 	
 	public TokenSetEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
-		super(writer, parameterMap);
+		super(writer, parameterMap, Character.toString(COMMENT_START), Character.toString(COMMENT_END));
 	}
 
 	
