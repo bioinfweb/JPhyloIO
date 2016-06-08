@@ -119,8 +119,6 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			if (c == COMMAND_END) {
 				setAllDataProcessed(true);
 				addStartEvent(name);
-//				getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
-//						DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
 				getStreamDataProvider().getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
 				getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 				return true;
@@ -131,13 +129,11 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		}
 		
 		addStartEvent(name);
-//		getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, 
-//				DEFAULT_CHAR_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name));
 		return false;
 	}
 	
 	
-	private void readVectorFormat(boolean isFirstCall) throws IOException {
+	private void readVectorFormat() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		Collection<JPhyloIOEvent> queue = getStreamDataProvider().getCurrentEventCollection();
 		
@@ -176,9 +172,6 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		if (currentStartColumn != -1) {  // No terminal '0' was found.
 			queue.add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn));
 		}
-		else if (isFirstCall) {  // A sequence of only '0' was found.
-			queue.add(new CharacterSetIntervalEvent(0, 0));
-		}
 		queue.add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
 }
 	
@@ -194,37 +187,27 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	}
 	
 	
-	private void readStandardFormat(boolean isFirstCall) throws IOException {
+	private void readStandardFormat() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		
-		int start = parseInteger();
-		if (start == -1) {  // Command end, comment or white space was already checked before calling this method. 
+		int nexusStart = parseInteger();  //TODO Does 1 need to be subtracted here
+		if (nexusStart == -1) {  // Command end, comment or white space was already checked before calling this method. 
 			throw new JPhyloIOReaderException("Unexpected token '" + reader.peekChar() + "' found in Nexus CHARSET command.", reader);
 		}
 		else {
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
-			int end = start;  // Definitions like "1-2 4 6-7" are allowed. 
+			int nexusEnd = nexusStart;  // Definitions like "1-2 4 6-7" are allowed. 
 			if (reader.peekChar() == CHAR_SET_TO) {
 				reader.skip(1);  // Consume '-'
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				end = parseInteger();
-				if (end == -1) {
+				nexusEnd = parseInteger();
+				if (nexusEnd == -1) {
 					throw new JPhyloIOReaderException("Unexpected end of file in Nexus character set definition.", reader);
 				}
 			}
 			
-			getStreamDataProvider().getCurrentEventCollection().add(new CharacterSetIntervalEvent(start, end + 1));
+			getStreamDataProvider().getCurrentEventCollection().add(new CharacterSetIntervalEvent(nexusStart - 1, nexusEnd));
 		}
-	}
-	
-	
-	private boolean endParsing(boolean isFirstCall) {
-		setAllDataProcessed(true);
-		if (isFirstCall) {
-			getStreamDataProvider().getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, 0));  // Empty character sets are not valid in Nexus but are anyway supported here.
-		}
-		getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
-		return isFirstCall;
 	}
 	
 	
@@ -250,14 +233,16 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 		}
 		else if ((char)nextChar == COMMAND_END) {
 			reader.skip(1);  // Consume ';'.
-			return endParsing(isFirstCall);
+			setAllDataProcessed(true);
+			getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+			return isFirstCall;
 		}
 		else {
 			if (isVectorFormat) {
-				readVectorFormat(isFirstCall);
+				readVectorFormat();
 			}
 			else {
-				readStandardFormat(isFirstCall);
+				readStandardFormat();
 			}
 			getStreamDataProvider().consumeWhiteSpaceAndComments();  // Consume upcoming comments to have the fired before the next character set event.
 			return initialEventCount < getStreamDataProvider().getCurrentEventCollection().size();

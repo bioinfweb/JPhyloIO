@@ -31,6 +31,10 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * type must be enclosed between a start and an end event with content type 
  * {@link EventContentType#CHARACTER_SET}. The start event will define the ID and the name
  * of the set.
+ * <p>
+ * Note that in contrast to e.g. many alignment editors or the character set definitions in Nexus, column indices in 
+ * <i>JPhyloIO</i> start with 0 and not with 1. The indices used by instances of this class must follow this convention
+ * and readers and writers will convert indices according to the conventions of their format.
  * 
  * @author Ben St&ouml;ver
  */
@@ -46,11 +50,25 @@ public class CharacterSetIntervalEvent extends ConcreteJPhyloIOEvent {
 	 * 
 	 * @param start the index of the first position of the sequence segment to be added to the specified character set
 	 * @param end the first index after the end of the sequence segment to be added to the specified character set
+	 * @throws IndexOutOfBoundsException if {@code start} or {@code end} are below 0
+	 * @throws IllegalArgumentException if {@code end} is not greater than {@code start} (If a character set shall have 
+	 *         no length, just omit nested interval event.)
 	 */
-	public CharacterSetIntervalEvent(long start,	long end) {
+	public CharacterSetIntervalEvent(long start, long end) {
 		super(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE);
-		this.start = start;
-		this.end = end;
+		if (start < 0) {
+			throw new IndexOutOfBoundsException("start must not be below 0.");
+		}
+		else if (end < 0) {
+			throw new IndexOutOfBoundsException("end must not be below 0.");
+		}
+		else if (end <= start) {
+			throw new IllegalArgumentException("end must be grater than start. (If a character set shall have no length, just omit nested interval events.)");
+		}
+		else {
+			this.start = start;
+			this.end = end;
+		}
 	}
 
 
