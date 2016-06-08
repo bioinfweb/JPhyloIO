@@ -23,33 +23,42 @@ import static org.junit.Assert.*;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
-import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.junit.*;
 
 
 
-public class IgnoreObjectListMetadataReceiverTest {
+public class BasicEventReceiverTest {
 	@Test
 	public void test_add() throws IOException {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
-		IgnoreObjectListMetadataReceiver receiver = new IgnoreObjectListMetadataReceiver(logger, "someObject", "someFormat");
-		assertFalse(receiver.isIgnoredMetadata());
-		
-		assertTrue(receiver.add(new EdgeEvent("id1", "Edge", null, "id2", 1.0)));
-		assertFalse(receiver.isIgnoredMetadata());
+		BasicEventReceiver<Writer> receiver = new BasicEventReceiver<Writer>(null, new ReadWriteParameterMap());
+		assertFalse(receiver.didIgnoreMetadata());
 		assertTrue(logger.getMessageList().isEmpty());
 		
-		assertFalse(receiver.add(new LiteralMetadataEvent("someID", "someLabel", new URIOrStringIdentifier("someKey", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE)));
-		assertTrue(receiver.isIgnoredMetadata());
-		assertEquals(1, logger.getMessageList().size());
+		receiver.add(new LiteralMetadataEvent("someID", "someLabel", new URIOrStringIdentifier("someKey", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE));
+		receiver.add(new LiteralMetadataContentEvent(new URIOrStringIdentifier("someKey", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), "someValue", "someValue"));
+		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		receiver.add(new CommentEvent("some comment"));
+		
+		assertTrue(receiver.didIgnoreMetadata());
+		receiver.addIgnoreLogMessage(logger, "someObject", "someFormat");
+		assertEquals(2, logger.getMessageList().size());
 		assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
-		assertEquals("Metadata attached to someObject was ignored, since the someFormat format does not support this.", 
+		assertEquals("1 metadata element(s) attached to someObject was/were ignored, since the someFormat format does not support it at this position.", 
 				logger.getMessageList().get(0).getMessage());
+		assertEquals("1 comment(s) attached to someObject was/were ignored, since the someFormat format does not support it at this position.", 
+				logger.getMessageList().get(1).getMessage());
 	}
 }
