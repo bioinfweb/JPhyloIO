@@ -55,7 +55,7 @@ public class PDEEventReaderTest implements PDEConstants {
 	@Test
 	public void testOutputPDE() {
 		try {
-			PDEEventReader reader = new PDEEventReader(new File("data/PDE/MissingSequenceInfo.pde"), new ReadWriteParameterMap());
+			PDEEventReader reader = new PDEEventReader(new File("data/PDE/SimpleDNASeq.pde"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
@@ -148,6 +148,14 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertLabeledIDEvent(EventContentType.OTU, "otu4", "C", reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
+				assertCharacterSetIntervalEvent(0, 23, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
 				assertEndEvent(EventContentType.DOCUMENT, reader);
 				
@@ -578,7 +586,13 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet5", "charSet1", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix5", null, "otus1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
+				assertCharacterSetIntervalEvent(0, 20, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet7", "charSet1", reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), null, "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), null, "FC3D33", null, Color.decode("#FC3D33"), true, reader);
 				assertCharacterSetIntervalEvent(2, 2, reader);
@@ -587,19 +601,13 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(20, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet8", "charSet2", reader);
+				assertLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet10", "charSet2", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), null, "FFFF33", null, Color.decode("#FFFF33"), true, reader);				
 				assertCharacterSetIntervalEvent(5, 9, reader);
 				assertCharacterSetIntervalEvent(11, 11, reader);
 				assertCharacterSetIntervalEvent(13, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);				
-				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "matrix11", null, "otus1", reader);
-				
-				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
-				assertCharacterSetIntervalEvent(0, 20, reader);
-				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, null, true, reader);

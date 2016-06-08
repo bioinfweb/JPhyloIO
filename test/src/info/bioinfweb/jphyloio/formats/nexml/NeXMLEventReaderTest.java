@@ -376,6 +376,6 @@ public class NeXMLEventReaderTest {
 		}
 		finally {
 			reader.close();
-		}
+		}		
 	}
 }
