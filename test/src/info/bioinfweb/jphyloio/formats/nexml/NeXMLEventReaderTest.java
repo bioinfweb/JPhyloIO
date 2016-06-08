@@ -19,52 +19,42 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+import static org.junit.Assert.*;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
 
+import java.awt.Color;
 import java.io.File;
-import java.io.IOException;
-
-import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
-import static org.junit.Assert.* ;
 
 
-
-public class NeXMLEventReaderTest {
+public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants {
 	@Test
 	public void testOutputNeXML() {
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/treebase-example.xml"), parameters);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocument.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
+					System.out.println(event.getType());
 					
-					if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
-//						System.out.println(event.asLiteralMetadataContentEvent().getStringValue());						
-					}
-					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-//						System.out.println(event.asLinkedOTUEvent().getID() + ", " + event.asLinkedOTUEvent().getLabel());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-//						System.out.println(event.asEdgeEvent().getLength() + ", " + event.asEdgeEvent().getSourceID() + ", " + event.asEdgeEvent().getTargetID());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.CHARACTER_SET, EventTopologyType.START))) {						
-//						System.out.println("ID: " + event.asLabeledIDEvent().getID());
+					if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.START))) {
+//					System.out.println("Predicate: " + event.asResourceMetadataEvent().getRel().getURI());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE))) {
-//						System.out.println("Start: " + event.asCharacterSetEvent().getStart() + " End: " + event.asCharacterSetEvent().getEnd());
+//						System.out.println("Start: " + event.asCharacterSetIntervalEvent().getStart() + " End: " + event.asCharacterSetIntervalEvent().getEnd());
 					}
 				}
 			}
@@ -78,6 +68,143 @@ public class NeXMLEventReaderTest {
 		}
 	}
 	
+	
+	@Test
+	public void readSimpleDocument() {
+		try {
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocument.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxonlist", reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);				
+				assertCharacterSetIntervalEvent(0, 1, reader);
+				assertCharacterSetIntervalEvent(2, 4, reader);				
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset2", null, "alignment", reader);				
+				assertCharacterSetIntervalEvent(2, 3, reader);
+				assertCharacterSetIntervalEvent(4, 5, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertCharacterSetIntervalEvent(0, 5, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertCharactersEvent("AACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "species2", "taxon2", reader);
+				assertCharactersEvent("ACGTT", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row3", "row3", "taxon3", reader);
+				assertCharactersEvent("ACCTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup", "treegroup", "taxonlist", reader);
+				
+				assertLabeledIDEvent(EventContentType.TREE, "tree", null, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node1", "node1", "taxon1", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node2", "species2", "taxon2", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node3", "node3", "taxon3", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node4", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node5", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "node4", 0.778, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node4", "node5", 1, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node4", "node3", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node5", "node1", 0.98, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node5", "node2", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, false, true, reader);
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertLabeledIDEvent(EventContentType.NETWORK, "network", null, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node1", "node1", "taxon1", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node2", "species2", "taxon2", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node3", "node3", "taxon3", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node4", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node5", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("node4", "node5", 0.44, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node4", "node3", 0.67, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node5", "node1", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node5", "node2", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node2", "node3", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEndEvent(EventContentType.NETWORK, reader);
+				
+				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);				
+				assertEndEvent(EventContentType.DOCUMENT, reader);			
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
 	
 	
 //	@Test

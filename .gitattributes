@@ -307,6 +307,7 @@ test/data/NeXML/MetaJAXBSimpleValue.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaJAXBXMLValue.xml -text svneol=unset#text/plain
 test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
 test/data/NeXML/Paralogues.xml -text
+test/data/NeXML/SimpleDocument.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownTag.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/EditedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/MaskedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
@@ -374,7 +375,7 @@ test/data/PDE/MissingHeaderAndAlignment.pde -text
 test/data/PDE/MissingMatrix.pde -text
 test/data/PDE/MissingMetaDefinition.pde -text
 test/data/PDE/MissingSequenceInfo.pde -text
-test/data/PDE/SimpleCharSet.pde -text svneol=unset#application/octet-stream
+test/data/PDE/SimpleCharSet.pde -text
 test/data/PDE/SimpleDNASeq.pde -text svneol=unset#application/octet-stream
 test/data/PDE/SimpleDNASeq.pde.gz -text
 test/data/PDE/SimpleProteinSeq.pde -text
