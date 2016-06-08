@@ -138,7 +138,7 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 		return otuIDToLabelMap;
 	}
 
-	
+
 	/**
 	 * Returns the ID of the states element (representing a token set definition) that is currently read.
 	 * 

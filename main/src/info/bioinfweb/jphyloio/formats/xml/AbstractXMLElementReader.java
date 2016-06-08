@@ -41,7 +41,7 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 		implements XMLElementReader<P> {
 	
 	
-	protected void readAttributes(P streamDataProvider, StartElement element, QName... mappings) {
+	protected void readAttributes(P streamDataProvider, StartElement element, String idPrefix, QName... mappings) {
 		if (mappings.length % 2 != 0) {
 			throw new IllegalArgumentException("Attributes and predicates need to be given in pairs, but an uneven number of arguments was found.");
 		}
@@ -50,20 +50,22 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 			for (int i  = 0; i  < mappings.length; i += 2) {
 				attributeToPredicateMap.put(mappings[i], mappings[i + 1]);
 			}
-			readAttributes(streamDataProvider, element, attributeToPredicateMap);
+			readAttributes(streamDataProvider, element, idPrefix, attributeToPredicateMap);
 		}
 	}
 	
 	
-	protected void readAttributes(P streamDataProvider, StartElement element, Map<QName, QName> attributeToPredicateMap) {
+	protected void readAttributes(P streamDataProvider, StartElement element, String idPrefix, Map<QName, QName> attributeToPredicateMap) {
 		if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
+			String metaIDPrefix = idPrefix + ReadWriteConstants.DEFAULT_META_ID_PREFIX;
+			
 			@SuppressWarnings("unchecked")
 			Iterator<Attribute> attributes = element.getAttributes();
 			while (attributes.hasNext()) {
 				Attribute attribute = attributes.next();
 				if (attributeToPredicateMap.containsKey(attribute.getName())) { //allows to ignore certain attributes
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+							new LiteralMetadataEvent(metaIDPrefix + streamDataProvider.getIDManager().createNewID(), null, 
 							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 	
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, element.getAttributeByName(attribute.getName()).getValue(), null));

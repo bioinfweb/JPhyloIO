@@ -19,12 +19,12 @@
 package info.bioinfweb.jphyloio.formats.pde;
 
 
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 
 
@@ -41,6 +41,9 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 	private int currentSequenceLength;
 	
 	private String otuListID;
+	
+	private boolean createAlignmentStart;
+	private boolean createAlignmentEnd;
 	private String currentSequenceID;
 	private Map<Integer, String> sequenceIndexToOTUID = new HashMap<Integer, String>();
 	
@@ -80,6 +83,26 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 
 	public void setOtuListID(String otuListID) {
 		this.otuListID = otuListID;
+	}
+
+
+	protected boolean isCreateAlignmentStart() {
+		return createAlignmentStart;
+	}
+
+
+	protected void setCreateAlignmentStart(boolean createAlignmentStart) {
+		this.createAlignmentStart = createAlignmentStart;
+	}
+	
+
+	protected boolean isCreateAlignmentEnd() {
+		return createAlignmentEnd;
+	}
+
+
+	protected void setCreateAlignmentEnd(boolean createAlignmentEnd) {
+		this.createAlignmentEnd = createAlignmentEnd;
 	}
 
 

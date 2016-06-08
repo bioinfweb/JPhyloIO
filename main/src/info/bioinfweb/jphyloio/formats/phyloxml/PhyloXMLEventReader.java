@@ -202,11 +202,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.setPropertyHasResource(true);
 					
 					if (appliesToAsAttribute) {
-						readAttributes(streamDataProvider, element, ATTR_APPLIES_TO, PREDICATE_PROPERTY_ATTR_APPLIES_TO, ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, 
+						readAttributes(streamDataProvider, element, "", ATTR_APPLIES_TO, PREDICATE_PROPERTY_ATTR_APPLIES_TO, ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, 
 								ATTR_ID_REF, PREDICATE_PROPERTY_ATTR_ID_REF);
 					}
 					else {
-						readAttributes(streamDataProvider, element, ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, ATTR_ID_REF, PREDICATE_PROPERTY_ATTR_ID_REF);
+						readAttributes(streamDataProvider, element, "", ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, ATTR_ID_REF, PREDICATE_PROPERTY_ATTR_ID_REF);
 					}
 				}
 				else {
@@ -354,7 +354,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.setCreatePhylogenyStart(true);
 					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 					
-					readAttributes(streamDataProvider, element, ATTR_ROOTED, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED, ATTR_REROOTABLE, 
+					readAttributes(streamDataProvider, element, "", ATTR_ROOTED, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED, ATTR_REROOTABLE, 
 							PREDICATE_PHYLOGENY_ATTR_REROOTABLE, ATTR_BRANCH_LENGTH_UNIT, PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, ATTR_TYPE, PREDICATE_PHYLOGENY_ATTR_TYPE);
 				}
 		});
@@ -399,7 +399,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
 					
-					readAttributes(streamDataProvider, event.asStartElement(), ATTR_ID_SOURCE, PREDICATE_ATTR_ID_SOURCE);
+					readAttributes(streamDataProvider, event.asStartElement(), "", ATTR_ID_SOURCE, PREDICATE_ATTR_ID_SOURCE);
 				}
 		});
 		
@@ -426,7 +426,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
 					
-					readAttributes(streamDataProvider, event.asStartElement(), ATTR_ID_SOURCE, PREDICATE_ATTR_ID_SOURCE);
+					readAttributes(streamDataProvider, event.asStartElement(), "", ATTR_ID_SOURCE, PREDICATE_ATTR_ID_SOURCE);
 				}
 		});
 		
@@ -545,7 +545,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 						
-						readAttributes(streamDataProvider, event.asStartElement(), ATTR_ID_REF_0, PREDICATE_CLADE_REL_ATTR_IDREF0, ATTR_ID_REF_1, PREDICATE_CLADE_REL_ATTR_IDREF1,
+						readAttributes(streamDataProvider, event.asStartElement(), "", ATTR_ID_REF_0, PREDICATE_CLADE_REL_ATTR_IDREF0, ATTR_ID_REF_1, PREDICATE_CLADE_REL_ATTR_IDREF1,
 								ATTR_DISTANCE, PREDICATE_CLADE_REL_ATTR_DISTANCE, ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE);
 					}
 					else { //the phylogeny is considered as a network						
@@ -565,7 +565,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 										
 								streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 								
-								readAttributes(streamDataProvider, event.asStartElement(), ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE);
+								readAttributes(streamDataProvider, event.asStartElement(), "", ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE);
 							}
 							else {
 								throw new JPhyloIOReaderException("A node ID was referenced by a clade relation element, that was not defined before.", event.getLocation());

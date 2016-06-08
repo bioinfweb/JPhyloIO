@@ -117,7 +117,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				streamDataProvider.getSourceNode().add(new NodeEdgeInfo(id, Double.NaN, new ArrayList<JPhyloIOEvent>()));
 				streamDataProvider.getEdgeInfos().add(branchInfo);
 				
-				readAttributes(streamDataProvider, element);
+				readAttributes(streamDataProvider, element, ""); //TODO which attributes should be read?
 			}
 		};
 		
@@ -200,7 +200,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				streamDataProvider.getEdgeInfos().peek().setLength(length);
 				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 				
-				readAttributes(streamDataProvider, element);
+				readAttributes(streamDataProvider, element, ""); //TODO which attributes should be read?
 			}
 		});
 		

@@ -489,7 +489,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					streamDataProvider.setCharacterSetType(setType);
 				}
 				
-				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, info.id, info.label, info.otuOrOtusID));				
+				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, info.id, info.label, info.otuOrOtusID));
+				streamDataProvider.setCurrentAlignmentID(info.id);
 			}
 		});
 		
@@ -625,11 +626,10 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				else {
 					throw new JPhyloIOReaderException("The states element \"" + states + "\" was referenced in a char element, but it was not defined previously.", element.getLocation()); 
 				}
-
+				
 				streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
 	    			null, new URIOrStringIdentifier(null, PREDICATE_CHAR), null, null));  // ID conflict theoretically possible
-				fireAttributeAsLiteralMetaEvent(element, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, streamDataProvider);
-				fireAttributeAsLiteralMetaEvent(element, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION, streamDataProvider);
+				readAttributes(streamDataProvider, element, RESERVED_ID_PREFIX, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION);
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 			}
 		});
@@ -646,7 +646,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 				String[] charIDArray = charIDs.split(" "); //IDs are not allowed to contain spaces
 						
-				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, info.id, info.label));
+				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, info.id, info.label, 
+						streamDataProvider.getCurrentAlignmentID()));
 
 				createIntervalEvents(streamDataProvider, charIDArray);
 			}				

@@ -179,18 +179,4 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		
 		return otuEventInformation;
 	}
-	
-	
-	protected void fireAttributeAsLiteralMetaEvent(StartElement element, QName attributeName, QName predicate, 
-			NeXMLReaderStreamDataProvider streamDataProvider) {
-		
-		String value = XMLUtils.readStringAttr(element, attributeName, null);
-		if (value != null) {
-			streamDataProvider.getCurrentEventCollection().add(
-					new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-					new URIOrStringIdentifier(null, predicate), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, value, null));						
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-		}
-	}
 }

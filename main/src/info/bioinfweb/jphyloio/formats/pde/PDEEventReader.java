@@ -191,6 +191,19 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						streamDataProvider.setCharacterSetType(type);
 						streamDataProvider.setAlignmentLength(XMLUtils.readIntAttr(element, ATTR_ALIGNMENT_LENGTH, 0));
 						streamDataProvider.setSequenceCount(XMLUtils.readIntAttr(element, ATTR_SEQUENCE_COUNT, 0));
+						streamDataProvider.setCreateAlignmentStart(true);
+						streamDataProvider.setCreateAlignmentEnd(false);
+					}
+			});
+		
+		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_ALIGNMENT, XMLStreamConstants.END_ELEMENT), 
+				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
+					@Override
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+						if (streamDataProvider.isCreateAlignmentEnd()) {
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.ALIGNMENT));
+							streamDataProvider.setCreateAlignmentEnd(false);
+						}
 					}
 			});
 		
@@ -209,6 +222,8 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.OTU_LIST));
+						
+						createAlignmentStart(streamDataProvider);
 					}
 			});
 		
@@ -288,15 +303,26 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					}
 			});
 		
+		putElementReader(new XMLElementReaderKey(TAG_ALIGNMENT, TAG_CHARSETS, XMLStreamConstants.START_ELEMENT), 
+				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
+					@Override
+					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+						if (streamDataProvider.isCreateAlignmentStart()) {
+							createAlignmentStart(streamDataProvider);
+						}
+					}
+			});
+		
 		putElementReader(new XMLElementReaderKey(TAG_CHARSETS, TAG_CHARSET, XMLStreamConstants.START_ELEMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						StartElement element = event.asStartElement();						
 						String label = XMLUtils.readStringAttr(element, ATTR_CHARSET_LABEL, null);
-						String hexColor = element.getAttributeByName(ATTR_COLOR).getValue();
+						String hexColor = element.getAttributeByName(ATTR_COLOR).getValue();						
 						
-						streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.CHARACTER_SET, DEFAULT_CHAR_SET_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), label));						
+						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, 
+								DEFAULT_CHAR_SET_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), label, streamDataProvider.getCurrentAlignmentID()));
 						
 						if (element.getAttributeByName(ATTR_VISIBILITY) != null) {
 							boolean visibility = XMLUtils.readBooleanAttr(element, ATTR_VISIBILITY, false);
@@ -391,13 +417,9 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, 
-								DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, streamDataProvider.getOtuListID()));
-						
-						streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(streamDataProvider.getCharacterSetType(), 
-								DEFAULT_TOKEN_SET_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null));
-						streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, streamDataProvider.getAlignmentLength()));
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
+						if (streamDataProvider.isCreateAlignmentStart()) {
+							createAlignmentStart(streamDataProvider);
+						}
 						
 						streamDataProvider.setCurrentSequenceIndex(0);
 						streamDataProvider.setIncompleteToken("");						
@@ -408,7 +430,10 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.ALIGNMENT));
+						if (streamDataProvider.isCreateAlignmentEnd()) {
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.ALIGNMENT));
+							streamDataProvider.setCreateAlignmentEnd(false);
+						}
 					}
 			});
 		
@@ -416,7 +441,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						readAttributes(streamDataProvider, event.asStartElement(), ATTR_ALIGNMENT_LENGTH, PREDICATE_CHARACTER_COUNT, ATTR_SEQUENCE_COUNT, PREDICATE_SEQUENCE_COUNT);
+						readAttributes(streamDataProvider, event.asStartElement(), "", ATTR_ALIGNMENT_LENGTH, PREDICATE_CHARACTER_COUNT, ATTR_SEQUENCE_COUNT, PREDICATE_SEQUENCE_COUNT);
 						
 						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
 						streamDataProvider.setCurrentSequenceID(DEFAULT_SEQUENCE_ID_PREFIX + streamDataProvider.getIDManager().createNewID());
@@ -618,6 +643,28 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				}
 			}
 		}
+	}
+	
+	
+	private void createAlignmentStart(PDEReaderStreamDataProvider streamDataProvider) {
+		String id = streamDataProvider.getCurrentAlignmentID();
+		
+		if (id == null) {
+			id = DEFAULT_MATRIX_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+		}
+		
+		streamDataProvider.setCurrentAlignmentID(id);
+		
+		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, id, 
+				null, streamDataProvider.getOtuListID()));						
+		
+		streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(streamDataProvider.getCharacterSetType(), 
+				DEFAULT_TOKEN_SET_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null));
+		streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, streamDataProvider.getAlignmentLength()));
+		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
+		
+		streamDataProvider.setCreateAlignmentStart(false);
+		streamDataProvider.setCreateAlignmentEnd(true);
 	}
 
 
