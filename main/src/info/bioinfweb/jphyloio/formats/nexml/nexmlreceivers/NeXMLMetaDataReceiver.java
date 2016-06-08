@@ -38,7 +38,7 @@ import javax.xml.stream.XMLStreamWriter;
  * 
  * @author Sarah Wiechers
  */
-public class NeXMLMetaDataReceiver extends AbstractNeXMLDataReceiver {	
+public class NeXMLMetaDataReceiver extends AbstractNeXMLDataReceiver {
 
 
 	public NeXMLMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,

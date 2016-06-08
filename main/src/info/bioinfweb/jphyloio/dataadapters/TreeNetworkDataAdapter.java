@@ -50,7 +50,7 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter<LabeledIDEv
 	/**
 	 * Defines whether the represented tree or network shall be considered as rooted (at the specified root edge(s))
 	 * or if it shall be considered as an unrooted network (where the specified root edge(s) just specify the position
-	 * to start drawing the network or unrooted tree. 
+	 * to start drawing the network or unrooted tree). 
 	 * 
 	 * @return {@code true} if the tree or network shall be considered rooted or {@code false} otherwise
 	 */
@@ -80,7 +80,7 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter<LabeledIDEv
 	 * 
 	 * @param id the ID of the requested node
 	 * @return the event that describes the specified node
-	 * @throws IllegalArgumentException if no to node start for the specified ID is present 
+	 * @throws IllegalArgumentException if no node start event for the specified ID is present
 	 */
 	public LinkedLabeledIDEvent getNodeStartEvent(String id);
 	

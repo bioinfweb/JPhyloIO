@@ -171,7 +171,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			}
 		};
 		
-		AbstractNeXMLElementReader readEdgeStart = new AbstractNeXMLElementReader() {			
+		AbstractNeXMLElementReader readEdgeStart = new AbstractNeXMLElementReader() {
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
@@ -679,9 +679,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				if (!streamDataProvider.getCurrentCellsBuffer().isEmpty()) {
 					// All waiting events should have been consumed in the last call of the cell tag element reader.
 					throw new JPhyloIOReaderException(streamDataProvider.getCurrentCellsBuffer().size() + 
-							" cell tag(s) referencing an undeclared column ID was found.", event.getLocation());
+							" cell tag(s) referencing an undeclared column ID was/were found.", event.getLocation());
 				}
-				//TODO Output gaps until the alignment length is reached somewhere or are different sequence lengths allowed?
+				
 				streamDataProvider.clearCurrentRowInformation();
 			}
 		});
