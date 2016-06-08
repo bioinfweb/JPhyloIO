@@ -378,7 +378,7 @@ public class JPhyloIOTestTools {
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventContentType.CHARACTER_SET_INTERVAL, event.getType().getContentType());
 		
-		CharacterSetIntervalEvent charSetEvent = event.asCharacterSetEvent();
+		CharacterSetIntervalEvent charSetEvent = event.asCharacterSetIntervalEvent();
 		assertEquals(expectedStart, charSetEvent.getStart());
 		assertEquals(expectedEnd, charSetEvent.getEnd());
   }
