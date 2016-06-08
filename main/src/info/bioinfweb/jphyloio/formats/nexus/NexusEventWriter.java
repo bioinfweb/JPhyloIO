@@ -39,7 +39,7 @@ import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -258,7 +258,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeLineBreak(writer, parameters);
 			increaseIndention();
 			increaseIndention();
-			IgnoreObjectListMetadataReceiver receiver = new IgnoreObjectListMetadataReceiver(logger, "an OTU", "Nexus");
+			BasicEventReceiver<Writer> receiver = new BasicEventReceiver<Writer>(writer, parameters);
 			Iterator<String> iterator = otuList.getIDIterator();
 			while (iterator.hasNext()) {
 				String id = iterator.next();
@@ -270,8 +270,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					writeCommandEnd();
 				}
 				otuList.writeContentData(receiver, id);
-				receiver.reset();
 			}
+			receiver.addIgnoreLogMessage(logger, "one or more OTUs", "Nexus");
 			decreaseIndention();
 			decreaseIndention();
 			

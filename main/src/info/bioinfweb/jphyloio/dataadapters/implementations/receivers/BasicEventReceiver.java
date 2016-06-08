@@ -270,4 +270,21 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 					"\" occured when trying to add an event to this receiver.", e);
 		}
 	}
+	
+	
+	public void addIgnoreLogMessage(ApplicationLogger logger,	String objectName, String formatName) {
+		if ((logger == null) || (objectName == null) || (formatName == null)) {
+			throw new NullPointerException("None of the parameters of this method may be null.");
+		}
+		else {
+			if (didIgnoreMetadata()) {
+				logger.addWarning(getIgnoredMetadata() + " metadata element(s) attached to " + objectName + " was/were ignored, since the " + 
+						formatName + " format does not support it at this position.");
+			}
+			if (didIgnoreComments()) {
+				logger.addWarning(getIgnoredComments() + " comment(s) attached to " + objectName + " was/were ignored, since the " + 
+						formatName + " format does not support it at this position.");
+			}
+		}
+	}
 }
