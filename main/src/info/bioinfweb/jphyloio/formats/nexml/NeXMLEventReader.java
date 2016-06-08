@@ -132,7 +132,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				else if (streamDataProvider.getParentName().equals(TAG_MATRIX.getLocalPart())) {
 					predicate = new URIOrStringIdentifier(null, PREDICATE_MATRIX);
 				}
-				//add cases if element reader is registered for more parent tags
+				//add cases if element reader is registered for more parent tags				
 				
 	    	streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
 	    			null, predicate, null, null)); // ID conflict theoretically possible
@@ -625,12 +625,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				}
 				else {
 					throw new JPhyloIOReaderException("The states element \"" + states + "\" was referenced in a char element, but it was not defined previously.", element.getLocation()); 
-				}
+				}				
 				
-				streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-	    			null, new URIOrStringIdentifier(null, PREDICATE_CHAR), null, null));  // ID conflict theoretically possible
-				readAttributes(streamDataProvider, element, RESERVED_ID_PREFIX, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION);
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+				if ((element.getAttributeByName(ATTR_TOKENS) != null) || (element.getAttributeByName(ATTR_CODON_POSITION) != null)) {
+					streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
+							null, new URIOrStringIdentifier(null, PREDICATE_CHAR), null, null));  // ID conflict theoretically possible
+					readAttributes(streamDataProvider, element, RESERVED_ID_PREFIX, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION);
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+				}	    			
 			}
 		});
 		
@@ -841,6 +843,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_EDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
+		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_ROOTEDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
+		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_ROOTEDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
 		putElementReader(new XMLElementReaderKey(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
 		putElementReader(new XMLElementReaderKey(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
 		

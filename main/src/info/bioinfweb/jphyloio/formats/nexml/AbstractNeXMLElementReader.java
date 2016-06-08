@@ -23,19 +23,13 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -128,7 +122,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	
 	protected void createIntervalEvents(NeXMLReaderStreamDataProvider streamDataProvider, String[] charIDs) {
 		boolean[] charSets = new boolean[streamDataProvider.getCharIDs().size()];
-		for (String charID: charIDs) {	
+		for (String charID: charIDs) {
 			charSets[streamDataProvider.getCharIDToIndexMap().get(charID)] = true;
 		}
 		
@@ -143,8 +137,9 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			if ((i == 0) || (charSets[i] && !charSets[i - 1])) {
 				startIndex = i;
 			}
-			else if (charSets[i] && ((i + 1 == charSets.length) || !charSets[i + 1])) {
-				streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex));
+			
+			if (charSets[i] && ((i + 1 == charSets.length) || !charSets[i + 1])) {
+				streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex + 1)); //the end of a character set interval is specified as the first index after the end of the sequence segment to be added to the specified character set
 			}
 		}
 	}

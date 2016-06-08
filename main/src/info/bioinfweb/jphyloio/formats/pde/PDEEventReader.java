@@ -373,7 +373,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									if (end.length() == 0) {
 										end.append(start.toString());
 									}
-									streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(Long.parseLong(start.toString()), Long.parseLong(end.toString())));
+									streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(Long.parseLong(start.toString()) - 1, Long.parseLong(end.toString())));
 								}								
 								writeStart = true;
 								start.delete(0, start.length());
@@ -400,7 +400,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							if (end.length() == 0) {
 								end.append(start.toString());
 							}							
-							streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(Long.parseLong(start.toString()), Long.parseLong(end.toString())));
+							streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(Long.parseLong(start.toString()) - 1, Long.parseLong(end.toString())));
 						}					
 					}
 			});
