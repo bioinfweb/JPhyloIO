@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
+package info.bioinfweb.jphyloio.formats.text;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 
 import java.io.IOException;

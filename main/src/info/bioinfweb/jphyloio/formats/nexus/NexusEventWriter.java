@@ -40,7 +40,6 @@ import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -50,6 +49,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.CharacterSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.TokenSetEventReceiver;
+import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
 
 
 

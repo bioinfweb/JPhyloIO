@@ -58,7 +58,6 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreTreeNetworkGroupDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/AbstractSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/BasicEventReceiver.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/TextSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/CharacterSetIntervalEvent.java -text svneol=unset#text/plain
@@ -229,6 +228,7 @@ main/src/info/bioinfweb/jphyloio/formats/text/AbstractTextEventReader.java -text
 main/src/info/bioinfweb/jphyloio/formats/text/BasicCommentEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/KeyValueInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/TextReaderStreamDataProvider.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/text/TextSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventReader.java -text svneol=unset#text/plain
