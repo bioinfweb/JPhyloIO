@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
+package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
 import info.bioinfweb.jphyloio.events.CommentEvent;

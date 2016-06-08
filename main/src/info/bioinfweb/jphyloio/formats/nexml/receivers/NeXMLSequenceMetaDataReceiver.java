@@ -16,29 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
+package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
+
+import java.io.IOException;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
 
-public abstract class AbstractNeXMLDataReceiver extends BasicEventReceiver<XMLStreamWriter> implements NeXMLConstants {
-	private NeXMLWriterStreamDataProvider streamDataProvider;
-	
-
-	public AbstractNeXMLDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap);
-		this.streamDataProvider = streamDataProvider;
-	}
+public class NeXMLSequenceMetaDataReceiver extends NeXMLMetaDataReceiver {
 
 	
-	protected NeXMLWriterStreamDataProvider getStreamDataProvider() {
-		return streamDataProvider;
+	public NeXMLSequenceMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
+			NeXMLWriterStreamDataProvider streamDataProvider) {
+		super(writer, parameterMap, streamDataProvider);
 	}
+	
+
+	@Override
+	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		switch (event.getType().getContentType()) {
+			default:
+				break;
+		}
+		return true;
+	}	
 }

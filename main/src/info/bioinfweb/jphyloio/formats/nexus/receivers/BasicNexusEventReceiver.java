@@ -16,35 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
+package info.bioinfweb.jphyloio.formats.nexus.receivers;
 
 
 import java.io.IOException;
-
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+import java.io.Writer;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 
 
 
-public class NeXMLSequenceMetaDataReceiver extends NeXMLMetaDataReceiver {
-
-	
-	public NeXMLSequenceMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, streamDataProvider);
+public class BasicNexusEventReceiver extends BasicEventReceiver<Writer> implements NexusConstants {
+	public BasicNexusEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
+		super(writer, parameterMap);
 	}
 	
-
+	
 	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		switch (event.getType().getContentType()) {
-			default:
-				break;
-		}
-		return true;
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
+		getWriter().write(COMMENT_START);
+		getWriter().write(event.getContent());
+		getWriter().write(COMMENT_END);
+		//TODO Handle continued comments
 	}	
 }

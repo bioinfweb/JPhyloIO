@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
+package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -33,46 +33,34 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-/**
- * This receiver should be used if no other elements than meta are expected under an element.
- * 
- * @author Sarah Wiechers
- */
-public class NeXMLMetaDataReceiver extends AbstractNeXMLDataReceiver {
 
-
-	public NeXMLMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
+public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
+	public NeXMLCollectNamespaceReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}
-
-
+	
+	
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleLiteralMeta(getStreamDataProvider(), event);
-	}
-
-
-	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(getStreamDataProvider(), event);
+		AbstractNeXMLDataReceiverMixin.checkLiteralMeta(getStreamDataProvider(), event);
 	}
 
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleResourceMeta(getStreamDataProvider(), event);
+		AbstractNeXMLDataReceiverMixin.checkResourceMeta(getStreamDataProvider(), event);
 	}
 
 
 	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleMetaEndEvent(getStreamDataProvider(), event);
-	}
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {}
 
 
 	@Override
-	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
-		AbstractNeXMLDataReceiverMixin.handleComment(getStreamDataProvider(), event);
-	}
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {}
+
+
+	@Override
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {}
 }

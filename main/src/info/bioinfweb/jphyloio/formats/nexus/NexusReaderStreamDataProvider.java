@@ -167,7 +167,7 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	 * @param key the key in the shared information map
 	 * @return the map object contained in the shared information map
 	 */
-	private Map<String, String> getMap(String key) {
+	private Map<String, String> getStringMap(String key) {
 		@SuppressWarnings("unchecked")
 		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(key);  // Casting null is possible.
 		if (result == null) {
@@ -239,7 +239,7 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 			throw new NullPointerException("The specified listID must not be null.");
 		}
 		else {
-			return getMap(INFO_KEY_TAXA_MAP + "." + listID);
+			return getStringMap(INFO_KEY_TAXA_MAP + "." + listID);
 		}
 	}
 	

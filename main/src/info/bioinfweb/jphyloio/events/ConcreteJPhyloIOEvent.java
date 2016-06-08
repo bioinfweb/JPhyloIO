@@ -130,7 +130,7 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
-	public CharacterSetIntervalEvent asCharacterSetEvent() throws ClassCastException {
+	public CharacterSetIntervalEvent asCharacterSetIntervalEvent() throws ClassCastException {
 		return (CharacterSetIntervalEvent)this;
 	}
 

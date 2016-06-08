@@ -126,7 +126,7 @@ public interface JPhyloIOEvent {
 	 * @return a reference to this event as a tokens event
 	 * @throws ClassCastException if this event is not an instance of {@link CharacterSetIntervalEvent}
 	 */
-	public CharacterSetIntervalEvent asCharacterSetEvent() throws ClassCastException;	
+	public CharacterSetIntervalEvent asCharacterSetIntervalEvent() throws ClassCastException;	
 	
 	/**
 	 * Casts this event to a character state set definition event.

@@ -41,12 +41,15 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.IgnoreObjectListMetadataReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.TextSequenceContentReceiver;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
+import info.bioinfweb.jphyloio.formats.nexus.receivers.CharacterSetEventReceiver;
+import info.bioinfweb.jphyloio.formats.nexus.receivers.TokenSetEventReceiver;
 
 
 
@@ -102,12 +105,25 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	private static enum MatrixWriteResult {
 		CHARACTERS,	UNALIGNED, NONE;
+		
+		
+		public String toBlockName() {
+			switch(this) {
+				case CHARACTERS:
+					return BLOCK_NAME_CHARACTERS;
+				case UNALIGNED:
+					return BLOCK_NAME_UNALIGNED;
+				default:
+					return null;
+			}
+		}
 	}
 	
 	
 	private Writer writer;
 	private ReadWriteParameterMap parameters;
 	private ApplicationLogger logger;
+	private Map<String, MatrixWriteResult> matrixIDToBlockTypeMap = new HashMap<String, MatrixWriteResult>(8);
 
 	
 	@Override
@@ -555,6 +571,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			decreaseIndention();
 			writeBlockEnd();
 			
+			matrixIDToBlockTypeMap.put(matrix.getStartEvent().getID(), result);			
 			return result;
 		}
 		else {
@@ -735,19 +752,35 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-//	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
-//		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
-//		while (matrixIterator.hasNext()) {
-//			MatrixDataAdapter matrix = matrixIterator.next();
-//			ObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = matrix.getCharacterSets();
-//			Iterator<String> charSetIDIterator = characterSets.getIDIterator();
-//			if (charSetIDIterator.hasNext()) {
-//				
-//				writeBlockStart(BLOCK_NAME_SETS);
-//				writeLinkCommand(matrix.getStartEvent().getID(), BL, linkedContentType);
-//			}
-//		}
-//	}
+	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
+		CharacterSetEventReceiver receiver = new CharacterSetEventReceiver(writer, parameters);
+		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
+		while (matrixIterator.hasNext()) {
+			MatrixDataAdapter matrix = matrixIterator.next();
+			ObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = matrix.getCharacterSets();
+			Iterator<String> charSetIDIterator = characterSets.getIDIterator();
+			if (charSetIDIterator.hasNext()) {
+				writeBlockStart(BLOCK_NAME_SETS);
+				String matrixID = matrix.getStartEvent().getID();
+				writeLinkCommand(matrixID, matrixIDToBlockTypeMap.get(matrixID).toBlockName(), EventContentType.ALIGNMENT);  // If matrixIDToBlockTypeMap.get(matrixID) returns null, the matrices have not been written correctly before.
+				
+				while (charSetIDIterator.hasNext()) {
+					String charSetID = charSetIDIterator.next();
+					
+					writeLineStart(writer, COMMAND_NAME_CHAR_SET);
+					writer.write(' ');
+					writer.write(formatToken(createUniqueLabel(parameters, characterSets.getObjectStartEvent(charSetID))));
+					writer.write(' ');
+					writer.write(KEY_VALUE_SEPARATOR);  // Next space will be written by receiver.
+					characterSets.writeContentData(receiver, charSetID);  // Nothing will be written for empty character sets.
+					writeCommandEnd();
+					//TODO Log ignored metadata?
+				}
+				
+				writeBlockEnd();
+			}
+		}
+	}
 	
 	
 	@Override
@@ -762,6 +795,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		writeTaxaBlocks(document);
 		writeCharactersUnalignedBlocks(document);
 		writeTreesBlocks(document);
-		//TODO Write SETS
+		writeSetsBlocks(document);
 	}
 }

@@ -43,7 +43,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 /**
  * Most event receivers will be inherited from this class. It implements basic shared functionalities mainly for handling
- * metadata and comments. The default behaviour of some methods may need to be overwritten by inherited classes.
+ * metadata and comments. The default behavior of some methods may need to be overwritten by inherited classes.
  * 
  * @author Ben St&ouml;ver
  *

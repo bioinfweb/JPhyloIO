@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml.nexmlreceivers;
+package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -45,7 +45,7 @@ public class NeXMLCollectCharSetDataReceiver extends NeXMLCollectNamespaceReceiv
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case CHARACTER_SET_INTERVAL:				
-				for (long i = event.asCharacterSetEvent().getStart(); i <= event.asCharacterSetEvent().getEnd(); i++) {
+				for (long i = event.asCharacterSetIntervalEvent().getStart(); i <= event.asCharacterSetIntervalEvent().getEnd(); i++) {
 					getStreamDataProvider().getCharSets().get(charSetID).add(i);
 				}				
 				break;

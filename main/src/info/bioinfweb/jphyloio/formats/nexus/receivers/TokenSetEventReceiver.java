@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexus;
+package info.bioinfweb.jphyloio.formats.nexus.receivers;
 
 
 import java.io.IOException;
@@ -30,6 +30,8 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
+import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
+import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
 
 
 
