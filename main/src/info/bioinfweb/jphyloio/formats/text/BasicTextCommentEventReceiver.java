@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.text;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -36,7 +37,7 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class BasicCommentEventReceiver extends BasicEventReceiver<Writer> {
+public class BasicTextCommentEventReceiver extends BasicEventReceiver<Writer> {
 	private String commentStart;
 	private String commentEnd;
 	
@@ -49,21 +50,44 @@ public class BasicCommentEventReceiver extends BasicEventReceiver<Writer> {
 	 * @param commentStart a string indicating the start of a comment in the target format
 	 * @param commentEnd a string indicating the end of a comment in the target format
 	 */
-	public BasicCommentEventReceiver(Writer writer, ReadWriteParameterMap parameterMap, String commentStart, String commentEnd) {
+	public BasicTextCommentEventReceiver(Writer writer, ReadWriteParameterMap parameterMap, String commentStart, String commentEnd) {
 		super(writer, parameterMap);
 		this.commentStart = commentStart;
 		this.commentEnd = commentEnd;
 	}
 
 
+	public String getCommentStart() {
+		return commentStart;
+	}
+
+
+	public String getCommentEnd() {
+		return commentEnd;
+	}
+
+
 	@Override
 	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
-		if (!isInComment()) {
-			getWriter().write(commentStart);
+		writeComment(this, event, commentStart, commentEnd);
+	}
+	
+	
+	public static void writeComment(BasicEventReceiver<Writer> receiver, CommentEvent event, String commentStart, String commentEnd) throws IOException {
+		if (!receiver.isInComment()) {
+			receiver.getWriter().write(commentStart);
 		}
-		getWriter().write(event.getContent());
+		
+		String content = event.getContent();
+		String editedContent = content.replaceAll(Pattern.quote(commentEnd), "");
+		receiver.getWriter().write(editedContent);
+		if (!content.equals(editedContent)) {
+			receiver.getLogger().addWarning("A comment inside a sequence contained one or more comment end symbols used by the target "
+					+ "format. The according parts were removed from the comment.");
+		}
+
 		if (!event.isContinuedInNextEvent()) {
-			getWriter().write(commentEnd);
+			receiver.getWriter().write(commentEnd);
 		}
 	}
 }

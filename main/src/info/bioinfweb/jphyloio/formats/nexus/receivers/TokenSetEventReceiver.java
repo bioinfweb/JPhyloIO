@@ -30,11 +30,11 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
-import info.bioinfweb.jphyloio.formats.text.BasicCommentEventReceiver;
+import info.bioinfweb.jphyloio.formats.text.BasicTextCommentEventReceiver;
 
 
 
-public class TokenSetEventReceiver extends BasicCommentEventReceiver implements NexusConstants {
+public class TokenSetEventReceiver extends BasicTextCommentEventReceiver implements NexusConstants {
 	private StringBuilder singleTokens = new StringBuilder();
 	
 	

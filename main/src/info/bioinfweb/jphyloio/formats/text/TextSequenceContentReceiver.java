@@ -25,7 +25,6 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -76,16 +75,8 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 
 	@Override
 	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
-		if (commentStart != null) {  //TODO Unify with BasicCommentEventReceiver to handle separated comments here and edited content there.
-			getWriter().write(commentStart);
-			String content = event.getContent();
-			String editedContent = content.replaceAll(Pattern.quote(commentEnd), "");
-			getWriter().write(editedContent);
-			if (!content.equals(editedContent)) {
-				getLogger().addWarning("A comment inside a sequence contained one or more comment end symbols used by the target "
-						+ "format. The according parts were removed from the comment.");
-			}
-			getWriter().write(commentEnd);
+		if (commentStart != null) {
+			BasicTextCommentEventReceiver.writeComment(this, event, commentStart, commentEnd);
 		}
 		else {
 			addIgnoredComments(1);

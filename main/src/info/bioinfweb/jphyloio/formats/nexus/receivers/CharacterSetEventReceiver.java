@@ -30,11 +30,11 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
-import info.bioinfweb.jphyloio.formats.text.BasicCommentEventReceiver;
+import info.bioinfweb.jphyloio.formats.text.BasicTextCommentEventReceiver;
 
 
 
-public class CharacterSetEventReceiver extends BasicCommentEventReceiver implements NexusConstants {
+public class CharacterSetEventReceiver extends BasicTextCommentEventReceiver implements NexusConstants {
 	public CharacterSetEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
 		super(writer, parameterMap, Character.toString(COMMENT_START), Character.toString(COMMENT_END));
 	}

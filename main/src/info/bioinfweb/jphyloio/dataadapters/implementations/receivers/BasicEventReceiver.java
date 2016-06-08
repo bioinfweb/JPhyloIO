@@ -74,17 +74,17 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 	}
 
 
-	protected W getWriter() {
+	public W getWriter() {
 		return writer;
 	}
 
 
-	protected ReadWriteParameterMap getParameterMap() {
+	public ReadWriteParameterMap getParameterMap() {
 		return parameterMap;
 	}
 	
 	
-	protected ApplicationLogger getLogger() {
+	public ApplicationLogger getLogger() {
 		return getParameterMap().getApplicationLogger(ReadWriteParameterMap.KEY_LOGGER);
 	}
 
