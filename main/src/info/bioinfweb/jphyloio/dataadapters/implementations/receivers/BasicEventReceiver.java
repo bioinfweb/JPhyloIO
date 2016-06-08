@@ -58,6 +58,7 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 	private long ignoredComments = 0;
 	private long ignoredLiteralMetadata = 0;
 	private long ignoredResourceMetadata = 0;
+	private boolean inComment = false;
 	
 	
 	/**
@@ -100,6 +101,17 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 		else {
 			return null;			
 		}		
+	}
+
+
+	/**
+	 * Determines whether the last event was a continued comment event and the next event is expected to be the continuing comment event.
+	 * This property is updated after {@link #handleComment(CommentEvent)} was called.
+	 * 
+	 * @return {@code true} if the last event was a continued comment event, {@code false} otherwise
+	 */
+	public boolean isInComment() {
+		return inComment;
 	}
 
 
@@ -204,66 +216,75 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 	@Override
 	public boolean add(JPhyloIOEvent event) throws IOException {
 		try {
-			boolean result = true;
-			JPhyloIOEvent parentEvent = getParentEvent();
-			
-			if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
-				if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(event.getType().getContentType())) {
-					throw IllegalEventException.newInstance(this, parentEvent, event);
-				}
-				else {
-					getParentEvents().pop();
-					parentEvent = getParentEvent();
-				}
-			}			
-			
-			switch (event.getType().getContentType()) {
-				case META_RESOURCE:
-					if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-						handleResourceMetaStart(event.asResourceMetadataEvent());
+			if (isInComment() && !event.getType().getContentType().equals(EventContentType.COMMENT)) {
+				throw new IllegalEventException(
+						"A non-comment event was encountered after a comment event that indicated to be continued in the next event.", 
+						this, getParentEvent(), event);
+			}
+			else {
+				boolean result = true;
+				JPhyloIOEvent parentEvent = getParentEvent();
+				
+				if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
+					if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(event.getType().getContentType())) {
+						throw IllegalEventException.newInstance(this, parentEvent, event);
 					}
 					else {
-						handleMetaEndEvent(event);
+						getParentEvents().pop();
+						parentEvent = getParentEvent();
 					}
-					break;
-				case META_LITERAL:
-					if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+				}			
+				
+				switch (event.getType().getContentType()) {
+					case META_RESOURCE:
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-							handleLiteralMetaStart(event.asLiteralMetadataEvent());
+							handleResourceMetaStart(event.asResourceMetadataEvent());
 						}
 						else {
 							handleMetaEndEvent(event);
 						}
-					}
-					else {
-						throw IllegalEventException.newInstance(this, parentEvent, event);
-					}
-					break;
-				case META_LITERAL_CONTENT:
-					if ((parentEvent != null) && parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
-						handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
-					}
-					else {
-						throw IllegalEventException.newInstance(this, parentEvent, event);
-					}
-					break;
-				case COMMENT:
-					handleComment(event.asCommentEvent());
-					break;
-				default:
-					if (parentEvent == null) {
-						result = doAdd(event);
-					}					
-					else {
-						throw IllegalEventException.newInstance(this, parentEvent, event);
-					}
-			}			
-			
-			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				getParentEvents().add(event);
+						break;
+					case META_LITERAL:
+						if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+							if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+								handleLiteralMetaStart(event.asLiteralMetadataEvent());
+							}
+							else {
+								handleMetaEndEvent(event);
+							}
+						}
+						else {
+							throw IllegalEventException.newInstance(this, parentEvent, event);
+						}
+						break;
+					case META_LITERAL_CONTENT:
+						if ((parentEvent != null) && parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+							handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
+						}
+						else {
+							throw IllegalEventException.newInstance(this, parentEvent, event);
+						}
+						break;
+					case COMMENT:
+						CommentEvent commentEvent = event.asCommentEvent();
+						handleComment(commentEvent);
+						inComment = commentEvent.isContinuedInNextEvent();
+						break;
+					default:
+						if (parentEvent == null) {
+							result = doAdd(event);
+						}					
+						else {
+							throw IllegalEventException.newInstance(this, parentEvent, event);
+						}
+				}			
+				
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					getParentEvents().add(event);
+				}
+				
+				return result;
 			}
-			
-			return result;
 		}
 		catch (XMLStreamException e) {
 			throw new JPhyloIOWriterException("An XMLStream exception with the message \"" + e.getMessage() + 

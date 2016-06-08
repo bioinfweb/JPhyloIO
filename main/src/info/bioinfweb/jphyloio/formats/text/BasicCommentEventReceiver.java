@@ -27,9 +27,6 @@ import javax.xml.stream.XMLStreamException;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.exception.IllegalEventException;
 
 
 
@@ -42,7 +39,6 @@ import info.bioinfweb.jphyloio.exception.IllegalEventException;
 public class BasicCommentEventReceiver extends BasicEventReceiver<Writer> {
 	private String commentStart;
 	private String commentEnd;
-	private boolean isInComment = false;
 	
 	
 	/**
@@ -61,26 +57,12 @@ public class BasicCommentEventReceiver extends BasicEventReceiver<Writer> {
 
 
 	@Override
-	public boolean add(JPhyloIOEvent event) throws IOException {
-		if (isInComment && !event.getType().getContentType().equals(EventContentType.COMMENT)) {
-			throw new IllegalEventException(
-					"A non-comment event was encountered after a comment event that indicated to be continued in the next event.", 
-					this, getParentEvent(), event);
-		}
-		else {
-			return super.add(event);
-		}
-	}
-
-
-	@Override
 	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
-		if (!isInComment) {
+		if (!isInComment()) {
 			getWriter().write(commentStart);
 		}
 		getWriter().write(event.getContent());
-		isInComment = event.isContinuedInNextEvent();
-		if (!isInComment) {
+		if (!event.isContinuedInNextEvent()) {
 			getWriter().write(commentEnd);
 		}
 	}
