@@ -187,10 +187,12 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		writer.write(' ');
 		writer.write(name);
 		writeCommandEnd();
+		increaseIndention();
 	}
 	
 	
 	private void writeBlockEnd() throws IOException {
+		decreaseIndention();
 		writeLineStart(writer, END_COMMAND);
 		writeCommandEnd();
 	}
@@ -244,7 +246,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		logIgnoredMetadata(otuList, "Metadata attached to an OTU list have been ignored.");
 		if (otuList.getCount() > 0) {
 			writeBlockStart(BLOCK_NAME_TAXA);
-			increaseIndention();
 			
 			writeTitleCommand(otuList.getStartEvent());
 			
@@ -274,7 +275,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			decreaseIndention();
 			decreaseIndention();
 			
-			decreaseIndention();
 			writeBlockEnd();
 		}
 		else {
@@ -557,7 +557,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				result = MatrixWriteResult.CHARACTERS;
 				writeBlockStart(BLOCK_NAME_CHARACTERS);
 			}
-			increaseIndention();
 			
 			LinkedLabeledIDEvent startEvent = matrix.getStartEvent();
 			writeTitleCommand(startEvent);
@@ -568,9 +567,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeMatrixTaxLabelsCommand(matrix);
 			writeMatrixCommand(document, matrix, columnCount, extensionToken);
 			
-			decreaseIndention();
 			writeBlockEnd();
-			
 			matrixIDToBlockTypeMap.put(matrix.getStartEvent().getID(), result);			
 			return result;
 		}
@@ -695,7 +692,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 
 			// Write block start:
 			writeBlockStart(BLOCK_NAME_TREES);
-			increaseIndention();
 			if (UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
 				writeTitleCommand("Trees linked to no TAXA block");
 			}
@@ -740,8 +736,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				}
 			}
 			
-			// Write block end:
-			decreaseIndention();
 			writeBlockEnd();
 		}
 		

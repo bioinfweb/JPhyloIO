@@ -75,7 +75,7 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 
 	@Override
 	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
-		if (commentStart != null) {
+		if (commentStart != null) {  //TODO Unify with BasicCommentEventReceiver to handle separated comments here and edited content there.
 			getWriter().write(commentStart);
 			String content = event.getContent();
 			String editedContent = content.replaceAll(Pattern.quote(commentEnd), "");

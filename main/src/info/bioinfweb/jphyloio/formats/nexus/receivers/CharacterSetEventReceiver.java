@@ -28,7 +28,6 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.text.BasicCommentEventReceiver;
@@ -44,14 +43,13 @@ public class CharacterSetEventReceiver extends BasicCommentEventReceiver impleme
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		if (event.getType().getContentType().equals(EventContentType.CHARACTER_SET_INTERVAL) && (getParentEvent() == null)) {  // Such events are only allowed on the top level.
-			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				CharacterSetIntervalEvent intervalEvent = event.asCharacterSetIntervalEvent();
-				getWriter().write(' ');
-				getWriter().write(Long.toString(intervalEvent.getStart()));
-				if (intervalEvent.getEnd() - intervalEvent.getStart() > 1) {
-					getWriter().write(CHAR_SET_TO);
-					getWriter().write(Long.toString(intervalEvent.getEnd()));
-				}
+			// No check for topology type, since only SOLE is possible.
+			CharacterSetIntervalEvent intervalEvent = event.asCharacterSetIntervalEvent();
+			getWriter().write(' ');
+			getWriter().write(Long.toString(intervalEvent.getStart()));
+			if (intervalEvent.getEnd() - intervalEvent.getStart() > 1) {
+				getWriter().write(CHAR_SET_TO);
+				getWriter().write(Long.toString(intervalEvent.getEnd() - 1));
 			}
 			return true;			
 		}
