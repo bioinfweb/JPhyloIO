@@ -53,34 +53,36 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 
 	@Test
 	public void testReadingCharSets() throws Exception {
+		// Note that Nexus indices start with 1 and JPhyloIO indices start with 0.
+		
 		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSet.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertCommentEvent("comment 1", reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", reader);
-			assertCharacterSetIntervalEvent(3, 6, reader);
-			assertCharacterSetIntervalEvent(9, 10, reader);
-			assertCharacterSetIntervalEvent(12, 17, reader);
+			assertCharacterSetIntervalEvent(2, 5, reader);
+			assertCharacterSetIntervalEvent(8, 9, reader);
+			assertCharacterSetIntervalEvent(11, 16, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertCommentEvent("comment 1a", reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set02", reader);
-			assertCharacterSetIntervalEvent(4, 10, reader);
+			assertCharacterSetIntervalEvent(3, 9, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertCommentEvent("comment 2", reader);
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set03", reader);
 			assertCommentEvent("comment 3", reader);
-			assertCharacterSetIntervalEvent(4, 7, reader);
-			assertCharacterSetIntervalEvent(12, 13, reader);
+			assertCharacterSetIntervalEvent(3, 6, reader);
+			assertCharacterSetIntervalEvent(11, 12, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set04", reader);
-			assertCharacterSetIntervalEvent(4, 7, reader);
+			assertCharacterSetIntervalEvent(3, 6, reader);
 			assertCommentEvent("comment 4", reader);
-			assertCharacterSetIntervalEvent(12, 13, reader);
+			assertCharacterSetIntervalEvent(11, 12, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set05", reader);
@@ -101,7 +103,6 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set07", reader);
-			assertCharacterSetIntervalEvent(0, 0, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set08", reader);
@@ -109,35 +110,34 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set09", reader);
-			assertCharacterSetIntervalEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set10", reader);
-			assertCharacterSetIntervalEvent(0, 0, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set11", reader);
-			assertCharacterSetIntervalEvent(12, 18, reader);
+			assertCharacterSetIntervalEvent(11, 17, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set12", reader);
-			assertCharacterSetIntervalEvent(3, 4, reader);
+			assertCharacterSetIntervalEvent(2, 3, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.13", reader);
-			assertCharacterSetIntervalEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.14", reader);
-			assertCharacterSetIntervalEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set'15", reader);
-			assertCharacterSetIntervalEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set 16;", reader);
-			assertCharacterSetIntervalEvent(1, 2, reader);
+			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
@@ -1520,18 +1520,18 @@ public void testCharSetsMultipleMatrices() throws Exception {
 		
 		// SETS 1:
 		assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID1, reader);
-		assertCharacterSetIntervalEvent(2, 5, reader);
-		assertCharacterSetIntervalEvent(6, 7, reader);
+		assertCharacterSetIntervalEvent(1, 4, reader);
+		assertCharacterSetIntervalEvent(5, 6, reader);
 		assertEndEvent(EventContentType.CHARACTER_SET, reader);
 		
 		// SETS 2:
 		assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID2, reader);
-		assertCharacterSetIntervalEvent(1, 4, reader);
+		assertCharacterSetIntervalEvent(0, 3, reader);
 		assertEndEvent(EventContentType.CHARACTER_SET, reader);
 		
 		// SETS 2:
 		assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID1, reader);
-		assertCharacterSetIntervalEvent(1, 3, reader);
+		assertCharacterSetIntervalEvent(0, 2, reader);
 		assertEndEvent(EventContentType.CHARACTER_SET, reader);
 		
 		
