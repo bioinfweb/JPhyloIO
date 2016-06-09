@@ -23,6 +23,7 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -120,10 +122,15 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected void createIntervalEvents(NeXMLReaderStreamDataProvider streamDataProvider, String[] charIDs) {
+	protected void createIntervalEvents(NeXMLReaderStreamDataProvider streamDataProvider, String[] charIDs) throws JPhyloIOReaderException, XMLStreamException {
 		boolean[] charSets = new boolean[streamDataProvider.getCharIDs().size()];
 		for (String charID: charIDs) {
-			charSets[streamDataProvider.getCharIDToIndexMap().get(charID)] = true;
+			if (streamDataProvider.getCharIDToIndexMap().containsKey(charID)) {
+				charSets[streamDataProvider.getCharIDToIndexMap().get(charID)] = true;
+			}
+			else {
+				throw new JPhyloIOReaderException("A character set referenced the ID \"" + charID + "\" of a character that was not specified before.", streamDataProvider.getXMLReader().peek().getLocation());
+			}
 		}
 		
 		int currentIndex = -1;
@@ -145,16 +152,21 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected LabeledIDEventInformation getLabeledIDEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) {
+	protected LabeledIDEventInformation getLabeledIDEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) throws JPhyloIOReaderException {
 		LabeledIDEventInformation labeledIDEventInformation = new LabeledIDEventInformation();
 		labeledIDEventInformation.id = XMLUtils.readStringAttr(element, ATTR_ID, null);
 		labeledIDEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 		
-		return labeledIDEventInformation;
+		if (labeledIDEventInformation.id != null) {
+			return labeledIDEventInformation;
+		}
+		else {
+			throw new JPhyloIOReaderException("The element \"" + element.getName().getLocalPart() + "\" must specify an ID.", element.getLocation());
+		}
 	}
 	
 	
-	protected OTUorOTUSEventInformation getOTUorOTUSEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) {
+	protected OTUorOTUSEventInformation getOTUorOTUSEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) throws JPhyloIOReaderException {
 		LabeledIDEventInformation labeledIDEventInformation = getLabeledIDEventInformation(streamDataProvider, element);
 		OTUorOTUSEventInformation otuEventInformation = new OTUorOTUSEventInformation();
 		

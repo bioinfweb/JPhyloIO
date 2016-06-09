@@ -57,6 +57,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.lang.model.element.Element;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -176,20 +177,16 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				try {
-					String edgeID = XMLUtils.readStringAttr(element, ATTR_ID, null);
+					LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
 					String targetID = XMLUtils.readStringAttr(element, ATTR_TARGET, null);
 					double length = XMLUtils.readDoubleAttr(element, ATTR_LENGTH, Double.NaN); // It is not a problem for JPhyloIO, if floating point values are specified for IntTrees.
 
-					if (edgeID == null) {
-						throw new JPhyloIOReaderException("The \"id\" attribute of an edge or rootedge definition in NeXML must not be omitted.", 
-								element.getLocation());
-					}
-					else if (targetID == null) {
+					if (targetID == null) {
 						throw new JPhyloIOReaderException("The \"target\" attribute of an edge or rootedge definition in NeXML must not be omitted.", 
 								element.getLocation());
 					}
 					else {
-						streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(edgeID, XMLUtils.readStringAttr(element, ATTR_LABEL, null), 
+						streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(info.id, info.label, 
 								XMLUtils.readStringAttr(element, ATTR_SOURCE, null), targetID, length)); // The source ID will be null for rootedges, which is valid.
 						
 						if (streamDataProvider.getRootNodeIDs().contains(targetID)) {
@@ -243,15 +240,24 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				CharacterSymbolMeaning meaning;
 				CharacterSymbolType tokenType;				
 				
-				if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
-	   			if (streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.SYMBOL_TO_LABEL) 
-	   					&& (info.getLabel() != null)) {
-	   				translation = info.getLabel();
-	   			}
-	   			else { //SYMBOL_TO_ID or label was null
-	   				translation = info.getId();
-	   			}
-	   		}
+				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE)) {					
+					if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
+		   			if (streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.SYMBOL_TO_LABEL) 
+		   					&& (info.getLabel() != null)) {
+		   				translation = info.getLabel();
+		   			}
+		   			else { //SYMBOL_TO_ID or label was null
+		   				translation = info.getId();
+		   			}
+		   		}
+					
+					try {
+						streamDataProvider.getTokenSets().get(streamDataProvider.getCurrentTokenSetID()).getSymbolTranslationMap().put(Integer.parseInt(symbol), translation);
+					}
+					catch (NumberFormatException e) {
+						throw new JPhyloIOReaderException("The symbol of a standard data token definition must be of type Integer.", event.getLocation());
+					}	  			
+				}				
 				
 	  		if (symbol != null) {
 	  			if (symbol.equals("?")) {
@@ -272,7 +278,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					}
 	  			
 	  			streamDataProvider.getTokenDefinitionIDToSymbolMap().put(info.getId(), symbol);
-	  			streamDataProvider.getTokenSets().get(streamDataProvider.getCurrentTokenSetID()).getSymbolTranslationMap().put(symbol, translation);
 	  			streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.getId(), info.getLabel(), symbol, meaning, tokenType, info.getConstituents()));
 	  		
 	  			Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
@@ -291,7 +296,12 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				StartElement element = event.asStartElement();
 				String state = XMLUtils.readStringAttr(element, ATTR_STATE, null);
 				
-				streamDataProvider.getCurrentSingleTokenDefinition().getConstituents().add(streamDataProvider.getTokenDefinitionIDToSymbolMap().get(state));
+				if (streamDataProvider.getTokenDefinitionIDToSymbolMap().containsKey(state)) {
+					streamDataProvider.getCurrentSingleTokenDefinition().getConstituents().add(streamDataProvider.getTokenDefinitionIDToSymbolMap().get(state));
+				}
+				else {
+					throw new JPhyloIOReaderException("A single token definition referenced the ID \"" + state + "\" of a state that was not specified before.", element.getLocation()); 
+				}
 			}
 		};
 		
@@ -338,6 +348,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_EDGE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_EDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		putElementReader(new XMLElementReaderKey(TAG_ROOTEDGE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		putElementReader(new XMLElementReaderKey(TAG_ROOTEDGE, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		
 		putElementReader(new XMLElementReaderKey(TAG_META, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
 			@Override
@@ -563,15 +575,24 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				String translation = symbol;
 				CharacterSymbolMeaning meaning;
 				
-				if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
-	   			if (streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.SYMBOL_TO_LABEL) 
-	   					&& (info.label != null)) {
-	   				translation = info.label;
-	   			}
-	   			else { //SYMBOL_TO_ID or label was null
-	   				translation = info.id;
-	   			}
-	   		}
+				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE)) {					
+					if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
+		   			if (streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.SYMBOL_TO_LABEL) 
+		   					&& (info.label != null)) {
+		   				translation = info.label;
+		   			}
+		   			else { //SYMBOL_TO_ID or label was null
+		   				translation = info.id;
+		   			}
+		   		}
+					
+					try {
+						streamDataProvider.getTokenSets().get(streamDataProvider.getCurrentTokenSetID()).getSymbolTranslationMap().put(Integer.parseInt(symbol), translation);
+					}
+					catch (NumberFormatException e) {
+						throw new JPhyloIOReaderException("The symbol of a standard data token definition must be of type Integer.", event.getLocation());
+					}	  			
+				}
 				
 	  		if (symbol != null) {	  			
 	  			if (symbol.equals("?")) {
@@ -585,7 +606,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					}
 	  			
 	  			streamDataProvider.getTokenDefinitionIDToSymbolMap().put(info.id, symbol);
-	  			streamDataProvider.getTokenSets().get(streamDataProvider.getCurrentTokenSetID()).getSymbolTranslationMap().put(symbol, translation);
 	  			streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.id, info.label, symbol, meaning, CharacterSymbolType.ATOMIC_STATE));
 	  		}
 	  		else {
@@ -624,7 +644,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					streamDataProvider.getTokenSetIDtoColumnsMap().get(states).add(info.id);
 				}
 				else {
-					throw new JPhyloIOReaderException("The states element \"" + states + "\" was referenced in a char element, but it was not defined previously.", element.getLocation()); 
+					throw new JPhyloIOReaderException("A character referenced the ID \"" + states + "\" of a token set that was not specified before.", element.getLocation()); 
 				}				
 				
 				if ((element.getAttributeByName(ATTR_TOKENS) != null) || (element.getAttributeByName(ATTR_CODON_POSITION) != null)) {
@@ -691,12 +711,21 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_ROW, TAG_CELL, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();
-				
+				StartElement element = event.asStartElement();				
 				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
-				String token = XMLUtils.readStringAttr(element, ATTR_STATE, null);
-				String columnID = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
+				String tokenState = XMLUtils.readStringAttr(element, ATTR_STATE, null);
+				String columnID = XMLUtils.readStringAttr(element, ATTR_CHAR, null);				
+				String token = null;
 				
+				if (!streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.CONTINUOUS)) {
+					if (streamDataProvider.getTokenDefinitionIDToSymbolMap().containsKey(tokenState)) {
+						token = streamDataProvider.getTokenDefinitionIDToSymbolMap().get(tokenState);
+					}
+					else {
+						throw new JPhyloIOReaderException("A cell referenced the ID \"" + tokenState + "\" of a token definition that was not specified before.", event.getLocation());
+					}
+				}
+
 				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) 
 						&& !streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
 					

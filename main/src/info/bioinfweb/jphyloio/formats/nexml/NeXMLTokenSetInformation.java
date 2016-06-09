@@ -36,7 +36,7 @@ public class NeXMLTokenSetInformation {
 	
 	private Collection<JPhyloIOEvent> nestedEvents = new ArrayList<JPhyloIOEvent>();
 	
-	private Map<String, String> symbolTranslationMap = new HashMap<String, String>();
+	private Map<Integer, String> symbolTranslationMap = new HashMap<Integer, String>(); //is only used for standard data
 	
 	
 	public NeXMLTokenSetInformation(String id, String label, CharacterStateSetType setType) {
@@ -90,7 +90,7 @@ public class NeXMLTokenSetInformation {
 	}
 
 
-	public Map<String, String> getSymbolTranslationMap() {
+	public Map<Integer, String> getSymbolTranslationMap() {
 		return symbolTranslationMap;
 	}
 }
