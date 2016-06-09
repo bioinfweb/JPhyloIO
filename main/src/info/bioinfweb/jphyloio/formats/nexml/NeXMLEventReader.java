@@ -20,9 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
-import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
-import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -315,6 +313,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_OTU, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaWithPredicateStart);
 		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaWithPredicateEnd);
+		putElementReader(new XMLElementReaderKey(TAG_SET, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart); //TODO only charset meta should be read
+		putElementReader(new XMLElementReaderKey(TAG_SET, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_STATES, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_STATES, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_STATE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
@@ -504,6 +504,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.ALIGNMENT));
 				streamDataProvider.getTokenSets().clear();
+				streamDataProvider.getCharIDs().clear();
+				streamDataProvider.getCharIDToIndexMap().clear();
+				streamDataProvider.getTokenDefinitionIDToSymbolMap().clear();
 			}
 		});		
 		
@@ -723,7 +726,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				// Handle cell tags that are not in the order of the columns:
 				String expectedID = streamDataProvider.getCurrentExpectedCharID();
 				if (expectedID == null) {
-					throw new JPhyloIOReaderException("A row contained more cell tags then previously declared columns.", event.getLocation());
+					throw new JPhyloIOReaderException("A row contained more cell tags than previously declared columns.", event.getLocation());
 				}
 				else if (expectedID.equals(columnID)) {  // Fire the current event:
 					streamDataProvider.getCurrentEventCollection().add(currentTokenEvent);
@@ -826,6 +829,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));
+				
+				streamDataProvider.getRootNodeIDs().clear();
 			}
 		});
 		
@@ -844,6 +849,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NETWORK));
+				streamDataProvider.getRootNodeIDs().clear();
 			}
 		});
 		
