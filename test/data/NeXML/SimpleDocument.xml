@@ -66,11 +66,11 @@
 			<node id="node8" otu="taxon3"/>
 			<node id="node9"/>
 			<node id="node10"/>			
-			<edge id="edge5" source="node4" target="node5" length="0.44"/>
-			<edge id="edge6" source="node4" target="node3" length="0.67"/>
-			<edge id="edge7" source="node5" target="node1"/>
-			<edge id="edge8" source="node5" target="node2"/>
-			<edge id="edge9" source="node2" target="node3"/>
+			<edge id="edge5" source="node9" target="node10" length="0.44"/>
+			<edge id="edge6" source="node9" target="node8" length="0.67"/>
+			<edge id="edge7" source="node10" target="node6"/>
+			<edge id="edge8" source="node10" target="node7"/>
+			<edge id="edge9" source="node7" target="node8"/>
 		</network>
 	</trees>
 </nex:nexml>

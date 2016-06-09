@@ -10,7 +10,7 @@
 		<otu id="taxon5" label="species5"/>
 		<otu id="taxon6"/>		
 	</otus>
-	<characters id="alignment" otus="taxonlist1" xsi:type="nex:DnaSeqs">
+	<characters id="alignment1" otus="taxonlist1" xsi:type="nex:DnaSeqs">
 		<format>
 			<states id="states1">
 				<state id="Adenine" symbol="A"/>
@@ -48,17 +48,17 @@
 			</row>
 		</matrix>
 	</characters>
-	<characters id="alignment" otus="taxonlist2" xsi:type="nex:DnaCells">
+	<characters id="alignment2" otus="taxonlist2" xsi:type="nex:DnaCells">
     <format>
-      <states id="states">
+      <states id="states3">
         <state id="Adenine" symbol="A"/>
         <state id="Cytosine" symbol="C"/>
         <state id="Guanine" symbol="G"/>
         <state id="Thymine" symbol="T"/>
       </states>
-      <char id="char5" states="states"/>
-      <char id="char6" states="states"/>
-      <char id="char7" states="states"/>
+      <char id="char5" states="states3"/>
+      <char id="char6" states="states3"/>
+      <char id="char7" states="states3"/>
     </format>
     <matrix>
       <row id="row4" otu="taxon5">
@@ -73,8 +73,30 @@
       </row>
     </matrix>
   </characters>
+  <characters id="alignment3" otus="taxonlist1" xsi:type="nex:DnaSeqs">
+		<format>
+			<states id="states4">
+				<state id="X" symbol="A"/>
+				<state id="Y" symbol="C"/>				
+			</states>			
+			<char id="char8" states="states4"/>
+			<char id="char9" states="states4"/>
+			<char id="char10" states="states4"/>			
+		</format>
+		<matrix>
+			<row id="row6" otu="taxon1">
+				<seq>ACC</seq>
+			</row>
+			<row id="row7" otu="taxon2">
+			   <seq>CAC</seq>
+			</row>
+			<row id="row8" otu="taxon3">
+				<seq>AAC</seq>
+			</row>
+		</matrix>
+	</characters>
 	<trees id="treegroup1" otus="taxonlist1">
-		<tree id="tree" xsi:type="nex:FloatTree">
+		<tree id="tree1" xsi:type="nex:FloatTree">
 			<node id="node1" otu="taxon1"/>
 			<node id="node2" otu="taxon2"/>
 			<node id="node3" otu="taxon3"/>
@@ -86,7 +108,7 @@
 			<edge id="edge3" source="node5" target="node1" length="0.98"/>
 			<edge id="edge4" source="node5" target="node2"/>
 		</tree>
-		<network id="network" xsi:type="nex:FloatNetwork">
+		<network id="network1" xsi:type="nex:FloatNetwork">
 			<node id="node6" otu="taxon1"/>
 			<node id="node7" otu="taxon2"/>
 			<node id="node8" otu="taxon3"/>
@@ -96,9 +118,9 @@
 			<edge id="edge6" source="node9" target="node8" length="0.67"/>
 			<edge id="edge7" source="node10" target="node6"/>
 			<edge id="edge8" source="node10" target="node7"/>
-			<edge id="edge9" source="node2" target="node8"/>
+			<edge id="edge9" source="node7" target="node8"/>
 		</network>
-		<tree id="tree" xsi:type="nex:IntTree">
+		<tree id="tree2" xsi:type="nex:IntTree">
 			<node id="node11" otu="taxon1"/>
 			<node id="node12" otu="taxon2"/>
 			<node id="node13" otu="taxon3"/>
@@ -109,21 +131,21 @@
 			<edge id="edge12" source="node15" target="node11" length="89"/>
 			<edge id="edge13" source="node15" target="node12"/>
 		</tree>
-		<network id="network" xsi:type="nex:IntNetwork">
+		<network id="network2" xsi:type="nex:IntNetwork">
 			<node id="node16" otu="taxon1"/>
 			<node id="node17" otu="taxon2"/>
 			<node id="node18" otu="taxon3"/>
 			<node id="node19"/>
 			<node id="node20"/>
-			<edge id="edge14" source="node19" target="node20" length="0.44"/>
-			<edge id="edge15" source="node19" target="node18" length="0.67"/>
+			<edge id="edge14" source="node19" target="node20" length="44"/>
+			<edge id="edge15" source="node19" target="node18" length="67"/>
 			<edge id="edge16" source="node20" target="node16"/>
 			<edge id="edge17" source="node20" target="node17"/>
 			<edge id="edge18" source="node17" target="node18"/>
 		</network>
 	</trees>
 	<trees id="treegroup2" otus="taxonlist2">
-		<tree id="tree" xsi:type="nex:FloatTree">
+		<tree id="tree3" xsi:type="nex:FloatTree">
 			<node id="node21" otu="taxon4"/>
 			<node id="node22" otu="taxon5"/>
 			<node id="node23" otu="taxon6"/>
