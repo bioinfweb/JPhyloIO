@@ -25,6 +25,7 @@ import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -55,12 +56,28 @@ import java.io.Reader;
  * <p>
  * This reader as able to read data from the Nexus {@code TAXA}, {@code CHARACTERS}, {@code UNALIGNED}, {@code DATA}, 
  * {@code TREES} and {@code SETS} blocks, although not all commands of the {@code SETS} block are currently supported.
- * In addition to the core Nexus standards, this reader also supports the {@code TITLE} and {@code LINK} commands
- * introduced by <a href="http://http://mesquiteproject.org/">Mesquite</a> to assign {@code TAXA} blocks to character 
- * or tree data, if more than one {@code TAXA} block is present. Furthermore it can read metadata provided in hot 
- * comments in trees as described in the documentation of {@link NewickStringReader}.
+ * Furthermore it can read metadata provided in hot comments in trees as described in the documentation of {@link NewickStringReader}. 
+ * It will also handle Nexus comments as comment events and optionally unknown commands as {@link UnknownCommandEvent}s.
+ * 
+ * <h3><a name="linking"></a>Links between blocks</h3> 
  * <p>
- * It will also output Nexus comments as comment events and optionally unknown commands as {@link UnknownCommandEvent}s.
+ * In addition to the core Nexus standards, this reader also supports the {@code TITLE} and {@code LINK} commands
+ * introduced by <a href="http://mesquiteproject.org/">Mesquite</a> e.g. to assign {@code TAXA} blocks to character 
+ * or tree data, if more than one {@code TAXA} block is present.
+ * <p>
+ * Block linking is modeled on <i>JPhyloIO</i> using the {@link LinkedLabeledIDEvent#getLinkedID()} property. The information from
+ * {@code TITLE} and {@code LINK} commands is e.g. used to link tree groups to OTU lists, alignments to OTU lists, character sets to 
+ * alignments or indirectly to link sequences and tree nodes to OTUs. 
+ * <p>
+ * Note that this reader requires referenced blocks to occur before the block that contains the reference. Linking blocks that occur 
+ * later in the file is not supported, since it would not allow direct event based parsing. If a {@code LINK} command is encountered 
+ * that links a block that was not declared before (or not anywhere in the file), a {@link JPhyloIOReaderException} is be thrown.
+ * <p>
+ * If a block without a {@code LINK} command, that would usually link another block is encountered, the first block of the according 
+ * type found in the file will be assumed as linked. If no according block was encountered before the {@code LINK}, nothing will be linked
+ * ({@link LinkedLabeledIDEvent#getLinkedID()} of the according event will return {@code null}).
+ * 
+ * <h3><a name="extending"></a>Extending this implementation</h3> 
  * <p>
  * It is possible to extend the functionality of this reader by adding custom implementations of {@link NexusBlockHandler}
  * or {@link NexusCommandEventReader}.
