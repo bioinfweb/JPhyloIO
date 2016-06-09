@@ -306,9 +306,9 @@ test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml.gz -text
 test/data/NeXML/MetaJAXBSimpleValue.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaJAXBXMLValue.xml -text svneol=unset#text/plain
-test/data/NeXML/MissingOTUS.xml -text svneol=unset#text/plain
 test/data/NeXML/MissingOTUsID.xml -text svneol=unset#text/plain
 test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
+test/data/NeXML/MultipleElements.xml -text svneol=unset#text/plain
 test/data/NeXML/Paralogues.xml -text
 test/data/NeXML/SimpleDocument.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownCharID_Cells.xml -text svneol=unset#text/plain

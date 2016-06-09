@@ -61,16 +61,16 @@
 			<edge id="edge4" source="node5" target="node2"/>
 		</tree>
 		<network id="network" xsi:type="nex:FloatNetwork">
-			<node id="node1" otu="taxon1"/>
-			<node id="node2" otu="taxon2"/>
-			<node id="node3" otu="taxon3"/>
-			<node id="node4"/>
-			<node id="node5"/>			
-			<edge id="edge1" source="node4" target="node5" length="0.44"/>
-			<edge id="edge2" source="node4" target="node3" length="0.67"/>
-			<edge id="edge3" source="node5" target="node1"/>
-			<edge id="edge4" source="node5" target="node2"/>
-			<edge id="edge5" source="node2" target="node3"/>
+			<node id="node6" otu="taxon1"/>
+			<node id="node7" otu="taxon2"/>
+			<node id="node8" otu="taxon3"/>
+			<node id="node9"/>
+			<node id="node10"/>			
+			<edge id="edge5" source="node4" target="node5" length="0.44"/>
+			<edge id="edge6" source="node4" target="node3" length="0.67"/>
+			<edge id="edge7" source="node5" target="node1"/>
+			<edge id="edge8" source="node5" target="node2"/>
+			<edge id="edge9" source="node2" target="node3"/>
 		</network>
 	</trees>
 </nex:nexml>
