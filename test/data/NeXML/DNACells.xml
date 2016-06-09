@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" 
+    xmlns:foo="http://bioinfweb.info/xmlns/example">
+    
   <otus id="taxa">
     <otu id="taxon1"/>
     <otu id="taxon2">
@@ -20,9 +23,17 @@
     </format>
     <matrix>
       <row id="row1" otu="taxon1">
-        <cell char="char1" state="Adenine"/>
-        <cell char="char2" state="Guanine"/>
-		<cell char="char3" state="Adenine"/>
+        <cell char="char1" state="Adenine">
+          <meta content="another text" datatype="xsd:string" id="meta3" property="foo:hasLiteralMeta" xsi:type="nex:LiteralMeta"/>
+        </cell>
+        <cell char="char2" state="Guanine">
+          <meta content="18" datatype="xsd:integer" id="meta3" property="foo:hasLiteralMeta" xsi:type="nex:LiteralMeta"/>
+        </cell>
+		<cell char="char3" state="Adenine">
+          <meta href="http://example.org/someURI" id="meta1" rel="foo:linksResource" xsi:type="nex:ResourceMeta">
+            <meta content="some text" datatype="xsd:string" id="meta2" property="foo:hasLiteralMeta" xsi:type="nex:LiteralMeta"/>
+          </meta>
+		</cell>
       </row>
       <row id="row2" otu="taxon2">
         <cell char="char1" state="Adenine"/>

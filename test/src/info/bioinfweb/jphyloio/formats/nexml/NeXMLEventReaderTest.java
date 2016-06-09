@@ -33,6 +33,10 @@ import info.bioinfweb.jphyloio.events.type.EventType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 
 import java.io.File;
+import java.math.BigInteger;
+import java.net.URI;
+
+import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
@@ -707,9 +711,28 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
-			assertSingleTokenEvent("A", true, reader);
-			assertSingleTokenEvent("G", true, reader);
-			assertSingleTokenEvent("A", true, reader);
+			
+			assertSingleTokenEvent("A", false, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "string", "xsd")), "another text", null, null, 
+					true,	reader);
+			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
+			
+			assertSingleTokenEvent("G", false, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "integer", "xsd")), "18", null,
+					new BigInteger("18"), true,	reader);
+			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
+			
+			assertSingleTokenEvent("A", false, reader);
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "linksResource", "foo")), 
+					new URI("http://example.org/someURI"), null, false, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "string", "xsd")), "some text", null, null, true, 
+					reader);
+			assertEndEvent(EventContentType.META_RESOURCE, reader);
+			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
+			
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "row2", "taxon2", reader);
