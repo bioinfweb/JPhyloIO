@@ -64,7 +64,8 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
   			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
   			
   			streamDataProvider.setNestedMetaType(datatype);
-  			streamDataProvider.setAlternativeStringRepresentation(content);		  			
+  			streamDataProvider.setAlternativeStringRepresentation(content);
+  			//TODO The value stored here, should also be passed as the alternative string representation in cases below.
   			
   			LiteralContentSequenceType contentType = LiteralContentSequenceType.XML;
   			
@@ -97,7 +98,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 					
 					if (nestedContent != null) {
 						try {
-							objectValue = translator.representationToJava(nestedContent, streamDataProvider);
+							objectValue = translator.representationToJava(nestedContent, streamDataProvider);  //TODO Check if "".equals(nestedContent.trim()) and use content instead, if that is not an empty string.
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), nestedContent, objectValue, null));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL)); //getElementText() already consumed the literal meta end event
 						}
