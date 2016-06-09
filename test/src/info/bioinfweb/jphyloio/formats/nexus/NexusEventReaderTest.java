@@ -60,7 +60,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			assertCommentEvent("comment 1", reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", null, reader);
 			assertCharacterSetIntervalEvent(2, 5, reader);
 			assertCharacterSetIntervalEvent(8, 9, reader);
 			assertCharacterSetIntervalEvent(11, 16, reader);
@@ -68,24 +68,24 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			
 			assertCommentEvent("comment 1a", reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set02", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set02", null, reader);
 			assertCharacterSetIntervalEvent(3, 9, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
 			assertCommentEvent("comment 2", reader);
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set03", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set03", null, reader);
 			assertCommentEvent("comment 3", reader);
 			assertCharacterSetIntervalEvent(3, 6, reader);
 			assertCharacterSetIntervalEvent(11, 12, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set04", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set04", null, reader);
 			assertCharacterSetIntervalEvent(3, 6, reader);
 			assertCommentEvent("comment 4", reader);
 			assertCharacterSetIntervalEvent(11, 12, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set05", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set05", null, reader);
 			assertCharacterSetIntervalEvent(3, 4, reader);
 			assertCharacterSetIntervalEvent(5, 7, reader);
 			assertCommentEvent("comment 5", reader);
@@ -94,7 +94,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertCharacterSetIntervalEvent(11, 13, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set06", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set06", null, reader);
 			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertCharacterSetIntervalEvent(2, 5, reader);
 			assertCharacterSetIntervalEvent(6, 7, reader);
@@ -102,41 +102,41 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertCommentEvent("comment 6", reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set07", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set07", null, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set08", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set08", null, reader);
 			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set09", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set09", null, reader);
 			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set10", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set10", null, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set11", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set11", null, reader);
 			assertCharacterSetIntervalEvent(11, 17, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set12", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set12", null, reader);
 			assertCharacterSetIntervalEvent(2, 3, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.13", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.13", null, reader);
 			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.14", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set.14", null, reader);
 			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set'15", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set'15", null, reader);
 			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 			
-			assertLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set 16;", reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set 16;", null, reader);
 			assertCharacterSetIntervalEvent(0, 1, reader);
 			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 
