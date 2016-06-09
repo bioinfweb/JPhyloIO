@@ -65,7 +65,7 @@ public class DefaultCommandReader extends AbstractNexusCommandEventReader implem
 			}
 		} while (!StringUtils.endsWith(sequence, COMMAND_END));
 		getStreamDataProvider().getCurrentEventCollection().add(new UnknownCommandEvent(getCommandName(), result.toString()));
-		//TODO This event should be added to queue before the comment events generated above. 
+		//TODO This event should be added to the queue before the comment events generated above. 
 		return true;
 	}
 }
