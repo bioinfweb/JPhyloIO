@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<characters id="alignment" otus="taxonlist" xsi:type="nex:DnaSeqs">
+		<format>
+			<states id="states">
+				<state id="Adenine" symbol="A"/>
+				<state id="Cytosine" symbol="C"/>
+				<state id="Guanine" symbol="G"/>
+				<state id="Thymine" symbol="T"/>
+			</states>
+			<char id="char0" states="states"/>
+			<char id="char1" states="states"/>
+			<char id="char2" states="states"/>
+			<char id="char3" states="states"/>
+			<char id="char4" states="states"/>
+			<set id="charset1" char="char0 char2 char3"/>
+			<set id="charset2" char="char4 char2"/>
+		</format>
+		<matrix>
+			<row id="row1" otu="taxon1">
+				<seq>AACTG</seq>
+			</row>
+			<row id="row2" otu="taxon2">
+			   <seq>ACGTT</seq>
+			</row>
+			<row id="row3" otu="taxon3">
+				<seq>ACCTG</seq>
+			</row>
+		</matrix>
+	</characters>
+</nex:nexml>

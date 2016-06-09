@@ -19,14 +19,14 @@
     </format>
     <matrix>
       <row id="row1" otu="taxon1">
-		<cell char="char3" state="A"/>
-        <cell char="char1" state="A"/>
-        <cell char="char2" state="G"/>
+		<cell char="char3" state="Adenine"/>
+        <cell char="char1" state="Adenine"/>
+        <cell char="char2" state="Guanine"/>
       </row>
       <row id="row2" otu="taxon2">
-        <cell char="char1" state="A"/>
-		<cell char="char3" state="T"/>
-        <cell char="char2" state="G"/>
+        <cell char="char1" state="Adenine"/>
+		<cell char="char3" state="Thymine"/>
+        <cell char="char2" state="Guanine"/>
       </row>
     </matrix>
   </characters>

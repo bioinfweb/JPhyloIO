@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<otus id="taxonlist">
+		<otu id="taxon1"/>
+		<otu id="taxon2" label="species2"/>
+		<otu id="taxon3"/>		
+	</otus>
+	<characters id="alignment" otus="taxonlist" xsi:type="nex:DnaCells">
+		<format>
+			<states id="states">
+				<state id="Adenine" symbol="A"/>
+				<state id="Cytosine" symbol="C"/>
+				<state id="Guanine" symbol="G"/>
+				<state id="Thymine" symbol="T"/>				
+			</states>
+			<char id="char0" states="states"/>
+			<char id="char1" states="states"/>
+			<char id="char2" states="states"/>
+			<char id="char3" states="states"/>
+			<char id="char4" states="states"/>			
+		</format>
+		<matrix>
+			<row id="row1" otu="taxon1">
+				<cell char="char0" state="Adenine"/>
+				<cell char="unknownChar" state="Thymine"/>
+			</row>			
+		</matrix>
+	</characters>	
+</nex:nexml>

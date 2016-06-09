@@ -12,15 +12,7 @@
 				<state id="Cytosine" symbol="C"/>
 				<state id="Guanine" symbol="G"/>
 				<state id="Thymine" symbol="T"/>
-				<uncertain_state_set id="unspecified" symbol="N">
-					<member state="Adenine"/>
-					<member state="Cytosine"/>
-					<member state="Guanine"/>
-					<member state="Thymine"/>
-				</uncertain_state_set>
-				<uncertain_state_set id="gap" symbol="-"/>
-				<uncertain_state_set id="missing" symbol="?">
-					<member state="gap"/>
+				<uncertain_state_set id="notSpecified" symbol="N">
 					<member state="Adenine"/>
 					<member state="Cytosine"/>
 					<member state="Guanine"/>
@@ -33,7 +25,7 @@
 			<char id="char3" states="states"/>
 			<char id="char4" states="states"/>
 			<set id="charset1" char="char0 char2 char3"/>
-			<set id="charset2" char="char4 char2"/>
+			<set id="charset2" char="unknownChar char2"/>
 		</format>
 		<matrix>
 			<row id="row1" otu="taxon1">
@@ -42,7 +34,7 @@
 			<row id="row2" otu="taxon2">
 			   <seq>ACGTT</seq>
 			</row>
-			<row id="row3" otu="taxon3">
+			<row id="row3" otu="unknownTaxon">
 				<seq>ACCTG</seq>
 			</row>
 		</matrix>
@@ -54,9 +46,9 @@
 			<node id="node3" otu="taxon3"/>
 			<node id="node4"/>
 			<node id="node5"/>
-			<rootedge id="rootedge" target="node4" length="0.778"/>
-			<edge id="edge1" source="node4" target="node5" length="1"/>
-			<edge id="edge2" source="node4" target="node3"/>
+			<rootedge id="rootedge" target="unknownNode" length="0.778"/>
+			<edge id="edge1" source="unknownNode" target="node5" length="1"/>
+			<edge id="edge2" source="node4" target="unknownNode"/>
 			<edge id="edge3" source="node5" target="node1" length="0.98"/>
 			<edge id="edge4" source="node5" target="node2"/>
 		</tree>

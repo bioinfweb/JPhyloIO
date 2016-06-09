@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<otus>
+		<otu id="taxon1"/>
+		<otu id="taxon2" label="species2"/>
+		<otu id="taxon3"/>		
+	</otus>
+</nex:nexml>
