@@ -739,16 +739,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					streamDataProvider.setCurrentEventCollection(info.getNestedEvents());
 					streamDataProvider.setCurrentCellBuffered(true);
 				}
-				
-				// Fire all waiting events from the buffer that fit to the current position:
-				BufferedEventInfo<SingleSequenceTokenEvent> info = streamDataProvider.getCurrentCellsBuffer().get(expectedID);
-				while (info != null) {
-					streamDataProvider.getCurrentEventCollection().add(info.getStartEvent());
-					streamDataProvider.getCurrentEventCollection().addAll(info.getNestedEvents());
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
-					
-					info = streamDataProvider.getCurrentCellsBuffer().get(streamDataProvider.nextCharID());  // Move iterator forward for next iteration or next call of this method.
-				}
 			}
 		});
 		
@@ -760,6 +750,17 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				}
 				else {
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
+				}
+				
+				// Fire all waiting events from the buffer that fit to the current position:
+				BufferedEventInfo<SingleSequenceTokenEvent> info = streamDataProvider.getCurrentCellsBuffer().get(streamDataProvider.getCurrentExpectedCharID());
+				while (info != null) {
+					streamDataProvider.getCurrentEventCollection().add(info.getStartEvent());
+					streamDataProvider.getCurrentEventCollection().addAll(info.getNestedEvents());
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
+					streamDataProvider.getCurrentCellsBuffer().remove(streamDataProvider.getCurrentExpectedCharID());
+					
+					info = streamDataProvider.getCurrentCellsBuffer().get(streamDataProvider.nextCharID());  // Move iterator forward for next iteration or next call of this method.
 				}
 			}
 		});
