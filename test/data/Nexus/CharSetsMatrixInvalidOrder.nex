@@ -1,0 +1,24 @@
+#NEXUS
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 3;
+	TAXLABELS 
+		A
+		B
+		C; 
+END; 
+
+BEGIN Sets;
+  TITLE sets1;
+  LINK CHARACTERS=matrix1;
+  CharSet set01 = 2-4 6;
+END;
+
+BEGIN Characters;
+  Title matrix1;
+  Dimensions NTax=3 NChar=7;
+  Format DataType = DNA Missing=? Gap= -;
+  Matrix A CGGTCAT
+         B CG-TCTT 
+         C CG-TC-T;
+END;

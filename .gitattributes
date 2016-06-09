@@ -340,6 +340,7 @@ test/data/Newick/OnlyBranchLengths.nwk -text
 test/data/Newick/ProblematicComments.nwk -text
 test/data/Nexus/CharSet.nex -text
 test/data/Nexus/CharSetInvalidVectorSymbol.nex -text
+test/data/Nexus/CharSetsMatrixInvalidOrder.nex -text
 test/data/Nexus/CharSetsMultipleMatrices.nex -text
 test/data/Nexus/Format.nex -text
 test/data/Nexus/FormatContinuous.nex -text
