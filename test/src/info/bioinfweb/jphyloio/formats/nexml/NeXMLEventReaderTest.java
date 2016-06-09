@@ -36,6 +36,7 @@ import java.io.File;
 import java.math.BigInteger;
 import java.net.URI;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
@@ -714,13 +715,13 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			
 			assertSingleTokenEvent("A", false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "string", "xsd")), "another text", null, null, 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "another text", null, "another text", 
 					true,	reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
 			
 			assertSingleTokenEvent("G", false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "integer", "xsd")), "18", null,
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "integer", "xsd")), "18", null,
 					new BigInteger("18"), true,	reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
 			
@@ -728,7 +729,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "linksResource", "foo")), 
 					new URI("http://example.org/someURI"), null, false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "string", "xsd")), "some text", null, null, true, 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "some text", null, null, true, 
 					reader);
 			assertEndEvent(EventContentType.META_RESOURCE, reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
