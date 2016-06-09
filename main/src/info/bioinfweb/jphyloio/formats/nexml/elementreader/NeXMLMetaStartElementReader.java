@@ -30,7 +30,6 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractNeXMLElementReader.LabeledIDEventInformation;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
@@ -120,7 +119,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
   				href = new URI(uri);
   			}
   			catch (URISyntaxException e) {
-  				throw new JPhyloIOReaderException("An \"href\"-attribute element must specify a valid URI. Instead the string\"" + uri + "\" was given.", event.getLocation());
+  				throw new JPhyloIOReaderException("An \"href\"-attribute element must specify a valid URI. Instead the string \"" + uri + "\" was found.", event.getLocation());
   			}
   			
   			streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(info.id, info.label, predicate, href, about));	  			
