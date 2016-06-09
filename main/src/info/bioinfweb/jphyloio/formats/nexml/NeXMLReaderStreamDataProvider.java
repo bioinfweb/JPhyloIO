@@ -216,7 +216,7 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	 * 
 	 * @return a map linking column indices to column IDs
 	 */
-	protected Map<String, Integer> getCharIDToIndexMap() {
+	public Map<String, Integer> getCharIDToIndexMap() {
 		return charIDToIndexMap;
 	}
 
@@ -315,12 +315,12 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	 * 
 	 * @return {@code true} if at least one root node was encountered
 	 */
-	protected boolean isTrulyRooted() {
+	public boolean isTrulyRooted() {
 		return isTrulyRooted;
 	}
 
 
-	protected void setTrulyRooted(boolean isTrulyRooted) {
+	public void setTrulyRooted(boolean isTrulyRooted) {
 		this.isTrulyRooted = isTrulyRooted;
 	}
 
@@ -330,12 +330,12 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	 * 
 	 * @return a list of all encountered root nodes
 	 */
-	protected Set<String> getRootNodeIDs() {
+	public Set<String> getRootNodeIDs() {
 		return rootNodeIDs;
 	}
 	
 
-	protected void setRootNodeIDs(Set<String> rootNodeIDs) {
+	public void setRootNodeIDs(Set<String> rootNodeIDs) {
 		this.rootNodeIDs = rootNodeIDs;
 	}
 }

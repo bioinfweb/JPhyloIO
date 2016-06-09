@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml;
+package info.bioinfweb.jphyloio.formats.nexml.elementreader;
 
 
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderStreamDataProvider;
 
 import java.io.IOException;
 

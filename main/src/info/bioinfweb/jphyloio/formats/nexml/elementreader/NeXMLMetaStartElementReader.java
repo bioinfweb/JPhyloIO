@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml;
+package info.bioinfweb.jphyloio.formats.nexml.elementreader;
 
 
 import info.bioinfweb.commons.io.W3CXSConstants;
@@ -29,6 +29,8 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractNeXMLElementReader.LabeledIDEventInformation;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 

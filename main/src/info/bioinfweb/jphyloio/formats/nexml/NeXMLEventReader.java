@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -44,6 +45,9 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractNeXMLElementReader;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaEndElementReader;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaStartElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
@@ -57,7 +61,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import javax.lang.model.element.Element;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -237,8 +240,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				NeXMLSingleTokenDefinitionInformation info = streamDataProvider.getCurrentSingleTokenDefinition();
 				String symbol = info.getSymbol();
 				String translation = symbol;
-				CharacterSymbolMeaning meaning;
-				CharacterSymbolType tokenType;				
 				
 				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE)) {					
 					if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
@@ -246,7 +247,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		   					&& (info.getLabel() != null)) {
 		   				translation = info.getLabel();
 		   			}
-		   			else { //SYMBOL_TO_ID or label was null
+		   			else {  // SYMBOL_TO_ID or label was null
 		   				translation = info.getId();
 		   			}
 		   		}
@@ -260,16 +261,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				}				
 				
 	  		if (symbol != null) {
-	  			if (symbol.equals("?")) {
-						meaning = CharacterSymbolMeaning.MISSING;
-					}
-					else if (symbol.equals("-")) {
-						meaning = CharacterSymbolMeaning.GAP;
-					}
-					else {
-						meaning = CharacterSymbolMeaning.CHARACTER_STATE;
-					}
-	  			
+					CharacterSymbolType tokenType;				
 	  			if (streamDataProvider.getElementName().equals(TAG_POLYMORPHIC.getLocalPart())) {
 						tokenType = CharacterSymbolType.POLYMORPHIC;
 					}
@@ -278,7 +270,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					}
 	  			
 	  			streamDataProvider.getTokenDefinitionIDToSymbolMap().put(info.getId(), symbol);
-	  			streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.getId(), info.getLabel(), symbol, meaning, tokenType, info.getConstituents()));
+	  			streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.getId(), info.getLabel(), symbol, 
+	  					parseStateMeaning(symbol), tokenType, info.getConstituents()));
 	  		
 	  			Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 	  			for (JPhyloIOEvent nestedEvent : nestedEvents) {
@@ -469,7 +462,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					CharacterStateSetType setType = null;
 					
 					if (tokenSetType.equals(TYPE_DNA_SEQS) || tokenSetType.equals(TYPE_DNA_CELLS)) {
-						info.label = "DNA";
+						info.label = "DNA";  //TODO Create constants (that may also contain spaces?)
 						setType = CharacterStateSetType.DNA; //standard IUPAC nucleotide symbols
 						streamDataProvider.setAllowLongTokens(false);
 					}
@@ -573,7 +566,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
 				String symbol = XMLUtils.readStringAttr(element, ATTR_SYMBOL, null);
 				String translation = symbol;
-				CharacterSymbolMeaning meaning;
 				
 				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE)) {					
 					if (!streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
@@ -581,7 +573,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		   					&& (info.label != null)) {
 		   				translation = info.label;
 		   			}
-		   			else { //SYMBOL_TO_ID or label was null
+		   			else {  // SYMBOL_TO_ID or label was null
 		   				translation = info.id;
 		   			}
 		   		}
@@ -595,18 +587,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				}
 				
 	  		if (symbol != null) {	  			
-	  			if (symbol.equals("?")) {
-						meaning = CharacterSymbolMeaning.MISSING;
-					}
-					else if (symbol.equals("-")) {
-						meaning = CharacterSymbolMeaning.GAP;
-					}
-					else {
-						meaning = CharacterSymbolMeaning.CHARACTER_STATE;
-					}
-	  			
 	  			streamDataProvider.getTokenDefinitionIDToSymbolMap().put(info.id, symbol);
-	  			streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.id, info.label, symbol, meaning, CharacterSymbolType.ATOMIC_STATE));
+	  			streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.id, info.label, symbol, parseStateMeaning(symbol), CharacterSymbolType.ATOMIC_STATE));
 	  		}
 	  		else {
 	  			throw new JPhyloIOReaderException("State tag must have an attribute called \"" + ATTR_SYMBOL + "\".", element.getLocation());

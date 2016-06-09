@@ -16,19 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml;
+package info.bioinfweb.jphyloio.formats.nexml.elementreader;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexml.TokenTranslationStrategy;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamConstants;
@@ -185,5 +188,17 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		}
 		
 		return otuEventInformation;
+	}
+	
+	
+	public static CharacterSymbolMeaning parseStateMeaning(String symbol) {
+		CharacterSymbolMeaning result = null;
+		if (symbol.length() == 1) {
+			result = CharacterSymbolMeaning.meaningByDefaultSymbol(symbol.charAt(0));
+		}
+		if (result == null) {
+			result = CharacterSymbolMeaning.CHARACTER_STATE;
+		}
+		return result;
 	}
 }
