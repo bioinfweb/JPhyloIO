@@ -1,17 +1,17 @@
 * text=auto !eol
-demo/.classpath -text svneol=unset#text/plain
-demo/.project -text svneol=unset#text/plain
-demo/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
-demo/data/LargeNeXMLFile.xml -text svneol=unset#text/plain
-demo/data/MatrixInterleaved.nex -text
-demo/data/test.fasta -text
-demo/src/info/bioinfweb/jphyloio/demo/CollectionToElementCollectionAdapter.java -text svneol=unset#text/plain
-demo/src/info/bioinfweb/jphyloio/demo/DemoModel.java -text svneol=unset#text/plain
-demo/src/info/bioinfweb/jphyloio/demo/DemoPhyloDocument.java -text svneol=unset#text/plain
-demo/src/info/bioinfweb/jphyloio/demo/DemoReader.java -text svneol=unset#text/plain
-demo/src/info/bioinfweb/jphyloio/demo/DemoWriter.java -text svneol=unset#text/plain
-demo/src/info/bioinfweb/jphyloio/demo/ModelCharacterData.java -text svneol=unset#text/plain
-demo/src/info/bioinfweb/jphyloio/demo/ReadWriteDemo.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/.classpath -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/.project -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/data/LargeNeXMLFile.xml -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/data/MatrixInterleaved.nex -text
+demo/info.bioinfweb.jphyloio.demo.old/data/test.fasta -text
+demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/CollectionToElementCollectionAdapter.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoModel.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoPhyloDocument.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoReader.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoWriter.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/ModelCharacterData.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/ReadWriteDemo.java -text svneol=unset#text/plain
 main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
