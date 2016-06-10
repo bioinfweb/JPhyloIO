@@ -47,7 +47,7 @@ public class NeXMLFactoryTest {
 	
 	@Test
 	public void test_checkFormat_largerFile() throws IOException {
-		PeekReader reader = new PeekReader(new FileReader("data/NeXML/treebase-record.xml"));
+		PeekReader reader = new PeekReader(new FileReader("data/NeXML/LargeSequences.xml"));
 		try {
 			assertTrue(new NeXMLFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}

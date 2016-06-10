@@ -301,6 +301,7 @@ test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
 test/data/NeXML/DNACellsDifferentOrder.xml -text svneol=unset#text/plain
 test/data/NeXML/EmptyCURIEPrefix.xml -text svneol=unset#text/plain
 test/data/NeXML/LargeSequences.xml -text svneol=unset#text/plain
+test/data/NeXML/LongStandardSequence.txt -text svneol=unset#text/plain
 test/data/NeXML/MetaCustomXML.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml -text svneol=unset#text/plain
 test/data/NeXML/MetaElements.xml.gz -text
@@ -311,6 +312,7 @@ test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
 test/data/NeXML/MultipleElements.xml -text svneol=unset#text/plain
 test/data/NeXML/Paralogues.xml -text
 test/data/NeXML/SimpleDocument.xml -text svneol=unset#text/plain
+test/data/NeXML/StandardData.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownCharID_Cells.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownCharID_CharSet.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownStateID.xml -text svneol=unset#text/plain
@@ -325,9 +327,7 @@ test/data/NeXML/freeAnnotations/ValueNestedInName.xml -text svneol=unset#text/pl
 test/data/NeXML/freeAnnotations/array/ValueNestedInName_arrayValue.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/array/ValueNestedInName_multipleValues.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/array/ValueNestedInName_multipleValues_specialPredicate.xml -text svneol=unset#text/plain
-test/data/NeXML/shortNeXMLExample.xml -text svneol=unset#text/plain
-test/data/NeXML/treebase-example.xml -text svneol=unset#text/plain
-test/data/NeXML/treebase-record.xml -text svneol=unset#text/plain
+test/data/NeXML/longContinuousSequence.txt -text svneol=unset#text/plain
 test/data/NeXML/xml2rdf.rdf -text
 test/data/Newick/Comments.nwk -text
 test/data/Newick/InternalsTerminalsLength.nwk -text

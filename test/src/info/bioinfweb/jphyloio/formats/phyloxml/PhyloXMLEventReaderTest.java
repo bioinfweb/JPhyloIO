@@ -19,18 +19,8 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEdgeEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEndEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLinkedLabeledIDEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaStartEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertResourceMetaEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSeparatedStringLiteralContentEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertXMLContentEvent;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+import static org.junit.Assert.*;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
@@ -38,18 +28,15 @@ import info.bioinfweb.commons.testing.XMLTestTools;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.awt.Color;
 import java.io.File;
 import java.math.BigInteger;
 import java.net.URI;
-import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
@@ -70,26 +57,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType());
-					
-					if (event instanceof LabeledIDEvent) {
-//						System.out.println(event.asLabeledIDEvent().getID() + " " + event.asLabeledIDEvent().getLabel());
-					}
-					
-					if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
-//						System.out.println("Predicate: " + event.asLiteralMetadataEvent().getPredicate().getURI());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
-						if (event.asLiteralMetadataContentEvent().hasXMLEventValue()) {
-//							System.out.println(event.asLiteralMetadataContentEvent().getXMLEvent());
-						}
-						else {
-//							System.out.println(event.asLiteralMetadataContentEvent().getStringValue());
-							if (event.asLiteralMetadataContentEvent().getObjectValue() != null) {
-//								System.out.println(event.asLiteralMetadataContentEvent().getObjectValue() + " " + event.asLiteralMetadataContentEvent().getObjectValue().getClass());
-							}
-						}
-					}
+//					System.out.println(event.getType());
 				}
 			}
 			finally {
@@ -114,7 +82,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
@@ -176,7 +144,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
@@ -211,7 +179,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree14", "Tree 2", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree14", "Tree 2", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n19", "y1", null, reader);
@@ -275,7 +243,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
@@ -341,7 +309,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n8", "A", null, reader);				
@@ -471,7 +439,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
@@ -564,7 +532,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NETWORK, "network2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.NETWORK, "network2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
@@ -654,7 +622,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_DESCRIPTION), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
 						"An example tree to test meta data event creation", null, null, true, reader);
@@ -756,7 +724,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);				
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "Name A", null, reader);
@@ -883,7 +851,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
@@ -915,7 +883,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NETWORK, "network2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.NETWORK, "network2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
@@ -978,7 +946,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
@@ -1098,7 +1066,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				
@@ -1170,7 +1138,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", null, reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				

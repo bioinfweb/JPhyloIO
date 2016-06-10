@@ -36,7 +36,6 @@ import java.io.File;
 import java.math.BigInteger;
 import java.net.URI;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
@@ -49,11 +48,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MultipleCharactersTags.xml"), parameters);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/UnknownTag.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-					System.out.println(event.getType());
+//					System.out.println(event.getType());
 					
 					if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.START))) {
 //					System.out.println("Predicate: " + event.asResourceMetadataEvent().getRel().getURI());
@@ -73,8 +72,19 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 	
 	@Test
 	public void readSimpleDocument() {
+		readDocument(new File("data/NeXML/SimpleDocument.xml"));
+	}
+	
+	
+	@Test
+	public void readDocumentWithUnknownTags() {
+		readDocument(new File("data/NeXML/UnknownTag.xml"));
+	}
+	
+	
+	public void readDocument(File file) {
 		try {
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocument.xml"), new ReadWriteParameterMap());
+			NeXMLEventReader reader = new NeXMLEventReader(file, new ReadWriteParameterMap());
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
@@ -517,6 +527,423 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 	
 	
 	@Test
+	public void readMultipleCharactersTags() {
+		try {
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MultipleCharactersTags.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t1", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t2", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t3", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t4", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t5", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", "RestrictionSiteData", "taxa1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
+				assertSingleTokenDefinitionEvent("0", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertCharacterSetIntervalEvent(0, 4, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "RestrictionSiteRow1", "RestrictionSiteRow1", "t1", reader);
+				assertCharactersEvent("0101", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "RestrictionSiteRow2", "RestrictionSiteRow2", "t2", reader);
+				assertCharactersEvent("0101", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "RestrictionSiteRow3", "RestrictionSiteRow3", "t3", reader);
+				assertCharactersEvent("0101", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m3", "ContinuousData", "taxa1", reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow1", "ContinuousCellsRow1", "t1", reader);
+				assertSingleTokenEvent("-1.545414144070023", true, reader);
+				assertSingleTokenEvent("-2.3905621575431044", true, reader);
+				assertSingleTokenEvent("-2.9610221833467265", true, reader);
+				assertSingleTokenEvent("0.7868662069161243", true, reader);
+				assertSingleTokenEvent("0.22968509237534918", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow2", "ContinuousCellsRow2", "t2", reader);
+				assertSingleTokenEvent("-1.6259836379710066", true, reader);
+				assertSingleTokenEvent("3.649352410850134", true, reader);
+				assertSingleTokenEvent("1.778885099660406", true, reader);
+				assertSingleTokenEvent("-1.2580877968480846", true, reader);
+				assertSingleTokenEvent("0.22335354995610862", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);		
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow3", "ContinuousCellsRow3", "t3", reader);
+				assertSingleTokenEvent("-1.5798979984134964", true, reader);
+				assertSingleTokenEvent("2.9548251411133157", true, reader);
+				assertSingleTokenEvent("1.522005675256233", true, reader);
+				assertSingleTokenEvent("-0.8642016921755289", true, reader);
+				assertSingleTokenEvent("-0.938129801832388", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);		
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow4", "ContinuousCellsRow4", "t4", reader);
+				assertSingleTokenEvent("2.7436692306788086", true, reader);
+				assertSingleTokenEvent("-0.7151148143399818", true, reader);
+				assertSingleTokenEvent("4.592207937774776", true, reader);
+				assertSingleTokenEvent("-0.6898841440534845", true, reader);
+				assertSingleTokenEvent("0.5769509574453064", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);		
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow5", "ContinuousCellsRow5", "t5", reader);
+				assertSingleTokenEvent("3.1060827493657683", true, reader);
+				assertSingleTokenEvent("-1.0453787389160105", true, reader);
+				assertSingleTokenEvent("2.67416332763427", true, reader);
+				assertSingleTokenEvent("-1.4045634106692808", true, reader);
+				assertSingleTokenEvent("0.019890469925520196", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);		
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "characters3", "DNA", "taxa1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("K", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("M", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("R", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("S", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("W", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("Y", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("B", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("D", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("H", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("V", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("N", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("X", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+				assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+				assertCharacterSetIntervalEvent(0, 16, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "DNASequence1", "DNASequence1", "t1", reader);
+				assertCharactersEvent("ACGCTCGCATCGCATC", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "DNASequence2", "DNASequence2", "t2", reader);
+				assertCharactersEvent("ACGCTCGCATCGCATC", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "DNASequence3", "DNASequence3", "t3", reader);
+				assertCharactersEvent("ACGCTCGCATCGCATC", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "rnaseqs4", "RNA", "taxa1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.RNA, "RNA", reader);
+				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("U", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("K", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("M", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("R", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("S", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("W", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("Y", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("B", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("D", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("H", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("V", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("N", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("X", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+				assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+				assertCharacterSetIntervalEvent(0, 20, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "rnarow1", "rnarow1", "t1", reader);
+				assertCharactersEvent("ACGCUCGCAUCGCAUC", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "rnarow2", "rnarow2", "t2", reader);
+				assertCharactersEvent("ACGCUCGCAUCGCAUC", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "rnarow3", "rnarow3", "t3", reader);
+				assertCharactersEvent("ACGCUCGCAUCGCAUC", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "contchars5", "ContinuousData", "taxa1", reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
+				assertCharactersEvent(new String[]{"-1.545414144070023", "-2.3905621575431044", "-2.9610221833467265", "0.7868662069161243", "0.22968509237534918"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw2", "controw2", "t2", reader);
+				assertCharactersEvent(new String[]{"-1.6259836379710066", "3.649352410850134", "1.778885099660406", "-1.2580877968480846", "0.22335354995610862"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw3", "controw3", "t3", reader);
+				assertCharactersEvent(new String[]{"-1.5798979984134964", "2.9548251411133157", "1.522005675256233", "-0.8642016921755289", "-0.938129801832388"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw4", "controw4", "t4", reader);
+				assertCharactersEvent(new String[]{"2.7436692306788086", "-0.7151148143399818", "4.592207937774776", "-0.6898841440534845", "0.5769509574453064"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw5", "controw5", "t5", reader);
+				assertCharactersEvent(new String[]{"3.1060827493657683", "-1.0453787389160105", "2.67416332763427", "-1.4045634106692808", "0.019890469925520196"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+						
+				assertEndEvent(EventContentType.DOCUMENT, reader);			
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void readStandardDataNeverTranslate() {
+		try {
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.NEVER);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/StandardData.xml"), parameters);
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t1", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t2", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t3", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t4", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t5", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", "StandardData", "taxa1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
+				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("2", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("3", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("4", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("5", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertCharacterSetIntervalEvent(0, 2, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow1", "StandardCategoricalStateCellsRow1", "t1", reader);
+				assertSingleTokenEvent("1", true, reader);
+				assertSingleTokenEvent("2", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow2", "StandardCategoricalStateCellsRow2", "t2", reader);
+				assertSingleTokenEvent("2", true, reader);
+				assertSingleTokenEvent("2", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow3", "StandardCategoricalStateCellsRow3", "t3", reader);
+				assertSingleTokenEvent("3", true, reader);
+				assertSingleTokenEvent("4", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow4", "StandardCategoricalStateCellsRow4", "t4", reader);
+				assertSingleTokenEvent("2", true, reader);
+				assertSingleTokenEvent("3", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow5", "StandardCategoricalStateCellsRow5", "t5", reader);
+				assertSingleTokenEvent("4", true, reader);
+				assertSingleTokenEvent("1", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", "StandardData", "taxa1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
+				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("2", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("3", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("4", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("5", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertCharacterSetIntervalEvent(0, 2, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr1", "standardr1", "t1", reader);
+				assertCharactersEvent("12", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr2", "standardr2", "t2", reader);
+				assertCharactersEvent("22", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr3", "standardr3", "t3", reader);
+				assertCharactersEvent("34", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr4", "standardr4", "t4", reader);
+				assertCharactersEvent("23", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr5", "standardr5", "t5", reader);
+				assertCharactersEvent("41", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+					
+				assertEndEvent(EventContentType.DOCUMENT, reader);			
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void readStandardDataTranslateSymbolToLabel() {
+		try {
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/StandardData.xml"), parameters);
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t1", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t2", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t3", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t4", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t5", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", "StandardData", "taxa1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
+				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("2", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("3", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("4", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("5", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertCharacterSetIntervalEvent(0, 2, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow1", "StandardCategoricalStateCellsRow1", "t1", reader);
+				assertSingleTokenEvent("1", true, reader);
+				assertSingleTokenEvent("2", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow2", "StandardCategoricalStateCellsRow2", "t2", reader);
+				assertSingleTokenEvent("2", true, reader);
+				assertSingleTokenEvent("2", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow3", "StandardCategoricalStateCellsRow3", "t3", reader);
+				assertSingleTokenEvent("3", true, reader);
+				assertSingleTokenEvent("4", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow4", "StandardCategoricalStateCellsRow4", "t4", reader);
+				assertSingleTokenEvent("2", true, reader);
+				assertSingleTokenEvent("3", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow5", "StandardCategoricalStateCellsRow5", "t5", reader);
+				assertSingleTokenEvent("4", true, reader);
+				assertSingleTokenEvent("1", true, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", "StandardData", "taxa1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
+				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("2", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("3", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("4", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("5", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertCharacterSetIntervalEvent(0, 2, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr1", "standardr1", "t1", reader);
+				assertCharactersEvent(new String[]{"standardstates1", "blue"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr2", "standardr2", "t2", reader);
+				assertCharactersEvent(new String[]{"blue", "blue"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr3", "standardr3", "t3", reader);
+				assertCharactersEvent(new String[]{"standardstates3", "green"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr4", "standardr4", "t4", reader);
+				assertCharactersEvent(new String[]{"blue", "standardstates3"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr5", "standardr5", "t5", reader);
+				assertCharactersEvent(new String[]{"green", "standardstates1"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+					
+				assertEndEvent(EventContentType.DOCUMENT, reader);			
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
 	public void readUnknownCharIDInCharSet() throws Exception {
 		NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/UnknownCharID_CharSet.xml"), new ReadWriteParameterMap());
 		try {			
@@ -715,13 +1142,13 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			
 			assertSingleTokenEvent("A", false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "another text", null, "another text", 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "string", "xsd")), "another text", null, null, 
 					true,	reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
 			
 			assertSingleTokenEvent("G", false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "integer", "xsd")), "18", null,
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "integer", "xsd")), "18", null,
 					new BigInteger("18"), true,	reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
 			
@@ -729,7 +1156,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "linksResource", "foo")), 
 					new URI("http://example.org/someURI"), null, false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "some text", null, null, true, 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "string", "xsd")), "some text", null, null, true, 
 					reader);
 			assertEndEvent(EventContentType.META_RESOURCE, reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
@@ -749,5 +1176,99 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 		finally {
 			reader.close();
 		}		
+	}
+	
+	
+	@Test
+	public void readLongSequences() {
+		try {
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.NEVER);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/StandardData.xml"), parameters);
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t1", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t2", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t3", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t4", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "t5", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", "ContinuousData", "taxa1", reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
+				//TODO test method needed
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw2", "controw2", "t2", reader);
+				assertCharactersEvent(new String[]{"-1.6259836379710066", "3.649352410850134", "1.778885099660406", "-1.2580877968480846", "0.22335354995610862"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw3", "controw3", "t3", reader);
+				assertCharactersEvent(new String[]{"-1.5798979984134964", "2.9548251411133157", "1.522005675256233", "-0.8642016921755289", "-0.938129801832388"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw4", "controw4", "t4", reader);
+				assertCharactersEvent(new String[]{"2.7436692306788086", "-0.7151148143399818", "4.592207937774776", "-0.6898841440534845", "0.5769509574453064"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw5", "controw5", "t5", reader);
+				assertCharactersEvent(new String[]{"3.1060827493657683", "-1.0453787389160105", "2.67416332763427", "-1.4045634106692808", "0.019890469925520196"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", "StandardData", "taxa1", reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
+				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("2", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("3", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("4", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("5", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertCharacterSetIntervalEvent(0, 2, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr1", "standardr1", "t1", reader);
+				//TODO test method needed
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr2", "standardr2", "t2", reader);
+				assertCharactersEvent(new String[]{"123", "123"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr3", "standardr3", "t3", reader);
+				assertCharactersEvent(new String[]{"134", "4"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr4", "standardr4", "t4", reader);
+				assertCharactersEvent(new String[]{"123", "134"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr5", "standardr5", "t5", reader);
+				assertCharactersEvent(new String[]{"4", "111"}, reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+					
+				assertEndEvent(EventContentType.DOCUMENT, reader);			
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
 	}
 }

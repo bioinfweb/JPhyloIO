@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-    xmlns:foo="http://bioinfweb.info/xmlns/example">
-    
+    xmlns:foo="http://bioinfweb.info/xmlns/example">    
   <otus id="taxa">
     <otu id="taxon1"/>
     <otu id="taxon2">
