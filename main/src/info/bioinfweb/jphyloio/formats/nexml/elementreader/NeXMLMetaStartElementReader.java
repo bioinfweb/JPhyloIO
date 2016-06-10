@@ -69,7 +69,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
   			
   			LiteralContentSequenceType contentType = LiteralContentSequenceType.XML;
   			
-  			ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
+  			ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype); //TODO also translate content attribute content
   			if (translator != null) {
   				contentType = LiteralContentSequenceType.SIMPLE;
   			}
@@ -77,7 +77,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
   			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, contentType));
   			
   			if ((streamDataProvider.getXMLReader().peek().getEventType() == XMLStreamConstants.END_ELEMENT) && (content != null)) { //if no character data or custom XML is nested under this literal meta event the value of the content-attribute is used to create a LiteralMetadataContentEvent
-  				Object objectValue;
+  				Object objectValue; //TODO if next events are only whitespace, treat the same
   				if (translator != null) {
 	  				try {
 							objectValue = translator.representationToJava(content, streamDataProvider);

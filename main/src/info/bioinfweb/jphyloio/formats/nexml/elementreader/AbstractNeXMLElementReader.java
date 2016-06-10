@@ -60,7 +60,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	}
 	
 	
-	protected List<String> readSequence(NeXMLReaderStreamDataProvider streamDataProvider, String sequence, TokenTranslationStrategy translateTokens) {		
+	protected List<String> readSequence(NeXMLReaderStreamDataProvider streamDataProvider, String sequence, TokenTranslationStrategy translateTokens) throws JPhyloIOReaderException, XMLStreamException {		
 		List<String> tokenList = new ArrayList<String>();
 		String lastToken = "";
    	String currentToken = "";
@@ -107,7 +107,13 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) && !translateTokens.equals(TokenTranslationStrategy.NEVER)) { //standard data
 	 			for (int i = 0; i < tokenList.size(); i++) {	 				
 		 			String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
-	 	 			tokenList.set(i, streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(tokenList.get(i)));
+		 			try {
+		 				int standardToken = Integer.parseInt(tokenList.get(i));
+		 				tokenList.set(i, streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(standardToken));
+		 			}
+		 			catch (NumberFormatException e) {
+		 				throw new JPhyloIOReaderException("The symbol of a standard data token definition must be of type Integer.", streamDataProvider.getXMLReader().peek().getLocation());
+		 			}	 	 			
 				}		 		
 			}
 		}
@@ -120,7 +126,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 				}
 	 		}
 		}
-		
+
    	return tokenList;
 	}
 	

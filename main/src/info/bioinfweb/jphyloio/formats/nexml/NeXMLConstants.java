@@ -41,8 +41,7 @@ public interface NeXMLConstants {
 	public static final QName TAG_OTUS = new QName(NEXML_NAMESPACE, "otus");
 	public static final QName TAG_OTU = new QName(NEXML_NAMESPACE, "otu");
 
-	public static final QName TAG_CHARACTERS = new QName(NEXML_NAMESPACE, "characters");
-	public static final QName TAG_MATRIX = new QName(NEXML_NAMESPACE, "matrix");
+	public static final QName TAG_CHARACTERS = new QName(NEXML_NAMESPACE, "characters");	
 	public static final QName TAG_FORMAT = new QName(NEXML_NAMESPACE, "format");
 	public static final QName TAG_STATES = new QName(NEXML_NAMESPACE, "states");
 	public static final QName TAG_STATE = new QName(NEXML_NAMESPACE, "state");
@@ -50,6 +49,7 @@ public interface NeXMLConstants {
 	public static final QName TAG_UNCERTAIN = new QName(NEXML_NAMESPACE, "uncertain_state_set");
 	public static final QName TAG_MEMBER = new QName(NEXML_NAMESPACE, "member");
 	public static final QName TAG_CHAR = new QName(NEXML_NAMESPACE, "char");
+	public static final QName TAG_MATRIX = new QName(NEXML_NAMESPACE, "matrix");
 	public static final QName TAG_ROW = new QName(NEXML_NAMESPACE, "row");
 	public static final QName TAG_CELL = new QName(NEXML_NAMESPACE, "cell");
 	public static final QName TAG_SEQ = new QName(NEXML_NAMESPACE, "seq");

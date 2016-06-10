@@ -305,16 +305,18 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_META, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_META, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
-		putElementReader(new XMLElementReaderKey(TAG_CHARACTERS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
-		putElementReader(new XMLElementReaderKey(TAG_CHARACTERS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		putElementReader(new XMLElementReaderKey(TAG_SET, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart); //TODO only charset meta should be read
+		putElementReader(new XMLElementReaderKey(TAG_SET, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);		
+	
 		putElementReader(new XMLElementReaderKey(TAG_OTUS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_OTUS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_OTU, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_OTU, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		
+		putElementReader(new XMLElementReaderKey(TAG_CHARACTERS, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		putElementReader(new XMLElementReaderKey(TAG_CHARACTERS, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaWithPredicateStart);
-		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaWithPredicateEnd);
-		putElementReader(new XMLElementReaderKey(TAG_SET, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart); //TODO only charset meta should be read
-		putElementReader(new XMLElementReaderKey(TAG_SET, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaWithPredicateEnd);		
 		putElementReader(new XMLElementReaderKey(TAG_STATES, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_STATES, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_STATE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
@@ -331,6 +333,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_ROW, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_CELL, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_CELL, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
+		
 		putElementReader(new XMLElementReaderKey(TAG_TREES, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_TREES, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
@@ -625,12 +628,14 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				streamDataProvider.getCharIDs().add(info.id);
 				streamDataProvider.getCharIDToStatesMap().put(info.id, states);
 				
-				if (streamDataProvider.getTokenSetIDtoColumnsMap().get(states) != null) {
-					streamDataProvider.getTokenSetIDtoColumnsMap().get(states).add(info.id);
+				if (!streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.CONTINUOUS)) {
+					if (streamDataProvider.getTokenSetIDtoColumnsMap().get(states) != null) {
+						streamDataProvider.getTokenSetIDtoColumnsMap().get(states).add(info.id);
+					}
+					else {
+						throw new JPhyloIOReaderException("A character referenced the ID \"" + states + "\" of a token set that was not specified before.", element.getLocation()); 
+					}
 				}
-				else {
-					throw new JPhyloIOReaderException("A character referenced the ID \"" + states + "\" of a token set that was not specified before.", element.getLocation()); 
-				}				
 				
 				if ((element.getAttributeByName(ATTR_TOKENS) != null) || (element.getAttributeByName(ATTR_CODON_POSITION) != null)) {
 					streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
@@ -700,7 +705,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				String label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
 				String tokenState = XMLUtils.readStringAttr(element, ATTR_STATE, null);
 				String columnID = XMLUtils.readStringAttr(element, ATTR_CHAR, null);				
-				String token = null;
+				String token = tokenState;
 				
 				if (!streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.CONTINUOUS)) {
 					if (streamDataProvider.getTokenDefinitionIDToSymbolMap().containsKey(tokenState)) {
@@ -770,6 +775,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				String tokens = event.asCharacters().getData();
 		   	streamDataProvider.getCurrentEventCollection().add(new SequenceTokensEvent(readSequence(streamDataProvider, tokens, streamDataProvider.getEventReader().getTranslateTokens())));				
+		   	//TODO use getSequenceTokensEventManager().createEvent() here?
 			}
 		});
 		
@@ -794,10 +800,10 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();				
-				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
+				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
 				String treeType = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
 				
-				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, info.id,	info.label, info.otuOrOtusID));	  		
+				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, info.id,	info.label));	  		
 	  		streamDataProvider.setRootNodeIDs(new HashSet<String>());
 				
 				if (treeType == null) {
@@ -839,9 +845,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
-				OTUorOTUSEventInformation otuInfo = getOTUorOTUSEventInformation(streamDataProvider, element);
+				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
 				
-	  		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NETWORK, otuInfo.id, otuInfo.label, otuInfo.otuOrOtusID));
+	  		streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NETWORK, info.id, info.label));
 	  		streamDataProvider.setRootNodeIDs(new HashSet<String>());
 			}
 		});

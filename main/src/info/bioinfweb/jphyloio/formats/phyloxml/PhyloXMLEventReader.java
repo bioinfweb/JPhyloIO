@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -120,8 +121,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		XMLElementReader<PhyloXMLReaderStreamDataProvider> cladeEndReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 			@Override
 			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {				
-				createNodeEvents(streamDataProvider);				
-				getStreamDataProvider().getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NODE));				
+				createNodeEvents(streamDataProvider);
+				getStreamDataProvider().getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NODE));
 				
 				if (!streamDataProvider.getPropertyEvents().isEmpty()) {
 					for (JPhyloIOEvent nextEvent : streamDataProvider.getPropertyEvents()) {
@@ -1128,7 +1129,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		}
 		
 		Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
-		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(phylogenyType, phylogenyID, phylogenyLabel, null));
+		streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(phylogenyType, phylogenyID, phylogenyLabel));
 		
 		for (JPhyloIOEvent nextEvent : nestedEvents) {
 			streamDataProvider.getCurrentEventCollection().add(nextEvent);
