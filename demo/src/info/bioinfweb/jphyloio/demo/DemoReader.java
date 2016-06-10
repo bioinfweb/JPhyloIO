@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LinkedOTUEvent;
+import info.bioinfweb.jphyloio.events.LinkedOTUOrOTUsEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 
@@ -60,7 +60,7 @@ public class DemoReader {
 	
 	public static void addSequenceToElementCollection(DemoModel collection, JPhyloIOEvent event) {
 		if (event.getType().getContentType().equals(EventContentType.SEQUENCE) && event.getType().getTopologyType().equals(EventTopologyType.START)) {
-			LinkedOTUEvent sequenceStartEvent = event.asLinkedOTUEvent();
+			LinkedOTUOrOTUsEvent sequenceStartEvent = event.asLinkedOTUOrOTUsEvent();
 			currentSequenceName = sequenceStartEvent.getLabel();
 		}
 		else if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {

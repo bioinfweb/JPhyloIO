@@ -19,12 +19,12 @@
 package info.bioinfweb.jphyloio.demo;
 
 
+import info.bioinfweb.jphyloio.EventWriterParameterMap;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAEventReader;
-import info.bioinfweb.jphyloio.formats.fasta.FastaModelWriter;
+import info.bioinfweb.jphyloio.formats.fasta.FASTAEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 import info.bioinfweb.jphyloio.formats.nexml.TranslateTokens;
 import info.bioinfweb.jphyloio.model.CharacterData;
-import info.bioinfweb.jphyloio.model.ModelWriterParameterMap;
 import info.bioinfweb.jphyloio.model.PhyloDocument;
 
 import java.io.BufferedWriter;
@@ -55,9 +55,8 @@ public class ReadWriteDemo {
 		List<CharacterData> characterData = new ArrayList<CharacterData>();
 		characterData.add(new ModelCharacterData(demoModel.getAlignmentData()));
 		PhyloDocument document = new DemoPhyloDocument(new CollectionToElementCollectionAdapter<>(characterData), null);
-		ModelWriterParameterMap parameters = new ModelWriterParameterMap();
-		parameters.put(ModelWriterParameterMap.KEY_ALLOW_LONG_TOKENS, false);
-		FastaModelWriter writer = new FastaModelWriter();
+		EventWriterParameterMap parameters = new EventWriterParameterMap();
+		FASTAEventWriter writer = new FASTAEventWriter();
 		Writer outputFileWriter = new BufferedWriter(new FileWriter("data/output_test.fasta"));
 		try {
 			DemoWriter.writeFasta(document, outputFileWriter, writer, parameters);
