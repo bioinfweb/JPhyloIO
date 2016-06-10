@@ -12,6 +12,9 @@ demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoReade
 demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoWriter.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/ModelCharacterData.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/ReadWriteDemo.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.tree/.classpath -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.tree/.project -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
