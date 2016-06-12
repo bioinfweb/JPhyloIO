@@ -20,7 +20,7 @@ BEGIN SETS;
   TAXSET set3 = 00110;
   TAXSET set4 = C-.;
   TAXSET set5 = ALL\2;
-  TAXSET set6 = .-C;
+  TAXSET set6 = . - B;
   [See "List" on page 619 of the Nexus paper for details.]
 END;
 
