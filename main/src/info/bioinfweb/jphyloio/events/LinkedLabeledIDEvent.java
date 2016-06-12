@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * 
  * @author Ben St&ouml;ver
  */
-public class LinkedLabeledIDEvent extends LabeledIDEvent {
+public class LinkedLabeledIDEvent extends LabeledIDEvent implements LinkedIDEvent {
 	private String linkedID;
 
 	
@@ -62,6 +62,7 @@ public class LinkedLabeledIDEvent extends LabeledIDEvent {
 	 * 
 	 * @return the linked ID or {@code null} if this object does not have an associated data element
 	 */
+	@Override
 	public String getLinkedID() {
 		return linkedID;
 	}
@@ -72,6 +73,7 @@ public class LinkedLabeledIDEvent extends LabeledIDEvent {
 	 * 
 	 * @return {@code true} if an ID is present, {@code false} otherwise
 	 */
+	@Override
 	public boolean hasLink() {
 		return getLinkedID() != null;
 	}

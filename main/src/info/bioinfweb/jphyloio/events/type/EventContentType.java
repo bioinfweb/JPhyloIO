@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.SetElementEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
@@ -159,50 +160,6 @@ public enum EventContentType {
 	SINGLE_SEQUENCE_TOKEN,
 	
 	
-	// Set events:
-	
-	/** 
-	 * Indicates the start or end of a sequence of {@link #CHARACTER_SET_INTERVAL} events. 
-	 * <p>
-	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
-	 * instances of {@link PartEndEvent}. The start events link a matrix by their ID using 
-	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
-	 * <p>
-	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
-	 */
-	CHARACTER_SET,
-	
-	/** 
-	 * Indicates a single interval of a character set. Such events are nested 
-	 * in {@link #CHARACTER_SET} and {@link #TOKEN_SET_DEFINITION}.
-	 * <p>
-	 * Events of this type are instances of {@link CharacterSetIntervalEvent} and always have the
-	 * topology type {@link EventTopologyType#SOLE}. 
-	 */
-	CHARACTER_SET_INTERVAL,
-	
-	/** 
-	 * Indicates the start or end of a token set definition.
-	 * <p>
-	 * Start events of this type are instances of {@link TokenSetDefinitionEvent}, end events are
-	 * instances of {@link ConcreteJPhyloIOEvent}.
-	 * <p>
-	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
-	 **/
-	TOKEN_SET_DEFINITION,
-	
-	/** 
-	 * Indicates the definition of a single sequence token symbol. Such events are nested 
-	 * in {@link #TOKEN_SET_DEFINITION}.
-	 * <p>
-	 * Start events of this type are instances of {@link SingleTokenDefinitionEvent}, end events are
-	 * instances of {@link ConcreteJPhyloIOEvent}.
-	 * <p>
-	 * This content type will never be combined with {@link EventTopologyType#SOLE}.
-	 */
-	SINGLE_TOKEN_DEFINITION,
-	
-	
 	// Tree and network events:
 	
 	/** 
@@ -258,5 +215,82 @@ public enum EventContentType {
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
 	 */
-	EDGE;
+	EDGE,
+	
+	
+	// Set events:
+	
+	/** 
+	 * Indicates the start or end of a token set definition.
+	 * <p>
+	 * Start events of this type are instances of {@link TokenSetDefinitionEvent}, end events are
+	 * instances of {@link ConcreteJPhyloIOEvent}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 **/
+	TOKEN_SET_DEFINITION,
+	
+	/** 
+	 * Indicates the definition of a single sequence token symbol. Such events are nested 
+	 * in {@link #TOKEN_SET_DEFINITION}.
+	 * <p>
+	 * Start events of this type are instances of {@link SingleTokenDefinitionEvent}, end events are
+	 * instances of {@link ConcreteJPhyloIOEvent}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}.
+	 */
+	SINGLE_TOKEN_DEFINITION,
+	
+	/** 
+	 * Indicates the start or end of a sequence of {@link #CHARACTER_SET_INTERVAL} events. 
+	 * <p>
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * instances of {@link PartEndEvent}. The start events link a matrix by their ID using 
+	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	CHARACTER_SET,
+	
+	/** 
+	 * Indicates a single interval of a character set. Such events are nested 
+	 * in {@link #CHARACTER_SET} and {@link #TOKEN_SET_DEFINITION}.
+	 * <p>
+	 * Events of this type are instances of {@link CharacterSetIntervalEvent} and always have the
+	 * topology type {@link EventTopologyType#SOLE}. 
+	 */
+	CHARACTER_SET_INTERVAL,
+	
+	/** 
+	 * Indicates a member of a set that is linked by its ID. Such events are nested e.g. in {@link #OTU_SET} 
+	 * and {@link #TREE_NETWORK_SET}. (Note that character and token sets represent their members in 
+	 * different way.
+	 * <p>
+	 * Events of this type are instances of {@link SetElementEvent} and always have the topology type 
+	 * {@link EventTopologyType#SOLE}. 
+	 */
+	SET_ELEMENT,
+	
+	/** 
+	 * Indicates the start or end of a sequence of {@link #SET_ELEMENT} events that define a set of OTUs. 
+	 * <p>
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * instances of {@link PartEndEvent}. The start events link an OTU list by their ID using 
+	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	OTU_SET,
+	
+	/** 
+	 * Indicates the start or end of a sequence of {@link #SET_ELEMENT} events that define a set of trees 
+	 * and networks. 
+	 * <p>
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * instances of {@link PartEndEvent}. The start events link a tree/network group by their ID using 
+	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	TREE_NETWORK_SET;
 }
