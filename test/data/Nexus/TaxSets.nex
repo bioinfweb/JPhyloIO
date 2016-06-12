@@ -1,0 +1,32 @@
+#NEXUS
+
+BEGIN TAXA;
+	TITLE taxa1;
+	DIMENSIONS NTAX = 5;
+	TAXLABELS A B C D E;
+END; 
+
+BEGIN TAXA;
+	TITLE taxa2;
+	DIMENSIONS NTAX = 5;
+	TAXLABELS t1 t2 t3 t4 t5;
+END; 
+
+BEGIN SETS;
+  TITLE sets1;
+  LINK TAXA=taxa2;
+  TAXSET set1 = 2-3 5;
+  TAXSET set2 = A set1;
+  TAXSET set3 = 00110;
+  TAXSET set4 = C-.;
+  TAXSET set5 = ALL\2;
+  TAXSET set6 = .-C;
+  [See "List" on page 619 of the Nexus paper for details.]
+END;
+
+
+BEGIN SETS;
+  TITLE sets2;
+  [Should be linked to the first TAXA block by default.]
+  TAXSET otherSet = 3 - 5; 
+END; 
