@@ -43,7 +43,9 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractIDLinkSetElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractNeXMLElementReader;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractSetElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaEndElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaStartElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
@@ -59,6 +61,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -449,6 +452,15 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			}
 		});
 		
+		putElementReader(new XMLElementReaderKey(TAG_OTUS, TAG_SET, XMLStreamConstants.END_ELEMENT), 
+				new AbstractIDLinkSetElementReader(EventContentType.OTU_SET, ATTR_OTU) {
+			
+			@Override
+			protected EventContentType determineObjectType(QName attributeName) {
+				return EventContentType.OTU;
+			}
+		});  //TODO Register other set readers accordingly.
+		
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_CHARACTERS, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
@@ -518,7 +530,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {								
-				//Token set definitions
+				// Token set definitions
 				Iterator<String> tokenSetIDIterator = streamDataProvider.getTokenSets().keySet().iterator();
 				while (tokenSetIDIterator.hasNext()) {
 					String tokenSetID = tokenSetIDIterator.next();
@@ -648,22 +660,30 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		
 		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_CHAR, XMLStreamConstants.END_ELEMENT), emptyElementReader);
 		
-		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_SET, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
+		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_SET, XMLStreamConstants.START_ELEMENT), 
+				new AbstractSetElementReader(EventContentType.CHARACTER_SET, ATTR_CHAR) {
+			
 			@Override
-			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();
-				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
-				
-				String charIDs = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
-				
-				String[] charIDArray = charIDs.split(" "); //IDs are not allowed to contain spaces
-						
-				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, info.id, info.label, 
-						streamDataProvider.getCurrentAlignmentID()));
-
-				createIntervalEvents(streamDataProvider, charIDArray);
-			}				
-		});
+			protected void processIDs(NeXMLReaderStreamDataProvider streamDataProvider,	String[] linkedIDs, QName attribute) throws JPhyloIOReaderException, XMLStreamException {
+				createIntervalEvents(streamDataProvider, linkedIDs);
+			}
+		});  //TODO Remove out-commented code, when new implementation is tested.
+//		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_SET, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
+//			@Override
+//			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+//				StartElement element = event.asStartElement();
+//				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+//				
+//				String charIDs = XMLUtils.readStringAttr(element, ATTR_CHAR, null);
+//				
+//				String[] charIDArray = charIDs.split(" ");  // IDs are not allowed to contain spaces
+//						
+//				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, info.id, info.label, 
+//						streamDataProvider.getCurrentAlignmentID()));
+//
+//				createIntervalEvents(streamDataProvider, charIDArray);
+//			}				
+//		});
 		
 		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_SET, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
