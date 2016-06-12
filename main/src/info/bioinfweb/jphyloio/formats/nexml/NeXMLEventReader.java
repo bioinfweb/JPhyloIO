@@ -453,7 +453,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		});
 		
 		putElementReader(new XMLElementReaderKey(TAG_OTUS, TAG_SET, XMLStreamConstants.END_ELEMENT), 
-				new AbstractIDLinkSetElementReader(EventContentType.OTU_SET, ATTR_OTU) {
+				new AbstractIDLinkSetElementReader(EventContentType.OTU_SET, ATTR_OTU) {  //TODO Using the constant ATTR_OTU here is problematic, since the same constant is used for different purposes now. It would be better to have multiple constants with the same value (e.g. ATTR_OTU_SET_LINKED_IDS, ...). (This maybe the case with multiple constants currently used.)
 			
 			@Override
 			protected EventContentType determineObjectType(QName attributeName) {
