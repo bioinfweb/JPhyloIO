@@ -26,10 +26,10 @@ import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.events.type.EventType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 
 import java.io.File;
@@ -37,6 +37,7 @@ import java.math.BigInteger;
 import java.net.URI;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 
 import org.junit.Test;
 
@@ -48,15 +49,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/UnknownTag.xml"), parameters);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/Sets.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
-//					System.out.println(event.getType());
-					
-					if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.START))) {
-//					System.out.println("Predicate: " + event.asResourceMetadataEvent().getRel().getURI());
-					}
+//					System.out.println(event.getType());					
 				}
 			}
 			finally {
@@ -97,7 +94,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxonlist", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);				
 				assertCharacterSetIntervalEvent(0, 1, reader);
@@ -225,6 +222,395 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 	
 	
 	@Test
+	public void readSimpleDocumentWithMetadata() {
+		try {
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocumentWithMetadata.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "hasCustomXML", "ex")), LiteralContentSequenceType.XML, reader);
+				assertXMLContentEvent(null, null, "customXML", XMLStreamConstants.START_ELEMENT, new QName("http://www.example.net/", "customTag", "ex"), null, false, reader);
+				assertXMLContentEvent(null, "some ", "customXML", XMLStreamConstants.CHARACTERS, null, "some ", false, reader);
+				assertXMLContentEvent(null, null, "customXML", XMLStreamConstants.START_ELEMENT, new QName("http://www.example.net/", "nestedTag", "ex"), null, false, reader);
+				assertXMLContentEvent(null, null, "customXML", XMLStreamConstants.END_ELEMENT, new QName("http://www.example.net/", "nestedTag", "ex"), null, false, reader);
+				assertXMLContentEvent(null, "characters", "customXML", XMLStreamConstants.CHARACTERS, null, "characters", false, reader);
+				assertXMLContentEvent(null, null, "customXML", XMLStreamConstants.END_ELEMENT, new QName("http://www.example.net/", "customTag", "ex"), null, true, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "someString1", null, null, true, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", "forty-seven", 47, true, reader);
+				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "rel", "ex")), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "someAlternativeString", "someAlternativeString", 
+						"someAlternativeString", true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "rel", "ex")), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "someString2", null, null, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "rel", "ex")), null, null, false, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "rel", "ex")), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "someString", "someString", "someString", true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "rel", "ex")), new URI("http://www.test.org/test1"), 
+						null, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", "47", 47, true, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), LiteralContentSequenceType.SIMPLE, reader);
+				assertEndEvent(EventContentType.META_LITERAL, reader);
+				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_FORMAT), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHAR), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);				
+				assertCharacterSetIntervalEvent(0, 1, reader);
+				assertCharacterSetIntervalEvent(2, 4, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset2", null, "alignment", reader);				
+				assertCharacterSetIntervalEvent(2, 3, reader);
+				assertCharacterSetIntervalEvent(4, 5, reader);
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION, reader);
+				assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				
+				assertSingleTokenDefinitionEvent("N", CharacterSymbolMeaning.CHARACTER_STATE, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "N", null, null, true, reader);
+				assertEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION, reader);
+				assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+				assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+				
+				assertCharacterSetIntervalEvent(0, 5, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MATRIX), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertCharactersEvent("AACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "species2", "taxon2", reader);
+				assertCharactersEvent("ACGTT", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row3", "row3", "taxon3", reader);
+				assertCharactersEvent("ACCTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup", "treegroup", "taxonlist", reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				
+				assertLabeledIDEvent(EventContentType.TREE, "tree", null, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node1", "node1", "taxon1", reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node2", "species2", "taxon2", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node3", "node3", "taxon3", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node4", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node5", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "node4", 0.778, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node4", "node5", 1, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node4", "node3", reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node5", "node1", 0.98, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node5", "node2", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, false, true, reader);
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertLabeledIDEvent(EventContentType.NETWORK, "network", null, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node6", "node6", "taxon1", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node7", "species2", "taxon2", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node8", "node8", "taxon3", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node9", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node10", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("node9", "node10", 0.44, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node9", "node8", 0.67, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node10", "node6", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node10", "node7", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node7", "node8", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEndEvent(EventContentType.NETWORK, reader);
+				
+				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);				
+				assertEndEvent(EventContentType.DOCUMENT, reader);			
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
+	public void readSets() {
+		try {
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/Sets.xml"), new ReadWriteParameterMap());
+			try {
+				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
+				
+				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertEndEvent(EventContentType.OTU, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet", null, null, reader);//TODO which ID should be linked here?
+				assertSetElementEvent("taxon1", EventContentType.OTU, reader);
+				assertSetElementEvent("taxon3", EventContentType.OTU, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertPartEndEvent(EventContentType.OTU_SET, true, reader);
+				
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet", null, "alignment", reader);				
+				assertCharacterSetIntervalEvent(0, 1, reader);
+				assertCharacterSetIntervalEvent(2, 4, reader);				
+				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);			
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("C", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("G", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("T", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				
+				assertSingleTokenDefinitionEvent("N", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
+				assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+				assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader); //TODO should not be fired without according state set
+				
+				assertCharacterSetIntervalEvent(0, 5, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertCharactersEvent("AACTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "species2", "taxon2", reader);
+				assertCharactersEvent("ACGTT", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row3", "row3", "taxon3", reader);
+				assertCharactersEvent("ACCTG", reader);
+				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader); //TODO should not be fired without according state set
+				
+				assertEndEvent(EventContentType.ALIGNMENT, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup", "treegroup", "taxonlist", reader);
+				
+				assertLabeledIDEvent(EventContentType.TREE, "tree", null, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node1", "node1", "taxon1", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node2", "species2", "taxon2", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node3", "node3", "taxon3", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node4", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node5", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent(null, "node4", 0.778, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node4", "node5", 1, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node4", "node3", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node5", "node1", 0.98, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node5", "node2", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader); //TODO should not be fired without according state set
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, false, true, reader);
+				
+				assertEndEvent(EventContentType.TREE, reader);
+				
+				assertLabeledIDEvent(EventContentType.NETWORK, "network", null, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node6", "node6", "taxon1", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node7", "species2", "taxon2", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node8", "node8", "taxon3", reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node9", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.NODE, "node10", null, null, reader);				
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				assertEdgeEvent("node9", "node10", 0.44, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node9", "node8", 0.67, reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node10", "node6", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node10", "node7", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertEdgeEvent("node7", "node8", reader);
+				assertEndEvent(EventContentType.EDGE, reader);
+				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader); //TODO should not be fired without according state set
+				
+				assertEndEvent(EventContentType.NETWORK, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeNetworkSet", null, "alignment", reader); //TODO which ID should be linked here?
+				assertSetElementEvent("tree", EventContentType.TREE, reader);
+				assertSetElementEvent("network", EventContentType.NETWORK, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
+				
+				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);				
+				assertEndEvent(EventContentType.DOCUMENT, reader);			
+				
+				assertFalse(reader.hasNextEvent());
+			}
+			finally {
+				reader.close();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	
+	@Test
 	public void readMultipleElements() {
 		try {
 			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/MultipleElements.xml"), new ReadWriteParameterMap());
@@ -249,7 +635,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment1", "DNA", "taxonlist1", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment1", ALIGNMENT_TYPE_DNA, "taxonlist1", reader);				
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -282,7 +668,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment2", "DNA", "taxonlist2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment2", ALIGNMENT_TYPE_DNA, "taxonlist2", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -306,7 +692,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment3", "DNA", "taxonlist1", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment3", ALIGNMENT_TYPE_DNA, "taxonlist1", reader);				
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -546,7 +932,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", "RestrictionSiteData", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_RESTRICTION, "taxa1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("0", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -568,7 +954,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m3", "ContinuousData", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m3", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow1", "ContinuousCellsRow1", "t1", reader);
 				assertSingleTokenEvent("-1.545414144070023", true, reader);
@@ -612,7 +998,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "characters3", "DNA", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "characters3", ALIGNMENT_TYPE_DNA, "taxa1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -650,7 +1036,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "rnaseqs4", "RNA", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "rnaseqs4", ALIGNMENT_TYPE_RNA, "taxa1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.RNA, "RNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -688,7 +1074,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "contchars5", "ContinuousData", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "contchars5", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
 				assertCharactersEvent(new String[]{"-1.545414144070023", "-2.3905621575431044", "-2.9610221833467265", "0.7868662069161243", "0.22968509237534918"}, reader);
@@ -749,7 +1135,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", "StandardData", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -787,7 +1173,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", "StandardData", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -857,7 +1243,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", "StandardData", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -895,7 +1281,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", "StandardData", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -959,7 +1345,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxonlist", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);				
 				assertCharacterSetIntervalEvent(0, 1, reader);
@@ -996,7 +1382,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxonlist", reader);			
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);			
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1039,7 +1425,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxonlist", reader);			
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);			
 				
 				fail("Exception not thrown");
 			}
@@ -1069,7 +1455,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxonlist", reader);			
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);			
 				
 				fail("Exception not thrown");		
 			}
@@ -1128,7 +1514,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertEndEvent(EventContentType.OTU, reader);
 			assertEndEvent(EventContentType.OTU_LIST, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", "DNA", "taxa", reader);
+			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxa", reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1142,13 +1528,13 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			
 			assertSingleTokenEvent("A", false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "string", "xsd")), "another text", null, null, 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "another text", "another text", "another text", 
 					true,	reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
 			
 			assertSingleTokenEvent("G", false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "integer", "xsd")), "18", null,
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "integer", "xsd")), "18", "18",
 					new BigInteger("18"), true,	reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
 			
@@ -1156,7 +1542,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "linksResource", "foo")), 
 					new URI("http://example.org/someURI"), null, false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
-					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema#", "string", "xsd")), "some text", null, null, true, 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "some text", "some text", "some text", true, 
 					reader);
 			assertEndEvent(EventContentType.META_RESOURCE, reader);
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
@@ -1167,6 +1553,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertSingleTokenEvent("A", true, reader);
 			assertSingleTokenEvent("G", true, reader);
 			assertSingleTokenEvent("T", true, reader);
+			
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
+					new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "some other text", "some other text", "some other text", 
+					true,	reader); //TODO should not occur without according set
+			
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEndEvent(EventContentType.ALIGNMENT, reader);
@@ -1184,7 +1575,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.NEVER);
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/StandardData.xml"), parameters);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/largeSequences.xml"), parameters); //file is not valid NeXML (missing column definitions)
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
@@ -1201,10 +1592,10 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", "ContinuousData", "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
-				//TODO test method needed
+				assertSplitCharactersEventLongTokens("data/NeXML/longContinuousSequence.txt", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw2", "controw2", "t2", reader);
@@ -1222,39 +1613,6 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw5", "controw5", "t5", reader);
 				assertCharactersEvent(new String[]{"3.1060827493657683", "-1.0453787389160105", "2.67416332763427", "-1.4045634106692808", "0.019890469925520196"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
-				
-				assertEndEvent(EventContentType.ALIGNMENT, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", "StandardData", "taxa1", reader);
-				
-				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
-				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("2", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("3", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("4", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertSingleTokenDefinitionEvent("5", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
-				assertCharacterSetIntervalEvent(0, 2, reader);
-				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr1", "standardr1", "t1", reader);
-				//TODO test method needed
-				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
-				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr2", "standardr2", "t2", reader);
-				assertCharactersEvent(new String[]{"123", "123"}, reader);
-				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
-				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr3", "standardr3", "t3", reader);
-				assertCharactersEvent(new String[]{"134", "4"}, reader);
-				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
-				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr4", "standardr4", "t4", reader);
-				assertCharactersEvent(new String[]{"123", "134"}, reader);
-				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
-				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr5", "standardr5", "t5", reader);
-				assertCharactersEvent(new String[]{"4", "111"}, reader);
-				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 					

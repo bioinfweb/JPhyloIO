@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.test;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.FileReader;
 import java.net.URI;
 
@@ -31,7 +30,6 @@ import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
-import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -44,6 +42,7 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.SetElementEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -138,6 +137,16 @@ public class JPhyloIOTestTools {
 	}
 	
 	
+	public static void assertSetElementEvent(String expectedLinkedID, EventContentType expectedLinkedObjectType, JPhyloIOEventReader reader) throws Exception {
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEventType(EventContentType.SET_ELEMENT, EventTopologyType.SOLE, event);
+		SetElementEvent setElement = event.asSetElementEvent();
+		assertEquals(expectedLinkedID, setElement.getLinkedID());
+		assertEquals(expectedLinkedObjectType, setElement.getLinkedObjectType());
+	}
+	
+	
 	public static void assertPartEndEvent(EventContentType contentType, boolean expectedSequenceTerminated, 
 			JPhyloIOEventReader reader) throws Exception {
 		
@@ -183,6 +192,34 @@ public class JPhyloIOTestTools {
 		for (int i = 0; i < expectedSequence.length; i++) {
 			assertEquals(expectedSequence[i], tokensEvent.getCharacterValues().get(i));
 		}
+	}
+	
+	
+	public static void assertSplitCharactersEventLongTokens(String expectedCharactersFile, JPhyloIOEventReader reader) throws Exception {  	
+  	FileReader valueReader = new FileReader(expectedCharactersFile);
+  	try {  		
+  		while (reader.hasNextEvent() && reader.peek().getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
+  			SequenceTokensEvent event = reader.next().asSequenceTokensEvent();
+  			String token = "";
+  			int tokenCount = 0;
+
+  			for (int i = 0; i < event.getCharacterValues().size(); i++) {
+  				int c = valueReader.read();
+  				while ((c != ' ') && (c != -1)) {
+  					token += (char)c;
+  					c = valueReader.read();  					
+  				}
+					assertEquals(token, event.getCharacterValues().get(i));
+					tokenCount ++;
+					token = "";
+				}
+
+  			assertEquals(tokenCount, event.getCharacterValues().size());
+  		}  		
+  	}
+  	finally {
+  		valueReader.close();
+  	}	  
 	}
 	
 	

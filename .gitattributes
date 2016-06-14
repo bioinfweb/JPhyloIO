@@ -319,7 +319,9 @@ test/data/NeXML/MissingOTUsID.xml -text svneol=unset#text/plain
 test/data/NeXML/MultipleCharactersTags.xml -text svneol=unset#text/plain
 test/data/NeXML/MultipleElements.xml -text svneol=unset#text/plain
 test/data/NeXML/Paralogues.xml -text
+test/data/NeXML/Sets.xml -text svneol=unset#text/plain
 test/data/NeXML/SimpleDocument.xml -text svneol=unset#text/plain
+test/data/NeXML/SimpleDocumentWithMetadata.xml -text svneol=unset#text/plain
 test/data/NeXML/StandardData.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownCharID_Cells.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownCharID_CharSet.xml -text svneol=unset#text/plain
