@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexml.elementreader;
 
 
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderStreamDataProvider;
 
@@ -30,20 +30,24 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class NeXMLMetaEndElementReader extends AbstractNeXMLElementReader {
+/**
+ * Abstract element reader that processes end elements of NeXML set tags.
+ * 
+ * @author Sarah Wiechers
+ * @since 0.0.0
+ */
+public class NeXMLSetEndElementReader extends AbstractNeXMLElementReader {
+	private EventContentType setType;
+	
+	
+	public NeXMLSetEndElementReader(EventContentType setType) {
+		super();
+		this.setType = setType;
+	}
+
 
 	@Override
-	public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-		EventContentType type = streamDataProvider.getMetaType().pop();
-
-		if (type.equals(EventContentType.META_LITERAL)) {
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-			streamDataProvider.setAlternativeStringRepresentation(null);
-			streamDataProvider.setCurrentLiteralContentSequenceType(null);
-			streamDataProvider.setCurrentMetaContentDatatype(null);
-		}
-		else if (type.equals(EventContentType.META_RESOURCE)) {
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		}		
-	}	
+	public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider,	XMLEvent event) throws IOException, XMLStreamException {
+		streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(setType, true));
+	}
 }

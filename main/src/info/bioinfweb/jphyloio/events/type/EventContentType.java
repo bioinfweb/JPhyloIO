@@ -263,8 +263,8 @@ public enum EventContentType {
 	
 	/** 
 	 * Indicates a member of a set that is linked by its ID. Such events are nested e.g. in {@link #OTU_SET} 
-	 * and {@link #TREE_NETWORK_SET}. (Note that character and token sets represent their members in 
-	 * different way.
+	 * and {@link #TREE_NETWORK_SET}. (Note that character and token sets represent their members in a
+	 * different way).
 	 * <p>
 	 * Events of this type are instances of {@link SetElementEvent} and always have the topology type 
 	 * {@link EventTopologyType#SOLE}. 

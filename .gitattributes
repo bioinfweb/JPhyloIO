@@ -149,6 +149,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/AbstractNeXMLElemen
 main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/AbstractSetElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/NeXMLMetaEndElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/NeXMLMetaStartElementReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/NeXMLSetEndElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/AbstractNeXMLDataReceiver.java -text svneol=unset#text/plain

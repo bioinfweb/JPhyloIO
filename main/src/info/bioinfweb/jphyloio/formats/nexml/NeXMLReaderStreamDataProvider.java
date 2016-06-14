@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
@@ -42,7 +43,8 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	private boolean allowLongTokens;
 	
 	private Stack<EventContentType> metaType = new Stack<EventContentType>();
-	private QName nestedMetaType;
+	private QName currentMetaContentDatatype;
+	private LiteralContentSequenceType currentLiteralContentSequenceType;
 	private String alternativeStringRepresentation;
 	
 	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();
@@ -102,13 +104,28 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	 * 
 	 * @return the datatype of character content nested under the current literal meta element
 	 */
-	public QName getNestedMetaType() {
-		return nestedMetaType;
+	public QName getCurrentMetaContentDatatype() {
+		return currentMetaContentDatatype;
 	}
 
 
-	public void setNestedMetaType(QName nestedMetaType) {
-		this.nestedMetaType = nestedMetaType;
+	public void setCurrentMetaContentDatatype(QName nestedMetaType) {
+		this.currentMetaContentDatatype = nestedMetaType;
+	}
+
+	
+	/**
+	 * Returns the {@link LiteralContentSequenceType} of the content nested under the current literal meta element. 
+	 * 
+	 * @return  the {@link LiteralContentSequenceType} of the content nested under the current literal meta element
+	 */
+	public LiteralContentSequenceType getCurrentLiteralContentSequenceType() {
+		return currentLiteralContentSequenceType;
+	}
+
+
+	public void setCurrentLiteralContentSequenceType(LiteralContentSequenceType currentLiteralContentSequenceType) {
+		this.currentLiteralContentSequenceType = currentLiteralContentSequenceType;
 	}
 
 

@@ -90,8 +90,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 				try {
 					XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
 					if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
-						String nextSequence = nextEvent.asCharacters().getData();
-						if (!Character.isWhitespace(nextSequence.charAt(0))) {
+						if (!Character.isWhitespace(nextEvent.asCharacters().getData().charAt(0))) {
 							streamDataProvider.setIncompleteToken(lastToken);
 						}
 					}
@@ -105,7 +104,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			}			
 
 			if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) && !translateTokens.equals(TokenTranslationStrategy.NEVER)) { //standard data
-	 			for (int i = 0; i < tokenList.size(); i++) {	 				
+				for (int i = 0; i < tokenList.size(); i++) {	 				
 		 			String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
 		 			try {
 		 				int standardToken = Integer.parseInt(tokenList.get(i));
@@ -181,7 +180,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		
 		otuEventInformation.id = labeledIDEventInformation.id;
 		otuEventInformation.label = labeledIDEventInformation.label;
-		otuEventInformation.otuOrOtusID = XMLUtils.readStringAttr(element, ATTR_OTU, null);
+		otuEventInformation.otuOrOtusID = XMLUtils.readStringAttr(element, ATTR_SINGLE_OTU_LINK, null);
 		if (otuEventInformation.otuOrOtusID == null) {
 			otuEventInformation.otuOrOtusID = XMLUtils.readStringAttr(element, ATTR_OTUS, null);
 		}

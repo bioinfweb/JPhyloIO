@@ -107,7 +107,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 				getWriter().writeEmptyElement(TAG_MEMBER.getLocalPart());
 				memberID = tokenNameToIDMap.get(tokenDefinition);
 				if ((memberID != null) && getStreamDataProvider().getDocumentIDs().contains(memberID)) {
-					getWriter().writeAttribute(ATTR_STATE.getLocalPart(), memberID);
+					getWriter().writeAttribute(ATTR_SINGLE_STATE_LINK.getLocalPart(), memberID);
 				}
 				else {
 					throw new JPhyloIOWriterException("The token definition set with the ID " + event.getID() 

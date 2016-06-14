@@ -134,9 +134,9 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 					case XMLStreamConstants.END_DOCUMENT:
 						elementTag = null;
 						break;
-					case XMLStreamConstants.START_ELEMENT:
+					case XMLStreamConstants.START_ELEMENT:						
 						StartElement element = xmlEvent.asStartElement();
-						elementTag = element.getName();
+						elementTag = element.getName();						
 						namespaceContext = element.getNamespaceContext();
 						break;
 					case XMLStreamConstants.END_ELEMENT:
@@ -155,16 +155,18 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 				}		
 				
 				if (xmlEvent.isStartElement()) {
-					QName elementName = xmlEvent.asStartElement().getName();
-					getEncounteredTags().push(elementName);
 					getStreamDataProvider().setParentName(parentTag.getLocalPart());
-					getStreamDataProvider().setElementName(elementName.getLocalPart());
+					getStreamDataProvider().setElementName(elementTag.getLocalPart());
 				}
 				
 				XMLElementReader<P> elementReader = getElementReader(parentTag, elementTag, xmlEvent.getEventType());
 				if (elementReader != null) {
 					elementReader.readEvent(getStreamDataProvider(), xmlEvent);
-				}			
+				}
+
+				if (xmlEvent.isStartElement()) {  // Should be done after elementReader.readEvent().
+					getEncounteredTags().push(elementTag);
+				}
 			}
 		}
 		catch (XMLStreamException e) {
@@ -183,7 +185,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 					result = elementReaderMap.get(new XMLElementReaderKey(null, null, eventType));
 				}
 			}
-		}
+		}		
 		return result;
 	}
 	
@@ -193,31 +195,43 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		String localPart = null;
 		String namespaceURI = null;
 		boolean invalidCurie = true;
+		QName qName = null;
 		
 		if (curie != null) {
-			Pattern curiePattern = Pattern.compile("(\\w+):(\\w+)");
-			Matcher matcher = curiePattern.matcher(curie);
-			
-			invalidCurie = !matcher.find(); //if no match is found, the string does not represent a valid CURIE //TODO assume default namespace?
-			if (!invalidCurie) {
-				prefix = matcher.group(1);
-				localPart = matcher.group(2); //TODO check if local part and prefix are valid NCNames?
+			if (curie.contains(":")) {
+				Pattern curiePattern = Pattern.compile("(\\w+):(\\w+)");
+				Matcher matcher = curiePattern.matcher(curie);
 				
-				invalidCurie = matcher.find(); //if another match is found in the same string, the string does not represent a valid CURIE
-			}		
-			
-			if (prefix != null) {
-				namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
-				if (namespaceURI == null) {
-					if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
-						namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+				invalidCurie = !matcher.find(); //if no match is found, the string does not represent a valid CURIE
+				if (!invalidCurie) {
+					prefix = matcher.group(1);
+					localPart = matcher.group(2); //TODO check if local part and prefix are valid NCNames?
+					
+					invalidCurie = matcher.find(); //if another match is found in the same string, the string does not represent a valid CURIE
+				}		
+				
+				if (prefix != null) {
+					namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
+					if (namespaceURI == null) {
+						if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
+							namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+						}
 					}
 				}
+				
+				qName = new QName(namespaceURI, localPart, prefix);
+			}
+			else {
+				namespaceURI =  element.getNamespaceContext().getNamespaceURI("");
+				localPart = curie;
+				invalidCurie = false;
+				
+				qName = new QName(namespaceURI, localPart);
 			}
 		}
 		
 		if (!invalidCurie) {
-			return new QName(namespaceURI, localPart, prefix);
+			return qName;
 		}
 		else {
 			throw new JPhyloIOReaderException("An invalid CURIE was encountered under the element \"" + element.getName().getLocalPart() + "\".", element.getLocation());

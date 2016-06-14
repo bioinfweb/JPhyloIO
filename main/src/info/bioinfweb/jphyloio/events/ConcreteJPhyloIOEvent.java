@@ -100,6 +100,12 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
+	public SetElementEvent asSetElementEvent() throws ClassCastException {
+		return (SetElementEvent)this;
+	}
+
+
+	@Override
 	public PartEndEvent asPartEndEvent() throws ClassCastException {
 		return (PartEndEvent)this;
 	}

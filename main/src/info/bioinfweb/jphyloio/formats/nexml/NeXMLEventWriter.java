@@ -420,7 +420,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				value.append(" ");
 			}
 
-			getXMLWriter().writeAttribute(ATTR_CHAR.getLocalPart(), value.toString());
+			getXMLWriter().writeAttribute(ATTR_SINGLE_CHAR_LINK.getLocalPart(), value.toString());
 
 			streamDataProvider.writeLabeledIDAttributes(alignment.getCharacterSets().getObjectStartEvent(charSetID));
 

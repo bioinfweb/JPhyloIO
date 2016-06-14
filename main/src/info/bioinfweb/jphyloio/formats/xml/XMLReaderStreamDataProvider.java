@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 
 import java.util.Stack;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 
 
@@ -33,7 +34,7 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	private String parentName;
 	private String elementName;
 	
-	private Stack<String> nestedMetaNames = new Stack<String>();  
+	private Stack<String> nestedMetaNames = new Stack<String>();
 	
 	private String incompleteToken = null;
 	
@@ -73,8 +74,8 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	public void setElementName(String elementName) {
 		this.elementName = elementName;
 	}
-	
-	
+
+
 	public Stack<String> getNestedMetaNames() {
 		return nestedMetaNames;
 	}

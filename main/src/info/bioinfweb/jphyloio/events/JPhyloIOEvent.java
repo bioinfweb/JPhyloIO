@@ -89,6 +89,14 @@ public interface JPhyloIOEvent {
 	public LabeledIDEvent asLabeledIDEvent() throws ClassCastException;
 	
 	/**
+	 * Casts this event to a set element event.
+	 * 
+	 * @return a reference to this event as a set element event
+	 * @throws ClassCastException if this event is not an instance of {@link SetElementEvent}
+	 */
+	public SetElementEvent asSetElementEvent() throws ClassCastException;
+	
+	/**
 	 * Casts this event to a part end event.
 	 * 
 	 * @return a reference to this event as a part end event
