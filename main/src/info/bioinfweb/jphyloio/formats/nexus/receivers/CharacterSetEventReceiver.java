@@ -48,7 +48,7 @@ public class CharacterSetEventReceiver extends BasicTextCommentEventReceiver imp
 			getWriter().write(' ');
 			getWriter().write(Long.toString(intervalEvent.getStart()));
 			if (intervalEvent.getEnd() - intervalEvent.getStart() > 1) {
-				getWriter().write(CHAR_SET_TO);
+				getWriter().write(SET_TO_SYMBOL);
 				getWriter().write(Long.toString(intervalEvent.getEnd() - 1));
 			}
 			return true;			

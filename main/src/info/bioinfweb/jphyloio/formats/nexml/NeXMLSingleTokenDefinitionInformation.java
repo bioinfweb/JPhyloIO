@@ -68,7 +68,7 @@ public class NeXMLSingleTokenDefinitionInformation {
 	}
 
 
-	protected String getId() {
+	protected String getID() {
 		return id;
 	}
 }

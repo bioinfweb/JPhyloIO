@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml.elementreader;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.collections.PackedObjectArrayList;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
@@ -131,10 +132,14 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	
 	
 	protected void createIntervalEvents(NeXMLReaderStreamDataProvider streamDataProvider, String[] charIDs) throws JPhyloIOReaderException, XMLStreamException {
-		boolean[] charSets = new boolean[streamDataProvider.getCharIDs().size()];
+		PackedObjectArrayList<Boolean> columns = new PackedObjectArrayList<Boolean>(2, streamDataProvider.getCharIDs().size());
+		for (int i = 0; i < streamDataProvider.getCharIDs().size(); i++) {
+			columns.add(false);
+		}
+		
 		for (String charID: charIDs) {
 			if (streamDataProvider.getCharIDToIndexMap().containsKey(charID)) {
-				charSets[streamDataProvider.getCharIDToIndexMap().get(charID)] = true;
+				columns.set(streamDataProvider.getCharIDToIndexMap().get(charID), true);
 			}
 			else {
 				throw new JPhyloIOReaderException("A character set referenced the ID \"" + charID + "\" of a character that was not specified before.", streamDataProvider.getXMLReader().peek().getLocation());
@@ -144,16 +149,16 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		int currentIndex = -1;
 		int startIndex = -1;
 		
-		for (int i = 0; i < charSets.length; i++) {
-			if (charSets[i]) {
+		for (int i = 0; i < columns.size(); i++) {
+			if (columns.get(i)) {
 				currentIndex = i;
 			}
 			
-			if ((i == 0) || (charSets[i] && !charSets[i - 1])) {
+			if ((i == 0) || (columns.get(i) && !columns.get(i - 1))) {
 				startIndex = i;
 			}
 			
-			if (charSets[i] && ((i + 1 == charSets.length) || !charSets[i + 1])) {
+			if (columns.get(i) && ((i + 1 == columns.size()) || !columns.get(i + 1))) {
 				streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex + 1)); //the end of a character set interval is specified as the first index after the end of the sequence segment to be added to the specified character set
 			}
 		}

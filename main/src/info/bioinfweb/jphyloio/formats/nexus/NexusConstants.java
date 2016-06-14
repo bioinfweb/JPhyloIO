@@ -43,7 +43,6 @@ public interface NexusConstants {
 	public static final char KEY_VALUE_SEPARATOR = '=';
 	public static final char WORD_DELIMITER = '\'';
 	public static final char VALUE_DELIMITER = '"';  // The paper really defines another delimiter here.
-	public static final char CHAR_SET_TO = '-';
 	public static final char ELEMENT_SEPARATOR = ',';
 	
 	public static final String BLOCK_NAME_TAXA = "TAXA";
@@ -95,8 +94,11 @@ public interface NexusConstants {
 	public static final char MATRIX_UNCERTAINS_TOKEN_START = '{';
 	public static final char MATRIX_UNCERTAINS_TOKEN_END = '}';
 	
-	public static final char CHAR_SET_NOT_CONTAINED = '0';
-	public static final char CHAR_SET_CONTAINED = '1';
+	public static final char SET_TO_SYMBOL = '-';
+	public static final String SET_KEY_WORD_ALL = "ALL";
+	public static final String SET_KEY_WORD_REMAINING = "REMAINING";
+	public static final char SET_VECTOR_NOT_CONTAINED = '0';
+	public static final char SET_VECTOR_CONTAINED = '1';
 	
 	public static final String NEXUS_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/Nexus/";
 	public static final String NEXUS_PREDICATE_NAMESPACE = NEXUS_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";

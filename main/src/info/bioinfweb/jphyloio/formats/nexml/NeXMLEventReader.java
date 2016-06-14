@@ -254,7 +254,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		   				translation = info.getLabel();
 		   			}
 		   			else {  // SYMBOL_TO_ID or label was null
-		   				translation = info.getId();
+		   				translation = info.getID();
 		   			}
 		   		}
 					
@@ -275,11 +275,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 						tokenType = CharacterSymbolType.UNCERTAIN;
 					}
 	  			
-	  			streamDataProvider.getTokenDefinitionIDToSymbolMap().put(info.getId(), symbol);
+	  			streamDataProvider.getTokenDefinitionIDToSymbolMap().put(info.getID(), symbol);
 	  			
 	  			Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
 	  			
-	  			streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.getId(), info.getLabel(), symbol, 
+	  			streamDataProvider.getCurrentEventCollection().add(new SingleTokenDefinitionEvent(info.getID(), info.getLabel(), symbol, 
 	  					parseStateMeaning(symbol), tokenType, info.getConstituents()));	  		
 	  			
 	  			for (JPhyloIOEvent nestedEvent : nestedEvents) {

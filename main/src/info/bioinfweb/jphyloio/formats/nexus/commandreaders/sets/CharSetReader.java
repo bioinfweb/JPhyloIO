@@ -148,13 +148,13 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 						}
 						getStreamDataProvider().readComment();
 						return;
-					case CHAR_SET_CONTAINED:
+					case SET_VECTOR_CONTAINED:
 						if (currentStartColumn == -1) {
 							currentStartColumn = currentColumn;
 						}
 						currentColumn++;
 						break;
-					case CHAR_SET_NOT_CONTAINED:
+					case SET_VECTOR_NOT_CONTAINED:
 						currentColumn++;
 						if (currentStartColumn != -1) {
 							queue.add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn - 1));
@@ -173,7 +173,7 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 			queue.add(new CharacterSetIntervalEvent(currentStartColumn, currentColumn));
 		}
 		queue.add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
-}
+	}
 	
 	
 	private int parseInteger() throws IOException {  //TODO Move method to PeekReader
@@ -190,14 +190,20 @@ public class CharSetReader extends AbstractNexusCommandEventReader implements Ne
 	private void readStandardFormat() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		
-		int nexusStart = parseInteger();  //TODO Does 1 need to be subtracted here
+		//TODO Add support for "ALL", "x\3", "5-." and "REMAINING" (at least exception in the latter case). 
+		//     Probably a boolean map should be used for this, which would also allow unordered interval definitions.
+		//TODO Generalize method in order to use it for other sets too. (Do not use CharacterSetIntervalEvent directly.)
+		
+		//reader.isNext(sequence)
+		
+		int nexusStart = parseInteger();
 		if (nexusStart == -1) {  // Command end, comment or white space was already checked before calling this method. 
 			throw new JPhyloIOReaderException("Unexpected token '" + reader.peekChar() + "' found in Nexus CHARSET command.", reader);
 		}
 		else {
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
 			int nexusEnd = nexusStart;  // Definitions like "1-2 4 6-7" are allowed. 
-			if (reader.peekChar() == CHAR_SET_TO) {
+			if (reader.peekChar() == SET_TO_SYMBOL) {
 				reader.skip(1);  // Consume '-'
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
 				nexusEnd = parseInteger();
