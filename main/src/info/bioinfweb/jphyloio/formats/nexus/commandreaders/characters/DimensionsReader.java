@@ -43,7 +43,7 @@ import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 public class DimensionsReader extends AbstractKeyValueCommandReader implements NexusConstants, ReadWriteConstants {
 	public static final String INFO_KEY_NTAX = "info.bioinfweb.jphyloio.nexus.ntax";
 	public static final String INFO_KEY_CHAR = "info.bioinfweb.jphyloio.nexus.ntax";
-	
+
 	
 	public DimensionsReader(NexusReaderStreamDataProvider nexusDocument) {
 		super(COMMAND_NAME_DIMENSIONS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, nexusDocument);
@@ -70,7 +70,11 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 			}
 			else if (DIMENSIONS_SUBCOMMAND_NCHAR.equals(key)) {
 				getStreamDataProvider().getSharedInformationMap().put(INFO_KEY_CHAR, longValue);
-				predicate = PREDICATE_CHARACTER_COUNT;  // This predicate may need to be changed, if a DIMENSION command outside of alignment blocks is read here. 
+				predicate = PREDICATE_CHARACTER_COUNT;  // This predicate may need to be changed, if a DIMENSION command outside of alignment blocks is read here.
+				
+				getStreamDataProvider().getMatrixWidthsMap().put(  // Store matrix width for later use by set readers.
+						(String)getStreamDataProvider().getSharedInformationMap().get(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID), 
+						longValue);
 			}
 			
 			events.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 

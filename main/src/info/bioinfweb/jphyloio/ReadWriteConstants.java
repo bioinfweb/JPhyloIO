@@ -62,6 +62,7 @@ public interface ReadWriteConstants {
 	
 	public static final String RESERVED_ID_PREFIX = "info.bioinfweb.jphyloio.reservedIDs.";
 	
+	public static final String DEFAULT_GENERAL_ID_PREFIX = "id";
 	public static final String DEFAULT_META_ID_PREFIX = "meta";
 	public static final String DEFAULT_OTU_LIST_ID_PREFIX = "otus";
 	public static final String DEFAULT_OTU_ID_PREFIX = "otu";

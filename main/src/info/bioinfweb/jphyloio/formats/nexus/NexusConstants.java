@@ -95,6 +95,8 @@ public interface NexusConstants {
 	public static final char MATRIX_UNCERTAINS_TOKEN_END = '}';
 	
 	public static final char SET_TO_SYMBOL = '-';
+	public static final char SET_START_OR_END_INDEX_SYMBOL = '.';
+	public static final char SET_REGULAR_INTERVAL_SYMBOL = '\\';
 	public static final String SET_KEY_WORD_ALL = "ALL";
 	public static final String SET_KEY_WORD_REMAINING = "REMAINING";
 	public static final char SET_VECTOR_NOT_CONTAINED = '0';

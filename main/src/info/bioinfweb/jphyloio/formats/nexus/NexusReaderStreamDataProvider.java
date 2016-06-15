@@ -56,6 +56,9 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaIDMap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
 	
+	/** Used to Determine the lengths of character set intervals that shall reach until the end of a matrix. */
+	public static final String INFO_KEY_MATRIX_WIDTHS_MAP = "info.bioinfweb.jphyloio.nexus.matrixWidths";
+	
 	
 	private ParameterMap sharedInformationMap = new ParameterMap();
 	
@@ -127,7 +130,7 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	 * If none of these blocks is explicitly linked, returning a default linked block will be tried in this order. If no default
 	 * linked block is found, {@code null} will be returned. 
 	 * 
-	 * @return a linked block containing a sequence matrix or {@code null}
+	 * @return a linked block containing sequences or {@code null}
 	 */
 	public String getMatrixLink() {
 		Map<String, String> map = getBlockLinks();
@@ -135,14 +138,14 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 		if (result == null) {
 			result = map.get(BLOCK_NAME_DATA);
 			if (result == null) {
-				result = map.get(BLOCK_NAME_UNALIGNED);  //TODO Can sets be defined for unaligned blocks?
+				result = map.get(BLOCK_NAME_UNALIGNED);
 				
 				if (result == null) {
 					result = getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_CHARACTERS);
 					if (result == null) {
 						result = getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_DATA);
 						if (result == null) {
-							result = getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_UNALIGNED);  //TODO Can sets be defined for unaligned blocks?
+							result = getBlockTitleToIDMap().getDefaultBlockID(BLOCK_NAME_UNALIGNED);
 						}
 					}
 				}
@@ -167,11 +170,11 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	 * @param key the key in the shared information map
 	 * @return the map object contained in the shared information map
 	 */
-	private Map<String, String> getStringMap(String key) {
-		@SuppressWarnings("unchecked")
-		Map<String, String> result = (Map<String, String>)getSharedInformationMap().get(key);  // Casting null is possible.
+	@SuppressWarnings("rawtypes")
+	private Map<?, ?> getMap(String key) {
+		Map result = (Map)getSharedInformationMap().get(key);  // Casting null is possible.
 		if (result == null) {
-			result = new HashMap<String, String>();
+			result = new HashMap();
 			getSharedInformationMap().put(key, result);
 		}
 		return result;
@@ -231,15 +234,16 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	 * Returns a map object that translates between a Nexus taxon name and the <i>JPhyloIO</i> ID of the according OTU event.
 	 * 
 	 * @param listID the <i>JPhyloIO</i> ID of the according OTU list start event
-	 * @return the map or {@code null} of no map is present for the specified OTU list ID
+	 * @return the map
 	 * @throws NullPointerException if {@code listID is null}
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getTaxaToIDMap(String listID) {
 		if (listID == null) {
 			throw new NullPointerException("The specified listID must not be null.");
 		}
 		else {
-			return getStringMap(INFO_KEY_TAXA_MAP + "." + listID);
+			return (Map<String, String>)getMap(INFO_KEY_TAXA_MAP + "." + listID);
 		}
 	}
 	
@@ -257,5 +261,17 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 			getSharedInformationMap().put(INFO_KEY_TREES_TRANSLATION, result);
 		}
 		return result;
+	}
+	
+	
+	/**
+	 * Returns a map object that stores the widths of all sequence matrices encountered until now. It is used by readers of set commands
+	 * to determine the last column of a matrix, which may be referred by a set definition.
+	 * 
+	 * @return the map 
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Long> getMatrixWidthsMap() {
+		return (Map<String, Long>)getMap(INFO_KEY_MATRIX_WIDTHS_MAP);
 	}
 }
