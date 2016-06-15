@@ -132,6 +132,18 @@ public enum EventContentType {
 	ALIGNMENT,
 	
 	/** 
+	 * Indicates a defined character (alignment column). Events of this type may have nested elements.
+	 * Events of this type are optional and most readers will create them only if a character label or
+	 * associated metadata is present or if an ID has explicitly been defined in the document that is read. 
+	 * <p>
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * instances of {@link ConcreteJPhyloIOEvent}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	CHARACTER_DEFINITION,
+	
+	/** 
 	 * Indicates the start or the end of the contents of a sequence in a matrix. 
 	 * <p>
 	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
