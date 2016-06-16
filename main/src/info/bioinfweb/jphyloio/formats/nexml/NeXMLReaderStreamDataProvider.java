@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
@@ -42,14 +43,18 @@ import javax.xml.namespace.QName;
 public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<NeXMLEventReader> {	
 	private boolean allowLongTokens;
 	
+	private Map<EventContentType, String> elementTypeToCurrentIDMap = new HashMap<EventContentType, String>();
+	
 	private Stack<EventContentType> metaType = new Stack<EventContentType>();
 	private QName currentMetaContentDatatype;
 	private LiteralContentSequenceType currentLiteralContentSequenceType;
 	private String alternativeStringRepresentation;
+	private URIOrStringIdentifier additionalResourceMetaRel;
+	
+	private boolean currentSetIsSupported;
 	
 	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();
 	
-	private String currentTokenSetID = null;
 	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();
 	private Map<String, String> tokenDefinitionIDToSymbolMap = new HashMap<String, String>();
 	private NeXMLSingleTokenDefinitionInformation currentSingleTokenDefinition;	
@@ -86,6 +91,16 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 
 	public void setAllowLongTokens(boolean allowLongTokens) {
 		this.allowLongTokens = allowLongTokens;
+	}
+
+	
+	/**
+	 * Returns a map that links the currently used ID to an {@link EventContentType}. This map is used to determine a the linked ID of a set.
+	 * 
+	 * @return the map linking an ID to an {@link EventContentType}
+	 */
+	public Map<EventContentType, String> getElementTypeToCurrentIDMap() {
+		return elementTypeToCurrentIDMap;
 	}
 
 
@@ -146,6 +161,39 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	
 	
 	/**
+	 * Returns a {link URIOrStringIdentifier} if an additional {@link ResourceMetadataEvent} is to be created to enclose 
+	 * meta data of elements without a {@link JPhyloIOEvent} representation or {@code null} if this the enclosing event 
+	 * was already generated.
+	 * 
+	 * @return a {link URIOrStringIdentifier} describing additional metadata or {@code null}
+	 */
+	public URIOrStringIdentifier getAdditionalResourceMetaRel() {
+		return additionalResourceMetaRel;
+	}
+
+
+	public void setAdditionalResourceMetaRel(URIOrStringIdentifier additionalResourceMetaRel) {
+		this.additionalResourceMetaRel = additionalResourceMetaRel;
+	}
+
+
+	/**
+	 * Returns {@code true} if the set element that is currently read can be interpreted as a series of {@link JPhyloIOEvent}s 
+	 * or {@code false} if the set and all its contents will be ignored.
+	 * 
+	 * @return {@code true} if the set currently read can be interpreted as a series of {@link JPhyloIOEvent}s
+	 */
+	public boolean isCurrentSetSupported() {
+		return currentSetIsSupported;
+	}
+
+
+	public void setCurrentSetIsSupported(boolean currentSetIsSupported) {
+		this.currentSetIsSupported = currentSetIsSupported;
+	}
+
+
+	/**
 	 * Returns a map that links a label to a certain OTU ID. This map is used to determine a sequence label 
 	 * from the OTU linked to it, in case no sequence label could be found.
 	 * 
@@ -155,20 +203,6 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 		return otuIDToLabelMap;
 	}
 
-
-	/**
-	 * Returns the ID of the states element (representing a token set definition) that is currently read.
-	 * 
-	 * @return the current token set ID
-	 */
-	public String getCurrentTokenSetID() {
-		return currentTokenSetID;
-	}
-
-
-	public void setCurrentTokenSetID(String tokenSetID) {
-		this.currentTokenSetID = tokenSetID;
-	}
 	
 	/**
 	 * Returns a map that links a {@link NeXMLTokenSetInformation} to a certain token set ID. 

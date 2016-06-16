@@ -33,6 +33,7 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SetElementEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
+import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 
 
@@ -136,7 +137,7 @@ public enum EventContentType {
 	 * Events of this type are optional and most readers will create them only if a character label or
 	 * associated metadata is present or if an ID has explicitly been defined in the document that is read. 
 	 * <p>
-	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * Start events of this type are instances of {@link CharacterDefinitionEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
@@ -293,6 +294,28 @@ public enum EventContentType {
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
 	 */
 	OTU_SET,
+	
+	/** 
+	 * Indicates the start or end of a sequence of {@link #SET_ELEMENT} events that define a set of sequences. 
+	 * <p>
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * instances of {@link PartEndEvent}. The start events link an alignment by their ID using 
+	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	SEQUENCE_SET,
+	
+	/** 
+	 * Indicates the start or end of a sequence of {@link #SET_ELEMENT} events that define a set of node and edges (including root edges).
+	 * <p>
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * instances of {@link PartEndEvent}. The start events link a tree or network by their ID using 
+	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	NODE_EDGE_SET,
 	
 	/** 
 	 * Indicates the start or end of a sequence of {@link #SET_ELEMENT} events that define a set of trees 

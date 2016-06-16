@@ -51,93 +51,88 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 		StartElement element = event.asStartElement();
   	LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
   	QName type = streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null), element);
-  	URIOrStringIdentifier predicate;
+  	URIOrStringIdentifier predicate;  	
+		
+		if (type.getLocalPart().equals(TYPE_LITERAL_META)) {
+			streamDataProvider.getMetaType().push(EventContentType.META_LITERAL);
 			
-  	if ((info.id != null) && !info.id.equals("")) {
-  		if (type.getLocalPart().equals(TYPE_LITERAL_META)) {
-  			streamDataProvider.getMetaType().push(EventContentType.META_LITERAL);
-  			
-  			predicate = new URIOrStringIdentifier(null, 
-  					streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null), element));
-  			QName datatype = streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);		  			
-  			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
-  			
-  			streamDataProvider.setCurrentMetaContentDatatype(datatype);
-  			streamDataProvider.setAlternativeStringRepresentation(content);
-  			
-  			LiteralContentSequenceType contentType = LiteralContentSequenceType.XML;
-  			
-  			ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
-  			if (translator != null) {
-  				contentType = LiteralContentSequenceType.SIMPLE;
-  			}
-  			
-  			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, contentType));
-  			streamDataProvider.setCurrentLiteralContentSequenceType(contentType);
-  			
-  			XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
-  			if (((nextEvent.getEventType() == XMLStreamConstants.END_ELEMENT)) && (content != null)) { //if no character data or custom XML is nested under this literal meta event the value of the content-attribute is used to create a LiteralMetadataContentEvent
-  				Object objectValue;
-  				if (translator != null) {
-	  				try {
+			predicate = new URIOrStringIdentifier(null, 
+					streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null), element));
+			QName datatype = streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);		  			
+			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
+			
+			streamDataProvider.setCurrentMetaContentDatatype(datatype);
+			streamDataProvider.setAlternativeStringRepresentation(content);
+			
+			LiteralContentSequenceType contentType = LiteralContentSequenceType.XML;
+			
+			ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
+			if (translator != null) {
+				contentType = LiteralContentSequenceType.SIMPLE;
+			}
+			
+			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, contentType));
+			streamDataProvider.setCurrentLiteralContentSequenceType(contentType);
+			
+			XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
+			if (((nextEvent.getEventType() == XMLStreamConstants.END_ELEMENT)) && (content != null)) { //if no character data or custom XML is nested under this literal meta event the value of the content-attribute is used to create a LiteralMetadataContentEvent
+				Object objectValue;
+				if (translator != null) {
+  				try {
+						objectValue = translator.representationToJava(content, streamDataProvider);
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), content, objectValue, content));
+					}
+					catch (InvalidObjectSourceDataException e) {
+						throw new JPhyloIOReaderException("The content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
+					}
+				}
+				else {
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), content, null, content));
+				}
+			}
+			else if (!datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
+				Object objectValue = null;
+				String nestedContent = XMLUtils.readCharactersAsString(streamDataProvider.getXMLReader());
+				
+				if (nestedContent != null) {
+					try {
+						if (!"".equals(nestedContent.trim())) {
+							objectValue = translator.representationToJava(nestedContent, streamDataProvider);
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), nestedContent, objectValue, content));
+						}
+						else if ((content != null) && !content.isEmpty()) {
 							objectValue = translator.representationToJava(content, streamDataProvider);
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), content, objectValue, content));
 						}
-						catch (InvalidObjectSourceDataException e) {
-							throw new JPhyloIOReaderException("The content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
-						}
-  				}
-  				else {
-  					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), content, null, content));
-  				}
-  			}
-  			else if (!datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
-  				Object objectValue = null;
-  				String nestedContent = XMLUtils.readCharactersAsString(streamDataProvider.getXMLReader());
-					
-					if (nestedContent != null) {
-						try {
-							if (!"".equals(nestedContent.trim())) {
-								objectValue = translator.representationToJava(nestedContent, streamDataProvider);
-								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), nestedContent, objectValue, content));
-							}
-							else if ((content != null) && !content.isEmpty()) {
-								objectValue = translator.representationToJava(content, streamDataProvider);
-								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), content, objectValue, content));
-							}
-						}
-						catch (InvalidObjectSourceDataException e) {
-							throw new JPhyloIOReaderException("The nested content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
-						}
 					}
+					catch (InvalidObjectSourceDataException e) {
+						throw new JPhyloIOReaderException("The nested content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
+					}
+				}
+			}
+			//TODO Create XMLStreamReader instance here, if nested XML is present.
+		}
+		else if (type.getLocalPart().equals(TYPE_RESOURCE_META)) {
+			streamDataProvider.getMetaType().push(EventContentType.META_RESOURCE);
+			predicate = new URIOrStringIdentifier(null, 
+					streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_REL, null), element));
+			String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
+			String uri = XMLUtils.readStringAttr(element, ATTR_HREF, null);
+			URI href = null;
+			if (uri != null) {
+  			try {
+  				href = new URI(uri);
   			}
-  			//TODO Create XMLStreamReader instance here, if nested XML is present.
-  		}
-  		else if (type.getLocalPart().equals(TYPE_RESOURCE_META)) {
-  			streamDataProvider.getMetaType().push(EventContentType.META_RESOURCE);
-  			predicate = new URIOrStringIdentifier(null, 
-  					streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_REL, null), element));
-  			String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
-  			String uri = XMLUtils.readStringAttr(element, ATTR_HREF, null);
-  			URI href = null;
-  			if (uri != null) {
-	  			try {
-	  				href = new URI(uri);
-	  			}
-	  			catch (URISyntaxException e) {
-	  				throw new JPhyloIOReaderException("An \"href\"-attribute element must specify a valid URI. Instead the string \"" + uri + "\" was found.", event.getLocation());
-	  			}
+  			catch (URISyntaxException e) {
+  				throw new JPhyloIOReaderException("An \"href\"-attribute element must specify a valid URI. Instead the string \"" + uri + "\" was found.", event.getLocation());
   			}
-  			
-  			streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(info.id, info.label, predicate, href, about));	  			
-  		}
-  		else {
-  			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + 
-  					TYPE_RESOURCE_META + "\".", element.getLocation());
-  		}
-  	}
-  	else {
-			throw new JPhyloIOReaderException("NeXML meta elements must specifiy an ID.", element.getLocation());
-		}		
+			}
+			
+			streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(info.id, info.label, predicate, href, about));	  			
+		}
+		else {
+			throw new JPhyloIOReaderException("Meta annotations can only be of type \"" + TYPE_LITERAL_META + "\" or \"" + 
+					TYPE_RESOURCE_META + "\".", element.getLocation());
+		}
 	}
 }

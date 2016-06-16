@@ -43,11 +43,13 @@ import javax.xml.stream.events.XMLEvent;
 public abstract class AbstractSetElementReader extends AbstractNeXMLElementReader {
 	private EventContentType setType;
 	private QName[] linkedIDsAttributes;
+	private EventContentType linkedIDType;
 	
 	
-	protected AbstractSetElementReader(EventContentType setType, QName... linkedIDsAttributes) {
+	protected AbstractSetElementReader(EventContentType setType, EventContentType linkedIDType, QName... linkedIDsAttributes) {
 		super();
 		this.setType = setType;
+		this.linkedIDType = linkedIDType;
 		this.linkedIDsAttributes = linkedIDsAttributes;
 	}
 
@@ -61,8 +63,10 @@ public abstract class AbstractSetElementReader extends AbstractNeXMLElementReade
 	public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider,	XMLEvent event) throws IOException, XMLStreamException {
 		StartElement element = event.asStartElement();
 		LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
+		
+		streamDataProvider.setCurrentSetIsSupported(true);
 		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(setType, info.id, info.label, 
-				streamDataProvider.getCurrentAlignmentID()));
+				streamDataProvider.getElementTypeToCurrentIDMap().get(linkedIDType)));
 
 		for (int i = 0; i < linkedIDsAttributes.length; i++) {
 			String linkedIDString = XMLUtils.readStringAttr(element, linkedIDsAttributes[i], null);

@@ -49,5 +49,6 @@ public class NeXMLSetEndElementReader extends AbstractNeXMLElementReader {
 	@Override
 	public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider,	XMLEvent event) throws IOException, XMLStreamException {
 		streamDataProvider.getCurrentEventCollection().add(new PartEndEvent(setType, true));
+		streamDataProvider.setCurrentSetIsSupported(false);
 	}
 }

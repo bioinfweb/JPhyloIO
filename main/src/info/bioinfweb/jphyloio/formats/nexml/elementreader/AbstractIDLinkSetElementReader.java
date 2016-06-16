@@ -39,8 +39,8 @@ public abstract class AbstractIDLinkSetElementReader extends AbstractSetElementR
 	 * 
 	 * @param linkedIDsAttributes one or more names of attribute that contain links to other objects (events) 
 	 */
-	public AbstractIDLinkSetElementReader(EventContentType setType, QName... linkedIDsAttributes) {
-		super(setType, linkedIDsAttributes);
+	public AbstractIDLinkSetElementReader(EventContentType setType, EventContentType linkedIDType, QName... linkedIDsAttributes) {
+		super(setType, linkedIDType, linkedIDsAttributes);
 	}
 	
 

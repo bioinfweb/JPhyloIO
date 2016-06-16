@@ -142,6 +142,12 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 
 
 	@Override
+	public CharacterDefinitionEvent asCharacterDefinitionEvent() throws ClassCastException {
+		return (CharacterDefinitionEvent)this;
+	}
+
+
+	@Override
 	public TokenSetDefinitionEvent asTokenSetDefinitionEvent() throws ClassCastException {
 		return (TokenSetDefinitionEvent)this;
 	}

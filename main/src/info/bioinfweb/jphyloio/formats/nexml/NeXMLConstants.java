@@ -92,7 +92,7 @@ public interface NeXMLConstants {
 	public static final QName ATTR_STATE_SET_LINKED_IDS = new QName("state");
 	public static final QName ATTR_CHAR_SET_LINKED_IDS = new QName("char");
 	public static final QName ATTR_CELL_SET_LINKED_IDS = new QName("cell");
-	public static final QName ATTR_ROW_SET_LINKED_IDS = new QName("row");
+	public static final QName ATTR_SEQUENCE_SET_LINKED_IDS = new QName("row");
 	public static final QName ATTR_NODE_EDGE_SET_LINKED_NODE_IDS = new QName("node");
 	public static final QName ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS = new QName("edge");
 	public static final QName ATTR_NODE_EDGE_SET_LINKED_ROOTEDGE_IDS = new QName("rootedge");

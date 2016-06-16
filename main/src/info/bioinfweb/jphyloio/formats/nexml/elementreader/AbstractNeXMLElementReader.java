@@ -168,13 +168,22 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	protected LabeledIDEventInformation getLabeledIDEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) throws JPhyloIOReaderException {
 		LabeledIDEventInformation labeledIDEventInformation = new LabeledIDEventInformation();
 		labeledIDEventInformation.id = XMLUtils.readStringAttr(element, ATTR_ID, null);
-		labeledIDEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);
+		labeledIDEventInformation.label = XMLUtils.readStringAttr(element, ATTR_LABEL, null);		
+		
+		if ((labeledIDEventInformation.id == null) || !org.semanticweb.owlapi.io.XMLUtils.isNCName(labeledIDEventInformation.id)) {
+			if (element.getName().equals(TAG_META)) { // NeXML meta elements are not required to specify a valid ID (though they usually do)
+				labeledIDEventInformation.id = RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+			}
+			else if (element.getName().equals(TAG_CHAR)) { // In some cases NeXML char elements might only specify a character index instead of an ID
+				labeledIDEventInformation.id = RESERVED_ID_PREFIX + DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+			}
+		}		
 		
 		if (labeledIDEventInformation.id != null) {
 			return labeledIDEventInformation;
 		}
-		else {
-			throw new JPhyloIOReaderException("The element \"" + element.getName().getLocalPart() + "\" must specify an ID.", element.getLocation());
+		else {			
+			throw new JPhyloIOReaderException("The element \"" + element.getName().getLocalPart() + "\" must specify an ID.", element.getLocation());			
 		}
 	}
 	

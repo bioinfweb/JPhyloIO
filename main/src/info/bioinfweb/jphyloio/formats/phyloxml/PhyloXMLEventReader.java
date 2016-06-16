@@ -47,6 +47,7 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
+import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
@@ -60,6 +61,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
@@ -214,7 +216,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.setPropertyHasResource(false);
 				}
 				
-				QName datatype = qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);
+				QName datatype = readDatatypeAttributeValue(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);
 				ObjectTranslator<?> translator = getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
 				String propertyValue;
 				
@@ -1185,5 +1187,39 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 	@Override
 	protected PhyloXMLReaderStreamDataProvider createStreamDataProvider() {
 		return new PhyloXMLReaderStreamDataProvider(this);
+	}
+	
+	
+	public static QName readDatatypeAttributeValue(String datatype, StartElement element) throws JPhyloIOReaderException {
+		String prefix = null;
+		String localPart = null;
+		String namespaceURI = null;
+		
+		if (datatype != null) {
+			if (datatype.contains(":")) {
+				prefix = datatype.substring(0, datatype.indexOf(':'));
+				localPart = datatype.substring(datatype.indexOf(':') + 1);				
+
+				if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) {
+					namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
+					if (namespaceURI == null) { // no namespace was defined for xsd prefix						
+						namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+					}	
+				}
+				else {
+					throw new JPhyloIOReaderException("The \"datatype\" value of a property element must specify \"xsd\" as a prefix, instead the prefix was \"" + prefix +  "\".", element.getLocation());
+				}						
+			}
+			else {
+				throw new JPhyloIOReaderException("The \"datatype\" value of a property element must specify a prefix.", element.getLocation());
+			}			
+		}
+		
+		if ((prefix != null) && (localPart != null) && (namespaceURI != null)) {
+			return new QName(namespaceURI, localPart, prefix);
+		}
+		else {
+			throw new JPhyloIOReaderException("The \"datatype\" attribute of a property element contained the invalid value \"" + datatype + "\".", element.getLocation());
+		}
 	}
 }

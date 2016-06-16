@@ -148,26 +148,26 @@ public class SequenceTokensEventManager {
 	 * Note that the algorithm for position monitoring will only work for interleaved formats where each sequence part
 	 * has the same length in each block or for non-interleaved formats (where each sequence only occurs once).
 	 * 
-	 * @param sequenceName the name of the sequence to append the tokens
+	 * @param sequenceID the event ID or another unique name of the sequence to append the tokens to
 	 * @param tokens the newly read tokens
 	 * @return the event object
-	 * @throws NullPointerException if either the sequence name or the token list is {@code null}
+	 * @throws NullPointerException if either {@code sequenceID} or {@code tokens} is {@code null}
 	 */
-	public SequenceTokensEvent createEvent(String sequenceName, List<String> tokens) {
-		if ((sequenceName == null) || (tokens == null)) {
+	public SequenceTokensEvent createEvent(String sequenceID, List<String> tokens) {
+		if ((sequenceID == null) || (tokens == null)) {
 			throw new NullPointerException("Sequence names must not be null.");
 		}
 		else {
-			boolean sequenceNameChange = !sequenceName.equals(currentSequenceName);
+			boolean sequenceNameChange = !sequenceID.equals(currentSequenceName);
 			if (sequenceNameChange) {
-				currentSequenceName = sequenceName;
+				currentSequenceName = sequenceID;
 				currentPosition = currentBlockStartPosition;  // Will be 0, until the second interleaved block is reached. (Therefore this implementation also works for non-interleaved data, where the sequences have an unequal length.) 
 			}
 			if (firstSequenceName == null) {
-				firstSequenceName = sequenceName;
+				firstSequenceName = sequenceID;
 			}
 			
-			if (firstSequenceName.equals(sequenceName)) {
+			if (firstSequenceName.equals(sequenceID)) {
 				firstSequence.addAll(tokens);
 				if (sequenceNameChange) {
 					currentBlockStartPosition += currentBlockLength;  // Add length of previous block that is now finished.

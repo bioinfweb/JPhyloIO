@@ -33,8 +33,6 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -45,6 +43,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+
+import org.semanticweb.owlapi.io.XMLUtils;
 
 
 
@@ -194,48 +194,37 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		String prefix = null;
 		String localPart = null;
 		String namespaceURI = null;
-		boolean invalidCurie = true;
 		QName qName = null;
 		
 		if (curie != null) {
 			if (curie.contains(":")) {
-				Pattern curiePattern = Pattern.compile("(\\w+):(\\w+)");
-				Matcher matcher = curiePattern.matcher(curie);
-				
-				invalidCurie = !matcher.find(); //if no match is found, the string does not represent a valid CURIE
-				if (!invalidCurie) {
-					prefix = matcher.group(1);
-					localPart = matcher.group(2); //TODO check if local part and prefix are valid NCNames?
-					
-					invalidCurie = matcher.find(); //if another match is found in the same string, the string does not represent a valid CURIE
-				}		
-				
-				if (prefix != null) {
-					namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
-					if (namespaceURI == null) {
-						if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) { //TODO keep this default solution?
-							namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-						}
-					}
+				prefix = curie.substring(0, curie.indexOf(':'));
+				localPart = curie.substring(curie.indexOf(':') + 1);				
+
+				if (!XMLUtils.isNCName(prefix)) {
+					prefix = null;
 				}
 				
-				qName = new QName(namespaceURI, localPart, prefix);
+				namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
+				if (namespaceURI == null) { // prefix value was not defined
+					if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) {
+						namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+					}
+					else {
+						prefix = null;
+					}					
+				}				
+			}
+			
+			if (prefix == null) {
+				qName = new QName(element.getNamespaceContext().getNamespaceURI(""), curie); // if no prefix was specified or it was invalid, the default namespace is used
 			}
 			else {
-				namespaceURI =  element.getNamespaceContext().getNamespaceURI("");
-				localPart = curie;
-				invalidCurie = false;
-				
-				qName = new QName(namespaceURI, localPart);
+				qName = new QName(namespaceURI, localPart, prefix);
 			}
 		}
 		
-		if (!invalidCurie) {
-			return qName;
-		}
-		else {
-			throw new JPhyloIOReaderException("An invalid CURIE was encountered under the element \"" + element.getName().getLocalPart() + "\".", element.getLocation());
-		}
+		return qName;
 	}
 	
 	

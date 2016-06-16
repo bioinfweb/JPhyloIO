@@ -397,7 +397,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		//TODO alignment.getColumnCount() may be -1 if sequences have various length
 		
 		for (long i = 0; i < alignment.getColumnCount(); i++) {
-			String charID = streamDataProvider.createNewID(ReadWriteConstants.DEFAULT_CHAR_ID_PREFIX);
+			String charID = streamDataProvider.createNewID(ReadWriteConstants.DEFAULT_CHARACTER_DEFINITION_ID_PREFIX);
 			columnIndexToIDMap.put(i, charID);
 			streamDataProvider.addToDocumentIDs(charID);
 

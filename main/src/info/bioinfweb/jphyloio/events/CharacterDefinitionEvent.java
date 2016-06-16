@@ -36,7 +36,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * @since 0.0.0
  */
 public class CharacterDefinitionEvent extends LabeledIDEvent {
-	public long index;  //TODO Should an BigInteger be used here or in an optional additional property? (The latter could be done later without API change.)
+	public long index;  //TODO Should a BigInteger be used here or in an optional additional property? (The latter could be done later without API change.)
 
 	
 	public CharacterDefinitionEvent(String id, String label, long index) {

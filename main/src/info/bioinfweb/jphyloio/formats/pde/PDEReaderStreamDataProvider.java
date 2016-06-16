@@ -42,6 +42,7 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 	
 	private String otuListID;
 	
+	private String currentAlignmentID;
 	private boolean createAlignmentStart;
 	private boolean createAlignmentEnd;
 	private String currentSequenceID;
@@ -86,6 +87,21 @@ public class PDEReaderStreamDataProvider extends XMLReaderStreamDataProvider<PDE
 	}
 
 
+	/**
+	 * Returns the ID of the characters element (representing an alignment) that is currently read.
+	 * 
+	 * @return the current alignment ID
+	 */
+	public String getCurrentAlignmentID() {
+		return currentAlignmentID;
+	}
+
+
+	public void setCurrentAlignmentID(String currentAlignmentID) {
+		this.currentAlignmentID = currentAlignmentID;
+	}
+	
+	
 	protected boolean isCreateAlignmentStart() {
 		return createAlignmentStart;
 	}

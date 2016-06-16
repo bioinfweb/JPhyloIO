@@ -58,38 +58,4 @@ public class XMLReadWriteUtils {
 		}
 		return prefix;
 	}
-	
-	
-//	@SuppressWarnings("serial")
-//	private static Map<QName,Class<?>> classForXsdType = new HashMap<QName, Class<?>>() {{
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "decimal", XSD_PRE), BigDecimal.class);  //TODO Constant prefixes will anyway be removed.
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "integer", XSD_PRE), BigInteger.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "boolean", XSD_PRE), Boolean.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "byte", XSD_PRE), Byte.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "QName", XSD_PRE), QName.class);		
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "double", XSD_PRE), Double.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "float", XSD_PRE), Float.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "long", XSD_PRE), Long.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "short", XSD_PRE), Short.class);		
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "string",XSD_PRE), String.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "char", XSD_PRE), Character.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "dateTime", XSD_PRE), Date.class);
-//		put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "duration", XSD_PRE), Duration.class);		
-//	}};
-//	
-//	
-//	@SuppressWarnings("serial")
-//	private static Map<Class<?>,QName> xsdTypeForClass = new HashMap<Class<?>,QName>() {{
-//		for ( QName xsdType : classForXsdType.keySet() ) {
-//			put(classForXsdType.get(xsdType), xsdType);
-//		}	
-//		put(Integer.class,new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "integer", XSD_PRE));
-//		put(Date.class, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "dateTime", XSD_PRE));
-//		put(Calendar.class, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "dateTime", XSD_PRE));
-//		put(UUID.class, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "string", XSD_PRE));
-//		put(java.awt.Image.class, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "base64Binary", XSD_PRE));
-//		put(Duration.class, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "duration", XSD_PRE));
-//		put(java.lang.Character.class, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "char", XSD_PRE));
-//		put(Source.class, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "base64Binary", XSD_PRE));
-//	}};
 }
