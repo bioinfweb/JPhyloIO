@@ -144,6 +144,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLReaderStreamDataProvider.jav
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLSingleTokenDefinitionInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLTokenSetInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLWriterStreamDataProvider.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/NonStoringCollection.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/TokenTranslationStrategy.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/AbstractIDLinkSetElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/AbstractNeXMLElementReader.java -text svneol=unset#text/plain

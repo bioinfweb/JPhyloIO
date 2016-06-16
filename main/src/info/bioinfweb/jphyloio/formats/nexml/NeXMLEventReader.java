@@ -133,7 +133,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				if (streamDataProvider.getParentName().equals(TAG_SET.getLocalPart()) && !streamDataProvider.isCurrentSetSupported()) {					
-					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());					
+					streamDataProvider.setCurrentEventCollection(new NonStoringCollection<JPhyloIOEvent>());					
 				}
 				
 				if (streamDataProvider.getAdditionalResourceMetaRel() == null) {
@@ -164,7 +164,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				super.readEvent(streamDataProvider, event);
 				
 				if (streamDataProvider.getParentName().equals(TAG_SET.getLocalPart()) && !streamDataProvider.isCurrentSetSupported()) {
-					streamDataProvider.resetCurrentEventCollection();								
+					streamDataProvider.resetCurrentEventCollection();
 				}
 			}			
 		};
