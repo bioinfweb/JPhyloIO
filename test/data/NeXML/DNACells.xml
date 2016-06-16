@@ -37,10 +37,7 @@
       <row id="row2" otu="taxon2">
         <cell char="char1" state="Adenine"/>
         <cell char="char2" state="Guanine"/>
-		<cell char="char3" state="Thymine"/>
-		<set id="cellSet" cell="char1 char2">
-			<meta content="some other text" datatype="xsd:string" id="meta7" property="foo:hasLiteralMeta" xsi:type="nex:LiteralMeta"/>
-		</set>
+		<cell char="char3" state="Thymine"/>		
       </row>
     </matrix>
   </characters>

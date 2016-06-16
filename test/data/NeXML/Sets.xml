@@ -51,7 +51,7 @@
 			<row id="row3" otu="taxon3">
 				<seq>ACCTG</seq>
 			</row>
-			<set id="rowSet" state="row1 row3">
+			<set id="rowSet" row="row1 row3">
 				<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			</set>
 		</matrix>

@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.test;
 import static org.junit.Assert.*;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.URI;
 
 import javax.xml.namespace.QName;
@@ -34,6 +35,7 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -155,6 +157,20 @@ public class JPhyloIOTestTools {
 		assertEventType(contentType, EventTopologyType.END, event);
 		PartEndEvent endEvent = event.asPartEndEvent();
 		assertEquals(expectedSequenceTerminated, endEvent.isTerminated());
+	}
+	
+	
+	public static void assertCharacterDefinitionEvent(long expectedIndex, boolean testEndEvent, JPhyloIOEventReader reader) throws Exception {
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+
+		assertEquals(EventContentType.CHARACTER_DEFINITION, event.getType().getContentType());
+		CharacterDefinitionEvent characterDefinitionEvent = event.asCharacterDefinitionEvent();
+		assertEquals(expectedIndex, characterDefinitionEvent.getIndex());
+		
+		if (testEndEvent) {
+			assertEndEvent(EventContentType.CHARACTER_DEFINITION, reader);
+		}		
 	}
 	
 	

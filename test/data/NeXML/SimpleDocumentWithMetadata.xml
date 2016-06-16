@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ex="http://www.example.net/" 
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-	<meta datatype="rdf:Literal" id="meta1" property="ex:hasCustomXML" xsi:type="nex:LiteralMeta" content="customXML">
-		<ex:customTag>some <ex:nestedTag />characters</ex:customTag>
-	</meta>
+	<meta datatype="rdf:Literal" id="meta1" property="ex:hasCustomXML" xsi:type="nex:LiteralMeta" content="customXML">characters<ex:customTag>some more <ex:nestedTag />characters</ex:customTag></meta>
 	<meta datatype="xsd:string" id="meta2" property="ex:predicate" xsi:type="nex:LiteralMeta">someString1</meta>
 	<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta" content="forty-seven">47</meta>
 	<meta id="meta4" rel="ex:rel" xsi:type="nex:ResourceMeta">
@@ -17,7 +15,7 @@
 			<meta datatype="xsd:string" id="meta10" property="ex:predicate" xsi:type="nex:LiteralMeta" content="someString">      </meta>
 		</meta>
 	</meta>
-	<meta id="meta4" rel="ex:rel" xsi:type="nex:ResourceMeta" href="http://www.test.org/test1"/>
+	<meta rel="ex:rel" xsi:type="nex:ResourceMeta" href="http://www.test.org/test1"/>
 	<otus id="taxonlist">
 		<meta datatype="xsd:int" id="meta11" property="ex:predicate" xsi:type="nex:LiteralMeta" content="47">
 		</meta>
@@ -31,8 +29,9 @@
 		<meta datatype="xsd:int" id="meta13" property="ex:predicate" xsi:type="nex:LiteralMeta">   	    </meta>
 		<format>
 			<meta datatype="xsd:int" id="meta14" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+			<meta datatype="xsd:int" id="meta15" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			<states id="states">
-				<meta datatype="xsd:int" id="meta15" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+				<meta datatype="xsd:int" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 				<state id="Adenine" symbol="A">
 					<meta datatype="xsd:int" id="meta16" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 				</state>
@@ -58,7 +57,7 @@
 			<char id="char0" states="states">
 				<meta datatype="xsd:int" id="meta18" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			</char>
-			<char id="char1" states="states"/>
+			<char id="1" states="states"/>
 			<char id="char2" states="states"/>
 			<char id="char3" states="states"/>
 			<char id="char4" states="states"/>
@@ -69,6 +68,7 @@
 		</format>
 		<matrix>
 			<meta datatype="xsd:int" id="meta20" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+			<meta datatype="xsd:int" id="meta28" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			<row id="row1" otu="taxon1">
 				<meta datatype="xsd:int" id="meta21" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 				<seq>AACTG</seq>
@@ -82,28 +82,28 @@
 		</matrix>
 	</characters>
 	<trees id="treegroup" otus="taxonlist">
-		<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+		<meta datatype="xsd:int" id="meta22" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 		<tree id="tree" xsi:type="nex:FloatTree">
-			<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+			<meta datatype="xsd:int" id="meta23" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			<node id="node1" otu="taxon1">
-				<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+				<meta datatype="xsd:int" id="meta24" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			</node>
 			<node id="node2" otu="taxon2"/>
 			<node id="node3" otu="taxon3"/>
 			<node id="node4"/>
 			<node id="node5"/>
 			<rootedge id="rootedge" target="node4" length="0.778">
-				<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+				<meta datatype="xsd:int" id="meta25" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			</rootedge>
 			<edge id="edge1" source="node4" target="node5" length="1"/>
 			<edge id="edge2" source="node4" target="node3">
-				<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+				<meta datatype="xsd:int" id="meta26" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			</edge>
 			<edge id="edge3" source="node5" target="node1" length="0.98"/>
 			<edge id="edge4" source="node5" target="node2"/>
 		</tree>
 		<network id="network" xsi:type="nex:FloatNetwork">
-			<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+			<meta datatype="xsd:int" id="meta27" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 			<node id="node6" otu="taxon1"/>
 			<node id="node7" otu="taxon2"/>
 			<node id="node8" otu="taxon3"/>
