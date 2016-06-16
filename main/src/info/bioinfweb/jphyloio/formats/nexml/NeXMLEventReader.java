@@ -569,7 +569,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				Iterator<String> tokenSetIDIterator = streamDataProvider.getTokenSets().keySet().iterator();
 				while (tokenSetIDIterator.hasNext()) {
 					String tokenSetID = tokenSetIDIterator.next();
-					NeXMLTokenSetInformation info = streamDataProvider.getTokenSets().get(tokenSetID);
+					NeXMLReaderTokenSetInformation info = streamDataProvider.getTokenSets().get(tokenSetID);
 					String[] columnIDs; 
 					
 					if (!info.getNestedEvents().isEmpty()) {						
@@ -606,7 +606,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 
 				streamDataProvider.getElementTypeToCurrentIDMap().put(EventContentType.TOKEN_SET_DEFINITION, info.id);
 				streamDataProvider.getTokenSetIDtoColumnsMap().put(info.id, new ArrayList<String>());
-				streamDataProvider.getTokenSets().put(info.id, new NeXMLTokenSetInformation(info.id, info.label, streamDataProvider.getCharacterSetType()));
+				streamDataProvider.getTokenSets().put(info.id, new NeXMLReaderTokenSetInformation(info.id, info.label, streamDataProvider.getCharacterSetType()));
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getTokenSets().get(info.id).getNestedEvents());
 			}
 		});

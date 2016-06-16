@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
+	NeXMLWriterAlignmentInformation alignmentInfo;
 	private Map<String, String> tokenNameToIDMap = new HashMap<String, String>();
 	private int tokenDefinitionIndex = 0;
 	
@@ -53,6 +55,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	public NeXMLTokenSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
+		this.alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
 	}
 	
 	
@@ -79,7 +82,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 			Collection<String> constituents = new ArrayList<String>();
 			
 			if (event.getConstituents() == null || event.getConstituents().isEmpty()) {
-				switch (getStreamDataProvider().getAlignmentType()) {
+				switch (alignmentInfo.getAlignmentType()) {
 					case DNA:
 						constituents = addConstituents(SequenceUtils.nucleotideConstituents(tokenName.charAt(0)));
 						break;
@@ -123,7 +126,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		String tokenSymbol = tokenName;
 		String label = event.getLabel();
 		
-		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
 			if (event.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
 				if (!((tokenName.length() == 1) && (tokenName.charAt(0) == SequenceUtils.GAP_CHAR))) {
 					tokenSymbol = "" + tokenDefinitionIndex;
@@ -144,14 +147,14 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 				label = tokenName;
 			}
 		}
-		else if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.AMINO_ACID)) {
+		else if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.AMINO_ACID)) {
 			if (tokenName.length() == 3) {
 				tokenSymbol = Character.toString(SequenceUtils.oneLetterAminoAcidByThreeLetter(tokenName));
 				label = tokenName;
 			}
 		}
 		
-		getStreamDataProvider().getTokenTranslationMap().put(event.getTokenName(), tokenSymbol);
+//		getStreamDataProvider().getTokenTranslationMap().put(event.getTokenName(), tokenSymbol); //TODO put in map of right token set
 		tokenNameToIDMap.put(tokenName, event.getID());
 		
 		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
@@ -176,7 +179,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 	
 	public void writeRemainingStandardTokenDefinitions() throws IOException, XMLStreamException {
-		Set<String> tokenNames = getStreamDataProvider().getTokenDefinitions();
+		Set<String> tokenNames = alignmentInfo.getTokenDefinitions();
 		
 		for (String token : tokenNames) {
 			doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX),
@@ -196,7 +199,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 							&& !tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {
 						
 						getStreamDataProvider().addToDocumentIDs(tokenDefinitionEvent.getID());
-						getStreamDataProvider().getTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
+						alignmentInfo.getTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
 						
 						switch (tokenDefinitionEvent.getTokenType()) {
 							case ATOMIC_STATE:

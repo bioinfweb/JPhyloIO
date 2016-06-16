@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		AbstractNeXMLDataReceiverMixin.checkResourceMeta(getStreamDataProvider(), event);
 		if (isNestedUnderSingleToken()) {
-			getStreamDataProvider().setWriteCellsTags(true);
+			getStreamDataProvider().getCurrentAlignmentInfo().setWriteCellsTags(true);
 		}
 	}
 
@@ -54,7 +55,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		AbstractNeXMLDataReceiverMixin.checkLiteralMeta(getStreamDataProvider(), event);
 		if (isNestedUnderSingleToken()) {
-			getStreamDataProvider().setWriteCellsTags(true);
+			getStreamDataProvider().getCurrentAlignmentInfo().setWriteCellsTags(true);
 		}
 	}
 
@@ -62,17 +63,18 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		if (isNestedUnderSingleToken()) {
-			getStreamDataProvider().setWriteCellsTags(true);
+			getStreamDataProvider().getCurrentAlignmentInfo().setWriteCellsTags(true);
 		}
 	}
 
 
 	@Override
 	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
-		if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
-			getStreamDataProvider().getTokenDefinitions().add(token);
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
+		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+			alignmentInfo.getTokenDefinitions().add(token);
 		}
-		else if (getStreamDataProvider().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
+		else if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
 			try {
 				Double.parseDouble(token);  //TODO Should BigDecimal or some other test method be used here? (Otherwise values outside the range of double will not be accepted.)
 			}
@@ -81,9 +83,9 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 			}
 		}
 		else {
-			if (!getStreamDataProvider().getTokenDefinitions().contains(token)) {
-				getStreamDataProvider().setAlignmentType(CharacterStateSetType.DISCRETE);
-				getStreamDataProvider().getTokenDefinitions().add(token);
+			if (!alignmentInfo.getTokenDefinitions().contains(token)) { // Token set definitions were read already, so any new token here was not defined or added previously
+				alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
+				alignmentInfo.getTokenDefinitions().add(token);
 			}
 		}
 	}

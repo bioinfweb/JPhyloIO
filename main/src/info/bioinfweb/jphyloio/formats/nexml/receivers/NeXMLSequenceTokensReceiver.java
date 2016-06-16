@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -35,11 +36,13 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver {
-
+	NeXMLWriterAlignmentInformation alignmentInfo;
+	
 
 	public NeXMLSequenceTokensReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, longTokens, streamDataProvider);
+		this.alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
 	}
 
 
@@ -85,9 +88,10 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 
 	@Override
 	protected void handleToken(String token, String label) throws XMLStreamException {
-		String translatedToken = getStreamDataProvider().getTokenTranslationMap().get(token);
+//		String translatedToken = alignmentInfo.getTokenTranslationMap().get(token);
+		String translatedToken = token; //TODO how to determine which token set is valid for this token?
 		
-		if (getStreamDataProvider().isWriteCellsTags()) {
+		if (alignmentInfo.isWriteCellsTags()) {
 			getWriter().writeStartElement(TAG_CELL.getLocalPart());
 			if (label != null) {
 				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
@@ -105,7 +109,7 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 
 	@Override
 	protected void handleTokenEnd() throws XMLStreamException {
-		if (getStreamDataProvider().isWriteCellsTags()) {
+		if (alignmentInfo.isWriteCellsTags()) {
 			String token = getStreamDataProvider().getSingleToken();			
 			if (token != null) {
 				getWriter().writeCharacters(token);

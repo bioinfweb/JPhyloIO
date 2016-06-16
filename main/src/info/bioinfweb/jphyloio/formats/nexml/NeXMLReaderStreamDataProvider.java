@@ -55,7 +55,7 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	
 	private Map<String, String> otuIDToLabelMap = new TreeMap<String, String>();
 	
-	private Map<String, NeXMLTokenSetInformation> tokenSets = new TreeMap<String, NeXMLTokenSetInformation>();
+	private Map<String, NeXMLReaderTokenSetInformation> tokenSets = new TreeMap<String, NeXMLReaderTokenSetInformation>();
 	private Map<String, String> tokenDefinitionIDToSymbolMap = new HashMap<String, String>();
 	private NeXMLSingleTokenDefinitionInformation currentSingleTokenDefinition;	
 
@@ -205,13 +205,13 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 
 	
 	/**
-	 * Returns a map that links a {@link NeXMLTokenSetInformation} to a certain token set ID. 
+	 * Returns a map that links a {@link NeXMLReaderTokenSetInformation} to a certain token set ID. 
 	 * This is used to buffer information about the token set until the start event is created and to be able 
 	 * to find the right translation map when reading sequences.
 	 * 
-	 * @return the map linking a {@link NeXMLTokenSetInformation} to an token set ID
+	 * @return the map linking a {@link NeXMLReaderTokenSetInformation} to an token set ID
 	 */
-	public Map<String, NeXMLTokenSetInformation> getTokenSets() {
+	public Map<String, NeXMLReaderTokenSetInformation> getTokenSets() {
 		return tokenSets;
 	}	
 

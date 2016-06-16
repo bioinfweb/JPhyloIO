@@ -29,7 +29,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
-public class NeXMLTokenSetInformation {
+public class NeXMLReaderTokenSetInformation {
 	private String id = null;
 	private String label = null;
 	private CharacterStateSetType setType;
@@ -39,7 +39,7 @@ public class NeXMLTokenSetInformation {
 	private Map<Integer, String> symbolTranslationMap = new HashMap<Integer, String>(); //is only used for standard data
 	
 	
-	public NeXMLTokenSetInformation(String id, String label, CharacterStateSetType setType) {
+	public NeXMLReaderTokenSetInformation(String id, String label, CharacterStateSetType setType) {
 		super();
 		if (id == null) {
 			throw new NullPointerException("The ID of this event must not be null.");

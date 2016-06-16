@@ -72,33 +72,4 @@ public class TokenSetDefinitionEvent extends LabeledIDEvent {
 	public CharacterStateSetType getSetType() {
 		return setType;
 	}
-	
-	
-	/**
-	 * Returns the ID of character set (which was defined in a previously fired series of 
-	 * character set events) for which this token set shall be valid.
-	 * 
-	 * @return the name of the according character set or {@code null} if no character set was 
-	 *         referenced in the parsed file (e.g. because this character state set shall be 
-	 *         valid for the whole alignment)
-	 */
-	@Deprecated
-	public String getCharacterSetID() {
-		return null;
-	}
-	
-	
-	/**
-	 * Specifies if this token set shall only be valid for a certain character set defined by a 
-	 * previous event.
-	 * 
-	 * @return {@code true} if this set is only valid for the character set defined by the return 
-	 *         value of {@link #getCharacterSetID()} or {@code false} if no character set was 
-	 *         referenced in the parsed file (e.g. because this character state set shall be 
-	 *         valid for the whole alignment) 
-	 */
-	@Deprecated
-	public boolean hasLinkedCharacterSet() {
-		return false;
-	}
 }

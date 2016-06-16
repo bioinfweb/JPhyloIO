@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -53,21 +52,14 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private StringBuffer commentContent = new StringBuffer();
 	private boolean literalContentIsContinued = false;
 	
-	private boolean hasOTUList = true; //is true if the document contains at least one OTU list	
+	private boolean hasOTUList = true;
 	private boolean writeUndefinedOTU = false;
 	private boolean writeUndefinedOtuList = false;
 	
-	private boolean writeCellsTags;
-	private CharacterStateSetType alignmentType;
+	private NeXMLWriterAlignmentInformation currentAlignmentInfo;
+	private Map<String, NeXMLWriterAlignmentInformation> idToAlignmentInfo = new HashMap<String, NeXMLWriterAlignmentInformation>();
 	
-	private boolean hasTokenDefinitionSet = true;
-	private boolean isNucleotideType = false;
-	private Map<String, String> tokenTranslationMap = new HashMap<String, String>();
-	private Set<String> tokenDefinitions = new HashSet<String>();
-	
-	private Map<String, String> charSetToTokenSetMap = new HashMap<String, String>();
-	private Map<String, Set<Long>> charSets = new HashMap<String, Set<Long>>();
-	private Map<Long, String> columnIndexToStatesMap = new HashMap<Long, String>();
+	private NeXMLWriterTokenSetInformation currentTokenSetInfo;
 	
 	private String singleToken = null;
 	
@@ -103,12 +95,12 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
-	public int getIdIndex() {
+	public int getIDIndex() {
 		return idIndex;
 	}
 
 
-	public void setIdIndex(int idIndex) {
+	public void setIDIndex(int idIndex) {
 		this.idIndex = idIndex;
 	}
 
@@ -118,11 +110,6 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 			throw new InconsistentAdapterDataException("The encountered ID " + id + " already exists in the document. IDs have to be unique.");
 		}
 	}
-
-
-//	public static Map<Class<?>, QName> getXsdTypeForClass() {
-//		return xsdTypeForClass;
-//	}
 
 
 	public boolean hasOTUList() {
@@ -170,68 +157,28 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public boolean isWriteCellsTags() {
-		return writeCellsTags;
+	public NeXMLWriterAlignmentInformation getCurrentAlignmentInfo() {
+		return currentAlignmentInfo;
 	}
 
 
-	public void setWriteCellsTags(boolean writeCellsTags) {
-		this.writeCellsTags = writeCellsTags;
+	public void setCurrentAlignmentInfo(NeXMLWriterAlignmentInformation currentAlignmentInfo) {
+		this.currentAlignmentInfo = currentAlignmentInfo;
 	}
 
 
-	public CharacterStateSetType getAlignmentType() {
-		return alignmentType;
+	public Map<String, NeXMLWriterAlignmentInformation> getIdToAlignmentInfo() {
+		return idToAlignmentInfo;
 	}
 
 
-	public void setAlignmentType(CharacterStateSetType alignmentType) throws JPhyloIOWriterException {
-		this.alignmentType = alignmentType;	
+	public NeXMLWriterTokenSetInformation getCurrentTokenSetInfo() {
+		return currentTokenSetInfo;
 	}
 
 
-	public boolean hasTokenDefinitionSet() {
-		return hasTokenDefinitionSet;
-	}
-
-
-	public void setHasTokenDefinitionSet(boolean hasTokenDefinitionSet) {
-		this.hasTokenDefinitionSet = hasTokenDefinitionSet;
-	}
-
-
-	public boolean isNucleotideType() {
-		return isNucleotideType;
-	}
-
-
-	public void setNucleotideType(boolean isNucleotideType) {
-		this.isNucleotideType = isNucleotideType;
-	}
-
-
-	public Map<String, String> getTokenTranslationMap() {
-		return tokenTranslationMap;
-	}
-
-
-	public Set<String> getTokenDefinitions() {
-		return tokenDefinitions;
-	}
-
-
-	public Map<String, String> getCharSetToTokenSetMap() {
-		return charSetToTokenSetMap;
-	}
-	
-
-	public Map<String, Set<Long>> getCharSets() {
-		return charSets;
-	}
-
-
-	public Map<Long, String> getColumnIndexToStatesMap() {
-		return columnIndexToStatesMap;
+	public void setCurrentTokenSetInfo(NeXMLWriterTokenSetInformation currentTokenSetInfo) {
+		this.currentTokenSetInfo = currentTokenSetInfo;
 	}
 
 
@@ -269,8 +216,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		String id;
 		
 		do {
-			id = prefix + getIdIndex();
-			setIdIndex(getIdIndex() + 1);
+			id = prefix + getIDIndex();
+			setIDIndex(getIDIndex() + 1);
 		} while (getDocumentIDs().contains(id));
 		
 		return id;

@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ import javax.xml.stream.XMLStreamWriter;
 public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {
 	private boolean nestedUnderSingleToken = false;
 	private NeXMLWriterStreamDataProvider streamDataProvider;
+	NeXMLWriterAlignmentInformation alignmentInfo;
 
 
 	public NeXMLHandleSequenceDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
@@ -44,6 +46,7 @@ public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceCo
 		super(writer, parameterMap, longTokens);
 		
 		this.streamDataProvider = streamDataProvider;
+		this.alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
 	}
 
 
@@ -76,7 +79,7 @@ public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceCo
 					setNestedUnderSingleToken(true);
 					
 					if (tokenEvent.getLabel() != null) {
-						getStreamDataProvider().setWriteCellsTags(true);
+						alignmentInfo.setWriteCellsTags(true);
 					}
 				}
 				else {

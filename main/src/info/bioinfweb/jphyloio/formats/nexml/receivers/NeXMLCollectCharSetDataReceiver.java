@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
@@ -44,10 +45,11 @@ public class NeXMLCollectCharSetDataReceiver extends NeXMLCollectNamespaceReceiv
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
-			case CHARACTER_SET_INTERVAL:				
-				for (long i = event.asCharacterSetIntervalEvent().getStart(); i <= event.asCharacterSetIntervalEvent().getEnd(); i++) {
-					getStreamDataProvider().getCharSets().get(charSetID).add(i);
-				}				
+			case CHARACTER_SET_INTERVAL:
+				CharacterSetIntervalEvent intervalEvent = event.asCharacterSetIntervalEvent();
+				for (long i = intervalEvent.getStart(); i < intervalEvent.getEnd(); i++) {
+					getStreamDataProvider().getCurrentAlignmentInfo().getCharSets().get(charSetID).add(i);
+				}
 				break;
 			default:
 				break;

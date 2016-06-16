@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben StÃ¶ver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -16,41 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats;
+package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderTokenSetInformation;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
-/**
- * Used to buffer information on an event and its nested events.
- * 
- * @author Ben St&ouml;ver
- * @since 0.0.0
- * @see NeXMLReaderTokenSetInformation
- */
-public class BufferedEventInfo<E extends JPhyloIOEvent> {
-	private E startEvent;
-	private List<JPhyloIOEvent> nestedEvents = new ArrayList<JPhyloIOEvent>();
+public class NeXMLWriterTokenSetInformation {
+	private boolean isNucleotideType = false;
+	private Map<String, String> tokenTranslationMap = new HashMap<String, String>();
 	
 	
-	public BufferedEventInfo(E startEvent) {
-		super();
-		this.startEvent = startEvent;
+	public boolean isNucleotideType() {
+		return isNucleotideType;
 	}
 
 
-	public E getStartEvent() {
-		return startEvent;
+	public void setNucleotideType(boolean isNucleotideType) {
+		this.isNucleotideType = isNucleotideType;
 	}
 
 
-	public List<JPhyloIOEvent> getNestedEvents() {
-		return nestedEvents;
+	public Map<String, String> getTokenTranslationMap() {
+		return tokenTranslationMap;
 	}
 }
