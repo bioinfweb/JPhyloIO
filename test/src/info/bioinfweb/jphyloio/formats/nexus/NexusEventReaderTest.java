@@ -1548,10 +1548,10 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertCharacterSetIntervalEvent(3, 4, reader);
 			assertCharacterSetIntervalEvent(5, 6, reader);
 			assertEndEvent(EventContentType.CHARACTER_SET, reader);
-//			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set06", matrixID2, reader);
-//			assertSetElementEvent(referencedSetID, EventContentType.CHARACTER_SET, reader);
-//			assertCharacterSetIntervalEvent(4, 5, reader);
-//			assertEndEvent(EventContentType.CHARACTER_SET, reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set06", matrixID2, reader);
+			assertSetElementEvent(referencedSetID, EventContentType.CHARACTER_SET, reader);
+			assertCharacterSetIntervalEvent(4, 5, reader);
+			assertEndEvent(EventContentType.CHARACTER_SET, reader);
 			
 			// SETS 3:
 			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID1, reader);
