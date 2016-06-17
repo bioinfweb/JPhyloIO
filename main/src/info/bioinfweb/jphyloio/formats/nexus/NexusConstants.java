@@ -91,6 +91,8 @@ public interface NexusConstants {
 	/** This is not part of the official Nexus definition, but is a MrBayes extension. */
 	public static final String FORMAT_VALUE_MIXED_DATA_TYPE = "MIXED";
 
+	public static final char CHARACTER_NAME_STATES_SEPARATOR = '/';
+	
 	public static final char MATRIX_POLYMORPHIC_TOKEN_START = '(';
 	public static final char MATRIX_POLYMORPHIC_TOKEN_END = ')';
 	public static final char MATRIX_UNCERTAINS_TOKEN_START = '{';

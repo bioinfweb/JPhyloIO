@@ -255,7 +255,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 			}
 			else {
 				while (!Character.isWhitespace(c) && (c != COMMENT_START) && (c != COMMAND_END) && (c != KEY_VALUE_SEPARATOR) 
-						&& (c != ELEMENT_SEPARATOR)) {  //TODO Add more special characters
+						&& (c != ELEMENT_SEPARATOR) && (c != CHARACTER_NAME_STATES_SEPARATOR)) {  //TODO Add more special characters
 					
 					result.append(c);
 					getReader().skip(1);
@@ -266,6 +266,35 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 		}
 		catch (EOFException e) {
 			throw new JPhyloIOReaderException("Unexpected end of file inside a Nexus word.", getReader(), e);
+		}
+	}
+	
+	
+	/**
+	 * Tries to read a positive integer from the current position of the underlying stream-
+	 * 
+	 * @param startOrEndIndex the value to be returned, if {@code '.'} is encountered (It is used as a placeholder 
+	 *        for the highest possible index in some commands.)
+	 * @return the read positive integer or {@code startOrEndIndex} or -2 if neither a positive integer nor {@code '.'} was found
+	 * @throws IOException
+	 */
+	protected long readPositiveInteger(long startOrEndIndex) throws IOException {
+		if (getReader().peekChar() == SET_START_OR_END_INDEX_SYMBOL) {
+			getReader().skip(1);
+			return startOrEndIndex;
+		}
+		else {
+			StringBuilder number = new StringBuilder();
+			while (Character.isDigit(getReader().peekChar())) {
+				number.append(getReader().readChar());
+			}
+			
+			if (number.length() > 0) {
+				return Long.parseLong(number.toString());
+			}
+			else {
+				return -2;  // Returns -2 instead of -1 to distinguish it from the return value of getElementCount().
+			}
 		}
 	}
 	

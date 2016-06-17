@@ -74,6 +74,12 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 
 
+	/**
+	 * Calls {@link #consumeWhiteSpaceAndComments(char, char)} with according parameters and
+	 * ensures visibility for {@link NexusReaderStreamDataProvider}.
+	 * 
+	 * @throws IOException if an I/O error occurs during the read operation
+	 */
 	public void consumeWhiteSpaceAndComments() throws IOException {
 		getEventReader().consumeWhiteSpaceAndComments();
 	}
@@ -81,6 +87,19 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	
 	public String readNexusWord() throws IOException {
 		return getEventReader().readNexusWord();
+	}
+	
+	
+	/**
+	 * Tries to read a positive integer from the current position of the underlying stream-
+	 * 
+	 * @param startOrEndIndex the value to be returned, if {@code '.'} is encountered (It is used as a placeholder 
+	 *        for the highest possible index in some commands.)
+	 * @return the read positive integer or {@code startOrEndIndex} or -2 if neither a positive integer nor {@code '.'} was found
+	 * @throws IOException
+	 */
+	public long readPositiveInteger(long startOrEndIndex) throws IOException {
+		return getEventReader().readPositiveInteger(startOrEndIndex);
 	}
 	
 	

@@ -147,28 +147,6 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	}
 
 	
-	private long parseInteger(long startOrEndIndex) throws IOException {
-		PeekReader reader = getStreamDataProvider().getDataReader();
-		if (reader.peekChar() == SET_START_OR_END_INDEX_SYMBOL) {
-			reader.skip(1);
-			return startOrEndIndex;
-		}
-		else {
-			StringBuilder number = new StringBuilder();
-			while (Character.isDigit(reader.peekChar())) {
-				number.append(reader.readChar());
-			}
-			
-			if (number.length() > 0) {
-				return Long.parseLong(number.toString());
-			}
-			else {
-				return -2;  // Returns -2 instead of -1 to distinguish it from the return value of getElementCount().
-			}
-		}
-	}
-	
-	
 	private JPhyloIOReaderException createUnknownElementCountException(PeekReader reader) {
 		return new JPhyloIOReaderException("A set was referencing the maximum index (using '.'), which could not be determined. "
 				+ "A possible cause can be that no block containing the set elements (e.g. TAXA or CHARACTERS) was previously defined.", reader);
@@ -216,7 +194,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 						" is currently not supported in JPhyloIO.", reader);
 			}
 			else {
-				nexusStart = parseInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
+				nexusStart = getStreamDataProvider().readPositiveInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
 				if (nexusStart == -1) {  // '.' was found.
 					throw new JPhyloIOReaderException("The token '.' may not be the first element of a set interval definition in Nexus.", reader);
 				}
@@ -230,7 +208,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 					if (reader.peekChar() == SET_TO_SYMBOL) {
 						reader.skip(1);  // Consume '-'
 						consumeWhiteSpaceAndComments(savedCommentEvents);
-						nexusEnd = parseInteger(finalIndex);
+						nexusEnd = getStreamDataProvider().readPositiveInteger(finalIndex);
 						if (nexusEnd == -2) {
 							throw createUnknownElementCountException(reader);
 						}
@@ -246,7 +224,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 			if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {  //TODO Throw exception, if this construct is used together with a reference to another set. (A special UnsupportedFeatureException could be implemented for such cases.)
 				reader.skip(1);  // Consume '\'
 				consumeWhiteSpaceAndComments(savedCommentEvents);
-				long interval = parseInteger(-1);
+				long interval = getStreamDataProvider().readPositiveInteger(-1);
 				if (nexusEnd == -2) {
 					throw createUnknownElementCountException(reader);
 				}

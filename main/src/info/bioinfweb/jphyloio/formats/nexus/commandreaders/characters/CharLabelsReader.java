@@ -33,17 +33,25 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
 
 
 
-public class CharLabelReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
+/**
+ * Nexus reader for the {@code CHARLABELS} command that produces {@link CharacterDefinitionEvent}s.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
+public class CharLabelsReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
 	private long index = 0;
 	
 	
-	public CharLabelReader(NexusReaderStreamDataProvider streamDataProvider) {
+	public CharLabelsReader(NexusReaderStreamDataProvider streamDataProvider) {
 		super(COMMAND_NAME_CHAR_LABELS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, streamDataProvider);
 	}
 
 	
 	@Override
 	protected boolean doReadNextEvent() throws IOException {
+		//TODO Buffer comment events
+		getStreamDataProvider().consumeWhiteSpaceAndComments();
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		if (reader.peek() == COMMAND_END) {
 			getStreamDataProvider().getDataReader().skip(1);  // Consume ';'.

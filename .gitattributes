@@ -192,7 +192,8 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/BlockTitleToID
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/LinkReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/TitleReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/all/package-info.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/CharLabelReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/CharLabelsReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/CharStateLabelsReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/DimensionsReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/FormatReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/characters/MatrixReader.java -text svneol=unset#text/plain
