@@ -105,7 +105,6 @@ public interface NexusConstants {
 	public static final String NEXUS_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/Nexus/";
 	public static final String NEXUS_PREDICATE_NAMESPACE = NEXUS_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 	
-	public static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]+");  //TODO Move to more general class (e.g. in PeekReader or somewhere else in commons).
 	public static final Pattern UNTIL_WHITESPACE_COMMENT_COMMAND_PATTERN = Pattern.compile(
 			".*(\\s|\\" + COMMENT_START + "|\\" + COMMAND_END + ")");
 	public static final Pattern UNTIL_WHITESPACE_COMMENT_COMMAND_EQUAL_PATTERN = Pattern.compile(

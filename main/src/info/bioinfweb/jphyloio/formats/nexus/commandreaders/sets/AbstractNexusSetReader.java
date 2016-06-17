@@ -146,19 +146,23 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	}
 
 	
-	private long parseInteger(long startOrEndIndex) throws IOException {  //TODO Move method to PeekReader
+	private long parseInteger(long startOrEndIndex) throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		if (reader.peekChar() == SET_START_OR_END_INDEX_SYMBOL) {
 			reader.skip(1);
 			return startOrEndIndex;
 		}
 		else {
-			String number = reader.readRegExp(INTEGER_PATTERN, true).getSequence().toString();
+			StringBuilder number = new StringBuilder();
+			while (Character.isDigit(reader.peekChar())) {
+				number.append(reader.readChar());
+			}
+			
 			if (number.length() > 0) {
-				return Integer.parseInt(number);
+				return Long.parseLong(number.toString());
 			}
 			else {
-				return -2;  // Returns -2 to distinguish it from the return value of getElementCount().
+				return -2;  // Returns -2 instead of -1 to distinguish it from the return value of getElementCount().
 			}
 		}
 	}
@@ -202,7 +206,6 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 			else {
 				nexusStart = 1;
 				nexusEnd = finalIndex;
-				//createEventsForInterval(0, finalIndex);
 				//TODO Consume remaining characters until command end (but process comments), since additional intervals would be valid but unnecessary.
 			}
 		}
@@ -212,9 +215,12 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 		}
 		else {
 			nexusStart = parseInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
-			if (nexusStart == -1) {  // Command end, comment or white space was already checked before calling this method.
+			if (nexusStart == -1) {  // '.' was found.
+				throw new JPhyloIOReaderException("The token '.' may not be the first element of a set interval definition in Nexus.", reader);
+			}
+			else if (nexusStart == -2) {  // non-integer token found
 				//TODO Read possible named reference here.
-				throw new JPhyloIOReaderException("Unexpected token '" + reader.peekChar() + "' found in Nexus CHARSET command.", reader);  //TODO The unexptected token does not necessarily consist of only one character. Either the full token should be given or the formulation should be changed.
+				throw new UnsupportedFormatFeatureException("Named set references are currently not supported.", reader);
 			}
 			else {
 				consumeWhiteSpaceAndComments(savedCommentEvents);
