@@ -47,9 +47,10 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * OTUSet = "OTU_SET.START", {SetContent,} "OTU_SET.END";
  * 
  * Matrix = "ALIGNMENT.START", {MatrixContent,} "ALIGNMENT.END";
- * MatrixContent = CharacterDefinition | TokenSetDefinition | SequencePart | CharacterSetPart | MetaInformation;
+ * MatrixContent = CharacterDefinition | TokenSetDefinition | SequencePart | CharacterSetPart | SequenceSet | MetaInformation;
  * 
  * CharacterDefinition = "CHARACTER_DEFINITION.START" {MetaInformation,} "CHARACTER_DEFINITION.END";
+ * SequenceSet = "SEQUENCE_SET.START" {SetContent,} "SEQUENCE_SET.END";
  * 
  * TokenSetDefinition = "TOKEN_SET_DEFINITION.START", {TokenSetDefinitionContent,} "TOKEN_SET_DEFINITION.END";
  * TokenSetDefinitionContent = "CHARACTER_SET_INTERVAL.SOLE" | SingleTokenDefinition | MetaInformation;
@@ -60,7 +61,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * SingleSequenceToken = "SINGLE_SEQUENCE_TOKEN.START", {MetaInformation,} "SINGLE_SEQUENCE_TOKEN.END";
  * 
  * CharacterSetPart = "CHARACTER_SET.START", {CharacterSetPartContent,} "CHARACTER_SET.END";
- * CharacterSetPartContent = "CHARACTER_SET_INTERVAL.SOLE" | MetaInformation;
+ * CharacterSetPartContent = "CHARACTER_SET_INTERVAL.SOLE" | SetContent; (* In character sets only other sets (and not characters) are using "SET_ELEMENT.SOLE". *)
  * 
  * TreeNetworkGroup = "TREE_NETWORK_GROUP.START", {TreeNetworkGroupContent,} "TREE_NETWORK_GROUP.END";
  * TreeNetworkGroupContent = Tree | Network | TreeNetworkSet;
@@ -90,7 +91,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * @see JPhyloIOEventWriter
  */
 public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
-	//TODO Grammar: Should the NodeEdgeSet also be allowed in document level? (It would currently not be necessary, since it does not exists in Nexus.)
+	//TODO Grammar: Should the SequenceSet and NodeEdgeSet also be allowed in document level? (It would currently not be necessary, since it does not exists in Nexus.)
 	
 	/*
 	 * In contrast the the structure of NeXML, this grammar does not differentiate between the actual matrix and data related
