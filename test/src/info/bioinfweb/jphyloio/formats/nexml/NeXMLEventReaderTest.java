@@ -103,11 +103,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);
 				assertCharacterSetIntervalEvent(0, 1, reader);
@@ -301,14 +301,14 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
-				assertCharacterDefinitionEvent(0, false, reader);
+				assertCharacterDefinitionEvent(null, null, 0, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertEndEvent(EventContentType.CHARACTER_DEFINITION, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);				
 				assertCharacterSetIntervalEvent(0, 1, reader);
@@ -534,11 +534,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet", null, "alignment", reader);				
 				assertCharacterSetIntervalEvent(0, 1, reader);
@@ -720,11 +720,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment1", ALIGNMENT_TYPE_DNA, "taxonlist1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -759,9 +759,9 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment2", ALIGNMENT_TYPE_DNA, "taxonlist2", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -787,9 +787,9 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment3", ALIGNMENT_TYPE_DNA, "taxonlist1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1031,10 +1031,10 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_RESTRICTION, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("0", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1058,11 +1058,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m3", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, "this is character 1", 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow1", "ContinuousCellsRow1", "t1", reader);
 				assertSingleTokenEvent("-1.545414144070023", true, reader);
@@ -1108,22 +1108,22 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "characters3", ALIGNMENT_TYPE_DNA, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
-				assertCharacterDefinitionEvent(5, true, reader);
-				assertCharacterDefinitionEvent(6, true, reader);
-				assertCharacterDefinitionEvent(7, true, reader);
-				assertCharacterDefinitionEvent(8, true, reader);
-				assertCharacterDefinitionEvent(9, true, reader);
-				assertCharacterDefinitionEvent(10, true, reader);
-				assertCharacterDefinitionEvent(11, true, reader);
-				assertCharacterDefinitionEvent(12, true, reader);
-				assertCharacterDefinitionEvent(13, true, reader);
-				assertCharacterDefinitionEvent(14, true, reader);
-				assertCharacterDefinitionEvent(15, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 5, true, reader);
+				assertCharacterDefinitionEvent(null, null, 6, true, reader);
+				assertCharacterDefinitionEvent(null, null, 7, true, reader);
+				assertCharacterDefinitionEvent(null, null, 8, true, reader);
+				assertCharacterDefinitionEvent(null, null, 9, true, reader);
+				assertCharacterDefinitionEvent(null, null, 10, true, reader);
+				assertCharacterDefinitionEvent(null, null, 11, true, reader);
+				assertCharacterDefinitionEvent(null, null, 12, true, reader);
+				assertCharacterDefinitionEvent(null, null, 13, true, reader);
+				assertCharacterDefinitionEvent(null, null, 14, true, reader);
+				assertCharacterDefinitionEvent(null, null, 15, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1163,26 +1163,26 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "rnaseqs4", ALIGNMENT_TYPE_RNA, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
-				assertCharacterDefinitionEvent(5, true, reader);
-				assertCharacterDefinitionEvent(6, true, reader);
-				assertCharacterDefinitionEvent(7, true, reader);
-				assertCharacterDefinitionEvent(8, true, reader);
-				assertCharacterDefinitionEvent(9, true, reader);
-				assertCharacterDefinitionEvent(10, true, reader);
-				assertCharacterDefinitionEvent(11, true, reader);
-				assertCharacterDefinitionEvent(12, true, reader);
-				assertCharacterDefinitionEvent(13, true, reader);
-				assertCharacterDefinitionEvent(14, true, reader);
-				assertCharacterDefinitionEvent(15, true, reader);
-				assertCharacterDefinitionEvent(16, true, reader);
-				assertCharacterDefinitionEvent(17, true, reader);
-				assertCharacterDefinitionEvent(18, true, reader);
-				assertCharacterDefinitionEvent(19, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 5, true, reader);
+				assertCharacterDefinitionEvent(null, null, 6, true, reader);
+				assertCharacterDefinitionEvent(null, null, 7, true, reader);
+				assertCharacterDefinitionEvent(null, null, 8, true, reader);
+				assertCharacterDefinitionEvent(null, null, 9, true, reader);
+				assertCharacterDefinitionEvent(null, null, 10, true, reader);
+				assertCharacterDefinitionEvent(null, null, 11, true, reader);
+				assertCharacterDefinitionEvent(null, null, 12, true, reader);
+				assertCharacterDefinitionEvent(null, null, 13, true, reader);
+				assertCharacterDefinitionEvent(null, null, 14, true, reader);
+				assertCharacterDefinitionEvent(null, null, 15, true, reader);
+				assertCharacterDefinitionEvent(null, null, 16, true, reader);
+				assertCharacterDefinitionEvent(null, null, 17, true, reader);
+				assertCharacterDefinitionEvent(null, null, 18, true, reader);
+				assertCharacterDefinitionEvent(null, null, 19, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.RNA, "RNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1222,11 +1222,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "contchars5", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
 				assertCharactersEvent(new String[]{"-1.545414144070023", "-2.3905621575431044", "-2.9610221833467265", "0.7868662069161243", "0.22968509237534918"}, reader);
@@ -1289,8 +1289,8 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1330,8 +1330,8 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1403,8 +1403,8 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1444,8 +1444,8 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, "DISCRETE", reader);
 				assertSingleTokenDefinitionEvent("1", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1511,11 +1511,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);				
 				assertCharacterSetIntervalEvent(0, 1, reader);
@@ -1554,11 +1554,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 				assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1603,11 +1603,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				fail("Exception not thrown");
 			}
@@ -1639,11 +1639,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				fail("Exception not thrown");		
 			}
@@ -1704,9 +1704,9 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			
 			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxa", reader);
 			
-			assertCharacterDefinitionEvent(0, true, reader);
-			assertCharacterDefinitionEvent(1, true, reader);
-			assertCharacterDefinitionEvent(2, true, reader);
+			assertCharacterDefinitionEvent(null, null, 0, true, reader);
+			assertCharacterDefinitionEvent(null, null, 1, true, reader);
+			assertCharacterDefinitionEvent(null, null, 2, true, reader);
 			
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertSingleTokenDefinitionEvent("A", CharacterSymbolMeaning.CHARACTER_STATE, true, reader);
@@ -1780,11 +1780,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
 				
-				assertCharacterDefinitionEvent(0, true, reader);
-				assertCharacterDefinitionEvent(1, true, reader);
-				assertCharacterDefinitionEvent(2, true, reader);
-				assertCharacterDefinitionEvent(3, true, reader);
-				assertCharacterDefinitionEvent(4, true, reader);
+				assertCharacterDefinitionEvent(null, null, 0, true, reader);
+				assertCharacterDefinitionEvent(null, null, 1, true, reader);
+				assertCharacterDefinitionEvent(null, null, 2, true, reader);
+				assertCharacterDefinitionEvent(null, null, 3, true, reader);
+				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
 				assertSplitCharactersEventLongTokens("data/NeXML/longContinuousSequence.txt", reader);

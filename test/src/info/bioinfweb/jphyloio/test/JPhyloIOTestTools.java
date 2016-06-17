@@ -160,14 +160,11 @@ public class JPhyloIOTestTools {
 	}
 	
 	
-	public static void assertCharacterDefinitionEvent(long expectedIndex, boolean testEndEvent, JPhyloIOEventReader reader) throws Exception {
-		assertTrue(reader.hasNextEvent());
-		JPhyloIOEvent event = reader.next();
-
-		assertEquals(EventContentType.CHARACTER_DEFINITION, event.getType().getContentType());
-		CharacterDefinitionEvent characterDefinitionEvent = event.asCharacterDefinitionEvent();
-		assertEquals(expectedIndex, characterDefinitionEvent.getIndex());
+	public static void assertCharacterDefinitionEvent(String expectedID, String expectedLabel, long expectedIndex, boolean testEndEvent, 
+			JPhyloIOEventReader reader) throws Exception {
 		
+		CharacterDefinitionEvent event = assertLabeledIDEvent(EventContentType.CHARACTER_DEFINITION, expectedID, expectedLabel, reader).asCharacterDefinitionEvent();
+		assertEquals(expectedIndex, event.getIndex());
 		if (testEndEvent) {
 			assertEndEvent(EventContentType.CHARACTER_DEFINITION, reader);
 		}		
