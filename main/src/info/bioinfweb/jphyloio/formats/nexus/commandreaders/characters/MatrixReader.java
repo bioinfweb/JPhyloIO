@@ -41,7 +41,7 @@ import info.bioinfweb.jphyloio.tools.IDToNameManager;
 
 
 /**
- * Parser for the {@code Matrix} command in a {@code Characters}, {@code Unaligned} or {@code Data} block.
+ * Parser for the {@code MATRIX} command in a {@code CHARACTERS}, {@code UNALIGNED} or {@code DATA} block.
  * 
  * @author Ben St&ouml;ver
  */

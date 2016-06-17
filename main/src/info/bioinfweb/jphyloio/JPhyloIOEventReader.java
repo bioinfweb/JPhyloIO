@@ -61,7 +61,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * SingleSequenceToken = "SINGLE_SEQUENCE_TOKEN.START", {MetaInformation,} "SINGLE_SEQUENCE_TOKEN.END";
  * 
  * CharacterSetPart = "CHARACTER_SET.START", {CharacterSetPartContent,} "CHARACTER_SET.END";
- * CharacterSetPartContent = "CHARACTER_SET_INTERVAL.SOLE" | SetContent; (* In character sets only other sets (and not characters) are using "SET_ELEMENT.SOLE". *)
+ * CharacterSetPartContent = "CHARACTER_SET_INTERVAL.SOLE" | SetContent;  (* In character sets only other sets (and not characters) are using "SET_ELEMENT.SOLE". *)
  * 
  * TreeNetworkGroup = "TREE_NETWORK_GROUP.START", {TreeNetworkGroupContent,} "TREE_NETWORK_GROUP.END";
  * TreeNetworkGroupContent = Tree | Network | TreeNetworkSet;
@@ -74,7 +74,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * TreeNetworkSet = "TREE_NETWORK_SET.START" {SetContent,} "TREE_NETWORK_SET.END";
  * NodeEdgeSet = "NODE_EDGE_SET.START" {SetContent,} "NODE_EDGE_SET.END";
  * 
- * SetContent = MetaInformation | "SET_ELEMENT.SOLE";
+ * SetContent = "SET_ELEMENT.SOLE" | MetaInformation;  (* Single elements and other sets of the same type can be linked using "SET_ELEMENT.SOLE". *)
  * 
  * MetaInformation = ResourceMeta | LiteralMeta;
  * ResourceMeta = "RESOURCE_META.START", {MetaInformation,} "RESOURCE_META.END";

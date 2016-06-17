@@ -57,6 +57,8 @@ public interface NexusConstants {
 	public static final String COMMAND_NAME_TAX_LABELS = "TAXLABELS";
 	public static final String COMMAND_NAME_DIMENSIONS = "DIMENSIONS";
 	public static final String COMMAND_NAME_FORMAT = "FORMAT";
+	public static final String COMMAND_NAME_CHAR_LABELS = "CHARLABELS";
+	public static final String COMMAND_NAME_CHAR_STATE_LABELS = "CHARSTATELABELS";
 	public static final String COMMAND_NAME_MATRIX = "MATRIX";
 	public static final String COMMAND_NAME_TRANSLATE = "TRANSLATE";
 	public static final String COMMAND_NAME_TREE = "TREE";

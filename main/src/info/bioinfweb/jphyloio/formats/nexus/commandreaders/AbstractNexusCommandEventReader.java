@@ -49,7 +49,7 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	 * @param validBlocks an array with the names of the Nexus blocks the command parsed by the implementing
 	 *        class may be contained in
 	 */
-	public AbstractNexusCommandEventReader(String commandName, String[] validBlocks, NexusReaderStreamDataProvider nexusDocument) {
+	public AbstractNexusCommandEventReader(String commandName, String[] validBlocks, NexusReaderStreamDataProvider streamDataProvider) {
 		super();
 		
 		this.commandName = commandName.toUpperCase();
@@ -58,7 +58,7 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 			list.add(validBlocks[i].toUpperCase());
 		}
 		this.validBlocks = Collections.unmodifiableCollection(list);
-		this.streamDataProvider = nexusDocument;
+		this.streamDataProvider = streamDataProvider;
 	}
 
 
