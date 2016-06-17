@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.exception.UnsupportedFormatFeatureException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
@@ -39,6 +40,8 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.MatrixReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets.AbstractNexusSetReader;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
@@ -76,6 +79,19 @@ import java.io.Reader;
  * If a block without a {@code LINK} command, that would usually link another block is encountered, the first block of the according 
  * type found in the file will be assumed as linked. If no according block was encountered before the {@code LINK}, nothing will be linked
  * ({@link LinkedLabeledIDEvent#getLinkedID()} of the according event will return {@code null}).
+ * 
+ * <h3><a name="unsupportedFeatures"></a>Unsupported features</h3> 
+ * <p>
+ * Currently this implementation (if used with the default command readers) does not support the following Nexus features and will throw
+ * an {@link UnsupportedFormatFeatureException} if one of them is encountered:
+ * <ul>
+ *   <li>Character matrices using the {@code FORMAT} subcommand {@code TRANSPOSE}, indicating that columns and rows are shifted can 
+ *       currently not be read by {@link MatrixReader}.</li>
+ *   <li>Set definitions in a {@code SETS} block using the {@code REMAINING} keyword to indicate that they contain all elements that
+ *       were not contained in a previous set are currently not supported by {@link AbstractNexusSetReader} and its descendants..</li>
+ * </ul>
+ * Note that this list only contains Nexus features that trigger an exception, if encountered. There may be additional featured (e.g.
+ * the {@code NOTES} block that are currently not supported, but are just ignored by the reader without throwing an exception.
  * 
  * <h3><a name="extending"></a>Extending this implementation</h3> 
  * <p>

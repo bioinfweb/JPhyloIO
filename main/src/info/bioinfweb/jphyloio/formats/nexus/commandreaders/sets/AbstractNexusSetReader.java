@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.exception.UnsupportedFormatFeatureException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
@@ -206,7 +207,8 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 			}
 		}
 		else if (reader.isNext(SET_KEY_WORD_REMAINING)) {
-			throw new JPhyloIOReaderException("The encountered keyword " + SET_KEY_WORD_REMAINING + " is currently not supported in JPhyloIO.", reader);
+			throw new UnsupportedFormatFeatureException("The encountered keyword " + SET_KEY_WORD_REMAINING + 
+					" is currently not supported in JPhyloIO.", reader);
 		}
 		else {
 			nexusStart = parseInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
@@ -233,7 +235,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 			}
 		}
 		
-		if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {
+		if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {  //TODO Throw exception, if this construct is used together with a reference to another set. (A special UnsupportedFeatureException could be implemented for such cases.)
 			reader.skip(1);  // Consume '\'
 			consumeWhiteSpaceAndComments(savedCommentEvents);
 			long interval = parseInteger(-1);

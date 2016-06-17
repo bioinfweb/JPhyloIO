@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.exception.UnsupportedFormatFeatureException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
@@ -101,7 +102,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 	protected boolean doReadNextEvent() throws IOException {
 		ParameterMap map = getStreamDataProvider().getSharedInformationMap();
 		if (map.getBoolean(FormatReader.INFO_KEY_TRANSPOSE, false)) {
-			throw new JPhyloIOReaderException("Transposed Nexus matrices are currently not supported by JPhyloIO.", 
+			throw new UnsupportedFormatFeatureException("Transposed Nexus matrices are currently not supported by JPhyloIO.", 
 					getStreamDataProvider().getDataReader());
 		}
 		else {
