@@ -19,9 +19,14 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets;
 
 
+import java.io.IOException;
+import java.util.Map;
+
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
@@ -41,6 +46,14 @@ public class CharSetReader extends AbstractNexusSetReader implements NexusConsta
 		super(EventContentType.CHARACTER_SET, COMMAND_NAME_CHAR_SET, new String[]{BLOCK_NAME_SETS}, streamDataProvider);
 	}
 	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void onCreateStartEvent(LinkedLabeledIDEvent event) {
+		((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).put(
+				event.getLabel(), event.getID());
+	}
+
 
 	@Override
 	protected long getElementCount() {
@@ -66,8 +79,23 @@ public class CharSetReader extends AbstractNexusSetReader implements NexusConsta
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	protected void createEventsForName(String name) {
-		//TODO Implement, when questions in superclass are solved.
+	protected void createEventsForName(String name) throws IOException {
+		//TODO Separate methods will be needed, for translating to an index and to an set ID. Possibly these methods should just return the according translation and not create any events?
+		
+		Long index = ((Map<String, Long>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_CHARACTER_NAME_TO_INDEX_MAP)).get(name);
+		if (index != null) {
+			
+		}
+		else {
+			String setID = ((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).get(name);
+			if (setID != null) {
+				
+			}
+			else {
+				throw new JPhyloIOReaderException("", getStreamDataProvider().getDataReader());
+			}
+		}
 	}
 }

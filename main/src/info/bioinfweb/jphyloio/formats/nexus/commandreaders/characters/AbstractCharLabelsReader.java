@@ -31,6 +31,12 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
 
 
 
+/**
+ * Implements shared functionality for Nexus command readers that process character (alignment column) definitions. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public abstract class AbstractCharLabelsReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
 	protected AbstractCharLabelsReader(String commandName, NexusReaderStreamDataProvider streamDataProvider) {
 		super(commandName, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, streamDataProvider);
@@ -43,7 +49,6 @@ public abstract class AbstractCharLabelsReader extends AbstractNexusCommandEvent
 		getStreamDataProvider().getCurrentEventCollection().add(new CharacterDefinitionEvent(id, characterName, characterIndex));
 		getStreamDataProvider().getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.CHARACTER_DEFINITION));
 		
-		((Map<Long, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_CURRENT_CHARACTER_INDEX_TO_ID_MAP)).put(characterIndex, id);
-		((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_CURRENT_CHARACTER_NAME_TO_ID_MAP)).put(characterName, id);
+		((Map<String, Long>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_CHARACTER_NAME_TO_INDEX_MAP)).put(characterName, characterIndex);
 	}
 }

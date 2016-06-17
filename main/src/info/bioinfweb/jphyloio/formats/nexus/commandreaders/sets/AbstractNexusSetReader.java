@@ -63,7 +63,9 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	}
 	
 	
-	protected abstract String getLinkedID();
+	protected abstract void onCreateStartEvent(LinkedLabeledIDEvent event) throws IOException;
+	
+	protected abstract String getLinkedID() throws IOException;
 	
 	/**
 	 * Returns the number of elements which can potentially be contained in this set (e.g. the number of declared taxa or the number
@@ -72,11 +74,11 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	 * @return the number of elements or -1 if the number is currently undefined (e.g. if no block is linked to the current 
 	 *         {@code SETS} block
 	 */
-	protected abstract long getElementCount();
+	protected abstract long getElementCount() throws IOException;
 	
-	protected abstract void createEventsForInterval(long start, long end);
+	protected abstract void createEventsForInterval(long start, long end) throws IOException;
 	
-	protected abstract void createEventsForName(String name);  //TODO Can the mapping to IDs already be done in this class, so that IDs can be passed here?
+	protected abstract void createEventsForName(String name) throws IOException;  //TODO Can the mapping to IDs already be done in this class, so that IDs can be passed here?
 	
 	
 	private boolean checkFormatName(PeekReader reader, String name) {
@@ -84,10 +86,11 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	}
 	
 
-	private void addStartEvent(String name) {
-		getStreamDataProvider().getCurrentEventCollection().add(new LinkedLabeledIDEvent(setType, 
-				DEFAULT_GENERAL_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), name, 
-				getLinkedID()));
+	private void addStartEvent(String name) throws IOException {
+		LinkedLabeledIDEvent event = new LinkedLabeledIDEvent(setType, DEFAULT_GENERAL_ID_PREFIX + 
+				getStreamDataProvider().getIDManager().createNewID(), name,	getLinkedID());
+		getStreamDataProvider().getCurrentEventCollection().add(event);
+		onCreateStartEvent(event);
 	}
 	
 	
