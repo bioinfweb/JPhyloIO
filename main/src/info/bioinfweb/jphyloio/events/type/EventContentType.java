@@ -307,17 +307,6 @@ public enum EventContentType {
 	SEQUENCE_SET,
 	
 	/** 
-	 * Indicates the start or end of a sequence of {@link #SET_ELEMENT} events that define a set of node and edges (including root edges).
-	 * <p>
-	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
-	 * instances of {@link PartEndEvent}. The start events link a tree or network by their ID using 
-	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
-	 * <p>
-	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
-	 */
-	NODE_EDGE_SET,
-	
-	/** 
 	 * Indicates the start or end of a sequence of {@link #SET_ELEMENT} events that define a set of trees 
 	 * and networks. 
 	 * <p>
@@ -327,5 +316,16 @@ public enum EventContentType {
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
 	 */
-	TREE_NETWORK_SET;
+	TREE_NETWORK_SET,
+
+	/** 
+	 * Indicates the start or end of a sequence of {@link #SET_ELEMENT} events that define a set of node and edges (including root edges).
+	 * <p>
+	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * instances of {@link PartEndEvent}. The start events link a tree or network by their ID using 
+	 * {@link LinkedLabeledIDEvent#getLinkedID()}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	NODE_EDGE_SET;
 }

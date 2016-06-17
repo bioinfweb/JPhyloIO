@@ -39,14 +39,17 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * <a href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">EBNF</a>:
  * <pre>
  * Document = "DOCUMENT.START", {DocumentContent,} "DOCUMENT.END";
- * DocumentContent = OTUSet | Matrix | TreeNetworkGroup | CharacterSetPart | MetaInformation;
+ * DocumentContent = OTUList | Matrix | TreeNetworkGroup | OTUSet | CharacterSetPart | TreeNetworkSet | MetaInformation;
  * 
- * OTUSet = "OTUS.START", {OTUContent,} "OTUS.END";
- * OTUContent = OTU | MetaInformation;
+ * OTUList = "OTUS.START", {OTUListContent,} {OTUSet,} "OTUS.END";
+ * OTUListContent = OTU | MetaInformation;
  * OTU = "OTU.START", {MetaInformation,} "OTU.END";
+ * OTUSet = "OTU_SET.START", {SetContent,} "OTU_SET.END";
  * 
  * Matrix = "ALIGNMENT.START", {MatrixContent,} "ALIGNMENT.END";
- * MatrixContent = TokenSetDefinition | SequencePart | CharacterSetPart | MetaInformation;
+ * MatrixContent = CharacterDefinition | TokenSetDefinition | SequencePart | CharacterSetPart | MetaInformation;
+ * 
+ * CharacterDefinition = "CHARACTER_DEFINITION.START" {MetaInformation,} "CHARACTER_DEFINITION.END";
  * 
  * TokenSetDefinition = "TOKEN_SET_DEFINITION.START", {TokenSetDefinitionContent,} "TOKEN_SET_DEFINITION.END";
  * TokenSetDefinitionContent = "CHARACTER_SET_INTERVAL.SOLE" | SingleTokenDefinition | MetaInformation;
@@ -60,12 +63,17 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * CharacterSetPartContent = "CHARACTER_SET_INTERVAL.SOLE" | MetaInformation;
  * 
  * TreeNetworkGroup = "TREE_NETWORK_GROUP.START", {TreeNetworkGroupContent,} "TREE_NETWORK_GROUP.END";
- * TreeNetworkGroupContent = Tree | Network;
- * Tree = "TREE.START", {TreeOrNetworkContent,} "TREE.END";
- * Network = "NETWORK.START", {TreeOrNetworkContent,} "NETWORK.END";
+ * TreeNetworkGroupContent = Tree | Network | TreeNetworkSet;
+ * Tree = "TREE.START", {TreeOrNetworkContent,} {NodeEdgeSet,} "TREE.END";
+ * Network = "NETWORK.START", {TreeOrNetworkContent,} {NodeEdgeSet,} "NETWORK.END";
  * TreeOrNetworkContent = Node | Edge | MetaInformation;
  * Node = "NODE.START", {MetaInformation,} "NODE.END";
  * Edge = "EDGE.START", {MetaInformation,} "EDGE.END";
+ * 
+ * TreeNetworkSet = "TREE_NETWORK_SET.START" {SetContent,} "TREE_NETWORK_SET.END";
+ * NodeEdgeSet = "NODE_EDGE_SET.START" {SetContent,} "NODE_EDGE_SET.END";
+ * 
+ * SetContent = MetaInformation | "SET_ELEMENT.SOLE";
  * 
  * MetaInformation = ResourceMeta | LiteralMeta;
  * ResourceMeta = "RESOURCE_META.START", {MetaInformation,} "RESOURCE_META.END";
@@ -82,6 +90,8 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * @see JPhyloIOEventWriter
  */
 public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
+	//TODO Grammar: Should the NodeEdgeSet also be allowed in document level? (It would currently not be necessary, since it does not exists in Nexus.)
+	
 	/*
 	 * In contrast the the structure of NeXML, this grammar does not differentiate between the actual matrix and data related
 	 * to it (e.g. token and character sets). That is not done, because parsing interleaved MEGA would create the need to

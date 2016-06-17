@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets;
 
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -198,67 +199,72 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 		long finalIndex = getElementCount();
 				//TODO The current implementation works only for character sets!
 		
-		if (reader.isNext(SET_KEY_WORD_ALL)) {
-			reader.skip(SET_KEY_WORD_ALL.length());
-			if (finalIndex < 0) {
-				throw createUnknownElementCountException(reader);
-			}
-			else {
-				nexusStart = 1;
-				nexusEnd = finalIndex;
-				//TODO Consume remaining characters until command end (but process comments), since additional intervals would be valid but unnecessary.
-			}
-		}
-		else if (reader.isNext(SET_KEY_WORD_REMAINING)) {
-			throw new UnsupportedFormatFeatureException("The encountered keyword " + SET_KEY_WORD_REMAINING + 
-					" is currently not supported in JPhyloIO.", reader);
-		}
-		else {
-			nexusStart = parseInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
-			if (nexusStart == -1) {  // '.' was found.
-				throw new JPhyloIOReaderException("The token '.' may not be the first element of a set interval definition in Nexus.", reader);
-			}
-			else if (nexusStart == -2) {  // non-integer token found
-				//TODO Read possible named reference here.
-				throw new UnsupportedFormatFeatureException("Named set references are currently not supported.", reader);
-			}
-			else {
-				consumeWhiteSpaceAndComments(savedCommentEvents);
-				nexusEnd = nexusStart;  // Definitions like "1-2 4 6-7" are allowed.
-				if (reader.peekChar() == SET_TO_SYMBOL) {
-					reader.skip(1);  // Consume '-'
-					consumeWhiteSpaceAndComments(savedCommentEvents);
-					nexusEnd = parseInteger(finalIndex);
-					if (nexusEnd == -2) {
-						throw createUnknownElementCountException(reader);
-					}
-					else if (nexusEnd < 0) {
-						throw new JPhyloIOReaderException("Unexpected end of file in Nexus character set definition.", reader);  //TODO This is not always EOF? (Illegal characters would also be possible?)
-					}
-					
-					consumeWhiteSpaceAndComments(savedCommentEvents);
+		try {
+			if (reader.isNext(SET_KEY_WORD_ALL)) {
+				reader.skip(SET_KEY_WORD_ALL.length());
+				if (finalIndex < 0) {
+					throw createUnknownElementCountException(reader);
+				}
+				else {
+					nexusStart = 1;
+					nexusEnd = finalIndex;
+					//TODO Consume remaining characters until command end (but process comments), since additional intervals would be valid but unnecessary.
 				}
 			}
-		}
-		
-		if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {  //TODO Throw exception, if this construct is used together with a reference to another set. (A special UnsupportedFeatureException could be implemented for such cases.)
-			reader.skip(1);  // Consume '\'
-			consumeWhiteSpaceAndComments(savedCommentEvents);
-			long interval = parseInteger(-1);
-			if (nexusEnd == -2) {
-				throw createUnknownElementCountException(reader);
+			else if (reader.isNext(SET_KEY_WORD_REMAINING)) {
+				throw new UnsupportedFormatFeatureException("The encountered keyword " + SET_KEY_WORD_REMAINING + 
+						" is currently not supported in JPhyloIO.", reader);
 			}
-			else if (interval < 0) {
-				throw new JPhyloIOReaderException("Unexpected token found in Nexus set definition.", reader);  //TODO More concrete message?
+			else {
+				nexusStart = parseInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
+				if (nexusStart == -1) {  // '.' was found.
+					throw new JPhyloIOReaderException("The token '.' may not be the first element of a set interval definition in Nexus.", reader);
+				}
+				else if (nexusStart == -2) {  // non-integer token found
+					//TODO Read possible named reference here.
+					throw new UnsupportedFormatFeatureException("Named set references are currently not supported.", reader);
+				}
+				else {
+					consumeWhiteSpaceAndComments(savedCommentEvents);
+					nexusEnd = nexusStart;  // Definitions like "1-2 4 6-7" are allowed.
+					if (reader.peekChar() == SET_TO_SYMBOL) {
+						reader.skip(1);  // Consume '-'
+						consumeWhiteSpaceAndComments(savedCommentEvents);
+						nexusEnd = parseInteger(finalIndex);
+						if (nexusEnd == -2) {
+							throw createUnknownElementCountException(reader);
+						}
+						else if (nexusEnd < 0) {
+							throw new JPhyloIOReaderException("Unexpected end of file in Nexus character set definition.", reader);  //TODO This is not always EOF? (Illegal characters would also be possible?)
+						}
+						
+						consumeWhiteSpaceAndComments(savedCommentEvents);
+					}
+				}
 			}
-			for (long i = nexusStart - 1; i < nexusEnd; i += interval) {
-				createEventsForInterval(i, i + 1);
+			
+			if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {  //TODO Throw exception, if this construct is used together with a reference to another set. (A special UnsupportedFeatureException could be implemented for such cases.)
+				reader.skip(1);  // Consume '\'
+				consumeWhiteSpaceAndComments(savedCommentEvents);
+				long interval = parseInteger(-1);
+				if (nexusEnd == -2) {
+					throw createUnknownElementCountException(reader);
+				}
+				else if (interval < 0) {
+					throw new JPhyloIOReaderException("Unexpected token found in Nexus set definition.", reader);  //TODO More concrete message?
+				}
+				for (long i = nexusStart - 1; i < nexusEnd; i += interval) {
+					createEventsForInterval(i, i + 1);
+				}
 			}
+			else {
+				createEventsForInterval(nexusStart - 1, nexusEnd);
+			}
+			getStreamDataProvider().getCurrentEventCollection().addAll(savedCommentEvents);
 		}
-		else {
-			createEventsForInterval(nexusStart - 1, nexusEnd);
+		catch (EOFException e) {  // Would the thrown by peekChar().
+			throw new JPhyloIOReaderException("Unexpected end of file inside a set definition.", reader, e);
 		}
-		getStreamDataProvider().getCurrentEventCollection().addAll(savedCommentEvents);
 	}
 	
 	
