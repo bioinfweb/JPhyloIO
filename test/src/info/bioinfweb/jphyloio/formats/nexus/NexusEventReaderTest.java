@@ -1502,7 +1502,11 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
 			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
-	
+			
+			assertCharacterDefinitionEvent(null, "col0", 0, true, reader);
+			assertCharacterDefinitionEvent(null, "col1", 1, true, reader);
+			assertCharacterDefinitionEvent(null, "col2", 2, true, reader);
+			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
 			assertCharactersEvent("AGGT-AT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
@@ -1525,7 +1529,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEndEvent(EventContentType.CHARACTER_SET, reader);
 			
 			// SETS 2:
-			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID2, reader);
+			String referencedSetID = assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID2, reader);
 			assertCharacterSetIntervalEvent(0, 3, reader);
 			assertEndEvent(EventContentType.CHARACTER_SET, reader);
 			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set02", matrixID2, reader);
@@ -1544,6 +1548,10 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertCharacterSetIntervalEvent(3, 4, reader);
 			assertCharacterSetIntervalEvent(5, 6, reader);
 			assertEndEvent(EventContentType.CHARACTER_SET, reader);
+//			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set06", matrixID2, reader);
+//			assertSetElementEvent(referencedSetID, EventContentType.CHARACTER_SET, reader);
+//			assertCharacterSetIntervalEvent(4, 5, reader);
+//			assertEndEvent(EventContentType.CHARACTER_SET, reader);
 			
 			// SETS 3:
 			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set01", matrixID1, reader);

@@ -21,6 +21,7 @@ BEGIN Characters;
   Title matrix2;
   Dimensions NTax=3 NChar=7;
   Format DataType = DNA Missing=? Gap= -;
+  CharLabels col0 col1 col2;
   Matrix A AGGT-AT
          B AC-GCTC 
          C AG-TC-T;
