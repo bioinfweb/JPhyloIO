@@ -19,21 +19,11 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets;
 
 
-import java.io.IOException;
-import java.util.Collection;
-
-import info.bioinfweb.commons.io.PeekReader;
-import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 
 

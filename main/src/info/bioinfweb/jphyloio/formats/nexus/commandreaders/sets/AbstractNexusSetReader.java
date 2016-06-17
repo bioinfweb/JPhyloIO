@@ -169,6 +169,17 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	}
 	
 	
+	private void consumeWhiteSpaceAndComments(Collection<JPhyloIOEvent> buffer) throws IOException {
+		getStreamDataProvider().setCurrentEventCollection(buffer);  // Whitespace and comments need to be consumed here to be able to test whether SET_REGULAR_INTERVAL_SYMBOL is next. Events cannot be fired directly, because if no SET_REGULAR_INTERVAL_SYMBOL follows, the comments should be fired after the interval event below.
+		try {
+			getStreamDataProvider().consumeWhiteSpaceAndComments();
+		}
+		finally {
+			getStreamDataProvider().resetCurrentEventCollection();
+		}
+	}
+	
+	
 	private void readStandardFormat() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		
@@ -176,15 +187,21 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 		//     Probably a boolean map should be used for this, which would also allow unordered interval definitions.
 		//TODO Support direct listing of names (some set definitions can also contain Nexus names)
 		
+		long nexusStart;
+		long nexusEnd;
+		Collection<JPhyloIOEvent> savedCommentEvents = new ArrayList<JPhyloIOEvent>();
 		long finalIndex = getElementCount();
 				//TODO The current implementation works only for character sets!
+		
 		if (reader.isNext(SET_KEY_WORD_ALL)) {
 			reader.skip(SET_KEY_WORD_ALL.length());
 			if (finalIndex < 0) {
 				throw createUnknownElementCountException(reader);
 			}
 			else {
-				createEventsForInterval(0, finalIndex);
+				nexusStart = 1;
+				nexusEnd = finalIndex;
+				//createEventsForInterval(0, finalIndex);
 				//TODO Consume remaining characters until command end (but process comments), since additional intervals would be valid but unnecessary.
 			}
 		}
@@ -192,18 +209,17 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 			throw new JPhyloIOReaderException("The encountered keyword " + SET_KEY_WORD_REMAINING + " is currently not supported in JPhyloIO.", reader);
 		}
 		else {
-			long nexusStart = parseInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
+			nexusStart = parseInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
 			if (nexusStart == -1) {  // Command end, comment or white space was already checked before calling this method.
 				//TODO Read possible named reference here.
 				throw new JPhyloIOReaderException("Unexpected token '" + reader.peekChar() + "' found in Nexus CHARSET command.", reader);  //TODO The unexptected token does not necessarily consist of only one character. Either the full token should be given or the formulation should be changed.
 			}
 			else {
-				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				long nexusEnd = nexusStart;  // Definitions like "1-2 4 6-7" are allowed.
-				Collection<JPhyloIOEvent> savedCommentEvents = new ArrayList<JPhyloIOEvent>();
+				consumeWhiteSpaceAndComments(savedCommentEvents);
+				nexusEnd = nexusStart;  // Definitions like "1-2 4 6-7" are allowed.
 				if (reader.peekChar() == SET_TO_SYMBOL) {
 					reader.skip(1);  // Consume '-'
-					getStreamDataProvider().consumeWhiteSpaceAndComments();
+					consumeWhiteSpaceAndComments(savedCommentEvents);
 					nexusEnd = parseInteger(finalIndex);
 					if (nexusEnd == -2) {
 						throw createUnknownElementCountException(reader);
@@ -212,34 +228,29 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 						throw new JPhyloIOReaderException("Unexpected end of file in Nexus character set definition.", reader);  //TODO This is not always EOF? (Illegal characters would also be possible?)
 					}
 					
-					getStreamDataProvider().setCurrentEventCollection(savedCommentEvents);  // Whitespace and comments need to be consumed here to be able to test whether SET_REGULAR_INTERVAL_SYMBOL is next. Events cannot be fired directly, because if no SET_REGULAR_INTERVAL_SYMBOL follows, the comments should be fired after the interval event below. 
-					try {
-						getStreamDataProvider().consumeWhiteSpaceAndComments();
-					}
-					finally {
-						getStreamDataProvider().resetCurrentEventCollection();
-					}
+					consumeWhiteSpaceAndComments(savedCommentEvents);
 				}
-				
-				if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {
-					reader.skip(1);  // Consume '\'
-					long interval = parseInteger(-1);
-					if (nexusEnd == -2) {
-						throw createUnknownElementCountException(reader);
-					}
-					else if (interval < 0) {
-						throw new JPhyloIOReaderException("Unexpected token found in Nexus set definition.", reader);  //TODO More concrete message?
-					}
-					for (long i = nexusStart - 1; i < nexusEnd; i += interval) {
-						createEventsForInterval(i, i + 1);
-					}
-				}
-				else {
-					createEventsForInterval(nexusStart - 1, nexusEnd);
-				}
-				getStreamDataProvider().getCurrentEventCollection().addAll(savedCommentEvents);
 			}
 		}
+		
+		if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {
+			reader.skip(1);  // Consume '\'
+			consumeWhiteSpaceAndComments(savedCommentEvents);
+			long interval = parseInteger(-1);
+			if (nexusEnd == -2) {
+				throw createUnknownElementCountException(reader);
+			}
+			else if (interval < 0) {
+				throw new JPhyloIOReaderException("Unexpected token found in Nexus set definition.", reader);  //TODO More concrete message?
+			}
+			for (long i = nexusStart - 1; i < nexusEnd; i += interval) {
+				createEventsForInterval(i, i + 1);
+			}
+		}
+		else {
+			createEventsForInterval(nexusStart - 1, nexusEnd);
+		}
+		getStreamDataProvider().getCurrentEventCollection().addAll(savedCommentEvents);
 	}
 	
 	
