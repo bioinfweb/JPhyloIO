@@ -36,6 +36,10 @@ BEGIN Sets;
   TITLE sets2;
   LINK CHARACTERS=matrix2;
   CharSet set01 = 1-3;
+  CharSet set02 = 3-.;
+  CharSet set03 = ALL;
+  CharSet set04 = ALL\3;
+  CharSet set05 = 2 - 6 \2;
 END;
 
 BEGIN Sets;

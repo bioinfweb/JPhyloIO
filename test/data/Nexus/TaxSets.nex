@@ -24,9 +24,8 @@ BEGIN SETS;
   [See "List" on page 619 of the Nexus paper for details.]
 END;
 
-
 BEGIN SETS;
   TITLE sets2;
   [Should be linked to the first TAXA block by default.]
   TAXSET otherSet = 3 - 5; 
-END; 
+END;
