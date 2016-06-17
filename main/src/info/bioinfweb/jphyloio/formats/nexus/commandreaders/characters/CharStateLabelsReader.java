@@ -24,12 +24,9 @@ import java.io.IOException;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 
 
@@ -42,9 +39,9 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class CharStateLabelsReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
+public class CharStateLabelsReader extends AbstractCharLabelsReader implements NexusConstants, ReadWriteConstants {
 	public CharStateLabelsReader(NexusReaderStreamDataProvider streamDataProvider) {
-		super(COMMAND_NAME_CHAR_STATE_LABELS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, streamDataProvider);
+		super(COMMAND_NAME_CHAR_STATE_LABELS, streamDataProvider);
 	}
 	
 	
@@ -98,10 +95,7 @@ public class CharStateLabelsReader extends AbstractNexusCommandEventReader imple
 					if (eventCreated) {  // Character label not omitted.
 						String characterName = getStreamDataProvider().readNexusWord();
 						if (!characterName.equals("")) { 
-							getStreamDataProvider().getCurrentEventCollection().add(new CharacterDefinitionEvent(DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + 
-									getStreamDataProvider().getIDManager().createNewID(), characterName, index - 1));  // Nexus indices start with 1.
-							getStreamDataProvider().getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.CHARACTER_DEFINITION));
-							
+							addCharacterDefinition(characterName, index - 1);  // Nexus indices start with 1.
 							consumeStateNames();
 						}
 						else {

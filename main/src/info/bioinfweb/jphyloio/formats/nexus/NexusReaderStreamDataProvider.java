@@ -54,6 +54,8 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	public static final String INFO_KEY_BLOCK_ID_MAP = "info.bioinfweb.jphyloio.nexus.taxa.blockTitleToIDMap";
 	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
 	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaIDMap";
+	public static final String INFO_CURRENT_CHARACTER_NAME_TO_ID_MAP = "info.bioinfweb.jphyloio.nexus.characters.characterNameToIDMap";
+	public static final String INFO_CURRENT_CHARACTER_INDEX_TO_ID_MAP = "info.bioinfweb.jphyloio.nexus.characters.characterIndexToIDMap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
 	
 	/** Used to Determine the lengths of character set intervals that shall reach until the end of a matrix. */
@@ -190,7 +192,7 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	 * @return the map object contained in the shared information map
 	 */
 	@SuppressWarnings("rawtypes")
-	private Map<?, ?> getMap(String key) {
+	public Map<?, ?> getMap(String key) {
 		Map result = (Map)getSharedInformationMap().get(key);  // Casting null is possible.
 		if (result == null) {
 			result = new HashMap();

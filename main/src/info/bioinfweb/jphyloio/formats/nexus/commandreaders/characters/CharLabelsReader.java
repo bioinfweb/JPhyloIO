@@ -24,12 +24,9 @@ import java.io.IOException;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
 
 
 
@@ -39,12 +36,12 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommand
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class CharLabelsReader extends AbstractNexusCommandEventReader implements NexusConstants, ReadWriteConstants {
+public class CharLabelsReader extends AbstractCharLabelsReader implements NexusConstants, ReadWriteConstants {
 	private long index = 0;
 	
 	
 	public CharLabelsReader(NexusReaderStreamDataProvider streamDataProvider) {
-		super(COMMAND_NAME_CHAR_LABELS, new String[]{BLOCK_NAME_CHARACTERS, BLOCK_NAME_UNALIGNED, BLOCK_NAME_DATA}, streamDataProvider);
+		super(COMMAND_NAME_CHAR_LABELS, streamDataProvider);
 	}
 
 	
@@ -64,10 +61,8 @@ public class CharLabelsReader extends AbstractNexusCommandEventReader implements
 		}
 		else {
 			String characterName = getStreamDataProvider().readNexusWord();
-			if (!characterName.equals("")) { 
-				getStreamDataProvider().getCurrentEventCollection().add(new CharacterDefinitionEvent(DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + 
-						getStreamDataProvider().getIDManager().createNewID(), characterName, index));
-				getStreamDataProvider().getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.CHARACTER_DEFINITION));
+			if (!characterName.equals("")) {
+				addCharacterDefinition(characterName, index);
 				index++;  // Labels are always listed consecutively in Nexus.
 			}
 			getStreamDataProvider().consumeWhiteSpaceAndComments();
