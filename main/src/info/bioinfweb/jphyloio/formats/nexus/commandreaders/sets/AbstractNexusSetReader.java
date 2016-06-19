@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
+import info.bioinfweb.jphyloio.events.SetElementEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.exception.UnsupportedFormatFeatureException;
@@ -63,8 +64,21 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	}
 	
 	
-	protected abstract void onCreateStartEvent(LinkedLabeledIDEvent event) throws IOException;
+	/**
+	 * Called by this implementation after the start event for this set was created.
+	 * 
+	 * @param event the start event of this set that has just been created
+	 * @throws IOException
+	 */
+	protected abstract void onCreateStartEvent(LinkedLabeledIDEvent event) throws IOException;  //TODO Should this allow throwing an exception
 	
+	/**
+	 * Returns the ID if the object that is linked to this set (e.g. an alignment start event related to a character set
+	 * or an OTU list related to an OTU set)
+	 * 
+	 * @return the ID of the linked start element
+	 * @throws IOException
+	 */
 	protected abstract String getLinkedID() throws IOException;
 	
 	/**
@@ -76,9 +90,30 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	 */
 	protected abstract long getElementCount() throws IOException;
 	
+	/**
+	 * Creates the event(s) representing the specified interval in the current set type
+	 * 
+	 * @param start the fist index of the interval
+	 * @param end the first index after the end of the interval
+	 * @throws IOException if an I/O error occurs while writing the event(s)
+	 */
 	protected abstract void createEventsForInterval(long start, long end) throws IOException;
 	
-	protected abstract void createEventsForName(String name) throws IOException;  //TODO Can the mapping to IDs already be done in this class, so that IDs can be passed here?
+	/**
+	 * Converts the Nexus name of a set element to its index.
+	 * 
+	 * @param name the Nexus name of the element
+	 * @return the index of the specified element or -1 if an element with the specified name could not be found
+	 */
+	protected abstract long elementIndexByName(String name);
+	
+	/**
+	 * Converts the Nexus name of a set to its <i>JPhyloIO</i> ID.
+	 * 
+	 * @param name the Nexus name of referenced set
+	 * @return the <i>JPhyloIO</i> ID to the specified name or {@code null} if no set with the specified name could be found
+	 */
+	protected abstract String setIDByName(String name);
 	
 	
 	private boolean checkFormatName(PeekReader reader, String name) {
@@ -167,18 +202,31 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	}
 	
 	
+	private long readIndex(String word, long finalIndex) {
+		if (word.equals(Character.toString(SET_END_INDEX_SYMBOL))) {
+			return finalIndex;
+		}
+		else {
+			long result = elementIndexByName(word);
+			if (result == -1) {
+				try {
+					result = Long.parseLong(word) - 1;  // Nexus indices start with 1.
+				}
+				catch (NumberFormatException e) {
+					return -1;
+				}
+			}
+			return result;
+		}
+	}
+	
+	
 	private void readStandardFormat() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
-		
-		//TODO Add support for "ALL", "x\3", "5-." and "REMAINING" (at least exception in the latter case).
-		//     Probably a boolean map should be used for this, which would also allow unordered interval definitions.
-		//TODO Support direct listing of names (some set definitions can also contain Nexus names)
-		
-		long nexusStart;
-		long nexusEnd;
+		long start;
+		long end = -1;
 		Collection<JPhyloIOEvent> savedCommentEvents = new ArrayList<JPhyloIOEvent>();
-		long finalIndex = getElementCount();
-				//TODO The current implementation works only for character sets!
+		long finalIndex = getElementCount() - 1;
 		
 		try {
 			if (reader.isNext(SET_KEY_WORD_ALL)) {
@@ -187,8 +235,8 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 					throw createUnknownElementCountException(reader);
 				}
 				else {
-					nexusStart = 1;
-					nexusEnd = finalIndex;
+					start = 0;
+					end = finalIndex;
 					//TODO Consume remaining characters until command end (but process comments), since additional intervals would be valid but unnecessary.
 				}
 			}
@@ -197,49 +245,62 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 						" is currently not supported in JPhyloIO.", reader);
 			}
 			else {
-				nexusStart = getStreamDataProvider().readPositiveInteger(-1);  // '.' is only allowed for the end index according to the Nexus paper.
-				if (nexusStart == -1) {  // '.' was found.
-					throw new JPhyloIOReaderException("The token '.' may not be the first element of a set interval definition in Nexus.", reader);
+				String word = getStreamDataProvider().readNexusWord();  //TODO Does this really read '.' and will it continue to do so in the future? (Possibly check for this manually.)
+				start = readIndex(word, -2);
+				if (start == -2) {
+					throw new JPhyloIOReaderException("The placeholder '" + SET_END_INDEX_SYMBOL + 
+							"' is not allowed as the first index of an interval in a Nexus set defintion.", reader);
 				}
-				else if (nexusStart == -2) {  // non-integer token found
-					//TODO Read possible named reference here.
-					throw new UnsupportedFormatFeatureException("Named set references are currently not supported.", reader);
+				else if (start == -1) {
+					String setID = setIDByName(word);
+					if (setID != null) {
+						getStreamDataProvider().getCurrentEventCollection().add(new SetElementEvent(setID, setType));
+						consumeWhiteSpaceAndComments(savedCommentEvents);
+						if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {
+							throw new UnsupportedFormatFeatureException("Specifying regular intervals for a referenced Nexus set (using '" + 
+									SET_REGULAR_INTERVAL_SYMBOL + "') is currently not supported by this reader.", reader);
+						}
+					}
+					else {
+						throw new JPhyloIOReaderException("The token \"" + word + 
+								"\" could not be recognized as an element of this set or a reference to another set of the same type.", reader);
+					}
 				}
 				else {
 					consumeWhiteSpaceAndComments(savedCommentEvents);
-					nexusEnd = nexusStart;  // Definitions like "1-2 4 6-7" are allowed.
+					end = start;  // Definitions like "1-2 4 6-7" are allowed.
 					if (reader.peekChar() == SET_TO_SYMBOL) {
 						reader.skip(1);  // Consume '-'
 						consumeWhiteSpaceAndComments(savedCommentEvents);
-						nexusEnd = getStreamDataProvider().readPositiveInteger(finalIndex);
-						if (nexusEnd == -2) {
+						word = getStreamDataProvider().readNexusWord();
+						end = readIndex(word, finalIndex);
+						if (end == -1) {
 							throw createUnknownElementCountException(reader);
 						}
-						else if (nexusEnd < 0) {
-							throw new JPhyloIOReaderException("Unexpected end of file in Nexus character set definition.", reader);  //TODO This is not always EOF? (Illegal characters would also be possible?)
-						}
-						
 						consumeWhiteSpaceAndComments(savedCommentEvents);
 					}
+					
 				}
 			}
 			
-			if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {  //TODO Throw exception, if this construct is used together with a reference to another set. (A special UnsupportedFeatureException could be implemented for such cases.)
-				reader.skip(1);  // Consume '\'
-				consumeWhiteSpaceAndComments(savedCommentEvents);
-				long interval = getStreamDataProvider().readPositiveInteger(-1);
-				if (nexusEnd == -2) {
-					throw createUnknownElementCountException(reader);
+			if (start >= 0) {  // Otherwise a set reference was already written.
+				if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {  //TODO Throw exception, if this construct is used together with a reference to another set. (A special UnsupportedFeatureException could be implemented for such cases.)
+					reader.skip(1);  // Consume '\'
+					consumeWhiteSpaceAndComments(savedCommentEvents);
+					long interval = getStreamDataProvider().readPositiveInteger(-1);
+					if (end == -2) {
+						throw createUnknownElementCountException(reader);
+					}
+					else if (interval < 0) {
+						throw new JPhyloIOReaderException("Unexpected token found in Nexus set definition.", reader);  //TODO More concrete message?
+					}
+					for (long i = start; i <= end; i += interval) {
+						createEventsForInterval(i, i + 1);
+					}
 				}
-				else if (interval < 0) {
-					throw new JPhyloIOReaderException("Unexpected token found in Nexus set definition.", reader);  //TODO More concrete message?
+				else {
+					createEventsForInterval(start, end + 1);
 				}
-				for (long i = nexusStart - 1; i < nexusEnd; i += interval) {
-					createEventsForInterval(i, i + 1);
-				}
-			}
-			else {
-				createEventsForInterval(nexusStart - 1, nexusEnd);
 			}
 			getStreamDataProvider().getCurrentEventCollection().addAll(savedCommentEvents);
 		}

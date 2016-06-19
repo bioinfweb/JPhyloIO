@@ -79,23 +79,22 @@ public class CharSetReader extends AbstractNexusSetReader implements NexusConsta
 	}
 
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void createEventsForName(String name) throws IOException {
-		//TODO Separate methods will be needed, for translating to an index and to an set ID. Possibly these methods should just return the according translation and not create any events?
-		
-		Long index = ((Map<String, Long>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_CHARACTER_NAME_TO_INDEX_MAP)).get(name);
+	protected long elementIndexByName(String id) {
+		@SuppressWarnings("unchecked")
+		Long index = ((Map<String, Long>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_CHARACTER_NAME_TO_INDEX_MAP)).get(id);
 		if (index != null) {
-			
+			return index;
 		}
 		else {
-			String setID = ((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).get(name);
-			if (setID != null) {
-				
-			}
-			else {
-				throw new JPhyloIOReaderException("", getStreamDataProvider().getDataReader());
-			}
+			return -1;
 		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected String setIDByName(String name) {
+		return ((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).get(name);
 	}
 }

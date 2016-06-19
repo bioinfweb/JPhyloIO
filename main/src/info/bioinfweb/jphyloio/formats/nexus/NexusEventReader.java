@@ -255,7 +255,8 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 			}
 			else {
 				while (!Character.isWhitespace(c) && (c != COMMENT_START) && (c != COMMAND_END) && (c != KEY_VALUE_SEPARATOR) 
-						&& (c != ELEMENT_SEPARATOR) && (c != CHARACTER_NAME_STATES_SEPARATOR)) {  //TODO Add more special characters
+						&& (c != ELEMENT_SEPARATOR) && (c != CHARACTER_NAME_STATES_SEPARATOR) && ((c != SET_TO_SYMBOL) || (result.length() == 0))) {  // Allow words to start with '-' to read negative numbers.  
+					  //TODO Add more special characters
 					
 					result.append(c);
 					getReader().skip(1);
@@ -279,7 +280,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	 * @throws IOException
 	 */
 	protected long readPositiveInteger(long startOrEndIndex) throws IOException {
-		if (getReader().peekChar() == SET_START_OR_END_INDEX_SYMBOL) {
+		if (getReader().peekChar() == SET_END_INDEX_SYMBOL) {
 			getReader().skip(1);
 			return startOrEndIndex;
 		}
