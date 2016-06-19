@@ -853,23 +853,23 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 
-			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon-1", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon1", null, reader);
 			assertCharactersEvent("ACTAGGACTAGATCAAGTT", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon-2", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon2", null, reader);
 			assertCharactersEvent("ACCAGGACTAGCGGATCAAG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon-3", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon3", null, reader);
 			assertCharactersEvent("ACCAGGACTAGATCAAG", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon-4", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon4", null, reader);
 			assertCharactersEvent("AGCCAGGACTAGTTC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon-5", null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon5", null, reader);
 			assertCharactersEvent("ATCAGGACTAGATCAAGTTC", reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
@@ -1550,6 +1550,10 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEndEvent(EventContentType.CHARACTER_SET, reader);
 			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set06", matrixID2, reader);
 			assertSetElementEvent(referencedSetID, EventContentType.CHARACTER_SET, reader);
+			assertCharacterSetIntervalEvent(4, 5, reader);
+			assertEndEvent(EventContentType.CHARACTER_SET, reader);
+			assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, "set07", matrixID2, reader);
+			assertCharacterSetIntervalEvent(1, 3, reader);
 			assertCharacterSetIntervalEvent(4, 5, reader);
 			assertEndEvent(EventContentType.CHARACTER_SET, reader);
 			

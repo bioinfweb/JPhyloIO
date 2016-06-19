@@ -42,6 +42,7 @@ BEGIN Sets;
   CharSet set04 = ALL\3;
   CharSet set05 = 2 - 6 \2;
   CharSet set06 = set01 5;
+  CharSet set07 = col1-col2 5;
 END;
 
 BEGIN Sets;
