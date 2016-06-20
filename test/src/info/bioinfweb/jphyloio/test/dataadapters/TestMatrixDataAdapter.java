@@ -225,7 +225,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions() {
-		if (sequenceSets == null) {
+		if (characterDefinitions == null) {
 			return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 		}
 		else {
