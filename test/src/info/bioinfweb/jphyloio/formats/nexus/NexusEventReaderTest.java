@@ -1641,6 +1641,13 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			
 			assertCharacterDefinitionEvent(null, "col0", 0, true, reader);
 			assertCharacterDefinitionEvent(null, "col2", 2, true, reader);
+			assertCommentEvent("comment 1", reader);
+			assertCommentEvent("comment 2", reader);
+			assertCommentEvent("comment 3", reader);
+			assertCommentEvent("comment 4", reader);
+			assertCommentEvent("comment 5", reader);
+			assertCommentEvent("comment 6", reader);
+			assertCommentEvent("comment 7", reader);
 			assertCharacterDefinitionEvent(null, "col5", 5, true, reader);
 			
 			assertEndEvent(EventContentType.ALIGNMENT, reader);

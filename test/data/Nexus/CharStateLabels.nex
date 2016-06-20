@@ -17,7 +17,7 @@ BEGIN Characters;
          C CG-TC-T;
   CharStateLabels
       1 col0,
-      3 col2/C T A G,
-      5/C T A G,
+      3[comment 1] col2[comment 2]/[comment 3]C[comment 4] T [comment 5]A G[comment 6] ,
+      5[comment 7]/C T A G,
       6 col5;
 END;
