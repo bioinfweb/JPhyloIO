@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +44,7 @@ import javax.xml.namespace.QName;
 public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<NeXMLEventReader> {	
 	private boolean allowLongTokens;
 	
-	private Map<EventContentType, String> elementTypeToCurrentIDMap = new HashMap<EventContentType, String>();
+	private EnumMap<EventContentType, String> elementTypeToCurrentIDMap = new EnumMap<EventContentType, String>(EventContentType.class);
 	
 	private Stack<EventContentType> metaType = new Stack<EventContentType>();
 	private QName currentMetaContentDatatype;
@@ -99,7 +100,7 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	 * 
 	 * @return the map linking an ID to an {@link EventContentType}
 	 */
-	public Map<EventContentType, String> getElementTypeToCurrentIDMap() {
+	public EnumMap<EventContentType, String> getElementTypeToCurrentIDMap() {
 		return elementTypeToCurrentIDMap;
 	}
 

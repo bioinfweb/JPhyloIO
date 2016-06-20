@@ -112,4 +112,11 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter<LabeledIDEv
 	 * @throws IllegalArgumentException if an unknown edge ID was specified
 	 */
 	public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+	
+	/**
+	 * Returns a list of node-and-edge-sets defined for the tree modeled by this instance.
+	 * 
+	 * @return a (possibly empty) list of node-edge-sets
+	 */
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets();
 }

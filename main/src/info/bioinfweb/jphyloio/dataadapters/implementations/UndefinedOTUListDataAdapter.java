@@ -22,7 +22,9 @@ package info.bioinfweb.jphyloio.dataadapters.implementations;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 
@@ -82,5 +84,12 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 	@Override
 	public LabeledIDEvent getStartEvent() {
 		return new LabeledIDEvent(EventContentType.OTU_LIST, UNDEFINED_OTUS_ID, UNDEFINED_OTUS_LABEL);
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
+		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }

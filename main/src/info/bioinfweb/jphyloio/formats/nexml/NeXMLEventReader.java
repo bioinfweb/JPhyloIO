@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
+import info.bioinfweb.commons.collections.NonStoringCollection;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;

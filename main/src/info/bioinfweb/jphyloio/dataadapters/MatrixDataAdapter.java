@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
@@ -73,6 +74,13 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter<LinkedLabeledIDE
 	public boolean containsLongTokens();
 	
 	/**
+	 * Returns a list of character definitions for the matrix modeled by this instance.
+	 * 
+	 * @return a (possibly empty) list of character definitions
+	 */
+	public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions();
+	
+	/**
 	 * Returns a list of character sets defined for the matrix modeled by this instance.
 	 * 
 	 * @return a (possibly empty) list of character sets
@@ -81,13 +89,17 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter<LinkedLabeledIDE
 	
 	/**
 	 * Returns a list of token sets defined for the matrix modeled by this instance.
-	 * <p>
-	 * Note that character sets referenced by token sets provided here, are expected to be contained
-	 * in the return value of {@link #getCharacterSets()}.
 	 * 
 	 * @return a (possibly empty) list of token sets
 	 */
 	public ObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets();
+	
+	/**
+	 * Returns a list of sequence sets defined for the matrix modeled by this instance.
+	 * 
+	 * @return a (possibly empty) list of sequence sets
+	 */
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets();
 	
 	/**
 	 * Returns an iterator returning the IDs of all sequences in the represented matrix.

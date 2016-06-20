@@ -22,6 +22,8 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
+import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -37,6 +39,8 @@ import java.util.Iterator;
 public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabeledIDEvent> implements MatrixDataAdapter {
 	private LinkedLabeledIDEvent startEvent;
 	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> matrix = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
+	private StoreObjectListDataAdapter<CharacterDefinitionEvent> characterDefinitions = new StoreObjectListDataAdapter<CharacterDefinitionEvent>();
+	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> sequenceSets = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	private StoreObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = new StoreObjectListDataAdapter<TokenSetDefinitionEvent>();
 	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	private boolean longTokens;
@@ -150,5 +154,17 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 		else {
 			throw new IllegalArgumentException("The alignment does not contain a sequence with the ID \"" + sequenceID +"\".");
 		}		
+	}
+
+
+	@Override
+	public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions() {
+		return characterDefinitions;
+	}
+
+
+	@Override
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets() {		
+		return sequenceSets;
 	}
 }

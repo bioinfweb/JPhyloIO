@@ -33,4 +33,11 @@ public interface TreeNetworkGroupDataAdapter extends AnnotatedDataAdapter<Linked
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
 	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator();
+	
+	/**
+	 * Returns a list of tree sets defined for the tree-network-group modeled by this instance.
+	 * 
+	 * @return a (possibly empty) list of tree sets
+	 */
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets();
 }

@@ -57,13 +57,13 @@ public class CharacterSetIntervalEvent extends ConcreteJPhyloIOEvent {
 	public CharacterSetIntervalEvent(long start, long end) {
 		super(EventContentType.CHARACTER_SET_INTERVAL, EventTopologyType.SOLE);
 		if (start < 0) {
-			throw new IndexOutOfBoundsException("start must not be below 0.");
+			throw new IndexOutOfBoundsException("\"start\" of an interval must not be below 0.");
 		}
 		else if (end < 0) {
-			throw new IndexOutOfBoundsException("end must not be below 0.");
+			throw new IndexOutOfBoundsException("\"end\" must not be below 0.");
 		}
 		else if (end <= start) {
-			throw new IllegalArgumentException("end must be grater than start. (If a character set shall have no length, just omit nested interval events.)");
+			throw new IllegalArgumentException("\"end\" must be greater than \"start\". (If a character set shall have no length, just omit nested interval events.)");
 		}
 		else {
 			this.start = start;
