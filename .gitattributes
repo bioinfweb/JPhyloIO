@@ -393,7 +393,7 @@ test/data/Nexus/MatrixUnaligned.nex -text
 test/data/Nexus/MultipleTreesBlocks.nex -text
 test/data/Nexus/SplitComments.nex -text
 test/data/Nexus/Symbols.nex -text
-test/data/Nexus/TaxSets.nex -text
+test/data/Nexus/TaxTreeSets.nex -text
 test/data/Nexus/TaxaNoLabels.nex -text
 test/data/Nexus/TaxaNoLabelsInvalid.nex -text
 test/data/Nexus/TitleLink.nex -text

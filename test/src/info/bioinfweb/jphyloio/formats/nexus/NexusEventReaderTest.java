@@ -1715,10 +1715,17 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 		}
 	}
 
+	
+	private String testTree(NexusEventReader reader, String label) throws Exception {
+		String treeID = assertLabeledIDEvent(EventContentType.TREE, null, label, reader).getID();
+		while (!reader.next().getType().getContentType().equals(EventContentType.TREE)) {}
+		return treeID;
+	}
+	
 
 	@Test
-	public void testReadingTaxSets() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxSets.nex"), new ReadWriteParameterMap());
+	public void testReadingTaxAndTreeSets() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxTreeSets.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
@@ -1750,41 +1757,88 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEndEvent(EventContentType.OTU, reader);
 			assertEndEvent(EventContentType.OTU_LIST, reader);
 			
+			// TREES 1:
+			String treeGroupID1 = assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, "trees1", otusID1, reader);
+			String treeID1_1 = testTree(reader, "tree1");
+			String treeID1_2 = testTree(reader, "tree2");
+			String treeID1_3 = testTree(reader, "tree3");
+			String treeID1_4 = testTree(reader, "tree4");
+			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
+
+			// TREES 2:
+			String treeGroupID2 = assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, "trees2", otusID1, reader);
+			String treeID2_1 = testTree(reader, "tree1");
+			String treeID2_2 = testTree(reader, "tree2");
+			String treeID2_3 = testTree(reader, "tree3");
+			String treeID2_4 = testTree(reader, "tree4");
+			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
+			
 			// SETS 1:
 			String setID1 = assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set1", otusID2, reader);
 			assertSetElementEvent(otuIDT2, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDT3, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDT5, EventContentType.OTU, reader);
-			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			assertPartEndEvent(EventContentType.OTU_SET, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set2", otusID2, reader);
 			assertSetElementEvent(otuIDT1, EventContentType.OTU, reader);
 			assertSetElementEvent(setID1, EventContentType.OTU_SET, reader);
-			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			assertPartEndEvent(EventContentType.OTU_SET, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set3", otusID2, reader);
 			assertSetElementEvent(otuIDT3, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDT4, EventContentType.OTU, reader);
-			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			assertPartEndEvent(EventContentType.OTU_SET, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set4", otusID2, reader);
 			assertSetElementEvent(otuIDT3, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDT4, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDT5, EventContentType.OTU, reader);
-			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			assertPartEndEvent(EventContentType.OTU_SET, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set5", otusID2, reader);
 			assertSetElementEvent(otuIDT1, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDT3, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDT5, EventContentType.OTU, reader);
-			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			assertPartEndEvent(EventContentType.OTU_SET, true, reader);
+
+			String treeSetID1 = assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, null, "set1", treeGroupID2, reader);
+			assertSetElementEvent(treeID2_3, EventContentType.TREE, reader);
+			assertSetElementEvent(treeID2_4, EventContentType.TREE, reader);
+			assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, null, "set2", treeGroupID2, reader);
+			assertSetElementEvent(treeID2_1, EventContentType.TREE, reader);
+			assertSetElementEvent(treeSetID1, EventContentType.TREE_NETWORK_SET, reader);
+			assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, null, "set3", treeGroupID2, reader);
+			assertSetElementEvent(treeID2_2, EventContentType.TREE, reader);
+			assertSetElementEvent(treeID2_3, EventContentType.TREE, reader);
+			assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, null, "set4", treeGroupID2, reader);
+			assertSetElementEvent(treeID2_3, EventContentType.TREE, reader);
+			assertSetElementEvent(treeID2_4, EventContentType.TREE, reader);
+			assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, null, "set5", treeGroupID2, reader);
+			assertSetElementEvent(treeID2_1, EventContentType.TREE, reader);
+			assertSetElementEvent(treeID2_3, EventContentType.TREE, reader);
+			assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
 			
 			// SETS 2:
 			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "otherSet", otusID1, reader);
 			assertSetElementEvent(otuIDC, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDD, EventContentType.OTU, reader);
 			assertSetElementEvent(otuIDE, EventContentType.OTU, reader);
-			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			assertPartEndEvent(EventContentType.OTU_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, null, "otherSet2", treeGroupID1, reader);
+			assertSetElementEvent(treeID1_2, EventContentType.TREE, reader);
+			assertSetElementEvent(treeID1_3, EventContentType.TREE, reader);
+			assertSetElementEvent(treeID1_4, EventContentType.TREE, reader);
+			assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
 			
 			assertEndEvent(EventContentType.DOCUMENT, reader);
 			assertFalse(reader.hasNextEvent());

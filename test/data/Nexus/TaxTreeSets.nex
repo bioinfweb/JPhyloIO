@@ -1,0 +1,52 @@
+#NEXUS
+
+BEGIN TAXA;
+	TITLE taxa1;
+	DIMENSIONS NTAX = 5;
+	TAXLABELS A B C D E;
+END; 
+
+BEGIN TAXA;
+	TITLE taxa2;
+	DIMENSIONS NTAX = 5;
+	TAXLABELS t1 t2 t3 t4 t5;
+END; 
+
+BEGIN TREES;
+	TITLE trees1;
+	TREE tree1 = ((A, (B, C)), D);
+	TREE tree2 = ((A, (B, C)), E);
+	TREE tree3 = ((A, (C, D)), E);
+	TREE tree4 = ((A, (E, C)), D);
+END; 
+
+BEGIN TREES;
+	TITLE trees2;
+	TREE tree1 = ((A, (E, C)), D);
+	TREE tree2 = ((A, (E, C)), B);
+	TREE tree3 = ((A, (E, D)), B);
+	TREE tree4 = ((A, (B, C)), D);
+END; 
+
+BEGIN SETS;
+  TITLE sets1;
+  LINK TAXA=taxa2 TREES=trees2;
+  
+  TAXSET set1 = 2-3 5;
+  TAXSET set2 = t1 set1;
+  TAXSET set3 VECTOR = 00110;
+  TAXSET set4 = t3-.;
+  TAXSET set5 = ALL\2;
+  
+  TREESET set1 = 3-4;
+  TREESET set2 = tree1 set1;
+  TREESET set3 VECTOR = 0110;
+  TREESET set4 = tree3-.;
+  TREESET set5 = ALL\2;
+END;
+
+BEGIN SETS;
+  TITLE sets2;
+  TAXSET otherSet = 3 - 5;
+  TREESET otherSet2 = 2 - 4; 
+END;
