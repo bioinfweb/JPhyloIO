@@ -22,8 +22,11 @@ package info.bioinfweb.jphyloio.test.dataadapters;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.IOException;
@@ -87,5 +90,12 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter<LabeledIDE
 	@Override
 	public LabeledIDEvent getObjectStartEvent(String otuID) throws IllegalArgumentException {
 		return otus.get(otuID);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
+		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }

@@ -24,7 +24,10 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsMatrixDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectListDataAdapter;
+import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
@@ -59,6 +62,8 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	private String label = null;
 	private String linkedOTUsID = null;
 	private ListOrderedMap<String, SequenceData> matrix = new ListOrderedMap<>();
+	private StoreObjectListDataAdapter<CharacterDefinitionEvent> characterDefinitions = null;
+	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> sequenceSets = null;
 	private ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = null;
 	private ObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = null;
 	private long columnCount;
@@ -214,6 +219,39 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	@Override
 	public boolean containsLongTokens() {
 		return longTokens;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions() {
+		if (sequenceSets == null) {
+			return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
+		}
+		else {
+			return characterDefinitions;
+		}		
+	}
+
+
+	public void setCharacterDefinitions(StoreObjectListDataAdapter<CharacterDefinitionEvent> characterDefinitions) {
+		this.characterDefinitions = characterDefinitions;
+	}
+
+
+	@Override
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets() {
+		if (sequenceSets == null) {
+			return super.getSequenceSets();
+		}
+		else {
+			return sequenceSets;
+		}
+	}
+
+
+	public void setSequenceSets(StoreObjectListDataAdapter<LinkedLabeledIDEvent> sequenceSets) {
+		this.sequenceSets = sequenceSets;
 	}
 
 

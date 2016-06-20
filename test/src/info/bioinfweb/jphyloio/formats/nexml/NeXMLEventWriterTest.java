@@ -30,7 +30,6 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.S
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreOTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectData;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
-import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -39,22 +38,15 @@ import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.TestTreeNetworkGroupDataAdapter;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.namespace.QName;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -63,7 +55,6 @@ import org.junit.Test;
 public class NeXMLEventWriterTest {
 	private StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 	private long idIndex = 0;
-	private long alignmentLength = 0;
 	
 	
 	public long getIDIndex() {
@@ -74,36 +65,221 @@ public class NeXMLEventWriterTest {
 
 
 	@Test
-	public void test_writeDocument() throws Exception {
-		createTestDocument();
+	public void testWriteSimpleDocument() throws Exception {
+		createSimpleTestDocument();
 		NeXMLEventWriter writer = new NeXMLEventWriter();
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		writer.writeDocument(document, new File("data/testOutput/NeXMLTest.xml"), parameters);
 	}
 	
 	
-	protected void createTestDocument() {
-//		for (JPhyloIOEvent event : createMetaData("document")) {
-//			document.getAnnotations().add(event);
-//		}
-		String taxaID = ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + getIDIndex();
-		document.getOTUListsMap().put(taxaID, createOTUList(taxaID));
-		document.getMatrices().add(createMatrix(taxaID));
-		document.getTreesNetworks().add(createTrees(taxaID));
+	protected void createSimpleTestDocument() {
+		// Add OTU list to document data adapter
+		String otuListID = ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + getIDIndex();
+		document.getOTUListsMap().put(otuListID, createOTUList(otuListID));
+		
+//		StoreMatrixDataAdapter matrix = createSequenceMatrix(otuListID);
+		StoreMatrixDataAdapter matrix = createContinuousCellsMatrix(otuListID);
+		
+		// Add token set of type DNA to matrix data adapter
+//		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
+//		matrix.getTokenSets().getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 10));
+			
+		// Add char sets to matrix data adapter
+		String charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
+		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID));
+		
+		// Add sequence matrix to matrix data adapter
+		document.getMatrices().add(matrix);
+		
+		// Add tree group to document data adapter
+		document.getTreesNetworks().add(createTrees(otuListID));
+	}	
+	
+	
+	protected StoreOTUListDataAdapter createOTUList(String id) {
+		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, id, "taxonlist"), null);
+		
+		for (int i = 0; i < 5; i++) {
+			String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + getIDIndex();
+			otuList.getOtus().getObjectMap().put(otuID, new StoreObjectData<LabeledIDEvent>(new LabeledIDEvent(EventContentType.OTU, 
+					otuID, "taxon"), null));
+		}
+		
+		return otuList;
 	}
 	
 	
-	protected List<JPhyloIOEvent> createMetaData(String about) {
-		List<JPhyloIOEvent> metaData = new ArrayList<JPhyloIOEvent>();
-		URI example = null;
+	protected StoreMatrixDataAdapter createSequenceMatrix(String otusID) {
+		String matrixID = ReadWriteConstants.DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
+		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
 		
-		try {
-			example = new URI("somePath/#fragment");
-		} 
-		catch (URISyntaxException e) {
-			e.printStackTrace();
+		List<List<String>> sequences = new ArrayList<>();
+		sequences.add(StringUtils.charSequenceToStringList("AGTGC"));
+		sequences.add(StringUtils.charSequenceToStringList("AGTCT"));
+		sequences.add(StringUtils.charSequenceToStringList("AGTGT"));
+		sequences.add(StringUtils.charSequenceToStringList("CGCTC"));
+		sequences.add(StringUtils.charSequenceToStringList("CATCGT"));
+		sequences.add(StringUtils.charSequenceToStringList("AGTCTAGTCT"));		
+		
+		// Add sequences
+		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
+		int otuCount = 0;
+		while (iterator.hasNext()) {
+			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
+			matrix.getMatrix().getObjectMap().put(sequenceID, createSequence(sequenceID,
+					sequences.get(otuCount), document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID()));
+			otuCount++;			
 		}
 		
+		// Add sequence that does not specify a linked OTU
+		String undefinedOTUSequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
+		matrix.getMatrix().getObjectMap().put(undefinedOTUSequenceID, createSequence(undefinedOTUSequenceID, sequences.get(5), null));
+		
+		return matrix;
+	}
+	
+	
+	private StoreObjectData<LinkedLabeledIDEvent> createSequence(String id, List<String> tokens, String otuID) {		
+		StoreObjectData<LinkedLabeledIDEvent> sequence = new StoreObjectData<LinkedLabeledIDEvent>(new LinkedLabeledIDEvent(EventContentType.OTU, 
+				id, "sequence", otuID), null);
+		
+		sequence.getObjectContent().add(new SequenceTokensEvent(tokens));
+		
+		return sequence;
+	}
+	
+	
+	protected StoreMatrixDataAdapter createCellsMatrix(String otusID) {
+		String matrixID = ReadWriteConstants.DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
+		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
+		
+		// Add single tokens
+		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
+		while (iterator.hasNext()) {
+			String otuID = document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID();
+			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
+			
+			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
+					new LinkedLabeledIDEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, sequenceID, "single token", otuID), null);
+			
+			addSingleSequenceToken(singleTokens, null, "A");
+			addSingleSequenceToken(singleTokens, null, "T");
+			addSingleSequenceToken(singleTokens, null, "G");
+			addSingleSequenceToken(singleTokens, null, "G");
+			addSingleSequenceToken(singleTokens, null, "C");
+			
+			matrix.getMatrix().getObjectMap().put(sequenceID, singleTokens);
+		}
+		
+		return matrix;
+	}
+	
+	
+	protected StoreMatrixDataAdapter createContinuousCellsMatrix(String otusID) {
+		String matrixID = ReadWriteConstants.DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
+		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "continuous data", otusID);
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
+		
+		// Add single tokens
+		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
+		while (iterator.hasNext()) {
+			String otuID = document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID();
+			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
+			
+			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
+					new LinkedLabeledIDEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, sequenceID, "single token", otuID), null);
+			
+			addSingleSequenceToken(singleTokens, null, "0.64566");
+			addSingleSequenceToken(singleTokens, null, "0.66673");
+			addSingleSequenceToken(singleTokens, null, "0.34454");
+			addSingleSequenceToken(singleTokens, null, "5.98678");
+			addSingleSequenceToken(singleTokens, null, "-5.43334");
+			
+			matrix.getMatrix().getObjectMap().put(sequenceID, singleTokens);
+		}
+		
+		return matrix;
+	}
+	
+	
+	private void addSingleSequenceToken(StoreObjectData<LinkedLabeledIDEvent> singleTokenAdapter, String label, String token) {
+		singleTokenAdapter.getObjectContent().add(new SingleSequenceTokenEvent(label, token));
+		singleTokenAdapter.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
+	}
+	
+	
+	protected StoreObjectData<TokenSetDefinitionEvent> createTokenSet(String id, CharacterStateSetType type, long alignmentLength) {
+		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
+				new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "tokenSet"), new ArrayList<JPhyloIOEvent>());
+
+		// Add single token definitions
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
+				CharacterSymbolType.ATOMIC_STATE));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Guanin", "G", CharacterSymbolMeaning.CHARACTER_STATE, 
+				CharacterSymbolType.ATOMIC_STATE));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Cytosin", "C", CharacterSymbolMeaning.CHARACTER_STATE, 
+				CharacterSymbolType.ATOMIC_STATE));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Thymine", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
+				CharacterSymbolType.ATOMIC_STATE));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		// Add single token definition for ambiguity code
+		Set<String> ambiguityCodeB = new HashSet<String>();
+		ambiguityCodeB.add("C");
+		ambiguityCodeB.add("G");
+		ambiguityCodeB.add("T");
+
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "ambiguity code", "B", CharacterSymbolMeaning.CHARACTER_STATE, 
+				CharacterSymbolType.UNCERTAIN, ambiguityCodeB));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		// Add validity interval for token set
+		tokenSet.getObjectContent().add(new CharacterSetIntervalEvent(0, alignmentLength));
+		
+		return tokenSet;
+	}
+	
+	
+	protected StoreObjectData<LinkedLabeledIDEvent> createCharSet(String id) {	
+		StoreObjectData<LinkedLabeledIDEvent> charSet = new StoreObjectData<LinkedLabeledIDEvent>(
+				new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, id, "charSet", null), new ArrayList<JPhyloIOEvent>());		
+
+		charSet.getObjectContent().add(new CharacterSetIntervalEvent(0, 2));
+		charSet.getObjectContent().add(new CharacterSetIntervalEvent(3, 4));
+		charSet.getObjectContent().add(new CharacterSetIntervalEvent(4, 5));
+		
+		return charSet;
+	}
+	
+	
+	protected TestTreeNetworkGroupDataAdapter createTrees(String prefix) {
+		String treeID = ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex();
+		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter(treeID, null, "nodeEdgeID");
+		trees.setLinkedOTUsID(prefix);
+		return trees;
+	}
+	
+	
+//	protected List<JPhyloIOEvent> createMetaData(String about) {
+//		List<JPhyloIOEvent> metaData = new ArrayList<JPhyloIOEvent>();
+//		URI example = null;
+//		
+//		try {
+//			example = new URI("somePath/#fragment");
+//		} 
+//		catch (URISyntaxException e) {
+//			e.printStackTrace();
+//		}
+//		
 //		metaData.add(new ResourceMetadataEvent("meta" + getIDIndex(), "ResourceMeta", new QName("http://meta.net/", "relations"), example, about));
 //		
 //		metaData.add(new LiteralMetadataEvent("meta" + getIDIndex(), "LiteralMeta", new QName("http://meta.net/", "predicate"), "literal value", LiteralContentSequenceType.SIMPLE));
@@ -126,157 +302,7 @@ public class NeXMLEventWriterTest {
 //		metaData.add(new LiteralMetadataEvent("meta" + getIdIndex(), "LiteralMeta", new UriOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), "literal value", LiteralContentSequenceType.SIMPLE));
 //		metaData.add(new LiteralMetadataContentEvent(new UriOrStringIdentifier(null, new QName(NeXMLConstants.TYPE_STRING)), "My literal value", true));
 //		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
-		
-		return metaData;
-	}
-	
-	
-	protected StoreOTUListDataAdapter createOTUList(String id) {
-		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, id, "taxonlist"), null);
-		
-		for (int i = 0; i < 5; i++) {
-			String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + getIDIndex();
-			otuList.getOtus().getObjectMap().put(otuID, createOTU(otuID));
-		}
-		
-		return otuList;
-	}
-	
-	
-	protected StoreObjectData<LabeledIDEvent> createOTU(String otuID) {		
-		StoreObjectData<LabeledIDEvent> otu = new StoreObjectData<LabeledIDEvent>(new LabeledIDEvent(EventContentType.OTU, 
-				otuID, "taxon"), null);
-		
-		return otu;
-	}
-	
-	
-	protected StoreMatrixDataAdapter createMatrix(String otusID) {
-		String matrixID = ReadWriteConstants.DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
-		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "matrix", otusID);
-		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
-		alignmentLength = 20;
-		
-		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
-		List<String> tokens = StringUtils.charSequenceToStringList("AGTCTTGCGCTTAGCAGTCG");
-		
-		// Add sequences and/or single tokens
-		while (iterator.hasNext()) {
-			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
-			matrix.getMatrix().getObjectMap().put(sequenceID, createSequence(sequenceID,
-					tokens, document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID())); // matrix contains token sequences
-//			matrix.getMatrix().getObjectMap().put(sequenceID, createSingleTokens(sequenceID, 
-//					document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID())); // matrix contains single tokens
-		}
-		
-		// Add sequence that does not specify a linked OTU
-		String undefinedOTUSequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
-		matrix.getMatrix().getObjectMap().put(undefinedOTUSequenceID, createSequence(undefinedOTUSequenceID, tokens, null));
-		
-		// Add token set of type DNA
-		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
-		matrix.getTokenSets().getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA));
-		
-		// Add char sets
-		String charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
-		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID, true));
-		charSetID = ReadWriteConstants.DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
-		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID, false));
-		
-		return matrix;
-	}
-	
-	
-	protected StoreObjectData<LinkedLabeledIDEvent> createSequence(String id, List<String> tokens, String otuID) {		
-		StoreObjectData<LinkedLabeledIDEvent> sequence = new StoreObjectData<LinkedLabeledIDEvent>(new LinkedLabeledIDEvent(EventContentType.OTU, 
-				id, "sequence", otuID), null);
-		
-		sequence.getObjectContent().add(new SequenceTokensEvent(tokens));
-		
-		return sequence;
-	}
-	
-	
-	protected StoreObjectData<LinkedLabeledIDEvent> createSingleTokens(String id, String otuID) {		
-		StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
-				new LinkedLabeledIDEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, id, "token definition", otuID), null);
-		
-		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent(null, "A"));
-		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
-		
-		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent(null, "T"));
-		
-		singleTokens.getObjectContent().add(new LiteralMetadataEvent("meta" + getIDIndex(), "LiteralMeta", new URIOrStringIdentifier("literal value", new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.SIMPLE));
-		singleTokens.getObjectContent().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, new QName("string")), "My literal value", true));
-		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
-		
-		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
-		
-		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent(null, "G"));
-		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
-		
-		singleTokens.getObjectContent().add(new SingleSequenceTokenEvent(null, "G"));
-		singleTokens.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
-		
-		return singleTokens;
-	}
-	
-	
-	protected StoreObjectData<TokenSetDefinitionEvent> createTokenSet(String id, CharacterStateSetType type) {
-		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
-				new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "tokenSet"), new ArrayList<JPhyloIOEvent>());
-
-		// Add single token definitions
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Guanin", "G", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Cytosin", "C", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Thymine", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-		
-		// Add single token definition for ambiguity code
-//		Set<String> ambiguityCodeB = new HashSet<String>();
-//		ambiguityCodeB.add("C");
-//		ambiguityCodeB.add("G");
-//		ambiguityCodeB.add("T");
-//
-//		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIdIndex(), null, "B", CharacterSymbolMeaning.CHARACTER_STATE, 
-//				CharacterSymbolType.UNCERTAIN, ambiguityCodeB));
-//		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-		
-		return tokenSet;
-	}
-	
-	
-	protected StoreObjectData<LinkedLabeledIDEvent> createCharSet(String id, boolean multipleIntervals) {	
-		StoreObjectData<LinkedLabeledIDEvent> charSet = new StoreObjectData<LinkedLabeledIDEvent>(
-				new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, id, "charSet", null), new ArrayList<JPhyloIOEvent>());		
-		
-		if (multipleIntervals) {
-			charSet.getObjectContent().add(new CharacterSetIntervalEvent(0, 6));
-			charSet.getObjectContent().add(new CharacterSetIntervalEvent(10, alignmentLength));
-		}
-		else {
-			charSet.getObjectContent().add(new CharacterSetIntervalEvent(4, 10));
-		}
-		
-		return charSet;
-	}
-	
-	
-	protected TestTreeNetworkGroupDataAdapter createTrees(String prefix) {
-		String treeID = ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex();
-		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter(treeID, null, "nodeEdgeID");
-		trees.setLinkedOTUsID(prefix);
-		return trees;
-	}
+//		
+//		return metaData;
+//	}
 }

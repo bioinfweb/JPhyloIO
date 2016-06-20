@@ -25,8 +25,10 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -164,5 +166,12 @@ public class MultipleRootEdgesTree extends EmptyAnnotatedDataAdapter<LabeledIDEv
 	
 
 	@Override
-	public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException {}	
+	public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException {}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets() {
+		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
+	}
 }

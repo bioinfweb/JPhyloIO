@@ -20,9 +20,11 @@ package info.bioinfweb.jphyloio.test.dataadapters;
 
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
@@ -69,5 +71,12 @@ public class TestTreeNetworkGroupDataAdapter extends EmptyAnnotatedDataAdapter<L
 
 	public void setLinkedOTUsID(String linkedOTUsID) {
 		this.linkedOTUsID = linkedOTUsID;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets() {		
+		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }

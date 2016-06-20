@@ -30,7 +30,9 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -165,6 +167,12 @@ public class FASTAEventWriterLogTest {
 			@Override
 			public Iterator<String> getEdgeIDsFromNode(String nodeID)	throws IllegalArgumentException {
 				return Collections.emptyIterator();
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets() {
+				return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 			}
 		});
 		
