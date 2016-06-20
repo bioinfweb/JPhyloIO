@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
@@ -53,11 +54,10 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.tools.NodeEdgeIDLister;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
@@ -339,10 +339,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 
 	private void writeTokenSetDefinitions(MatrixDataAdapter alignment) throws XMLStreamException, IllegalArgumentException, IOException {
-		NeXMLTokenSetEventReceiver receiver = 
-				new NeXMLTokenSetEventReceiver(getXMLWriter(), getParameters(), streamDataProvider);
-		NeXMLMolecularDataTokenDefinitionReceiver molecularDataReceiver =
-				new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), streamDataProvider);
+		NeXMLTokenSetEventReceiver receiver;
+		NeXMLMolecularDataTokenDefinitionReceiver molecularDataReceiver;
 		streamDataProvider.setIDIndex(0);
 		
 		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSetDefinitions = alignment.getTokenSets();
@@ -353,7 +351,9 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			while (tokenSetDefinitionIDs.hasNext()) {
 				String tokenSetID = tokenSetDefinitionIDs.next();
 				TokenSetDefinitionEvent startEvent = tokenSetDefinitions.getObjectStartEvent(tokenSetID);
-				NeXMLWriterTokenSetInformation info = alignmentInfo.getIdToTokenSetInfoMap().get(tokenSetID);
+				NeXMLWriterTokenSetInformation info = alignmentInfo.getIDToTokenSetInfoMap().get(tokenSetID);
+				receiver = new NeXMLTokenSetEventReceiver(getXMLWriter(), getParameters(), alignmentInfo, tokenSetID, streamDataProvider);
+				molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), alignmentInfo, tokenSetID, streamDataProvider);
 
 				switch (alignmentInfo.getAlignmentType()) {
 					case CONTINUOUS: //can not have a states tag
@@ -384,8 +384,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						streamDataProvider.writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(receiver, tokenSetID);
-						alignmentInfo.getTokenDefinitions().removeAll(info.getTokenTranslationMap().keySet());
-						if (!alignmentInfo.getTokenDefinitions().isEmpty()) {
+						alignmentInfo.getOccuringTokens().removeAll(info.getTokenTranslationMap().keySet());
+						if (!alignmentInfo.getOccuringTokens().isEmpty()) {
 							receiver.writeRemainingStandardTokenDefinitions();
 						}
 						getXMLWriter().writeEndElement();
@@ -395,7 +395,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		else if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
 			getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 			streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, DEFAULT_TOKEN_DEFINITION_SET_ID, null));
-			if (!alignmentInfo.getTokenDefinitions().isEmpty()) {
+			if (!alignmentInfo.getOccuringTokens().isEmpty()) {
+				receiver = new NeXMLTokenSetEventReceiver(getXMLWriter(), getParameters(), alignmentInfo, DEFAULT_TOKEN_DEFINITION_SET_ID, streamDataProvider);
 				receiver.writeRemainingStandardTokenDefinitions();
 			}
 			getXMLWriter().writeEndElement();
@@ -405,7 +406,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	private void writeCharacterDefinitions(MatrixDataAdapter alignment) throws XMLStreamException, JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getIdToAlignmentInfo().get(alignment.getStartEvent().getID());
-
+		String states;
+		
 		streamDataProvider.setIDIndex(0);
 		
 		for (long i = 0; i < alignmentInfo.getAlignmentLength(); i++) {
@@ -417,7 +419,12 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 			getXMLWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
 			if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-				getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), alignmentInfo.getColumnIndexToStatesMap().get(i)); //TODO what if no value for an index is found?
+				states = alignmentInfo.getColumnIndexToStatesMap().get(i);				
+				if (states == null) {
+					states = DEFAULT_TOKEN_DEFINITION_SET_ID;
+				}
+					
+				getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), states);
 			}
 		}
 	}
@@ -431,19 +438,17 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		streamDataProvider.setIDIndex(0);
 
 		while (characterSetIDs.hasNext()) {
-			String charSetID = characterSetIDs.next();
-
-			getXMLWriter().writeStartElement(TAG_SET.getLocalPart());
+			String charSetID = characterSetIDs.next();			
 
 			StringBuffer value = new StringBuffer();
 			for (long columnIndex : alignmentInfo.getCharSets().get(charSetID)) {
 				value.append(alignmentInfo.getColumnIndexToIDMap().get(columnIndex));
 				value.append(" ");
 			}
-
-			getXMLWriter().writeAttribute(ATTR_SINGLE_CHAR_LINK.getLocalPart(), value.toString());
-
+			
+			getXMLWriter().writeStartElement(TAG_SET.getLocalPart());
 			streamDataProvider.writeLabeledIDAttributes(alignment.getCharacterSets().getObjectStartEvent(charSetID));
+			getXMLWriter().writeAttribute(ATTR_SINGLE_CHAR_LINK.getLocalPart(), value.toString());		
 
 			alignment.getCharacterSets().writeContentData(receiver, charSetID);
 
@@ -506,11 +511,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		if (alignment.getStartEvent().getLinkedID() == null) {
 			streamDataProvider.setWriteUndefinedOtuList(true);
 		}
-
-		//TODO alignment.getColumnCount() may be -1 if sequences have various length
-		//TODO different alignments might have different data (token sets, alignment length, ...) therefore data collected here might be invalid or overwritten when the alignment data is actually written to the file
 		
-		checkTokenSets(alignment);		
+		checkTokenSets(alignment);
 		checkCharacterSets(alignment);
 
 		Iterator<String> sequenceIDs = alignment.getSequenceIDIterator();
@@ -523,10 +525,22 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			if ((linkedOtuID == null) || linkedOtuID.isEmpty()) {
 				streamDataProvider.setWriteUndefinedOTU(true);
 			}
-
+			
+			
 			alignment.writeSequencePartContentData(receiver, sequenceID, 0, alignment.getSequenceLength(sequenceStartEvent.getID()));
+
+			if (streamDataProvider.getCurrentAlignmentInfo().getAlignmentLength() < alignment.getSequenceLength(sequenceStartEvent.getID())) {
+				streamDataProvider.getCurrentAlignmentInfo().setAlignmentLength(alignment.getSequenceLength(sequenceStartEvent.getID()));
+			}
 			
 			streamDataProvider.getIdToAlignmentInfo().put(alignmentID, streamDataProvider.getCurrentAlignmentInfo());
+		}
+		
+		if (!streamDataProvider.getCurrentAlignmentInfo().hasTokenDefinitionSet() 
+				&& !streamDataProvider.getCurrentAlignmentInfo().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
+			for (long i = 0; i < streamDataProvider.getCurrentAlignmentInfo().getAlignmentLength(); i++) {
+				streamDataProvider.getCurrentAlignmentInfo().getColumnIndexToStatesMap().put(i, DEFAULT_TOKEN_DEFINITION_SET_ID);
+			}
 		}
 	}
 
@@ -537,7 +551,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		Iterator<String> tokenSetDefinitionIDs = tokenSets.getIDIterator();
 		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
 
-		if (tokenSets.getCount() > 0) {			
+		if (tokenSets.getCount() > 0) {
 			while (tokenSetDefinitionIDs.hasNext()) {
 				String tokenSetID = tokenSetDefinitionIDs.next();
 				receiver = new NeXMLCollectTokenSetDefinitionDataReceiver(getXMLWriter(), getParameters(), tokenSetID, streamDataProvider);
@@ -546,9 +560,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				streamDataProvider.addToDocumentIDs(tokenSetID);
 				streamDataProvider.setCurrentTokenSetInfo(new NeXMLWriterTokenSetInformation());
 
-				if (alignmentType.equals(CharacterStateSetType.NUCLEOTIDE)) {
-					streamDataProvider.getCurrentTokenSetInfo().setNucleotideType(true);
-				}
+				streamDataProvider.getCurrentTokenSetInfo().setNucleotideType(alignmentType.equals(CharacterStateSetType.NUCLEOTIDE));
 
 				CharacterStateSetType previousType = alignmentInfo.getAlignmentType();
 				if ((previousType == null) || previousType.equals(CharacterStateSetType.UNKNOWN)) {
@@ -556,18 +568,50 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				}
 				else {
 					if (!previousType.equals(alignmentType)) {
-						throw new JPhyloIOWriterException("Different data types were encountered but only character data of one type (e.g DNA or amino acid) can be written to a NeXML characters tag.");
+						throw new JPhyloIOWriterException("Different data types were encountered but only character data of one type (e.g DNA or amino acid) "
+								+ "can be written to a single NeXML characters tag.");
 					}
 				}
-				
-				tokenSets.writeContentData(receiver, tokenSetID);
-				alignmentInfo.getIdToTokenSetInfoMap().put(tokenSetID, streamDataProvider.getCurrentTokenSetInfo());
-				//TODO add all remaining token definitions for this token set type
+				alignmentInfo.getIDToTokenSetInfoMap().put(tokenSetID, streamDataProvider.getCurrentTokenSetInfo());
+				tokenSets.writeContentData(receiver, tokenSetID);				
+				setTokenList(alignmentInfo);
 			}
+		}
+		else {
+			NeXMLWriterTokenSetInformation tokenSetInfo = new NeXMLWriterTokenSetInformation();
+			tokenSetInfo.setNucleotideType(false);
+			alignmentInfo.getIDToTokenSetInfoMap().put(DEFAULT_TOKEN_DEFINITION_SET_ID, tokenSetInfo);
 		}
 		
 		if (alignmentInfo.getAlignmentType() == null || alignmentInfo.getAlignmentType().equals(CharacterStateSetType.UNKNOWN)) {
 			alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
+		}
+	}
+	
+	
+	private void setTokenList(NeXMLWriterAlignmentInformation alignmentInfo) {
+		switch (alignmentInfo.getAlignmentType()) {
+			case AMINO_ACID:
+				for (Character aminoAcidToken : SequenceUtils.getAminoAcidOneLetterCodes(true)) {
+					alignmentInfo.getDefinedTokens().add(Character.toString(aminoAcidToken));
+					
+				}
+				alignmentInfo.getDefinedTokens().remove("J");
+				break;
+			case DNA:
+				for (Character nucleotideToken : SequenceUtils.getNucleotideCharacters()) {
+					alignmentInfo.getDefinedTokens().add(Character.toString(nucleotideToken));
+				}
+				alignmentInfo.getDefinedTokens().remove("U");
+				break;
+			case RNA:
+				for (Character nucleotideToken : SequenceUtils.getNucleotideCharacters()) {
+					alignmentInfo.getDefinedTokens().add(Character.toString(nucleotideToken));
+				}
+				alignmentInfo.getDefinedTokens().remove("T");
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -582,7 +626,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			NeXMLCollectCharSetDataReceiver receiver = new NeXMLCollectCharSetDataReceiver(getXMLWriter(), getParameters(), streamDataProvider, charSetID);
 			streamDataProvider.addToDocumentIDs(charSetID);
 
-			alignmentInfo.getCharSets().put(charSetID, new HashSet<Long>());
+			alignmentInfo.getCharSets().put(charSetID, new TreeSet<Long>());
 			charSets.writeContentData(receiver, charSetID);
 		}
 	}

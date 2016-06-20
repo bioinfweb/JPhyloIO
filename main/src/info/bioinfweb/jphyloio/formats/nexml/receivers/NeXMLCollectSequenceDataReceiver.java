@@ -71,8 +71,17 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 	@Override
 	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
+		
+		if (!alignmentInfo.hasTokenDefinitionSet() && alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+			try {
+				Double.parseDouble(token); //TODO might be problematic if standard sequences consisting of integer symbols do not specify a token definition (but this case is rather unlikely)
+				alignmentInfo.setAlignmentType(CharacterStateSetType.CONTINUOUS);
+			}
+			catch (NumberFormatException e) {}
+		}
+		
 		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
-			alignmentInfo.getTokenDefinitions().add(token);
+			alignmentInfo.getOccuringTokens().add(token);
 		}
 		else if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
 			try {
@@ -83,9 +92,9 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 			}
 		}
 		else {
-			if (!alignmentInfo.getTokenDefinitions().contains(token)) { // Token set definitions were read already, so any new token here was not defined or added previously
+			if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
 				alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
-				alignmentInfo.getTokenDefinitions().add(token);
+				alignmentInfo.getOccuringTokens().add(token);
 			}
 		}
 	}

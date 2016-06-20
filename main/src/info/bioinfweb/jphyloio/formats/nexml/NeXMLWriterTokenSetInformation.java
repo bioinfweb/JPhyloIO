@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -20,22 +20,30 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 
 public class NeXMLWriterTokenSetInformation {
 	private boolean isNucleotideType = false;
+	private Set<String> singleTokenDefinitions = new HashSet<String>();
 	private Map<String, String> tokenTranslationMap = new HashMap<String, String>();
-	
-	
+
+
 	public boolean isNucleotideType() {
 		return isNucleotideType;
 	}
 
-
+	
 	public void setNucleotideType(boolean isNucleotideType) {
 		this.isNucleotideType = isNucleotideType;
+	}
+
+
+	public Set<String> getSingleTokenDefinitions() {
+		return singleTokenDefinitions;
 	}
 
 

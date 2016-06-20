@@ -58,7 +58,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 		switch (alignmentInfo.getAlignmentType()) {
 			case DNA:
 				if (!isDNAToken(event)) {
-					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isRNAToken(event) && !alignmentInfo.getTokenDefinitions().contains("T")) {
+					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isRNAToken(event) && !alignmentInfo.getOccuringTokens().contains("T")) {
 						alignmentInfo.setAlignmentType(CharacterStateSetType.RNA);
 					}
 					else {
@@ -68,7 +68,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				break;
 			case RNA:
 				if (!isRNAToken(event)) {
-					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isDNAToken(event) && !alignmentInfo.getTokenDefinitions().contains("U")) {
+					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isDNAToken(event) && !alignmentInfo.getOccuringTokens().contains("U")) {
 						alignmentInfo.setAlignmentType(CharacterStateSetType.DNA);
 					}
 					else {
@@ -162,7 +162,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			else if (isMissingChar(event) || isGapChar(event)) {
 				return true;
 			}
-			else if (event.getMeaning().equals(CharacterSymbolMeaning.OTHER) && token.equals(SequenceUtils.STOP_CODON_CHAR)) { //TODO maybe create new CharacterSymbolMeaning?
+			else if (event.getMeaning().equals(CharacterSymbolMeaning.CHARACTER_STATE) && token.equals(SequenceUtils.STOP_CODON_CHAR)) {
 				return true;
 			}
 		}
@@ -234,14 +234,16 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 
 
 	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {		
+	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case SINGLE_TOKEN_DEFINITION:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
 					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH)) {
-						checkSingleTokenDefinition(tokenDefinitionEvent);
-						alignmentInfo.getTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
+						checkSingleTokenDefinition(tokenDefinitionEvent);				
+					
+						alignmentInfo.getIDToTokenSetInfoMap().get(tokenSetDefinitionID).getSingleTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
+						alignmentInfo.getDefinedTokens().add(tokenDefinitionEvent.getTokenName());
 					}
 				}
 				break;

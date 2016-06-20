@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -23,13 +23,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 
-public class NeXMLWriterAlignmentInformation {
+public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 	private boolean writeCellsTags;
 	private long alignmentLength; // Length of the longest sequence found in the alignment adapter
 	private CharacterStateSetType alignmentType;
@@ -37,11 +38,12 @@ public class NeXMLWriterAlignmentInformation {
 	private Map<String, NeXMLWriterTokenSetInformation> idToTokenSetInfoMap = new HashMap<String, NeXMLWriterTokenSetInformation>();
 	
 	private Map<String, String> charSetToTokenSetMap = new HashMap<String, String>();
-	private Map<String, Set<Long>> charSets = new HashMap<String, Set<Long>>();
+	private Map<String, SortedSet<Long>> charSets = new HashMap<String, SortedSet<Long>>();
 	Map<Long, String> columnIndexToIDMap = new HashMap<Long, String>();
 	private Map<Long, String> columnIndexToStatesMap = new HashMap<Long, String>();
 	
-	private Set<String> tokenDefinitions = new HashSet<String>();
+	private Set<String> definedTokens = new HashSet<String>();
+	private Set<String> occuringTokens = new HashSet<String>();
 	
 	
 	public boolean isWriteCellsTags() {
@@ -75,11 +77,11 @@ public class NeXMLWriterAlignmentInformation {
 
 
 	public boolean hasTokenDefinitionSet() {
-		return !getIdToTokenSetInfoMap().isEmpty();
+		return !(getIDToTokenSetInfoMap().isEmpty() || (getIDToTokenSetInfoMap().size() == 1 && getIDToTokenSetInfoMap().containsKey(DEFAULT_TOKEN_DEFINITION_SET_ID)));
 	}
 
 
-	public Map<String, NeXMLWriterTokenSetInformation> getIdToTokenSetInfoMap() {
+	public Map<String, NeXMLWriterTokenSetInformation> getIDToTokenSetInfoMap() {
 		return idToTokenSetInfoMap;
 	}
 
@@ -89,7 +91,7 @@ public class NeXMLWriterAlignmentInformation {
 	}
 	
 
-	public Map<String, Set<Long>> getCharSets() {
+	public Map<String, SortedSet<Long>> getCharSets() {
 		return charSets;
 	}
 
@@ -104,7 +106,12 @@ public class NeXMLWriterAlignmentInformation {
 	}
 	
 
-	public Set<String> getTokenDefinitions() {
-		return tokenDefinitions;
+	public Set<String> getDefinedTokens() {
+		return definedTokens;
+	}
+
+
+	public Set<String> getOccuringTokens() {
+		return occuringTokens;
 	}
 }

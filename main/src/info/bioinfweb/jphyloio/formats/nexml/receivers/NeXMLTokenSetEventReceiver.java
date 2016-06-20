@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
@@ -48,14 +49,16 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	NeXMLWriterAlignmentInformation alignmentInfo;
+	String tokenSetID;
 	private Map<String, String> tokenNameToIDMap = new HashMap<String, String>();
 	private int tokenDefinitionIndex = 0;
 	
 	
-	public NeXMLTokenSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider) {
+	public NeXMLTokenSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterAlignmentInformation alignmentInfo,
+			String tokenSetID, NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
-		this.alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
+		this.alignmentInfo = alignmentInfo;
+		this.tokenSetID = tokenSetID;
 	}
 	
 	
@@ -113,8 +116,8 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 					getWriter().writeAttribute(ATTR_SINGLE_STATE_LINK.getLocalPart(), memberID);
 				}
 				else {
-					throw new JPhyloIOWriterException("The token definition set with the ID " + event.getID() 
-							+ " linked to the token definition ID " + memberID + " which does not exist in the document");
+					throw new InconsistentAdapterDataException("The token definition set with the ID \"" + event.getID() 
+							+ "\" linked to the token definition ID \"" + memberID + "\" of the token \"" + tokenDefinition + "\" which does not exist in the adapter data.");
 				}
 			}
 		}
@@ -154,7 +157,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 			}
 		}
 		
-//		getStreamDataProvider().getTokenTranslationMap().put(event.getTokenName(), tokenSymbol); //TODO put in map of right token set
+		alignmentInfo.getIDToTokenSetInfoMap().get(tokenSetID).getTokenTranslationMap().put(event.getTokenName(), tokenSymbol);
 		tokenNameToIDMap.put(tokenName, event.getID());
 		
 		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
@@ -179,7 +182,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 	
 	public void writeRemainingStandardTokenDefinitions() throws IOException, XMLStreamException {
-		Set<String> tokenNames = alignmentInfo.getTokenDefinitions();
+		Set<String> tokenNames = alignmentInfo.getOccuringTokens();
 		
 		for (String token : tokenNames) {
 			doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX),
@@ -196,10 +199,8 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
 					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH) 
-							&& !tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {
-						
+							&& !tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {						
 						getStreamDataProvider().addToDocumentIDs(tokenDefinitionEvent.getID());
-						alignmentInfo.getTokenDefinitions().add(tokenDefinitionEvent.getTokenName());
 						
 						switch (tokenDefinitionEvent.getTokenType()) {
 							case ATOMIC_STATE:

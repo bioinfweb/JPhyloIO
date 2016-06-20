@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -37,6 +38,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver {
 	NeXMLWriterAlignmentInformation alignmentInfo;
+	long columnCount = 0;
 	
 
 	public NeXMLSequenceTokensReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens,
@@ -88,8 +90,14 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 
 	@Override
 	protected void handleToken(String token, String label) throws XMLStreamException {
-//		String translatedToken = alignmentInfo.getTokenTranslationMap().get(token);
-		String translatedToken = token; //TODO how to determine which token set is valid for this token?
+		String translatedToken;
+		
+		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+			translatedToken = alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(columnCount)).getTokenTranslationMap().get(token);
+		}
+		else {
+			translatedToken = token;
+		}
 		
 		if (alignmentInfo.isWriteCellsTags()) {
 			getWriter().writeStartElement(TAG_CELL.getLocalPart());
@@ -103,7 +111,9 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 			if (isLongTokens()) {
 				getWriter().writeCharacters(" ");
 			}
-		}			
+		}
+		
+		columnCount++;
 	}
 
 

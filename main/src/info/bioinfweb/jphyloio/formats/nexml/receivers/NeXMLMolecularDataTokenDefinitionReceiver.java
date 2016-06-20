@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -53,32 +54,52 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 	private NeXMLTokenSetEventReceiver receiver;
 	private Set<Character> tokens = new HashSet<Character>();
 	NeXMLWriterAlignmentInformation alignmentInfo;
+	String tokenSetID;
 
 
-	public NeXMLMolecularDataTokenDefinitionReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider) {
+	public NeXMLMolecularDataTokenDefinitionReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterAlignmentInformation alignmentInfo,
+			String tokenSetID, NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
-		this.receiver = new NeXMLTokenSetEventReceiver(writer, parameterMap, streamDataProvider);
-		this.alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
+		this.receiver = new NeXMLTokenSetEventReceiver(writer, parameterMap, alignmentInfo, tokenSetID, streamDataProvider);
+		this.alignmentInfo = alignmentInfo;
+		this.tokenSetID = tokenSetID;
 	}
 
 
 	private void writeDNATokenDefinitions(NeXMLTokenSetEventReceiver receiver) throws IOException, XMLStreamException {
-		Set<Character> remainingTokens = SequenceUtils.getNucleotideCharacters();
+		LinkedHashSet<Character> remainingTokens = new LinkedHashSet<Character>();
+		
+		// Add atomic states first
+		for (int i = 0; i < SequenceUtils.DNA_CHARS.length(); i++) {
+			remainingTokens.add(SequenceUtils.DNA_CHARS.charAt(i));
+		}
+		for (Character state : SequenceUtils.getNucleotideCharacters()) {
+			remainingTokens.add(state);
+		}
+		
 		remainingTokens.removeAll(tokens);
 		remainingTokens.remove('U');
 
 		List<String> states = new ArrayList<String>();
 		for (int i = 0; i < SequenceUtils.DNA_CHARS.length(); i++) {
 			states.add(Character.toString(SequenceUtils.DNA_CHARS.charAt(i)));
-		}  //TODO Default tokens should be added to the set in the stream data provider instead of just writing them to the file here.
+		}
 
 		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.DNA, states);
 	}
 
 
 	private void writeRNATokenDefinitions(NeXMLTokenSetEventReceiver receiver) throws IOException, XMLStreamException {
-		Set<Character> remainingTokens = SequenceUtils.getNucleotideCharacters();
+		LinkedHashSet<Character> remainingTokens = new LinkedHashSet<Character>();
+		
+		// Add atomic states first
+		for (int i = 0; i < SequenceUtils.RNA_CHARS.length(); i++) {
+			remainingTokens.add(SequenceUtils.RNA_CHARS.charAt(i));
+		}
+		for (Character state : SequenceUtils.getNucleotideCharacters()) {
+			remainingTokens.add(state);
+		}
+		
 		remainingTokens.removeAll(tokens);
 		remainingTokens.remove('T');
 
@@ -92,7 +113,16 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 
 
 	private void writeAminoAcidTokenDefinitions(NeXMLTokenSetEventReceiver receiver) throws IOException, XMLStreamException {
-		Set<Character> remainingTokens = SequenceUtils.getAminoAcidOneLetterCodes(true);
+		LinkedHashSet<Character> remainingTokens = new LinkedHashSet<Character>();
+		
+		// Add atomic states first
+		for (Character state : SequenceUtils.getAminoAcidOneLetterCodes(false)) {
+			remainingTokens.add(state);
+		}
+		for (Character state : SequenceUtils.getAminoAcidOneLetterCodes(true)) {
+			remainingTokens.add(state);
+		}
+		
 		remainingTokens.removeAll(tokens);
 		remainingTokens.remove('J');
 
@@ -109,6 +139,7 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 			Collection<String> atomicStates) throws IOException, XMLStreamException {
 		List<String> constituents;
 		CharacterSymbolType type;
+		String tokenID;
 
 		for (Character token : remainingTokens) {
 			constituents = null;
@@ -147,7 +178,7 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends AbstractNeXMLData
 
 		if (alignmentType.equals(CharacterStateSetType.AMINO_ACID)) {
 			receiver.doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX),
-					"stop codon", Character.toString(SequenceUtils.STOP_CODON_CHAR), CharacterSymbolMeaning.OTHER, CharacterSymbolType.ATOMIC_STATE, null));
+					"stop codon", Character.toString(SequenceUtils.STOP_CODON_CHAR), CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
 			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		}
 	}
