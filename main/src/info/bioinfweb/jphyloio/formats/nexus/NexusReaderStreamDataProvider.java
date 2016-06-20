@@ -56,7 +56,6 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	public static final String INFO_KEY_ELEMENT_LIST = "info.bioinfweb.jphyloio.nexus.elementlist";
 	public static final String INFO_KEY_NEXUS_NAME_TO_ID_MAP = "info.bioinfweb.jphyloio.nexus.nameToIDMap";
 	public static final String INFO_CHARACTER_NAME_TO_INDEX_MAP = "info.bioinfweb.jphyloio.nexus.characters.characterNameToIndexMap";
-	public static final String INFO_SET_NAME_TO_ID_MAP = "info.bioinfweb.jphyloio.nexus.characters.setNameToIDMap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
 	
 	/** Used to Determine the lengths of character set intervals that shall reach until the end of a matrix. */

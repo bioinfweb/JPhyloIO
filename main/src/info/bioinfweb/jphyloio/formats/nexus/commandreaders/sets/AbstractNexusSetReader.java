@@ -23,7 +23,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
@@ -53,6 +52,9 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	//TODO Implement support for Nexus name references (to both objects and other sets). Calling the createEventsForName() method will be necessary.
 	//TODO Document in JavaDoc if any feature of the standard formats is not supported, when version 1.0 is released (e.g. "REMINDER").
 	
+	private static final String NULL_LINKED_ID = "$$$$$";
+	
+	
 	private EventContentType setType;
 	private String name = null;
 	private boolean isVectorFormat = false;
@@ -72,7 +74,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	 * @return the ID of the linked start element
 	 * @throws IOException
 	 */
-	protected abstract String getLinkedID() throws IOException;
+	protected abstract String getLinkedID();
 	
 	/**
 	 * Returns the number of elements which can potentially be contained in this set (e.g. the number of declared taxa or the number
@@ -81,7 +83,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	 * @return the number of elements or -1 if the number is currently undefined (e.g. if no block is linked to the current 
 	 *         {@code SETS} block
 	 */
-	protected abstract long getElementCount() throws IOException;
+	protected abstract long getElementCount();
 	
 	/**
 	 * Creates the event(s) representing the specified interval in the current set type
@@ -105,14 +107,22 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 		return reader.peekString(name.length()).toUpperCase().equals(name);
 	}
 	
+	
+	private String getKeyFromLinkedID() {
+		String result = getLinkedID();
+		if (result == null) {
+			result = NULL_LINKED_ID;  // Just for the case that no linked and no default linked block is present. 
+		}
+		return result;
+	}
+	
 
-	@SuppressWarnings("unchecked")
 	private void addStartEvent(String name) throws IOException {
 		LinkedLabeledIDEvent event = new LinkedLabeledIDEvent(setType, DEFAULT_GENERAL_ID_PREFIX + 
 				getStreamDataProvider().getIDManager().createNewID(), name,	getLinkedID());
 		getStreamDataProvider().getCurrentEventCollection().add(event);
-		((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).put(
-				event.getLabel(), event.getID());  //TODO Equal names for sets with different types could be allowed, by adding a prefix to the key or using a key object.
+		
+		getStreamDataProvider().getNexusNameToIDMap(setType, getKeyFromLinkedID()).put(event.getLabel(), event.getID());
 	}
 	
 	
@@ -228,8 +238,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 							"' is not allowed as the first index of an interval in a Nexus set defintion.", reader);
 				}
 				else if (start == -1) {
-					@SuppressWarnings("unchecked")
-					String setID = ((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).get(word);
+					String setID = getStreamDataProvider().getNexusNameToIDMap(setType, getKeyFromLinkedID()).get(word); 
 					if (setID != null) {
 						getStreamDataProvider().getCurrentEventCollection().add(new SetElementEvent(setID, setType));
 						consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);

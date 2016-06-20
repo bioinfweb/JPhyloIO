@@ -20,58 +20,46 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets;
 
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
-import info.bioinfweb.jphyloio.events.SetElementEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
 
 
-public class TaxSetReader extends AbstractNexusSetReader implements NexusConstants, ReadWriteConstants {
+public class TreeSetReader extends AbstractNexusSetReader implements NexusConstants, ReadWriteConstants {
 	// No default SETS block is ever specified using BlockTitleToIDMap.putDefaultBlockID() since there is no JPhyloIO event that models
 	// a sets block.
 
-	public TaxSetReader(NexusReaderStreamDataProvider streamDataProvider) {
-		super(EventContentType.OTU_SET, COMMAND_NAME_TAXON_SET, new String[]{BLOCK_NAME_SETS}, streamDataProvider);
+	public TreeSetReader(NexusReaderStreamDataProvider streamDataProvider) {
+		super(EventContentType.TREE_NETWORK_SET, COMMAND_NAME_TREE_SET, new String[]{BLOCK_NAME_SETS}, streamDataProvider);
 	}
 
 	
 	@Override
 	protected String getLinkedID() {
-		return getStreamDataProvider().getCurrentLinkedBlockID(BLOCK_NAME_TAXA);
+		return getStreamDataProvider().getCurrentLinkedBlockID(BLOCK_NAME_TREES);
 	}
 
-	
+
 	@Override
 	protected long getElementCount() {
-		return getStreamDataProvider().getElementList(EventContentType.OTU, getLinkedID()).size();
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-	
+
 	@Override
 	protected void createEventsForInterval(long start, long end) throws IOException {
-		if (end > Integer.MAX_VALUE) {
-			throw new JPhyloIOReaderException("This reader implementation does not support taxon sets in Nexus files that contain more than "
-					+ Integer.MAX_VALUE + " elements.", getStreamDataProvider().getDataReader());
-		}
-		else {
-			List<String> taxa = getStreamDataProvider().getElementList(EventContentType.OTU, getLinkedID());
-			Map<String, String> namesToIDMap = getStreamDataProvider().getNexusNameToIDMap(EventContentType.OTU, getLinkedID());
-			for (int i = (int)start; i < end; i++) {
-				getStreamDataProvider().getCurrentEventCollection().add(new SetElementEvent(namesToIDMap.get(taxa.get(i)), EventContentType.OTU));
-				//TODO If map returns null, the error message from the constructor will be thrown, which may not be sufficient for the end user.
-			}
-		}
+		// TODO Auto-generated method stub
+		
 	}
 
-	
+
 	@Override
 	protected long elementIndexByName(String name) {
-		return getStreamDataProvider().getElementList(EventContentType.OTU, getLinkedID()).indexOf(name);  //TODO Increase performance by using an ID to index map?
-	}
+		// TODO Auto-generated method stub
+		return 0;
+	}	
 }
