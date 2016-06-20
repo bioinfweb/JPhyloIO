@@ -25,8 +25,10 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectData;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -90,6 +92,12 @@ public class NexusEventWriterTest implements NexusConstants {
 		matrix.setLinkedOTUsID("otus0");
 		matrix.setTokenSets(new TestSingleTokenSetAdapter());
 		
+		StoreObjectListDataAdapter<CharacterDefinitionEvent> characterDefinitions = new StoreObjectListDataAdapter<CharacterDefinitionEvent>();
+		characterDefinitions.setObjectStartEvent(new CharacterDefinitionEvent("charDef0", "col0", 0));
+		characterDefinitions.setObjectStartEvent(new CharacterDefinitionEvent("charDef2", "col2", 2));
+		characterDefinitions.setObjectStartEvent(new CharacterDefinitionEvent("charDef3", "col3", 3));
+		matrix.setCharacterDefinitions(characterDefinitions);
+		
 		StoreTreeNetworkGroupDataAdapter treeGroup1 = new StoreTreeNetworkGroupDataAdapter(null, 
 				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX, null, null));
 		StoreTreeNetworkGroupDataAdapter treeGroup2 = new StoreTreeNetworkGroupDataAdapter(null, 
@@ -133,6 +141,10 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\tLINK TAXA=OTU_list_0;", reader.readLine());
 			assertEquals("\tDIMENSIONS NTAX=3 NCHAR=5;", reader.readLine());
 			assertEquals("\tFORMAT DATATYPE=DNA GAP=- MISSING=? MATCHCHAR=. SYMBOLS=\"A T C G\" NOTOKENS;", reader.readLine());
+			assertEquals("\tCHARSTATELABELS", reader.readLine());
+			assertEquals("\t\t\t0 col0,", reader.readLine());
+			assertEquals("\t\t\t2 col2,", reader.readLine());
+			assertEquals("\t\t\t3 col3;", reader.readLine());
 			assertEquals("\tMATRIX", reader.readLine());
 			assertEquals("\t\t\tOTU_otu0 ACT[comment 1]GC", reader.readLine());
 			assertEquals("\t\t\tOTU_otu1 A-TCC", reader.readLine());
