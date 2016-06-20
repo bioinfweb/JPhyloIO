@@ -48,6 +48,7 @@ import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLMetaDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLMolecularDataTokenDefinitionReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLSequenceMetaDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLSequenceTokensReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLSetContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLTokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
@@ -166,6 +167,25 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
+	private void writeSet(String setElementAttribute, ObjectListDataAdapter<LinkedLabeledIDEvent> setAdapter) 
+			throws XMLStreamException, IllegalArgumentException, IOException {
+		NeXMLSetContentReceiver receiver = new NeXMLSetContentReceiver(getXMLWriter(), getParameters(), streamDataProvider);
+		Iterator<String> setIDIterator = setAdapter.getIDIterator();
+		while (setIDIterator.hasNext()) {
+			String setID = setIDIterator.next();
+			
+			getXMLWriter().writeStartElement(TAG_SET.getLocalPart());
+			streamDataProvider.writeLabeledIDAttributes(setAdapter.getObjectStartEvent(setID));
+			
+			setAdapter.writeContentData(receiver, setID);
+			getXMLWriter().writeAttribute(setElementAttribute, streamDataProvider.getCurrentSetElements().toString());			
+			streamDataProvider.getCurrentSetElements().delete(0, streamDataProvider.getCurrentSetElements().length());
+			
+			getXMLWriter().writeEndElement();
+		}
+	}
+	
+	
 	private void writeOTUSTags(DocumentDataAdapter document) throws IOException, XMLStreamException {
 		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
 		if (otusIterator.hasNext()) {
@@ -209,6 +229,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			streamDataProvider.writeLabeledIDAttributes(new LabeledIDEvent(EventContentType.OTU, UNDEFINED_OTU_ID, UNDEFINED_OTU_LABEL));
 			getXMLWriter().writeEndElement();
 		}
+		
+		writeSet(ATTR_OTU_SET_LINKED_IDS.getLocalPart(), otuList.getOTUSets());
 
 		getXMLWriter().writeEndElement();
 	}
@@ -321,6 +343,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		while (sequenceIDIterator.hasNext()) {
 			writeRowTag(alignment.getSequenceStartEvent(sequenceIDIterator.next()), alignment);
 		}
+		
+		writeSet(ATTR_SEQUENCE_SET_LINKED_IDS.getLocalPart(), alignment.getSequenceSets());
 
 		getXMLWriter().writeEndElement();
 		getXMLWriter().writeEndElement();

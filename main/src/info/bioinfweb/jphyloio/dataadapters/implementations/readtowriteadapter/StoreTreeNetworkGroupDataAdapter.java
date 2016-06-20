@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
 import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -61,7 +60,7 @@ public class StoreTreeNetworkGroupDataAdapter extends StoreAnnotatedDataAdapter<
 
 
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets() {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets() {
 		return treeAndNetworkSets;
 	}
 }

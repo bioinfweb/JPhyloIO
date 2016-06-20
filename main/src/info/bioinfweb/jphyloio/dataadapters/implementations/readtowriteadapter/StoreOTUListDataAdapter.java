@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
@@ -41,6 +40,7 @@ public class StoreOTUListDataAdapter extends StoreAnnotatedDataAdapter<LabeledID
 		super(annotations);
 		this.listStartEvent = listStartEvent;
 		this.otus = new StoreObjectListDataAdapter<LabeledIDEvent>();
+		this.otuSets =  new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	}
 	
 	
@@ -85,7 +85,7 @@ public class StoreOTUListDataAdapter extends StoreAnnotatedDataAdapter<LabeledID
 
 
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
 		return otuSets;
 	}
 }

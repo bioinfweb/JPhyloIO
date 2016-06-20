@@ -158,13 +158,13 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 
 
 	@Override
-	public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions() {
+	public StoreObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions() {
 		return characterDefinitions;
 	}
 
 
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets() {		
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets() {		
 		return sequenceSets;
 	}
 }

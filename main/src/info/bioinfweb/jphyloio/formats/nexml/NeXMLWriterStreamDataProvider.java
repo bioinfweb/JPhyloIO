@@ -52,6 +52,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private StringBuffer commentContent = new StringBuffer();
 	private boolean literalContentIsContinued = false;
 	
+	private StringBuffer currentSetElements = new StringBuffer();
+	
 	private boolean hasOTUList = true;
 	private boolean writeUndefinedOTU = false;
 	private boolean writeUndefinedOtuList = false;
@@ -154,6 +156,11 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public void setLiteralContentIsContinued(boolean literalContentIsContinued) {
 		this.literalContentIsContinued = literalContentIsContinued;
+	}
+
+
+	public StringBuffer getCurrentSetElements() {
+		return currentSetElements;
 	}
 
 

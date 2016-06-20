@@ -28,14 +28,27 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
 /**
  * Abstract implementation of {@link MatrixDataAdapter}, which returns empty object list adapters
- * for {@link #getTokenSets()} and {@link #getCharacterSets()}. Additionally an empty implementation
+ * for {@link #getTokenSets()}, {@link #getSequenceSets()}, {@link #getCharacterSets()}. Additionally an empty implementation
  * of {@link #writeMetadata(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver)} is inherited.
  * <p>
- * Application adapters that do not provide any token or character sets can be inherited from this class.
+ * Application adapters that do not provide any token, sequence or character sets can be inherited from this class.
  * 
  * @author Ben St&ouml;ver
  */
 public abstract class NoSetsMatrixDataAdapter extends EmptyAnnotatedDataAdapter<LinkedLabeledIDEvent> implements MatrixDataAdapter {
+	/**
+	 * Default implementation that always returns an empty object list adapter 
+	 * 
+	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
+	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getTokenSets()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets() {
+		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
+	}
+	
+	
 	/**
 	 * Default implementation that always returns an empty object list adapter 
 	 * 
