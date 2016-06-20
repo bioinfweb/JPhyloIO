@@ -191,17 +191,6 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	}
 	
 	
-	private void consumeWhiteSpaceAndComments(Collection<JPhyloIOEvent> buffer) throws IOException {
-		getStreamDataProvider().setCurrentEventCollection(buffer);  // Whitespace and comments need to be consumed here to be able to test whether SET_REGULAR_INTERVAL_SYMBOL is next. Events cannot be fired directly, because if no SET_REGULAR_INTERVAL_SYMBOL follows, the comments should be fired after the interval event below.
-		try {
-			getStreamDataProvider().consumeWhiteSpaceAndComments();
-		}
-		finally {
-			getStreamDataProvider().resetCurrentEventCollection();
-		}
-	}
-	
-	
 	private long readIndex(String word, long finalIndex) {
 		if (word.equals(Character.toString(SET_END_INDEX_SYMBOL))) {
 			return finalIndex;
@@ -255,7 +244,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 					String setID = setIDByName(word);
 					if (setID != null) {
 						getStreamDataProvider().getCurrentEventCollection().add(new SetElementEvent(setID, setType));
-						consumeWhiteSpaceAndComments(savedCommentEvents);
+						consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
 						if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {
 							throw new UnsupportedFormatFeatureException("Specifying regular intervals for a referenced Nexus set (using '" + 
 									SET_REGULAR_INTERVAL_SYMBOL + "') is currently not supported by this reader.", reader);
@@ -267,17 +256,17 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 					}
 				}
 				else {
-					consumeWhiteSpaceAndComments(savedCommentEvents);
+					consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
 					end = start;  // Definitions like "1-2 4 6-7" are allowed.
 					if (reader.peekChar() == SET_TO_SYMBOL) {
 						reader.skip(1);  // Consume '-'
-						consumeWhiteSpaceAndComments(savedCommentEvents);
+						consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
 						word = getStreamDataProvider().readNexusWord();
 						end = readIndex(word, finalIndex);
 						if (end == -1) {
 							throw createUnknownElementCountException(reader);
 						}
-						consumeWhiteSpaceAndComments(savedCommentEvents);
+						consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
 					}
 					
 				}
@@ -286,7 +275,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 			if (start >= 0) {  // Otherwise a set reference was already written.
 				if (reader.peekChar() == SET_REGULAR_INTERVAL_SYMBOL) {  //TODO Throw exception, if this construct is used together with a reference to another set. (A special UnsupportedFeatureException could be implemented for such cases.)
 					reader.skip(1);  // Consume '\'
-					consumeWhiteSpaceAndComments(savedCommentEvents);
+					consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
 					long interval = getStreamDataProvider().readPositiveInteger(-1);
 					if (end == -2) {
 						throw createUnknownElementCountException(reader);

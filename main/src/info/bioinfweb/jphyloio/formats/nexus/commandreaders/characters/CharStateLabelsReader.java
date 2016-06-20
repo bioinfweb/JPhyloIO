@@ -20,10 +20,13 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
@@ -45,12 +48,12 @@ public class CharStateLabelsReader extends AbstractCharLabelsReader implements N
 	}
 	
 	
-	private boolean consumeStateNames() throws IOException {
+	private boolean consumeStateNames(Collection<JPhyloIOEvent> savedCommentEvents) throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
 		boolean result = reader.peekChar() == CHARACTER_NAME_STATES_SEPARATOR;
 		if (result) {  // No character label, only state names.
 			reader.skip(1);  // Consume '/'.
-			getStreamDataProvider().consumeWhiteSpaceAndComments();
+			consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
 			
 			char c = reader.peekChar();
 			while ((c != ELEMENT_SEPARATOR) && (c != COMMAND_END)) {
@@ -59,7 +62,7 @@ public class CharStateLabelsReader extends AbstractCharLabelsReader implements N
 					throw new JPhyloIOReaderException("The character '" + c + "' is invalid at this position inside a Nexus " + 
 							COMMAND_NAME_CHAR_STATE_LABELS + " command.", reader);
 				}
-				getStreamDataProvider().consumeWhiteSpaceAndComments();
+				consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
 				c = reader.peekChar();
 			}
 		}
@@ -69,15 +72,16 @@ public class CharStateLabelsReader extends AbstractCharLabelsReader implements N
 	
 	@Override
 	protected boolean doReadNextEvent() throws IOException {
-		//TODO Buffer comment events
+		Collection<JPhyloIOEvent> savedCommentEvents = new ArrayList<JPhyloIOEvent>();
+		boolean result = true;
 		boolean eventCreated = false;
-		while (!eventCreated) {
+		while (result && !eventCreated) {
 			PeekReader reader = getStreamDataProvider().getDataReader();
-			getStreamDataProvider().consumeWhiteSpaceAndComments();
+			consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
 			if (reader.peek() == COMMAND_END) {
 				getStreamDataProvider().getDataReader().skip(1);  // Consume ';'.
 				setAllDataProcessed(true);
-				return false;
+				result = false;
 			}
 			else if ((reader.peek() == KEY_VALUE_SEPARATOR)) {  // This two characters would prevent reading a Nexus word and are illegal in this command.
 				throw new JPhyloIOReaderException("The character " + getStreamDataProvider().getDataReader().readChar() + " is not allowed in the Nexus "
@@ -90,13 +94,14 @@ public class CharStateLabelsReader extends AbstractCharLabelsReader implements N
 							COMMAND_NAME_CHAR_STATE_LABELS + " command.", reader);
 				}
 				else {
-					getStreamDataProvider().consumeWhiteSpaceAndComments();
-					eventCreated = !consumeStateNames(); 
+					consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
+					eventCreated = !consumeStateNames(savedCommentEvents); 
 					if (eventCreated) {  // Character label not omitted.
 						String characterName = getStreamDataProvider().readNexusWord();
 						if (!characterName.equals("")) { 
 							addCharacterDefinition(characterName, index - 1);  // Nexus indices start with 1.
-							consumeStateNames();
+							consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);
+							consumeStateNames(savedCommentEvents);
 						}
 						else {
 							throw new JPhyloIOReaderException("The character '" + reader.peekChar() + "' is invalid at this position inside a Nexus " + 
@@ -109,7 +114,9 @@ public class CharStateLabelsReader extends AbstractCharLabelsReader implements N
 					}
 				}
 			}
+			getStreamDataProvider().getCurrentEventCollection().addAll(savedCommentEvents);
+			savedCommentEvents.clear();
 		}
-		return true;
+		return result;
 	}
 }

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders;
 
 
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
 import java.io.IOException;
@@ -95,6 +96,17 @@ public abstract class AbstractNexusCommandEventReader implements NexusCommandEve
 	}
 
 
+	protected void consumeWhiteSpaceAndCommentsToBuffer(Collection<JPhyloIOEvent> buffer) throws IOException {
+		getStreamDataProvider().setCurrentEventCollection(buffer);  // Whitespace and comments need to be consumed here to be able to test whether SET_REGULAR_INTERVAL_SYMBOL is next. Events cannot be fired directly, because if no SET_REGULAR_INTERVAL_SYMBOL follows, the comments should be fired after the interval event below.
+		try {
+			getStreamDataProvider().consumeWhiteSpaceAndComments();
+		}
+		finally {
+			getStreamDataProvider().resetCurrentEventCollection();
+		}
+	}
+	
+	
 	protected abstract boolean doReadNextEvent() throws IOException;
 	
 	
