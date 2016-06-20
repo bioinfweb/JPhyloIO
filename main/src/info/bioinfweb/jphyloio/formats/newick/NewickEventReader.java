@@ -61,7 +61,7 @@ public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamD
 	
 	
 	private void init() {
-		newickStringReader = new NewickStringReader(getStreamDataProvider(), null, new DefaultNewickReaderNodeLabelProcessor());
+		newickStringReader = new NewickStringReader(getStreamDataProvider(), null, null, new DefaultNewickReaderNodeLabelProcessor());
 	}
 	
 	

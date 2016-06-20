@@ -84,6 +84,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	private static final int ONE_HOT_COMMENT_READ = -1;	
 	
 	private TextReaderStreamDataProvider<?> streamDataProvider;
+	private String treeID;
 	private String treeLabel;
 	private NewickReaderNodeLabelProcessor nodeLabelProcessor;
 	private NewickScanner scanner;
@@ -104,7 +105,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	 * @param nodeLabelProcessor the node label processor to be used to possibly translate node labels in Newick strings
 	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
-	public NewickStringReader(TextReaderStreamDataProvider<?> streamDataProvider, String treeLabel, 
+	public NewickStringReader(TextReaderStreamDataProvider<?> streamDataProvider, String treeID, String treeLabel, 
 			NewickReaderNodeLabelProcessor nodeLabelProcessor) {
 		
 		super();
@@ -117,6 +118,12 @@ public class NewickStringReader implements ReadWriteConstants {
 		}
 		
 		this.streamDataProvider = streamDataProvider;
+		if (treeID == null) {
+			this.treeID = DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+		}
+		else {
+			this.treeID = treeID;
+		}
 		this.treeLabel = treeLabel;
 		this.nodeLabelProcessor = nodeLabelProcessor;
 		
@@ -289,7 +296,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	
 	private void endTree() {
 		addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
-		streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.TREE, EventTopologyType.END));  // End of file without terminal symbol.
+		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));  // End of file without terminal symbol.
 		isInTree = false;
 	}
 	
@@ -383,8 +390,7 @@ public class NewickStringReader implements ReadWriteConstants {
 					addCommentEvent(scanner.nextToken());
 				}
 				else {
-					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, 
-							DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), treeLabel));
+					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, treeID, treeLabel));
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 						boolean currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 						scanner.nextToken();  // Skip rooted token.

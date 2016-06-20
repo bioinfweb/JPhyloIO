@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
@@ -48,11 +49,18 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 		try {
 			if (newickStringReader == null) {  // First call
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
-				String label = getStreamDataProvider().readNexusWord();
+				String treeLabel = getStreamDataProvider().readNexusWord();
 				getStreamDataProvider().consumeWhiteSpaceAndComments();
+				
+				String treeGroupID = getStreamDataProvider().getSharedInformationMap().getString(
+						NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID);
+				getStreamDataProvider().getElementList(EventContentType.TREE, treeGroupID).add(treeLabel);
+				String treeID = DEFAULT_TREE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
+				getStreamDataProvider().getNexusNameToIDMap(EventContentType.TREE, treeGroupID).put(treeLabel, treeID);
+				
 				if (reader.peekChar() == KEY_VALUE_SEPARATOR) {
 					reader.read();  // Skip KEY_VALUE_SEPARATOR.
-					newickStringReader = new NewickStringReader(getStreamDataProvider(), label, 
+					newickStringReader = new NewickStringReader(getStreamDataProvider(), treeID, treeLabel, 
 							new NexusNewickReaderNodeLabelProcessor(getStreamDataProvider()));
 				}
 				else {

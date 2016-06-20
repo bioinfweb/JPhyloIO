@@ -361,7 +361,7 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 		else if ((char)nextChar == COMMAND_END) {
 			reader.skip(1);  // Consume ';'.
 			setAllDataProcessed(true);
-			getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, true));
+			getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(setType, true));
 			return isFirstCall;
 		}
 		else {
