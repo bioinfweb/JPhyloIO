@@ -507,7 +507,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 
 	
-	
 	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, long alignmentLength, 
 			String extensionToken)	throws IOException {
 		

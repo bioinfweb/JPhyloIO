@@ -434,6 +434,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		streamDataProvider.setIDIndex(0);
 		
+		//TODO Adjust to use character definition events from alignment, if available. 
 		for (long i = 0; i < alignmentInfo.getAlignmentLength(); i++) {
 			String charID = streamDataProvider.createNewID(ReadWriteConstants.DEFAULT_CHARACTER_DEFINITION_ID_PREFIX);
 			alignmentInfo.getColumnIndexToIDMap().put(i, charID);
