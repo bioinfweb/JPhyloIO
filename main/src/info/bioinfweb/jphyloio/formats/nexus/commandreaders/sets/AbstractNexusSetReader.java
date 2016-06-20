@@ -23,6 +23,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.text.StringUtils;
@@ -65,14 +66,6 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	
 	
 	/**
-	 * Called by this implementation after the start event for this set was created.
-	 * 
-	 * @param event the start event of this set that has just been created
-	 * @throws IOException
-	 */
-	protected abstract void onCreateStartEvent(LinkedLabeledIDEvent event) throws IOException;  //TODO Should this allow throwing an exception
-	
-	/**
 	 * Returns the ID if the object that is linked to this set (e.g. an alignment start event related to a character set
 	 * or an OTU list related to an OTU set)
 	 * 
@@ -107,25 +100,20 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 	 */
 	protected abstract long elementIndexByName(String name);
 	
-	/**
-	 * Converts the Nexus name of a set to its <i>JPhyloIO</i> ID.
-	 * 
-	 * @param name the Nexus name of referenced set
-	 * @return the <i>JPhyloIO</i> ID to the specified name or {@code null} if no set with the specified name could be found
-	 */
-	protected abstract String setIDByName(String name);
-	
 	
 	private boolean checkFormatName(PeekReader reader, String name) {
 		return reader.peekString(name.length()).toUpperCase().equals(name);
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	private void addStartEvent(String name) throws IOException {
 		LinkedLabeledIDEvent event = new LinkedLabeledIDEvent(setType, DEFAULT_GENERAL_ID_PREFIX + 
 				getStreamDataProvider().getIDManager().createNewID(), name,	getLinkedID());
 		getStreamDataProvider().getCurrentEventCollection().add(event);
-		onCreateStartEvent(event);
+		((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).put(
+				event.getLabel(), event.getID());  //TODO Equal names for sets with different types could be allowed, by adding a prefix to the key or using a key object.
+		//onCreateStartEvent(event);
 	}
 	
 	
@@ -241,7 +229,8 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 							"' is not allowed as the first index of an interval in a Nexus set defintion.", reader);
 				}
 				else if (start == -1) {
-					String setID = setIDByName(word);
+					@SuppressWarnings("unchecked")
+					String setID = ((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).get(word);
 					if (setID != null) {
 						getStreamDataProvider().getCurrentEventCollection().add(new SetElementEvent(setID, setType));
 						consumeWhiteSpaceAndCommentsToBuffer(savedCommentEvents);

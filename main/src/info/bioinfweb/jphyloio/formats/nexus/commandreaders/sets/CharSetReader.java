@@ -19,14 +19,12 @@
 package info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets;
 
 
-import java.io.IOException;
 import java.util.Map;
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
@@ -46,14 +44,6 @@ public class CharSetReader extends AbstractNexusSetReader implements NexusConsta
 		super(EventContentType.CHARACTER_SET, COMMAND_NAME_CHAR_SET, new String[]{BLOCK_NAME_SETS}, streamDataProvider);
 	}
 	
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void onCreateStartEvent(LinkedLabeledIDEvent event) {
-		((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).put(
-				event.getLabel(), event.getID());
-	}
-
 
 	@Override
 	protected long getElementCount() {
@@ -89,12 +79,5 @@ public class CharSetReader extends AbstractNexusSetReader implements NexusConsta
 		else {
 			return -1;
 		}
-	}
-
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected String setIDByName(String name) {
-		return ((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).get(name);
 	}
 }

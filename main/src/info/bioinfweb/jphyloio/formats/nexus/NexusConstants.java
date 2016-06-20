@@ -63,6 +63,7 @@ public interface NexusConstants {
 	public static final String COMMAND_NAME_TRANSLATE = "TRANSLATE";
 	public static final String COMMAND_NAME_TREE = "TREE";
 	public static final String COMMAND_NAME_CHAR_SET = "CHARSET";
+	public static final String COMMAND_NAME_TAXON_SET = "TAXSET";
 	
 	public static final String DIMENSIONS_SUBCOMMAND_NEW_TAXA = "NEWTAXA";
 	public static final String DIMENSIONS_SUBCOMMAND_NTAX = "NTAX";
