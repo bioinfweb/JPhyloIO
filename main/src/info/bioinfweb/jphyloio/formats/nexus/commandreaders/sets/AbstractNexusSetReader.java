@@ -113,7 +113,6 @@ public abstract class AbstractNexusSetReader extends AbstractNexusCommandEventRe
 		getStreamDataProvider().getCurrentEventCollection().add(event);
 		((Map<String, String>)getStreamDataProvider().getMap(NexusReaderStreamDataProvider.INFO_SET_NAME_TO_ID_MAP)).put(
 				event.getLabel(), event.getID());  //TODO Equal names for sets with different types could be allowed, by adding a prefix to the key or using a key object.
-		//onCreateStartEvent(event);
 	}
 	
 	
