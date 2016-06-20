@@ -16,16 +16,13 @@ BEGIN SETS;
   TITLE sets1;
   LINK TAXA=taxa2;
   TAXSET set1 = 2-3 5;
-  TAXSET set2 = A set1;
-  TAXSET set3 = 00110;
-  TAXSET set4 = C-.;
+  TAXSET set2 = t1 set1;
+  TAXSET set3 VECTOR = 00110;
+  TAXSET set4 = t3-.;
   TAXSET set5 = ALL\2;
-  TAXSET set6 = . - B;
-  [See "List" on page 619 of the Nexus paper for details.]
 END;
 
 BEGIN SETS;
   TITLE sets2;
-  [Should be linked to the first TAXA block by default.]
   TAXSET otherSet = 3 - 5; 
 END;

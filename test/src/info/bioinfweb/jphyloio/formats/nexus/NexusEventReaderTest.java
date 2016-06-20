@@ -1714,4 +1714,83 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			reader.close();
 		}
 	}
+
+
+	@Test
+	public void testReadingTaxSets() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TaxSets.nex"), new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			// TAXA 1:
+			String otusID1 = assertLabeledIDEvent(EventContentType.OTU_LIST, null, "taxa1", reader).getID();
+			String otuIDA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDD = assertLabeledIDEvent(EventContentType.OTU, null, "D", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDE = assertLabeledIDEvent(EventContentType.OTU, null, "E", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
+			// TAXA 2:
+			String otusID2 = assertLabeledIDEvent(EventContentType.OTU_LIST, null, "taxa2", reader).getID();
+			String otuIDT1 = assertLabeledIDEvent(EventContentType.OTU, null, "t1", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDT2 = assertLabeledIDEvent(EventContentType.OTU, null, "t2", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDT3 = assertLabeledIDEvent(EventContentType.OTU, null, "t3", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDT4 = assertLabeledIDEvent(EventContentType.OTU, null, "t4", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDT5 = assertLabeledIDEvent(EventContentType.OTU, null, "t5", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
+			// SETS 1:
+			String setID1 = assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set1", otusID2, reader);
+			assertSetElementEvent(otuIDT2, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDT3, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDT5, EventContentType.OTU, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set2", otusID2, reader);
+			assertSetElementEvent(otuIDT1, EventContentType.OTU, reader);
+			assertSetElementEvent(setID1, EventContentType.OTU_SET, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set3", otusID2, reader);
+			assertSetElementEvent(otuIDT3, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDT4, EventContentType.OTU, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set4", otusID2, reader);
+			assertSetElementEvent(otuIDT3, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDT4, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDT5, EventContentType.OTU, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "set5", otusID2, reader);
+			assertSetElementEvent(otuIDT1, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDT3, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDT5, EventContentType.OTU, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			
+			// SETS 2:
+			assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, "otherSet", otusID1, reader);
+			assertSetElementEvent(otuIDC, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDD, EventContentType.OTU, reader);
+			assertSetElementEvent(otuIDE, EventContentType.OTU, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
+			
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }
