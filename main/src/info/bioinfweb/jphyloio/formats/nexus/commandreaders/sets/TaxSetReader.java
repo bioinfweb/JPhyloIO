@@ -49,7 +49,7 @@ public class TaxSetReader extends AbstractNexusSetReader implements NexusConstan
 	
 	@Override
 	protected long getElementCount() throws IOException {
-		return getStreamDataProvider().getTaxaList(getLinkedID()).size();
+		return getStreamDataProvider().getElementList(EventContentType.OTU, getLinkedID()).size();
 	}
 
 	
@@ -60,8 +60,8 @@ public class TaxSetReader extends AbstractNexusSetReader implements NexusConstan
 					+ Integer.MAX_VALUE + " elements.", getStreamDataProvider().getDataReader());
 		}
 		else {
-			List<String> taxa = getStreamDataProvider().getTaxaList(getLinkedID());
-			Map<String, String> namesToIDMap = getStreamDataProvider().getTaxaToIDMap(getLinkedID());
+			List<String> taxa = getStreamDataProvider().getElementList(EventContentType.OTU, getLinkedID());
+			Map<String, String> namesToIDMap = getStreamDataProvider().getNexusNameToIDMap(EventContentType.OTU, getLinkedID());
 			for (int i = (int)start; i < end; i++) {
 				getStreamDataProvider().getCurrentEventCollection().add(new SetElementEvent(namesToIDMap.get(taxa.get(i)), EventContentType.OTU));
 				//TODO If map returns null, the error message from the constructor will be thrown, which may not be sufficient for the end user.
@@ -72,6 +72,6 @@ public class TaxSetReader extends AbstractNexusSetReader implements NexusConstan
 	
 	@Override
 	protected long elementIndexByName(String name) {
-		return getStreamDataProvider().getTaxaList(getLinkedID()).indexOf(name);  //TODO Increase performance by using an ID to index map?
+		return getStreamDataProvider().getElementList(EventContentType.OTU, getLinkedID()).indexOf(name);  //TODO Increase performance by using an ID to index map?
 	}
 }

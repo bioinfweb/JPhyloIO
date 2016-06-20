@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees;
 import java.util.Collections;
 import java.util.List;
 
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.newick.NewickReaderNodeLabelProcessor;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
@@ -51,7 +52,7 @@ public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabe
 				taxaList = Collections.emptyList();
 			}
 			else {
-				taxaList = streamDataProvider.getTaxaList(linkedOTUsID);
+				taxaList = streamDataProvider.getElementList(EventContentType.OTU, linkedOTUsID);
 			}
 			
 			String result = table.get(originalLabel);
@@ -87,7 +88,7 @@ public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabe
 				return null;
 			}
 			else {
-				return streamDataProvider.getTaxaToIDMap(linkedOTUsID).get(processedLabel);
+				return streamDataProvider.getNexusNameToIDMap(EventContentType.OTU, linkedOTUsID).get(processedLabel);
 			}
 		}
 	}

@@ -81,8 +81,8 @@ public class TaxLabelsReader extends AbstractNexusCommandEventReader implements 
 					String taxon = getStreamDataProvider().readNexusWord();
 					String id = DEFAULT_OTU_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
 					
-					getStreamDataProvider().getTaxaList(currentListID).add(taxon);
-					getStreamDataProvider().getTaxaToIDMap(currentListID).put(taxon, id);
+					getStreamDataProvider().getElementList(EventContentType.OTU, currentListID).add(taxon);
+					getStreamDataProvider().getNexusNameToIDMap(EventContentType.OTU, currentListID).put(taxon, id);
 					
 					getStreamDataProvider().getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, id, taxon));
 					getStreamDataProvider().getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.OTU, EventTopologyType.END));

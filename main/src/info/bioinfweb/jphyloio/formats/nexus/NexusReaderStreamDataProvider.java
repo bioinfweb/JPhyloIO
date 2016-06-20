@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.all.BlockTitleToIDMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.NexusTranslationTable;
@@ -52,8 +53,8 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	
 	public static final String INFO_KEY_BLOCK_LINKS = "info.bioinfweb.jphyloio.nexus.blockLinks";
 	public static final String INFO_KEY_BLOCK_ID_MAP = "info.bioinfweb.jphyloio.nexus.taxa.blockTitleToIDMap";
-	public static final String INFO_KEY_TAXA_LIST = "info.bioinfweb.jphyloio.nexus.taxa.list";
-	public static final String INFO_KEY_TAXA_MAP = "info.bioinfweb.jphyloio.nexus.taxa.taxaIDMap";
+	public static final String INFO_KEY_ELEMENT_LIST = "info.bioinfweb.jphyloio.nexus.elementlist";
+	public static final String INFO_KEY_NEXUS_NAME_TO_ID_MAP = "info.bioinfweb.jphyloio.nexus.nameToIDMap";
 	public static final String INFO_CHARACTER_NAME_TO_INDEX_MAP = "info.bioinfweb.jphyloio.nexus.characters.characterNameToIndexMap";
 	public static final String INFO_SET_NAME_TO_ID_MAP = "info.bioinfweb.jphyloio.nexus.characters.setNameToIDMap";
 	public static final String INFO_KEY_TREES_TRANSLATION = "info.bioinfweb.jphyloio.nexus.trees.translate";
@@ -235,16 +236,17 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	}
 	
 	
-	public List<String> getTaxaList(String listID) {
+	public List<String> getElementList(EventContentType type, String listID) {
 		if (listID == null) {
 			throw new NullPointerException("The specified listID must not be null.");
 		}
 		else {
+			String key = INFO_KEY_ELEMENT_LIST + "." + type.toString() + "." + listID;
 			@SuppressWarnings("unchecked")
-			List<String> result = (List<String>)getSharedInformationMap().get(INFO_KEY_TAXA_LIST + "." + listID);  // Casting null is possible.
+			List<String> result = (List<String>)getSharedInformationMap().get(key);  // Casting null is possible.
 			if (result == null) {
 				result = new ArrayList<String>();
-				getSharedInformationMap().put(INFO_KEY_TAXA_LIST + "." + listID, result);
+				getSharedInformationMap().put(key, result);
 			}
 			return result;
 		}
@@ -252,19 +254,21 @@ public class NexusReaderStreamDataProvider extends TextReaderStreamDataProvider<
 	
 	
 	/**
-	 * Returns a map object that translates between a Nexus taxon name and the <i>JPhyloIO</i> ID of the according OTU event.
+	 * Returns a map object that translates between a Nexus name and the <i>JPhyloIO</i> ID of the according event.
 	 * 
+	 * @param type the event type of events of the requested ID
 	 * @param listID the <i>JPhyloIO</i> ID of the according OTU list start event
+	 * 
 	 * @return the map
 	 * @throws NullPointerException if {@code listID is null}
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, String> getTaxaToIDMap(String listID) {
+	public Map<String, String> getNexusNameToIDMap(EventContentType type, String listID) {
 		if (listID == null) {
 			throw new NullPointerException("The specified listID must not be null.");
 		}
 		else {
-			return (Map<String, String>)getMap(INFO_KEY_TAXA_MAP + "." + listID);
+			return (Map<String, String>)getMap(INFO_KEY_NEXUS_NAME_TO_ID_MAP + "." + type.toString() + "." + listID);
 		}
 	}
 	

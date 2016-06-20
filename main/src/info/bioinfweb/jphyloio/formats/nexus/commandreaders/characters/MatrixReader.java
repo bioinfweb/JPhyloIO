@@ -133,13 +133,13 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 										+ "block is present", getStreamDataProvider().getDataReader());  //TODO Can NOLABELS also be used, if NEWTAXA is used?
 							}
 							
-							if (currentSequenceIndex >= getStreamDataProvider().getTaxaList(linkedOTUsID).size()) {
+							if (currentSequenceIndex >= getStreamDataProvider().getElementList(EventContentType.OTU, linkedOTUsID).size()) {
 								throw new JPhyloIOReaderException("A MATRIX command contains more sequences than defined in the TAXA block. "
 										+ "This is invalid, if NOLABELS was specified. An alternative cause could be an invalid sequence "
 										+ "length definition.", getStreamDataProvider().getDataReader());
 							}
 							else {
-								currentSequenceLabel = getStreamDataProvider().getTaxaList(linkedOTUsID).get(currentSequenceIndex);
+								currentSequenceLabel = getStreamDataProvider().getElementList(EventContentType.OTU, linkedOTUsID).get(currentSequenceIndex);
 							}
 						}
 						else {
@@ -149,7 +149,7 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 						
 						String otuID = null;
 						if (linkedOTUsID != null) {
-							otuID = getStreamDataProvider().getTaxaToIDMap(linkedOTUsID).get(currentSequenceLabel);  // Returns the OTU ID or null, if it is not found in the map.
+							otuID = getStreamDataProvider().getNexusNameToIDMap(EventContentType.OTU, linkedOTUsID).get(currentSequenceLabel);  // Returns the OTU ID or null, if it is not found in the map.
 						}
 						getStreamDataProvider().getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, 
 								idToNameManager.getID(currentSequenceLabel), currentSequenceLabel, otuID));
