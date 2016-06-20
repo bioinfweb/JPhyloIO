@@ -1451,7 +1451,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 	
 	
 	@Test
-	public void testCharSetsMultipleMatrices() throws Exception {
+	public void testReadingCharSetsMultipleMatrices() throws Exception {
 		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetsMultipleMatrices.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -1573,7 +1573,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 	
 	
 	@Test(expected=JPhyloIOReaderException.class)
-	public void testCharSetsInvalidOrder() throws Exception {
+	public void testReadingCharSetsInvalidOrder() throws Exception {
 		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharSetsMatrixInvalidOrder.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -1601,7 +1601,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 
 
 	@Test
-	public void testCharStateLabels() throws Exception {
+	public void testReadingCharStateLabels() throws Exception {
 		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharStateLabels.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
@@ -1649,6 +1649,64 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertCommentEvent("comment 6", reader);
 			assertCommentEvent("comment 7", reader);
 			assertCharacterDefinitionEvent(null, "col5", 5, true, reader);
+			
+			assertEndEvent(EventContentType.ALIGNMENT, reader);
+		}
+		finally {
+			reader.close();
+		}
+	}
+
+
+	@Test
+	public void testReadingCharLabels() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/CharLabels.nex"), new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			
+			// TAXA:
+			String otusID = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+			String otuIDA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String otuIDC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
+			// CHARACTERS 1:
+			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "matrix1", otusID, reader);
+			
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "3", null, new Long(3), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
+			
+			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+	
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
+			assertCharactersEvent("CGGTCAT", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
+			assertCharactersEvent("CG-TCTT", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
+			assertCharactersEvent("CG-TC-T", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertCommentEvent("comment 1", reader);
+			assertCommentEvent("comment 2", reader);
+			assertCharacterDefinitionEvent(null, "col0", 0, true, reader);
+			assertCharacterDefinitionEvent(null, "col1", 1, true, reader);
+			assertCharacterDefinitionEvent(null, "col2", 2, true, reader);
+			assertCommentEvent("comment 3", reader);
+			assertCommentEvent("comment 4", reader);
+			assertCharacterDefinitionEvent(null, "col3", 3, true, reader);
+			assertCommentEvent("comment 5", reader);
+			assertCommentEvent("comment 6", reader);
 			
 			assertEndEvent(EventContentType.ALIGNMENT, reader);
 		}
