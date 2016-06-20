@@ -40,6 +40,7 @@ import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
+import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -478,6 +479,35 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
+	private void writeCharStateLabelsCommand(MatrixDataAdapter matrix) throws IOException {
+		final ObjectListDataAdapter<CharacterDefinitionEvent> definitions = matrix.getCharacterDefinitions();
+		
+		Iterator<String> iterator = definitions.getIDIterator();
+		if (iterator.hasNext()) {
+			writeLineStart(writer, COMMAND_NAME_CHAR_STATE_LABELS);
+			writeLineBreak(writer, parameters);
+			increaseIndention();
+			increaseIndention();
+			
+			while (iterator.hasNext()) {  //TODO Should only definitions with labels be written?
+				CharacterDefinitionEvent event = definitions.getObjectStartEvent(iterator.next());
+				String label = createUniqueLabel(parameters, event);
+				parameters.getLabelEditingReporter().addEdit(event, label);
+				writeLineStart(writer, event.getIndex() + " " + label);
+				if (iterator.hasNext()) {
+					writer.write(ELEMENT_SEPARATOR);
+					writeLineBreak(writer, parameters);
+				}
+			}
+			
+			decreaseIndention();
+			decreaseIndention();
+			writeCommandEnd();
+		}
+	}
+
+	
+	
 	private void writeMatrixCommand(DocumentDataAdapter document, MatrixDataAdapter matrix, long alignmentLength, 
 			String extensionToken)	throws IOException {
 		
@@ -564,6 +594,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeMatrixDimensionsCommand(matrix, columnCount);
 			writeFormatCommand(matrix);
 			writeMatrixTaxLabelsCommand(matrix);
+			writeCharStateLabelsCommand(matrix);
 			writeMatrixCommand(document, matrix, columnCount, extensionToken);
 			
 			writeBlockEnd();
