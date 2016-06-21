@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -39,6 +40,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements OTUListDataAdapter {
 	private int indexOfList;
 	private ListOrderedMap<String, LabeledIDEvent> otus = new ListOrderedMap<String, LabeledIDEvent>();
+	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> otuSets = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	
 	
 	public TestOTUListDataAdapter(int indexOfList, LabeledIDEvent... otus) {
@@ -93,9 +95,8 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter<LabeledIDE
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
-		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
+		return otuSets;
 	}
 }

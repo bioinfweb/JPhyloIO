@@ -493,6 +493,11 @@ public class NexusEventWriterTest implements NexusConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "A"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", "B"),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "C"));
+		otuList.getOTUSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet1", "otu set 1", otuList.getStartEvent().getID()));
+		otuList.getOTUSets().getObjectMap().get("otuSet1").getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU));
+		otuList.getOTUSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet2", "otu set 2", otuList.getStartEvent().getID()));
+		otuList.getOTUSets().getObjectMap().get("otuSet2").getObjectContent().add(new SetElementEvent("otu2", EventContentType.OTU));
+		otuList.getOTUSets().getObjectMap().get("otuSet2").getObjectContent().add(new SetElementEvent("otuSet1", EventContentType.OTU_SET));
 		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
 
 		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter("matrix0", "a matrix", true, 
@@ -569,6 +574,13 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("END;", reader.readLine());
 			assertEquals("", reader.readLine());
 
+			assertEquals("BEGIN SETS;", reader.readLine());
+			assertEquals("\tLINK TAXA=OTU_list_0;", reader.readLine());
+			assertEquals("\tTAXSET otu_set_1 = A;", reader.readLine());
+			assertEquals("\tTAXSET otu_set_2 = C otu_set_1;", reader.readLine());
+			assertEquals("END;", reader.readLine());
+			assertEquals("", reader.readLine());
+			
 			assertEquals("BEGIN SETS;", reader.readLine());
 			assertEquals("\tLINK CHARACTERS=a_matrix;", reader.readLine());
 			assertEquals("\tCHARSET char_set_1 = 1-2 4;", reader.readLine());
