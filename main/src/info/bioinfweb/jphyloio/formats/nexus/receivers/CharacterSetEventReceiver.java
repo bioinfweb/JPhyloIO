@@ -27,9 +27,12 @@ import javax.xml.stream.XMLStreamException;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SetElementEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
+import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
 import info.bioinfweb.jphyloio.formats.text.BasicTextCommentEventReceiver;
 
 
@@ -42,19 +45,36 @@ public class CharacterSetEventReceiver extends BasicTextCommentEventReceiver imp
 	
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if (event.getType().getContentType().equals(EventContentType.CHARACTER_SET_INTERVAL) && (getParentEvent() == null)) {  // Such events are only allowed on the top level.
-			// No check for topology type, since only SOLE is possible.
-			CharacterSetIntervalEvent intervalEvent = event.asCharacterSetIntervalEvent();
-			getWriter().write(' ');
-			getWriter().write(Long.toString(intervalEvent.getStart()));
-			if (intervalEvent.getEnd() - intervalEvent.getStart() > 1) {
-				getWriter().write(SET_TO_SYMBOL);
-				getWriter().write(Long.toString(intervalEvent.getEnd() - 1));
+		if (getParentEvent() == null) {  // Such events are only allowed on the top level.
+			switch (event.getType().getContentType()) {  // No check for topology type, since only SOLE is possible.
+				case CHARACTER_SET_INTERVAL:
+					CharacterSetIntervalEvent intervalEvent = event.asCharacterSetIntervalEvent();
+					getWriter().write(' ');
+					getWriter().write(Long.toString(intervalEvent.getStart() + 1));
+					if (intervalEvent.getEnd() - intervalEvent.getStart() > 1) {
+						getWriter().write(SET_TO_SYMBOL);
+						getWriter().write(Long.toString(intervalEvent.getEnd()));
+					}
+					return true;
+					
+				case SET_ELEMENT:
+					SetElementEvent setEvent = event.asSetElementEvent();
+					if (setEvent.getLinkedObjectType().equals(EventContentType.CHARACTER_SET)) {
+						getWriter().write(' ');
+						String referencedSet = getParameterMap().getLabelEditingReporter().getEditedLabel(EventContentType.CHARACTER_SET, setEvent.getLinkedID());
+						if (referencedSet == null) {
+							throw new InconsistentAdapterDataException("A character set references the other character set with the ID " + setEvent.getLinkedID() 
+									+ "\" that was not previously (or not at all) declared.");  //TODO If a subsequent set is referenced here, it could alternatively be fetched from the provider and be written directly here instead of referencing it.
+						}
+						else {
+							getWriter().write(NexusEventWriter.formatToken(referencedSet));
+						}
+						return true;
+					}  // Otherwise throw exception at the end of the method.
+					
+				default:
 			}
-			return true;			
 		}
-		else {  // No other events would be valid here.
-			throw IllegalEventException.newInstance(this, getParentEvent(), event);
-		}
+		throw IllegalEventException.newInstance(this, getParentEvent(), event);
 	}
 }
