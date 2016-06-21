@@ -29,6 +29,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.S
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreMatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreOTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectData;
+import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -74,7 +75,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	}
 	
 	
-	protected void createSimpleTestDocument() {
+	private void createSimpleTestDocument() {
 		// Add OTU list to document data adapter
 		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + getIDIndex();
 		document.getOTUListsMap().put(otuListID, createOTUList(otuListID));
@@ -82,9 +83,16 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 //		StoreMatrixDataAdapter matrix = createSequenceMatrix(otuListID);
 		StoreMatrixDataAdapter matrix = createContinuousCellsMatrix(otuListID);
 		
+		// Add character definitions to matrix data adapter
+		String charDefinitionID;
+		for (long i = 0; i < 3; i++) {
+			charDefinitionID = DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + getIDIndex();
+			matrix.getCharacterDefinitions().getObjectMap().put(charDefinitionID, createCharacterDefinition(charDefinitionID, i));
+		}
+		
 		// Add token set of type DNA to matrix data adapter
-//		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
-//		matrix.getTokenSets().getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 10));
+		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
+		matrix.getTokenSets().getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 10));
 			
 		// Add char sets to matrix data adapter
 		String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
@@ -108,7 +116,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	}	
 	
 	
-	protected StoreOTUListDataAdapter createOTUList(String id) {
+	private StoreOTUListDataAdapter createOTUList(String id) {
 		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, id, "taxonlist"), null);
 		
 		for (int i = 0; i < 5; i++) {
@@ -149,7 +157,15 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	}
 	
 	
-	protected StoreMatrixDataAdapter createSequenceMatrix(String otusID) {
+	private StoreObjectData<CharacterDefinitionEvent> createCharacterDefinition(String charDefinitionID, long index) {
+		StoreObjectData<CharacterDefinitionEvent> characterDefinition = new StoreObjectData<CharacterDefinitionEvent>(
+				new CharacterDefinitionEvent(charDefinitionID, "char definition", index), new ArrayList<JPhyloIOEvent>());
+		
+		return characterDefinition;
+	}
+	
+	
+	private StoreMatrixDataAdapter createSequenceMatrix(String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
