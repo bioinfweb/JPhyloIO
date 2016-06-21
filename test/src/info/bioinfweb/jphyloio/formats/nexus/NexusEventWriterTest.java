@@ -100,13 +100,21 @@ public class NexusEventWriterTest implements NexusConstants {
 		matrix.setCharacterDefinitions(characterDefinitions);
 		
 		StoreTreeNetworkGroupDataAdapter treeGroup1 = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX, null, null));
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + "0", null, null));
 		StoreTreeNetworkGroupDataAdapter treeGroup2 = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX, null, "otus0"));
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + "1", null, "otus0"));
 		
 		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree0", "tree", "t0"));
 		treeGroup2.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree1", "tree", "t1", new String[]{"otu0", "otu1", "otu2"}));
 		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree2", "tree", "t2"));
+		
+		treeGroup1.getTreeSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet1", "tree set 1", treeGroup1.getStartEvent().getID()));
+		treeGroup1.getTreeSets().getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("tree0", EventContentType.TREE));
+		treeGroup1.getTreeSets().getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("network0", EventContentType.NETWORK));  // The referenced network does currently not exist, but it should not matter for the current implementation. The aim is testing, if a network is ignored without exceptions.
+		//TODO Test below, whether ignored network was logged.
+		treeGroup1.getTreeSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet2", "tree set 2", treeGroup1.getStartEvent().getID()));
+		treeGroup1.getTreeSets().getObjectMap().get("treeSet2").getObjectContent().add(new SetElementEvent("tree2", EventContentType.TREE));
+		treeGroup1.getTreeSets().getObjectMap().get("treeSet2").getObjectContent().add(new SetElementEvent("treeSet1", EventContentType.TREE_NETWORK_SET));
 		
 		document.getTreeNetworkGroups().add(treeGroup1);
 		document.getTreeNetworkGroups().add(treeGroup2);
@@ -154,14 +162,14 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("", reader.readLine());
 
 			assertEquals("BEGIN TREES;", reader.readLine());
-			assertEquals("\tTITLE Trees_linked_to_no_TAXA_block;", reader.readLine());
+			assertEquals("\tTITLE treesOrNetworks0;", reader.readLine());
 			assertEquals("\tTREE tree = [&R] ((Node_t0nA:1.1[&splitString='ABCDEF', array={100, 'abc'}], Node_t0nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t0nC:2.0)Node_t0nRoot:1.5;", reader.readLine());
 			assertEquals("\tTREE 'tree2_tree' = [&R] ((Node_t2nA:1.1[&splitString='ABCDEF', array={100, 'abc'}], Node_t2nB:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, Node_t2nC:2.0)Node_t2nRoot:1.5;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			assertEquals("", reader.readLine());
 			
 			assertEquals("BEGIN TREES;", reader.readLine());
-			assertEquals("\tTITLE Trees_linked_to_OTU_list_0;", reader.readLine());
+			assertEquals("\tTITLE treesOrNetworks1;", reader.readLine());
 			assertEquals("\tLINK TAXA=OTU_list_0;", reader.readLine());
 			if (generateTranslationTable) {
 				assertEquals("\tTRANSLATE", reader.readLine());
@@ -175,6 +183,13 @@ public class NexusEventWriterTest implements NexusConstants {
 			else {
 				assertEquals("\tTREE tree = [&R] ((1:1.1[&splitString='ABCDEF', array={100, 'abc'}], 2:0.9)'Node ''_1'[&a1=100, a2='ab ''c']:1.0, 3:2.0)Node_t1nRoot:1.5;", reader.readLine());
 			}
+			assertEquals("END;", reader.readLine());
+			assertEquals("", reader.readLine());
+			
+			assertEquals("BEGIN SETS;", reader.readLine());
+			assertEquals("\tLINK TREES=treesOrNetworks0;", reader.readLine());
+			assertEquals("\tTREESET tree_set_1 = tree;", reader.readLine());
+			assertEquals("\tTREESET tree_set_2 = 'tree2_tree' tree_set_1;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			
 			LabelEditingReporter reporter = parameters.getLabelEditingReporter();
