@@ -66,8 +66,10 @@ public interface ReadWriteConstants {
 	public static final String DEFAULT_META_ID_PREFIX = "meta";
 	public static final String DEFAULT_OTU_LIST_ID_PREFIX = "otus";
 	public static final String DEFAULT_OTU_ID_PREFIX = "otu";
+	public static final String DEFAULT_OTU_SET_ID_PREFIX = "otuSet";
 	public static final String DEFAULT_MATRIX_ID_PREFIX = "matrix";
 	public static final String DEFAULT_SEQUENCE_ID_PREFIX = "seq";
+	public static final String DEFAULT_SEQUENCE_SET_ID_PREFIX = "sequenceSet";
 	public static final String DEFAULT_CHARACTER_DEFINITION_ID_PREFIX = "char";
 	public static final String DEFAULT_CHAR_SET_ID_PREFIX = "charSet";
 	public static final String DEFAULT_TOKEN_SET_ID_PREFIX = "tokenSet";
@@ -75,6 +77,8 @@ public interface ReadWriteConstants {
 	public static final String DEFAULT_TREE_ID_PREFIX = "tree";
 	public static final String DEFAULT_NETWORK_ID_PREFIX = "network";
 	public static final String DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX = "treesOrNetworks";
+	public static final String DEFAULT_TREE_NETWORK_SET_ID_PREFIX = "treeNetworkSet";
 	public static final String DEFAULT_NODE_ID_PREFIX = "n";
 	public static final String DEFAULT_EDGE_ID_PREFIX = "e";
+	public static final String DEFAULT_NODE_EDGE_SET_ID_PREFIX = "nodeEdgeSet";
 }

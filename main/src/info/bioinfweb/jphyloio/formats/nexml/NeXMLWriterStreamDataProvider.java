@@ -23,9 +23,11 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListData
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,7 +54,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private StringBuffer commentContent = new StringBuffer();
 	private boolean literalContentIsContinued = false;
 	
-	private StringBuffer currentSetElements = new StringBuffer();
+	private EnumMap<EventContentType, Set<String>> eventTypeToSetElementsMap = new EnumMap<EventContentType, Set<String>>(EventContentType.class);
 	
 	private boolean hasOTUList = true;
 	private boolean writeUndefinedOTU = false;
@@ -159,8 +161,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public StringBuffer getCurrentSetElements() {
-		return currentSetElements;
+	public EnumMap<EventContentType, Set<String>> getEventTypeToSetElementsMap() {
+		return eventTypeToSetElementsMap;
 	}
 
 

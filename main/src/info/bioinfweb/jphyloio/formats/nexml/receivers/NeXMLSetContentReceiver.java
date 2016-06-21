@@ -21,6 +21,8 @@ package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.SetElementEvent;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -43,8 +45,14 @@ public class NeXMLSetContentReceiver extends NeXMLMetaDataReceiver {
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		switch (event.getType().getContentType()) {
 			case SET_ELEMENT:
-				getStreamDataProvider().getCurrentSetElements().append(event.asSetElementEvent().getLinkedID());
-				getStreamDataProvider().getCurrentSetElements().append(" ");
+				SetElementEvent setElementEvent = event.asSetElementEvent();
+				if (getStreamDataProvider().getEventTypeToSetElementsMap().containsKey(setElementEvent.getLinkedObjectType())) {
+					getStreamDataProvider().getEventTypeToSetElementsMap().get(setElementEvent.getLinkedObjectType()).add(setElementEvent.getLinkedID());
+				}
+				else {
+					throw new JPhyloIOWriterException("The element \"" + setElementEvent.getLinkedID() + "\" with the type \"" + setElementEvent.getLinkedObjectType() 
+							+ "\" can not be written to the current set.");
+				}
 				break;
 			default:
 				break;

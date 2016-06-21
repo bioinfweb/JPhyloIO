@@ -55,6 +55,7 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.tools.NodeEdgeIDLister;
 
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -167,21 +168,57 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void writeSet(String setElementAttribute, ObjectListDataAdapter<LinkedLabeledIDEvent> setAdapter) 
+	private void writeSetTags(EnumMap<EventContentType, String> elementTypeToLinkAttributeMap, EventContentType setType, ObjectListDataAdapter<LinkedLabeledIDEvent> setAdapter) 
 			throws XMLStreamException, IllegalArgumentException, IOException {
+		
 		NeXMLSetContentReceiver receiver = new NeXMLSetContentReceiver(getXMLWriter(), getParameters(), streamDataProvider);
-		Iterator<String> setIDIterator = setAdapter.getIDIterator();
+		
+		Set<String> encounteredSetIDs = new TreeSet<String>();
+		
+		Iterator<String> setIDIterator = setAdapter.getIDIterator();		
 		while (setIDIterator.hasNext()) {
 			String setID = setIDIterator.next();
+			encounteredSetIDs.add(setID);
 			
 			getXMLWriter().writeStartElement(TAG_SET.getLocalPart());
 			streamDataProvider.writeLabeledIDAttributes(setAdapter.getObjectStartEvent(setID));
 			
+			// Add collection for IDs referencing other sets and all supported event types
+			streamDataProvider.getEventTypeToSetElementsMap().put(setType, new TreeSet<String>());			
+			for (EventContentType type : elementTypeToLinkAttributeMap.keySet()) {
+				streamDataProvider.getEventTypeToSetElementsMap().put(type, new TreeSet<String>());
+			}
+			
 			setAdapter.writeContentData(receiver, setID);
-			getXMLWriter().writeAttribute(setElementAttribute, streamDataProvider.getCurrentSetElements().toString());			
-			streamDataProvider.getCurrentSetElements().delete(0, streamDataProvider.getCurrentSetElements().length());
+			
+			while (!streamDataProvider.getEventTypeToSetElementsMap().get(setType).isEmpty()) {
+				Set<String> referencedSetIDs = new HashSet<String>();
+				referencedSetIDs.addAll(streamDataProvider.getEventTypeToSetElementsMap().get(setType));
+				streamDataProvider.getEventTypeToSetElementsMap().get(setType).clear();
+				
+				for (String referencedSetID : referencedSetIDs) {
+					if (encounteredSetIDs.add(referencedSetID)) {
+						setAdapter.writeContentData(receiver, referencedSetID);
+					}
+					else {
+						throw new JPhyloIOWriterException("A circular reference was encountered when writing sets.");
+					}
+				}				
+			}
+				
+			for (EventContentType type : elementTypeToLinkAttributeMap.keySet()) {
+				StringBuffer setElements = new StringBuffer();
+				for (String elementID : streamDataProvider.getEventTypeToSetElementsMap().get(type)) {
+					setElements.append(elementID);
+					setElements.append(" ");
+				}
+				
+				getXMLWriter().writeAttribute(elementTypeToLinkAttributeMap.get(type), setElements.toString());
+			}
 			
 			getXMLWriter().writeEndElement();
+			encounteredSetIDs.clear();
+			streamDataProvider.getEventTypeToSetElementsMap().clear();
 		}
 	}
 	
@@ -230,7 +267,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			getXMLWriter().writeEndElement();
 		}
 		
-		writeSet(ATTR_OTU_SET_LINKED_IDS.getLocalPart(), otuList.getOTUSets());
+		EnumMap<EventContentType, String> elementTypeToLinkAttributeMap = new EnumMap<EventContentType, String>(EventContentType.class);
+		elementTypeToLinkAttributeMap.put(EventContentType.OTU, ATTR_OTU_SET_LINKED_IDS.getLocalPart());
+		
+		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.OTU_SET, otuList.getOTUSets());
 
 		getXMLWriter().writeEndElement();
 	}
@@ -344,7 +384,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			writeRowTag(alignment.getSequenceStartEvent(sequenceIDIterator.next()), alignment);
 		}
 		
-		writeSet(ATTR_SEQUENCE_SET_LINKED_IDS.getLocalPart(), alignment.getSequenceSets());
+		EnumMap<EventContentType, String> elementTypeToLinkAttributeMap = new EnumMap<EventContentType, String>(EventContentType.class);
+		elementTypeToLinkAttributeMap.put(EventContentType.SEQUENCE, ATTR_SEQUENCE_SET_LINKED_IDS.getLocalPart());
+		
+		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.SEQUENCE_SET, alignment.getSequenceSets());
 
 		getXMLWriter().writeEndElement();
 		getXMLWriter().writeEndElement();
@@ -434,7 +477,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		streamDataProvider.setIDIndex(0);
 		
-		//TODO Adjust to use character definition events from alignment, if available. 
+		//TODO Adjust to use character definition events from alignment, if available.
 		for (long i = 0; i < alignmentInfo.getAlignmentLength(); i++) {
 			String charID = streamDataProvider.createNewID(ReadWriteConstants.DEFAULT_CHARACTER_DEFINITION_ID_PREFIX);
 			alignmentInfo.getColumnIndexToIDMap().put(i, charID);
@@ -673,6 +716,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		while (treesAndNetworksIterator.hasNext()) {
 			writeTreeOrNetworkTag(treesAndNetworksIterator.next());
 		}
+		
+		EnumMap<EventContentType, String> elementTypeToLinkAttributeMap = new EnumMap<EventContentType, String>(EventContentType.class);
+		elementTypeToLinkAttributeMap.put(EventContentType.TREE, ATTR_TREE_SET_LINKED_TREE_IDS.getLocalPart());
+		elementTypeToLinkAttributeMap.put(EventContentType.NETWORK, ATTR_TREE_SET_LINKED_NETWORK_IDS.getLocalPart());
+		
+		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.TREE_NETWORK_SET, treeOrNetworkGroup.getTreeSets());
+		
 		getXMLWriter().writeEndElement();
 	}
 
@@ -712,6 +762,12 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		for (String edgeID : lister.getEdgeIDs()) {
 			writeEdgeOrRootedgeTag(treeOrNetwork, treeOrNetwork.getEdgeStartEvent(edgeID));
 		}
+		
+		EnumMap<EventContentType, String> elementTypeToLinkAttributeMap = new EnumMap<EventContentType, String>(EventContentType.class);
+		elementTypeToLinkAttributeMap.put(EventContentType.NODE, ATTR_NODE_EDGE_SET_LINKED_NODE_IDS.getLocalPart());
+		elementTypeToLinkAttributeMap.put(EventContentType.EDGE, ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS.getLocalPart());
+		
+		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.NODE_EDGE_SET, treeOrNetwork.getNodeEdgeSets());
 
 		getXMLWriter().writeEndElement();
 	}
