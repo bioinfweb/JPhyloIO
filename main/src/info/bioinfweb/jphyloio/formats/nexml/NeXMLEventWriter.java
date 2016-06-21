@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
+import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -398,7 +399,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		getXMLWriter().writeStartElement(TAG_FORMAT.getLocalPart());
 
 		writeTokenSetDefinitions(alignment); // Only written if data is not continuous		
-		writeCharacterDefinitions(alignment);
+		writeCharacterDefinitionTags(alignment);
 		writeCharacterSets(alignment);
 
 		getXMLWriter().writeEndElement();
@@ -471,28 +472,55 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 	
 	
-	private void writeCharacterDefinitions(MatrixDataAdapter alignment) throws XMLStreamException, JPhyloIOWriterException {
+	private void writeCharacterDefinitionTags(MatrixDataAdapter alignment) throws XMLStreamException, JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getIdToAlignmentInfo().get(alignment.getStartEvent().getID());
 		String states;
+	
+		if (alignment.getCharacterDefinitions().getCount() > 0) {
+			Iterator<String> charDefinitionIDIterator = alignment.getCharacterDefinitions().getIDIterator();
+			while (charDefinitionIDIterator.hasNext()) {
+				String charID = charDefinitionIDIterator.next();
+				CharacterDefinitionEvent charDefEvent = alignment.getCharacterDefinitions().getObjectStartEvent(charID);
+				
+				alignmentInfo.getColumnIndexToIDMap().put(charDefEvent.getIndex(), charID);
+				streamDataProvider.addToDocumentIDs(charID);
+
+				getXMLWriter().writeStartElement(TAG_CHAR.getLocalPart());
+
+				streamDataProvider.writeLabeledIDAttributes(charDefEvent);
+				if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
+					states = alignmentInfo.getColumnIndexToStatesMap().get(charDefEvent.getIndex());				
+					if (states == null) {
+						states = DEFAULT_TOKEN_DEFINITION_SET_ID;
+					}
+						
+					getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), states);
+				}
+				
+				 //TODO write char definition metadata
+				
+				getXMLWriter().writeEndElement();
+			}
+		}
 		
 		streamDataProvider.setIDIndex(0);
-		
-		//TODO Adjust to use character definition events from alignment, if available.
 		for (long i = 0; i < alignmentInfo.getAlignmentLength(); i++) {
-			String charID = streamDataProvider.createNewID(ReadWriteConstants.DEFAULT_CHARACTER_DEFINITION_ID_PREFIX);
-			alignmentInfo.getColumnIndexToIDMap().put(i, charID);
-			streamDataProvider.addToDocumentIDs(charID);
+			if (!alignmentInfo.getColumnIndexToIDMap().containsKey(i)) {
+				String charID = streamDataProvider.createNewID(ReadWriteConstants.DEFAULT_CHARACTER_DEFINITION_ID_PREFIX);
+				alignmentInfo.getColumnIndexToIDMap().put(i, charID);
+				streamDataProvider.addToDocumentIDs(charID);
 
-			getXMLWriter().writeEmptyElement(TAG_CHAR.getLocalPart());
+				getXMLWriter().writeEmptyElement(TAG_CHAR.getLocalPart());
 
-			getXMLWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
-			if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-				states = alignmentInfo.getColumnIndexToStatesMap().get(i);				
-				if (states == null) {
-					states = DEFAULT_TOKEN_DEFINITION_SET_ID;
+				getXMLWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
+				if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
+					states = alignmentInfo.getColumnIndexToStatesMap().get(i);				
+					if (states == null) {
+						states = DEFAULT_TOKEN_DEFINITION_SET_ID;
+					}
+						
+					getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), states);
 				}
-					
-				getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), states);
 			}
 		}
 	}
