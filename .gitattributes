@@ -170,12 +170,15 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLSequenceMetaDataRe
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLSequenceTokensReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLSetContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLTokenSetEventReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/AbstractNexusSetWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusFactory.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/NexusMatrixWriteResult.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusNewickWriterNodeLabelProcessor.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/NexusReaderStreamDataProvider.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/NexusWriterStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/AbstractNexusBlockHandler.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/CharactersDataUnalignedBlockHandler.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/NexusBlockHandler.java -text svneol=unset#text/plain
