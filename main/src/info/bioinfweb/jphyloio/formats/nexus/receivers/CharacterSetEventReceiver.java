@@ -34,44 +34,38 @@ import info.bioinfweb.jphyloio.formats.nexus.NexusWriterStreamDataProvider;
 
 
 
-public class CharacterSetEventReceiver extends AbstractNexusEventReceiver {
+public class CharacterSetEventReceiver extends AbstractNexusSetsEventReceiver {
 	public CharacterSetEventReceiver(NexusWriterStreamDataProvider streamDataProvider) {
 		super(streamDataProvider);
 	}
 
 	
 	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if (getParentEvent() == null) {  // Such events are only allowed on the top level.
-			switch (event.getType().getContentType()) {  // No check for topology type, since only SOLE is possible.
-				case CHARACTER_SET_INTERVAL:
-					CharacterSetIntervalEvent intervalEvent = event.asCharacterSetIntervalEvent();
-					getWriter().write(' ');
-					getWriter().write(Long.toString(intervalEvent.getStart() + 1));
-					if (intervalEvent.getEnd() - intervalEvent.getStart() > 1) {
-						getWriter().write(SET_TO_SYMBOL);
-						getWriter().write(Long.toString(intervalEvent.getEnd()));
-					}
-					return true;
-					
-				case SET_ELEMENT:
-					SetElementEvent setEvent = event.asSetElementEvent();
-					if (setEvent.getLinkedObjectType().equals(EventContentType.CHARACTER_SET)) {
-						getWriter().write(' ');
-						String referencedSet = getParameterMap().getLabelEditingReporter().getEditedLabel(EventContentType.CHARACTER_SET, setEvent.getLinkedID());
-						if (referencedSet == null) {
-							throw new InconsistentAdapterDataException("A character set references the other character set with the ID " + setEvent.getLinkedID() 
-									+ "\" that was not previously (or not at all) declared.");  //TODO If a subsequent set is referenced here, it could alternatively be fetched from the provider and be written directly here instead of referencing it.
-						}
-						else {
-							getWriter().write(NexusEventWriter.formatToken(referencedSet));
-						}
-						return true;
-					}  // Otherwise throw exception at the end of the method.
-					
-				default:
-			}
+	protected boolean handleCharacterSetInterval(CharacterSetIntervalEvent event) throws IOException {
+		getWriter().write(' ');
+		getWriter().write(Long.toString(event.getStart() + 1));
+		if (event.getEnd() - event.getStart() > 1) {
+			getWriter().write(SET_TO_SYMBOL);
+			getWriter().write(Long.toString(event.getEnd()));
 		}
-		throw IllegalEventException.newInstance(this, getParentEvent(), event);
+		return true;
+	}
+
+
+	@Override
+	protected boolean handleSetElement(SetElementEvent event) throws IOException {
+		if (event.getLinkedObjectType().equals(EventContentType.CHARACTER_SET)) {
+			getWriter().write(' ');
+			String referencedSet = getParameterMap().getLabelEditingReporter().getEditedLabel(EventContentType.CHARACTER_SET, event.getLinkedID());
+			if (referencedSet == null) {
+				throw new InconsistentAdapterDataException("A character set references the other character set with the ID " + event.getLinkedID() 
+						+ "\" that was not previously (or not at all) declared.");  //TODO If a subsequent set is referenced here, it could alternatively be fetched from the provider and be written directly here instead of referencing it.
+			}
+			else {
+				getWriter().write(NexusEventWriter.formatToken(referencedSet));
+			}
+			return true;
+		}
+		return false;  // Throw exception.
 	}
 }

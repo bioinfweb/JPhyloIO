@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,7 +35,6 @@ import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
@@ -46,11 +44,13 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEvent
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.CharacterSetEventReceiver;
+import info.bioinfweb.jphyloio.formats.nexus.receivers.OTUSetReceiver;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.TokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
 
@@ -173,7 +173,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void logIgnoredMetadata(AnnotatedDataAdapter adapter, String objectName) {
+	private void logIgnoredMetadata(AnnotatedDataAdapter<?> adapter, String objectName) {
 		if (adapter.getMetadataAdapter() != null) {
 			logger.addWarning(objectName + 
 					" is annotated directly with metadata, which have been ignored, since the Nexus format does not support this.");
@@ -358,12 +358,12 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeFormatCommand(MatrixDataAdapter matrix) throws IOException {
-		ObjectListDataAdapter tokenSets = matrix.getTokenSets();
+		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = matrix.getTokenSets();
 		if (tokenSets.getCount() > 0) {
 			writeLineStart(writer, COMMAND_NAME_FORMAT);
 			Iterator<String> iterator = tokenSets.getIDIterator();
 			if (tokenSets.getCount() == 1) {
-				TokenSetEventReceiver receiver = new TokenSetEventReceiver(writer, parameters);
+				TokenSetEventReceiver receiver = new TokenSetEventReceiver(getStreamDataProvider());
 				
 				String dataType;
 				String tokenSetID = iterator.next();

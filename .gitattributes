@@ -216,6 +216,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/TranslateRea
 main/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/TreeReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/receivers/AbstractNexusEventReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexus/receivers/AbstractNexusSetsEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/receivers/CharacterSetEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/receivers/TokenSetEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexus/receivers/package-info.java -text svneol=unset#text/plain

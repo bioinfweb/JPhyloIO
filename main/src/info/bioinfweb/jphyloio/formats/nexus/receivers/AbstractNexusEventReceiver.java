@@ -25,6 +25,12 @@ import info.bioinfweb.jphyloio.formats.text.BasicTextCommentEventReceiver;
 
 
 
+/**
+ * Implements basic functionality for event receivers writing Nexus.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class AbstractNexusEventReceiver extends BasicTextCommentEventReceiver implements NexusConstants {
 	private NexusWriterStreamDataProvider streamDataProvider;
 	
