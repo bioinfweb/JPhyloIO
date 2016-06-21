@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,7 +34,9 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.DataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
@@ -775,27 +778,81 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
-		CharacterSetEventReceiver receiver = new CharacterSetEventReceiver(writer, parameters);
-		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
-		while (matrixIterator.hasNext()) {
-			MatrixDataAdapter matrix = matrixIterator.next();
-			ObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = matrix.getCharacterSets();
-			Iterator<String> charSetIDIterator = characterSets.getIDIterator();
+	private void writeSetsBlockStart(String linkedID) throws IOException {
+		writeBlockStart(BLOCK_NAME_SETS);
+		writeLinkCommand(linkedID, matrixIDToBlockTypeMap.get(linkedID).toBlockName(), EventContentType.ALIGNMENT);  // If matrixIDToBlockTypeMap.get(matrixID) returns null, the matrices have not been written correctly before.
+	}
+	
+	
+	private boolean writeSets(String linkedID, String commandName, ObjectListDataAdapter<LinkedLabeledIDEvent> list, 
+			JPhyloIOEventReceiver receiver, boolean blockStarted) throws IOException {
+		
+		Iterator<String> idIterator = list.getIDIterator();
+		if (!blockStarted && idIterator.hasNext()) {
+			writeSetsBlockStart(linkedID);
+			blockStarted = true;
+		}
+		
+		while (idIterator.hasNext()) {
+			String charSetID = idIterator.next();
+			writeLineStart(writer, commandName);
+			writer.write(' ');
+			writer.write(formatToken(createUniqueLabel(parameters, list.getObjectStartEvent(charSetID))));
+			writer.write(' ');
+			writer.write(KEY_VALUE_SEPARATOR);  // Next space will be written by receiver.
+			list.writeContentData(receiver, charSetID);  // Nothing will be written for empty character sets.
+			writeCommandEnd();
+			//TODO Log ignored metadata?
+		}
+		return blockStarted;
+	}
+	
+	
+//	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
+//		CharacterSetEventReceiver charSetReceiver = new CharacterSetEventReceiver(writer, parameters);
+//		
+//		document.getOTUList("").getOTUSets()
+//		
+//		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
+//		while (matrixIterator.hasNext()) {
+//			MatrixDataAdapter matrix = matrixIterator.next();
+//			String matrixID = matrix.getStartEvent().getID();
+//			boolean blockStarted = false;
+//			blockStarted = writeSets(matrixID, COMMAND_NAME_CHAR_SET, matrix.getCharacterSets(), charSetReceiver, blockStarted);
+//			
+//			if (blockStarted) {
+//				writeBlockEnd();
+//			}
+//		}
+//	}
+	
+	
+	private void writeSetsBlocks(DocumentDataAdapter document, String commandName, String linkedBlockName, EventContentType linkedContentType,
+			Iterator<DataAdapter<? extends LabeledIDEvent>> dataSourceIterator,	String setGetterMethodName, JPhyloIOEventReceiver receiver) 
+			throws IOException,	IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, 
+			SecurityException {
+		
+		while (dataSourceIterator.hasNext()) {
+			DataAdapter<? extends LabeledIDEvent> dataSource = dataSourceIterator.next();
+			
+			@SuppressWarnings("unchecked")
+			ObjectListDataAdapter<LinkedLabeledIDEvent> sets = 
+					(ObjectListDataAdapter<LinkedLabeledIDEvent>)dataSource.getClass().getMethod(setGetterMethodName).invoke(dataSource);
+			Iterator<String> charSetIDIterator = sets.getIDIterator();
 			if (charSetIDIterator.hasNext()) {
 				writeBlockStart(BLOCK_NAME_SETS);
-				String matrixID = matrix.getStartEvent().getID();
-				writeLinkCommand(matrixID, matrixIDToBlockTypeMap.get(matrixID).toBlockName(), EventContentType.ALIGNMENT);  // If matrixIDToBlockTypeMap.get(matrixID) returns null, the matrices have not been written correctly before.
+				String matrixID = dataSource.getStartEvent().getID();
+				writeLinkCommand(matrixID, linkedBlockName, linkedContentType);
 				
 				while (charSetIDIterator.hasNext()) {
 					String charSetID = charSetIDIterator.next();
 					
-					writeLineStart(writer, COMMAND_NAME_CHAR_SET);
+					writeLineStart(writer, commandName);
 					writer.write(' ');
-					writer.write(formatToken(createUniqueLabel(parameters, characterSets.getObjectStartEvent(charSetID))));
+					writer.write(formatToken(createUniqueLabel(parameters, sets.getObjectStartEvent(charSetID))));
 					writer.write(' ');
 					writer.write(KEY_VALUE_SEPARATOR);  // Next space will be written by receiver.
-					characterSets.writeContentData(receiver, charSetID);  // Nothing will be written for empty character sets.
+					sets.writeContentData(receiver, charSetID);  // Nothing will be written for empty character sets.
 					writeCommandEnd();
 					//TODO Log ignored metadata?
 				}
@@ -804,8 +861,39 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			}
 		}
 	}
+
 	
-	
+//	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
+//		CharacterSetEventReceiver receiver = new CharacterSetEventReceiver(writer, parameters);
+//		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
+//		while (matrixIterator.hasNext()) {
+//			MatrixDataAdapter matrix = matrixIterator.next();
+//			ObjectListDataAdapter<LinkedLabeledIDEvent> characterSets = matrix.getCharacterSets();
+//			Iterator<String> charSetIDIterator = characterSets.getIDIterator();
+//			if (charSetIDIterator.hasNext()) {
+//				writeBlockStart(BLOCK_NAME_SETS);
+//				String matrixID = matrix.getStartEvent().getID();
+//				writeLinkCommand(matrixID, matrixIDToBlockTypeMap.get(matrixID).toBlockName(), EventContentType.ALIGNMENT);  // If matrixIDToBlockTypeMap.get(matrixID) returns null, the matrices have not been written correctly before.
+//				
+//				while (charSetIDIterator.hasNext()) {
+//					String charSetID = charSetIDIterator.next();
+//					
+//					writeLineStart(writer, COMMAND_NAME_CHAR_SET);
+//					writer.write(' ');
+//					writer.write(formatToken(createUniqueLabel(parameters, characterSets.getObjectStartEvent(charSetID))));
+//					writer.write(' ');
+//					writer.write(KEY_VALUE_SEPARATOR);  // Next space will be written by receiver.
+//					characterSets.writeContentData(receiver, charSetID);  // Nothing will be written for empty character sets.
+//					writeCommandEnd();
+//					//TODO Log ignored metadata?
+//				}
+//				
+//				writeBlockEnd();
+//			}
+//		}
+//	}
+//
+//	
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
 		this.writer = writer;
@@ -818,6 +906,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		writeTaxaBlocks(document);
 		writeCharactersUnalignedBlocks(document);
 		writeTreesBlocks(document);
-		writeSetsBlocks(document);
+		//writeSetsBlocks(document, COMMAND_NAME_CHAR_SET, matrixIDToBlockTypeMap.get(matrixID).toBlockName());
 	}
 }
