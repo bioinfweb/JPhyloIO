@@ -740,13 +740,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 
 			// Write block start:
 			writeBlockStart(BLOCK_NAME_TREES);
-			if (UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
-				writeTitleCommand("Trees linked to no TAXA block");
-			}
-			else {
-				writeTitleCommand("Trees linked to " + parameters.getLabelEditingReporter().getEditedLabel(
-						EventContentType.OTU_LIST, groupStartEvent.getLinkedID()));
-			}
+			writeTitleCommand(groupStartEvent);
 			writeLinkCommand(groupStartEvent, BLOCK_NAME_TAXA, EventContentType.OTU_LIST);  // Writes only if a block is linked.
 			
 			// Write trees:
@@ -824,6 +818,23 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			@Override
 			protected String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource) {
 				return matrixIDToBlockTypeMap.get(dataSource.getStartEvent().getID()).toBlockName();
+			}
+		}.write();
+
+		// Write tree sets:
+		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_TREE_SET, EventContentType.TREE_NETWORK_GROUP, 
+				document.getTreeNetworkGroupIterator(),	
+				new ReferenceOnlySetReceiver(getStreamDataProvider(), EnumSet.of(EventContentType.TREE, EventContentType.TREE_NETWORK_SET),
+						EnumSet.of(EventContentType.NETWORK))) {
+			
+			@Override
+			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
+				return ((TreeNetworkGroupDataAdapter)dataSource).getTreeSets();
+			}
+			
+			@Override
+			protected String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource) {
+				return BLOCK_NAME_TREES;
 			}
 		}.write();
 	}

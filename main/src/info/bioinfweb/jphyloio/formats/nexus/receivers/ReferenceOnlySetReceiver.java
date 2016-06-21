@@ -23,17 +23,27 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusWriterStreamDataProvider;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.Set;
 
 
 
 public class ReferenceOnlySetReceiver extends AbstractNexusSetsEventReceiver {
 	private Set<EventContentType> allowedTypes;
+	private Set<EventContentType> ignoredTypes;
 	
 	
-	public ReferenceOnlySetReceiver(NexusWriterStreamDataProvider streamDataProvider,	Set<EventContentType> allowedTypes) {
+	public ReferenceOnlySetReceiver(NexusWriterStreamDataProvider streamDataProvider,	Set<EventContentType> allowedTypes, 
+			Set<EventContentType> ignoredTypes) {
+		
 		super(streamDataProvider);
 		this.allowedTypes = allowedTypes;
+		this.ignoredTypes = ignoredTypes;
+	}
+
+
+	public ReferenceOnlySetReceiver(NexusWriterStreamDataProvider streamDataProvider,	Set<EventContentType> allowedTypes) {
+		this(streamDataProvider, allowedTypes, EnumSet.noneOf(EventContentType.class));
 	}
 
 
@@ -42,6 +52,9 @@ public class ReferenceOnlySetReceiver extends AbstractNexusSetsEventReceiver {
 		boolean result = allowedTypes.contains(event.getLinkedObjectType()); 
 		if (result) {
 			writeElementReference(event);
+		}
+		else {
+			result = ignoredTypes.contains(event.getLinkedObjectType());
 		}
 		return result;
 	}
