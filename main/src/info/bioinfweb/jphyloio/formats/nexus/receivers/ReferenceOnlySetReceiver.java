@@ -18,31 +18,31 @@
  */
 package info.bioinfweb.jphyloio.formats.nexus.receivers;
 
-
-import java.io.IOException;
-
 import info.bioinfweb.jphyloio.events.SetElementEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusWriterStreamDataProvider;
 
+import java.io.IOException;
+import java.util.Set;
 
 
-public class OTUSetReceiver extends AbstractNexusSetsEventReceiver {
-	public OTUSetReceiver(NexusWriterStreamDataProvider streamDataProvider) {
+
+public class ReferenceOnlySetReceiver extends AbstractNexusSetsEventReceiver {
+	private Set<EventContentType> allowedTypes;
+	
+	
+	public ReferenceOnlySetReceiver(NexusWriterStreamDataProvider streamDataProvider,	Set<EventContentType> allowedTypes) {
 		super(streamDataProvider);
+		this.allowedTypes = allowedTypes;
 	}
 
-	
+
 	@Override
 	protected boolean handleSetElement(SetElementEvent event) throws IOException {
-		switch (event.getLinkedObjectType()) {
-			case OTU:
-				writeElementReference(event);  //TODO Should all set elements be collected to reconstruct possible intervals or should just all single references by written?
-				return true;
-			case OTU_SET:
-				writeElementReference(event);
-				return true;
-			default:
-				return false;
+		boolean result = allowedTypes.contains(event.getLinkedObjectType()); 
+		if (result) {
+			writeElementReference(event);
 		}
+		return result;
 	}
 }

@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,7 +51,7 @@ import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.CharacterSetEventReceiver;
-import info.bioinfweb.jphyloio.formats.nexus.receivers.OTUSetReceiver;
+import info.bioinfweb.jphyloio.formats.nexus.receivers.ReferenceOnlySetReceiver;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.TokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
 
@@ -798,7 +799,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		
 		// Write taxon sets:
 		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_TAXON_SET, EventContentType.OTU_LIST, document.getOTUListIterator(), 
-				new OTUSetReceiver(getStreamDataProvider())) {
+				new ReferenceOnlySetReceiver(getStreamDataProvider(), EnumSet.of(EventContentType.OTU, EventContentType.OTU_SET))) {
 			
 			@Override
 			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
