@@ -794,8 +794,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
+		// Write character sets:
 		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_CHAR_SET, EventContentType.ALIGNMENT, document.getMatrixIterator(), 
-				new CharacterSetEventReceiver(writer, parameters)) {
+				new CharacterSetEventReceiver(getStreamDataProvider())) {
 			
 			@Override
 			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {

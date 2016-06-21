@@ -20,26 +20,23 @@ package info.bioinfweb.jphyloio.formats.nexus.receivers;
 
 
 import java.io.IOException;
-import java.io.Writer;
 
 import javax.xml.stream.XMLStreamException;
 
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SetElementEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
-import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
-import info.bioinfweb.jphyloio.formats.text.BasicTextCommentEventReceiver;
+import info.bioinfweb.jphyloio.formats.nexus.NexusWriterStreamDataProvider;
 
 
 
-public class CharacterSetEventReceiver extends BasicTextCommentEventReceiver implements NexusConstants {
-	public CharacterSetEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
-		super(writer, parameterMap, Character.toString(COMMENT_START), Character.toString(COMMENT_END));
+public class CharacterSetEventReceiver extends AbstractNexusEventReceiver {
+	public CharacterSetEventReceiver(NexusWriterStreamDataProvider streamDataProvider) {
+		super(streamDataProvider);
 	}
 
 	
