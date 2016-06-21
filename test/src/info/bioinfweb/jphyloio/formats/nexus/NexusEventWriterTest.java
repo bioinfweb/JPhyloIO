@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.SetElementEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.test.dataadapters.SharedOTUTestMatrixAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
@@ -498,10 +499,13 @@ public class NexusEventWriterTest implements NexusConstants {
 				"A", "ACTGC", "B", "A-TCC", "C", "ACTTC");
 		StoreObjectListDataAdapter<LinkedLabeledIDEvent> charSets = new StoreObjectListDataAdapter<>();
 		charSets.setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet1", "char set 1", "matrix0"));
-		charSets.getObjectMap().get("charSet1").getObjectContent().add(new CharacterSetIntervalEvent(1, 3));
-		charSets.getObjectMap().get("charSet1").getObjectContent().add(new CharacterSetIntervalEvent(4, 5));
+		charSets.getObjectMap().get("charSet1").getObjectContent().add(new CharacterSetIntervalEvent(0, 2));
+		charSets.getObjectMap().get("charSet1").getObjectContent().add(new CharacterSetIntervalEvent(3, 4));
 		charSets.setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet2", "char set 2", "matrix0"));
-		charSets.getObjectMap().get("charSet2").getObjectContent().add(new CharacterSetIntervalEvent(2, 4));
+		charSets.getObjectMap().get("charSet2").getObjectContent().add(new CharacterSetIntervalEvent(1, 3));
+		charSets.setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet3", "char set 3", "matrix0"));
+		charSets.getObjectMap().get("charSet3").getObjectContent().add(new CharacterSetIntervalEvent(0, 1));
+		charSets.getObjectMap().get("charSet3").getObjectContent().add(new SetElementEvent("charSet2", EventContentType.CHARACTER_SET));
 		matrix.setCharacterSets(charSets);
 		
 		matrix.setLinkedOTUsID("otus0");
@@ -511,8 +515,8 @@ public class NexusEventWriterTest implements NexusConstants {
 		matrix = new SingleTokenTestMatrixDataAdapter("matrix1", "another matrix", true, 
 				"A", "ACTCTGC", "B", "ACC-TCC", "C", "ACTCTTC");
 		charSets = new StoreObjectListDataAdapter<>();
-		charSets.setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet3", "char set 3", "matrix1"));
-		charSets.getObjectMap().get("charSet3").getObjectContent().add(new CharacterSetIntervalEvent(1, 4));
+		charSets.setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet4", "char set 4", "matrix1"));
+		charSets.getObjectMap().get("charSet4").getObjectContent().add(new CharacterSetIntervalEvent(0, 3));
 		matrix.setCharacterSets(charSets);
 		
 		matrix.setLinkedOTUsID("otus0");
@@ -569,12 +573,13 @@ public class NexusEventWriterTest implements NexusConstants {
 			assertEquals("\tLINK CHARACTERS=a_matrix;", reader.readLine());
 			assertEquals("\tCHARSET char_set_1 = 1-2 4;", reader.readLine());
 			assertEquals("\tCHARSET char_set_2 = 2-3;", reader.readLine());
+			assertEquals("\tCHARSET char_set_3 = 1 char_set_2;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			assertEquals("", reader.readLine());
 			
 			assertEquals("BEGIN SETS;", reader.readLine());
 			assertEquals("\tLINK CHARACTERS=another_matrix;", reader.readLine());
-			assertEquals("\tCHARSET char_set_3 = 1-3;", reader.readLine());
+			assertEquals("\tCHARSET char_set_4 = 1-3;", reader.readLine());
 			assertEquals("END;", reader.readLine());
 			
 			assertEquals(-1, reader.read());
