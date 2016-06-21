@@ -91,12 +91,12 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID));
 		
 		// Add sequence sets to matrix data adapter
-		String sequenceSetID = DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
+		String sequenceSetID = DEFAULT_SEQUENCE_SET_ID_PREFIX + getIDIndex();
 		StoreObjectData<LinkedLabeledIDEvent> sequenceSet = new StoreObjectData<LinkedLabeledIDEvent>(
-				new LinkedLabeledIDEvent(EventContentType.OTU_SET, sequenceSetID, null, "matrix")); //TODO use real matrix ID
-		sequenceSet.getObjectContent().add(new SetElementEvent("sequence1", EventContentType.OTU));
-		sequenceSet.getObjectContent().add(new SetElementEvent("sequence2", EventContentType.OTU));
-		sequenceSet.getObjectContent().add(new SetElementEvent("sequence3", EventContentType.OTU)); //TODO use real sequence IDs
+				new LinkedLabeledIDEvent(EventContentType.SEQUENCE_SET, sequenceSetID, null, "matrix")); //TODO use real matrix ID
+		sequenceSet.getObjectContent().add(new SetElementEvent("sequence1", EventContentType.SEQUENCE));
+		sequenceSet.getObjectContent().add(new SetElementEvent("sequence2", EventContentType.SEQUENCE));
+		sequenceSet.getObjectContent().add(new SetElementEvent("sequence3", EventContentType.SEQUENCE)); //TODO use real sequence IDs
 		
 		matrix.getSequenceSets().getObjectMap().put(sequenceSetID, sequenceSet);
 		
@@ -117,14 +117,33 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 					otuID, "taxon"), null));
 		}
 		
-		String otuSetID = DEFAULT_OTU_ID_PREFIX + getIDIndex();
+		// Add OTU set
+		String otuSetID = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();
 		StoreObjectData<LinkedLabeledIDEvent> otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
 				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetID, null, id));
 		otuSet.getObjectContent().add(new SetElementEvent("otu1", EventContentType.OTU));
 		otuSet.getObjectContent().add(new SetElementEvent("otu2", EventContentType.OTU));
-		otuSet.getObjectContent().add(new SetElementEvent("otu3", EventContentType.OTU)); //TODO use real otu IDs
+		otuSet.getObjectContent().add(new SetElementEvent("otu3", EventContentType.OTU)); //TODO use real OTU IDs
 		
 		otuList.getOTUSets().getObjectMap().put(otuSetID, otuSet);
+		
+//		// Add OTU set referencing another set
+//		String otuSetReferencingSetID = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();
+//		otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
+//				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetReferencingSetID, null, id));
+//		otuSet.getObjectContent().add(new SetElementEvent(otuSetID, EventContentType.OTU_SET));		
+//		otuSet.getObjectContent().add(new SetElementEvent("otu4", EventContentType.OTU)); //TODO use real OTU IDs
+//		
+//		otuList.getOTUSets().getObjectMap().put(otuSetReferencingSetID, otuSet);
+//		
+//	// Add OTU set referencing another set
+//		String otuSetReferencingSetID2 = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();
+//		otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
+//				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetReferencingSetID2, null, id));
+//		otuSet.getObjectContent().add(new SetElementEvent(otuSetReferencingSetID, EventContentType.OTU_SET));		
+//		otuSet.getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU)); //TODO use real OTU IDs
+//		
+//		otuList.getOTUSets().getObjectMap().put(otuSetReferencingSetID2, otuSet);
 		
 		return otuList;
 	}

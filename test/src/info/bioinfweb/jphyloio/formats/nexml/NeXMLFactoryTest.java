@@ -52,7 +52,7 @@ public class NeXMLFactoryTest {
 			assertTrue(new NeXMLFactory().checkFormat(reader, new ReadWriteParameterMap()));
 		}
 		finally {
-			System.out.println(reader.getCharacterOffset());
+//			System.out.println(reader.getCharacterOffset());
 			reader.close();
 		}
 	}

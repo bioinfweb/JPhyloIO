@@ -406,8 +406,8 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 						"METRIC:m", null, null, true, reader);	
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_APPLIES_TO), null, 
 						"node", null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, new QName("http://example.org", "newType", "ex")), 
-						"-0.545", null, "-0.545", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
+						"-0.545", null, -0.545, true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);

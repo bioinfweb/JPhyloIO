@@ -29,6 +29,6 @@
          </clade>
       </clade>
 	  <property datatype="xsd:int" ref="ex:predicate" applies_to="phylogeny"> 1 </property>
-	  <property datatype="ex:newType" ref="ex:predicate" applies_to="node" unit="METRIC:m">-0.545</property>
+	  <property datatype="xsd:double" ref="ex:predicate" applies_to="node" unit="METRIC:m">-0.545</property>
    </phylogeny>
 </phyloxml>
