@@ -21,37 +21,28 @@ package info.bioinfweb.jphyloio.formats.nexus.receivers;
 
 import java.io.IOException;
 
-import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.SetElementEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.NexusWriterStreamDataProvider;
 
 
 
-public class CharacterSetEventReceiver extends AbstractNexusSetsEventReceiver {
-	public CharacterSetEventReceiver(NexusWriterStreamDataProvider streamDataProvider) {
+public class OTUSetReceiver extends AbstractNexusSetsEventReceiver {
+	public OTUSetReceiver(NexusWriterStreamDataProvider streamDataProvider) {
 		super(streamDataProvider);
 	}
 
 	
 	@Override
-	protected boolean handleCharacterSetInterval(CharacterSetIntervalEvent event) throws IOException {
-		getWriter().write(' ');
-		getWriter().write(Long.toString(event.getStart() + 1));
-		if (event.getEnd() - event.getStart() > 1) {
-			getWriter().write(SET_TO_SYMBOL);
-			getWriter().write(Long.toString(event.getEnd()));
-		}
-		return true;
-	}
-
-
-	@Override
 	protected boolean handleSetElement(SetElementEvent event) throws IOException {
-		boolean result = event.getLinkedObjectType().equals(EventContentType.CHARACTER_SET); 
-		if (result) {
-			writeElementReference(event);
+		switch (event.getLinkedObjectType()) {
+			case OTU:
+				writeElementReference(event);  //TODO Should all set elements be collected to reconstruct possible intervals or should just all single references by written?
+				return true;
+			case OTU_SET:
+				writeElementReference(event);
+				return true;
+			default:
+				return false;
 		}
-		return result;
 	}
 }

@@ -50,6 +50,7 @@ import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.CharacterSetEventReceiver;
+import info.bioinfweb.jphyloio.formats.nexus.receivers.OTUSetReceiver;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.TokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
 
@@ -793,6 +794,23 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
+		//TODO Ignored metadata from all the receivers should be logged. (They provide according properties.)
+		
+		// Write taxon sets:
+		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_TAXON_SET, EventContentType.OTU_LIST, document.getOTUListIterator(), 
+				new OTUSetReceiver(getStreamDataProvider())) {
+			
+			@Override
+			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
+				return ((OTUListDataAdapter)dataSource).getOTUSets();
+			}
+			
+			@Override
+			protected String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource) {
+				return BLOCK_NAME_TAXA;
+			}
+		}.write();
+
 		// Write character sets:
 		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_CHAR_SET, EventContentType.ALIGNMENT, document.getMatrixIterator(), 
 				new CharacterSetEventReceiver(getStreamDataProvider())) {
