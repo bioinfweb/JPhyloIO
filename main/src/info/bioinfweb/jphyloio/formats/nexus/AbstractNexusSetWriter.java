@@ -20,15 +20,18 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.dataadapters.DataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.nexus.receivers.AbstractNexusEventReceiver;
 
 
 
@@ -43,12 +46,12 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 	private String commandName;
 	private EventContentType linkedContentType;
 	private Iterator<? extends DataAdapter<? extends LabeledIDEvent>> dataSourceIterator;
-	private JPhyloIOEventReceiver receiver;
+	private AbstractNexusEventReceiver receiver;
 	private boolean executed = false;
 	
 	
 	public AbstractNexusSetWriter(NexusWriterStreamDataProvider streamDataProvider, String commandName,	EventContentType linkedContentType,	
-			Iterator<? extends DataAdapter<? extends LabeledIDEvent>> dataSourceIterator,	JPhyloIOEventReceiver receiver) {
+			Iterator<? extends DataAdapter<? extends LabeledIDEvent>> dataSourceIterator,	AbstractNexusEventReceiver receiver) {
 		
 		super();
 		this.streamDataProvider = streamDataProvider;
@@ -62,6 +65,15 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 	protected abstract ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource);
 	
 	protected abstract String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource);
+	
+	
+	private void logIgnoredMetadata(BasicEventReceiver<Writer> receiver, String setName) {
+		if (receiver.didIgnoreMetadata()) {
+			streamDataProvider.getParameters().getLogger().addMessage("One or more " + setName + " elements contained metadata. " + 
+					receiver.getIgnoredMetadata() +	
+					" metadata items were not written, because the Nexus format does not support metadata at this position.");
+		}
+	}
 	
 	
 	public void write() throws IOException {
@@ -98,5 +110,7 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 				streamDataProvider.writeBlockEnd();
 			}
 		}
+		
+		logIgnoredMetadata(receiver, commandName);
 	}
 }

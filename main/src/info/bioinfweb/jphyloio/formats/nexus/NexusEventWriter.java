@@ -789,8 +789,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
-		//TODO Ignored metadata from all the receivers should be logged. (They provide according properties.)
-		
 		// Write taxon sets:
 		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_TAXON_SET, EventContentType.OTU_LIST, document.getOTUListIterator(), 
 				new ReferenceOnlySetReceiver(getStreamDataProvider(), EnumSet.of(EventContentType.OTU, EventContentType.OTU_SET))) {
