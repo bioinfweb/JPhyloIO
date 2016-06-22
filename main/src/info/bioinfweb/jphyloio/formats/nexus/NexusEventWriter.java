@@ -87,8 +87,10 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * of the label, until it is unique labels. The elements (ID, label, index) of edited Nexus names will be separated by
  * {@link #EDITED_LABEL_SEPARATOR}.
  * <p>
- * The Nexus names that have actually be used in the output can be obtained from the {@link LabelEditingReporter} added
- * to the parameter map.
+ * The Nexus names that have actually been used in the output can be obtained from the {@link LabelEditingReporter} added
+ * to the parameter map using {@link ReadWriteParameterMap#getLabelEditingReporter()}. (A reference to the parameter map 
+ * passed to one of the {@code #writeDocument()} methods must be kept by the application code, in order to access the
+ * label editing reporter after the document has been written.)
  *  
  * <h3><a name="parameters"></a>Recognized parameters</h3> 
  * <ul>
@@ -102,6 +104,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * </ul>
  * 
  * @author Ben St&ouml;ver
+ * @since 0.0.0
  */
 public class NexusEventWriter extends AbstractEventWriter implements NexusConstants {
 	private static final String UNDEFINED_OTUS_ID = "\n";  // Should not occur as a real ID;
