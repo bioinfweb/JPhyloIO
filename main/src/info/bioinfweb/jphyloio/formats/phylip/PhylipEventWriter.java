@@ -39,7 +39,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * Event based writer for the Phylip format.
  * <p>
  * This write is able to write sequence data to Phylip formatted streams. It will ignore any data for phylogenetic
- * trees and networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator()}, because the Phylip 
+ * trees and networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator(ReadWriteParameterMap)}, because the Phylip 
  * format does not support such data.
  * <p>
  * Note that sequence names may have to be edited according to the (length) constrains the Phylip format imposes.

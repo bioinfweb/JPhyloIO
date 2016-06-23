@@ -738,7 +738,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		getXMLWriter().writeStartElement(TAG_TREES.getLocalPart());
 		streamDataProvider.writeLinkedLabeledIDAttributes(treeOrNetworkGroup.getStartEvent(getParameters()), TAG_OTUS, true);
 
-		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = treeOrNetworkGroup.getTreeNetworkIterator();
+		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = treeOrNetworkGroup.getTreeNetworkIterator(getParameters());
 		while (treesAndNetworksIterator.hasNext()) {
 			writeTreeOrNetworkTag(treesAndNetworksIterator.next());
 		}
@@ -747,7 +747,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		elementTypeToLinkAttributeMap.put(EventContentType.TREE, ATTR_TREE_SET_LINKED_TREE_IDS.getLocalPart());
 		elementTypeToLinkAttributeMap.put(EventContentType.NETWORK, ATTR_TREE_SET_LINKED_NETWORK_IDS.getLocalPart());
 		
-		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.TREE_NETWORK_SET, treeOrNetworkGroup.getTreeSets());
+		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.TREE_NETWORK_SET, treeOrNetworkGroup.getTreeSets(getParameters()));
 		
 		getXMLWriter().writeEndElement();
 	}
@@ -835,7 +835,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			streamDataProvider.setWriteUndefinedOtuList(true);
 		}
 
-		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = treesAndNetworks.getTreeNetworkIterator();
+		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = treesAndNetworks.getTreeNetworkIterator(getParameters());
 		while (treesAndNetworksIterator.hasNext()) {
 			checkTreeOrNetwork(treesAndNetworksIterator.next());
 		}

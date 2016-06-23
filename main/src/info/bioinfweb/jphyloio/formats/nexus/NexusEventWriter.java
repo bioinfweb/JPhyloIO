@@ -61,7 +61,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * Event based writer for the Nexus format.
  * <p>
  * This write is able to write OTU, sequence and tree data to Nexus formatted streams. It will ignore any data for 
- * phylogenetic networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator()}, because the Nexus 
+ * phylogenetic networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator(ReadWriteParameterMap)}, because the Nexus 
  * format only supports trees.
  * 
  * <h3><a name="commentsMeta"></a>Comments and metadata</h3> 
@@ -749,7 +749,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			
 			// Write trees:
 			Set<String> usedLabels = new HashSet<String>();
-			Iterator<TreeNetworkDataAdapter> treeIterator = group.getTreeNetworkIterator();
+			Iterator<TreeNetworkDataAdapter> treeIterator = group.getTreeNetworkIterator(getParameters());
 			while (treeIterator.hasNext()) {
 				Map<String, Long> indexMap = null;
 				if (currentOTUList != null) {
@@ -831,7 +831,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			
 			@Override
 			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
-				return ((TreeNetworkGroupDataAdapter)dataSource).getTreeSets();
+				return ((TreeNetworkGroupDataAdapter)dataSource).getTreeSets(getParameters());
 			}
 			
 			@Override

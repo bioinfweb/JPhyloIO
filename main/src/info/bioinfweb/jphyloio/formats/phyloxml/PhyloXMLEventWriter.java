@@ -71,7 +71,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 		while (treeNetworkGroupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
 			
-			Iterator<TreeNetworkDataAdapter> treeNetworkIterator = treeNetworkGroup.getTreeNetworkIterator();
+			Iterator<TreeNetworkDataAdapter> treeNetworkIterator = treeNetworkGroup.getTreeNetworkIterator(getParameters());
 			while (treeNetworkIterator.hasNext()) {
 				TreeNetworkDataAdapter tree = treeNetworkIterator.next();
 

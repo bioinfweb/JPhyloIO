@@ -37,7 +37,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
  * Event based writer for the FASTA format.
  * <p>
  * This write is able to write sequence data to FASTA formatted streams. It will ignore any data for phylogenetic
- * trees and networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator()}, because the FASTA 
+ * trees and networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator(ReadWriteParameterMap)}, because the FASTA 
  * format does not support such data. 
  * <p>
  * Since FASTA does not support OTU or taxon lists as well, such a list (if provided by 

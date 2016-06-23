@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
 import java.util.Iterator;
@@ -29,15 +30,17 @@ public interface TreeNetworkGroupDataAdapter extends AnnotatedDataAdapter<Linked
 	/**
 	 * Returns an iterator providing access to all trees and networks contained in the 
 	 * document to be written. 
+	 * @param parameters TODO
 	 * 
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
-	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator();
+	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns a list of tree sets defined for the tree-network-group modeled by this instance.
+	 * @param parameters TODO
 	 * 
 	 * @return a (possibly empty) list of tree sets
 	 */
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets();
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets(ReadWriteParameterMap parameters);
 }

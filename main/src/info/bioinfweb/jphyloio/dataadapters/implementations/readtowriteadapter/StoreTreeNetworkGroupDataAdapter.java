@@ -50,7 +50,7 @@ public class StoreTreeNetworkGroupDataAdapter extends StoreAnnotatedDataAdapter<
 
 
 	@Override
-	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator() {
+	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator(ReadWriteParameterMap parameters) {
 		return treesAndNetworks.iterator();
 	}
 
@@ -61,7 +61,7 @@ public class StoreTreeNetworkGroupDataAdapter extends StoreAnnotatedDataAdapter<
 
 
 	@Override
-	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets() {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets(ReadWriteParameterMap parameters) {
 		return treeAndNetworkSets;
 	}
 }
