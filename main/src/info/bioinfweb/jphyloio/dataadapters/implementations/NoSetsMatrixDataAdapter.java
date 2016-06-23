@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -29,7 +30,7 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 /**
  * Abstract implementation of {@link MatrixDataAdapter}, which returns empty object list adapters
  * for {@link #getTokenSets()}, {@link #getSequenceSets()}, {@link #getCharacterSets()}. Additionally an empty implementation
- * of {@link #writeMetadata(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver)} is inherited.
+ * of {@link #writeMetadata(ReadWriteParameterMap, info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver)} is inherited.
  * <p>
  * Application adapters that do not provide any token, sequence or character sets can be inherited from this class.
  * 

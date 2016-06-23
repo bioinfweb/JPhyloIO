@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 import java.io.IOException;
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -38,7 +39,7 @@ public abstract class EmptyAnnotatedDataAdapter<E extends JPhyloIOEvent> impleme
 	 * This default implementation does nothing and can be overwritten by inherited classes if necessary.
 	 */
 	@Override
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {
+	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}

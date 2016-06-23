@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import java.io.IOException;
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
@@ -33,7 +34,8 @@ public interface AnnotatedDataAdapter<E extends JPhyloIOEvent> extends DataAdapt
 	/**
 	 * Writes events describing the metadata associated with the object represented by this instance.
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @param receiver the writer accepting the events
 	 */
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException;
+	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException;
 }

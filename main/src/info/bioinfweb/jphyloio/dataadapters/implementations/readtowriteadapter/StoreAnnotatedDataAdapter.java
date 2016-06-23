@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -46,7 +47,7 @@ public abstract class StoreAnnotatedDataAdapter<E extends JPhyloIOEvent> impleme
 
 
 	@Override
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {
+	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
 		for (JPhyloIOEvent annotation : annotations) {
 			receiver.add(annotation);
 		}		

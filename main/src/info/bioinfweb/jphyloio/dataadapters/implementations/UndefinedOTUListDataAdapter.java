@@ -76,7 +76,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 
 
 	@Override
-	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {}
+	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {}
 
 
 	@Override

@@ -147,7 +147,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		}
 
-		adapter.writeMetadata(receiver);
+		adapter.writeMetadata(getParameters(), receiver);
 	}
 
 
@@ -772,7 +772,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), ATTR_XSI_TYPE.getNamespaceURI(),
 				ATTR_XSI_TYPE.getLocalPart(), treeType.toString()); //trees and networks are always written as float type
 
-		treeOrNetwork.writeMetadata(receiver);
+		treeOrNetwork.writeMetadata(getParameters(), receiver);
 
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork);
 
@@ -849,7 +849,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		streamDataProvider.addToDocumentIDs(treeOrNetwork.getStartEvent(getParameters()).getID());
 
-		treeOrNetwork.writeMetadata(receiver);
+		treeOrNetwork.writeMetadata(getParameters(), receiver);
 
 		for (String edgeID : lister.getEdgeIDs()) {
 			EdgeEvent edge = treeOrNetwork.getEdgeStartEvent(edgeID);

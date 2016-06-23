@@ -47,23 +47,24 @@ public interface DocumentDataAdapter extends AnnotatedDataAdapter<ConcreteJPhylo
 	/**
 	 * Returns an iterator providing access to all OTU lists contained in the document
 	 * to be written. 
-	 * @param parameters TODO
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return the iterator (May be empty but not {@code null}.)
 	 */
 	public Iterator<OTUListDataAdapter> getOTUListIterator(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns the number of OTU lists provided by this document adapter.
-	 * @param parameters TODO
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return the number of OTU lists, that will be returned by {@link #getOTUListIterator(ReadWriteParameterMap)}
 	 */
 	public long getOTUListCount(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns the OTU list referenced by the specified ID.
-	 * @param parameters TODO
+	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @param id the ID of the OTU list to be returned
 	 * 
 	 * @return the OTU list referenced by the specified ID
@@ -73,18 +74,18 @@ public interface DocumentDataAdapter extends AnnotatedDataAdapter<ConcreteJPhylo
 
 	/**
 	 * Returns an iterator providing access to all matrices contained in the document
-	 * to be written. 
-	 * @param parameters TODO
-	 * 
+	 * to be written.
+	 *  
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
 	public Iterator<MatrixDataAdapter> getMatrixIterator(ReadWriteParameterMap parameters);
 
 	/**
 	 * Returns an iterator providing access to all trees and network groups contained in the 
-	 * document to be written. 
-	 * @param parameters TODO
-	 * 
+	 * document to be written.
+	 *  
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
 	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator(ReadWriteParameterMap parameters);

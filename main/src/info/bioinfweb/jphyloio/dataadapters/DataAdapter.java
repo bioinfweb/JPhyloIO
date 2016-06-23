@@ -28,8 +28,8 @@ public interface DataAdapter<E extends JPhyloIOEvent> {
 	/**
 	 * Returns the start event of this data element. The returned event can be used to determine the label and ID 
 	 * of the modeled data element or an optionally linked data element.
-	 * @param parameters TODO
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return the start event of this data element
 	 */
 	public E getStartEvent(ReadWriteParameterMap parameters);
