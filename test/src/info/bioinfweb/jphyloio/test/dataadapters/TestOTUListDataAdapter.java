@@ -68,19 +68,19 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter<LabeledIDE
 
 
 	@Override
-	public long getCount() {
+	public long getCount(ReadWriteParameterMap parameters) {
 		return otus.size();
 	}
 
 	
 	@Override
-	public Iterator<String> getIDIterator() {
+	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
 		return otus.keySet().iterator();
 	}
 
 	
 	@Override
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException {}
+	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) throws IOException {}
 
 	
 	@Override
@@ -91,7 +91,7 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter<LabeledIDE
 
 	
 	@Override
-	public LabeledIDEvent getObjectStartEvent(String otuID) throws IllegalArgumentException {
+	public LabeledIDEvent getObjectStartEvent(ReadWriteParameterMap parameters, String otuID) throws IllegalArgumentException {
 		return otus.get(otuID);
 	}
 

@@ -179,12 +179,12 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		sequences.add(StringUtils.charSequenceToStringList("AGTCTAGTCT"));		
 		
 		// Add sequences
-		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator();
+		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator(parameters);
 		int otuCount = 0;
 		while (iterator.hasNext()) {
 			String sequenceID = DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
 			matrix.getMatrix().getObjectMap().put(sequenceID, createSequence(sequenceID,
-					sequences.get(otuCount), document.getOTUList(parameters, otusID).getObjectStartEvent(iterator.next()).getID()));
+					sequences.get(otuCount), document.getOTUList(parameters, otusID).getObjectStartEvent(parameters, iterator.next()).getID()));
 			otuCount++;			
 		}
 		
@@ -212,9 +212,9 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
 		
 		// Add single tokens
-		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator();
+		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator(parameters);
 		while (iterator.hasNext()) {
-			String otuID = document.getOTUList(parameters, otusID).getObjectStartEvent(iterator.next()).getID();
+			String otuID = document.getOTUList(parameters, otusID).getObjectStartEvent(parameters, iterator.next()).getID();
 			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
 			
 			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
@@ -239,9 +239,9 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
 		
 		// Add single tokens
-		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator();
+		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator(parameters);
 		while (iterator.hasNext()) {
-			String otuID = document.getOTUList(parameters, otusID).getObjectStartEvent(iterator.next()).getID();
+			String otuID = document.getOTUList(parameters, otusID).getObjectStartEvent(parameters, iterator.next()).getID();
 			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
 			
 			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(

@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 
 public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter<ConcreteJPhyloIOEvent> implements ObjectListDataAdapter<TokenSetDefinitionEvent>, ReadWriteConstants {	
 	@Override
-	public long getCount() {
+	public long getCount(ReadWriteParameterMap parameters) {
 		return 1;
 	}
 
@@ -59,13 +59,13 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter<Concret
 
 
 	@Override
-	public Iterator<String> getIDIterator() {
+	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
 		return Arrays.asList(new String[]{"tokenSet0"}).iterator();
 	}
 
 	
 	@Override
-	public TokenSetDefinitionEvent getObjectStartEvent(String id) throws IllegalArgumentException {
+	public TokenSetDefinitionEvent getObjectStartEvent(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException {
 		if (id.equals("tokenSet0")) {
 			return new TokenSetDefinitionEvent(CharacterStateSetType.DNA, "tokenSet0", "Some token set");
 		}
@@ -76,7 +76,7 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter<Concret
 
 
 	@Override
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException {
+	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) throws IOException {
 		if (id.equals("tokenSet0")) {			
 			IntegerIDManager idManager = new IntegerIDManager();
 			
