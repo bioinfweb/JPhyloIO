@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.test.dataadapters;
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
@@ -166,7 +167,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 
 
 	@Override
-	public LinkedLabeledIDEvent getStartEvent() {
+	public LinkedLabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, id, label, linkedOTUsID);
 	}
 

@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.test.dataadapters;
 
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
@@ -83,7 +84,7 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter<LabeledIDE
 
 	
 	@Override
-	public LabeledIDEvent getStartEvent() {
+	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new LabeledIDEvent(EventContentType.OTU_LIST, ReadWriteConstants.DEFAULT_OTU_LIST_ID_PREFIX + indexOfList, 
 				"OTU list " + indexOfList);
 	}

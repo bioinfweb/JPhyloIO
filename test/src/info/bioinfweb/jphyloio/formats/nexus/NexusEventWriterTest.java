@@ -80,11 +80,16 @@ public class NexusEventWriterTest implements NexusConstants {
 		File file = new File("data/testOutput/Test_" + writeNodeLabels + "_" + generateTranslationTable + ".nex");
 		
 		// Write file:
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_COMMENT, "Some application comment.");
+		parameters.put(ReadWriteParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, writeNodeLabels);
+		parameters.put(ReadWriteParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, generateTranslationTable);
+		
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
 		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter("matrix0", "a matrix", true, 
 				"Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
 		TestOTUListDataAdapter otuList = matrix.createAccordingOTUList(0); 
-		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent(null).getID(), otuList);  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
 		document.getMatrices().add(matrix);
 		
 		String otuID = ReadWriteConstants.DEFAULT_OTU_ID_PREFIX + "2";
@@ -108,11 +113,11 @@ public class NexusEventWriterTest implements NexusConstants {
 		treeGroup2.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree1", "tree", "t1", new String[]{"otu0", "otu1", "otu2"}));
 		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree2", "tree", "t2"));
 		
-		treeGroup1.getTreeSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet1", "tree set 1", treeGroup1.getStartEvent().getID()));
+		treeGroup1.getTreeSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet1", "tree set 1", treeGroup1.getStartEvent(parameters).getID()));
 		treeGroup1.getTreeSets().getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("tree0", EventContentType.TREE));
 		treeGroup1.getTreeSets().getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("network0", EventContentType.NETWORK));  // The referenced network does currently not exist, but it should not matter for the current implementation. The aim is testing, if a network is ignored without exceptions.
 		//TODO Test below, whether ignored network was logged.
-		treeGroup1.getTreeSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet2", "tree set 2", treeGroup1.getStartEvent().getID()));
+		treeGroup1.getTreeSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet2", "tree set 2", treeGroup1.getStartEvent(parameters).getID()));
 		treeGroup1.getTreeSets().getObjectMap().get("treeSet2").getObjectContent().add(new SetElementEvent("tree2", EventContentType.TREE));
 		treeGroup1.getTreeSets().getObjectMap().get("treeSet2").getObjectContent().add(new SetElementEvent("treeSet1", EventContentType.TREE_NETWORK_SET));
 		
@@ -120,10 +125,6 @@ public class NexusEventWriterTest implements NexusConstants {
 		document.getTreeNetworkGroups().add(treeGroup2);
 		
 		NexusEventWriter writer = new NexusEventWriter();
-		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_COMMENT, "Some application comment.");
-		parameters.put(ReadWriteParameterMap.KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS, writeNodeLabels);
-		parameters.put(ReadWriteParameterMap.KEY_GENERATE_NEXUS_TRANSLATION_TABLE, generateTranslationTable);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -234,7 +235,7 @@ public class NexusEventWriterTest implements NexusConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu7", null),
 				new LabeledIDEvent(EventContentType.OTU, "otu8", "otu9_label1"),
 				new LabeledIDEvent(EventContentType.OTU, "otu9", "label1"));  // Test if ID is removed again, before index is appended.
-		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent(null).getID(), otuList);  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
 		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter("matrix0", "a matrix", false, 
 				"ACGT", "ACCT", "AC-T", "AGGT", "AG-T", "TCGT", "CCGT", "GCGT");
 		matrix.setLinkedOTUsID("otus0");
@@ -330,7 +331,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
 		TestOTUListDataAdapter otuList = new TestOTUListDataAdapter(0, 
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "someOTU"));
-		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent(null).getID(), otuList);  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
 		SharedOTUTestMatrixAdapter matrix = new SharedOTUTestMatrixAdapter("matrix0", "a matrix", "otu0", false, 
 				"ACGT", "ACCT");
 		matrix.setLinkedOTUsID("otus0");
@@ -394,7 +395,7 @@ public class NexusEventWriterTest implements NexusConstants {
 		TestOTUListDataAdapter otuList = new TestOTUListDataAdapter(0, 
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "long"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", "short"));
-		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent(null).getID(), otuList);  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
 		TestMatrixDataAdapter matrix = new TestMatrixDataAdapter("matrix0", "a matrix", false, "A-CGTT", "ACCT");
 		matrix.setLinkedOTUsID("otus0");
 		document.getMatrices().add(matrix);
@@ -508,12 +509,12 @@ public class NexusEventWriterTest implements NexusConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "A"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", "B"),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "C"));
-		otuList.getOTUSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet1", "otu set 1", otuList.getStartEvent().getID()));
+		otuList.getOTUSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet1", "otu set 1", otuList.getStartEvent(null).getID()));  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
 		otuList.getOTUSets().getObjectMap().get("otuSet1").getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU));
-		otuList.getOTUSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet2", "otu set 2", otuList.getStartEvent().getID()));
+		otuList.getOTUSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet2", "otu set 2", otuList.getStartEvent(null).getID()));  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
 		otuList.getOTUSets().getObjectMap().get("otuSet2").getObjectContent().add(new SetElementEvent("otu2", EventContentType.OTU));
 		otuList.getOTUSets().getObjectMap().get("otuSet2").getObjectContent().add(new SetElementEvent("otuSet1", EventContentType.OTU_SET));
-		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent(null).getID(), otuList);  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
 
 		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter("matrix0", "a matrix", true, 
 				"A", "ACTGC", "B", "A-TCC", "C", "ACTTC");

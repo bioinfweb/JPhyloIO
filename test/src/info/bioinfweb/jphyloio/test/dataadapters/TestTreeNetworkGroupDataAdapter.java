@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.test.dataadapters;
 
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
@@ -58,7 +59,7 @@ public class TestTreeNetworkGroupDataAdapter extends EmptyAnnotatedDataAdapter<L
 
 
 	@Override
-	public LinkedLabeledIDEvent getStartEvent() {
+	public LinkedLabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new LinkedLabeledIDEvent(EventContentType.TREE, id, label, linkedOTUsID);
 	}
 	

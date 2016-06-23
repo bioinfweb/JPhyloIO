@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
@@ -68,7 +69,7 @@ public class NoAnnotationsTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent>
 
 
 	@Override
-	public LabeledIDEvent getStartEvent() {
+	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new LabeledIDEvent(EventContentType.TREE, id, label);
 	}
 

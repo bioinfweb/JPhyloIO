@@ -24,6 +24,7 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
@@ -52,7 +53,7 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter<Concret
 
 
 	@Override
-	public ConcreteJPhyloIOEvent getStartEvent() {
+	public ConcreteJPhyloIOEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return null;
 	}
 

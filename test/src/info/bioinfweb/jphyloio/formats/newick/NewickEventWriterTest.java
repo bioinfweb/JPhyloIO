@@ -66,13 +66,14 @@ public class NewickEventWriterTest {
 		File file = new File("data/testOutput/LinkedOTUs.nwk");
 		
 		// Write file:
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
 		
 		TestOTUListDataAdapter otuList = new TestOTUListDataAdapter(0, 
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "label1"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", null),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "otu0"));
-		document.getOTUListsMap().put(otuList.getStartEvent().getID(), otuList);
+		document.getOTUListsMap().put(otuList.getStartEvent(parameters).getID(), otuList);  // Providing the parameter map may cause problems in the future, if otuList.getStartEvent() needs to know the current format ID.
 		
 		document.getTreeNetworkGroups().add(new TestTreeNetworkGroupDataAdapter("tree0", "first tree", "t0"));
 		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter("tree1", "second tree", "t1", new String[]{"otu0", "otu1", "otu2"});		
@@ -80,7 +81,7 @@ public class NewickEventWriterTest {
 		document.getTreeNetworkGroups().add(trees);
 		
 		NewickEventWriter writer = new NewickEventWriter();
-		writer.writeDocument(document, file, new ReadWriteParameterMap());
+		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
 		BufferedReader reader = new BufferedReader(new FileReader(file));

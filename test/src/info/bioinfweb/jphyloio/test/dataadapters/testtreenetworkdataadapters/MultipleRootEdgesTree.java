@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
@@ -69,7 +70,7 @@ public class MultipleRootEdgesTree extends EmptyAnnotatedDataAdapter<LabeledIDEv
 
 
 	@Override
-	public LabeledIDEvent getStartEvent() {
+	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new LabeledIDEvent(EventContentType.TREE, id, label);
 	}
 	

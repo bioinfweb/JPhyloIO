@@ -35,6 +35,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataA
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 
@@ -126,7 +127,7 @@ public class FASTAEventWriterLogTest {
 			public void writeMetadata(JPhyloIOEventReceiver receiver)	throws IOException {}
 
 			@Override
-			public LinkedLabeledIDEvent getStartEvent() {
+			public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 				return null;
 			}
 
