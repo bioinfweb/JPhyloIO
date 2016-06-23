@@ -26,7 +26,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsMatrixDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.NoCharDefsNoSetsMatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -44,7 +44,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
-public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements ReadWriteConstants {
+public class TestMatrixDataAdapter extends NoCharDefsNoSetsMatrixDataAdapter implements ReadWriteConstants {
 	public static class SequenceData {
 		public String label;
 		public List<JPhyloIOEvent> leadingEvents;
