@@ -270,7 +270,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		if (otuList.getCount() > 0) {
 			writeBlockStart(BLOCK_NAME_TAXA);
 			
-			writeTitleCommand(otuList.getStartEvent());
+			writeTitleCommand(otuList.getStartEvent(parameters));
 			
 			writeLineStart(writer, COMMAND_NAME_DIMENSIONS);
 			writer.write(' ');
@@ -609,7 +609,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				writeBlockStart(BLOCK_NAME_CHARACTERS);
 			}
 			
-			LinkedLabeledIDEvent startEvent = matrix.getStartEvent();
+			LinkedLabeledIDEvent startEvent = matrix.getStartEvent(parameters);
 			writeTitleCommand(startEvent);
 			writeLinkCommand(startEvent, BLOCK_NAME_TAXA, EventContentType.OTU_LIST);
 			
@@ -620,7 +620,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeMatrixCommand(document, matrix, columnCount, extensionToken);
 			
 			writeBlockEnd();
-			matrixIDToBlockTypeMap.put(matrix.getStartEvent().getID(), result);			
+			matrixIDToBlockTypeMap.put(matrix.getStartEvent(parameters).getID(), result);			
 			return result;
 		}
 		else {
@@ -730,7 +730,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		Iterator<TreeNetworkGroupDataAdapter> groupIterator = document.getTreeNetworkGroupIterator();
 		while (groupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter group = groupIterator.next();
-			LinkedLabeledIDEvent groupStartEvent = group.getStartEvent();
+			LinkedLabeledIDEvent groupStartEvent = group.getStartEvent(parameters);
 			String currentOTUsID = getOTUsIDForTreeGroup(groupStartEvent);
 			OTUListDataAdapter currentOTUList = null;
 			if (!UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
@@ -770,7 +770,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				if (treeNetwork.isTree()) {
 					writeLineStart(writer, COMMAND_NAME_TREE);
 					writer.write(' ');
-					writer.write(formatToken(createUniqueTreeLabel(treeNetwork.getStartEvent(), usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
+					writer.write(formatToken(createUniqueTreeLabel(treeNetwork.getStartEvent(parameters), usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
 					writer.write(' ');
 					writer.write(KEY_VALUE_SEPARATOR);
 					writer.write(' ');
@@ -819,7 +819,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			
 			@Override
 			protected String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource) {
-				return matrixIDToBlockTypeMap.get(dataSource.getStartEvent().getID()).toBlockName();
+				return matrixIDToBlockTypeMap.get(dataSource.getStartEvent(parameters).getID()).toBlockName();
 			}
 		}.write();
 

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
@@ -27,8 +28,9 @@ public interface DataAdapter<E extends JPhyloIOEvent> {
 	/**
 	 * Returns the start event of this data element. The returned event can be used to determine the label and ID 
 	 * of the modeled data element or an optionally linked data element.
+	 * @param parameters TODO
 	 * 
 	 * @return the start event of this data element
 	 */
-	public E getStartEvent();
+	public E getStartEvent(ReadWriteParameterMap parameters);
 }

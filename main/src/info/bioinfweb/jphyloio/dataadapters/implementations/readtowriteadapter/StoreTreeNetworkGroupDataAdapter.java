@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -43,7 +44,7 @@ public class StoreTreeNetworkGroupDataAdapter extends StoreAnnotatedDataAdapter<
 
 
 	@Override
-	public LinkedLabeledIDEvent getStartEvent() {
+	public LinkedLabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return startEvent;
 	}
 

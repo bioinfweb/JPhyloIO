@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -46,7 +47,7 @@ public class StoreOTUListDataAdapter extends StoreAnnotatedDataAdapter<LabeledID
 	
 	
 	@Override
-	public LabeledIDEvent getStartEvent() {
+	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return listStartEvent;
 	}
 

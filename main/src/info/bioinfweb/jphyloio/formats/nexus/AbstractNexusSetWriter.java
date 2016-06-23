@@ -90,7 +90,7 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 			Iterator<String> charSetIDIterator = sets.getIDIterator();
 			if (charSetIDIterator.hasNext()) {
 				streamDataProvider.writeBlockStart(BLOCK_NAME_SETS);
-				String dataSourceID = dataSource.getStartEvent().getID();
+				String dataSourceID = dataSource.getStartEvent(streamDataProvider.getParameters()).getID();
 				streamDataProvider.writeLinkCommand(dataSourceID, getLinkedBlockName(dataSource), linkedContentType);
 				
 				while (charSetIDIterator.hasNext()) {

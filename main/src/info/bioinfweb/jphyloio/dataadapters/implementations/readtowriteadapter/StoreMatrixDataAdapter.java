@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
@@ -53,7 +54,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 
 
 	@Override
-	public LinkedLabeledIDEvent getStartEvent() {
+	public LinkedLabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return startEvent;
 	}
 

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
@@ -79,7 +80,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 
 
 	@Override
-	public LabeledIDEvent getStartEvent() {
+	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new LabeledIDEvent(EventContentType.OTU_LIST, UNDEFINED_OTUS_ID, UNDEFINED_OTUS_LABEL);
 	}
 

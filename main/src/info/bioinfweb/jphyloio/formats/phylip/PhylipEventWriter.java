@@ -121,7 +121,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
 		long maxSequenceLength = determineMaxSequenceLength(matrix);
 		OTUListDataAdapter otuList = null;
-		LinkedLabeledIDEvent matrixStartEvent = matrix.getStartEvent();
+		LinkedLabeledIDEvent matrixStartEvent = matrix.getStartEvent(parameters);
 		if (matrixStartEvent.hasLink()) {
 			otuList = document.getOTUList(matrixStartEvent.getLinkedID());
 			if (otuList == null) {

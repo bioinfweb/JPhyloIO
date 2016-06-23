@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
@@ -100,7 +101,7 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter<Conc
 	
 	
 	@Override
-	public ConcreteJPhyloIOEvent getStartEvent() {
+	public ConcreteJPhyloIOEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
 	}
 

@@ -79,7 +79,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 					writePhylogenyTag(tree);
 				}
 				else { //TODO can networks be written using the CladeRelation tag?
-					getLogger().addWarning("A provided network definition with the ID \"" + tree.getStartEvent().getID() 
+					getLogger().addWarning("A provided network definition with the ID \"" + tree.getStartEvent(getParameters()).getID() 
 							+ "\" was ignored, because the PhyloXML format only supports trees.");
 				}
 			}
@@ -95,7 +95,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	
 	private void writePhylogenyTag(TreeNetworkDataAdapter tree) throws XMLStreamException, IOException {
 		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), PropertyOwner.PHYLOGENY);		
-		LabeledIDEvent startEvent = tree.getStartEvent();
+		LabeledIDEvent startEvent = tree.getStartEvent(getParameters());
 		Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs();
 		boolean rooted = rootEdgeIterator.hasNext();
 		

@@ -61,7 +61,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = document.getTreeNetworkGroupIterator();
 		while (treeNetworkGroupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
-			OTUListDataAdapter otuList = getReferencedOTUList(document, treeNetworkGroup);
+			OTUListDataAdapter otuList = getReferencedOTUList(document, treeNetworkGroup, parameters);
 			
 			Iterator<TreeNetworkDataAdapter> treeNetworkIterator = treeNetworkGroup.getTreeNetworkIterator();
 			while (treeNetworkIterator.hasNext()) {

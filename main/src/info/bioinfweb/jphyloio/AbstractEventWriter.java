@@ -183,9 +183,11 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 * @return the referenced list or {@code null}, if the specified event does not reference any OTU
 	 * @throws IllegalArgumentException if no OTU list with the specified ID is available in {@code document}
 	 */
-	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, DataAdapter<LinkedLabeledIDEvent> source) {
+	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, DataAdapter<LinkedLabeledIDEvent> source, 
+			ReadWriteParameterMap parameters) {
+		
 		OTUListDataAdapter result = null;
-		String otuListID = source.getStartEvent().getLinkedID();
+		String otuListID = source.getStartEvent(parameters).getLinkedID();
 		if (otuListID != null) {
 			result = document.getOTUList(otuListID);
 		}
@@ -342,7 +344,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			catch (IllegalArgumentException e) {  // from otuList.getOTUStartEvent()
 				throw new InconsistentAdapterDataException("The OTU with the ID " + event.getLinkedID() + 
 						" referenced by the data element with the ID " + event.getID() + 
-						" was not found in the OTU list with the ID " +	otuList.getStartEvent().getID());
+						" was not found in the OTU list with the ID " +	otuList.getStartEvent(parameters).getID());
 			}
 		}
 		else {
