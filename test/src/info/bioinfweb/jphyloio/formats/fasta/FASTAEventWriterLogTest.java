@@ -132,44 +132,44 @@ public class FASTAEventWriterLogTest {
 			}
 
 			@Override
-			public LinkedLabeledIDEvent getNodeStartEvent(String id) {
+			public LinkedLabeledIDEvent getNodeStartEvent(ReadWriteParameterMap parameters, String id) {
 				return null;
 			}
 
 			@Override
-			public EdgeEvent getEdgeStartEvent(String id) {
+			public EdgeEvent getEdgeStartEvent(ReadWriteParameterMap parameters, String id) {
 				return null;
 			}
 
 			@Override
-			public void writeNodeContentData(JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {}
+			public void writeNodeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {}
 			
 			@Override
-			public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException {}
+			public void writeEdgeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException {}
 			
 			@Override
-			public boolean isTree() {
+			public boolean isTree(ReadWriteParameterMap parameters) {
 				return false;
 			}
 			
 			@Override
-			public boolean considerRooted() {
+			public boolean considerRooted(ReadWriteParameterMap parameters) {
 				return false;
 			}
 
 			@Override
-			public Iterator<String> getRootEdgeIDs() {
+			public Iterator<String> getRootEdgeIDs(ReadWriteParameterMap parameters) {
 				return Collections.emptyIterator();
 			}
 			
 			@Override
-			public Iterator<String> getEdgeIDsFromNode(String nodeID)	throws IllegalArgumentException {
+			public Iterator<String> getEdgeIDsFromNode(ReadWriteParameterMap parameters, String nodeID)	throws IllegalArgumentException {
 				return Collections.emptyIterator();
 			}
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets() {
+			public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {
 				return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 			}
 		});

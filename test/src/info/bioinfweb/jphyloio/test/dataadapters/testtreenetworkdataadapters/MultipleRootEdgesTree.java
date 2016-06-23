@@ -76,25 +76,25 @@ public class MultipleRootEdgesTree extends EmptyAnnotatedDataAdapter<LabeledIDEv
 	
 
 	@Override
-	public boolean isTree() {
+	public boolean isTree(ReadWriteParameterMap parameters) {
 		return true;
 	}
 	
 
 	@Override
-	public boolean considerRooted() {
+	public boolean considerRooted(ReadWriteParameterMap parameters) {
 		return true;
 	}
 	
 
 	@Override
-	public Iterator<String> getRootEdgeIDs() {
+	public Iterator<String> getRootEdgeIDs(ReadWriteParameterMap parameters) {
 		return Arrays.asList(new String[]{nodeEdgeIDPrefix + "eRoot1", nodeEdgeIDPrefix + "eRoot2"}).iterator();
 	}
 	
 
 	@Override
-	public Iterator<String> getEdgeIDsFromNode(String nodeID) throws IllegalArgumentException {
+	public Iterator<String> getEdgeIDsFromNode(ReadWriteParameterMap parameters, String nodeID) throws IllegalArgumentException {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
 				case "nRoot":
@@ -113,7 +113,7 @@ public class MultipleRootEdgesTree extends EmptyAnnotatedDataAdapter<LabeledIDEv
 
 	
 	@Override
-	public LinkedLabeledIDEvent getNodeStartEvent(String nodeID) {
+	public LinkedLabeledIDEvent getNodeStartEvent(ReadWriteParameterMap parameters, String nodeID) {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
 				case "n1":
@@ -137,11 +137,11 @@ public class MultipleRootEdgesTree extends EmptyAnnotatedDataAdapter<LabeledIDEv
 	
 
 	@Override
-	public void writeNodeContentData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException {}
+	public void writeNodeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String nodeID) throws IOException {}
 	
 
 	@Override
-	public EdgeEvent getEdgeStartEvent(String edgeID) {
+	public EdgeEvent getEdgeStartEvent(ReadWriteParameterMap parameters, String edgeID) {
 		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (edgeID.substring(nodeEdgeIDPrefix.length())) {
 				case "eRoot1":
@@ -167,12 +167,12 @@ public class MultipleRootEdgesTree extends EmptyAnnotatedDataAdapter<LabeledIDEv
 	
 
 	@Override
-	public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException {}
+	public void writeEdgeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException {}
 	
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets() {
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }

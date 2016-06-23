@@ -82,25 +82,25 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 
 
 	@Override
-	public boolean isTree() {
+	public boolean isTree(ReadWriteParameterMap parameters) {
 		return true;
 	}
 
 	
 	@Override
-	public boolean considerRooted() {
+	public boolean considerRooted(ReadWriteParameterMap parameters) {
 		return true;
 	}
 
 
 	@Override
-	public Iterator<String> getRootEdgeIDs() {
+	public Iterator<String> getRootEdgeIDs(ReadWriteParameterMap parameters) {
 		return Arrays.asList(new String[]{nodeEdgeIDPrefix + "eRoot"}).iterator();
 	}
 
 	
 	@Override
-	public LinkedLabeledIDEvent getNodeStartEvent(String nodeID) {
+	public LinkedLabeledIDEvent getNodeStartEvent(ReadWriteParameterMap parameters, String nodeID) {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
 				case "n1":
@@ -124,7 +124,7 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 
 
 	@Override
-	public void writeNodeContentData(JPhyloIOEventReceiver receiver, String nodeID) throws IOException {
+	public void writeNodeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String nodeID) throws IOException {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			if(nodeID.substring(nodeEdgeIDPrefix.length()).equals("n1")) {
 
@@ -143,7 +143,7 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 
 	
 	@Override
-	public Iterator<String> getEdgeIDsFromNode(String nodeID)	throws IllegalArgumentException {
+	public Iterator<String> getEdgeIDsFromNode(ReadWriteParameterMap parameters, String nodeID)	throws IllegalArgumentException {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
 				case "nRoot":
@@ -162,7 +162,7 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 
 	
 	@Override
-	public EdgeEvent getEdgeStartEvent(String edgeID) {
+	public EdgeEvent getEdgeStartEvent(ReadWriteParameterMap parameters, String edgeID) {
 		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (edgeID.substring(nodeEdgeIDPrefix.length())) {
 				case "eRoot":
@@ -186,7 +186,7 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 
 
 	@Override
-	public void writeEdgeContentData(JPhyloIOEventReceiver receiver, String edgeID) throws IOException {
+	public void writeEdgeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String edgeID) throws IOException {
 		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
 			if(edgeID.substring(nodeEdgeIDPrefix.length()).equals("eA")) {
 				receiver.add(new LiteralMetadataEvent("eAmeta1", null, new URIOrStringIdentifier("splitString", new QName("http://example.org/", "somePredicate")), 
@@ -207,7 +207,7 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets() {
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }
