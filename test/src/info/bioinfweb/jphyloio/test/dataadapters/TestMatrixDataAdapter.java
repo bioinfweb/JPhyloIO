@@ -206,13 +206,13 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	
 	
 	@Override
-	public long getSequenceCount() {
+	public long getSequenceCount(ReadWriteParameterMap parameters) {
 		return getMatrix().size();
 	}
 	
 	
 	@Override
-	public long getColumnCount() {
+	public long getColumnCount(ReadWriteParameterMap parameters) {
 		return columnCount;
 	}
 	
