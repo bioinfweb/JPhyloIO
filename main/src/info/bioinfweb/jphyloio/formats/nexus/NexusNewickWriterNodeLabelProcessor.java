@@ -67,7 +67,7 @@ public class NexusNewickWriterNodeLabelProcessor extends DefaultNewickWriterNode
 			}
 		}
 		else {
-			result = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeEvent, getOTUList());
+			result = AbstractEventWriter.getLinkedOTUNameOTUFirst(nodeEvent, getOTUList(), getParameters());
 			reporter.addEdit(nodeEvent, result);  // Collisions between labels of nodes that do not reference an OTU are legal. (Otherwise it would not be possible to write support values as internal node names.)
 		}
 		return result;

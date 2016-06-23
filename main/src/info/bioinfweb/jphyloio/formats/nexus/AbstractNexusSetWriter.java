@@ -87,7 +87,7 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 		while (dataSourceIterator.hasNext()) {
 			DataAdapter<? extends LabeledIDEvent> dataSource = dataSourceIterator.next();
 			ObjectListDataAdapter<LinkedLabeledIDEvent> sets = getSets(dataSource);
-			Iterator<String> charSetIDIterator = sets.getIDIterator();
+			Iterator<String> charSetIDIterator = sets.getIDIterator(streamDataProvider.getParameters());
 			if (charSetIDIterator.hasNext()) {
 				streamDataProvider.writeBlockStart(BLOCK_NAME_SETS);
 				String dataSourceID = dataSource.getStartEvent(streamDataProvider.getParameters()).getID();
@@ -99,10 +99,10 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 					streamDataProvider.writeLineStart(commandName);
 					streamDataProvider.getDataWriter().write(' ');
 					streamDataProvider.getDataWriter().write(NexusEventWriter.formatToken(AbstractEventWriter.createUniqueLabel(
-							streamDataProvider.getParameters(), sets.getObjectStartEvent(charSetID))));
+							streamDataProvider.getParameters(), sets.getObjectStartEvent(streamDataProvider.getParameters(), charSetID))));
 					streamDataProvider.getDataWriter().write(' ');
 					streamDataProvider.getDataWriter().write(KEY_VALUE_SEPARATOR);  // Next space will be written by receiver.
-					sets.writeContentData(receiver, charSetID);  // Nothing will be written for empty character sets.
+					sets.writeContentData(streamDataProvider.getParameters(), receiver, charSetID);  // Nothing will be written for empty character sets.
 					streamDataProvider.writeCommandEnd();
 					//TODO Log ignored metadata?
 				}

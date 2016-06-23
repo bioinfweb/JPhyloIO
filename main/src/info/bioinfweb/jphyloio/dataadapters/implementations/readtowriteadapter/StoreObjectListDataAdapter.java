@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -48,7 +49,7 @@ public class StoreObjectListDataAdapter<E extends LabeledIDEvent> implements Obj
 
 
 	@Override
-	public E getObjectStartEvent(String id)	throws IllegalArgumentException {
+	public E getObjectStartEvent(ReadWriteParameterMap parameters, String id)	throws IllegalArgumentException {
 		StoreObjectData<E> data = objectMap.get(id);
 		if (data != null) {
 			return data.getObjectStartEvent();
@@ -77,19 +78,19 @@ public class StoreObjectListDataAdapter<E extends LabeledIDEvent> implements Obj
 
 	
 	@Override
-	public long getCount() {
+	public long getCount(ReadWriteParameterMap parameters) {
 		return objectMap.size();
 	}
 
 	
 	@Override
-	public Iterator<String> getIDIterator() {
+	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
 		return objectMap.keyList().iterator();
 	}
 
 	
 	@Override
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
+	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
 		StoreObjectData<E> data = objectMap.get(id);
 		if (data != null) {
 			for (JPhyloIOEvent event : objectMap.get(id).getObjectContent()) {

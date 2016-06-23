@@ -115,7 +115,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 	@Override
 	public LinkedLabeledIDEvent getSequenceStartEvent(ReadWriteParameterMap parameters, String sequenceID) throws IllegalArgumentException {
 		if (matrix.getObjectMap().keyList().contains(sequenceID)) {
-			return matrix.getObjectStartEvent(sequenceID);
+			return matrix.getObjectStartEvent(parameters, sequenceID);
 		}
 		else {
 			throw new IllegalArgumentException("The alignment does not contain a sequence with the ID \"" + sequenceID +"\".");

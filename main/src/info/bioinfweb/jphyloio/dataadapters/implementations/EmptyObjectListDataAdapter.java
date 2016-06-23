@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -41,7 +42,7 @@ public class EmptyObjectListDataAdapter<E extends JPhyloIOEvent> implements Obje
 
 
 	@Override
-	public E getObjectStartEvent(String id) throws IllegalArgumentException {
+	public E getObjectStartEvent(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException {
 		throw new IllegalArgumentException("No object with the ID \"" + id + "\" is offered by this adapter.");
 	}
 
@@ -50,10 +51,10 @@ public class EmptyObjectListDataAdapter<E extends JPhyloIOEvent> implements Obje
 	 * This default implementation always returns 0.
 	 * 
 	 * @return always 0
-	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#getCount()
+	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#getCount(ReadWriteParameterMap)
 	 */
 	@Override
-	public long getCount() {
+	public long getCount(ReadWriteParameterMap parameters) {
 		return 0;
 	}
 
@@ -62,10 +63,10 @@ public class EmptyObjectListDataAdapter<E extends JPhyloIOEvent> implements Obje
 	 * This default implementation always returns an empty iterator.
 	 * 
 	 * @return always an empty iterator
-	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#getIDIterator()
+	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#getIDIterator(ReadWriteParameterMap)
 	 */
 	@Override
-	public Iterator<String> getIDIterator() {
+	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
 		return Collections.emptyIterator();
 	}
 
@@ -74,10 +75,10 @@ public class EmptyObjectListDataAdapter<E extends JPhyloIOEvent> implements Obje
 	 * Always throws an {@link IllegalArgumentException}, since this default implementation does not contain
 	 * any objects.
 	 * 
-	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#writeContentData(info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver, java.lang.String)
+	 * @see info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter#writeContentData(ReadWriteParameterMap, info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver, java.lang.String)
 	 */
 	@Override
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
+	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
 		throw new IllegalArgumentException("No object with the ID \"" + id + "\" is offered by this adapter.");
 	}
 }

@@ -44,7 +44,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 
 
 	@Override
-	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException {
+	public LabeledIDEvent getObjectStartEvent(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException {
 		if (id.equals(UNDEFINED_OTU_ID)) {
 			return undefinedOTU;
 		}
@@ -55,13 +55,13 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 
 
 	@Override
-	public long getCount() {
+	public long getCount(ReadWriteParameterMap parameters) {
 		return 1;
 	}
 
 
 	@Override
-	public Iterator<String> getIDIterator() {
+	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
 		return Arrays.asList(new String[]{UNDEFINED_OTU_ID}).iterator();
 	}
 
@@ -72,7 +72,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 
 
 	@Override
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {}
+	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {}
 
 
 	@Override

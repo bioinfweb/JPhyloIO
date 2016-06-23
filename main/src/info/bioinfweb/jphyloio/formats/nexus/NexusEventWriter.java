@@ -267,14 +267,14 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	private void writeTaxaBlock(OTUListDataAdapter otuList) throws IOException {
 		logIgnoredMetadata(otuList, "Metadata attached to an OTU list have been ignored.");
-		if (otuList.getCount() > 0) {
+		if (otuList.getCount(getParameters()) > 0) {
 			writeBlockStart(BLOCK_NAME_TAXA);
 			
 			writeTitleCommand(otuList.getStartEvent(parameters));
 			
 			writeLineStart(writer, COMMAND_NAME_DIMENSIONS);
 			writer.write(' ');
-			writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NTAX, Long.toString(otuList.getCount()));
+			writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NTAX, Long.toString(otuList.getCount(getParameters())));
 			writeCommandEnd();
 			
 			writeLineStart(writer, COMMAND_NAME_TAX_LABELS);
@@ -282,17 +282,17 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			increaseIndention();
 			increaseIndention();
 			BasicEventReceiver<Writer> receiver = new BasicEventReceiver<Writer>(writer, parameters);
-			Iterator<String> iterator = otuList.getIDIterator();
+			Iterator<String> iterator = otuList.getIDIterator(getParameters());
 			while (iterator.hasNext()) {
 				String id = iterator.next();
-				writeLineStart(writer, formatToken(createUniqueLabel(parameters, otuList.getObjectStartEvent(id))));
+				writeLineStart(writer, formatToken(createUniqueLabel(parameters, otuList.getObjectStartEvent(getParameters(), id))));
 				if (iterator.hasNext()) {
 					writeLineBreak(writer, parameters);
 				}
 				else {
 					writeCommandEnd();
 				}
-				otuList.writeContentData(receiver, id);
+				otuList.writeContentData(getParameters(), receiver, id);
 			}
 			receiver.addIgnoreLogMessage(logger, "one or more OTUs", "Nexus");
 			decreaseIndention();
@@ -364,15 +364,15 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	private void writeFormatCommand(MatrixDataAdapter matrix) throws IOException {
 		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = matrix.getTokenSets(getParameters());
-		if (tokenSets.getCount() > 0) {
+		if (tokenSets.getCount(getParameters()) > 0) {
 			writeLineStart(writer, COMMAND_NAME_FORMAT);
-			Iterator<String> iterator = tokenSets.getIDIterator();
-			if (tokenSets.getCount() == 1) {
+			Iterator<String> iterator = tokenSets.getIDIterator(getParameters());
+			if (tokenSets.getCount(getParameters()) == 1) {
 				TokenSetEventReceiver receiver = new TokenSetEventReceiver(getStreamDataProvider());
 				
 				String dataType;
 				String tokenSetID = iterator.next();
-				switch (tokenSets.getObjectStartEvent(tokenSetID).asTokenSetDefinitionEvent().getSetType()) {
+				switch (tokenSets.getObjectStartEvent(getParameters(), tokenSetID).asTokenSetDefinitionEvent().getSetType()) {
 					case DISCRETE:
 						dataType = FORMAT_VALUE_STANDARD_DATA_TYPE;
 						break;
@@ -401,7 +401,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					NexusEventWriter.writeKeyValueExpression(writer, FORMAT_SUBCOMMAND_DATA_TYPE, dataType);
 				}			
 				
-				tokenSets.writeContentData(receiver, tokenSetID);
+				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);
 				
 				if (receiver.getSingleTokens() != null) {
 					writer.write(' ');
@@ -505,7 +505,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	private void writeCharStateLabelsCommand(MatrixDataAdapter matrix) throws IOException {
 		final ObjectListDataAdapter<CharacterDefinitionEvent> definitions = matrix.getCharacterDefinitions(getParameters());
 		
-		Iterator<String> iterator = definitions.getIDIterator();
+		Iterator<String> iterator = definitions.getIDIterator(getParameters());
 		if (iterator.hasNext()) {
 			writeLineStart(writer, COMMAND_NAME_CHAR_STATE_LABELS);
 			writeLineBreak(writer, parameters);
@@ -513,7 +513,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			increaseIndention();
 			
 			while (iterator.hasNext()) {  //TODO Should only definitions with labels be written?
-				CharacterDefinitionEvent event = definitions.getObjectStartEvent(iterator.next());
+				CharacterDefinitionEvent event = definitions.getObjectStartEvent(getParameters(), iterator.next());
 				String label = createUniqueLabel(parameters, event);
 				parameters.getLabelEditingReporter().addEdit(event, label);
 				writeLineStart(writer, event.getIndex() + " " + label);
@@ -685,7 +685,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	private Map<String, Long> createOTUIndexMap(OTUListDataAdapter otus) {
 		Map<String, Long> result = new HashMap<String, Long>();
 		long index = 1;  // Nexus taxon indices start with 1.
-		Iterator<String> iterator = otus.getIDIterator();
+		Iterator<String> iterator = otus.getIDIterator(getParameters());
 		while (iterator.hasNext()) {
 			result.put(iterator.next(), index);
 			index++;

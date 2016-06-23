@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.dataadapters;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 import java.io.IOException;
@@ -28,9 +29,9 @@ import java.util.Iterator;
 
 /**
  * Allows to provide data for a list of phylogenetic objects. All objects need to be identified by
- * unique IDs, provided by {@link #getIDIterator()}. The start event of each object will be requested by 
- * separate calls of {@link #getObjectStartEvent(String)} and the event sequence by
- * separate calls of {@link #writeContentData(JPhyloIOEventReceiver, String)}.
+ * unique IDs, provided by {@link #getIDIterator(ReadWriteParameterMap)}. The start event of each object will be requested by 
+ * separate calls of {@link #getObjectStartEvent(ReadWriteParameterMap, String)} and the event sequence by
+ * separate calls of {@link #writeContentData(ReadWriteParameterMap, JPhyloIOEventReceiver, String)}.
  * <p>
  * Such objects may e.g. be OTUs, token sets or character sets, depending on where instances of this 
  * interface are used.
@@ -40,36 +41,39 @@ import java.util.Iterator;
 public interface ObjectListDataAdapter<E extends JPhyloIOEvent> {
 	/**
 	 * Returns the start event of an object determined by the specified object ID.
-	 * <p>
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @param id the ID of the requested object
 	 * @return an instance of a labeled ID event that describes the specified object
 	 * @throws IllegalArgumentException if no to object for the specified ID is present 
 	 */
-	public E getObjectStartEvent(String id) throws IllegalArgumentException;
+	public E getObjectStartEvent(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException;
 	
 	/**
-	 * Returns the number of objects to be returned by {@link #getIDIterator()}.
+	 * Returns the number of objects to be returned by {@link #getIDIterator(ReadWriteParameterMap)}.
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return the number of objects in the list modeled by this instance
 	 */
-	public long getCount();
+	public long getCount(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns an iterator returning the IDs of all objects contained in the list modeled by this instance.
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return an iterator returning the IDs (Depending in the usage of this object, the returned iterator 
 	 *         must return at least one element or can be empty, but it may never be {@code null}.)
 	 */
-	public Iterator<String> getIDIterator();
+	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Writes the nested events in the specified object describing its contents.
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @param receiver the receiver for the events
 	 * @param nodeID the ID of the requested node
 	 * @throws IOException if a I/O error occurs while writing the data
 	 * @throws IllegalArgumentException if an unknown ID was specified
 	 */
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException;
+	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException;
 }

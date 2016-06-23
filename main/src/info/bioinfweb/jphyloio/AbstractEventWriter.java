@@ -135,11 +135,13 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 * @return a string representing the specified event as described
 	 * @see #getLinkedOTUNameOTUFirst(LinkedLabeledIDEvent, OTUListDataAdapter)
 	 */
-	public static String getLinkedOTUNameOwnFirst(LinkedLabeledIDEvent linkedOTUEvent, OTUListDataAdapter otuList) {
+	public static String getLinkedOTUNameOwnFirst(LinkedLabeledIDEvent linkedOTUEvent, OTUListDataAdapter otuList, 
+			ReadWriteParameterMap parameters) {
+		
 		String result = linkedOTUEvent.getLabel();
 		if (result == null) {
 			if (linkedOTUEvent.hasLink() && (otuList != null)) {
-				result = otuList.getObjectStartEvent(linkedOTUEvent.getLinkedID()).getLabel();
+				result = otuList.getObjectStartEvent(parameters, linkedOTUEvent.getLinkedID()).getLabel();
 			}
 			if (result == null) {
 				result = linkedOTUEvent.getID();
@@ -165,9 +167,11 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 * @return a string representing the specified event as described
 	 * @see #getLinkedOTUNameOwnFirst(LinkedLabeledIDEvent, OTUListDataAdapter)
 	 */
-	public static String getLinkedOTUNameOTUFirst(LinkedLabeledIDEvent linkedOTUEvent, OTUListDataAdapter otuList) {
+	public static String getLinkedOTUNameOTUFirst(LinkedLabeledIDEvent linkedOTUEvent, OTUListDataAdapter otuList, 
+			ReadWriteParameterMap parameters) {
+		
 		if (linkedOTUEvent.hasLink() && (otuList != null)) {
-			return getLabeledIDName(otuList.getObjectStartEvent(linkedOTUEvent.getLinkedID()));
+			return getLabeledIDName(otuList.getObjectStartEvent(parameters, linkedOTUEvent.getLinkedID()));
 		}
 		else {
 			return getLabeledIDName(linkedOTUEvent);
@@ -331,12 +335,12 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			try {
 				String result;
 				if (otuFirst) {
-					result = createUniqueLabel(parameters, handler, otuList.getObjectStartEvent(event.getLinkedID()).getLabel(), 
+					result = createUniqueLabel(parameters, handler, otuList.getObjectStartEvent(parameters, event.getLinkedID()).getLabel(), 
 							event.getLinkedID(), event.getLabel(), event.getID()); 
 				}
 				else {
 					result = createUniqueLabel(parameters, handler, event.getLabel(), event.getID(), 
-							otuList.getObjectStartEvent(event.getLinkedID()).getLabel(), event.getLinkedID()); 
+							otuList.getObjectStartEvent(parameters, event.getLinkedID()).getLabel(), event.getLinkedID()); 
 				}
 				parameters.getLabelEditingReporter().addEdit(event, result);
 				return result;

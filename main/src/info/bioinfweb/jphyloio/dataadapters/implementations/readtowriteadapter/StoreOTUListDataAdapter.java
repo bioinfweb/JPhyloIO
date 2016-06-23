@@ -63,26 +63,26 @@ public class StoreOTUListDataAdapter extends StoreAnnotatedDataAdapter<LabeledID
 
 
 	@Override
-	public LabeledIDEvent getObjectStartEvent(String id) throws IllegalArgumentException {
-		return otus.getObjectStartEvent(id);
+	public LabeledIDEvent getObjectStartEvent(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException {
+		return otus.getObjectStartEvent(parameters, id);
 	}
 
 
 	@Override
-	public long getCount() {
-		return otus.getCount();
+	public long getCount(ReadWriteParameterMap parameters) {
+		return otus.getCount(parameters);
 	}
 
 
 	@Override
-	public Iterator<String> getIDIterator() {
-		return otus.getIDIterator();
+	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
+		return otus.getIDIterator(parameters);
 	}
 
 
 	@Override
-	public void writeContentData(JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
-		otus.writeContentData(receiver, id);
+	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
+		otus.writeContentData(parameters, receiver, id);
 	}
 
 
