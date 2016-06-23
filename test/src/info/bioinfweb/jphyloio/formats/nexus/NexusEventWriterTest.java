@@ -113,13 +113,13 @@ public class NexusEventWriterTest implements NexusConstants {
 		treeGroup2.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree1", "tree", "t1", new String[]{"otu0", "otu1", "otu2"}));
 		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree2", "tree", "t2"));
 		
-		treeGroup1.getTreeSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet1", "tree set 1", treeGroup1.getStartEvent(parameters).getID()));
-		treeGroup1.getTreeSets().getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("tree0", EventContentType.TREE));
-		treeGroup1.getTreeSets().getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("network0", EventContentType.NETWORK));  // The referenced network does currently not exist, but it should not matter for the current implementation. The aim is testing, if a network is ignored without exceptions.
+		treeGroup1.getTreeSets(null).setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet1", "tree set 1", treeGroup1.getStartEvent(parameters).getID()));
+		treeGroup1.getTreeSets(null).getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("tree0", EventContentType.TREE));
+		treeGroup1.getTreeSets(null).getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("network0", EventContentType.NETWORK));  // The referenced network does currently not exist, but it should not matter for the current implementation. The aim is testing, if a network is ignored without exceptions.
 		//TODO Test below, whether ignored network was logged.
-		treeGroup1.getTreeSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet2", "tree set 2", treeGroup1.getStartEvent(parameters).getID()));
-		treeGroup1.getTreeSets().getObjectMap().get("treeSet2").getObjectContent().add(new SetElementEvent("tree2", EventContentType.TREE));
-		treeGroup1.getTreeSets().getObjectMap().get("treeSet2").getObjectContent().add(new SetElementEvent("treeSet1", EventContentType.TREE_NETWORK_SET));
+		treeGroup1.getTreeSets(null).setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet2", "tree set 2", treeGroup1.getStartEvent(parameters).getID()));
+		treeGroup1.getTreeSets(null).getObjectMap().get("treeSet2").getObjectContent().add(new SetElementEvent("tree2", EventContentType.TREE));
+		treeGroup1.getTreeSets(null).getObjectMap().get("treeSet2").getObjectContent().add(new SetElementEvent("treeSet1", EventContentType.TREE_NETWORK_SET));
 		
 		document.getTreeNetworkGroups().add(treeGroup1);
 		document.getTreeNetworkGroups().add(treeGroup2);

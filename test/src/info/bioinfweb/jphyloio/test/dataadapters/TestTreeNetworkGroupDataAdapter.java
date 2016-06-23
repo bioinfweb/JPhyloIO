@@ -65,7 +65,7 @@ public class TestTreeNetworkGroupDataAdapter extends EmptyAnnotatedDataAdapter<L
 	
 
 	@Override
-	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator() {
+	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator(ReadWriteParameterMap parameters) {
 		return Arrays.asList(new TreeNetworkDataAdapter[]{tree}).iterator();
 	}
 
@@ -77,7 +77,7 @@ public class TestTreeNetworkGroupDataAdapter extends EmptyAnnotatedDataAdapter<L
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets() {		
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets(ReadWriteParameterMap parameters) {		
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }
