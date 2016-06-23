@@ -168,7 +168,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	private StoreMatrixDataAdapter createSequenceMatrix(String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
-		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
 		
 		List<List<String>> sequences = new ArrayList<>();
 		sequences.add(StringUtils.charSequenceToStringList("AGTGC"));
@@ -209,7 +209,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	protected StoreMatrixDataAdapter createCellsMatrix(String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
-		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
 		
 		// Add single tokens
 		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
@@ -236,7 +236,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	protected StoreMatrixDataAdapter createContinuousCellsMatrix(String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "continuous data", otusID);
-		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(null, startEvent, false);
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
 		
 		// Add single tokens
 		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();

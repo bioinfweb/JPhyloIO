@@ -27,15 +27,9 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.MultipleRootEdgesTree;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 
@@ -80,8 +74,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		// Write file
 		idIndex = 1;
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();		
-		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null));
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null), null);
 		
 		trees.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
 		document.getTreesNetworks().add(trees);
@@ -122,8 +116,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		idIndex = 1;
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
-		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null));		
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null), null);		
 		trees.getTreesAndNetworks().add(new MultipleRootEdgesTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
 		document.getTreesNetworks().add(trees);
 		
@@ -283,8 +277,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		
 		// Write file
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
-		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null));		
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null), null);		
 		
 		document.getTreesNetworks().add(trees);
 		
@@ -319,8 +313,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		// Write file
 		idIndex = 1;
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
-		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null));
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null), null);
 		
 		trees.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
 		trees.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
@@ -364,12 +358,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		idIndex = 1;
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
-		StoreTreeNetworkGroupDataAdapter trees1 = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null));
+		StoreTreeNetworkGroupDataAdapter trees1 = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null), null);
 		trees1.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));		
 		
-		StoreTreeNetworkGroupDataAdapter trees2 = new StoreTreeNetworkGroupDataAdapter(null, 
-				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null));
+		StoreTreeNetworkGroupDataAdapter trees2 = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIdIndex(), null, null), null);
 		trees1.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIdIndex(), null, "nodeEdgeID"));
 		
 		document.getTreesNetworks().add(trees1);
