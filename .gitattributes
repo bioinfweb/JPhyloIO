@@ -47,7 +47,7 @@ main/src/info/bioinfweb/jphyloio/dataadapters/TreeNetworkGroupDataAdapter.java -
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/EmptyAnnotatedDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/EmptyObjectListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/ListBasedDocumentDataAdapter.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/dataadapters/implementations/NoSetsMatrixDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/implementations/NoCharDefsNoSetsMatrixDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/UndefinedOTUListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreAnnotatedDataAdapter.java -text svneol=unset#text/plain
