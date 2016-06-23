@@ -30,16 +30,16 @@ public interface TreeNetworkGroupDataAdapter extends AnnotatedDataAdapter<Linked
 	/**
 	 * Returns an iterator providing access to all trees and networks contained in the 
 	 * document to be written. 
-	 * @param parameters TODO
-	 * 
+	 *
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
 	public Iterator<TreeNetworkDataAdapter> getTreeNetworkIterator(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns a list of tree sets defined for the tree-network-group modeled by this instance.
-	 * @param parameters TODO
-	 * 
+	 *
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return a (possibly empty) list of tree sets
 	 */
 	public ObjectListDataAdapter<LinkedLabeledIDEvent> getTreeSets(ReadWriteParameterMap parameters);

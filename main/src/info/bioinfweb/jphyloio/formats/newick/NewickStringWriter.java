@@ -120,9 +120,9 @@ public class NewickStringWriter implements NewickConstants {
 	private void writeSubtree(String rootEdgeID) throws IOException {
 		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = 
 				new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters);
-		tree.writeEdgeContentData(edgeReceiver, rootEdgeID);  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
-		String nodeID = tree.getEdgeStartEvent(rootEdgeID).getTargetID();
-		Iterator<String> childEdgeIDIterator = tree.getEdgeIDsFromNode(nodeID);
+		tree.writeEdgeContentData(parameters, edgeReceiver, rootEdgeID);  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
+		String nodeID = tree.getEdgeStartEvent(parameters, rootEdgeID).getTargetID();
+		Iterator<String> childEdgeIDIterator = tree.getEdgeIDsFromNode(parameters, nodeID);
 		if (childEdgeIDIterator.hasNext()) {
 			writer.write(SUBTREE_START);
 			writeSubtree(childEdgeIDIterator.next());
@@ -135,17 +135,17 @@ public class NewickStringWriter implements NewickConstants {
 		
 		NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent> nodeReceiver = 
 				new NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent>(writer, parameters);
-		tree.writeNodeContentData(nodeReceiver, nodeID);
+		tree.writeNodeContentData(parameters, nodeReceiver, nodeID);
 		
 		// Write node data:
-		writer.write(formatToken(nodeLabelProcessor.createNodeName(tree.getNodeStartEvent(nodeID)), NAME_DELIMITER));
+		writer.write(formatToken(nodeLabelProcessor.createNodeName(tree.getNodeStartEvent(parameters, nodeID)), NAME_DELIMITER));
 		nodeReceiver.writeMetadata();
 		nodeReceiver.writeComments();
 		
 		// Write edge data:
-		if (tree.getEdgeStartEvent(rootEdgeID).hasLength()) {
+		if (tree.getEdgeStartEvent(parameters, rootEdgeID).hasLength()) {
 			writer.write(LENGTH_SEPERATOR);
-			writer.write(Double.toString(tree.getEdgeStartEvent(rootEdgeID).getLength()));
+			writer.write(Double.toString(tree.getEdgeStartEvent(parameters, rootEdgeID).getLength()));
 		}
 		edgeReceiver.writeMetadata();
 		edgeReceiver.writeComments();
@@ -154,7 +154,7 @@ public class NewickStringWriter implements NewickConstants {
 	
 	private void writeRootedInformation() throws IOException {
 		writer.write(COMMENT_START);
-		if (tree.considerRooted()) {
+		if (tree.considerRooted(parameters)) {
 			writer.write(ROOTED_HOT_COMMENT.toUpperCase());
 		}
 		else {
@@ -179,13 +179,13 @@ public class NewickStringWriter implements NewickConstants {
 	 */
 	public void write() throws IOException {
 		ApplicationLogger logger = parameters.getLogger();
-		if (tree.isTree()) {
+		if (tree.isTree(parameters)) {
 //			if (tree.getMetadataAdapter() != null) {  //TODO Use receiver to check for metadata instead
 //				logger.addWarning(
 //						"A tree definition contains tree metadata, which cannot be written to Newick/NHX and is therefore ignored.");
 //			}
 			
-			Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs();
+			Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs(parameters);
 			if (rootEdgeIterator.hasNext()) {
 				String rootEdgeID = rootEdgeIterator.next();
 				if (rootEdgeIterator.hasNext()) {

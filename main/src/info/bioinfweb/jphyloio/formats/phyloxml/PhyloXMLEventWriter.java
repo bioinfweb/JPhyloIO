@@ -75,7 +75,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 			while (treeNetworkIterator.hasNext()) {
 				TreeNetworkDataAdapter tree = treeNetworkIterator.next();
 
-				if (tree.isTree()) {
+				if (tree.isTree(getParameters())) {
 					writePhylogenyTag(tree);
 				}
 				else { //TODO can networks be written using the CladeRelation tag?
@@ -96,7 +96,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	private void writePhylogenyTag(TreeNetworkDataAdapter tree) throws XMLStreamException, IOException {
 		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), PropertyOwner.PHYLOGENY);		
 		LabeledIDEvent startEvent = tree.getStartEvent(getParameters());
-		Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs();
+		Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs(getParameters());
 		boolean rooted = rootEdgeIterator.hasNext();
 		
 		getXMLWriter().writeStartElement(TAG_PHYLOGENY.getLocalPart());
@@ -132,20 +132,20 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	private void writeCladeTag(TreeNetworkDataAdapter tree, String rootEdgeID) throws XMLStreamException, IOException {
 		PhyloXMLMetaDataReceiver nodeReceiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), PropertyOwner.CLADE);
 		PhyloXMLMetaDataReceiver edgeReceiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), PropertyOwner.PARENT_BRANCH);
-		String nodeID = tree.getEdgeStartEvent(rootEdgeID).getTargetID();
+		String nodeID = tree.getEdgeStartEvent(getParameters(), rootEdgeID).getTargetID();
 		
 		getXMLWriter().writeStartElement(TAG_CLADE.getLocalPart());
 		
-		writeSimpleTag(TAG_NAME.getLocalPart(), tree.getNodeStartEvent(nodeID).getLabel());
-		writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(tree.getEdgeStartEvent(rootEdgeID).getLength()));
+		writeSimpleTag(TAG_NAME.getLocalPart(), tree.getNodeStartEvent(getParameters(), nodeID).getLabel());
+		writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(tree.getEdgeStartEvent(getParameters(), rootEdgeID).getLength()));
 		writeSimpleTag(TAG_NODE_ID.getLocalPart(), nodeID);
 		
 		//TODO should sequences be written here?	
 		
-		tree.writeNodeContentData(nodeReceiver, nodeID);
-		tree.writeEdgeContentData(edgeReceiver, rootEdgeID); //TODO write both meta data contents?
+		tree.writeNodeContentData(getParameters(), nodeReceiver, nodeID);
+		tree.writeEdgeContentData(getParameters(), edgeReceiver, rootEdgeID); //TODO write both meta data contents?
 		
-		Iterator<String> childEdgeIDIterator = tree.getEdgeIDsFromNode(nodeID);
+		Iterator<String> childEdgeIDIterator = tree.getEdgeIDsFromNode(getParameters(), nodeID);
 		
 		while (childEdgeIDIterator.hasNext()) {
 			writeCladeTag(tree, childEdgeIDIterator.next());

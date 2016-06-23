@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.tools;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 
 import java.util.ArrayDeque;
@@ -46,21 +47,21 @@ public class NodeEdgeIDLister {
 	 * 
 	 * @param adapter the adapter providing the node and edge IDs
 	 */
-	public NodeEdgeIDLister(TreeNetworkDataAdapter adapter) {
+	public NodeEdgeIDLister(TreeNetworkDataAdapter adapter, ReadWriteParameterMap parameters) {
 		super();
-		fillSets(adapter);
+		fillSets(adapter, parameters);
 	}
 	
 	
-	private void fillSets(TreeNetworkDataAdapter adapter) {
+	private void fillSets(TreeNetworkDataAdapter adapter, ReadWriteParameterMap parameters) {
 		Queue<String> waitingRootNodes = new ArrayDeque<String>();
 		
-		Iterator<String> iterator = adapter.getRootEdgeIDs();
+		Iterator<String> iterator = adapter.getRootEdgeIDs(parameters);
 		do {
 			while (iterator.hasNext()) {
 				String edgeID = iterator.next();
 				if (edgeIDs.add(edgeID)) {
-					String nodeID = adapter.getEdgeStartEvent(edgeID).getTargetID();
+					String nodeID = adapter.getEdgeStartEvent(parameters, edgeID).getTargetID();
 					if (nodeIDs.add(nodeID)) {
 						waitingRootNodes.add(nodeID);
 					}
@@ -70,7 +71,7 @@ public class NodeEdgeIDLister {
 				iterator = null;
 			}
 			else {
-				iterator = adapter.getEdgeIDsFromNode(waitingRootNodes.poll());
+				iterator = adapter.getEdgeIDsFromNode(parameters, waitingRootNodes.poll());
 			}
 		} while (iterator != null);
 	}

@@ -767,7 +767,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				}
 				
 				TreeNetworkDataAdapter treeNetwork = treeIterator.next();
-				if (treeNetwork.isTree()) {
+				if (treeNetwork.isTree(getParameters())) {
 					writeLineStart(writer, COMMAND_NAME_TREE);
 					writer.write(' ');
 					writer.write(formatToken(createUniqueTreeLabel(treeNetwork.getStartEvent(parameters), usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
