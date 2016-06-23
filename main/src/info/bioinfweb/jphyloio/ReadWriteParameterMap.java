@@ -292,6 +292,16 @@ public class ReadWriteParameterMap extends ParameterMap {
 	public static final String KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE = KEY_PREFIX + "considerPhylogenyAsTree";
 	
 	
+	/**
+	 * Returns the writer instance registered under {@link #KEY_WRITER_INSTANCE}.
+	 * 
+	 * @return the current writer instance or {@code null} if none is present in the map (e.g. because it is used in a reader).
+	 */
+	public JPhyloIOEventWriter getWriterInstance() {
+		return (JPhyloIOEventWriter)get(KEY_WRITER_INSTANCE);
+	}
+	
+	
 	public ApplicationLogger getLogger() {
 		return getApplicationLogger(KEY_LOGGER);
 	}
