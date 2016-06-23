@@ -56,10 +56,11 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 //		TODO write namespaces collected in document
 
 		writePhylogenyTags();
-		
-		if (getDocument().getMetadataAdapter() != null) {
-			getLogger().addWarning("The document contained document meta data which could not be written since the PhyloXML format does not support this.");
-		}
+
+		//TODO Use receiver to log ignored metadata
+//		if (getDocument().getMetadataAdapter() != null) {
+//			getLogger().addWarning("The document contained document meta data which could not be written since the PhyloXML format does not support this.");
+//		}
 		
 		getXMLWriter().writeEndElement();
 	}
@@ -83,10 +84,11 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 				}
 			}
 			
-			if (treeNetworkGroup.getMetadataAdapter() != null) {
-				getLogger().addWarning("No metadata for the tree or network group with the ID \"" + treeNetworkGroup.getStartEvent().getID() + "\" was written, "
-						+ "because the PhyloXML format does not support this.");
-			}
+			//TODO Use receiver to log ignored metadata
+//			if (treeNetworkGroup.getMetadataAdapter() != null) {
+//				getLogger().addWarning("No metadata for the tree or network group with the ID \"" + treeNetworkGroup.getStartEvent().getID() + 
+//						"\" was written, because the PhyloXML format does not support this.");
+//			}
 		}
 	}
 	
@@ -117,10 +119,11 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 					+ "root edge definition defining the edge to start writing tree to the PhyloXML format.) No "
 					+ "tree was written.");
 		}
-		
-		if (tree.getMetadataAdapter() != null) {
-//			tree.getMetadataAdapter(); //TODO use new metadata structure
-		}
+
+		//TODO Write metadata here using an receiver?
+//		if (tree.getMetadataAdapter() != null) {
+////			tree.getMetadataAdapter(); //TODO use new metadata structure
+//		}
 		
 		getXMLWriter().writeEndElement();
 	}

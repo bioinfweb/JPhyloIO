@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.dataadapters.implementations;
 
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -76,9 +75,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 
 
 	@Override
-	public MetadataAdapter getMetadataAdapter() {
-		return null;
-	}
+	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {}
 
 
 	@Override

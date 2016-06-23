@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -32,6 +31,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 
 
@@ -45,7 +45,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 	private boolean longTokens;
 	
 	
-	public StoreMatrixDataAdapter(MetadataAdapter annotations, LinkedLabeledIDEvent alignmentStartEvent, boolean longTokens) {
+	public StoreMatrixDataAdapter(LinkedLabeledIDEvent alignmentStartEvent, boolean longTokens, List<JPhyloIOEvent> annotations) {
 		super(annotations);
 		this.startEvent = alignmentStartEvent;
 		this.longTokens = longTokens;

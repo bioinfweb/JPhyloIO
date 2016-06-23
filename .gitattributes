@@ -40,7 +40,6 @@ main/src/info/bioinfweb/jphyloio/dataadapters/DataAdapter.java -text svneol=unse
 main/src/info/bioinfweb/jphyloio/dataadapters/DocumentDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/JPhyloIOEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/MatrixDataAdapter.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/dataadapters/MetadataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/OTUListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/ObjectListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/TreeNetworkDataAdapter.java -text svneol=unset#text/plain
@@ -54,7 +53,6 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/package-info.java 
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreAnnotatedDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreDocumentDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreMatrixDataAdapter.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreMetadataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreOTUListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/readtowriteadapter/StoreObjectListDataAdapter.java -text svneol=unset#text/plain

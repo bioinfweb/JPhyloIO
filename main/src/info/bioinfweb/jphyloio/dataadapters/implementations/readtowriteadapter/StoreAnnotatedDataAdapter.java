@@ -19,24 +19,41 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.MetadataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
 public abstract class StoreAnnotatedDataAdapter<E extends JPhyloIOEvent> implements AnnotatedDataAdapter<E> {
-	private MetadataAdapter annotations;
+	private List<JPhyloIOEvent> annotations;
 	
 	
-	public StoreAnnotatedDataAdapter(MetadataAdapter annotations) {
+	public StoreAnnotatedDataAdapter(List<JPhyloIOEvent> annotations) {
 		super();
-		this.annotations = annotations;		
+		
+		if (annotations == null) {
+			this.annotations = new ArrayList<JPhyloIOEvent>();
+		}
+		else {
+			this.annotations = annotations;
+		}
 	}
 
 
 	@Override
-	public MetadataAdapter getMetadataAdapter() {
-		return annotations;		
+	public void writeMetadata(JPhyloIOEventReceiver receiver) throws IOException {
+		for (JPhyloIOEvent annotation : annotations) {
+			receiver.add(annotation);
+		}		
+	}
+
+
+	public List<JPhyloIOEvent> getAnnotations() {
+		return annotations;
 	}
 }

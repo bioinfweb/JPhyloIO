@@ -147,9 +147,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		}
 
-		if (adapter.getMetadataAdapter() != null) {
-//			adapter.writeMetadata(receiver); //TODO use new metadata structure
-		}
+		adapter.writeMetadata(receiver);
 	}
 
 
@@ -774,9 +772,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), ATTR_XSI_TYPE.getNamespaceURI(),
 				ATTR_XSI_TYPE.getLocalPart(), treeType.toString()); //trees and networks are always written as float type
 
-		if (treeOrNetwork.getMetadataAdapter() != null) {
-//			treeOrNetwork.writeMetadata(receiver); //TODO use new metadata structure
-		}
+		treeOrNetwork.writeMetadata(receiver);
 
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork);
 
@@ -853,9 +849,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		streamDataProvider.addToDocumentIDs(treeOrNetwork.getStartEvent().getID());
 
-		if (treeOrNetwork.getMetadataAdapter() != null) {
-//			treeOrNetwork.writeMetadata(receiver); //TODO use new metadata structure
-		}
+		treeOrNetwork.writeMetadata(receiver);
 
 		for (String edgeID : lister.getEdgeIDs()) {
 			EdgeEvent edge = treeOrNetwork.getEdgeStartEvent(edgeID);
@@ -867,16 +861,16 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		}
 
 		if (referencedNodeIDs.remove(null)) {
-            ;
-        }
+			//TODO What should be done here?
+		}
 
 		if (!(referencedNodeIDs.size() == lister.getNodeIDs().size())) {
-			StringBuffer message = new StringBuffer("The nodes \n");
+			StringBuffer message = new StringBuffer("The nodes ");
 
 			for (String nodeID : referencedNodeIDs) {
 				if (!lister.getNodeIDs().contains(nodeID)) {
 					message.append(nodeID);
-					message.append(",\n");
+					message.append(", ");
 				}
 			}
 
