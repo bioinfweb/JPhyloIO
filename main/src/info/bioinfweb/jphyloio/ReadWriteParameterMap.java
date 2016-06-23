@@ -24,6 +24,7 @@ import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 import info.bioinfweb.jphyloio.formats.nexml.TokenTranslationStrategy;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
@@ -47,6 +48,19 @@ public class ReadWriteParameterMap extends ParameterMap {
 	 * prefix ({@value #KEY_PREFIX}). 
 	 */
 	public static final String KEY_PREFIX = "info.bioinfweb.jphyloio.";
+	
+	/** 
+	 * This key is used by implementations of {@link JPhyloIOEventWriter} to provide a reference to the currently 
+	 * active instance. The according entry is useful for implementations of a data adapter, if they wish to obtain
+	 * information on the writer requesting data from them.
+	 * <p>
+	 * Note that this key identifies a return value of a writer implementation and not a parameter for the writer. 
+	 * Entries provided by the implementation prior to calling a write method of a writer will be directly overwritten 
+	 * by the actual target format. 
+	 * <p>
+	 * The value must have the type {@link JPhyloIOEventWriter}. 
+	 */
+	public static final String KEY_WRITER_INSTANCE = KEY_PREFIX + "writerInstance";
 	
 	/** 
 	 * Identifies an application logger to write log messages to.

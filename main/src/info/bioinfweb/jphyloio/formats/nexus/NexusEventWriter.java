@@ -843,7 +843,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
+	protected void doWriteDocument(DocumentDataAdapter document, Writer writer,	ReadWriteParameterMap parameters) throws IOException {
 		this.writer = writer;
 		this.parameters = parameters;
 		logger = parameters.getLogger();

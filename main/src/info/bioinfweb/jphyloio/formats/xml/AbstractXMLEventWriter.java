@@ -65,7 +65,7 @@ public abstract class AbstractXMLEventWriter extends AbstractEventWriter {
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
+	protected void doWriteDocument(DocumentDataAdapter document, Writer writer,	ReadWriteParameterMap parameters) throws IOException {
 		try {
 			this.xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
 			this.parameters = parameters;

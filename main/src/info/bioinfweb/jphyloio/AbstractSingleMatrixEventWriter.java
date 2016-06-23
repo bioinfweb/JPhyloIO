@@ -95,9 +95,7 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer,
-			ReadWriteParameterMap parameters) throws IOException {
-		
+	protected void doWriteDocument(DocumentDataAdapter document, Writer writer,	ReadWriteParameterMap parameters) throws IOException {
 		ApplicationLogger logger = parameters.getLogger();
 		logIngnoredOTULists(document, logger, parameters, formatName, "sequences");
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator(parameters);

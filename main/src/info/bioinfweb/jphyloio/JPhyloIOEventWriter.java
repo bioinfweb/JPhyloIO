@@ -41,7 +41,8 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * 
 	 * @param document the adapter providing the data to be written
 	 * @param stream the stream to write the data to
-	 * @param parameters a map of parameters to exchange information with the writer implementation
+	 * @param parameters a map of parameters to exchange information with the writer implementation (Care should be taken, if a
+	 *        parameter map is reused for multiple calls, since the writer implementation may add or changes entries in the map.)
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */
@@ -52,7 +53,8 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * 
 	 * @param document the adapter providing the data to be written
 	 * @param file the file to write the data to
-	 * @param parameters a map of parameters to exchange information with the writer implementation
+	 * @param parameters a map of parameters to exchange information with the writer implementation (Care should be taken, if a
+	 *        parameter map is reused for multiple calls, since the writer implementation may add or changes entries in the map.)
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */
@@ -63,7 +65,8 @@ public interface JPhyloIOEventWriter extends JPhyloIOFormatSpecificObject {
 	 * 
 	 * @param document the adapter providing the data to be written
 	 * @param writer the writer to write the data to
-	 * @param parameters a map of parameters to exchange information with the writer implementation
+	 * @param parameters a map of parameters to exchange information with the writer implementation (Care should be taken, if a
+	 *        parameter map is reused for multiple calls, since the writer implementation may add or changes entries in the map.)
 	 * @throws InconsistentAdapterDataException if any inconsistency in the specified document adapter is found
 	 * @throws Exception implementing classes may choose to throw additional types of exceptions
 	 */

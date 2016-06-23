@@ -415,4 +415,14 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	public void writeDocument(DocumentDataAdapter document, OutputStream stream, ReadWriteParameterMap parameters) throws IOException {		
 		writeDocument(document, new BufferedWriter(new OutputStreamWriter(stream)), parameters);		
 	}
+
+
+	@Override
+	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
+		parameters.put(ReadWriteParameterMap.KEY_WRITER_INSTANCE, this);
+		doWriteDocument(document, writer, parameters);
+	}
+	
+	
+	protected abstract void doWriteDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException;
 }

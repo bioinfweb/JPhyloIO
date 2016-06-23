@@ -48,7 +48,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 	
 	
 	@Override
-	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
+	protected void doWriteDocument(DocumentDataAdapter document, Writer writer,	ReadWriteParameterMap parameters) throws IOException {
 		ApplicationLogger logger = parameters.getLogger();
 		int treeCount = 0;
 		
