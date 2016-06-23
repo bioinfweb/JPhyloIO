@@ -102,12 +102,12 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 			String id = sequenceIDIterator.next();
 			
 			// Write name and tokens:
-			writeSequenceName(editSequenceOrNodeLabel(matrix.getSequenceStartEvent(id), parameters, otuList), writer, 
+			writeSequenceName(editSequenceOrNodeLabel(matrix.getSequenceStartEvent(parameters, id), parameters, otuList), writer, 
 					eventReceiver, parameters);
 			eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
-			matrix.writeSequencePartContentData(eventReceiver, id, 0, matrix.getSequenceLength(id));
+			matrix.writeSequencePartContentData(parameters, eventReceiver, id, 0, matrix.getSequenceLength(parameters, id));
 			
-			extendSequence(matrix, id, maxSequenceLength, extensionToken, eventReceiver);  // Event receiver manages line length.
+			extendSequence(matrix, parameters, id, maxSequenceLength, extensionToken, eventReceiver);  // Event receiver manages line length.
 		}
 		
 		ApplicationLogger logger = parameters.getLogger();

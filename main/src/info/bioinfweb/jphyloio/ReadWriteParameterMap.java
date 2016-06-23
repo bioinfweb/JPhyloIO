@@ -186,7 +186,7 @@ public class ReadWriteParameterMap extends ParameterMap {
 	 * The value should have the type {@link String} and define the token to be used to fill up sequences. If this parameter
 	 * is omitted or {@code null} is specified, sequences will not be filled up. Note that the specified string should only
 	 * be longer than one character, if it is only used with {@link MatrixDataAdapter}s that provide long tokens.
-	 * ({@link MatrixDataAdapter#containsLongTokens()} must return {@code true}.)
+	 * ({@link MatrixDataAdapter#containsLongTokens(ReadWriteParameterMap)} must return {@code true}.)
 	 * <p>
 	 * Note that this parameter is valid for all alignments. It is not possible to extend only a subset alignments of the 
 	 * same file using this parameter. 

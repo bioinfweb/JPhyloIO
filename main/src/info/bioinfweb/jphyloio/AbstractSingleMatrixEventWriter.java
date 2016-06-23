@@ -103,7 +103,7 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator(parameters);
 		if (matrixIterator.hasNext()) {
 			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
-			Iterator<String> sequenceIDIterator = matrixDataAdapter.getSequenceIDIterator();
+			Iterator<String> sequenceIDIterator = matrixDataAdapter.getSequenceIDIterator(parameters);
 			if (sequenceIDIterator.hasNext()) {
 				writeSingleMatrix(document, matrixDataAdapter, sequenceIDIterator, writer, parameters);
 			}

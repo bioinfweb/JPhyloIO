@@ -87,7 +87,7 @@ public class StoreOTUListDataAdapter extends StoreAnnotatedDataAdapter<LabeledID
 
 
 	@Override
-	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets(ReadWriteParameterMap parameters) {
 		return otuSets;
 	}
 }

@@ -52,7 +52,7 @@ public interface JPhyloIOEventReceiver {
 	 * <p>
 	 * Exceptions thrown by this instance should not be caught within any of the {@code write*()} methods
 	 * in application implementations of any data adapter (e.g. 
-	 * {@link MatrixDataAdapter#writeSequencePartContentData(JPhyloIOEventReceiver, String, long, long)}. 
+	 * {@link MatrixDataAdapter#writeSequencePartContentData(ReadWriteParameterMap, JPhyloIOEventReceiver, String, long, long)}. 
 	 * They will be forwarded by the calling writer and can be handled by the application when 
 	 * {@link JPhyloIOEventWriter#writeDocument(DocumentDataAdapter, Writer, ReadWriteParameterMap)}
 	 * (or one of the other overloaded versions) are called. 

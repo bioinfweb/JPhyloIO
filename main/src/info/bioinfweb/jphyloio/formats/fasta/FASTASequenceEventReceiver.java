@@ -83,7 +83,7 @@ class FASTASequenceEventReceiver extends BasicEventReceiver<Writer> implements J
 	
 	
 	private void writeToken(String token) throws IOException {
-		if (matrixDataAdapter.containsLongTokens()) {
+		if (matrixDataAdapter.containsLongTokens(getParameterMap())) {
 			token += " "; 
 		}
 		else if (token.length() > 1) {

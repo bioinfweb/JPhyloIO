@@ -87,7 +87,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets(ReadWriteParameterMap parameters) {
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }

@@ -71,9 +71,9 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 		long previousLength = 0;
 		long currentLength = 0;
 		
-		Iterator<String> sequences = getSequenceIDIterator();
+		Iterator<String> sequences = getSequenceIDIterator(parameters);
 		while (sequences.hasNext()) {
-			currentLength = getSequenceLength(sequences.next());
+			currentLength = getSequenceLength(parameters, sequences.next());
 			if ((previousLength != 0) && (previousLength != currentLength)) {
 				return -1;
 			}
@@ -84,7 +84,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 	
 
 	@Override
-	public boolean containsLongTokens() {
+	public boolean containsLongTokens(ReadWriteParameterMap parameters) {
 		return longTokens;
 	}
 
@@ -95,25 +95,25 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 
 
 	@Override
-	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets() {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets(ReadWriteParameterMap parameters) {
 		return characterSets;
 	}
 	
 
 	@Override
-	public StoreObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets() {
+	public StoreObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets(ReadWriteParameterMap parameters) {
 		return tokenSets;
 	}
 	
 
 	@Override
-	public Iterator<String> getSequenceIDIterator() {
+	public Iterator<String> getSequenceIDIterator(ReadWriteParameterMap parameters) {
 		return matrix.getObjectMap().keyList().iterator();
 	}
 	
 
 	@Override
-	public LinkedLabeledIDEvent getSequenceStartEvent(String sequenceID) throws IllegalArgumentException {
+	public LinkedLabeledIDEvent getSequenceStartEvent(ReadWriteParameterMap parameters, String sequenceID) throws IllegalArgumentException {
 		if (matrix.getObjectMap().keyList().contains(sequenceID)) {
 			return matrix.getObjectStartEvent(sequenceID);
 		}
@@ -124,7 +124,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 	
 
 	@Override
-	public long getSequenceLength(String sequenceID) throws IllegalArgumentException {
+	public long getSequenceLength(ReadWriteParameterMap parameters, String sequenceID) throws IllegalArgumentException {
 		if (matrix.getObjectMap().keyList().contains(sequenceID)) {
 			int sequenceLength = 0;
 			for (JPhyloIOEvent event : matrix.getObjectContent(sequenceID)) {
@@ -144,8 +144,8 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 	
 
 	@Override
-	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
-			long endColumn) throws IOException, IllegalArgumentException {
+	public void writeSequencePartContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String sequenceID, 
+			long startColumn, long endColumn) throws IOException, IllegalArgumentException {
 		if (matrix.getObjectMap().keyList().contains(sequenceID)) {
 			for (JPhyloIOEvent event : matrix.getObjectContent(sequenceID)) {
 				receiver.add(event);
@@ -158,13 +158,13 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 
 
 	@Override
-	public StoreObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions() {
+	public StoreObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions(ReadWriteParameterMap parameters) {
 		return characterDefinitions;
 	}
 
 
 	@Override
-	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets() {		
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets(ReadWriteParameterMap parameters) {		
 		return sequenceSets;
 	}
 }

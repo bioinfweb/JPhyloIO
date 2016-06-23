@@ -205,9 +205,9 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	public static long determineMaxSequenceLength(MatrixDataAdapter matrix, ReadWriteParameterMap parameters) {
 		long result = matrix.getColumnCount(parameters);
 		if (result == -1) {
-			Iterator<String> iterator = matrix.getSequenceIDIterator();
+			Iterator<String> iterator = matrix.getSequenceIDIterator(parameters);
 			while (iterator.hasNext()) {
-				result = Math.max(result, matrix.getSequenceLength(iterator.next()));
+				result = Math.max(result, matrix.getSequenceLength(parameters, iterator.next()));
 			}
 		}
 		return result;
@@ -380,11 +380,11 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 //	}
 	
 	
-	protected void extendSequence(MatrixDataAdapter matrix, String sequenceID, long targetLength, 
+	protected void extendSequence(MatrixDataAdapter matrix, ReadWriteParameterMap parameters, String sequenceID, long targetLength, 
 			String extensionToken, JPhyloIOEventReceiver receiver) throws IOException {
 		
 		if (extensionToken != null) {
-			long additionalLength = targetLength - matrix.getSequenceLength(sequenceID);
+			long additionalLength = targetLength - matrix.getSequenceLength(parameters, sequenceID);
 			SingleSequenceTokenEvent startEvent = new SingleSequenceTokenEvent(null, extensionToken);
 			ConcreteJPhyloIOEvent endEvent = ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN);
 			for (long i = 0; i < additionalLength; i++) {

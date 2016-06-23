@@ -29,7 +29,7 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 
 /**
  * Abstract implementation of {@link MatrixDataAdapter}, which returns empty object list adapters
- * for {@link #getTokenSets()}, {@link #getSequenceSets()}, {@link #getCharacterSets()}. Additionally an empty implementation
+ * for {@link #getTokenSets(ReadWriteParameterMap)}, {@link #getSequenceSets(ReadWriteParameterMap)}, {@link #getCharacterSets(ReadWriteParameterMap)}. Additionally an empty implementation
  * of {@link #writeMetadata(ReadWriteParameterMap, info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver)} is inherited.
  * <p>
  * Application adapters that do not provide any token, sequence or character sets can be inherited from this class.
@@ -41,11 +41,11 @@ public abstract class NoSetsMatrixDataAdapter extends EmptyAnnotatedDataAdapter<
 	 * Default implementation that always returns an empty object list adapter 
 	 * 
 	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
-	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getTokenSets()
+	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getTokenSets(ReadWriteParameterMap)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets() {
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets(ReadWriteParameterMap parameters) {
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 	
@@ -54,11 +54,11 @@ public abstract class NoSetsMatrixDataAdapter extends EmptyAnnotatedDataAdapter<
 	 * Default implementation that always returns an empty object list adapter 
 	 * 
 	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
-	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getTokenSets()
+	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getTokenSets(ReadWriteParameterMap)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets() {
+	public ObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets(ReadWriteParameterMap parameters) {
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 	
@@ -67,11 +67,11 @@ public abstract class NoSetsMatrixDataAdapter extends EmptyAnnotatedDataAdapter<
 	 * Default implementation that always returns an empty object list adapter 
 	 * 
 	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
-	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getCharacterSets()
+	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getCharacterSets(ReadWriteParameterMap)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets() {
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets(ReadWriteParameterMap parameters) {
 		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }

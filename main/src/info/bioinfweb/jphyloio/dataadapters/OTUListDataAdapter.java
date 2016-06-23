@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 
@@ -36,7 +37,8 @@ public interface OTUListDataAdapter extends ObjectListDataAdapter<LabeledIDEvent
 	/**
 	 * Returns a list of OTU sets defined for the OTU list modeled by this instance.
 	 * 
+	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return a (possibly empty) list of OTU sets
 	 */
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets();
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets(ReadWriteParameterMap parameters);
 }

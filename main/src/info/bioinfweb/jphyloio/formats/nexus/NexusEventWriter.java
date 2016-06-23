@@ -326,9 +326,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	private boolean containsInvalidOTULinks(MatrixDataAdapter matrix) {
 		Set<String> encounteredOTUs = new HashSet<String>();
-		Iterator<String> iterator = matrix.getSequenceIDIterator();
+		Iterator<String> iterator = matrix.getSequenceIDIterator(getParameters());
 		while (iterator.hasNext()) {
-			LinkedLabeledIDEvent event = matrix.getSequenceStartEvent(iterator.next());
+			LinkedLabeledIDEvent event = matrix.getSequenceStartEvent(getParameters(), iterator.next());
 			if (event.hasLink()) {
 				if (encounteredOTUs.contains(event.getLinkedID())) {
 					return true;
@@ -363,7 +363,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeFormatCommand(MatrixDataAdapter matrix) throws IOException {
-		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = matrix.getTokenSets();
+		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = matrix.getTokenSets(getParameters());
 		if (tokenSets.getCount() > 0) {
 			writeLineStart(writer, COMMAND_NAME_FORMAT);
 			Iterator<String> iterator = tokenSets.getIDIterator();
@@ -413,7 +413,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				}
 				
 				writer.write(' ');
-				if (matrix.containsLongTokens()) {
+				if (matrix.containsLongTokens(getParameters())) {
 					writer.write(FORMAT_SUBCOMMAND_TOKENS);
 				}
 				else {
@@ -441,9 +441,9 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		boolean beforeFirst = true;
 		boolean anyWritten = false;
 		Set<String> encounteredOTUs = new HashSet<String>();
-		Iterator<String> iterator = matrix.getSequenceIDIterator();
+		Iterator<String> iterator = matrix.getSequenceIDIterator(getParameters());
 		while (iterator.hasNext()) {
-			LinkedLabeledIDEvent event = matrix.getSequenceStartEvent(iterator.next());
+			LinkedLabeledIDEvent event = matrix.getSequenceStartEvent(getParameters(), iterator.next());
 			boolean createNewLabel = false;
 			if (event.hasLink()) {
 				if (encounteredOTUs.contains(event.getLinkedID())) {
@@ -503,7 +503,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeCharStateLabelsCommand(MatrixDataAdapter matrix) throws IOException {
-		final ObjectListDataAdapter<CharacterDefinitionEvent> definitions = matrix.getCharacterDefinitions();
+		final ObjectListDataAdapter<CharacterDefinitionEvent> definitions = matrix.getCharacterDefinitions(getParameters());
 		
 		Iterator<String> iterator = definitions.getIDIterator();
 		if (iterator.hasNext()) {
@@ -539,7 +539,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		
 		increaseIndention();
 		increaseIndention();
-		Iterator<String> iterator = matrix.getSequenceIDIterator();
+		Iterator<String> iterator = matrix.getSequenceIDIterator(getParameters());
 		while (iterator.hasNext()) {
 			String id = iterator.next();
 			String sequenceName = reporter.getEditedLabel(EventContentType.SEQUENCE, id);
@@ -551,16 +551,16 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writer.write(' ');
 			
 			TextSequenceContentReceiver receiver = new TextSequenceContentReceiver(
-					writer, parameters, "" + COMMENT_START, "" + COMMENT_END, matrix.containsLongTokens());
-			matrix.writeSequencePartContentData(receiver, id, 0, matrix.getSequenceLength(id));
+					writer, parameters, "" + COMMENT_START, "" + COMMENT_END, matrix.containsLongTokens(getParameters()));
+			matrix.writeSequencePartContentData(getParameters(), receiver, id, 0, matrix.getSequenceLength(getParameters(), id));
 			if (receiver.didIgnoreMetadata()) {
 				logger.addWarning(receiver.getIgnoredMetadata() + " metadata events nested inside the sequence \"" + sequenceName + 
 						"\" have been ignored, since the Nexus format does not supprt such data.");
 			}
 			if (extensionToken != null) {
-				long additionalTokens = alignmentLength - matrix.getSequenceLength(id);
+				long additionalTokens = alignmentLength - matrix.getSequenceLength(getParameters(), id);
 				for (long i = 0; i < additionalTokens; i++) {
-					if (matrix.containsLongTokens()) {
+					if (matrix.containsLongTokens(getParameters())) {
 						writer.write(' ');
 					}
 					writer.write(extensionToken);
@@ -799,7 +799,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			
 			@Override
 			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
-				return ((OTUListDataAdapter)dataSource).getOTUSets();
+				return ((OTUListDataAdapter)dataSource).getOTUSets(getParameters());
 			}
 			
 			@Override
@@ -814,7 +814,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			
 			@Override
 			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
-				return ((MatrixDataAdapter)dataSource).getCharacterSets();
+				return ((MatrixDataAdapter)dataSource).getCharacterSets(getParameters());
 			}
 			
 			@Override

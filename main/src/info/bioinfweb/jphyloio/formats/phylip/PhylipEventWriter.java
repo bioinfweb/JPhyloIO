@@ -146,7 +146,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
     	String id = sequenceIDIterator.next();
     	
     	// Write label:
-    	String label = editSequenceOrNodeLabel(matrix.getSequenceStartEvent(id), parameters, otuList);
+    	String label = editSequenceOrNodeLabel(matrix.getSequenceStartEvent(parameters, id), parameters, otuList);
     	writer.write(label);
     	for (int i = label.length(); i < nameLength; i++) {
 				writer.write(' ');
@@ -154,9 +154,9 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
     	
     	// Write sequence:
     	TextSequenceContentReceiver receiver = new TextSequenceContentReceiver(writer, parameters, null, null, 
-    			matrix.containsLongTokens());
-    	matrix.writeSequencePartContentData(receiver, id, 0, matrix.getSequenceLength(id));
-    	extendSequence(matrix, id, maxSequenceLength, extensionToken, receiver);
+    			matrix.containsLongTokens(parameters));
+    	matrix.writeSequencePartContentData(parameters, receiver, id, 0, matrix.getSequenceLength(parameters, id));
+    	extendSequence(matrix, parameters, id, maxSequenceLength, extensionToken, receiver);
     	
     	writeLineBreak(writer, parameters);
     }
