@@ -307,7 +307,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	
 	private void writeTaxaBlocks(DocumentDataAdapter document) throws IOException {
-		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
+		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator(getParameters());
 		if (otusIterator.hasNext()) {
 			writeTaxaBlock(otusIterator.next());
 			if (otusIterator.hasNext()) {
@@ -634,7 +634,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		boolean charactersWritten = false;
 		boolean unalignedWritten = false;
 		
-		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
+		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator(getParameters());
 		while (matrixIterator.hasNext()) {
 			switch (writeCharactersUnalignedBlock(document, matrixIterator.next())) {
 				case CHARACTERS:
@@ -727,16 +727,16 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	private void writeTreesBlocks(DocumentDataAdapter document) throws IOException {
 		long skippedNetworks = 0;
-		Iterator<TreeNetworkGroupDataAdapter> groupIterator = document.getTreeNetworkGroupIterator();
+		Iterator<TreeNetworkGroupDataAdapter> groupIterator = document.getTreeNetworkGroupIterator(getParameters());
 		while (groupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter group = groupIterator.next();
 			LinkedLabeledIDEvent groupStartEvent = group.getStartEvent(parameters);
 			String currentOTUsID = getOTUsIDForTreeGroup(groupStartEvent);
 			OTUListDataAdapter currentOTUList = null;
 			if (!UNDEFINED_OTUS_ID.equals(currentOTUsID)) {
-				currentOTUList = document.getOTUList(currentOTUsID);
+				currentOTUList = document.getOTUList(getParameters(), currentOTUsID);
 			}
-			else if (document.getOTUListCount() > 1) {
+			else if (document.getOTUListCount(getParameters()) > 1) {
 				parameters.getLogger().addWarning("One or more trees were written to the Nexus document, which do not reference "
 						+ "any TAXA block. Since the created Nexus document contains more than one TAXA block, this file may not be "
 						+ "readable by some applications.");
@@ -794,7 +794,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	
 	private void writeSetsBlocks(DocumentDataAdapter document) throws IOException {
 		// Write taxon sets:
-		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_TAXON_SET, EventContentType.OTU_LIST, document.getOTUListIterator(), 
+		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_TAXON_SET, EventContentType.OTU_LIST, document.getOTUListIterator(getParameters()), 
 				new ReferenceOnlySetReceiver(getStreamDataProvider(), EnumSet.of(EventContentType.OTU, EventContentType.OTU_SET))) {
 			
 			@Override
@@ -809,7 +809,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		}.write();
 
 		// Write character sets:
-		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_CHAR_SET, EventContentType.ALIGNMENT, document.getMatrixIterator(), 
+		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_CHAR_SET, EventContentType.ALIGNMENT, document.getMatrixIterator(getParameters()), 
 				new CharacterSetEventReceiver(getStreamDataProvider())) {
 			
 			@Override
@@ -825,7 +825,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 
 		// Write tree sets:
 		new AbstractNexusSetWriter(getStreamDataProvider(), COMMAND_NAME_TREE_SET, EventContentType.TREE_NETWORK_GROUP, 
-				document.getTreeNetworkGroupIterator(),	
+				document.getTreeNetworkGroupIterator(getParameters()),	
 				new ReferenceOnlySetReceiver(getStreamDataProvider(), EnumSet.of(EventContentType.TREE, EventContentType.TREE_NETWORK_SET),
 						EnumSet.of(EventContentType.NETWORK))) {
 			

@@ -52,13 +52,13 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 		ApplicationLogger logger = parameters.getLogger();
 		int treeCount = 0;
 		
-		logIngnoredOTULists(document, logger, "Newick/NHX", "tree nodes"); 
-		if (document.getMatrixIterator().hasNext()) {
+		logIngnoredOTULists(document, logger, parameters, "Newick/NHX", "tree nodes"); 
+		if (document.getMatrixIterator(parameters).hasNext()) {
 			logger.addWarning(
 					"The specified matrix (matrices) will not be written, since the Newick/NHX format does not support such data."); 
 		}
 		
-		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = document.getTreeNetworkGroupIterator();
+		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = document.getTreeNetworkGroupIterator(parameters);
 		while (treeNetworkGroupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
 			OTUListDataAdapter otuList = getReferencedOTUList(document, treeNetworkGroup, parameters);

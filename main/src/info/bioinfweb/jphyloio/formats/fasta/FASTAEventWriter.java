@@ -41,7 +41,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
  * format does not support such data. 
  * <p>
  * Since FASTA does not support OTU or taxon lists as well, such a list (if provided by 
- * {@link DocumentDataAdapter#getOTUListIterator()}) will also not be written. OTU definitions (if present) will though 
+ * {@link DocumentDataAdapter#getOTUListIterator(ReadWriteParameterMap)}) will also not be written. OTU definitions (if present) will though 
  * be used, if a sequence with a linked OTU ID but without a label is specified. In such cases
  * {@link OTUListDataAdapter#getOTUStartEvent(String)} will be used to determine the according OTU label. If that OTU
  * label is also {@code null}, the sequence ID will be used as the sequence name in FASTA.

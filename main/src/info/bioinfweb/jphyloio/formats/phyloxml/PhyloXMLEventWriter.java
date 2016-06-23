@@ -67,7 +67,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	
 	
 	private void writePhylogenyTags() throws XMLStreamException, IOException {
-		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = getDocument().getTreeNetworkGroupIterator();		
+		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = getDocument().getTreeNetworkGroupIterator(getParameters());		
 		while (treeNetworkGroupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
 			

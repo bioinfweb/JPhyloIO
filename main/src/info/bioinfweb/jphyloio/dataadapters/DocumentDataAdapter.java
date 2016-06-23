@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 
 import java.util.Iterator;
@@ -46,40 +47,45 @@ public interface DocumentDataAdapter extends AnnotatedDataAdapter<ConcreteJPhylo
 	/**
 	 * Returns an iterator providing access to all OTU lists contained in the document
 	 * to be written. 
+	 * @param parameters TODO
 	 * 
 	 * @return the iterator (May be empty but not {@code null}.)
 	 */
-	public Iterator<OTUListDataAdapter> getOTUListIterator();
+	public Iterator<OTUListDataAdapter> getOTUListIterator(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns the number of OTU lists provided by this document adapter.
+	 * @param parameters TODO
 	 * 
-	 * @return the number of OTU lists, that will be returned by {@link #getOTUListIterator()}
+	 * @return the number of OTU lists, that will be returned by {@link #getOTUListIterator(ReadWriteParameterMap)}
 	 */
-	public long getOTUListCount();
+	public long getOTUListCount(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns the OTU list referenced by the specified ID.
-	 * 
+	 * @param parameters TODO
 	 * @param id the ID of the OTU list to be returned
+	 * 
 	 * @return the OTU list referenced by the specified ID
 	 * @throws IllegalArgumentException if no OTU list with the specified ID is available
 	 */
-	public OTUListDataAdapter getOTUList(String id) throws IllegalArgumentException;
+	public OTUListDataAdapter getOTUList(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException;
 
 	/**
 	 * Returns an iterator providing access to all matrices contained in the document
 	 * to be written. 
+	 * @param parameters TODO
 	 * 
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
-	public Iterator<MatrixDataAdapter> getMatrixIterator();
+	public Iterator<MatrixDataAdapter> getMatrixIterator(ReadWriteParameterMap parameters);
 
 	/**
 	 * Returns an iterator providing access to all trees and network groups contained in the 
 	 * document to be written. 
+	 * @param parameters TODO
 	 * 
 	 * @return the iterator (Maybe empty but not {@code null}.)
 	 */
-	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator();
+	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator(ReadWriteParameterMap parameters);
 }

@@ -47,7 +47,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * (using {@link ReadWriteParameterMap#KEY_LABEL_EDITING_REPORTER}).
  * <p>
  * Since Phylip does not support OTU or taxon lists as well, such a list (if provided by 
- * {@link DocumentDataAdapter#getOTUListIterator()}) will also not be written. OTU definitions (if present) will though 
+ * {@link DocumentDataAdapter#getOTUListIterator(ReadWriteParameterMap)}) will also not be written. OTU definitions (if present) will though 
  * be used, if a sequence with a linked OTU ID but without a label is specified. In such cases 
  * {@link OTUListDataAdapter#getOTUStartEvent(String)} will be used to determine the according OTU label. If that OTU
  * label is also {@code null}, the sequence ID will be used as the sequence name in Phylip.
@@ -123,7 +123,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 		OTUListDataAdapter otuList = null;
 		LinkedLabeledIDEvent matrixStartEvent = matrix.getStartEvent(parameters);
 		if (matrixStartEvent.hasLink()) {
-			otuList = document.getOTUList(matrixStartEvent.getLinkedID());
+			otuList = document.getOTUList(parameters, matrixStartEvent.getLinkedID());
 			if (otuList == null) {
 				parameters.getLogger().addWarning("The matrix with the ID " + matrixStartEvent.getID() 
 						+	" references an OTU list with the ID " + matrixStartEvent.getLinkedID() 

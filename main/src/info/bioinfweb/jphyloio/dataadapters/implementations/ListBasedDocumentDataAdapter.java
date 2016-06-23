@@ -122,31 +122,31 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter<Conc
 
 
 	@Override
-	public Iterator<OTUListDataAdapter> getOTUListIterator() {
+	public Iterator<OTUListDataAdapter> getOTUListIterator(ReadWriteParameterMap parameters) {
 		return otuListsMap.valueList().iterator();
 	}
 
 	
 	@Override
-	public long getOTUListCount() {
+	public long getOTUListCount(ReadWriteParameterMap parameters) {
 		return otuListsMap.size();
 	}
 
 
 	@Override
-	public OTUListDataAdapter getOTUList(String id)	throws IllegalArgumentException {
+	public OTUListDataAdapter getOTUList(ReadWriteParameterMap parameters, String id)	throws IllegalArgumentException {
 		return otuListsMap.get(id);
 	}
 
 
 	@Override
-	public Iterator<MatrixDataAdapter> getMatrixIterator() {
+	public Iterator<MatrixDataAdapter> getMatrixIterator(ReadWriteParameterMap parameters) {
 		return matrices.iterator();
 	}
 
 	
 	@Override
-	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator() {
+	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator(ReadWriteParameterMap parameters) {
 		return treeNetworkGroups.iterator();
 	}
 }

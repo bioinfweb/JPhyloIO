@@ -119,7 +119,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void checkDocument(DocumentDataAdapter document) throws IOException {
 		writeOrCheckMetaData(document, true);
 
-		if (document.getOTUListCount() > 0) {
+		if (document.getOTUListCount(getParameters()) > 0) {
 			checkOTUSTags(document);
 		}
 		else {
@@ -127,11 +127,11 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			streamDataProvider.setWriteUndefinedOtuList(true);
 		}
 
-		if (document.getMatrixIterator().hasNext()) {
+		if (document.getMatrixIterator(getParameters()).hasNext()) {
 			checkCharactersTags(document);
 		}
 
-		if (document.getTreeNetworkGroupIterator().hasNext()) {
+		if (document.getTreeNetworkGroupIterator(getParameters()).hasNext()) {
 			checkTreeAndNetworkGroups(document);
 		}
 	}
@@ -223,7 +223,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void writeOTUSTags(DocumentDataAdapter document) throws IOException, XMLStreamException {
-		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
+		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator(getParameters());
 		if (otusIterator.hasNext()) {
 			OTUListDataAdapter otuList = otusIterator.next();
 			writeOTUSTag(otuList);
@@ -276,7 +276,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 
 	private void checkOTUSTags(DocumentDataAdapter document) throws IOException {
-		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator();
+		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator(getParameters());
 		if (otusIterator.hasNext()) {
 			checkOTUsTag(otusIterator.next());
 			if (otusIterator.hasNext()) {
@@ -302,7 +302,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void writeCharactersTags(DocumentDataAdapter document) throws IOException, XMLStreamException {
-		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator();
+		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator(getParameters());
 		if (matricesIterator.hasNext()) {
 			writeCharactersTag(matricesIterator.next());
 			if (matricesIterator.hasNext()) {
@@ -582,7 +582,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 
 	private void checkCharactersTags(DocumentDataAdapter document) throws IllegalArgumentException, IOException {
-		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator();
+		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator(getParameters());
 
 		if (matricesIterator.hasNext()) {
 			checkMatrix(matricesIterator.next());
@@ -727,7 +727,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 
 	private void writeTreesTags(DocumentDataAdapter document) throws XMLStreamException, IOException {
-		Iterator<TreeNetworkGroupDataAdapter> treeAndNetworkGroupIterator = document.getTreeNetworkGroupIterator();
+		Iterator<TreeNetworkGroupDataAdapter> treeAndNetworkGroupIterator = document.getTreeNetworkGroupIterator(getParameters());
 		while (treeAndNetworkGroupIterator.hasNext()) {
 			writeTreesTag(treeAndNetworkGroupIterator.next());
 		}
@@ -820,7 +820,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 
 	private void checkTreeAndNetworkGroups(DocumentDataAdapter document) throws IOException {
-		Iterator<TreeNetworkGroupDataAdapter> treeAndNetworkGroupIterator = document.getTreeNetworkGroupIterator();
+		Iterator<TreeNetworkGroupDataAdapter> treeAndNetworkGroupIterator = document.getTreeNetworkGroupIterator(getParameters());
 		while (treeAndNetworkGroupIterator.hasNext()) {
 			checkTreesAndNetworkGroup(treeAndNetworkGroupIterator.next());
 		}

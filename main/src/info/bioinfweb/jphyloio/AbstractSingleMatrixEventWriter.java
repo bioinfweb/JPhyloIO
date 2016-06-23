@@ -99,8 +99,8 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 			ReadWriteParameterMap parameters) throws IOException {
 		
 		ApplicationLogger logger = parameters.getLogger();
-		logIngnoredOTULists(document, logger, formatName, "sequences");
-		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator();
+		logIngnoredOTULists(document, logger, parameters, formatName, "sequences");
+		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator(parameters);
 		if (matrixIterator.hasNext()) {
 			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
 			Iterator<String> sequenceIDIterator = matrixDataAdapter.getSequenceIDIterator();
@@ -122,7 +122,7 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 					" file was written since the specified document adapter contained contained no matrices.");
 		}
 		
-		if (document.getTreeNetworkGroupIterator().hasNext()) {
+		if (document.getTreeNetworkGroupIterator(parameters).hasNext()) {
 			logger.addWarning("The specified tree or network definitions will not be written, since the " + formatName + 
 					" format does not support this."); 
 		}

@@ -94,10 +94,10 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 *        (The warning message will use this name for a hint that the OTU lists may still be used to label this
 	 *        type of elements.)
 	 */
-	public static void logIngnoredOTULists(DocumentDataAdapter document, ApplicationLogger logger, String formatName,
-			String labeledElements) {
+	public static void logIngnoredOTULists(DocumentDataAdapter document, ApplicationLogger logger, ReadWriteParameterMap parameters, 
+			String formatName, String labeledElements) {
 		
-		if (document.getOTUListIterator().hasNext()) {
+		if (document.getOTUListIterator(parameters).hasNext()) {
 			logger.addWarning("The specified OTU list(s) will not be written, since the " + formatName
 					+	" format does not support this. Referenced lists will though be used to try to label " + labeledElements
 					+ " if necessary."); 
@@ -189,7 +189,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		OTUListDataAdapter result = null;
 		String otuListID = source.getStartEvent(parameters).getLinkedID();
 		if (otuListID != null) {
-			result = document.getOTUList(otuListID);
+			result = document.getOTUList(parameters, otuListID);
 		}
 		return result;
 	}
