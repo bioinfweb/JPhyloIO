@@ -124,7 +124,7 @@ public class FASTAEventWriterLogTest {
 		
 		treeGroup.getTreesAndNetworks().add(new TreeNetworkDataAdapter() {
 			@Override
-			public void writeMetadata(JPhyloIOEventReceiver receiver)	throws IOException {}
+			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver)	throws IOException {}
 
 			@Override
 			public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
