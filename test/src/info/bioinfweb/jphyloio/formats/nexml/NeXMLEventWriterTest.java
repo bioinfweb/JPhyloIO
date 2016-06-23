@@ -68,20 +68,20 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 
 	@Test
 	public void testWriteSimpleDocument() throws Exception {
-		createSimpleTestDocument();
 		NeXMLEventWriter writer = new NeXMLEventWriter();
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		createSimpleTestDocument(parameters);
 		writer.writeDocument(document, new File("data/testOutput/NeXMLTest.xml"), parameters);
 	}
 	
 	
-	private void createSimpleTestDocument() {
+	private void createSimpleTestDocument(ReadWriteParameterMap parameters) {
 		// Add OTU list to document data adapter
 		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + getIDIndex();
 		document.getOTUListsMap().put(otuListID, createOTUList(otuListID));
 		
 //		StoreMatrixDataAdapter matrix = createSequenceMatrix(otuListID);
-		StoreMatrixDataAdapter matrix = createContinuousCellsMatrix(otuListID);
+		StoreMatrixDataAdapter matrix = createContinuousCellsMatrix(parameters, otuListID);
 		
 		// Add character definitions to matrix data adapter
 		String charDefinitionID;
@@ -165,7 +165,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	}
 	
 	
-	private StoreMatrixDataAdapter createSequenceMatrix(String otusID) {
+	private StoreMatrixDataAdapter createSequenceMatrix(ReadWriteParameterMap parameters, String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
@@ -179,12 +179,12 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		sequences.add(StringUtils.charSequenceToStringList("AGTCTAGTCT"));		
 		
 		// Add sequences
-		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
+		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator();
 		int otuCount = 0;
 		while (iterator.hasNext()) {
 			String sequenceID = DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
 			matrix.getMatrix().getObjectMap().put(sequenceID, createSequence(sequenceID,
-					sequences.get(otuCount), document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID()));
+					sequences.get(otuCount), document.getOTUList(parameters, otusID).getObjectStartEvent(iterator.next()).getID()));
 			otuCount++;			
 		}
 		
@@ -206,15 +206,15 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	}
 	
 	
-	protected StoreMatrixDataAdapter createCellsMatrix(String otusID) {
+	protected StoreMatrixDataAdapter createCellsMatrix(ReadWriteParameterMap parameters, String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
 		
 		// Add single tokens
-		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
+		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator();
 		while (iterator.hasNext()) {
-			String otuID = document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID();
+			String otuID = document.getOTUList(parameters, otusID).getObjectStartEvent(iterator.next()).getID();
 			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
 			
 			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
@@ -233,15 +233,15 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	}
 	
 	
-	protected StoreMatrixDataAdapter createContinuousCellsMatrix(String otusID) {
+	protected StoreMatrixDataAdapter createContinuousCellsMatrix(ReadWriteParameterMap parameters, String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "continuous data", otusID);
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
 		
 		// Add single tokens
-		Iterator<String> iterator = document.getOTUList(otusID).getIDIterator();
+		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator();
 		while (iterator.hasNext()) {
-			String otuID = document.getOTUList(otusID).getObjectStartEvent(iterator.next()).getID();
+			String otuID = document.getOTUList(parameters, otusID).getObjectStartEvent(iterator.next()).getID();
 			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + getIDIndex();
 			
 			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(

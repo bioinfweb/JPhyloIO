@@ -103,7 +103,7 @@ public class PhylipEventWriterTest implements ReadWriteConstants {
 		
 		// Write file:
 		DocumentDataAdapter document = createTestDocumentWithLabels("Label 1", "ACTGC", null, "A-TCC", null, "ACTTC");
-		TestOTUListDataAdapter otuList = (TestOTUListDataAdapter)document.getOTUListIterator().next();
+		TestOTUListDataAdapter otuList = (TestOTUListDataAdapter)document.getOTUListIterator(null).next();  // Specifying null here may become a problem in the future.
 		String otuID = DEFAULT_OTU_ID_PREFIX + "2";
 		otuList.getOtus().put(otuID, new LabeledIDEvent(EventContentType.OTU, otuID, null));  // Set last OTU label to null
 		
