@@ -95,7 +95,7 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 		FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrix, 
 				parameters.getLong(ReadWriteParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
 		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
-		long maxSequenceLength = determineMaxSequenceLength(matrix);
+		long maxSequenceLength = determineMaxSequenceLength(matrix, parameters);
 		OTUListDataAdapter otuList = getReferencedOTUList(document, matrix, parameters);
 		
 		while (sequenceIDIterator.hasNext()) {

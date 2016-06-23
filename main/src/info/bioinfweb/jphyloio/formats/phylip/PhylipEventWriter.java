@@ -119,7 +119,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 
 		int nameLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
 		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
-		long maxSequenceLength = determineMaxSequenceLength(matrix);
+		long maxSequenceLength = determineMaxSequenceLength(matrix, parameters);
 		OTUListDataAdapter otuList = null;
 		LinkedLabeledIDEvent matrixStartEvent = matrix.getStartEvent(parameters);
 		if (matrixStartEvent.hasLink()) {
@@ -134,9 +134,9 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 		}
 		
 		// Write heading:
-    writer.write("\t" + matrix.getSequenceCount() + "\t" + maxSequenceLength);
+    writer.write("\t" + matrix.getSequenceCount(parameters) + "\t" + maxSequenceLength);
     writeLineBreak(writer, parameters);
-    if ((matrix.getColumnCount() == -1) && (extensionToken == null)) {
+    if ((matrix.getColumnCount(parameters) == -1) && (extensionToken == null)) {
     	parameters.getLogger().addWarning("The provided sequences have inequal lengths and filling up sequences was not "
     			+ "specified. The column count written to the Phylip document is the length of the longest sequence. Some "
     			+ "programs may not be able to parse Phylip files with unequal sequence lengths.");

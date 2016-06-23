@@ -197,13 +197,13 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	/**
 	 * Calculates the maximum sequence length in matrix with unequal lengths. This method iterates over all sequences
-	 * if {@link MatrixDataAdapter#getColumnCount()} returns -1, otherwise it will directly return the specified column count. 
+	 * if {@link MatrixDataAdapter#getColumnCount(ReadWriteParameterMap)} returns -1, otherwise it will directly return the specified column count. 
 	 * 
 	 * @param matrix the matrix data adapter containing the sequences
 	 * @return the maximal sequence length or -1, if the specified matrix data adapter does not declare any sequences
 	 */
-	public static long determineMaxSequenceLength(MatrixDataAdapter matrix) {
-		long result = matrix.getColumnCount();
+	public static long determineMaxSequenceLength(MatrixDataAdapter matrix, ReadWriteParameterMap parameters) {
+		long result = matrix.getColumnCount(parameters);
 		if (result == -1) {
 			Iterator<String> iterator = matrix.getSequenceIDIterator();
 			while (iterator.hasNext()) {

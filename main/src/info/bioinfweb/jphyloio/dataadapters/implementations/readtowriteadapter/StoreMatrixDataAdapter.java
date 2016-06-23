@@ -61,13 +61,13 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 
 
 	@Override
-	public long getSequenceCount() {
+	public long getSequenceCount(ReadWriteParameterMap parameters) {
 		return matrix.getObjectMap().size();
 	}
 	
 
 	@Override
-	public long getColumnCount() { //TODO do not go through all sequences in case they are very long
+	public long getColumnCount(ReadWriteParameterMap parameters) { //TODO do not go through all sequences in case they are very long
 		long previousLength = 0;
 		long currentLength = 0;
 		

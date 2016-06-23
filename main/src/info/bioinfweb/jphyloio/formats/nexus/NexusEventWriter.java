@@ -352,7 +352,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writer.write(DIMENSIONS_SUBCOMMAND_NEW_TAXA);
 			writer.write(' ');
 		}
-		writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NTAX, Long.toString(matrix.getSequenceCount()));
+		writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NTAX, Long.toString(matrix.getSequenceCount(getParameters())));
 		if (columnCount != -1) {
 			writer.write(' ');
 			writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NCHAR, Long.toString(columnCount));
@@ -590,13 +590,13 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	 * @return a value indicating if and which Nexus block was written
 	 * @throws IOException
 	 */
-	private NexusMatrixWriteResult writeCharactersUnalignedBlock(DocumentDataAdapter document, MatrixDataAdapter matrix) throws IOException {
+	private NexusMatrixWriteResult writeCharactersUnalignedBlock(DocumentDataAdapter document, MatrixDataAdapter matrix, ReadWriteParameterMap parameters) throws IOException {
 		logIgnoredMetadata(matrix, "A character matrix");
-		if (matrix.getSequenceCount() > 0) {
-			long columnCount = matrix.getColumnCount();
+		if (matrix.getSequenceCount(getParameters()) > 0) {
+			long columnCount = matrix.getColumnCount(getParameters());
 			String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
 			if ((columnCount == -1) && (extensionToken != null)) {
-				columnCount = determineMaxSequenceLength(matrix);  // -1 will not be returned, since it was already checked, that at least one sequence is contained.
+				columnCount = determineMaxSequenceLength(matrix, parameters);  // -1 will not be returned, since it was already checked, that at least one sequence is contained.
 			}
 			
 			NexusMatrixWriteResult result;
@@ -630,13 +630,13 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void writeCharactersUnalignedBlocks(DocumentDataAdapter document) throws IOException {
+	private void writeCharactersUnalignedBlocks(DocumentDataAdapter document, ReadWriteParameterMap parameters) throws IOException {
 		boolean charactersWritten = false;
 		boolean unalignedWritten = false;
 		
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator(getParameters());
 		while (matrixIterator.hasNext()) {
-			switch (writeCharactersUnalignedBlock(document, matrixIterator.next())) {
+			switch (writeCharactersUnalignedBlock(document, matrixIterator.next(), parameters)) {
 				case CHARACTERS:
 					charactersWritten = true;
 					break;
@@ -852,7 +852,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		writeInitialLines();
 		logIgnoredMetadata(document, "The document");
 		writeTaxaBlocks(document);
-		writeCharactersUnalignedBlocks(document);
+		writeCharactersUnalignedBlocks(document, parameters);
 		writeTreesBlocks(document);
 		writeSetsBlocks(document);
 	}

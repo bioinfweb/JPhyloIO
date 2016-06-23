@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -37,7 +38,7 @@ import java.util.Iterator;
  * matrix.
  * <p>
  * This interface also allows to provide unaligned data (e.g. for the UNALIGNED block in Nexus).
- * In such cases implementations need to return an according value in {@link #getColumnCount()}.
+ * In such cases implementations need to return an according value in {@link #getColumnCount(ReadWriteParameterMap)}.
  * 
  * @author Ben St&ouml;ver
  */
@@ -46,10 +47,11 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter<LinkedLabeledIDE
 	
 	/**
 	 * Returns the number of sequences contained in this matrix.
+	 * @param parameters TODO
 	 * 
 	 * @return the number of sequences that will be returned by {@link #getSequenceIDIterator()}
 	 */
-	public long getSequenceCount();
+	public long getSequenceCount(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns the number of columns the modeled matrix has, if it contains aligned data or -1 if it 
@@ -58,10 +60,11 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter<LinkedLabeledIDE
 	 * For some writers the return value of this method may also determine which type of sequence
 	 * data is written. (A Nexus writer would e.g. use an UNALIGNED instead of a CHARACTERS block,
 	 * if -1 is returned.)
+	 * @param parameters TODO
 	 * 
 	 * @return the number of columns in the matrix or -1 if each sequence may have a different length
 	 */
-	public long getColumnCount();
+	public long getColumnCount(ReadWriteParameterMap parameters);
 	
 	/**
 	 * Returns whether tokens longer than one character are contained in the matrix modeled by this 
@@ -123,8 +126,8 @@ public interface MatrixDataAdapter extends AnnotatedDataAdapter<LinkedLabeledIDE
 	public LinkedLabeledIDEvent getSequenceStartEvent(String sequenceID);
 	
 	/**
-	 * Returns the length for the specified sequence. If {@link #getColumnCount()} returns does not return -1,
-	 * this method should return the same value as {@link #getColumnCount()} for each sequence. Otherwise it 
+	 * Returns the length for the specified sequence. If {@link #getColumnCount(ReadWriteParameterMap)} returns does not return -1,
+	 * this method should return the same value as {@link #getColumnCount(ReadWriteParameterMap)} for each sequence. Otherwise it 
 	 * may return different values for each sequence.
 	 *  
 	 * @param sequenceID the ID of the sequence which defined the length
