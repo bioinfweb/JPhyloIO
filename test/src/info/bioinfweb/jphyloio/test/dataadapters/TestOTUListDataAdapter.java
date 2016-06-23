@@ -97,7 +97,7 @@ public class TestOTUListDataAdapter extends EmptyAnnotatedDataAdapter<LabeledIDE
 
 
 	@Override
-	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets() {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getOTUSets(ReadWriteParameterMap parameters) {
 		return otuSets;
 	}
 }

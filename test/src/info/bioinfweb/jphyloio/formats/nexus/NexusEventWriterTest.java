@@ -509,11 +509,11 @@ public class NexusEventWriterTest implements NexusConstants {
 				new LabeledIDEvent(EventContentType.OTU, "otu0", "A"),
 				new LabeledIDEvent(EventContentType.OTU, "otu1", "B"),
 				new LabeledIDEvent(EventContentType.OTU, "otu2", "C"));
-		otuList.getOTUSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet1", "otu set 1", otuList.getStartEvent(null).getID()));  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
-		otuList.getOTUSets().getObjectMap().get("otuSet1").getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU));
-		otuList.getOTUSets().setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet2", "otu set 2", otuList.getStartEvent(null).getID()));  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
-		otuList.getOTUSets().getObjectMap().get("otuSet2").getObjectContent().add(new SetElementEvent("otu2", EventContentType.OTU));
-		otuList.getOTUSets().getObjectMap().get("otuSet2").getObjectContent().add(new SetElementEvent("otuSet1", EventContentType.OTU_SET));
+		otuList.getOTUSets(null).setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet1", "otu set 1", otuList.getStartEvent(null).getID()));  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
+		otuList.getOTUSets(null).getObjectMap().get("otuSet1").getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU));
+		otuList.getOTUSets(null).setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet2", "otu set 2", otuList.getStartEvent(null).getID()));  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
+		otuList.getOTUSets(null).getObjectMap().get("otuSet2").getObjectContent().add(new SetElementEvent("otu2", EventContentType.OTU));
+		otuList.getOTUSets(null).getObjectMap().get("otuSet2").getObjectContent().add(new SetElementEvent("otuSet1", EventContentType.OTU_SET));
 		document.getOTUListsMap().put(otuList.getStartEvent(null).getID(), otuList);  // Specifying null as a parameter map here may cause problems, if the implementation of getStartEvent() changes in the future.
 
 		SingleTokenTestMatrixDataAdapter matrix = new SingleTokenTestMatrixDataAdapter("matrix0", "a matrix", true, 

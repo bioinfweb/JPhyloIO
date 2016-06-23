@@ -87,16 +87,16 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		String charDefinitionID;
 		for (long i = 0; i < 3; i++) {
 			charDefinitionID = DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + getIDIndex();
-			matrix.getCharacterDefinitions().getObjectMap().put(charDefinitionID, createCharacterDefinition(charDefinitionID, i));
+			matrix.getCharacterDefinitions(null).getObjectMap().put(charDefinitionID, createCharacterDefinition(charDefinitionID, i));
 		}
 		
 		// Add token set of type DNA to matrix data adapter
 		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
-		matrix.getTokenSets().getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 10));
+		matrix.getTokenSets(null).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 10));
 			
 		// Add char sets to matrix data adapter
 		String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
-		matrix.getCharacterSets().getObjectMap().put(charSetID, createCharSet(charSetID));
+		matrix.getCharacterSets(null).getObjectMap().put(charSetID, createCharSet(charSetID));
 		
 		// Add sequence sets to matrix data adapter
 		String sequenceSetID = DEFAULT_SEQUENCE_SET_ID_PREFIX + getIDIndex();
@@ -106,7 +106,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		sequenceSet.getObjectContent().add(new SetElementEvent("sequence2", EventContentType.SEQUENCE));
 		sequenceSet.getObjectContent().add(new SetElementEvent("sequence3", EventContentType.SEQUENCE)); //TODO use real sequence IDs
 		
-		matrix.getSequenceSets().getObjectMap().put(sequenceSetID, sequenceSet);
+		matrix.getSequenceSets(null).getObjectMap().put(sequenceSetID, sequenceSet);
 		
 		// Add sequence matrix to matrix data adapter
 		document.getMatrices().add(matrix);
@@ -133,7 +133,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		otuSet.getObjectContent().add(new SetElementEvent("otu2", EventContentType.OTU));
 		otuSet.getObjectContent().add(new SetElementEvent("otu3", EventContentType.OTU)); //TODO use real OTU IDs
 		
-		otuList.getOTUSets().getObjectMap().put(otuSetID, otuSet);
+		otuList.getOTUSets(null).getObjectMap().put(otuSetID, otuSet);  // Specifying null here may become a problem in the future.
 		
 //		// Add OTU set referencing another set
 //		String otuSetReferencingSetID = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();

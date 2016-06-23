@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.test.dataadapters;
 
 
 import info.bioinfweb.commons.Math2;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -48,13 +49,13 @@ public class SingleTokenTestMatrixDataAdapter extends TestMatrixDataAdapter {
 
 	
 	@Override
-	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, long endColumn)
+	public void writeSequencePartContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, long endColumn)
 			throws IOException {
 		
 		String firstID = getMatrix().keySet().iterator().next();  // Throws exception, if map is empty.
 		if (firstID.equals(sequenceID) && Math2.isBetween(SINGLE_TOKEN_INDEX, startColumn, endColumn - 1)) {
 			if (startColumn < SINGLE_TOKEN_INDEX) {
-				super.writeSequencePartContentData(receiver, sequenceID, startColumn, SINGLE_TOKEN_INDEX);
+				super.writeSequencePartContentData(parameters, receiver, sequenceID, startColumn, SINGLE_TOKEN_INDEX);
 			}
 			
 			receiver.add(new SingleSequenceTokenEvent(null, getMatrix().get(firstID).tokens.get(SINGLE_TOKEN_INDEX)));
@@ -67,11 +68,11 @@ public class SingleTokenTestMatrixDataAdapter extends TestMatrixDataAdapter {
 			receiver.add(new CommentEvent("comment ]1"));
 			
 			if (SINGLE_TOKEN_INDEX < endColumn) {
-				super.writeSequencePartContentData(receiver, sequenceID, SINGLE_TOKEN_INDEX + 1, endColumn);
+				super.writeSequencePartContentData(parameters, receiver, sequenceID, SINGLE_TOKEN_INDEX + 1, endColumn);
 			}
 		}
 		else {
-			super.writeSequencePartContentData(receiver, sequenceID, startColumn, endColumn);
+			super.writeSequencePartContentData(parameters, receiver, sequenceID, startColumn, endColumn);
 		}
 	}
 }

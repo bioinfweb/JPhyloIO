@@ -173,7 +173,7 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 
 
 	@Override
-	public void writeSequencePartContentData(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
+	public void writeSequencePartContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
 			long endColumn) throws IOException {
 		
 		SequenceData data = getSequence(sequenceID);
@@ -187,20 +187,20 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	
 	
 	@Override
-	public LinkedLabeledIDEvent getSequenceStartEvent(String sequenceID) {
+	public LinkedLabeledIDEvent getSequenceStartEvent(ReadWriteParameterMap parameters, String sequenceID) {
 		return new LinkedLabeledIDEvent(EventContentType.SEQUENCE, sequenceID, getSequence(sequenceID).label, 
 				sequenceID.replace(DEFAULT_SEQUENCE_ID_PREFIX, DEFAULT_OTU_ID_PREFIX));
 	}
 	
 	
 	@Override
-	public long getSequenceLength(String sequenceID) throws IllegalArgumentException {
+	public long getSequenceLength(ReadWriteParameterMap parameters, String sequenceID) throws IllegalArgumentException {
 		return getSequence(sequenceID).tokens.size();
 	}
 	
 	
 	@Override
-	public Iterator<String> getSequenceIDIterator() {
+	public Iterator<String> getSequenceIDIterator(ReadWriteParameterMap parameters) {
 		return getMatrix().keySet().iterator();
 	}
 	
@@ -218,14 +218,14 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 	
 	
 	@Override
-	public boolean containsLongTokens() {
+	public boolean containsLongTokens(ReadWriteParameterMap parameters) {
 		return longTokens;
 	}
 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions() {
+	public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions(ReadWriteParameterMap parameters) {
 		if (characterDefinitions == null) {
 			return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 		}
@@ -241,9 +241,9 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 
 
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets() {
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getSequenceSets(ReadWriteParameterMap parameters) {
 		if (sequenceSets == null) {
-			return super.getSequenceSets();
+			return super.getSequenceSets(parameters);
 		}
 		else {
 			return sequenceSets;
@@ -257,9 +257,9 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 
 
 	@Override
-	public ObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets() {
+	public ObjectListDataAdapter<TokenSetDefinitionEvent> getTokenSets(ReadWriteParameterMap parameters) {
 		if (tokenSets == null) {
-			return super.getTokenSets();
+			return super.getTokenSets(parameters);
 		}
 		else {
 			return tokenSets;
@@ -273,9 +273,9 @@ public class TestMatrixDataAdapter extends NoSetsMatrixDataAdapter implements Re
 
 
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets() {
+	public ObjectListDataAdapter<LinkedLabeledIDEvent> getCharacterSets(ReadWriteParameterMap parameters) {
 		if (characterSets == null) {
-			return super.getCharacterSets();
+			return super.getCharacterSets(parameters);
 		}
 		else {
 			return characterSets;
