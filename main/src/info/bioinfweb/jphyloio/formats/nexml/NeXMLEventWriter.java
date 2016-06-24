@@ -627,6 +627,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		streamDataProvider.getCurrentAlignmentInfo().setAlignmentLength(determineMaxSequenceLength(alignment, getParameters()));
 		
+		if (streamDataProvider.getCurrentAlignmentInfo().getTokenSetType().equals(streamDataProvider.getCurrentAlignmentInfo().getTokenType())) {
+			streamDataProvider.getCurrentAlignmentInfo().setAlignmentType(streamDataProvider.getCurrentAlignmentInfo().getTokenSetType());
+		}
+		else {
+			streamDataProvider.getCurrentAlignmentInfo().setAlignmentType(CharacterStateSetType.DISCRETE);
+		}
+		
 		if (!streamDataProvider.getCurrentAlignmentInfo().hasTokenDefinitionSet() 
 				&& !streamDataProvider.getCurrentAlignmentInfo().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
 			for (long i = 0; i < streamDataProvider.getCurrentAlignmentInfo().getAlignmentLength(); i++) {
@@ -702,6 +709,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		if (alignmentInfo.getTokenSetType() == null || alignmentInfo.getTokenSetType().equals(CharacterStateSetType.UNKNOWN)) {
 			alignmentInfo.setTokenSetType(CharacterStateSetType.CONTINUOUS);
 		}
+		
+		alignmentInfo.setTokenType(alignmentInfo.getTokenSetType());
 	}	
 
 
