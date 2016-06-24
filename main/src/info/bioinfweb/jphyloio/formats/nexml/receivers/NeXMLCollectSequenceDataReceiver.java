@@ -72,8 +72,9 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		
+		
 		if (!alignmentInfo.hasTokenDefinitionSet()) { // No token set was contained in the data adapter
-			alignmentInfo.getOccuringTokens().add(token);
+			alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getOccuringTokens().add(token);
 			
 			if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.CONTINUOUS)) {
 				try {
@@ -92,7 +93,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 		}
 		else {
 			if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.DISCRETE)) {
-				alignmentInfo.getOccuringTokens().add(token);
+				alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getOccuringTokens().add(token);
 			}
 			else if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.CONTINUOUS)) {
 				try {
@@ -103,12 +104,14 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 				}
 			}
 			else {
-				alignmentInfo.getOccuringTokens().add(token);
+				alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getOccuringTokens().add(token);
 				
 				if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
 					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
 				}
 			}
 		}
+		
+		setTokenIndex(getTokenIndex() + 1);
 	}
 }

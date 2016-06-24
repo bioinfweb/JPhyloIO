@@ -37,6 +37,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {
 	private boolean nestedUnderSingleToken = false;
+	private long tokenIndex = 0;
+	
 	private NeXMLWriterStreamDataProvider streamDataProvider;
 	NeXMLWriterAlignmentInformation alignmentInfo;
 
@@ -60,6 +62,16 @@ public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceCo
 	}
 	
 	
+	public long getTokenIndex() {
+		return tokenIndex;
+	}
+
+
+	public void setTokenIndex(long tokenIndex) {
+		this.tokenIndex = tokenIndex;
+	}
+
+
 	public NeXMLWriterStreamDataProvider getStreamDataProvider() {
 		return streamDataProvider;
 	}

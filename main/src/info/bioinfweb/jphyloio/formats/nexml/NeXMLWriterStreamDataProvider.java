@@ -164,7 +164,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	public EnumMap<EventContentType, Set<String>> getEventTypeToSetElementsMap() {
 		return eventTypeToSetElementsMap;
 	}
-
+	
 
 	public NeXMLWriterAlignmentInformation getCurrentAlignmentInfo() {
 		return currentAlignmentInfo;
@@ -274,36 +274,29 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		}
 	}
 	
-	
 	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
-		setNamespacePrefix(prefix, null, namespace);
+		setNamespacePrefix(prefix, DEFAULT_NAMESPACE_PREFIX, namespace);
 	}
 	
 	
-	public void setNamespacePrefix(String prefix, String defaultPrefix, String namespace) throws XMLStreamException {				
+	public void setNamespacePrefix(String prefix, String defaultPrefix, String namespace) throws XMLStreamException {
 		if (namespace != null) {
-			if ((prefix == null) || prefix.isEmpty()) {
-				prefix = defaultPrefix;
-			}
-		
-			if (getXMLStreamWriter().getPrefix(namespace) == null) {
-				String nameSpacePrefix = prefix;
+			if (!(((prefix == null) || prefix.isEmpty()) && (getXMLStreamWriter().getPrefix(namespace) != null))) {				
+				if (((prefix == null) || prefix.isEmpty())) {
+					prefix = defaultPrefix;
+				}
+						
 				int index = 0;
-				
+				String nameSpacePrefix = prefix;
 				if (!getNamespacePrefixes().add(nameSpacePrefix)) {
 					do {
 						nameSpacePrefix = prefix + index;
 						index++;
 					} while (!getNamespacePrefixes().add(nameSpacePrefix));
 				}
-				
-				if (prefix != null) {
-					getXMLStreamWriter().setPrefix(nameSpacePrefix, namespace);
-					getNameSpaces().add(namespace);
-				}
-				else {
-					throw new InconsistentAdapterDataException("No prefix was defined for the namespace URL \"" + namespace + "\".");
-				}				
+
+				getXMLStreamWriter().setPrefix(nameSpacePrefix, namespace);
+				getNameSpaces().add(namespace);			
 			}
 		}
 	}

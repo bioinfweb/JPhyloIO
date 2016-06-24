@@ -86,7 +86,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	protected void doWriteDocument() throws IOException, XMLStreamException {
 		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this, getXMLWriter());
 		
-		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(NEXML_NAMESPACE), NEXML_DEFAULT_PRE, NEXML_NAMESPACE);
+		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(NEXML_NAMESPACE), NEXML_DEFAULT_PRE, NEXML_NAMESPACE); //TODO only use this if namespaces were not declared previously
 		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI),
 				XMLReadWriteUtils.XSI_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
 		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(XMLConstants.W3C_XML_SCHEMA_NS_URI),
@@ -100,7 +100,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		getXMLWriter().writeDefaultNamespace(NEXML_NAMESPACE);
 		getXMLWriter().writeAttribute(ATTR_VERSION.getLocalPart(), NEXML_VERSION);
-		getXMLWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), getClass().getName()); //TODO is this necessary/correct?		
+		getXMLWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), getClass().getName()); //TODO is this necessary/correct?
 		
 		for (String prefix : streamDataProvider.getNamespacePrefixes()) {
 			getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
@@ -137,7 +137,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 
 
-	private void writeOrCheckMetaData(AnnotatedDataAdapter adapter, boolean check) throws IOException {
+	private void writeOrCheckMetaData(AnnotatedDataAdapter<?> adapter, boolean check) throws IOException {
 		JPhyloIOEventReceiver receiver;
 
 		if (check) {
@@ -151,7 +151,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 
 
-	private void writeOrCheckObjectMetaData(ObjectListDataAdapter adapter, String objectID, boolean check) throws IOException {
+	private void writeOrCheckObjectMetaData(ObjectListDataAdapter<?> adapter, String objectID, boolean check) throws IOException {
 		AbstractNeXMLDataReceiver receiver;
 
 		if (check) {
@@ -168,8 +168,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	
 	private void writeSetTags(EnumMap<EventContentType, String> elementTypeToLinkAttributeMap, EventContentType setType, ObjectListDataAdapter<LinkedLabeledIDEvent> setAdapter) 
-			throws XMLStreamException, IllegalArgumentException, IOException {
-		
+			throws XMLStreamException, IllegalArgumentException, IOException {		
 		NeXMLSetContentReceiver receiver = new NeXMLSetContentReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		
 		Set<String> encounteredSetIDs = new TreeSet<String>();
@@ -177,6 +176,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		Iterator<String> setIDIterator = setAdapter.getIDIterator(getParameters());		
 		while (setIDIterator.hasNext()) {
 			String setID = setIDIterator.next();
+			
 			encounteredSetIDs.add(setID);
 			
 			getXMLWriter().writeStartElement(TAG_SET.getLocalPart());
@@ -218,6 +218,16 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			getXMLWriter().writeEndElement();
 			encounteredSetIDs.clear();
 			streamDataProvider.getEventTypeToSetElementsMap().clear();
+		}
+	}
+	
+	
+	private void checkSets(ObjectListDataAdapter<LinkedLabeledIDEvent> setAdapter) throws IllegalArgumentException, IOException {		
+		Iterator<String> idIterator = setAdapter.getIDIterator(getParameters());
+		while (idIterator.hasNext()) {
+			String setID = idIterator.next();
+			streamDataProvider.addToDocumentIDs(setID);
+			writeOrCheckObjectMetaData(setAdapter, setID, true);
 		}
 	}
 	
@@ -296,8 +306,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		while (otuIDIterator.hasNext()) {
 			String otuID = otuIDIterator.next();
 			streamDataProvider.addToDocumentIDs(otuID);
-			writeOrCheckObjectMetaData(otuList, otuID, true);
+			writeOrCheckObjectMetaData(otuList, otuID, true);			
 		}
+		
+		checkSets(otuList.getOTUSets(getParameters()));
 	}
 	
 	
@@ -315,81 +327,89 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 
 	private void writeCharactersTag(MatrixDataAdapter alignment) throws IOException, XMLStreamException {
-		getXMLWriter().writeStartElement(TAG_CHARACTERS.getLocalPart());
-		streamDataProvider.writeLinkedLabeledIDAttributes(alignment.getStartEvent(getParameters()), TAG_OTUS, true);
 		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
-		streamDataProvider.setCurrentAlignmentInfo(alignmentInfo);
-		StringBuffer alignmentType = new StringBuffer();
-		alignmentType.append(streamDataProvider.getNexPrefix());
-		alignmentType.append(":");
-
-		if (alignmentInfo.isWriteCellsTags()) {
-			switch (alignmentInfo.getAlignmentType()) {
-				case NUCLEOTIDE:
-				case DNA:
-					alignmentType.append(TYPE_DNA_CELLS);
-					break;
-				case RNA:
-					alignmentType.append(TYPE_RNA_CELLS);
-					break;
-				case AMINO_ACID:
-					alignmentType.append(TYPE_PROTEIN_CELLS);
-					break;
-				case CONTINUOUS:
-					alignmentType.append(TYPE_CONTIN_CELLS);
-					break;
-				case DISCRETE:
-				case UNKNOWN: //should not occur if previous code worked correctly
-					alignmentType.append(TYPE_STANDARD_CELLS);
-					break;
-				default:
-					break;
+		
+		if (alignmentInfo.isWriteAlignment()) {
+			getXMLWriter().writeStartElement(TAG_CHARACTERS.getLocalPart());
+			streamDataProvider.writeLinkedLabeledIDAttributes(alignment.getStartEvent(getParameters()), TAG_OTUS, true);		
+			streamDataProvider.setCurrentAlignmentInfo(alignmentInfo);
+			
+			StringBuffer alignmentType = new StringBuffer();
+			alignmentType.append(streamDataProvider.getNexPrefix());
+			alignmentType.append(":");
+	
+			if (alignmentInfo.isWriteCellsTags()) {
+				switch (alignmentInfo.getAlignmentType()) {
+					case NUCLEOTIDE:
+					case DNA:
+						alignmentType.append(TYPE_DNA_CELLS);
+						break;
+					case RNA:
+						alignmentType.append(TYPE_RNA_CELLS);
+						break;
+					case AMINO_ACID:
+						alignmentType.append(TYPE_PROTEIN_CELLS);
+						break;
+					case CONTINUOUS:
+						alignmentType.append(TYPE_CONTIN_CELLS);
+						break;
+					case DISCRETE:
+					case UNKNOWN: //should not occur if previous code worked correctly
+						alignmentType.append(TYPE_STANDARD_CELLS);
+						break;
+					default:
+						break;
+				}
 			}
+			else {
+				switch (alignmentInfo.getAlignmentType()) {
+					case DNA:
+						alignmentType.append(TYPE_DNA_SEQS);
+						break;
+					case RNA:
+						alignmentType.append(TYPE_RNA_SEQS);
+						break;
+					case AMINO_ACID:
+						alignmentType.append(TYPE_PROTEIN_SEQS);
+						break;
+					case CONTINUOUS:
+						alignmentType.append(TYPE_CONTIN_SEQ);
+						break;
+					case DISCRETE:
+					case UNKNOWN: //should not occur if previous code worked correctly
+						alignmentType.append(TYPE_STANDARD_SEQ);
+						break;
+					default:
+						break;
+				}
+			}
+			
+			getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()),
+					ATTR_XSI_TYPE.getNamespaceURI(), ATTR_XSI_TYPE.getLocalPart(), alignmentType.toString());
+			
+			writeOrCheckMetaData(alignment, false); //TODO write meta data with a format or matrix predicate nested under the according tag
+	
+			writeFormatTag(alignment);
+	
+			getXMLWriter().writeStartElement(TAG_MATRIX.getLocalPart()); // Tag does not have any attributes
+	
+			Iterator<String> sequenceIDIterator = alignment.getSequenceIDIterator(getParameters());
+			while (sequenceIDIterator.hasNext()) {
+				writeRowTag(alignment.getSequenceStartEvent(getParameters(), sequenceIDIterator.next()), alignment);
+			}
+			
+			EnumMap<EventContentType, String> elementTypeToLinkAttributeMap = new EnumMap<EventContentType, String>(EventContentType.class);
+			elementTypeToLinkAttributeMap.put(EventContentType.SEQUENCE, ATTR_SEQUENCE_SET_LINKED_IDS.getLocalPart());
+			
+			writeSetTags(elementTypeToLinkAttributeMap, EventContentType.SEQUENCE_SET, alignment.getSequenceSets(getParameters()));
+	
+			getXMLWriter().writeEndElement();
+			getXMLWriter().writeEndElement();
 		}
 		else {
-			switch (alignmentInfo.getAlignmentType()) {
-				case DNA:
-					alignmentType.append(TYPE_DNA_SEQS);
-					break;
-				case RNA:
-					alignmentType.append(TYPE_RNA_SEQS);
-					break;
-				case AMINO_ACID:
-					alignmentType.append(TYPE_PROTEIN_SEQS);
-					break;
-				case CONTINUOUS:
-					alignmentType.append(TYPE_CONTIN_SEQ);
-					break;
-				case DISCRETE:
-				case UNKNOWN: //should not occur if previous code worked correctly
-					alignmentType.append(TYPE_STANDARD_SEQ);
-					break;
-				default:
-					break;
-			}
+			getParameters().getLogger().addWarning("Alignment data was found but either the number of sequences or the alignment length were zero. "
+					+ "Therefore no characters element was written. It is possible that meta or other data was lost because of this.");
 		}
-		
-		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()),
-				ATTR_XSI_TYPE.getNamespaceURI(), ATTR_XSI_TYPE.getLocalPart(), alignmentType.toString());
-
-		writeFormatTag(alignment);
-
-		getXMLWriter().writeStartElement(TAG_MATRIX.getLocalPart()); //tag does not have any attributes
-
-		writeOrCheckMetaData(alignment, false);
-
-		Iterator<String> sequenceIDIterator = alignment.getSequenceIDIterator(getParameters());
-		while (sequenceIDIterator.hasNext()) {
-			writeRowTag(alignment.getSequenceStartEvent(getParameters(), sequenceIDIterator.next()), alignment);
-		}
-		
-		EnumMap<EventContentType, String> elementTypeToLinkAttributeMap = new EnumMap<EventContentType, String>(EventContentType.class);
-		elementTypeToLinkAttributeMap.put(EventContentType.SEQUENCE, ATTR_SEQUENCE_SET_LINKED_IDS.getLocalPart());
-		
-		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.SEQUENCE_SET, alignment.getSequenceSets(getParameters()));
-
-		getXMLWriter().writeEndElement();
-		getXMLWriter().writeEndElement();
 	}
 
 
@@ -422,58 +442,63 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), alignmentInfo, tokenSetID, streamDataProvider);
 
 				switch (alignmentInfo.getAlignmentType()) {
-					case CONTINUOUS: //can not have a states tag
-					case NUCLEOTIDE: //should not occur
+					case CONTINUOUS: // Can not have a states tag
+					case NUCLEOTIDE: // Should not occur
 						break;
 					case DNA:
-						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
-						streamDataProvider.writeLabeledIDAttributes(startEvent);
-						tokenSetDefinitions.writeContentData(getParameters(), molecularDataReceiver, tokenSetID);
-						molecularDataReceiver.addRemainingEvents(CharacterStateSetType.DNA);
-						getXMLWriter().writeEndElement();
-						break;
 					case RNA:
+					case AMINO_ACID: // Molecular data
 						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
-						streamDataProvider.writeLabeledIDAttributes(startEvent);
+						streamDataProvider.writeLabeledIDAttributes(startEvent);						
 						tokenSetDefinitions.writeContentData(getParameters(), molecularDataReceiver, tokenSetID);
-						molecularDataReceiver.addRemainingEvents(CharacterStateSetType.RNA);
-						getXMLWriter().writeEndElement();
+						molecularDataReceiver.addRemainingEvents(alignmentInfo.getAlignmentType());
+						getXMLWriter().writeEndElement();						
 						break;
-					case AMINO_ACID:
-						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
-						streamDataProvider.writeLabeledIDAttributes(startEvent);
-						tokenSetDefinitions.writeContentData(getParameters(), molecularDataReceiver, tokenSetID);
-						molecularDataReceiver.addRemainingEvents(CharacterStateSetType.AMINO_ACID);
-						getXMLWriter().writeEndElement();
-						break;
-					default: //discrete data
+					default: // Discrete data
 						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						streamDataProvider.writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(getParameters(), receiver, tokenSetID);
-						alignmentInfo.getOccuringTokens().removeAll(info.getTokenTranslationMap().keySet());
-						if (!alignmentInfo.getOccuringTokens().isEmpty()) {
+						info.getOccuringTokens().removeAll(info.getTokenTranslationMap().keySet());
+						if (!info.getOccuringTokens().isEmpty()) {
 							receiver.writeRemainingStandardTokenDefinitions();
 						}
-						getXMLWriter().writeEndElement();
+						getXMLWriter().writeEndElement();						
 				}
 			}
 		}
-		else if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-			getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
-			streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, DEFAULT_TOKEN_DEFINITION_SET_ID, null));
-			if (!alignmentInfo.getOccuringTokens().isEmpty()) {
-				receiver = new NeXMLTokenSetEventReceiver(getXMLWriter(), getParameters(), alignmentInfo, DEFAULT_TOKEN_DEFINITION_SET_ID, streamDataProvider);
-				receiver.writeRemainingStandardTokenDefinitions();
+		
+		if (alignmentInfo.isWriteDefaultTokenSet()) {
+			switch (alignmentInfo.getAlignmentType()) {
+				case CONTINUOUS: // Can not have a states tag
+				case NUCLEOTIDE: // Should not occur
+					break;
+				case DNA:
+				case RNA:
+				case AMINO_ACID: // Molecular data
+					getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
+					streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), DEFAULT_TOKEN_DEFINITION_SET_ID, null));
+					molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), alignmentInfo, DEFAULT_TOKEN_DEFINITION_SET_ID, 
+							streamDataProvider);
+					molecularDataReceiver.addRemainingEvents(alignmentInfo.getAlignmentType());
+					getXMLWriter().writeEndElement();
+					break;
+				default: // Discrete data
+					getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
+					streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), DEFAULT_TOKEN_DEFINITION_SET_ID, null));
+					if (!alignmentInfo.getIDToTokenSetInfoMap().get(DEFAULT_TOKEN_DEFINITION_SET_ID).getOccuringTokens().isEmpty()) {
+						receiver = new NeXMLTokenSetEventReceiver(getXMLWriter(), getParameters(), alignmentInfo, DEFAULT_TOKEN_DEFINITION_SET_ID, streamDataProvider);
+						receiver.writeRemainingStandardTokenDefinitions();
+					}
+					getXMLWriter().writeEndElement();
 			}
-			getXMLWriter().writeEndElement();
 		}
 	}
 	
 	
-	private void writeCharacterDefinitionTags(MatrixDataAdapter alignment) throws XMLStreamException, JPhyloIOWriterException {
+	private void writeCharacterDefinitionTags(MatrixDataAdapter alignment) throws XMLStreamException, IOException {
 		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
-		String states;
 	
+		// Write character definitions from adapter
 		if (alignment.getCharacterDefinitions(getParameters()).getCount(getParameters()) > 0) {
 			Iterator<String> charDefinitionIDIterator = alignment.getCharacterDefinitions(getParameters()).getIDIterator(getParameters());
 			while (charDefinitionIDIterator.hasNext()) {
@@ -487,20 +512,16 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 				streamDataProvider.writeLabeledIDAttributes(charDefEvent);
 				if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-					states = alignmentInfo.getColumnIndexToStatesMap().get(charDefEvent.getIndex());				
-					if (states == null) {
-						states = DEFAULT_TOKEN_DEFINITION_SET_ID;
-					}
-						
-					getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), states);
+					getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), alignmentInfo.getColumnIndexToStatesMap().get(charDefEvent.getIndex()));
 				}
 				
-				 //TODO write char definition metadata
+				writeOrCheckObjectMetaData(alignment.getCharacterDefinitions(getParameters()), charID, false);
 				
 				getXMLWriter().writeEndElement();
 			}
 		}
 		
+		// Write definitions for remaining characters
 		streamDataProvider.setIDIndex(0);
 		for (long i = 0; i < alignmentInfo.getAlignmentLength(); i++) {
 			if (!alignmentInfo.getColumnIndexToIDMap().containsKey(i)) {
@@ -512,12 +533,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 				getXMLWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
 				if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-					states = alignmentInfo.getColumnIndexToStatesMap().get(i);				
-					if (states == null) {
-						states = DEFAULT_TOKEN_DEFINITION_SET_ID;
-					}
-						
-					getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), states);
+					getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), alignmentInfo.getColumnIndexToStatesMap().get(i));
 				}
 			}
 		}
@@ -568,7 +584,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		alignment.writeSequencePartContentData(getParameters(), metaDataReceiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(getParameters(), sequenceEvent.getID()));
 
-		if (alignmentInfo.isWriteCellsTags()) {
+		if (alignmentInfo.isWriteCellsTags()) { //TODO cell meta data must be nested under cell tag
 			alignment.writeSequencePartContentData(getParameters(), tokenReceiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(getParameters(), sequenceEvent.getID()));
 		}
 		else {
@@ -598,17 +614,47 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void checkMatrix(MatrixDataAdapter alignment) throws IllegalArgumentException, IOException {
 		NeXMLCollectSequenceDataReceiver receiver = new NeXMLCollectSequenceDataReceiver(getXMLWriter(), getParameters(), false, streamDataProvider);  //also collects metadata namespaces
 		String alignmentID = alignment.getStartEvent(getParameters()).getID();
-		streamDataProvider.setCurrentAlignmentInfo(new NeXMLWriterAlignmentInformation());
 		
+		streamDataProvider.setCurrentAlignmentInfo(new NeXMLWriterAlignmentInformation());		
+		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();		
 		streamDataProvider.addToDocumentIDs(alignmentID);
+		streamDataProvider.getIdToAlignmentInfo().put(alignmentID, alignmentInfo);
 
 		if (alignment.getStartEvent(getParameters()).getLinkedID() == null) {
 			streamDataProvider.setWriteUndefinedOtuList(true);
 		}
 		
+		writeOrCheckMetaData(alignment, true);
+		
+		// Check character definition
+		checkCharacterDefinitions(alignment.getCharacterDefinitions(getParameters()));
+		
+		// Check token sets
 		checkTokenSets(alignment);
+		
+		alignmentInfo.setAlignmentLength(determineMaxSequenceLength(alignment, getParameters()));
+		
+		// Determine which token set is valid in which alignment column		
+		for (long i = 0; i < alignmentInfo.getAlignmentLength(); i++) {
+			if (alignmentInfo.getColumnIndexToStatesMap().get(i) == null) {
+				alignmentInfo.getColumnIndexToStatesMap().put(i, DEFAULT_TOKEN_DEFINITION_SET_ID);
+				alignmentInfo.setWriteDefaultTokenSet(true);
+			}
+		}
+		
+		// Add default token set to map if necessary
+		if (alignmentInfo.isWriteDefaultTokenSet()) {
+			NeXMLWriterTokenSetInformation tokenSetInfo = new NeXMLWriterTokenSetInformation();
+			tokenSetInfo.setNucleotideType(false);
+			streamDataProvider.addToDocumentIDs(DEFAULT_TOKEN_DEFINITION_SET_ID);
+			alignmentInfo.getIDToTokenSetInfoMap().put(DEFAULT_TOKEN_DEFINITION_SET_ID, tokenSetInfo);
+		}
+		
+		// Check character and sequence sets
 		checkCharacterSets(alignment);
-
+		checkSets(alignment.getSequenceSets(getParameters()));
+		
+		// Check sequences
 		Iterator<String> sequenceIDs = alignment.getSequenceIDIterator(getParameters());
 		while (sequenceIDs.hasNext()) {
 			String sequenceID = sequenceIDs.next();
@@ -618,28 +664,23 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 			if ((linkedOtuID == null) || linkedOtuID.isEmpty()) {
 				streamDataProvider.setWriteUndefinedOTU(true);
-			}			
+			}
 			
 			alignment.writeSequencePartContentData(getParameters(), receiver, sequenceID, 0, alignment.getSequenceLength(getParameters(), sequenceStartEvent.getID()));
-			
-			streamDataProvider.getIdToAlignmentInfo().put(alignmentID, streamDataProvider.getCurrentAlignmentInfo());
-		}
+			receiver.setTokenIndex(0);
+		}		
 		
-		streamDataProvider.getCurrentAlignmentInfo().setAlignmentLength(determineMaxSequenceLength(alignment, getParameters()));
-		
-		if (streamDataProvider.getCurrentAlignmentInfo().getTokenSetType().equals(streamDataProvider.getCurrentAlignmentInfo().getTokenType())) {
-			streamDataProvider.getCurrentAlignmentInfo().setAlignmentType(streamDataProvider.getCurrentAlignmentInfo().getTokenSetType());
+		if (alignmentInfo.getTokenSetType().equals(alignmentInfo.getTokenType())) {
+			alignmentInfo.setAlignmentType(alignmentInfo.getTokenSetType());
 		}
 		else {
-			streamDataProvider.getCurrentAlignmentInfo().setAlignmentType(CharacterStateSetType.DISCRETE);
+			alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
 		}
 		
-		if (!streamDataProvider.getCurrentAlignmentInfo().hasTokenDefinitionSet() 
-				&& !streamDataProvider.getCurrentAlignmentInfo().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-			for (long i = 0; i < streamDataProvider.getCurrentAlignmentInfo().getAlignmentLength(); i++) {
-				streamDataProvider.getCurrentAlignmentInfo().getColumnIndexToStatesMap().put(i, DEFAULT_TOKEN_DEFINITION_SET_ID);
-			}
-		}
+		setTokenList(alignmentInfo);
+		
+		// Check if alignment is empty
+		alignmentInfo.setWriteAlignment((alignment.getSequenceCount(getParameters()) > 0) && (determineMaxSequenceLength(alignment, getParameters()) > 0));
 	}
 	
 	
@@ -665,6 +706,14 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				break;
 			default:
 				break;
+		}
+	}
+	
+	
+	private void checkCharacterDefinitions(ObjectListDataAdapter<CharacterDefinitionEvent> characterDefinitions) throws IOException {
+		Iterator<String> charIDs = characterDefinitions.getIDIterator(getParameters());
+		while (charIDs.hasNext()) {
+			writeOrCheckObjectMetaData(characterDefinitions, charIDs.next(), true);
 		}
 	}
 
@@ -699,11 +748,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				alignmentInfo.getIDToTokenSetInfoMap().put(tokenSetID, streamDataProvider.getCurrentTokenSetInfo());
 				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);				
 			}
-		}
-		else {
-			NeXMLWriterTokenSetInformation tokenSetInfo = new NeXMLWriterTokenSetInformation();
-			tokenSetInfo.setNucleotideType(false);
-			alignmentInfo.getIDToTokenSetInfoMap().put(DEFAULT_TOKEN_DEFINITION_SET_ID, tokenSetInfo);
 		}
 		
 		if (alignmentInfo.getTokenSetType() == null || alignmentInfo.getTokenSetType().equals(CharacterStateSetType.UNKNOWN)) {
@@ -743,6 +787,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		getXMLWriter().writeStartElement(TAG_TREES.getLocalPart());
 		streamDataProvider.writeLinkedLabeledIDAttributes(treeOrNetworkGroup.getStartEvent(getParameters()), TAG_OTUS, true);
 
+		writeOrCheckMetaData(treeOrNetworkGroup, false);
+		
 		Iterator<TreeNetworkDataAdapter> treesAndNetworksIterator = treeOrNetworkGroup.getTreeNetworkIterator(getParameters());
 		while (treesAndNetworksIterator.hasNext()) {
 			writeTreeOrNetworkTag(treesAndNetworksIterator.next());
@@ -777,7 +823,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), ATTR_XSI_TYPE.getNamespaceURI(),
 				ATTR_XSI_TYPE.getLocalPart(), treeType.toString()); //trees and networks are always written as float type
 
-		treeOrNetwork.writeMetadata(getParameters(), receiver);
+		writeOrCheckMetaData(treeOrNetwork, false);
 
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork, getParameters());
 
@@ -835,6 +881,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void checkTreesAndNetworkGroup(TreeNetworkGroupDataAdapter treesAndNetworks) throws IOException {
 		String linkedOTUs = treesAndNetworks.getStartEvent(getParameters()).getLinkedID();
 		streamDataProvider.addToDocumentIDs(treesAndNetworks.getStartEvent(getParameters()).getID());
+		
+		writeOrCheckMetaData(treesAndNetworks, true);
 
 		if (linkedOTUs == null) {
 			streamDataProvider.setWriteUndefinedOtuList(true);
@@ -844,6 +892,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		while (treesAndNetworksIterator.hasNext()) {
 			checkTreeOrNetwork(treesAndNetworksIterator.next());
 		}
+		
+		checkSets(treesAndNetworks.getTreeSets(getParameters()));
 	}
 
 
@@ -854,7 +904,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		streamDataProvider.addToDocumentIDs(treeOrNetwork.getStartEvent(getParameters()).getID());
 
-		treeOrNetwork.writeMetadata(getParameters(), receiver);
+		writeOrCheckMetaData(treeOrNetwork, true);
+		checkSets(treeOrNetwork.getNodeEdgeSets(getParameters()));
 
 		for (String edgeID : lister.getEdgeIDs()) {
 			EdgeEvent edge = treeOrNetwork.getEdgeStartEvent(getParameters(), edgeID);
@@ -865,9 +916,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			referencedNodeIDs.add(edge.getTargetID());
 		}
 
-		if (referencedNodeIDs.remove(null)) {
-			//TODO What should be done here?
-		}
+		referencedNodeIDs.remove(null);
 
 		if (!(referencedNodeIDs.size() == lister.getNodeIDs().size())) {
 			StringBuffer message = new StringBuffer("The nodes ");

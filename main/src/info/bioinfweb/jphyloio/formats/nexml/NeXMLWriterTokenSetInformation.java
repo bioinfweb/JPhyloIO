@@ -30,6 +30,7 @@ public class NeXMLWriterTokenSetInformation {
 	private boolean isNucleotideType = false;
 	private Set<String> singleTokenDefinitions = new HashSet<String>();
 	private Map<String, String> tokenTranslationMap = new HashMap<String, String>();
+	private Set<String> occuringTokens = new HashSet<String>();
 
 
 	public boolean isNucleotideType() {
@@ -49,5 +50,10 @@ public class NeXMLWriterTokenSetInformation {
 
 	public Map<String, String> getTokenTranslationMap() {
 		return tokenTranslationMap;
+	}
+
+
+	public Set<String> getOccuringTokens() {
+		return occuringTokens;
 	}
 }

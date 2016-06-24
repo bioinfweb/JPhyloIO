@@ -31,11 +31,15 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
+	private boolean writeAlignment = true;
+	
 	private boolean writeCellsTags;
+	
 	private long alignmentLength; // Length of the longest sequence found in the alignment adapter
 	private CharacterStateSetType alignmentType;
 	private CharacterStateSetType tokenSetType;
 	private CharacterStateSetType tokenType;
+	private boolean writeDefaultTokenSet = false;
 	
 	private Map<String, NeXMLWriterTokenSetInformation> idToTokenSetInfoMap = new HashMap<String, NeXMLWriterTokenSetInformation>();
 	
@@ -45,9 +49,18 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 	private Map<Long, String> columnIndexToStatesMap = new HashMap<Long, String>();
 	
 	private Set<String> definedTokens = new HashSet<String>();
-	private Set<String> occuringTokens = new HashSet<String>();
 	
 	
+	public boolean isWriteAlignment() {
+		return writeAlignment;
+	}
+
+
+	public void setWriteAlignment(boolean writeAlignment) {
+		this.writeAlignment = writeAlignment;
+	}
+
+
 	public boolean isWriteCellsTags() {
 		return writeCellsTags;
 	}
@@ -98,6 +111,16 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 	}
 
 
+	public boolean isWriteDefaultTokenSet() {
+		return writeDefaultTokenSet;
+	}
+
+
+	public void setWriteDefaultTokenSet(boolean writeDefaultTokenSet) {
+		this.writeDefaultTokenSet = writeDefaultTokenSet;
+	}
+
+
 	public boolean hasTokenDefinitionSet() {
 		return !(getIDToTokenSetInfoMap().isEmpty() || (getIDToTokenSetInfoMap().size() == 1 && getIDToTokenSetInfoMap().containsKey(DEFAULT_TOKEN_DEFINITION_SET_ID)));
 	}
@@ -130,10 +153,5 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 
 	public Set<String> getDefinedTokens() {
 		return definedTokens;
-	}
-
-
-	public Set<String> getOccuringTokens() {
-		return occuringTokens;
 	}
 }

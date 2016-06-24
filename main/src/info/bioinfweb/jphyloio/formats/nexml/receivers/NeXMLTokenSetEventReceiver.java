@@ -182,11 +182,12 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 	
 	public void writeRemainingStandardTokenDefinitions() throws IOException, XMLStreamException {
-		Set<String> tokenNames = alignmentInfo.getOccuringTokens();
+		Set<String> tokenNames = alignmentInfo.getIDToTokenSetInfoMap().get(tokenSetID).getOccuringTokens();
 		
 		for (String token : tokenNames) {
-			doAdd(new SingleTokenDefinitionEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX),
-					null, token, CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
+			String tokenDefinitionID = getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX);
+			getStreamDataProvider().addToDocumentIDs(tokenDefinitionID);
+			doAdd(new SingleTokenDefinitionEvent(tokenDefinitionID, null, token, CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
 			doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		}
 	}
@@ -199,8 +200,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
 					if (!tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.MATCH) 
-							&& !tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {						
-						getStreamDataProvider().addToDocumentIDs(tokenDefinitionEvent.getID());
+							&& !tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.OTHER)) {
 						
 						switch (tokenDefinitionEvent.getTokenType()) {
 							case ATOMIC_STATE:

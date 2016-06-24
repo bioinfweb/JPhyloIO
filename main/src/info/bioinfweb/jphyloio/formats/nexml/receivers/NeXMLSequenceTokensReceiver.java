@@ -38,7 +38,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver {
 	NeXMLWriterAlignmentInformation alignmentInfo;
-	long columnCount = 0;
 	
 
 	public NeXMLSequenceTokensReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens,
@@ -93,7 +92,7 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 		String translatedToken;
 		
 		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
-			translatedToken = alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(columnCount)).getTokenTranslationMap().get(token);
+			translatedToken = alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getTokenTranslationMap().get(token);
 		}
 		else {
 			translatedToken = token;
@@ -113,7 +112,7 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 			}
 		}
 		
-		columnCount++;
+		setTokenIndex(getTokenIndex() + 1);
 	}
 
 
