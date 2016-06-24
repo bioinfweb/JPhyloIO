@@ -22,13 +22,18 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
+
+import static info.bioinfweb.commons.testing.XMLTestTools.*;
+
 import info.bioinfweb.commons.text.StringUtils;
+
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreMatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreOTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectData;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -41,21 +46,33 @@ import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.test.dataadapters.TestTreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.StartElement;
+
 import org.junit.Test;
 
 
 
-public class NeXMLEventWriterTest implements ReadWriteConstants {
+public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants {
 	private StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+	private ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 	private long idIndex = 0;
 	
 	
@@ -64,15 +81,72 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		idIndex++;
 		return index;
 	}
-
-
+	
+	
 	@Test
-	public void testWriteSimpleDocument() throws Exception {
+	public void assertSimpleDocument() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/NeXMLTest.xml");
+		
+		// Write file:
+		createSimpleDocument();
 		NeXMLEventWriter writer = new NeXMLEventWriter();
-		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-		createSimpleTestDocument(parameters);
-		writer.writeDocument(document, new File("data/testOutput/NeXMLTest.xml"), parameters);
+		writer.writeDocument(document, file, parameters);
+		
+		// Validate file:
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader(file));
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNameSpaceCount(5, element);
+			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), element);			
+			
+			
+//			assertEndElement(TAG_ROOT, reader);			
+//			
+//			assertEndDocument(reader);
+		}
+		finally {
+			reader.close();
+			file.delete();
+		}
 	}
+	
+	
+	private void createSimpleDocument() {
+		// Add OTU list to document data adapter
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + getIDIndex();
+		document.getOTUListsMap().put(otuListID, createOTUList(otuListID));
+		
+		StoreMatrixDataAdapter matrix = createSequenceMatrix(parameters, otuListID);
+		
+		// Add character definitions to matrix data adapter
+		String charDefinitionID;
+		for (long i = 0; i < 10; i++) {
+			charDefinitionID = DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + getIDIndex();
+			matrix.getCharacterDefinitions(parameters).getObjectMap().put(charDefinitionID, createCharacterDefinition(charDefinitionID, i));
+		}
+		
+		// Add token set of type DNA to matrix data adapter
+		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
+		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 10));
+			
+		// Add char sets to matrix data adapter
+		String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
+		matrix.getCharacterSets(parameters).getObjectMap().put(charSetID, createCharSet(charSetID));
+		
+		// Add sequence matrix to matrix data adapter
+		document.getMatrices().add(matrix);
+		
+		// Add tree group to document data adapter
+		document.getTreesNetworks().add(createTrees(otuListID));
+	}	
 	
 	
 	private void createSimpleTestDocument(ReadWriteParameterMap parameters) {
@@ -80,8 +154,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + getIDIndex();
 		document.getOTUListsMap().put(otuListID, createOTUList(otuListID));
 		
-//		StoreMatrixDataAdapter matrix = createSequenceMatrix(otuListID);
-		StoreMatrixDataAdapter matrix = createContinuousCellsMatrix(parameters, otuListID);
+		StoreMatrixDataAdapter matrix = createSequenceMatrix(parameters, otuListID);
+//		StoreMatrixDataAdapter matrix = createContinuousCellsMatrix(otuListID);
 		
 		// Add character definitions to matrix data adapter
 		String charDefinitionID;
@@ -125,35 +199,38 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 					otuID, "taxon"), null));
 		}
 		
+		return otuList;
+	}
+	
+	
+	private void addOTUSets(StoreOTUListDataAdapter otuList, String otuListID) {
 		// Add OTU set
 		String otuSetID = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();
 		StoreObjectData<LinkedLabeledIDEvent> otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
-				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetID, null, id));
+				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetID, null, otuListID));
 		otuSet.getObjectContent().add(new SetElementEvent("otu1", EventContentType.OTU));
 		otuSet.getObjectContent().add(new SetElementEvent("otu2", EventContentType.OTU));
 		otuSet.getObjectContent().add(new SetElementEvent("otu3", EventContentType.OTU)); //TODO use real OTU IDs
 		
 		otuList.getOTUSets(null).getObjectMap().put(otuSetID, otuSet);  // Specifying null here may become a problem in the future.
+	
+		// Add OTU set referencing another set
+		String otuSetReferencingSetID = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();
+		otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
+				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetReferencingSetID, null, otuListID));
+		otuSet.getObjectContent().add(new SetElementEvent(otuSetID, EventContentType.OTU_SET));		
+		otuSet.getObjectContent().add(new SetElementEvent("otu4", EventContentType.OTU)); //TODO use real OTU IDs
 		
-//		// Add OTU set referencing another set
-//		String otuSetReferencingSetID = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();
-//		otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
-//				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetReferencingSetID, null, id));
-//		otuSet.getObjectContent().add(new SetElementEvent(otuSetID, EventContentType.OTU_SET));		
-//		otuSet.getObjectContent().add(new SetElementEvent("otu4", EventContentType.OTU)); //TODO use real OTU IDs
-//		
-//		otuList.getOTUSets().getObjectMap().put(otuSetReferencingSetID, otuSet);
-//		
-//	// Add OTU set referencing another set
-//		String otuSetReferencingSetID2 = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();
-//		otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
-//				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetReferencingSetID2, null, id));
-//		otuSet.getObjectContent().add(new SetElementEvent(otuSetReferencingSetID, EventContentType.OTU_SET));		
-//		otuSet.getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU)); //TODO use real OTU IDs
-//		
-//		otuList.getOTUSets().getObjectMap().put(otuSetReferencingSetID2, otuSet);
+		otuList.getOTUSets(parameters).getObjectMap().put(otuSetReferencingSetID, otuSet);
 		
-		return otuList;
+	// Add OTU set referencing another set
+		String otuSetReferencingSetID2 = DEFAULT_OTU_SET_ID_PREFIX + getIDIndex();
+		otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
+				new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetReferencingSetID2, null, otuListID));
+		otuSet.getObjectContent().add(new SetElementEvent(otuSetReferencingSetID, EventContentType.OTU_SET));		
+		otuSet.getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU)); //TODO use real OTU IDs
+		
+		otuList.getOTUSets(parameters).getObjectMap().put(otuSetReferencingSetID2, otuSet);
 	}
 	
 	
@@ -316,10 +393,12 @@ public class NeXMLEventWriterTest implements ReadWriteConstants {
 	}
 	
 	
-	protected TestTreeNetworkGroupDataAdapter createTrees(String prefix) {
+	protected StoreTreeNetworkGroupDataAdapter createTrees(String otuListID) {
+		String treesID = DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex();
 		String treeID = DEFAULT_TREE_ID_PREFIX + getIDIndex();
-		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter(treeID, null, "nodeEdgeID");
-		trees.setLinkedOTUsID(prefix);
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, treesID, 
+				null, otuListID), null);
+		trees.getTreesAndNetworks().add(new NoAnnotationsTree(treeID, null, otuListID));
 		return trees;
 	}
 	

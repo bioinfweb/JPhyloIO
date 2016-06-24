@@ -71,7 +71,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	public void assertSingleTreeDocument() throws IOException, XMLStreamException {
 		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		
-		// Write file
+		// Write file:
 		idIndex = 1;
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();		
 		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(

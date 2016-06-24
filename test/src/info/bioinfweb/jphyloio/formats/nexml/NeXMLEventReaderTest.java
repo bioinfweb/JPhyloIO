@@ -19,8 +19,27 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
-import static org.junit.Assert.*;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharacterDefinitionEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharacterSetIntervalEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEdgeEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEndEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLabeledIDEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLinkedLabeledIDEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaStartEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertPartEndEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertResourceMetaEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSetElementEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSingleTokenDefinitionEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSingleTokenEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSplitCharactersEventLongTokens;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertTokenSetDefinitionEvent;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertXMLContentEvent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -50,16 +69,14 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocumentWithMetadata.xml"), parameters);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/nexml_treebase_example.xml"), parameters);
+//			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocumentWithMetadata.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
 //					System.out.println(event.getType());
 					if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
 //						System.out.println(event.asLiteralMetadataContentEvent().getStringValue() + " " + event.asLiteralMetadataContentEvent().getObjectValue());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.START))) {
-//						System.out.println(event.asResourceMetadataEvent().getRel().getURI().getLocalPart());
 					}
 				}
 			}
@@ -1064,6 +1081,10 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterDefinitionEvent(null, null, 3, true, reader);
 				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.CONTINUOUS, null, reader);
+				assertCharacterSetIntervalEvent(0, 5, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow1", "ContinuousCellsRow1", "t1", reader);
 				assertSingleTokenEvent("-1.545414144070023", true, reader);
 				assertSingleTokenEvent("-2.3905621575431044", true, reader);
@@ -1227,6 +1248,10 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterDefinitionEvent(null, null, 2, true, reader);
 				assertCharacterDefinitionEvent(null, null, 3, true, reader);
 				assertCharacterDefinitionEvent(null, null, 4, true, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.CONTINUOUS, null, reader);
+				assertCharacterSetIntervalEvent(0, 5, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
 				assertCharactersEvent(new String[]{"-1.545414144070023", "-2.3905621575431044", "-2.9610221833467265", "0.7868662069161243", "0.22968509237534918"}, reader);
@@ -1785,6 +1810,10 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterDefinitionEvent(null, null, 2, true, reader);
 				assertCharacterDefinitionEvent(null, null, 3, true, reader);
 				assertCharacterDefinitionEvent(null, null, 4, true, reader);
+				
+				assertTokenSetDefinitionEvent(CharacterStateSetType.CONTINUOUS, null, reader);
+				assertCharacterSetIntervalEvent(0, 5, reader);
+				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
 				assertSplitCharactersEventLongTokens("data/NeXML/longContinuousSequence.txt", reader);
