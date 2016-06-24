@@ -22,13 +22,11 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
-
 import static info.bioinfweb.commons.testing.XMLTestTools.*;
-
 import info.bioinfweb.commons.text.StringUtils;
-
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreMatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreOTUListDataAdapter;
@@ -47,6 +45,7 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
+import info.bioinfweb.jphyloio.test.dataadapters.TestTreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 
 import java.io.File;
@@ -100,7 +99,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNameSpaceCount(5, element);
+			assertNameSpaceCount(6, element);
 			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
@@ -135,7 +134,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		
 		// Add token set of type DNA to matrix data adapter
 		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
-		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 10));
+		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 8));
 			
 		// Add char sets to matrix data adapter
 		String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
@@ -149,7 +148,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}	
 	
 	
-	private void createSimpleTestDocument(ReadWriteParameterMap parameters) {
+	private void createSimpleTestDocument() {
 		// Add OTU list to document data adapter
 		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + getIDIndex();
 		document.getOTUListsMap().put(otuListID, createOTUList(otuListID));
@@ -393,12 +392,15 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
-	protected StoreTreeNetworkGroupDataAdapter createTrees(String otuListID) {
+	protected TreeNetworkGroupDataAdapter createTrees(String otuListID) {		
 		String treesID = DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex();
-		String treeID = DEFAULT_TREE_ID_PREFIX + getIDIndex();
-		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, treesID, 
-				null, otuListID), null);
-		trees.getTreesAndNetworks().add(new NoAnnotationsTree(treeID, null, otuListID));
+		TestTreeNetworkGroupDataAdapter trees = new TestTreeNetworkGroupDataAdapter(treesID, null, otuListID);
+		
+//		String treeID = DEFAULT_TREE_ID_PREFIX + getIDIndex();
+//		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, treesID, 
+//				null, otuListID), null);
+//		trees.getTreesAndNetworks().add(new NoAnnotationsTree(treeID, null, otuListID));
+		
 		return trees;
 	}
 	
