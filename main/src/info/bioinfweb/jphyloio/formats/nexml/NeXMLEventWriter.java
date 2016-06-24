@@ -622,13 +622,11 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			
 			
 			alignment.writeSequencePartContentData(getParameters(), receiver, sequenceID, 0, alignment.getSequenceLength(getParameters(), sequenceStartEvent.getID()));
-
-			if (streamDataProvider.getCurrentAlignmentInfo().getAlignmentLength() < alignment.getSequenceLength(getParameters(), sequenceStartEvent.getID())) {
-				streamDataProvider.getCurrentAlignmentInfo().setAlignmentLength(alignment.getSequenceLength(getParameters(), sequenceStartEvent.getID()));
-			}
 			
 			streamDataProvider.getIdToAlignmentInfo().put(alignmentID, streamDataProvider.getCurrentAlignmentInfo());
 		}
+		
+		streamDataProvider.getCurrentAlignmentInfo().setAlignmentLength(determineMaxSequenceLength(alignment, getParameters()));
 		
 		if (!streamDataProvider.getCurrentAlignmentInfo().hasTokenDefinitionSet() 
 				&& !streamDataProvider.getCurrentAlignmentInfo().getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {

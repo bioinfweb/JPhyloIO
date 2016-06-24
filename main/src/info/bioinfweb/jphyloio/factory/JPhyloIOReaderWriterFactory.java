@@ -68,10 +68,10 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	public static final int DEFAULT_READ_AHAED_LIMIT = 8 * 1024;  // XML files may contain long comments before the root tag.
 	
 	
-	private final ReadWriteLock readAheahLimitLock = new ReentrantReadWriteLock();	
+	private final ReadWriteLock readAheadLimitLock = new ReentrantReadWriteLock();	
 	
 	private ListOrderedMap<String, SingleReaderWriterFactory> formatMap = new ListOrderedMap<String, SingleReaderWriterFactory>();
-	private int readAheahLimit = DEFAULT_READ_AHAED_LIMIT;
+	private int readAheadLimit = DEFAULT_READ_AHAED_LIMIT;
 	
 	
 	public JPhyloIOReaderWriterFactory() {
@@ -108,12 +108,12 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @return the current read ahead limit
 	 */
 	public int getReadAheadLimit() {
-		readAheahLimitLock.readLock().lock();
+		readAheadLimitLock.readLock().lock();
 		try {
-			return readAheahLimit;
+			return readAheadLimit;
 		}
 		finally {
-			readAheahLimitLock.readLock().unlock();
+			readAheadLimitLock.readLock().unlock();
 		}
 	}
 
@@ -127,12 +127,12 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * @param readAheahLimit the new read ahead limit
 	 */
 	public void setReadAheahLimit(int readAheahLimit) {
-		readAheahLimitLock.writeLock().lock();
+		readAheadLimitLock.writeLock().lock();
 		try {
-			this.readAheahLimit = readAheahLimit;
+			this.readAheadLimit = readAheahLimit;
 		}
 		finally {
-			readAheahLimitLock.writeLock().unlock();
+			readAheadLimitLock.writeLock().unlock();
 		}
 	}
 	//TODO Isn't setting an integer an atomic operation and synchronizing is unnecessary?

@@ -170,7 +170,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			}			
 		};
 		
-		AbstractNeXMLElementReader readNodeStart = new AbstractNeXMLElementReader() {			
+		AbstractNeXMLElementReader readNodeStart = new AbstractNeXMLElementReader() {
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
