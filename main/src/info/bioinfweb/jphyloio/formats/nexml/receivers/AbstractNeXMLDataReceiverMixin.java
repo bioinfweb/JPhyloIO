@@ -89,6 +89,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			streamDataProvider.addToDocumentIDs(event.getID());
 			
 			if (event.getPredicate().getURI() != null) {
+				System.out.println("Literal: " + event.getPredicate().getURI().getPrefix() + " " + event.getPredicate().getURI().getNamespaceURI());
 				streamDataProvider.setNamespacePrefix(event.getPredicate().getURI().getPrefix(), event.getPredicate().getURI().getNamespaceURI());
 			}
 		}

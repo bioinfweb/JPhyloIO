@@ -618,8 +618,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 			if ((linkedOtuID == null) || linkedOtuID.isEmpty()) {
 				streamDataProvider.setWriteUndefinedOTU(true);
-			}
-			
+			}			
 			
 			alignment.writeSequencePartContentData(getParameters(), receiver, sequenceID, 0, alignment.getSequenceLength(getParameters(), sequenceStartEvent.getID()));
 			
@@ -635,58 +634,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			}
 		}
 	}
-
-
-	private void checkTokenSets(MatrixDataAdapter alignment) throws IllegalArgumentException, IOException {
-		NeXMLCollectTokenSetDefinitionDataReceiver receiver;
-		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = alignment.getTokenSets(getParameters());
-		Iterator<String> tokenSetDefinitionIDs = tokenSets.getIDIterator(getParameters());
-		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
-
-		if (tokenSets.getCount(getParameters()) > 0) {
-			while (tokenSetDefinitionIDs.hasNext()) {
-				String tokenSetID = tokenSetDefinitionIDs.next();
-				receiver = new NeXMLCollectTokenSetDefinitionDataReceiver(getXMLWriter(), getParameters(), tokenSetID, streamDataProvider);
-				
-				CharacterStateSetType alignmentType = tokenSets.getObjectStartEvent(getParameters(), tokenSetID).getSetType();
-				streamDataProvider.addToDocumentIDs(tokenSetID);
-				streamDataProvider.setCurrentTokenSetInfo(new NeXMLWriterTokenSetInformation());
-
-				streamDataProvider.getCurrentTokenSetInfo().setNucleotideType(alignmentType.equals(CharacterStateSetType.NUCLEOTIDE));
-
-				CharacterStateSetType previousType = alignmentInfo.getAlignmentType();
-				if ((previousType == null) || previousType.equals(CharacterStateSetType.UNKNOWN)) {
-					alignmentInfo.setAlignmentType(alignmentType);
-				}
-				else {
-					if (!previousType.equals(alignmentType)) {
-						throw new JPhyloIOWriterException("Different data types were encountered but only character data of one type (e.g DNA or amino acid) "
-								+ "can be written to a single NeXML characters tag.");
-					}
-				}
-				alignmentInfo.getIDToTokenSetInfoMap().put(tokenSetID, streamDataProvider.getCurrentTokenSetInfo());
-				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);				
-				setTokenList(alignmentInfo);
-			}
-		}
-		else {
-			NeXMLWriterTokenSetInformation tokenSetInfo = new NeXMLWriterTokenSetInformation();
-			tokenSetInfo.setNucleotideType(false);
-			alignmentInfo.getIDToTokenSetInfoMap().put(DEFAULT_TOKEN_DEFINITION_SET_ID, tokenSetInfo);
-		}
-		
-		if (alignmentInfo.getAlignmentType() == null || alignmentInfo.getAlignmentType().equals(CharacterStateSetType.UNKNOWN)) {
-			alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
-		}
-	}
 	
 	
 	private void setTokenList(NeXMLWriterAlignmentInformation alignmentInfo) {
 		switch (alignmentInfo.getAlignmentType()) {
 			case AMINO_ACID:
 				for (Character aminoAcidToken : SequenceUtils.getAminoAcidOneLetterCodes(true)) {
-					alignmentInfo.getDefinedTokens().add(Character.toString(aminoAcidToken));
-					
+					alignmentInfo.getDefinedTokens().add(Character.toString(aminoAcidToken));					
 				}
 				alignmentInfo.getDefinedTokens().remove("J");
 				break;
@@ -708,6 +662,49 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 
 
+	private void checkTokenSets(MatrixDataAdapter alignment) throws IllegalArgumentException, IOException {
+		NeXMLCollectTokenSetDefinitionDataReceiver receiver;
+		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = alignment.getTokenSets(getParameters());
+		Iterator<String> tokenSetDefinitionIDs = tokenSets.getIDIterator(getParameters());
+		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
+
+		if (tokenSets.getCount(getParameters()) > 0) {
+			while (tokenSetDefinitionIDs.hasNext()) {
+				String tokenSetID = tokenSetDefinitionIDs.next();
+				receiver = new NeXMLCollectTokenSetDefinitionDataReceiver(getXMLWriter(), getParameters(), tokenSetID, streamDataProvider);
+				
+				CharacterStateSetType alignmentType = tokenSets.getObjectStartEvent(getParameters(), tokenSetID).getSetType();
+				streamDataProvider.addToDocumentIDs(tokenSetID);
+				streamDataProvider.setCurrentTokenSetInfo(new NeXMLWriterTokenSetInformation());
+
+				streamDataProvider.getCurrentTokenSetInfo().setNucleotideType(alignmentType.equals(CharacterStateSetType.NUCLEOTIDE));
+
+				CharacterStateSetType previousType = alignmentInfo.getTokenSetType();
+				if ((previousType == null) || previousType.equals(CharacterStateSetType.UNKNOWN)) {
+					alignmentInfo.setTokenSetType(alignmentType);
+				}
+				else {
+					if (!previousType.equals(alignmentType)) {
+						throw new JPhyloIOWriterException("Different data types were encountered but only character data of one type (e.g DNA or amino acid) "
+								+ "can be written to a single NeXML characters tag.");
+					}
+				}
+				alignmentInfo.getIDToTokenSetInfoMap().put(tokenSetID, streamDataProvider.getCurrentTokenSetInfo());
+				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);				
+			}
+		}
+		else {
+			NeXMLWriterTokenSetInformation tokenSetInfo = new NeXMLWriterTokenSetInformation();
+			tokenSetInfo.setNucleotideType(false);
+			alignmentInfo.getIDToTokenSetInfoMap().put(DEFAULT_TOKEN_DEFINITION_SET_ID, tokenSetInfo);
+		}
+		
+		if (alignmentInfo.getTokenSetType() == null || alignmentInfo.getTokenSetType().equals(CharacterStateSetType.UNKNOWN)) {
+			alignmentInfo.setTokenSetType(CharacterStateSetType.CONTINUOUS);
+		}
+	}	
+
+
 	private void checkCharacterSets(MatrixDataAdapter alignment) throws IllegalArgumentException, IOException {
 		ObjectListDataAdapter<LinkedLabeledIDEvent> charSets = alignment.getCharacterSets(getParameters());
 		Iterator<String> charSetIDs = charSets.getIDIterator(getParameters());
@@ -717,7 +714,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			String charSetID = charSetIDs.next();
 			NeXMLCollectCharSetDataReceiver receiver = new NeXMLCollectCharSetDataReceiver(getXMLWriter(), getParameters(), streamDataProvider, charSetID);
 			streamDataProvider.addToDocumentIDs(charSetID);
-
+			
+			//TODO Possibly check if char set links correct matrix ID
 			alignmentInfo.getCharSets().put(charSetID, new TreeSet<Long>());
 			charSets.writeContentData(getParameters(), receiver, charSetID);
 		}

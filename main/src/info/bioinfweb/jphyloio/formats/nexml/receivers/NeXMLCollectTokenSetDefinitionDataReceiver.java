@@ -55,42 +55,45 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 
 
 	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {
-		switch (alignmentInfo.getAlignmentType()) {
+		switch (alignmentInfo.getTokenSetType()) {
 			case DNA:
 				if (!isDNAToken(event)) {
 					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isRNAToken(event) && !alignmentInfo.getOccuringTokens().contains("T")) {
-						alignmentInfo.setAlignmentType(CharacterStateSetType.RNA);
+						alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
 					}
 					else {
-						alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
+						alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 					}
 				}
 				break;
 			case RNA:
 				if (!isRNAToken(event)) {
 					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isDNAToken(event) && !alignmentInfo.getOccuringTokens().contains("U")) {
-						alignmentInfo.setAlignmentType(CharacterStateSetType.DNA);
+						alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
 					}
 					else {
-						alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
+						alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 					}					
 				}
 				break;
 			case NUCLEOTIDE:
 				if (isDNAToken(event)) {
-					alignmentInfo.setAlignmentType(CharacterStateSetType.DNA);
+					alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
 				}
 				else if (isRNAToken(event)) {
-					alignmentInfo.setAlignmentType(CharacterStateSetType.RNA);
+					alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
 				}
 				else {
-					alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
+					alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 				}
 				break;
 			case AMINO_ACID:
 				if (!isAAToken(event)) {
-					alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
+					alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 				}
+				break;
+			case CONTINUOUS:
+				alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE); // Continuous data does not define specific tokens
 				break;
 			default:
 				break;

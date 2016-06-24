@@ -34,6 +34,8 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 	private boolean writeCellsTags;
 	private long alignmentLength; // Length of the longest sequence found in the alignment adapter
 	private CharacterStateSetType alignmentType;
+	private CharacterStateSetType tokenSetType;
+	private CharacterStateSetType tokenType;
 	
 	private Map<String, NeXMLWriterTokenSetInformation> idToTokenSetInfoMap = new HashMap<String, NeXMLWriterTokenSetInformation>();
 	
@@ -73,6 +75,26 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 
 	public void setAlignmentType(CharacterStateSetType alignmentType) throws JPhyloIOWriterException {
 		this.alignmentType = alignmentType;	
+	}
+
+
+	public CharacterStateSetType getTokenSetType() {
+		return tokenSetType;
+	}
+
+
+	public void setTokenSetType(CharacterStateSetType tokenSetType) {
+		this.tokenSetType = tokenSetType;
+	}
+
+
+	public CharacterStateSetType getTokenType() {
+		return tokenType;
+	}
+
+
+	public void setTokenType(CharacterStateSetType tokenType) {
+		this.tokenType = tokenType;
 	}
 
 

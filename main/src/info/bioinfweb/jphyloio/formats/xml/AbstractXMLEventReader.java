@@ -175,7 +175,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	protected XMLElementReader<P> getElementReader(QName parentTag, QName elementTag, int eventType) {
+	protected XMLElementReader<P> getElementReader(QName parentTag, QName elementTag, int eventType) {		
 		XMLElementReader<P> result = elementReaderMap.get(new XMLElementReaderKey(parentTag, elementTag, eventType));
 		if (result == null) {
 			result = elementReaderMap.get(new XMLElementReaderKey(null, elementTag, eventType));

@@ -25,6 +25,7 @@ import info.bioinfweb.commons.collections.NonStoringCollection;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -567,23 +568,31 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				}
 				
 				// Token set definitions
-				Iterator<String> tokenSetIDIterator = streamDataProvider.getTokenSets().keySet().iterator();
-				while (tokenSetIDIterator.hasNext()) {
-					String tokenSetID = tokenSetIDIterator.next();
-					NeXMLReaderTokenSetInformation info = streamDataProvider.getTokenSets().get(tokenSetID);
-					String[] columnIDs; 
-					
-					if (!info.getNestedEvents().isEmpty()) {						
-						streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(info.getSetType(), info.getID(), info.getLabel()));						
+				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.CONTINUOUS)) { // Continuous data character tags usually do not specify a token set so a new is generated here
+					streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(
+							CharacterStateSetType.CONTINUOUS, RESERVED_ID_PREFIX + DEFAULT_TOKEN_DEFINITION_SET_ID + streamDataProvider.getIDManager().createNewID(), null));
+					streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, streamDataProvider.getCharIDs().size()));					
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
+				}
+				else {
+					Iterator<String> tokenSetIDIterator = streamDataProvider.getTokenSets().keySet().iterator();
+					while (tokenSetIDIterator.hasNext()) {
+						String tokenSetID = tokenSetIDIterator.next();
+						NeXMLReaderTokenSetInformation info = streamDataProvider.getTokenSets().get(tokenSetID);
+						String[] columnIDs; 
 						
-						for (JPhyloIOEvent nestedEvent : info.getNestedEvents()) {
-							streamDataProvider.getCurrentEventCollection().add(nestedEvent);
+						if (!info.getNestedEvents().isEmpty()) {						
+							streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(info.getSetType(), info.getID(), info.getLabel()));						
+							
+							for (JPhyloIOEvent nestedEvent : info.getNestedEvents()) {
+								streamDataProvider.getCurrentEventCollection().add(nestedEvent);
+							}
+							
+							columnIDs = streamDataProvider.getTokenSetIDtoColumnsMap().get(tokenSetID).toArray(new String[streamDataProvider.getTokenSetIDtoColumnsMap().get(tokenSetID).size()]);
+							createIntervalEvents(streamDataProvider, columnIDs);
+							
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 						}
-						
-						columnIDs = streamDataProvider.getTokenSetIDtoColumnsMap().get(tokenSetID).toArray(new String[streamDataProvider.getTokenSetIDtoColumnsMap().get(tokenSetID).size()]);
-						createIntervalEvents(streamDataProvider, columnIDs);
-						
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 					}
 				}
 			}

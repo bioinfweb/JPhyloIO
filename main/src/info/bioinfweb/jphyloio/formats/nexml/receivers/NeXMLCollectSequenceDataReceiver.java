@@ -72,29 +72,42 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		
-		if (!alignmentInfo.hasTokenDefinitionSet() && alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
-			try {
-				Double.parseDouble(token); //TODO might be problematic if standard sequences consisting of integer symbols do not specify a token definition (but this case is rather unlikely)
-				alignmentInfo.setAlignmentType(CharacterStateSetType.CONTINUOUS);
-			}
-			catch (NumberFormatException e) {}
-		}
-		
-		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
+		if (!alignmentInfo.hasTokenDefinitionSet()) { // No token set was contained in the data adapter
 			alignmentInfo.getOccuringTokens().add(token);
-		}
-		else if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
-			try {
-				Double.parseDouble(token);  //TODO Should BigDecimal or some other test method be used here? (Otherwise values outside the range of double will not be accepted.)
+			
+			if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.CONTINUOUS)) {
+				try {
+					Double.parseDouble(token);
+					alignmentInfo.setTokenType(CharacterStateSetType.CONTINUOUS);
+				}
+				catch (NumberFormatException e) {
+					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
+				}
 			}
-			catch (NumberFormatException e) {
-				throw new JPhyloIOWriterException("All tokens in a continuous data characters tag must be numbers.");
+			else if (!alignmentInfo.getTokenSetType().equals(CharacterStateSetType.DISCRETE)) { // Molecular data				
+				if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
+					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);				
+				}
 			}
 		}
 		else {
-			if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
-				alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
+			if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.DISCRETE)) {
 				alignmentInfo.getOccuringTokens().add(token);
+			}
+			else if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.CONTINUOUS)) {
+				try {
+					Double.parseDouble(token); //TODO Should BigDecimal or some other test method be used here? (Otherwise values outside the range of double will not be accepted.)
+				}
+				catch (NumberFormatException e) {
+					throw new JPhyloIOWriterException("All tokens in a continuous data characters tag must be numbers.");
+				}
+			}
+			else {
+				alignmentInfo.getOccuringTokens().add(token);
+				
+				if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
+					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
+				}
 			}
 		}
 	}

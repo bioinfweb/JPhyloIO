@@ -276,13 +276,13 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	
 	
 	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
-		setNamespacePrefix(prefix, "defaultNamespacePrefix", namespace);
+		setNamespacePrefix(prefix, null, namespace);
 	}
 	
 	
 	public void setNamespacePrefix(String prefix, String defaultPrefix, String namespace) throws XMLStreamException {				
 		if (namespace != null) {
-			if (prefix == null) {
+			if ((prefix == null) || prefix.isEmpty()) {
 				prefix = defaultPrefix;
 			}
 		
@@ -297,8 +297,13 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 					} while (!getNamespacePrefixes().add(nameSpacePrefix));
 				}
 				
-				getXMLStreamWriter().setPrefix(nameSpacePrefix, namespace);
-				getNameSpaces().add(namespace);
+				if (prefix != null) {
+					getXMLStreamWriter().setPrefix(nameSpacePrefix, namespace);
+					getNameSpaces().add(namespace);
+				}
+				else {
+					throw new InconsistentAdapterDataException("No prefix was defined for the namespace URL \"" + namespace + "\".");
+				}				
 			}
 		}
 	}
