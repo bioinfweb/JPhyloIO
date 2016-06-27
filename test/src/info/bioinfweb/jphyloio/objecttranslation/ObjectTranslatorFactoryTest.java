@@ -33,7 +33,7 @@ public class ObjectTranslatorFactoryTest {
 	@Test
 	public void test_getDefaultTranslator() {
 		ObjectTranslatorFactory factory = new ObjectTranslatorFactory();
-		factory.addXDSTranslators(false);
+		factory.addXSDTranslators(false);
 		assertEquals(new BooleanTranslator(), factory.getDefaultTranslator(W3CXSConstants.DATA_TYPE_BOOLEAN));
 	}
 	
@@ -41,7 +41,7 @@ public class ObjectTranslatorFactoryTest {
 	@Test
 	public void test_getTranslator() {
 		ObjectTranslatorFactory factory = new ObjectTranslatorFactory();
-		factory.addXDSTranslators(false);
+		factory.addXSDTranslators(false);
 		assertEquals(new BooleanTranslator(), factory.getTranslator(W3CXSConstants.DATA_TYPE_BOOLEAN, Boolean.class));
 		assertNull(factory.getTranslator(W3CXSConstants.DATA_TYPE_BOOLEAN, Integer.class));
 	}
