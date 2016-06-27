@@ -362,7 +362,7 @@ public class ReadWriteParameterMap extends ParameterMap {
 		Object result = get(KEY_OBJECT_TRANSLATOR_FACTORY);
 		if (!(result instanceof ObjectTranslatorFactory)) {  // Also checks for null.
 			result = new ObjectTranslatorFactory();
-			((ObjectTranslatorFactory)result).addXDSTranslators(true);
+			((ObjectTranslatorFactory)result).addXSDTranslators(true);
 			put(KEY_OBJECT_TRANSLATOR_FACTORY, result);
 		}
 		return (ObjectTranslatorFactory)result;

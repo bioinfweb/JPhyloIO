@@ -34,7 +34,7 @@ import javax.xml.namespace.QName;
  * <p>
  * After creation this factory is empty. New translators can be added to this factory using 
  * {@link #addTranslator(ObjectTranslator, boolean)}. A default set of translators for XSD types can be added by calling
- * {@link #addXDSTranslators(boolean)}. 
+ * {@link #addXSDTranslators(boolean)}. 
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
@@ -85,7 +85,7 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 	 *        will remain in the factory, of they have a different object type and will be completely overwritten if they have 
 	 *        the same.)  
 	 */
-	public void addXDSTranslators(boolean asDefault) {
+	public void addXSDTranslators(boolean asDefault) {
 		addTranslator(new StringTranslator(), asDefault, DATA_TYPE_STRING, DATA_TYPE_TOKEN);
 		addTranslator(new BooleanTranslator(), asDefault, DATA_TYPE_BOOLEAN);
 

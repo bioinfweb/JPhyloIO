@@ -50,15 +50,17 @@ public interface ReadWriteConstants {
 	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata");
 	public static final QName PREDICATE_HAS_RESOURCE_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasResourceMetadata");
 	
+	@Deprecated
 	public static final QName PREDICATE_DISPLAY_TREE_ROOTED = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "displayTreeRooted");
 	public static final QName PREDICATE_SEQUENCE_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "sequenceCount");
 	public static final QName PREDICATE_CHARACTER_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "characterCount");
-	public static final QName PREDICATE_IS_ALIGNED = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isAligned");
+	public static final QName PREDICATE_IS_ALIGNED = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isAligned");  //TODO Is this still needed? (If so, make sure not to produce reader-writer-inconsistencies in its use.)
 	
+	//TODO Are these predicates intended for general use or should they be moved to the PhyloXML namespace?
 	public static final QName PREDICATE_EDGE_SOURCE_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeSourceNode");
 	public static final QName PREDICATE_EDGE_TARGET_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeTargetNode");
 	public static final QName PREDICATE_EDGE_LENGTH = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeLength");
-	public static final QName PREDICATE_IS_CROSSLINK = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isCrosslink");
+	public static final QName PREDICATE_IS_CROSSLINK = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isCrosslink");  // Can be written e.g. to NeXML. Will not be written as metadata to PhyloXML, since the cladeRelation-tag does not allow nested metadata.
 	
 	public static final String RESERVED_ID_PREFIX = "info.bioinfweb.jphyloio.reservedIDs.";
 	

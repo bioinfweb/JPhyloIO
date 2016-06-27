@@ -58,7 +58,7 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		if (isNestedUnderSingleToken()) {
-			AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(getStreamDataProvider(), event);
+			AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(getStreamDataProvider(), getParameterMap(), event);
 		}
 	}
 

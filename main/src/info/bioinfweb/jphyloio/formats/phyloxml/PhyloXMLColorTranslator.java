@@ -46,8 +46,6 @@ import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataExceptio
  * @since 0.0.0
  */
 public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> implements PhyloXMLConstants {
-	
-	
 	@Override
 	public Class<Color> getObjectClass() {
 		return Color.class;
@@ -61,23 +59,25 @@ public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> imp
 
 	
 	@Override
-	public String javaToRepresentation(Color object) throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException {
 		throw new UnsupportedOperationException("PhyloXML color definitions can only be represented as structured XML.");
 	}
 
 	
 	@Override
-	public void writeXMLRepresentation(XMLStreamWriter writer, Color object) throws IOException, XMLStreamException {
+	public void writeXMLRepresentation(XMLStreamWriter writer, Object object) throws IOException, XMLStreamException {
+		Color color = (Color)object;
+		
 		writer.writeStartElement(TAG_RED.getLocalPart());
-		writer.writeCharacters(Integer.toString(object.getRed()));
+		writer.writeCharacters(Integer.toString(color.getRed()));
 		writer.writeEndElement();
 		
 		writer.writeStartElement(TAG_GREEN.getLocalPart());
-		writer.writeCharacters(Integer.toString(object.getGreen()));
+		writer.writeCharacters(Integer.toString(color.getGreen()));
 		writer.writeEndElement();
 		
 		writer.writeStartElement(TAG_BLUE.getLocalPart());
-		writer.writeCharacters(Integer.toString(object.getBlue()));
+		writer.writeCharacters(Integer.toString(color.getBlue()));
 		writer.writeEndElement();		
 	}
 

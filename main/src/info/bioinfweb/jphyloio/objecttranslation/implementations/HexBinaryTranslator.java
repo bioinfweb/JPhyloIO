@@ -45,7 +45,7 @@ public class HexBinaryTranslator extends IllegalArgumentExceptionSimpleValueTran
 
 
 	@Override
-	public String javaToRepresentation(byte[] object)	throws UnsupportedOperationException, ClassCastException {
-		return DatatypeConverter.printHexBinary(object);
+	public String javaToRepresentation(Object object)	throws UnsupportedOperationException, ClassCastException {
+		return DatatypeConverter.printHexBinary((byte[])object);
 	}
 }

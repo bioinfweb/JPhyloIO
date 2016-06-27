@@ -47,7 +47,5 @@ public enum LiteralContentSequenceType {
 	 * one XML element as they are read by an implementation of {@link XMLEventReader}. (The data represented by the
 	 * XML sequence as a whole is the literal value.) 
 	 */
-	XML,
-	
-	OTHER;  //TODO Should this value be present/allowed?
+	XML;
 }

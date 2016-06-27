@@ -45,7 +45,7 @@ public class Base64BinaryTranslator extends IllegalArgumentExceptionSimpleValueT
 
 
 	@Override
-	public String javaToRepresentation(byte[] object)	throws UnsupportedOperationException, ClassCastException {
-		return DatatypeConverter.printBase64Binary(object);
+	public String javaToRepresentation(Object object)	throws UnsupportedOperationException, ClassCastException {
+		return DatatypeConverter.printBase64Binary((byte[])object);
 	}
 }

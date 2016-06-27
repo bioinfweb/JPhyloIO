@@ -65,13 +65,14 @@ public class QNameTranslator extends IllegalArgumentExceptionSimpleValueTranslat
 
 
 	@Override
-	public String javaToRepresentation(QName object) throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException {
+		QName qName = (QName)object;
 		//TODO Also use DatatypeConverter here instead.
-		if ("".equals(object.getPrefix())) {  // Constructing instances with null is not possible.
-			return object.getLocalPart();
+		if ("".equals(qName.getPrefix())) {  // Constructing instances with null is not possible.
+			return qName.getLocalPart();
 		}
 		else {
-			return object.getPrefix() + XMLUtils.QNAME_SEPARATOR + object.getLocalPart();
+			return qName.getPrefix() + XMLUtils.QNAME_SEPARATOR + qName.getLocalPart();
 		}
 		//TODO Should output of QNames including "{namespaceURI} also or in another translator be supported?
 	}

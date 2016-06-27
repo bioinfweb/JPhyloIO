@@ -43,7 +43,10 @@ public interface ObjectTranslator<O> {
 	//     or should parsing of XML not at all be supported? => Probably the first alternative.
 	
 	/**
-	 * Returns the Java class or interface the objects handled by this instance have.
+	 * Returns the Java class of object instances created by this translator.
+	 * <p>
+	 * Note that {@link #javaToRepresentation(Object)} and {@link #writeXMLRepresentation(XMLStreamWriter, Object)} may also 
+	 * accept instances of other classes. This is independent from the return value here.
 	 * 
 	 * @return the class of the handled objects
 	 */
@@ -73,7 +76,7 @@ public interface ObjectTranslator<O> {
 	 *         interface
 	 * @see #hasStringRepresentation()
 	 */
-	public String javaToRepresentation(O object) throws UnsupportedOperationException, ClassCastException;
+	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException;
 	
 	/**
 	 * Writes the XML representation of the specified object into the specified XML writer.
@@ -86,7 +89,7 @@ public interface ObjectTranslator<O> {
 	 * @throws IOException if an I/O error occurs while trying to write to the specified writer
 	 * @throws XMLStreamException if an XML stream exception occurs while trying to write to the specified writer
 	 */
-	public void writeXMLRepresentation(XMLStreamWriter writer, O object) throws IOException, XMLStreamException;
+	public void writeXMLRepresentation(XMLStreamWriter writer, Object object) throws IOException, XMLStreamException, ClassCastException;
 	
 	/**
 	 * Converts the specified string representation to a new instance of the according Java object.

@@ -47,7 +47,7 @@ public class DateTranslator extends IllegalArgumentExceptionSimpleValueTranslato
 
 
 	@Override
-	public String javaToRepresentation(Calendar object)	throws UnsupportedOperationException, ClassCastException {
-		return DatatypeConverter.printDate(object);
+	public String javaToRepresentation(Object object)	throws UnsupportedOperationException, ClassCastException {
+		return DatatypeConverter.printDate((Calendar)object);  //TODO Should other classes be accepted and converted?
 	}
 }

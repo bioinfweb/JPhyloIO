@@ -139,13 +139,12 @@ public interface NeXMLConstants {
   public static final String NEXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/NeXML/";	
 	public static final String NEXML_PREDICATE_NAMESPACE = NEXML_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 	
-	public static final QName PREDICATE_FORMAT = new QName(NEXML_PREDICATE_NAMESPACE, "Format");
-	
-	public static final QName PREDICATE_CHAR = new QName(NEXML_PREDICATE_NAMESPACE, "Char");
 	public static final QName PREDICATE_CHAR_ATTR_TOKENS = new QName(NEXML_PREDICATE_NAMESPACE, "Char.Tokens");
 	public static final QName PREDICATE_CHAR_ATTR_CODON_POSITION = new QName(NEXML_PREDICATE_NAMESPACE, "Char.CodonPosition");
 	
+	public static final QName PREDICATE_FORMAT = new QName(NEXML_PREDICATE_NAMESPACE, "Format");
 	public static final QName PREDICATE_MATRIX = new QName(NEXML_PREDICATE_NAMESPACE, "Matrix");
 	
+	@Deprecated
 	public static final QName PREDICATE_TRUE_ROOT = new QName(NEXML_PREDICATE_NAMESPACE, "trueRoot");
 }

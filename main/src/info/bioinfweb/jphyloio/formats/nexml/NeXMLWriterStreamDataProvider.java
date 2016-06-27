@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
@@ -50,7 +51,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private Set<String> nameSpaces = new TreeSet<String>();
 	private Set<String> namespacePrefixes = new HashSet<String>();
 	
-	private LiteralMetadataEvent literalWithoutXMLContent;
+	private LiteralMetadataEvent currentLiteralMetaStartEvent;
+	private LiteralContentSequenceType currentLiteralMetaType;
 	private StringBuffer commentContent = new StringBuffer();
 	private boolean literalContentIsContinued = false;
 	
@@ -126,13 +128,23 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public LiteralMetadataEvent getLiteralWithoutXMLContent() {
-		return literalWithoutXMLContent;
+	public LiteralMetadataEvent getCurrentLiteralMetaStartEvent() {
+		return currentLiteralMetaStartEvent;
 	}
 
 
-	public void setLiteralWithoutXMLContent(LiteralMetadataEvent literalWithoutXMLContent) {
-		this.literalWithoutXMLContent = literalWithoutXMLContent;
+	public void setCurrentLiteralMetaStartEvent(LiteralMetadataEvent literalWithoutXMLContent) {
+		this.currentLiteralMetaStartEvent = literalWithoutXMLContent;
+	}
+
+
+	public LiteralContentSequenceType getCurrentLiteralMetaType() {
+		return currentLiteralMetaType;
+	}
+
+
+	public void setCurrentLiteralMetaType(LiteralContentSequenceType currentLiteralMetaType) {
+		this.currentLiteralMetaType = currentLiteralMetaType;
 	}
 
 
@@ -151,7 +163,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public boolean isLiteralContentIsContinued() {
+	public boolean isLiteralContentContinued() {
 		return literalContentIsContinued;
 	}
 
@@ -286,7 +298,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 					prefix = defaultPrefix;
 				}
 						
-				int index = 0;
+				int index = 1;
 				String nameSpacePrefix = prefix;
 				if (!getNamespacePrefixes().add(nameSpacePrefix)) {
 					do {

@@ -139,7 +139,6 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 			Collection<String> atomicStates) throws IOException, XMLStreamException {
 		List<String> constituents;
 		CharacterSymbolType type;
-		String tokenID;
 
 		for (Character token : remainingTokens) {
 			constituents = null;

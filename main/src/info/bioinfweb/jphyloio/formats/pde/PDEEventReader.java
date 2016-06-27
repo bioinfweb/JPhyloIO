@@ -626,7 +626,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				}
 				else {
 					try {
-						File file = new File(sequenceInfo.get(key).replace("\\\\", "\\")); //PhyDE replaces backslashes by double backslashes in file paths
+						File file = new File(sequenceInfo.get(key).replace("\\\\", "\\")); // PhyDE replaces backslashes by double backslashes in file paths
 						URI resource;
 						
 						if (file.isAbsolute()) { //TODO check operating system beforehand, use leading "/" to identify Linux paths, under Linux the Windows specific drive identifiers ("C:") might be problematic

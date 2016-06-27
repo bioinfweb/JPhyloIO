@@ -60,7 +60,7 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#javaToRepresentation(java.lang.Object)
 	 */
 	@Override
-	public String javaToRepresentation(O object) throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException {
 		return object.toString();
 	}
 	
@@ -73,7 +73,7 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	 * @param object the object to be converted
 	 */
 	@Override
-	public void writeXMLRepresentation(XMLStreamWriter writer, O object) throws IOException, XMLStreamException {
+	public void writeXMLRepresentation(XMLStreamWriter writer, Object object) throws IOException, XMLStreamException {
 		writer.writeCharacters(javaToRepresentation(object));
 	}
 

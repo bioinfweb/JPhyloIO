@@ -45,7 +45,7 @@ public class StringTranslator extends SimpleValueTranslator<String> {
 
 
 	@Override
-	public String javaToRepresentation(String object)	throws UnsupportedOperationException, ClassCastException {
-		return object;
+	public String javaToRepresentation(Object object)	throws UnsupportedOperationException, ClassCastException {
+		return object.toString();
 	}
 }

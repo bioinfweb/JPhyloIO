@@ -54,7 +54,9 @@ public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
 
 
 	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {}
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
+		AbstractNeXMLDataReceiverMixin.checkLiteralContentMeta(getStreamDataProvider(), event);
+	}
 
 
 	@Override

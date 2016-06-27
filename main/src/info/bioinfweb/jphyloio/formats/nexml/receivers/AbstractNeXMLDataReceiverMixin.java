@@ -19,9 +19,9 @@
 package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
@@ -32,12 +32,18 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 
 
@@ -51,38 +57,39 @@ import javax.xml.stream.XMLStreamWriter;
  * @since 0.0.0
  */
 public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
+	
+	
 	public static void handleLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) throws XMLStreamException, JPhyloIOWriterException {		
-		if (!event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE)) { //TODO what about type OTHER?
-			writeLiteralMeta(streamDataProvider, event, null);
-		}
-		else {
-			streamDataProvider.setLiteralWithoutXMLContent(event);
-		}
+		streamDataProvider.setCurrentLiteralMetaStartEvent(event); // Must be buffered because data type and alternative string representation are only given in the following content events
+		streamDataProvider.setCurrentLiteralMetaType(event.getSequenceType());
 	}
 	
 	
-	private static void writeLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event, Object object) throws XMLStreamException, JPhyloIOWriterException {
+	private static void writeLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event, QName datatype, String alternativeStringRepresentation) throws XMLStreamException, JPhyloIOWriterException {
 		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();
 		String metaType = streamDataProvider.getNexPrefix() + ":" + TYPE_LITERAL_META;
 		
-		writer.writeStartElement(TAG_META.getLocalPart());		
+		// Write literal meta start tag with attributes
+		writer.writeStartElement(TAG_META.getLocalPart());
 		streamDataProvider.writeLabeledIDAttributes(event, null);
-		
-		if ((event.getPredicate() != null) && (event.getPredicate().getURI() != null)) { //TODO what about alternative string representation?
-			QName predicate = event.getPredicate().getURI();
-			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), writer.getPrefix(predicate.getNamespaceURI()) + ":" + predicate.getLocalPart());			
-		}
-		else {
-			throw new InternalError("Literal meta needs to have a predicate.");
-		}
-		
-//		if (object != null) { //TODO use object translator
-//			writer.writeAttribute(ATTR_DATATYPE.getLocalPart(), XSD_PRE + ":" + NeXMLWriterStreamDataProvider.getXsdTypeForClass().get(object.getClass()).getLocalPart());
-//		}
 		
 		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getXMLStreamWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
 				ATTR_XSI_TYPE.getLocalPart(), metaType);
 		
+		if (event.getPredicate().getURI() != null) { //TODO How to use alternative string representation if no QName is present?
+			QName predicate = event.getPredicate().getURI();
+			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), writer.getPrefix(predicate.getNamespaceURI()) + ":" + predicate.getLocalPart()); //TODO move to separate method and use for custom XML
+		}
+		
+		if (datatype != null) { // Attribute is optional
+			writer.writeAttribute(ATTR_DATATYPE.getLocalPart(), writer.getPrefix(datatype.getNamespaceURI()) + ":" + datatype.getLocalPart());
+		}
+		
+		if (alternativeStringRepresentation != null) { // Attribute is optional
+			writer.writeAttribute(ATTR_CONTENT.getLocalPart(), alternativeStringRepresentation);
+		}
+		
+		// Write nested comments
 		if (streamDataProvider.getCommentContent().length() != 0) {
 			streamDataProvider.getXMLStreamWriter().writeComment(streamDataProvider.getCommentContent().toString());
 			streamDataProvider.getCommentContent().delete(0, streamDataProvider.getCommentContent().length());
@@ -91,7 +98,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	
 	
 	public static void checkLiteralMeta (NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) 
-			throws XMLStreamException, JPhyloIOWriterException { //TODO also check datatype of content event
+			throws XMLStreamException, JPhyloIOWriterException {
 		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 			streamDataProvider.addToDocumentIDs(event.getID());
 			
@@ -102,22 +109,76 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	}
 	
 
-	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException, JPhyloIOWriterException {		
-		if (streamDataProvider.getLiteralWithoutXMLContent() != null) {
-			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(), event.getObjectValue());
-			streamDataProvider.setLiteralWithoutXMLContent(null);
+	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameters, LiteralMetadataContentEvent event) throws XMLStreamException, JPhyloIOWriterException {		
+		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter(); 
+		QName datatype = null;
+		
+		if (event.getOriginalType() != null) {
+			datatype = event.getOriginalType().getURI(); //TODO determine datatype from object value if original type is null -> Map from java class to W3CXSConstant?
 		}
 		
 		streamDataProvider.setLiteralContentIsContinued(event.isContinuedInNextEvent());
-				
-		if (event.getObjectValue() != null) {
-			streamDataProvider.getXMLStreamWriter().writeCharacters(event.getObjectValue().toString());
+		 
+		if (streamDataProvider.getCurrentLiteralMetaStartEvent() != null) {
+			writeLiteralMeta(streamDataProvider, streamDataProvider.getCurrentLiteralMetaStartEvent(), datatype, event.getAlternativeStringValue());
+			streamDataProvider.setCurrentLiteralMetaStartEvent(null);
 		}
-		else if (event.getStringValue() != null) {
-			streamDataProvider.getXMLStreamWriter().writeCharacters(event.getStringValue()); //TODO should the alternative String value be written somewhere to?
+		
+		switch (streamDataProvider.getCurrentLiteralMetaType()) {
+			case SIMPLE:
+				ObjectTranslator<?> translator = parameters.getObjectTranslatorFactory().getDefaultTranslator(datatype);
+				if ((event.getObjectValue() != null) && (translator != null) && translator.hasStringRepresentation() 
+						&& translator.getObjectClass().isInstance(event.getObjectValue().getClass())) {
+					
+					streamDataProvider.getXMLStreamWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue()));  //TODO Wrap possible ClassCastException
+				}
+				else if (event.getStringValue() != null) {
+					writer.writeCharacters(event.getStringValue());
+				}
+				break;
+			case SIMPLE_ARRAY:
+				//TODO how should this type be written?
+				break;
+			case XML:
+				if (event.hasXMLEventValue()) {
+					XMLEvent xmlContentEvent = event.getXMLEvent();
+					
+					switch (xmlContentEvent.getEventType()) {
+						case XMLStreamConstants.START_ELEMENT:
+							StartElement element = xmlContentEvent.asStartElement();
+							writer.writeStartElement(element.getName().getPrefix(), element.getName().getLocalPart(), element.getName().getNamespaceURI());
+							@SuppressWarnings("unchecked")
+							Iterator<Attribute> attributes = element.getAttributes();
+							while (attributes.hasNext()) {
+								Attribute attribute = attributes.next();
+								writer.writeAttribute(attribute.getName().getPrefix(), attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
+							}
+							break;
+						case XMLStreamConstants.END_ELEMENT:
+							writer.writeEndElement();
+							break;
+						case XMLStreamConstants.CHARACTERS:
+							writer.writeCharacters(xmlContentEvent.asCharacters().getData());
+							break;
+						default: //TODO handle start and end document?
+							break;
+					}
+				}
+				break;
 		}
-		else {
-			streamDataProvider.getXMLStreamWriter().writeCharacters("");
+	}
+	
+	
+	public static void checkLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException {
+		if (event.hasXMLEventValue()) {
+			if (event.getXMLEvent().getEventType() == XMLStreamConstants.START_ELEMENT) {
+				StartElement element = event.getXMLEvent().asStartElement();
+				streamDataProvider.setNamespacePrefix(element.getName().getPrefix(), element.getName().getNamespaceURI());
+			}
+		}
+		
+		if ((event.getOriginalType() != null) && (event.getOriginalType().getURI() != null)) {
+			streamDataProvider.setNamespacePrefix(event.getOriginalType().getURI().getPrefix(), event.getOriginalType().getURI().getNamespaceURI());
 		}
 	}
 	
@@ -126,23 +187,20 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();		
 		String metaType = streamDataProvider.getNexPrefix() + ":" + TYPE_RESOURCE_META;
 		
-		writer.writeStartElement(TAG_META.getLocalPart());
-		
+		writer.writeStartElement(TAG_META.getLocalPart());		
 		streamDataProvider.writeLabeledIDAttributes(event, event.getAbout());
-		
-		if (event.getRel() != null) {
-			writer.writeAttribute(ATTR_REL.getLocalPart(), event.getRel().getURI().getLocalPart());		
-		}
-		else {
-			throw new InternalError("Resource meta should have a predicate that is a QName.");
-		}
-		
-		if (event.getHRef() != null) {
-			writer.writeAttribute(ATTR_HREF.getLocalPart(), event.getHRef().toString());
-		}
 		
 		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getXMLStreamWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
 				ATTR_XSI_TYPE.getLocalPart(), metaType);
+		
+		if (event.getRel().getURI() != null) { //TODO How to use alternative string representation if no QName is present?
+			QName predicate = event.getRel().getURI();			
+			writer.writeAttribute(ATTR_REL.getLocalPart(), writer.getPrefix(predicate.getNamespaceURI()) + ":" + predicate.getLocalPart());		
+		}
+		
+		if (event.getHRef() != null) { // Attribute is optional
+			writer.writeAttribute(ATTR_HREF.getLocalPart(), event.getHRef().toString());
+		}		
 	}
 	
 	
@@ -154,19 +212,24 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				streamDataProvider.setNamespacePrefix(event.getRel().getURI().getPrefix(), event.getRel().getURI().getNamespaceURI());
 			}
 		}
-	}	
+	}
 	
 	
 	public static void handleMetaEndEvent(NeXMLWriterStreamDataProvider streamDataProvider, JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if (event.getType().getContentType().equals(EventContentType.META_LITERAL) && (streamDataProvider.getLiteralWithoutXMLContent() != null)) {
-			writeLiteralMeta(streamDataProvider, streamDataProvider.getLiteralWithoutXMLContent(), null);
-			streamDataProvider.setLiteralWithoutXMLContent(null);
+		// Write literal meta start if no content event was present
+		if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+			streamDataProvider.setCurrentLiteralMetaType(null);
 			
-			if (streamDataProvider.isLiteralContentIsContinued()) { //TODO do the same for comments?
-				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
-						+ "event was marked to be continued in a subsequent event.");
+			if (streamDataProvider.getCurrentLiteralMetaStartEvent() != null) {
+				writeLiteralMeta(streamDataProvider, streamDataProvider.getCurrentLiteralMetaStartEvent(), null, null);
+				streamDataProvider.setCurrentLiteralMetaStartEvent(null);
+				
+				if (streamDataProvider.isLiteralContentContinued()) { //TODO do the same for comments?
+					throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
+							+ "event was marked to be continued in a subsequent event.");
+				}
 			}
-		}
+		}		
 		
 		streamDataProvider.getXMLStreamWriter().writeEndElement();
 	}
@@ -180,7 +243,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		}
 		
 		if (!event.isContinuedInNextEvent()) {
-			if (streamDataProvider.getLiteralWithoutXMLContent() == null) {
+			if (streamDataProvider.getCurrentLiteralMetaStartEvent() == null) {
 				streamDataProvider.getXMLStreamWriter().writeComment(streamDataProvider.getCommentContent().toString());
 				streamDataProvider.getCommentContent().delete(0, streamDataProvider.getCommentContent().length());
 			}
