@@ -495,6 +495,7 @@ test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLFactoryTest.java -text
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/objecttranslation/ObjectTranslatorFactoryTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/objecttranslation/implementations/ListTranslatorTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/JPhyloIOTestTools.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/SystemOutEventReceiver.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/SharedOTUTestMatrixAdapter.java -text svneol=unset#text/plain
