@@ -133,6 +133,7 @@ main/src/info/bioinfweb/jphyloio/formats/newick/NewickStringReader.java -text sv
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickStringWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickToken.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickTokenType.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/newick/NewickTools.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/NewickWriterNodeLabelProcessor.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/newick/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/NeXMLConstants.java -text svneol=unset#text/plain
@@ -289,6 +290,7 @@ main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/FloatTranslat
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/HexBinaryTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/IllegalArgumentExceptionSimpleValueTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/IntegerTranslator.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/ListTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/LongTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/NumericValueTranslator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/QNameTranslator.java -text svneol=unset#text/plain

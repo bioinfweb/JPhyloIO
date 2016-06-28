@@ -119,16 +119,16 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 	}
 	
 	
-	private void addLiteralMetaStart(String key, QName predicate, LiteralContentSequenceType sequenceType, 
-			TextReaderStreamDataProvider<?> streamDataProvider, Collection<JPhyloIOEvent> eventQueue) {
+	private void addLiteralMetaStart(String key, QName predicate, LiteralContentSequenceType sequenceType, TextReaderStreamDataProvider<?> streamDataProvider,  
+			Collection<JPhyloIOEvent> eventQueue) {
 		
-		eventQueue.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
-				streamDataProvider.getIDManager().createNewID(), key, new URIOrStringIdentifier(key, predicate), sequenceType));
+		eventQueue.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+				key, new URIOrStringIdentifier(key, predicate), sequenceType));
 	}
 	
 	
 	private void addLiteralMetaContent(Value value, Collection<JPhyloIOEvent> eventQueue) {
-		eventQueue.add(new LiteralMetadataContentEvent(null, value.stringValue, value.objectValue));
+		eventQueue.add(new LiteralMetadataContentEvent(value.objectValue, value.stringValue));
 	}
 	
 	
@@ -150,7 +150,7 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 		int start = 1;
 		int end = findAllocationEnd(comment, start);  //TODO Is this still necessary? (Comes from TG implementation.)
 		while (end != -1) {
-			String[] parts = comment.substring(start, end).split("" + ALLOCATION_SYMBOL);
+			String[] parts = comment.substring(start, end).split("" + ALLOCATION_SYMBOL);  //TODO Does not work, if '=' is contained in a string.
 			if (parts.length == 2) {
 				for (int j = 0; j < parts.length; j++) {
 					parts[j] = parts[j].trim();
@@ -158,8 +158,7 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 				
 				if (parts[1].startsWith("" + FIELD_START_SYMBOL)) {
 					if (parts[1].endsWith("" + FIELD_END_SYMBOL)) {
-						String[] values = parts[1].substring(1, parts[1].length() - 1).split(
-								"" + FIELD_VALUE_SEPARATOR_SYMBOL);
+						String[] values = parts[1].substring(1, parts[1].length() - 1).split("" + FIELD_VALUE_SEPARATOR_SYMBOL);  //TODO Does not work, if ',' is contained in a string.
 						addLiteralMetaStart(parts[0], PREDICATE_HAS_LITERAL_METADATA, LiteralContentSequenceType.SIMPLE_ARRAY, streamDataProvider, 
 								eventQueue);
 						for (int j = 0; j < values.length; j++) {

@@ -243,6 +243,8 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 
 	
 	protected String readToken(char commandEnd, char commentStart, char commentEnd, char keyValueSeparator) throws IOException {
+		//TODO Should delimited names be supported? Combine this method with NexusEventReader.readNexusWord()?
+		
 		PeekReader reader = getReader();
 		StringBuilder result = new StringBuilder();
 		char c = reader.peekChar();
