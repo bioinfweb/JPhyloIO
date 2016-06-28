@@ -61,6 +61,11 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 			QName datatype = streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);		  			
 			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
 			
+			URIOrStringIdentifier originalType = null;
+			if (datatype != null) {
+				originalType = new URIOrStringIdentifier(null, datatype);
+			}
+			
 			streamDataProvider.setCurrentMetaContentDatatype(datatype);
 			streamDataProvider.setAlternativeStringRepresentation(content);
 			
@@ -80,17 +85,17 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 				if (translator != null) {
   				try {
 						objectValue = translator.representationToJava(content, streamDataProvider);
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), content, objectValue, content));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, content, objectValue, content));
 					}
 					catch (InvalidObjectSourceDataException e) {
 						throw new JPhyloIOReaderException("The content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
 					}
 				}
 				else {
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), content, null, content));
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, content, null, content));
 				}
 			}
-			else if (!datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
+			else if ((datatype != null) && !datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
 				Object objectValue = null;
 				String nestedContent = XMLUtils.readCharactersAsString(streamDataProvider.getXMLReader());
 				
@@ -98,11 +103,11 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 					try {
 						if (!"".equals(nestedContent.trim())) {
 							objectValue = translator.representationToJava(nestedContent, streamDataProvider);
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), nestedContent, objectValue, content));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, nestedContent, objectValue, content));
 						}
 						else if ((content != null) && !content.isEmpty()) {
 							objectValue = translator.representationToJava(content, streamDataProvider);
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), content, objectValue, content));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, content, objectValue, content));
 						}
 					}
 					catch (InvalidObjectSourceDataException e) {
