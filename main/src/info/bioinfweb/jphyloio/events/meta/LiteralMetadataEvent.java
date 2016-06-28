@@ -33,10 +33,20 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  */
 public class LiteralMetadataEvent extends LabeledIDEvent {
 	private URIOrStringIdentifier predicate;
+	private String alternativeStringValue = null;
+	private URIOrStringIdentifier originalType;
 	private LiteralContentSequenceType sequenceType;
 	
 	
+	@Deprecated
 	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, LiteralContentSequenceType sequenceType) {
+		this(id, label, predicate, null, null, sequenceType);
+	}
+	
+	
+	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, String alternativeStringValue, URIOrStringIdentifier originalType, 
+				LiteralContentSequenceType sequenceType) {
+		
 		super(EventContentType.META_LITERAL, id, label);
 		if (predicate == null) {
 			throw new NullPointerException("The predicate must not be null.");
@@ -46,6 +56,8 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 		}
 		else {
 			this.predicate = predicate;
+			this.alternativeStringValue = alternativeStringValue;
+			this.originalType = originalType;			
 			this.sequenceType = sequenceType;
 		}
 	}
@@ -53,6 +65,35 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 
 	public URIOrStringIdentifier getPredicate() {
 		return predicate;
+	}
+	
+	
+	/**
+	 * Determines whether an alternative string representation is available for the value modeled by the following 
+	 * sequence of {@link LiteralMetadataContentEvent}s.
+	 * 
+	 * @return {@code true} if an alternative representation is available or {@code false} otherwise
+	 */
+	public boolean hasAlternativeStringValue() {
+		return getAlternativeStringValue() != null;
+	}
+	
+	
+	/**
+	 * Returns the alternative string representation of the literal value modeled by the following 
+	 * sequence of {@link LiteralMetadataContentEvent}s.
+	 * <p>
+	 * Some formats may provide alternative representations of a content, e.g. a human and a machine readable one.
+	 * 
+	 * @return the alternative representation or {@code null} if there is none
+	 */
+	public String getAlternativeStringValue() {
+		return alternativeStringValue;
+	}
+	
+	
+	public URIOrStringIdentifier getOriginalType() {
+		return originalType;
 	}
 
 

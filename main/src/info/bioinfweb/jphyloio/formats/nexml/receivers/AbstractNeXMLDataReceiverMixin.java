@@ -136,9 +136,6 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 					writer.writeCharacters(event.getStringValue());
 				}
 				break;
-			case SIMPLE_ARRAY:
-				//TODO how should this type be written?
-				break;
 			case XML:
 				if (event.hasXMLEventValue()) {
 					XMLEvent xmlContentEvent = event.getXMLEvent();
@@ -164,6 +161,8 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 							break;
 					}
 				}
+				break;
+			default:
 				break;
 		}
 	}

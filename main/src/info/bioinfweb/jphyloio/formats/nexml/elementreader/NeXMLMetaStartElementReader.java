@@ -97,7 +97,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 			}
 			else if ((datatype != null) && !datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
 				Object objectValue = null;
-				String nestedContent = XMLUtils.readCharactersAsString(streamDataProvider.getXMLReader());
+				String nestedContent = XMLUtils.readCharactersAsString(streamDataProvider.getXMLReader()); //TODO check if translator can read from string or if the reader itself needs to be provided
 				
 				if (nestedContent != null) {
 					try {

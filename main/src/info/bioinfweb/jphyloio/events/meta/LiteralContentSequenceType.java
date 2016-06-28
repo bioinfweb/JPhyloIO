@@ -40,7 +40,8 @@ public enum LiteralContentSequenceType {
 	 * Indicates that a sequence of {@link LiteralMetadataContentEvent}s will be nested. Each of them represents
 	 * one value in an array of values. (The whole array is the literal value.) 
 	 */
-	SIMPLE_ARRAY,
+	@Deprecated
+	SIMPLE_ARRAY, //TODO remove after according changes to Newick reader and writer classes
 
 	/** 
 	 * Indicates that a sequence of {@link LiteralMetadataContentEvent}s will be nested. Each of them represents

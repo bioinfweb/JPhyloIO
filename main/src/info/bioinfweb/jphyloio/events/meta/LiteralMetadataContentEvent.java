@@ -54,52 +54,37 @@ import javax.xml.stream.events.XMLEvent;
 public class LiteralMetadataContentEvent extends ContinuedEvent {
 	private String stringValue;
 	private Object objectValue;
+	@Deprecated
 	private String alternativeStringValue = null;
+	@Deprecated
 	private URIOrStringIdentifier originalType;
 
 	
-	/**
-	 * Creates a new instance of this class.
-	 * 
-	 * @param originalType the original type of meta information or null. 
-	 * @param stringValue the string value of the meta information.
-	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
-	 *        its value and more events are ahead or {@code false otherwise}.
-	 */
+	@Deprecated
 	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, boolean continuedInNextEvent) {
 		this(originalType, stringValue, null, null, continuedInNextEvent);
 	}
 	
-	
-	/**
-	 * Creates a new instance of this class.
-	 * 
-	 * @param originalType the original type of meta information or null. 
-	 * @param stringValue the string value of the meta information.
-	 * @param objectValue the object value of the meta information.
-	 */
+
+	@Deprecated
 	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, Object objectValue) {
 		this(originalType, stringValue, objectValue, null, false);
 	}
 	
 	
+	@Deprecated
 	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, Object objectValue, String alternativeStringValue) {
 		this(originalType, stringValue, objectValue, alternativeStringValue, false);
 	}
 	
 	
-	/**
-	 * Creates a new instance of this class.
-	 * 
-	 * @param originalType the original type of meta information or null. 
-	 * @param stringValue the string value of the meta information.
-	 * @param objectValue the object value of the meta information.
-	 * @param alternativeStringValue an alternative string representation of the value (Some formats may provide alternative
-	 *        representations of a value, e.g. a human and a machine readable one.)
-	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
-	 *        its value and more events are ahead or {@code false otherwise}.
-	 * @throws NullPointerException if {@code stringValue} is {@code null} and {@code alternativeStringValue} is not
-	 */
+	@Deprecated
+	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, String alternativeStringValue) {
+		this(originalType, stringValue, null, alternativeStringValue, false);
+	}
+
+	
+	@Deprecated
 	private LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, Object objectValue, String alternativeStringValue, 
 			boolean continuedInNextEvent) {
 		
@@ -126,22 +111,8 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 		}
 	}
 	
-
-	/**
-	 * Creates a new instance of this class wrapping an {@link XMLEvent}.
-	 * 
-	 * @param xmlEvent the XML event object to be wrapped
-	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
-	 *        its value and more events are ahead or {@code false otherwise}. (Note that {@code true} this is only allowed
-	 *        for character XML events which contain only a part of the represented string.)
-	 * @throws IllegalArgumentException if {@code continuedInNextEvent} in set to {@code true}, but the specified XML event
-	 *         was not a characters event 
-	 */
-	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent) {
-		this(xmlEvent, continuedInNextEvent, null);
-	}
 	
-	
+	@Deprecated
 	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent, String alternativeStringValue) {
 		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
 		
@@ -156,6 +127,85 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 			this.alternativeStringValue = alternativeStringValue;
 			this.objectValue = xmlEvent;
 			this.originalType = null;  //TODO Should something else be stored here (e.g. the XML event type)?
+		}
+	}
+	
+	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param stringValue the string value of the meta information.
+	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
+	 *        its value and more events are ahead or {@code false otherwise}.
+	 */
+	public LiteralMetadataContentEvent(String stringValue, boolean continuedInNextEvent) {
+		this(stringValue, null, continuedInNextEvent);
+	}
+	
+	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param stringValue the string value of the meta information.
+	 * @param objectValue the object value of the meta information.
+	 */
+	public LiteralMetadataContentEvent(String stringValue, Object objectValue) {
+		this(stringValue, objectValue, false);
+	}
+	
+	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param originalType the original type of meta information or null. 
+	 * @param stringValue the string value of the meta information.
+	 * @param objectValue the object value of the meta information.
+	 * @param alternativeStringValue an alternative string representation of the value (Some formats may provide alternative
+	 *        representations of a value, e.g. a human and a machine readable one.)
+	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
+	 *        its value and more events are ahead or {@code false otherwise}.
+	 * @throws NullPointerException if {@code stringValue} is {@code null} and {@code alternativeStringValue} is not
+	 */
+	private LiteralMetadataContentEvent(String stringValue, Object objectValue, boolean continuedInNextEvent) {		
+		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
+		
+		if ((stringValue == null) && (objectValue == null)) {
+			throw new NullPointerException("Either stringValue or objectValue must be specified. If a literal meta event has no content, the content event should be omitted.");
+		}
+		else {
+			this.stringValue = stringValue;
+			if ((objectValue != null) && isContinuedInNextEvent()) {
+				throw new IllegalArgumentException("If a value is separated among several events no object value may be specified.");
+			}
+			else {
+				this.objectValue = objectValue;
+			}
+		}
+	}
+	
+
+	/**
+	 * Creates a new instance of this class wrapping an {@link XMLEvent}.
+	 * 
+	 * @param xmlEvent the XML event object to be wrapped
+	 * @param continuedInNextEvent Specify {@code true} here if this event does not contain the final part of 
+	 *        its value and more events are ahead or {@code false otherwise}. (Note that {@code true} this is only allowed
+	 *        for character XML events which contain only a part of the represented string.)
+	 * @throws IllegalArgumentException if {@code continuedInNextEvent} in set to {@code true}, but the specified XML event
+	 *         was not a characters event 
+	 */
+	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent) {
+		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
+		
+		if (!xmlEvent.isCharacters() && continuedInNextEvent) {
+			throw new IllegalArgumentException("Only character XML events may be continued in the next event. "
+					+ "The specified event had the type " + xmlEvent.getEventType() + ".");
+		}
+		else {
+			if (xmlEvent.isCharacters()) {
+				this.stringValue = xmlEvent.asCharacters().getData();  //TODO Also store tags as string representations?
+			}			
+			this.objectValue = xmlEvent;
 		}
 	}
 	
@@ -181,6 +231,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	}
 
 
+	@Deprecated
 	public URIOrStringIdentifier getOriginalType() {
 		return originalType;
 	}
@@ -201,6 +252,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * 
 	 * @return {@code true} if an alternative representation is available or {@code false} otherwise
 	 */
+	@Deprecated
 	public boolean hasAlternativeStringValue() {
 		return getAlternativeStringValue() != null;
 	}
@@ -213,6 +265,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * 
 	 * @return the alternative representation or {@code null} if there is none
 	 */
+	@Deprecated
 	public String getAlternativeStringValue() {
 		return alternativeStringValue;
 	}
