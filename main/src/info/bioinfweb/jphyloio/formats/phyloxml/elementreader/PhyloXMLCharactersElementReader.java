@@ -22,10 +22,9 @@ package info.bioinfweb.jphyloio.formats.phyloxml.elementreader;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
@@ -37,8 +36,8 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXMLReaderStreamDataProvider> {
-	private QName datatype; //TODO use URIOrStringIdentifier?	
+public class PhyloXMLCharactersElementReader extends AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider> {
+	private QName datatype;
 	
 	
 	public PhyloXMLCharactersElementReader(QName datatype) {
@@ -48,7 +47,7 @@ public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXM
 
 
 	@Override
-	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {		
+	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 		ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
 		
 		if (!datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null) && translator.hasStringRepresentation()) {			
@@ -58,7 +57,7 @@ public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXM
 			if (propertyValue != null) {
 				try {
 					objectValue = translator.representationToJava(propertyValue, streamDataProvider);
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, datatype), propertyValue, objectValue, null));
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(propertyValue, objectValue));
 				}
 				catch (InvalidObjectSourceDataException e) {
 					throw new JPhyloIOReaderException("The content of this tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
@@ -67,8 +66,7 @@ public class PhyloXMLCharactersElementReader implements XMLElementReader<PhyloXM
 		}
 		else {
 			boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
-			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-					new URIOrStringIdentifier(null, datatype), event.asCharacters().getData(), isContinued));
+			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asCharacters().getData(), isContinued));
 		}		
 	}
 }

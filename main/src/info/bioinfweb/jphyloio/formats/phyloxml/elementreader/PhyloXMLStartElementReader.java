@@ -19,11 +19,6 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.elementreader;
 
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
@@ -33,7 +28,12 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -42,18 +42,20 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLReaderStreamDataProvider> {
+public class PhyloXMLStartElementReader extends AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider> {
 	private QName literalPredicate;
 	private QName resourcePredicate;
+	private URIOrStringIdentifier datatype;
 	private boolean isEdgeMeta;
 	private Map<QName, QName> attributeToPredicateMap;
 	
 
 	
-	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, boolean isEdgeMeta, QName... mappings) {
+	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, URIOrStringIdentifier datatype, boolean isEdgeMeta, QName... mappings) {
 		super();
 		this.literalPredicate = literalPredicate;
 		this.resourcePredicate = resourcePredicate;
+		this.datatype = datatype;
 		this.isEdgeMeta = isEdgeMeta;
 		
 		if (mappings.length % 2 != 0) {
@@ -65,15 +67,6 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 				attributeToPredicateMap.put(mappings[i], mappings[i + 1]);
 			}
 		}
-	}
-	
-	
-	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, boolean isEdgeMeta, Map<QName, QName> attributeToPredicateMap) {
-		super();
-		this.literalPredicate = literalPredicate;
-		this.resourcePredicate = resourcePredicate;
-		this.isEdgeMeta = isEdgeMeta;
-		this.attributeToPredicateMap = attributeToPredicateMap;		
 	}
 
 
@@ -94,12 +87,12 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 				Iterator<Attribute> attributes = event.asStartElement().getAttributes();
 				while (attributes.hasNext()) {
 					Attribute attribute = attributes.next();
+					String attributeValue = event.asStartElement().getAttributeByName(attribute.getName()).getValue();
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
+							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), datatype, LiteralContentSequenceType.SIMPLE));
 
-					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataContentEvent(null, event.asStartElement().getAttributeByName(attribute.getName()).getValue(), null));
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
 							
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				}
@@ -109,7 +102,7 @@ public class PhyloXMLStartElementReader implements XMLElementReader<PhyloXMLRead
 		if (literalPredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
 					new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-					new URIOrStringIdentifier(null, literalPredicate), LiteralContentSequenceType.SIMPLE));
+					new URIOrStringIdentifier(null, literalPredicate), datatype, LiteralContentSequenceType.SIMPLE));
 		}
 	}
 }

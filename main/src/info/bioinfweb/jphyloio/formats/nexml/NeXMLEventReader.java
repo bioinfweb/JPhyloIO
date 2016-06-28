@@ -49,9 +49,9 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractIDLinkSetElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractNeXMLElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractSetElementReader;
-import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLSetEndElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaEndElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaStartElementReader;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLSetEndElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
@@ -213,9 +213,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 						
 						if (streamDataProvider.getRootNodeIDs().contains(targetID)) {
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
-									null, new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, Boolean.toString(true), 
-									true, null)); // since it is possible to have true roots in the default scenario no extra meta events for edges that are not true roots should be generated
+									null, new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), null, LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Boolean.toString(true), true)); // Since it is possible to have true roots in the default scenario no extra meta events for edges that are not true roots should be generated
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 							
 							streamDataProvider.getRootNodeIDs().remove(targetID);
@@ -375,22 +374,25 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					String content = event.asCharacters().getData();
 					boolean isContinued = streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS);
 					
-					if (streamDataProvider.getCurrentLiteralContentSequenceType().equals(LiteralContentSequenceType.SIMPLE)) {
-						URIOrStringIdentifier datatype = new URIOrStringIdentifier(null, streamDataProvider.getCurrentMetaContentDatatype());						
-						
+					if (streamDataProvider.getCurrentLiteralContentSequenceType().equals(LiteralContentSequenceType.SIMPLE)) {						
 						if (!content.matches("\\s+")) {
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(datatype, content, isContinued));  //TODO Currently the alternative string representation gets lost and should be provided here. This will be solved, when the alternative string representation is moved back to the literal start event.
+							if (isContinued) {
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, isContinued));
+							}
+							else {
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, content));
+							}
 						}
 						else if (streamDataProvider.getAlternativeStringRepresentation() != null) {
 							content = streamDataProvider.getAlternativeStringRepresentation();
-							if (isContinued == false) {
-								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(datatype, content, content));
-							}						
+							if (!isContinued) {
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, content));
+							}
 						}
 					}
 					else {  // XML and simple values with unknown original type that have a content attribute and only whitespace as nested content (Reason: For unknown types, it cannot be determined whether they are simple or XML.)
 						streamDataProvider.getCurrentEventCollection().add(
-								new LiteralMetadataContentEvent(event.asCharacters(), isContinued, streamDataProvider.getAlternativeStringRepresentation()));
+								new LiteralMetadataContentEvent(event.asCharacters(), isContinued));
 					}
 				}
 			}
@@ -401,7 +403,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events					
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataContentEvent(event.asStartElement(), false, streamDataProvider.getAlternativeStringRepresentation()));
+							new LiteralMetadataContentEvent(event.asStartElement(), false));
 				}
 			}
 		});
@@ -411,7 +413,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {				
 				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asCharacters(), 
-							streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS), streamDataProvider.getAlternativeStringRepresentation()));
+							streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS)));
 				}
 			}
 		});
@@ -421,7 +423,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events					
 					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataContentEvent(event.asEndElement(), false, streamDataProvider.getAlternativeStringRepresentation()));
+							new LiteralMetadataContentEvent(event.asEndElement(), false));
 				}
 			}
 		});
@@ -898,7 +900,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
 								null, new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), LiteralContentSequenceType.SIMPLE));  // ID conflict theoretically possible
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, Boolean.toString(true), true, null));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Boolean.toString(true), true));
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));				
 						
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.EDGE));
@@ -907,8 +909,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
 						null, new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, Boolean.toString(streamDataProvider.isTrulyRooted()), 
-						streamDataProvider.isTrulyRooted(), null));
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Boolean.toString(streamDataProvider.isTrulyRooted()), 
+						streamDataProvider.isTrulyRooted()));
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));

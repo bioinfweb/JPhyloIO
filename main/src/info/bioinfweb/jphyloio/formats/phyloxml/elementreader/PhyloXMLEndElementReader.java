@@ -19,19 +19,19 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.elementreader;
 
 
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
+
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
 
 
-
-public class PhyloXMLEndElementReader implements XMLElementReader<PhyloXMLReaderStreamDataProvider> {
+public class PhyloXMLEndElementReader extends AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider> {
 	private boolean createLiteralEnd;
 	private boolean createResourceEnd;
 	private boolean isEdgeMeta;

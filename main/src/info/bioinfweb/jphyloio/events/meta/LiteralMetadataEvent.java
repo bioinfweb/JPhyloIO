@@ -38,9 +38,13 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 	private LiteralContentSequenceType sequenceType;
 	
 	
-	@Deprecated
 	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, LiteralContentSequenceType sequenceType) {
 		this(id, label, predicate, null, null, sequenceType);
+	}
+	
+	
+	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, URIOrStringIdentifier originalType, LiteralContentSequenceType sequenceType) {
+		this(id, label, predicate, null, originalType, sequenceType);
 	}
 	
 	

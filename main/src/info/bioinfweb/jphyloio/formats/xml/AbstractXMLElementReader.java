@@ -63,12 +63,14 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 			Iterator<Attribute> attributes = element.getAttributes();
 			while (attributes.hasNext()) {
 				Attribute attribute = attributes.next();
-				if (attributeToPredicateMap.containsKey(attribute.getName())) { //allows to ignore certain attributes
+				if (attributeToPredicateMap.containsKey(attribute.getName())) {  // Allows to ignore certain attributes
+					String attributeValue = element.getAttributeByName(attribute.getName()).getValue();
+					
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(metaIDPrefix + streamDataProvider.getIDManager().createNewID(), null, 
 							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
 	
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, element.getAttributeByName(attribute.getName()).getValue(), null));
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
 							
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				}

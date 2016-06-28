@@ -120,10 +120,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 					+ "tree was written.");
 		}
 
-		//TODO Write metadata here using an receiver?
-//		if (tree.getMetadataAdapter() != null) {
-////			tree.getMetadataAdapter(); //TODO use new metadata structure
-//		}
+		tree.writeMetadata(getParameters(), receiver);
 		
 		getXMLWriter().writeEndElement();
 	}

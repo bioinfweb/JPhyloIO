@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.pde;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -151,7 +152,8 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						streamDataProvider.getCurrentEventCollection().add(
 								new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-								new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE));						
+								new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+								LiteralContentSequenceType.SIMPLE));
 					}
 			});
 		
@@ -160,7 +162,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						boolean isContinued = streamDataProvider.getXMLReader().peek().isCharacters();
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, event.asCharacters().getData(), isContinued));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asCharacters().getData(), isContinued));
 					}
 			});
 		
@@ -329,9 +331,10 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							
 							streamDataProvider.getCurrentEventCollection().add(
 									new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-									new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), LiteralContentSequenceType.SIMPLE));		
+									new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
+									LiteralContentSequenceType.SIMPLE));
 							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataContentEvent(null, Boolean.toString(visibility), visibility, null));
+									new LiteralMetadataContentEvent(Boolean.toString(visibility), visibility));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 						
@@ -341,8 +344,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							streamDataProvider.getCurrentEventCollection().add(
 									new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), LiteralContentSequenceType.SIMPLE));		
-							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataContentEvent(null, hexColor, charSetColor));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(hexColor, charSetColor));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 					}
@@ -620,8 +622,8 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 			if (predicate != null) {
 				if (!predicate.getURI().equals(PREDICATE_HAS_RESOURCE_METADATA) && !predicate.getURI().equals(PREDICATE_LINKED_FILE)) {
 					getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), columnLabel, 
-							predicate, LiteralContentSequenceType.SIMPLE));
-					getCurrentEventCollection().add(new LiteralMetadataContentEvent(datatype, sequenceInfo.get(key), false));
+							predicate, datatype, LiteralContentSequenceType.SIMPLE));
+					getCurrentEventCollection().add(new LiteralMetadataContentEvent(sequenceInfo.get(key), sequenceInfo.get(key)));
 					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				}
 				else {

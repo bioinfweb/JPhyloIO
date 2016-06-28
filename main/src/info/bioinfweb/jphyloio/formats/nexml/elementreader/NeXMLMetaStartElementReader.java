@@ -76,23 +76,23 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 				contentType = LiteralContentSequenceType.SIMPLE;
 			}
 			
-			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, contentType));
+			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(info.id, info.label, predicate, content, originalType, contentType));
 			streamDataProvider.setCurrentLiteralContentSequenceType(contentType);
 			
 			XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
-			if (((nextEvent.getEventType() == XMLStreamConstants.END_ELEMENT)) && (content != null)) { //if no character data or custom XML is nested under this literal meta event the value of the content-attribute is used to create a LiteralMetadataContentEvent
+			if (((nextEvent.getEventType() == XMLStreamConstants.END_ELEMENT)) && (content != null)) {  // If no character data or custom XML is nested under this literal meta event the value of the content-attribute is used to create a LiteralMetadataContentEvent
 				Object objectValue;
 				if (translator != null) {
   				try {
 						objectValue = translator.representationToJava(content, streamDataProvider);
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, content, objectValue, content));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, objectValue));
 					}
 					catch (InvalidObjectSourceDataException e) {
 						throw new JPhyloIOReaderException("The content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
 					}
 				}
 				else {
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, content, null, content));
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, content));
 				}
 			}
 			else if ((datatype != null) && !datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
@@ -103,11 +103,11 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 					try {
 						if (!"".equals(nestedContent.trim())) {
 							objectValue = translator.representationToJava(nestedContent, streamDataProvider);
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, nestedContent, objectValue, content));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(nestedContent, objectValue));
 						}
 						else if ((content != null) && !content.isEmpty()) {
 							objectValue = translator.representationToJava(content, streamDataProvider);
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(originalType, content, objectValue, content));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, objectValue));
 						}
 					}
 					catch (InvalidObjectSourceDataException e) {

@@ -53,7 +53,9 @@ public class PhyloXMLMetaDataReceiver extends BasicEventReceiver<XMLStreamWriter
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		if (!((getParentEvent() instanceof LiteralMetadataEvent) || (getParentEvent() instanceof ResourceMetadataEvent))) {
-			metaContentType = event.getSequenceType();			
+			metaContentType = event.getSequenceType();
+			//TODO buffer original type and alternative string representation
+			
 			//TODO meta literal nur nutzen, um zu bestimmen als was die folgenden Inhalte geschrieben werden?
 			//TODO translate predicate to existing PhyloXML tags
 		}
@@ -66,14 +68,11 @@ public class PhyloXMLMetaDataReceiver extends BasicEventReceiver<XMLStreamWriter
 			switch (metaContentType) {
 				case SIMPLE:
 					if ((event.getObjectValue() != null) && event.getObjectValue() instanceof Double) {
-						writeConfidenceTag(event.getOriginalType().getStringRepresentation(), ((Double)event.getObjectValue()));
+						writeConfidenceTag(null, ((Double)event.getObjectValue())); //TODO use original type
 					}
 					else {
 						if (event.getStringValue() != null) {
-							String dataType = "string";
-							if (event.getOriginalType() != null) {
-								dataType = event.getOriginalType().getStringRepresentation();
-							}							
+							String dataType = "string"; //TODO use original type
 							writePropertyTag(dataType, propertyOwner, event.getStringValue());
 						}
 					}					
@@ -82,7 +81,7 @@ public class PhyloXMLMetaDataReceiver extends BasicEventReceiver<XMLStreamWriter
 					if (event.hasXMLEventValue()) {
 						writeOtherTag(event.getXMLEvent());
 					}
-				default: //TODO how should arrays be written here?
+				default:
 					break;
 			}
 		}

@@ -19,15 +19,13 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 
 
@@ -43,7 +41,6 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	private Map<String, String> cladeIDToNodeEventIDMap = new HashMap<String, String>();
 	
 	private List<JPhyloIOEvent> propertyEvents = new ArrayList<JPhyloIOEvent>();
-	private QName currentPropertyDatatype;
 	private boolean propertyHasResource;
 	private boolean propertyIsURI;
 	private boolean resetEventCollection;
@@ -123,17 +120,7 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	protected List<JPhyloIOEvent> getPropertyEvents() {
 		return propertyEvents;
 	}
-
-
-	protected QName getCurrentPropertyDatatype() {
-		return currentPropertyDatatype;
-	}
-
-
-	protected void setCurrentPropertyDatatype(QName currentPropertydatatype) {
-		this.currentPropertyDatatype = currentPropertydatatype;
-	}
-
+	
 
 	protected boolean isFirstContentEvent() {
 		return isFirstContentEvent;

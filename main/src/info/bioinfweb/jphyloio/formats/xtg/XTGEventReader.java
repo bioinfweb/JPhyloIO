@@ -25,7 +25,8 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
@@ -136,16 +137,9 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>> createMetaEnd = new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_INFORMATION));
+				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			}
 		};
-		
-//		AbstractXMLElementReader<XMLStreamDataProvider<XTGEventReader>> idDataReader = new AbstractXMLElementReader<XMLStreamDataProvider<XTGEventReader>>() {			
-//			@Override
-//			public void readEvent(XMLStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws Exception {
-//				  
-//			}
-//		};
 		
 		AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>> emptyReader = new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
@@ -228,8 +222,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				streamDataProvider.getEdgeInfos().peek().setLabel(label); //TODO which text is used as a label if more than one text labels exist?
 				
-				streamDataProvider.getCurrentEventCollection().add(new MetaInformationEvent(getFormatID() + "." + streamDataProvider.getParentName() 
-						+ "." + element.getName().getLocalPart(), null, null));
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(getFormatID() + "." + streamDataProvider.getParentName() 
+						+ "." + element.getName().getLocalPart(), null, null, LiteralContentSequenceType.SIMPLE));
 			}
 		});
 		
