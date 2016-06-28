@@ -851,7 +851,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeEdgeOrRootedgeTag(TreeNetworkDataAdapter tree, EdgeEvent edge) throws XMLStreamException, IllegalArgumentException, IOException {
 		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 
-		if (edge.isRoot()) {
+		if (edge.isRootEdge()) {
 			getXMLWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart()); //TODO check if tree.isConsideredRooted(), always write a rootedge if thats true?
 		}
 		else {

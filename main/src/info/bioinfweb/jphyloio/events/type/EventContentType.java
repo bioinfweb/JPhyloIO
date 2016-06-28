@@ -231,6 +231,17 @@ public enum EventContentType {
 	 */
 	EDGE,
 	
+	/** 
+	 * Indicates a root edge in a phylogenetic tree. Events of this type are not allowed to be nested under networks 
+	 * and at most one may be nested under a tree.
+	 * <p> 
+	 * Start events of this type are instances of {@link EdgeEvent}, end events are
+	 * instances of {@link ConcreteJPhyloIOEvent}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
+	 */
+	ROOT_EDGE,
+	
 	
 	// Set events:
 	

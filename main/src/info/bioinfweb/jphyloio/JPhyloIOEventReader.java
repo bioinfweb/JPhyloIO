@@ -61,7 +61,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * SingleSequenceToken = "SINGLE_SEQUENCE_TOKEN.START", {MetaInformation,} "SINGLE_SEQUENCE_TOKEN.END";
  * 
  * CharacterSetPart = "CHARACTER_SET.START", {CharacterSetPartContent,} "CHARACTER_SET.END";
- * CharacterSetPartContent = "CHARACTER_SET_INTERVAL.SOLE" | SetContent;  (* In character sets only other sets (and not characters) are using "SET_ELEMENT.SOLE". *)
+ * CharacterSetPartContent = "CHARACTER_SET_INTERVAL.SOLE" | SetContent;  (* In character sets only references to other character sets (and not single character definitions) are using "SET_ELEMENT.SOLE". *)
  * 
  * TreeNetworkGroup = "TREE_NETWORK_GROUP.START", {TreeNetworkGroupContent,} "TREE_NETWORK_GROUP.END";
  * TreeNetworkGroupContent = Tree | Network | TreeNetworkSet;
