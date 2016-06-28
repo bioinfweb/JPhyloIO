@@ -85,7 +85,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 				if (translator != null) {
   				try {
 						objectValue = translator.representationToJava(content, streamDataProvider);
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, objectValue));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, content));
 					}
 					catch (InvalidObjectSourceDataException e) {
 						throw new JPhyloIOReaderException("The content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
@@ -103,11 +103,11 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 					try {
 						if (!"".equals(nestedContent.trim())) {
 							objectValue = translator.representationToJava(nestedContent, streamDataProvider);
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(nestedContent, objectValue));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, nestedContent));
 						}
 						else if ((content != null) && !content.isEmpty()) {
 							objectValue = translator.representationToJava(content, streamDataProvider);
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, objectValue));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, content));
 						}
 					}
 					catch (InvalidObjectSourceDataException e) {

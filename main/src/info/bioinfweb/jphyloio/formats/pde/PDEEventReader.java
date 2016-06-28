@@ -334,7 +334,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_VISIBILITY), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
 									LiteralContentSequenceType.SIMPLE));
 							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataContentEvent(Boolean.toString(visibility), visibility));
+									new LiteralMetadataContentEvent(visibility, Boolean.toString(visibility)));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 						
@@ -344,7 +344,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 							streamDataProvider.getCurrentEventCollection().add(
 									new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), LiteralContentSequenceType.SIMPLE));		
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(hexColor, charSetColor));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(charSetColor, hexColor));
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 					}

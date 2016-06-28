@@ -145,11 +145,10 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	
 	/**
 	 * Creates a new instance of this class.
-	 * 
-	 * @param stringValue the string value of the meta information.
 	 * @param objectValue the object value of the meta information.
+	 * @param stringValue the string value of the meta information.
 	 */
-	public LiteralMetadataContentEvent(String stringValue, Object objectValue) {
+	public LiteralMetadataContentEvent(Object objectValue, String stringValue) {
 		this(stringValue, objectValue, false);
 	}
 	

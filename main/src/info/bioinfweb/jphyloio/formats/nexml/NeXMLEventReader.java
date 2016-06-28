@@ -214,7 +214,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 						if (streamDataProvider.getRootNodeIDs().contains(targetID)) {
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
 									null, new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), null, LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Boolean.toString(true), true)); // Since it is possible to have true roots in the default scenario no extra meta events for edges that are not true roots should be generated
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true))); // Since it is possible to have true roots in the default scenario no extra meta events for edges that are not true roots should be generated
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 							
 							streamDataProvider.getRootNodeIDs().remove(targetID);
@@ -900,7 +900,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
 								null, new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), LiteralContentSequenceType.SIMPLE));  // ID conflict theoretically possible
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Boolean.toString(true), true));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true)));
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));				
 						
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.EDGE));
@@ -909,8 +909,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
 						null, new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Boolean.toString(streamDataProvider.isTrulyRooted()), 
-						streamDataProvider.isTrulyRooted()));
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(streamDataProvider.isTrulyRooted(), 
+						Boolean.toString(streamDataProvider.isTrulyRooted())));
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));

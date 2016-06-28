@@ -251,7 +251,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						if (propertyValue != null) {
 							try {
 								objectValue = translator.representationToJava(propertyValue, streamDataProvider);
-								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(propertyValue, objectValue));
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, propertyValue));
 							}
 							catch (InvalidObjectSourceDataException e) {
 								throw new JPhyloIOReaderException("The content of this property tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
@@ -538,7 +538,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 									new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_LENGTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
 									LiteralContentSequenceType.SIMPLE));
 			
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Double.toString(branchLength), branchLength));
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(branchLength, Double.toString(branchLength)));
 									
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
@@ -560,7 +560,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 										new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
 										LiteralContentSequenceType.SIMPLE));
 				
-								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Boolean.toString(true), new Boolean(true)));
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true)));
 										
 								streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 								
@@ -686,7 +686,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					
 					try {
 						color = translator.readXMLRepresentation(getXMLReader(), streamDataProvider);
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, color));
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(color, null));
 					}
 					catch (InvalidObjectSourceDataException e) {
 						throw new JPhyloIOReaderException("The content of this property tag could not be parsed to class color.", event.getLocation());
@@ -1179,7 +1179,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
 					LiteralContentSequenceType.SIMPLE));
 	
-			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Boolean.toString(false), new Boolean(false)));
+			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(false, Boolean.toString(false)));
 					
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		}
