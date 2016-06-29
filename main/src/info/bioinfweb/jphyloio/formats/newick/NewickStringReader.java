@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
@@ -84,6 +85,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	private static final int ONE_HOT_COMMENT_READ = -1;	
 	
 	private TextReaderStreamDataProvider<?> streamDataProvider;
+	private boolean currentTreeRooted = false;
 	private String treeID;
 	private String treeLabel;
 	private NewickReaderNodeLabelProcessor nodeLabelProcessor;
@@ -228,7 +230,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	}
 	
 	
-	private LinkedLabeledIDEvent readNode() throws IOException {
+	private NodeEvent readNode() throws IOException {
 		NewickToken token;
 		if (scanner.hasMoreTokens()) {
 			token = scanner.peek();
@@ -267,8 +269,8 @@ public class NewickStringReader implements ReadWriteConstants {
 			// Generate node information:
 			passedSubnodes.peek().add(new NodeEdgeInfo(nodeID, length, nestedEdgeEvents));
 			String processedLabel = nodeLabelProcessor.processLabel(label);
-			LinkedLabeledIDEvent result = new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, processedLabel,
-					nodeLabelProcessor.getLinkedOTUID(processedLabel));
+			NodeEvent result = new NodeEvent(nodeID, processedLabel,	nodeLabelProcessor.getLinkedOTUID(processedLabel), 
+					currentTreeRooted && (passedSubnodes.size() == 1));  //TODO Does the rooted expression work?
 			streamDataProvider.getCurrentEventCollection().add(result);
 			streamDataProvider.getCurrentEventCollection().addAll(nestedNodeEvents);
 			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
@@ -298,6 +300,7 @@ public class NewickStringReader implements ReadWriteConstants {
 		addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
 		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));  // End of file without terminal symbol.
 		isInTree = false;
+		currentTreeRooted = false;
 	}
 	
 	
@@ -331,10 +334,8 @@ public class NewickStringReader implements ReadWriteConstants {
 									scanner.peek().getLocation());
 						}
 						else {
-							Queue<NodeEdgeInfo> levelInfo = passedSubnodes.pop();
-							LinkedLabeledIDEvent nodeEvent = readNode();  // Cannot be null, because SUBTREE_START has been handled.
-							String sourceID = nodeEvent.getID();
-							addEdgeEvents(sourceID, levelInfo);
+							Queue<NodeEdgeInfo> levelInfo = passedSubnodes.pop();  // Must be called before readNode().
+							addEdgeEvents(readNode().getID(), levelInfo);  // readNode() is (and needs to be) executed before addEdgeEvents().
 						}
 						break;
 					case TERMNINAL_SYMBOL:
@@ -392,14 +393,8 @@ public class NewickStringReader implements ReadWriteConstants {
 				else {
 					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, treeID, treeLabel));
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
-						boolean currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
+						currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 						scanner.nextToken();  // Skip rooted token.
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
-								streamDataProvider.getIDManager().createNewID(), null, 
-								new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), LiteralContentSequenceType.SIMPLE));
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(
-								null, Boolean.toString(currentTreeRooted), new Boolean(currentTreeRooted)));
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 					}
 					passedSubnodes.add(new ArrayDeque<NodeEdgeInfo>());  // Add queue for top level.
 					
