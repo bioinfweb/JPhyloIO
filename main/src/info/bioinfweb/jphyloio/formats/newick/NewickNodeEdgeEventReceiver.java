@@ -22,9 +22,11 @@ package info.bioinfweb.jphyloio.formats.newick;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -34,9 +36,14 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.ListTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.StringTranslator;
 
 
 
@@ -48,17 +55,15 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	
 	private static class Metadata {
 		public String key;
-		public List<String> values;
+		public String value = null;
+		public QName originalType = null;
 		
-		public Metadata(String key) {
+		public Metadata(String key, URIOrStringIdentifier originalType) {
 			super();
 			this.key = key;
-			this.values = new ArrayList<String>();
-		}
-		
-		public Metadata(String key, String firstValue) {
-			this(key);
-			values.add(firstValue);
+			if (originalType != null) {
+				this.originalType = originalType.getURI();
+			}
 		}
 	}
 	
@@ -68,6 +73,8 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	private boolean ignoredXMLMetadata = false;
 	private boolean ignoredNestedMetadata = false;
 	private StringBuilder currentLiteralValue = new StringBuilder();
+	private ListTranslator listTranslator = new ListTranslator();
+	private StringTranslator stringTranslator = new StringTranslator();
 	
 	
 	public NewickNodeEdgeEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
@@ -101,9 +108,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		if (getParentEvents().isEmpty()) {
-			if (event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE) || 
-					event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE_ARRAY)) {
-				
+			if (event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE)) {
 				String key = event.getPredicate().getStringRepresentation();
 				if (key == null) {
 					if (event.getPredicate().getURI() == null) {
@@ -113,7 +118,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 						key = event.getPredicate().getURI().getLocalPart();  // uri cannot be null, if stringRepresentation was null. 
 					}
 				}
-				metadataList.add(new Metadata(key));
+				metadataList.add(new Metadata(key, event.getOriginalType()));
 				//TODO Add values later. Possibly throw exception e.g. in handleMetaEndEvent, if no value was specified or allow empty annotations.
 			}
 			else {  // Will also be executed for OTHER.
@@ -132,14 +137,57 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 			throw new InternalError("No metadata entry was added for the parent literal meta event.");  // Should not happen.
 		}
 		else {
-			currentLiteralValue.append(event.getStringValue());  // Such events cannot have non-string object values.
+			//TODO What happens to XML content events? -> Write test case!
+			
+			if (event.isContinuedInNextEvent() || (currentLiteralValue.length() > 0)) {
+				if ((event.getStringValue() == null) || (event.getObjectValue() != null)) {
+					throw new IllegalEventException("A literal metadata content event with null as its string representation and/or a non null "
+							+ "object value was encountered, although it specifies to be continued or followes upon a continued string event.", this, 
+							getParentEvent(), event);
+				}
+				else {
+					currentLiteralValue.append(event.getStringValue());
+				}
+			}
+
 			if (!event.isContinuedInNextEvent()) {
-				String value = currentLiteralValue.toString();;
-				if (!(event.getObjectValue() instanceof Number)) {
-					value = NAME_DELIMITER + value.replaceAll("\\" + NAME_DELIMITER, "" + NAME_DELIMITER + NAME_DELIMITER) + NAME_DELIMITER;
+				String value;
+				Metadata metadata = metadataList.get(metadataList.size() - 1);
+				if (event.getStringValue() == null) {
+					ObjectTranslator<?> translator = null;
+					if (metadata.originalType != null) {
+						translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(metadata.originalType);
+					}
+					if (translator == null) {
+						if (event.getObjectValue() instanceof Collection) {
+							translator = listTranslator;
+						}
+						else {
+							translator = stringTranslator;
+						}
+					}
+					value = translator.javaToRepresentation(event.getObjectValue());
+				}
+				else {
+					if (currentLiteralValue.length() > 0) {
+						value = currentLiteralValue.toString();
+					}
+					else {
+						value = event.getStringValue();
+					}
+					if (!(event.getObjectValue() instanceof Number)) {
+						value = NAME_DELIMITER + value.replaceAll("\\" + NAME_DELIMITER, "" + NAME_DELIMITER + NAME_DELIMITER) + NAME_DELIMITER;
+					}
 				}
 				
-				metadataList.get(metadataList.size() - 1).values.add(value);
+				if (metadata.value == null) {
+					metadata.value = value;
+				}
+				else {
+					throw new IllegalEventException(
+							"An additional literal metadata content event was encountered, although the previous content event was a terminating event.", 
+							this, getParentEvent(), event);
+				}
 				clearCurrentLiteralValue();
 			}
 		}
@@ -171,22 +219,8 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 				Metadata metadata = iterator.next();
 				getWriter().write(metadata.key);
 				getWriter().write(ALLOCATION_SYMBOL);
-				if (!metadata.values.isEmpty()) {
-					if (metadata.values.size() == 1) {
-						getWriter().write(metadata.values.get(0));  // Necessary string delimiters have already been added.
-					}
-					else {
-						Iterator<String> valuesIterator = metadata.values.iterator();
-						getWriter().write(FIELD_START_SYMBOL);
-						while (valuesIterator.hasNext()) {
-							getWriter().write(valuesIterator.next());
-							if (valuesIterator.hasNext()) {
-								getWriter().write(FIELD_VALUE_SEPARATOR_SYMBOL);
-								getWriter().write(' ');
-							}
-						}
-						getWriter().write(FIELD_END_SYMBOL);
-					}
+				if (metadata.value != null) {
+					getWriter().write(metadata.value);  // Necessary string delimiters or array definitions have already been added.
 				}
 				if (iterator.hasNext()) {
 					getWriter().write(ALLOCATION_SEPARATOR_SYMBOL);
