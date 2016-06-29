@@ -21,10 +21,12 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.*;
+import static info.bioinfweb.commons.testing.XMLAssert.*;
+
+
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
-import info.bioinfweb.commons.testing.XMLTestTools;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -954,7 +956,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
 				
 				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
-				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "A", element);
+				assertAttribute(new QName("http://example.org", "attr", "ex"), "A", element);
 				assertXMLContentEvent(null, "example Text 1", null, XMLStreamConstants.CHARACTERS, null, "example Text 1", false, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);				
@@ -970,7 +972,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
 				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
-				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "C", element);
+				assertAttribute(new QName("http://example.org", "attr", "ex"), "C", element);
 				assertXMLContentEvent(null, "example Text 3", null, XMLStreamConstants.CHARACTERS, null, "example Text 3", false, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);				
@@ -1004,7 +1006,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
 				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
-				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "B", element);
+				assertAttribute(new QName("http://example.org", "attr", "ex"), "B", element);
 				assertXMLContentEvent(null, "example Text 2", null, XMLStreamConstants.CHARACTERS, null, "example Text 2", false, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);				
@@ -1024,7 +1026,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
 				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
-				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "D", element);
+				assertAttribute(new QName("http://example.org", "attr", "ex"), "D", element);
 				assertXMLContentEvent(null, "example Text 4", null, XMLStreamConstants.CHARACTERS, null, "example Text 4", false, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);
@@ -1035,7 +1037,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "exampleTag", "ex")), LiteralContentSequenceType.XML, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);				
 				element = assertXMLContentEvent(null, null, null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
-				XMLTestTools.assertAttribute(new QName("http://example.org", "attr", "ex"), "E", element);
+				assertAttribute(new QName("http://example.org", "attr", "ex"), "E", element);
 				assertXMLContentEvent(null, "example Text 5", null, XMLStreamConstants.CHARACTERS, null, "example Text 5", false, reader);
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
 				assertXMLContentEvent(null, null, null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);				

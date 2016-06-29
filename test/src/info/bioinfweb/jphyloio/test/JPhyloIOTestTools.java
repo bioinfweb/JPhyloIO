@@ -20,10 +20,11 @@ package info.bioinfweb.jphyloio.test;
 
 
 import static org.junit.Assert.*;
+import static info.bioinfweb.commons.testing.Assert2.*;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -277,8 +278,9 @@ public class JPhyloIOTestTools {
   	return assertLiteralMetaStartEvent(expectedPredicate, expectedSequenceType, null, null, reader);
   }
   
-  	
-  public static void assertLiteralMetaContentEvent(String expectedStringValue, Object expectedObjectValue, boolean testLiteralEndEvent, 
+  
+  @SuppressWarnings("unchecked")
+	public static void assertLiteralMetaContentEvent(String expectedStringValue, Object expectedObjectValue, boolean testLiteralEndEvent, 
   		JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
@@ -287,6 +289,9 @@ public class JPhyloIOTestTools {
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 		assertEquals(expectedStringValue, contentEvent.getStringValue());
 		assertEquals(expectedObjectValue, contentEvent.getObjectValue());
+		if (expectedObjectValue instanceof List) {
+			assertListElementTypes((List<Object>)expectedObjectValue, (List<Object>)contentEvent.getObjectValue());
+		}
 		
 		if (testLiteralEndEvent) {
 			assertEndEvent(EventContentType.META_LITERAL, reader);

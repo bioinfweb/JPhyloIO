@@ -19,12 +19,14 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import static info.bioinfweb.commons.testing.XMLAssert.*;
+
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
-import static info.bioinfweb.commons.testing.XMLTestTools.*;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;

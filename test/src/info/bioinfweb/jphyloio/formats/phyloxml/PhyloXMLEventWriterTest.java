@@ -20,9 +20,11 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 import static org.junit.Assert.assertEquals;
+import static info.bioinfweb.commons.testing.XMLAssert.*;
+
+
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
-import info.bioinfweb.commons.testing.XMLTestTools;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
@@ -87,19 +89,19 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		try {
 			StartElement element;
 			
-			XMLTestTools.assertStartDocument(reader);
+			assertStartDocument(reader);
 			
-			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
-			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNameSpaceCount(2, element);
+			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
 					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			validateSingleTree("tree2", reader);
 			
-			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
+			assertEndElement(TAG_ROOT, reader);			
 			
-			XMLTestTools.assertEndDocument(reader);
+			assertEndDocument(reader);
 		}
 		finally {
 			reader.close();
@@ -132,19 +134,19 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		try {
 			StartElement element;
 			
-			XMLTestTools.assertStartDocument(reader);
+			assertStartDocument(reader);
 			
-			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
-			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNameSpaceCount(2, element);
+			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
 					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			validateSingleTree("tree2", reader);
 			
-			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
+			assertEndElement(TAG_ROOT, reader);			
 			
-			XMLTestTools.assertEndDocument(reader);
+			assertEndDocument(reader);
 			
 			assertEquals(1, logger.getMessageList().size());
 			assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
@@ -181,58 +183,58 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 //		try {
 //			StartElement element;
 //			
-//			XMLTestTools.assertStartDocument(reader);
+//			assertStartDocument(reader);
 //			
-//			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
-//			XMLTestTools.assertNameSpaceCount(2, element);
-//			XMLTestTools.assertNamespace(new QName(NAMESPACE_URI, XMLConstants.XMLNS_ATTRIBUTE), element);
-//			XMLTestTools.assertNamespace(new QName(NAMESPACE_XSI, XMLConstants.XMLNS_ATTRIBUTE, "xsi"), element);
+//			element = assertStartElement(TAG_ROOT, reader);
+//			assertNameSpaceCount(2, element);
+//			assertNamespace(new QName(NAMESPACE_URI, XMLConstants.XMLNS_ATTRIBUTE), element);
+//			assertNamespace(new QName(NAMESPACE_XSI, XMLConstants.XMLNS_ATTRIBUTE, "xsi"), element);
 //			
-//			element = XMLTestTools.assertStartElement(TAG_PHYLOGENY, reader);
-//			XMLTestTools.assertAttributeCount(2, element);
-//			XMLTestTools.assertAttribute(ATTR_ROOTED, "true", element);
-//			XMLTestTools.assertAttribute(ATTR_BRANCH_LENGTH_UNIT, "xs:double", element);
+//			element = assertStartElement(TAG_PHYLOGENY, reader);
+//			assertAttributeCount(2, element);
+//			assertAttribute(ATTR_ROOTED, "true", element);
+//			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, "xs:double", element);
 //			
-//			XMLTestTools.assertShortElement(TAG_ID, "tree2", reader);
+//			assertShortElement(TAG_ID, "tree2", reader);
 //			
-//			XMLTestTools.assertStartElement(TAG_CLADE, reader);
-//			XMLTestTools.assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
-//			XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
-//			XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+//			assertStartElement(TAG_CLADE, reader);
+//			assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+//			assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+//			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
 //			
-//			XMLTestTools.assertStartElement(TAG_CLADE, reader);
-//			XMLTestTools.assertShortElement(TAG_NAME, "Node '_1", reader);
-//			XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
-//			XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
+//			assertStartElement(TAG_CLADE, reader);
+//			assertShortElement(TAG_NAME, "Node '_1", reader);
+//			assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+//			assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
 //			
-//			XMLTestTools.assertStartElement(TAG_CLADE, reader);
-//			XMLTestTools.assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
-//			XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
-//			XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
-//			XMLTestTools.assertEndElement(TAG_CLADE, reader);
+//			assertStartElement(TAG_CLADE, reader);
+//			assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+//			assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+//			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
+//			assertEndElement(TAG_CLADE, reader);
 //			
-//			XMLTestTools.assertStartElement(TAG_CLADE, reader);
-//			XMLTestTools.assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
-//			XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
-//			XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
-//			XMLTestTools.assertEndElement(TAG_CLADE, reader);
+//			assertStartElement(TAG_CLADE, reader);
+//			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+//			assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
+//			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+//			assertEndElement(TAG_CLADE, reader);
 //			
-//			XMLTestTools.assertEndElement(TAG_CLADE, reader);
+//			assertEndElement(TAG_CLADE, reader);
 //			
-//			XMLTestTools.assertStartElement(TAG_CLADE, reader);
-//			XMLTestTools.assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
-//			XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
-//			XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
-//			XMLTestTools.assertEndElement(TAG_CLADE, reader);
+//			assertStartElement(TAG_CLADE, reader);
+//			assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+//			assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+//			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+//			assertEndElement(TAG_CLADE, reader);
 //			
-//			XMLTestTools.assertEndElement(TAG_CLADE, reader);
-//			XMLTestTools.assertEndElement(TAG_PHYLOGENY, reader);			
+//			assertEndElement(TAG_CLADE, reader);
+//			assertEndElement(TAG_PHYLOGENY, reader);			
 //			
-//			//TODO assert property attributes XMLTestTools.assertShortElement(TAG_PROPERTY, "myValue", reader);
+//			//TODO assert property attributes assertShortElement(TAG_PROPERTY, "myValue", reader);
 //			
-//			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
+//			assertEndElement(TAG_ROOT, reader);			
 //			
-//			XMLTestTools.assertEndDocument(reader);
+//			assertEndDocument(reader);
 //		}
 //		finally {
 //			reader.close();
@@ -252,17 +254,17 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		// Validate file:
 		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader(file));
 		try {
-			XMLTestTools.assertStartDocument(reader);
+			assertStartDocument(reader);
 			
-			StartElement element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
-			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+			StartElement element = assertStartElement(TAG_ROOT, reader);
+			assertNameSpaceCount(2, element);
+			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
 					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);		
 			
-			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
+			assertEndElement(TAG_ROOT, reader);			
 			
-			XMLTestTools.assertEndDocument(reader);
+			assertEndDocument(reader);
 		}
 		finally {
 			reader.close();
@@ -287,17 +289,17 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		// Validate file:
 		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader(file));
 		try {
-			XMLTestTools.assertStartDocument(reader);
+			assertStartDocument(reader);
 			
-			StartElement element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
-			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+			StartElement element = assertStartElement(TAG_ROOT, reader);
+			assertNameSpaceCount(2, element);
+			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
 					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
-			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
+			assertEndElement(TAG_ROOT, reader);			
 			
-			XMLTestTools.assertEndDocument(reader);
+			assertEndDocument(reader);
 		}
 		finally {
 			reader.close();
@@ -327,21 +329,21 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		try {
 			StartElement element;
 			
-			XMLTestTools.assertStartDocument(reader);
+			assertStartDocument(reader);
 			
-			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
-			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNameSpaceCount(2, element);
+			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
 					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			validateSingleTree("tree2", reader);
 			
 			validateSingleTree("tree3", reader);
 			
-			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
+			assertEndElement(TAG_ROOT, reader);			
 			
-			XMLTestTools.assertEndDocument(reader);
+			assertEndDocument(reader);
 		}
 		finally {
 			reader.close();
@@ -376,21 +378,21 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		try {
 			StartElement element;
 			
-			XMLTestTools.assertStartDocument(reader);
+			assertStartDocument(reader);
 			
-			element = XMLTestTools.assertStartElement(TAG_ROOT, reader);
-			XMLTestTools.assertNameSpaceCount(2, element);
-			XMLTestTools.assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			XMLTestTools.assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNameSpaceCount(2, element);
+			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
 					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
 			
 			validateSingleTree("tree2", reader);
 			
 			validateSingleTree("tree4", reader);
 			
-			XMLTestTools.assertEndElement(TAG_ROOT, reader);			
+			assertEndElement(TAG_ROOT, reader);			
 			
-			XMLTestTools.assertEndDocument(reader);
+			assertEndDocument(reader);
 		}
 		finally {
 			reader.close();
@@ -399,44 +401,44 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	}
 	
 	private void validateSingleTree(String treeID, XMLEventReader reader) throws IOException, XMLStreamException {
-		StartElement element = XMLTestTools.assertStartElement(TAG_PHYLOGENY, reader);
-		XMLTestTools.assertAttributeCount(2, element);
-		XMLTestTools.assertAttribute(ATTR_ROOTED, "true", element);
-		XMLTestTools.assertAttribute(ATTR_BRANCH_LENGTH_UNIT, "xs:double", element);
+		StartElement element = assertStartElement(TAG_PHYLOGENY, reader);
+		assertAttributeCount(2, element);
+		assertAttribute(ATTR_ROOTED, "true", element);
+		assertAttribute(ATTR_BRANCH_LENGTH_UNIT, "xs:double", element);
 		
-		XMLTestTools.assertShortElement(TAG_ID, treeID, reader);
+		assertShortElement(TAG_ID, treeID, reader);
 		
-		XMLTestTools.assertStartElement(TAG_CLADE, reader);
-		XMLTestTools.assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
-		XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
-		XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+		assertStartElement(TAG_CLADE, reader);
+		assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+		assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+		assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
 		
-		XMLTestTools.assertStartElement(TAG_CLADE, reader);
-		XMLTestTools.assertShortElement(TAG_NAME, "Node '_1", reader);
-		XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
-		XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
+		assertStartElement(TAG_CLADE, reader);
+		assertShortElement(TAG_NAME, "Node '_1", reader);
+		assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+		assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
 		
-		XMLTestTools.assertStartElement(TAG_CLADE, reader);
-		XMLTestTools.assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
-		XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
-		XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
-		XMLTestTools.assertEndElement(TAG_CLADE, reader);
+		assertStartElement(TAG_CLADE, reader);
+		assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+		assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+		assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
+		assertEndElement(TAG_CLADE, reader);
 		
-		XMLTestTools.assertStartElement(TAG_CLADE, reader);
-		XMLTestTools.assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
-		XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
-		XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
-		XMLTestTools.assertEndElement(TAG_CLADE, reader);
+		assertStartElement(TAG_CLADE, reader);
+		assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+		assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
+		assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+		assertEndElement(TAG_CLADE, reader);
 		
-		XMLTestTools.assertEndElement(TAG_CLADE, reader);
+		assertEndElement(TAG_CLADE, reader);
 		
-		XMLTestTools.assertStartElement(TAG_CLADE, reader);
-		XMLTestTools.assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
-		XMLTestTools.assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
-		XMLTestTools.assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
-		XMLTestTools.assertEndElement(TAG_CLADE, reader);
+		assertStartElement(TAG_CLADE, reader);
+		assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+		assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+		assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+		assertEndElement(TAG_CLADE, reader);
 		
-		XMLTestTools.assertEndElement(TAG_CLADE, reader);
-		XMLTestTools.assertEndElement(TAG_PHYLOGENY, reader);
+		assertEndElement(TAG_CLADE, reader);
+		assertEndElement(TAG_PHYLOGENY, reader);
 	}
 }
