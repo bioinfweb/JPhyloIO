@@ -455,7 +455,14 @@ public class JPhyloIOTestTools {
   }
   
   
-  public static void assertNodeEvent(String expectedID, String expectedLabel, boolean expectedIsRoot, String expectedLinkedID, boolean testEndEvent, 
+  public static String assertNodeEvent(String expectedID, String expectedLabel, boolean expectedIsRoot, String expectedLinkedID,  
+			JPhyloIOEventReader reader) throws Exception {
+  	
+  	return assertNodeEvent(expectedID, expectedLabel, expectedIsRoot, expectedLinkedID, false, reader);
+  }
+  
+  
+  public static String assertNodeEvent(String expectedID, String expectedLabel, boolean expectedIsRoot, String expectedLinkedID, boolean testEndEvent, 
 			JPhyloIOEventReader reader) throws Exception {
   	
   	NodeEvent nodeEvent = assertLabeledIDEvent(EventContentType.NODE, expectedID, expectedLabel, reader).asNodeEvent();
@@ -471,6 +478,7 @@ public class JPhyloIOTestTools {
 		if (testEndEvent) {
 			assertEndEvent(EventContentType.NODE, reader);
 		}
+		return nodeEvent.getID();
   }
 
 
