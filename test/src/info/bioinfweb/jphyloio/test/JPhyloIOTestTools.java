@@ -43,6 +43,7 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SetElementEvent;
@@ -326,15 +327,13 @@ public class JPhyloIOTestTools {
   }
   
   
-  public static XMLEvent assertXMLContentEvent(URIOrStringIdentifier expectedOriginalType, 
-  		String expectedStringValue, String expectedAlternativeStringValue, int expectedEventType, QName expectedEventName, String expectedCharacterContent, boolean testLiteralEndEvent, 
-  		JPhyloIOEventReader reader) throws Exception {
+  public static XMLEvent assertXMLContentEvent(String expectedStringValue, int expectedEventType, QName expectedEventName, String expectedCharacterContent, 
+  		boolean testLiteralEndEvent, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
 		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
-		assertEquals(expectedOriginalType, contentEvent.getOriginalType());
 		assertEquals(expectedStringValue, contentEvent.getStringValue());
 		
 		assertTrue(contentEvent.hasXMLEventValue());
@@ -348,9 +347,7 @@ public class JPhyloIOTestTools {
 		}
 		else if (expectedEventType == XMLStreamConstants.END_ELEMENT) {
 			assertEquals(expectedEventName, contentEvent.getXMLEvent().asEndElement().getName());
-		}		
-		
-		assertEquals(expectedAlternativeStringValue, contentEvent.getAlternativeStringValue());
+		}
 		
 		if (testLiteralEndEvent) {
 			assertEndEvent(EventContentType.META_LITERAL, reader);
@@ -364,8 +361,8 @@ public class JPhyloIOTestTools {
   		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testEndEvent, 
   		JPhyloIOEventReader reader) throws Exception {
   	
-		String result = assertLiteralMetaStartEvent(expectedPredicate, LiteralContentSequenceType.SIMPLE, reader);
-  	assertLiteralMetaContentEvent(expectedOriginalType, expectedStringValue, expectedAlternativeStringValue, expectedObjectValue, testEndEvent, reader);		
+  	String result = assertLiteralMetaStartEvent(expectedPredicate, LiteralContentSequenceType.SIMPLE, expectedOriginalType, expectedAlternativeStringValue, reader);
+  	assertLiteralMetaContentEvent(expectedStringValue, expectedObjectValue, testEndEvent, reader);	
 		return result;
   }
   
@@ -455,6 +452,25 @@ public class JPhyloIOTestTools {
 		CharacterSetIntervalEvent charSetEvent = event.asCharacterSetIntervalEvent();
 		assertEquals(expectedStart, charSetEvent.getStart());
 		assertEquals(expectedEnd, charSetEvent.getEnd());
+  }
+  
+  
+  public static void assertNodeEvent(String expectedID, String expectedLabel, boolean expectedIsRoot, String expectedLinkedID, boolean testEndEvent, 
+			JPhyloIOEventReader reader) throws Exception {
+  	
+  	NodeEvent nodeEvent = assertLabeledIDEvent(EventContentType.NODE, expectedID, expectedLabel, reader).asNodeEvent();
+		if (expectedLinkedID == null) {
+			assertNull(nodeEvent.getLinkedID());
+		}
+		else {
+			assertEquals(expectedLinkedID, nodeEvent.getLinkedID());
+		}
+		
+		assertEquals(expectedIsRoot, nodeEvent.isRootNode());
+		
+		if (testEndEvent) {
+			assertEndEvent(EventContentType.NODE, reader);
+		}
   }
 
 
