@@ -27,7 +27,10 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.ListTranslator;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -82,14 +85,34 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 	}
 	
 	
-	private int findFieldEnd(String text, int pos) {
+	private int findNameEnd(String text, int pos, char nameDelimiter) {
+		pos++;  // Skip leading name delimiter.
 		while (pos < text.length()) {
-			if (text.charAt(pos) == ALLOCATION_SEPARATOR_SYMBOL) {
+			if (text.charAt(pos) == nameDelimiter) {
 				return pos;
 			}
 			else {
 				pos++;
 			}
+		}
+		return -1;
+	}
+	
+	
+	private int findFieldEnd(String text, int pos) {
+		while (pos < text.length()) { 
+			switch (text.charAt(pos)) {
+				case NAME_DELIMITER:
+				case ALTERNATIVE_NAME_DELIMITER:
+					pos = findNameEnd(text, pos, text.charAt(pos));
+					if (pos == -1) {
+						return -1;
+					}
+					break;
+				case FIELD_END_SYMBOL:
+					return pos;
+			}
+			pos++;  // Also skips found name end
 		}
 		return -1;
 	}
@@ -105,25 +128,29 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 				switch (text.charAt(pos)) {
 					case FIELD_START_SYMBOL:
 						pos = findFieldEnd(text, pos);
-						if (pos == -1) {
-							return -1;
-						}
+						break;
+					case NAME_DELIMITER:
+					case ALTERNATIVE_NAME_DELIMITER:
+						pos = findNameEnd(text, pos, text.charAt(pos));
 						break;
 					case ALLOCATION_SEPARATOR_SYMBOL:
 						return pos;
 				}
-				pos++;
+				if (pos == -1) {
+					return -1;
+				}
+				pos++;  // Also skips found field or name end.
 			}
 			return pos;
 		}
 	}
 	
 	
-	private void addLiteralMetaStart(String key, QName predicate, LiteralContentSequenceType sequenceType, TextReaderStreamDataProvider<?> streamDataProvider,  
-			Collection<JPhyloIOEvent> eventQueue) {
+	private void addLiteralMetaStart(String key, QName predicate, URIOrStringIdentifier dataType, 
+			TextReaderStreamDataProvider<?> streamDataProvider,	Collection<JPhyloIOEvent> eventQueue) {
 		
 		eventQueue.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-				key, new URIOrStringIdentifier(key, predicate), sequenceType));
+				key, new URIOrStringIdentifier(key, predicate), dataType, LiteralContentSequenceType.SIMPLE));
 	}
 	
 	
@@ -143,36 +170,37 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 	 * 
 	 * @param comment
 	 * @param eventQueue
+	 * @throws JPhyloIOReaderException 
 	 */
 	private void processMetacomments(final String comment, TextReaderStreamDataProvider<?> streamDataProvider, 
-			Collection<JPhyloIOEvent> eventQueue) {
+			Collection<JPhyloIOEvent> eventQueue) throws JPhyloIOReaderException {
 		
+		ListTranslator translator = new ListTranslator();  //TODO Could be a static class field.
 		int start = 1;
-		int end = findAllocationEnd(comment, start);  //TODO Is this still necessary? (Comes from TG implementation.)
+		int end = findAllocationEnd(comment, start);
 		while (end != -1) {
-			String[] parts = comment.substring(start, end).split("" + ALLOCATION_SYMBOL);  //TODO Does not work, if '=' is contained in a string.
-			if (parts.length == 2) {
-				for (int j = 0; j < parts.length; j++) {
-					parts[j] = parts[j].trim();
-				}
-				
-				if (parts[1].startsWith("" + FIELD_START_SYMBOL)) {
-					if (parts[1].endsWith("" + FIELD_END_SYMBOL)) {
-						String[] values = parts[1].substring(1, parts[1].length() - 1).split("" + FIELD_VALUE_SEPARATOR_SYMBOL);  //TODO Does not work, if ',' is contained in a string.
-						addLiteralMetaStart(parts[0], PREDICATE_HAS_LITERAL_METADATA, LiteralContentSequenceType.SIMPLE_ARRAY, streamDataProvider, 
-								eventQueue);
-						for (int j = 0; j < values.length; j++) {
-							addLiteralMetaContent(readTextElementData(values[j].trim()), eventQueue);
-						}
-						addLiteralMetaEnd(eventQueue);
+			String allocation = comment.substring(start, end);
+			int allocationSymbolPos = allocation.indexOf(ALLOCATION_SYMBOL);  // split() cannot be used, since text values may contain additional '='.
+			if (allocationSymbolPos >= 0) {
+				String valueText = allocation.substring(allocationSymbolPos + 1).trim();
+				Value value;
+				URIOrStringIdentifier dataType = null;
+				if (valueText.startsWith("" + FIELD_START_SYMBOL) && valueText.endsWith("" + FIELD_END_SYMBOL)) {
+					try {
+						value = new Value(valueText, translator.representationToJava(valueText, streamDataProvider));
+						dataType = new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY);
 					}
-					//TODO Should really nothing happen in the else part?
+					catch (InvalidObjectSourceDataException e) {
+						throw new JPhyloIOReaderException("The following excpetion occurred when trying to read a list from a Newick hot comment: " + 
+								e.getMessage(), streamDataProvider.getDataReader(), e);
+					}
 				}
 				else {
-					addLiteralMetaStart(parts[0], PREDICATE_HAS_LITERAL_METADATA, LiteralContentSequenceType.SIMPLE, streamDataProvider, eventQueue);
-					addLiteralMetaContent(readTextElementData(parts[1]), eventQueue);
-					addLiteralMetaEnd(eventQueue);
+					value = readTextElementData(valueText);
 				}
+				addLiteralMetaStart(allocation.substring(0, allocationSymbolPos).trim(), PREDICATE_HAS_LITERAL_METADATA, dataType, streamDataProvider, eventQueue);
+				addLiteralMetaContent(value, eventQueue);
+				addLiteralMetaEnd(eventQueue);
 			}
 			
 			start = end + 1;
@@ -182,7 +210,7 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 	
 	
 	/**
-	 * Processed comments according to 
+	 * Processes comments according to 
 	 * <a href="https://sites.google.com/site/cmzmasek/home/software/forester/nhx">this</a> definition.
 	 * 
 	 * @param comment the text of the hot comment without the comment start or end tokens
@@ -196,7 +224,7 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 			int splitPos = parts[i].indexOf(ALLOCATION_SYMBOL);
 			if (splitPos > 0) {
 				String key = parts[i].substring(0, splitPos);
-				addLiteralMetaStart(NHX_KEY_PREFIX + key, NHXTools.getInstance().predicateByKey(key), LiteralContentSequenceType.SIMPLE, streamDataProvider, newEvents);
+				addLiteralMetaStart(NHX_KEY_PREFIX + key, NHXTools.getInstance().predicateByKey(key), null, streamDataProvider, newEvents);
 				addLiteralMetaContent(readTextElementData(parts[i].substring(splitPos + 1, parts[i].length())), newEvents);
 				addLiteralMetaEnd(newEvents);
 			}
@@ -216,8 +244,9 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 	 * @param isOnNode Specifies {@code true} here, if the hot comment was attached to a node or
 	 *        {@code false} if it was attached to an edge
 	 * @throws IllegalArgumentException if the specified comment cannot be parsed in the TreeAnnotator or the NHX format.
+	 * @throws JPhyloIOReaderException 
 	 */
-	public void read(String comment, TextReaderStreamDataProvider<?> streamDataProvider, Collection<JPhyloIOEvent> eventQueue, boolean isOnNode) throws IllegalArgumentException {
+	public void read(String comment, TextReaderStreamDataProvider<?> streamDataProvider, Collection<JPhyloIOEvent> eventQueue, boolean isOnNode) throws IllegalArgumentException, JPhyloIOReaderException {
 		if (comment.startsWith(NHX_START)) {  // Needs to be checked first.
 			processNHX(comment, streamDataProvider, eventQueue);
 		}
