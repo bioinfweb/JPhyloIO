@@ -19,6 +19,11 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
+
+import javax.xml.namespace.QName;
+
+
 
 public interface NewickConstants {
 	public static final String NEWICK_FORMAT_NAME = "Newick";	
@@ -54,13 +59,20 @@ public interface NewickConstants {
 	public static final String NHX_START = "&&NHX" + NHX_VALUE_SEPARATOR_SYMBOL;
 	public static final String NHX_KEY_PREFIX = "NHX:";
 	
-	public static final String NHX_KEY_GENE_NAME = "GN"; 
-	public static final String NHX_KEY_SEQUENCE_ACCESSION = "AC"; 
-	public static final String NHX_KEY_CONFIDENCE = "B"; 
-	public static final String NHX_KEY_EVENT = "D"; 
-	public static final String NHX_KEY_SCIENTIFIC_NAME = "S"; 
+	public static final String NHX_KEY_GENE_NAME = "GN";
+	public static final String NHX_KEY_SEQUENCE_ACCESSION = "AC";
+	public static final String NHX_KEY_CONFIDENCE = "B";
+	public static final String NHX_KEY_EVENT = "D";
+	public static final String NHX_KEY_SCIENTIFIC_NAME = "S";
 	public static final String NHX_KEY_TAXONOMY_ID = "T";
 	
 //	public static final String UNNAMED_EDGE_DATA_NAME = "unnamedEdgeHotComment";  //TODO Specify URL or similar ID here?
 //	public static final String UNNAMED_NODE_DATA_NAME = "unnamedNodeHotComment";  //TODO Specify URL or similar ID here?
+	
+	
+	// Data type constants:
+	
+	public static final String NEWICK_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_FORMATS_NAMESPACE_PREFIX + "Newick/";
+	public static final String NEWICK_DATA_TYPE_NAMESPACE = NEWICK_NAMESPACE_PREFIX + ReadWriteConstants.DATA_TYPE_NAMESPACE_FOLDER + "/";
+	public static final QName DATA_TYPE_NEWICK_ARRAY = new QName(NEWICK_DATA_TYPE_NAMESPACE, "Array");
 }

@@ -136,7 +136,7 @@ public interface NeXMLConstants {
   public static final String DEFAULT_NAMESPACE_PREFIX = "prefix";
   
   
-  public static final String NEXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/NeXML/";	
+  public static final String NEXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_FORMATS_NAMESPACE_PREFIX + "NeXML/";	
 	public static final String NEXML_PREDICATE_NAMESPACE = NEXML_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 	
 	public static final QName PREDICATE_CHAR_ATTR_TOKENS = new QName(NEXML_PREDICATE_NAMESPACE, "Char.Tokens");

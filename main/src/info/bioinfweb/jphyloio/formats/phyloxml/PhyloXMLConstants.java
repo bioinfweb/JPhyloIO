@@ -144,7 +144,7 @@ public interface PhyloXMLConstants {
 	public static final String APPLIES_TO_OTHER = "other";
 	
 	
-	public static final String PHYLOXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_NAMESPACE_PREFIX + "Formats/PhyloXML/";
+	public static final String PHYLOXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_FORMATS_NAMESPACE_PREFIX + "PhyloXML/";
 	
 	public static final String PHYLOXML_PREDICATE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 	
@@ -310,7 +310,7 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_PROPERTY_ATTR_ID_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDRef");
 
 
-	public static final String PHYLOXML_DATA_TYPE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + "DataTypes/";
+	public static final String PHYLOXML_DATA_TYPE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + ReadWriteConstants.DATA_TYPE_NAMESPACE_FOLDER + "/";
 	
 	public static final QName DATA_TYPE_BRANCH_COLOR = new QName(PHYLOXML_DATA_TYPE_NAMESPACE, "Clade" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Color");
 	

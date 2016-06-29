@@ -42,10 +42,12 @@ public interface ReadWriteConstants {
 	
 	public static final String PREDICATE_PART_SEPERATOR = ".";
 	public static final String PREDICATE_NAMESPACE_FOLDER = "Predicates";
+	public static final String DATA_TYPE_NAMESPACE_FOLDER = "DataTypes";
 	
 	public static final String JPHYLOIO_NAMESPACE_PREFIX = "http://bioinfweb.info/xmlns/JPhyloIO/";
 	
 	public static final String JPHYLOIO_PREDICATE_NAMESPACE = JPHYLOIO_NAMESPACE_PREFIX + "General/" + PREDICATE_NAMESPACE_FOLDER + "/";
+	public static final String JPHYLOIO_FORMATS_NAMESPACE_PREFIX = JPHYLOIO_NAMESPACE_PREFIX + "Formats/";
 	
 	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata");
 	public static final QName PREDICATE_HAS_RESOURCE_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasResourceMetadata");
