@@ -24,6 +24,7 @@ import static info.bioinfweb.commons.testing.Assert2.*;
 
 import java.io.FileReader;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -290,8 +291,8 @@ public class JPhyloIOTestTools {
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 		assertEquals(expectedStringValue, contentEvent.getStringValue());
 		assertEquals(expectedObjectValue, contentEvent.getObjectValue());
-		if (expectedObjectValue instanceof List) {
-			assertListElementTypes((List<Object>)expectedObjectValue, (List<Object>)contentEvent.getObjectValue());
+		if (expectedObjectValue instanceof Collection) {
+			assertCollectionElementTypes((Collection<Object>)expectedObjectValue, (Collection<Object>)contentEvent.getObjectValue());
 		}
 		
 		if (testLiteralEndEvent) {
