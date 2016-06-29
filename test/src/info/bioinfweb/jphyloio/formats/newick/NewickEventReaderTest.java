@@ -47,38 +47,38 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			String idA = assertNodeEvent(null, "A", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idB = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", null, reader);
+			String idB = assertNodeEvent(null, "B", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idN3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "N3", null, reader);
+			String idN3 = assertNodeEvent(null, "N3", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN3, idA, 1.05, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN3, idB, 1.0, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
-			String idC = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", null, reader);
+			String idC = assertNodeEvent(null, "C", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "N2", null, reader);
+			String idN2 = assertNodeEvent(null, "N2", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN2, idN3, 1.5, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN2, idC, 2.5, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
-			String idD = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "D", null, reader);
+			String idD = assertNodeEvent(null, "D", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idE = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "E", null, reader);
+			String idE = assertNodeEvent(null, "E", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idN4 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "N4", null, reader);
+			String idN4 = assertNodeEvent(null, "N4", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN4, idD, 2.0, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN4, idE, 2.1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
-			String idN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "N1", null, reader);
+			String idN1 = assertNodeEvent(null, "N1", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idN2, .8, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -108,24 +108,24 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String id1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id1 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			
-			String id3_1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3_2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id2 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
-			String id3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id3_1 = assertNodeEvent(null, null, false, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertNodeEvent(null, null, false, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_2, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
-			String id0 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id0 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -157,24 +157,24 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String id1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			String id1 = assertNodeEvent(null, "A", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			
-			String id3_1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3_2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "D", null, reader);
+			String id2 = assertNodeEvent(null, "B", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
-			String id3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id3_1 = assertNodeEvent(null, "C", false, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertNodeEvent(null, "D", false, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_2, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
-			String id0 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id0 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -206,24 +206,24 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String id1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id1 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			
-			String id3_1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
-			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3_2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id2 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
-			String id3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id3_1 = assertNodeEvent(null, null, false, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			String id3_2 = assertNodeEvent(null, null, false, null, reader);
+			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
+			
+			String id3 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_1, .3, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_2, .4, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
-			String id0 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id0 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id1, .1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -271,7 +271,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			String idA = assertNodeEvent(null, "A", false, null, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "1.000000000000000e+000", null, new Double(1.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0", null, new Double(0.0), true, reader);
 			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
@@ -281,7 +281,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob+-sd", PREDICATE_HAS_LITERAL_METADATA), null, "100+-0", null, "100+-0", true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
-			String idB = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", null, reader);
+			String idB = assertNodeEvent(null, "B", false, null, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "A, =B", null, "A, =B", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
 			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
@@ -291,7 +291,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob+-sd", PREDICATE_HAS_LITERAL_METADATA), null, "100+-0", null, "100+-0", true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
-			String idC = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", null, reader);
+			String idC = assertNodeEvent(null, "C", false, null, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "6.364056912805381e-001", null, new Double(6.364056912805381e-001), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "7.249475639180907e-004", null, new Double(7.249475639180907e-004), true, reader);
 			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
@@ -303,7 +303,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEndEvent(EventContentType.NODE, reader);
 			
 			
-			String idN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN1 = assertNodeEvent(null, null, false, null, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "1.000000000000000e+000", null, new Double(1.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
 			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
@@ -331,7 +331,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 					Arrays.asList(new Double(9.114712766459516e-003), new Double(1.418351647155842e-001)), true, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 
-			String idN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN2 = assertNodeEvent(null, null, false, null, reader);
 			assertCommentEvent("18", false, reader);
 			//assertMetaEvent(HotCommentDataReader.UNNAMED_NODE_DATA_NAME, "18", null, new Double(18), true, true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
@@ -388,18 +388,18 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			String idA = assertNodeEvent(null, "A", false, null, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("a", PREDICATE_HAS_LITERAL_METADATA), null, "1", null, new Double(1.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("b", PREDICATE_HAS_LITERAL_METADATA), null, "2", null, new Double(2.0), true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
-			String idB = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", null, reader);
+			String idB = assertNodeEvent(null, "B", false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
-			String idC = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", null, reader);
+			String idC = assertNodeEvent(null, "C", false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
-			String idN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN1 = assertNodeEvent(null, null, false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
 			assertEdgeEvent(idN1, idB, reader);
@@ -408,7 +408,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEdgeEvent(idN1, idC, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			
-			String idN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN2 = assertNodeEvent(null, null, false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
 			assertEdgeEvent(idN2, idA, 18.0, reader);
@@ -441,21 +441,21 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
-			String id1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			String id1 = assertNodeEvent(null, "A", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", null, reader);
+			String id2 = assertNodeEvent(null, "B", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3_1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", null, reader);
+			String id3_1 = assertNodeEvent(null, "C", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3_2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "D", null, reader);
+			String id3_2 = assertNodeEvent(null, "D", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String id3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id3 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(id3, id3_2, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
-			String id0 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String id0 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(id0, id1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -468,19 +468,19 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
-			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			String idA = assertNodeEvent(null, "A", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idB = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", null, reader);
+			String idB = assertNodeEvent(null, "B", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idC = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", null, reader);
+			String idC = assertNodeEvent(null, "C", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String idN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN1 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idB, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idC, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
-			String idN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN2 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN2, idA, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -491,19 +491,19 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
-			idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			idA = assertNodeEvent(null, "A", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			idB = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", null, reader);
+			idB = assertNodeEvent(null, "B", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			idN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			idN1 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idA, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN1, idB, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
-			idC = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", null, reader);
+			idC = assertNodeEvent(null, "C", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			idN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			idN2 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(idN2, idN1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -532,11 +532,11 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String idADH2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "ADH2", null, reader);
+			String idADH2 = assertNodeEvent(null, "ADH2", false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
-			String idADH1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "ADH1", null, reader);
+			String idADH1 = assertNodeEvent(null, "ADH1", false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
-			String idN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN1 = assertNodeEvent(null, null, false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
 			assertEdgeEvent(idN1, idADH2, 0.1, reader);
@@ -546,9 +546,9 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:S", PREDICATE_TAXONOMY_SCIENTIFIC_NAME), null, "human", null, "human", true, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			
-			String idADHX = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "ADHX", null, reader);
+			String idADHX = assertNodeEvent(null, "ADHX", false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
-			String idN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN2 = assertNodeEvent(null, null, false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 
 			assertEdgeEvent(idN2, idN1, 0.05, reader);
@@ -560,9 +560,9 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertCommentEvent("&&NHX:=insect", reader);  // Not a valid NHX hot comment.
 			assertEndEvent(EventContentType.EDGE, reader);
 			
-			String idADH3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "ADH3", null, reader);
+			String idADH3 = assertNodeEvent(null, "ADH3", false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
-			String idN3 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN3 = assertNodeEvent(null, null, false, null, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("NHX:D", PREDICATE_HAS_LITERAL_METADATA), null, "N", null, "N", true, reader);  // This metadata should theoretically be associated with the root branch, since NHX does not offer attaching data to nodes instead of branches.
 			assertEndEvent(EventContentType.NODE, reader);
 
@@ -619,7 +619,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-//			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+//			String idA = assertNodeEvent(null, "A", null, reader);
 //			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 //
 //			assertEdgeEvent(null, idA, Double.NaN, reader);
@@ -645,7 +645,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			String idA = assertNodeEvent(null, "A", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, idA, Double.NaN, reader);
@@ -671,7 +671,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idA = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, idA, 2.0, reader);
@@ -698,7 +698,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
 			
-			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", null, reader);
+			String idA = assertNodeEvent(null, "A", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, idA, 2.0, reader);

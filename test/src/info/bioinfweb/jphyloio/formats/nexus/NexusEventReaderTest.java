@@ -1019,21 +1019,21 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			String otuIDScarabaeus, String otuIDDrosophila, String otuIDAranaeus) throws Exception {
 		assertLabeledIDEvent(EventContentType.TREE, null, label, reader);
 		
-		String nodeIDScarabaeus = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "Scarabaeus", otuIDScarabaeus, reader);
+		String nodeIDScarabaeus = assertNodeEvent(null, "Scarabaeus", false, otuIDScarabaeus, reader);
 		assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-		String nodeIDDrosophila = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "Drosophila", otuIDDrosophila, reader);
+		String nodeIDDrosophila = assertNodeEvent(null, "Drosophila", false, otuIDDrosophila, reader);
 		assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 		
-		String nodeIDN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+		String nodeIDN1 = assertNodeEvent(null, null, false, null, reader);
 		assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 		assertEdgeEvent(nodeIDN1, nodeIDScarabaeus, reader);
 		assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 		assertEdgeEvent(nodeIDN1, nodeIDDrosophila, reader);
 		assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 		
-		String nodeIDAranaeus = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "Aranaeus", otuIDAranaeus, reader);
+		String nodeIDAranaeus = assertNodeEvent(null, "Aranaeus", false, otuIDAranaeus, reader);
 		assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-		String nodeIDN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+		String nodeIDN2 = assertNodeEvent(null, null, false, null, reader);
 		assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 		
 		assertEdgeEvent(nodeIDN2, nodeIDN1, reader);
@@ -1108,21 +1108,21 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, otusID, reader);
 			assertLabeledIDEvent(EventContentType.TREE, null, "my tree", reader);
 			
-			String nodeIDScarabaeus = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "Scarabaeus bug", otuIDScarabaeus, reader);
+			String nodeIDScarabaeus = assertNodeEvent(null, "Scarabaeus bug", false, otuIDScarabaeus, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String nodeIDDrosophila = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "Drosophila", otuIDDrosophila, reader);
+			String nodeIDDrosophila = assertNodeEvent(null, "Drosophila", false, otuIDDrosophila, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
-			String nodeIDN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String nodeIDN1 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(nodeIDN1, nodeIDScarabaeus, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(nodeIDN1, nodeIDDrosophila, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
-			String nodeIDAranaeus = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "3", null, reader);
+			String nodeIDAranaeus = assertNodeEvent(null, "3", false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String nodeIDN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String nodeIDN2 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
 			assertEdgeEvent(nodeIDN2, nodeIDN1, reader);
@@ -1161,9 +1161,9 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, otusID, reader);
 			assertLabeledIDEvent(EventContentType.TREE, null, "tree", reader);
-			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, new Boolean(false), true, reader);
+			//assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, new Boolean(false), true, reader);
 			
-			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", otuIDA, reader);
+			String idA = assertNodeEvent(null, "A", false, otuIDA, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, ",=\"", null, ",=\"", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0", null, new Double(0.0), true, reader);
 			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
@@ -1173,7 +1173,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob+-sd", PREDICATE_HAS_LITERAL_METADATA), null, "100+-0", null, "100+-0", true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
-			String idB = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", otuIDB, reader);
+			String idB = assertNodeEvent(null, "B", false, otuIDB, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "1.000000000000000e+000", null, new Double(1.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
 			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
@@ -1183,7 +1183,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob+-sd", PREDICATE_HAS_LITERAL_METADATA), null, "100+-0", null, "100+-0", true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
-			String idC = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", otuIDC, reader);
+			String idC = assertNodeEvent(null, "C", false, otuIDC, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "6.364056912805381e-001", null, new Double(6.364056912805381e-001), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "7.249475639180907e-004", null, new Double(7.249475639180907e-004), true, reader);
 			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
@@ -1194,7 +1194,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEndEvent(EventContentType.NODE, reader);
 			
 			
-			String idN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN1 = assertNodeEvent(null, null, false, null, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "1.000000000000000e+000", null, new Double(1.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
 			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
@@ -1222,7 +1222,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 					Arrays.asList(new Double(9.114712766459516e-003), new Double(1.418351647155842e-001)), true, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 
-			String idN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String idN2 = assertNodeEvent(null, null, true, null, reader);
 			assertCommentEvent("18", false, reader);
 			//assertMetaEvent(HotCommentDataReader.UNNAMED_NODE_DATA_NAME, "18", null, new Double(18), true, true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
@@ -1306,21 +1306,21 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, otusID, reader);
 			assertLabeledIDEvent(EventContentType.TREE, null, "otherTree", reader);
 			
-			String nodeIDBeetle = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "beetle", otuIDBeetle, reader);
+			String nodeIDBeetle = assertNodeEvent(null, "beetle", false, otuIDBeetle, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String nodeIDFly = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "fly", otuIDFly, reader);
+			String nodeIDFly = assertNodeEvent(null, "fly", false, otuIDFly, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
-			String nodeIDN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String nodeIDN1 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			assertEdgeEvent(nodeIDN1, nodeIDBeetle, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(nodeIDN1, nodeIDFly, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
-			String nodeIDSpider = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "spider", otuIDSpider, reader);
+			String nodeIDSpider = assertNodeEvent(null, "spider", false, otuIDSpider, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
-			String nodeIDN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String nodeIDN2 = assertNodeEvent(null, null, false, null, reader);
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 			
 			assertEdgeEvent(nodeIDN2, nodeIDN1, reader);
@@ -1419,13 +1419,13 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, "someTrees", otusID, reader);
 			assertLabeledIDEvent(EventContentType.TREE, null, "someTree", reader);
 			
-			String nodeIDA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", otuIDA, reader);
+			String nodeIDA = assertNodeEvent(null, "A", false, otuIDA, reader);
 			assertEndEvent(EventContentType.NODE, reader);
-			String nodeIDB = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", otuIDB, reader);
+			String nodeIDB = assertNodeEvent(null, "B", false, otuIDB, reader);
 			assertEndEvent(EventContentType.NODE, reader);
-			String nodeIDC = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", otuIDC, reader);
+			String nodeIDC = assertNodeEvent(null, "C", false, otuIDC, reader);
 			assertEndEvent(EventContentType.NODE, reader);
-			String nodeIDN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String nodeIDN1 = assertNodeEvent(null, null, false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
 			assertEdgeEvent(nodeIDN1, nodeIDB, reader);
@@ -1433,7 +1433,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEdgeEvent(nodeIDN1, nodeIDC, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 
-			String nodeIDN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
+			String nodeIDN2 = assertNodeEvent(null, null, false, null, reader);
 			assertEndEvent(EventContentType.NODE, reader);
 			
 			assertEdgeEvent(nodeIDN2, nodeIDA, reader);
