@@ -38,13 +38,6 @@ public enum LiteralContentSequenceType {
 	
 	/** 
 	 * Indicates that a sequence of {@link LiteralMetadataContentEvent}s will be nested. Each of them represents
-	 * one value in an array of values. (The whole array is the literal value.) 
-	 */
-	@Deprecated
-	SIMPLE_ARRAY, //TODO remove after according changes to Newick reader and writer classes
-
-	/** 
-	 * Indicates that a sequence of {@link LiteralMetadataContentEvent}s will be nested. Each of them represents
 	 * one XML element as they are read by an implementation of {@link XMLEventReader}. (The data represented by the
 	 * XML sequence as a whole is the literal value.) 
 	 */
