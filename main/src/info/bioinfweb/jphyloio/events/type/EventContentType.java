@@ -29,6 +29,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.MetaInformationEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SetElementEvent;
@@ -214,7 +215,7 @@ public enum EventContentType {
 	/** 
 	 * Indicates a node in a phylogenetic tree or network.
 	 * <p> 
-	 * Start events of this type are instances of {@link LinkedLabeledIDEvent}, end events are
+	 * Start events of this type are instances of {@link NodeEvent}, end events are
 	 * instances of {@link ConcreteJPhyloIOEvent}. Start events optionally link a single OTU.
 	 * <p>
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 

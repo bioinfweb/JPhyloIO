@@ -95,7 +95,7 @@ public class EdgeEvent extends LabeledIDEvent {
 	 * Returns the ID of the source node linked by this edge.
 	 * 
 	 * @return the ID of the source node or {@code null} if this event represents a root edge
-	 * @see #isRootEdge()
+	 * @see #hasSource()
 	 */
 	public String getSourceID() {
 		return sourceID;
@@ -103,13 +103,13 @@ public class EdgeEvent extends LabeledIDEvent {
 
 	
 	/**
-	 * Indicates whether this edge is a root edge or connects two nodes inside a tree or network.
+	 * Indicates whether this edge has a source node and can therefore be considered a root edge.
 	 * <p>
 	 * If this method returns {@code true}, {@link #getSourceID()} will return {@code null}.
 	 * 
-	 * @return {@code true} if this edge is a root edge or {@code false} otherwise
+	 * @return {@code true} if this edge has a source node or {@code false} otherwise
 	 */
-	public boolean isRootEdge() {
+	public boolean hasSource() {
 		return getSourceID() == null;
 	}
 	
