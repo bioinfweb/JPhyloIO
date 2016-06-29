@@ -43,12 +43,14 @@ public class EdgeEvent extends LabeledIDEvent {
 	
 	
 	/**
-	 * Creates a new instance of this class that represents an internal edge.
+	 * Creates a new instance of this class that represents an internal edge or a root edge. If {@code sourceID}
+	 * is {@code null} the content type will be {@link EventContentType#ROOT_EDGE} and otherwise it will be
+	 * {@link EventContentType#EDGE}.
 	 * 
 	 * @param id the unique ID associated with the represented edge (Must be a valid
 	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
 	 * @param label an optional label associated with this edge (Maybe {@code null}.)
-	 * @param sourceID the ID of the source node of this edge 
+	 * @param sourceID the ID of the source node of this edge (Maybe {@code null} if a root edge shall be created.)
 	 * @param targetID the ID of the target node of this edge
 	 * @param length an optional lengths of this edge (Maybe {@link Double#NaN} if no length is given.)
 	 * @throws NullPointerException if {@code id}, {@code sourceID} or {@code targetID} are {@code null}
@@ -56,10 +58,12 @@ public class EdgeEvent extends LabeledIDEvent {
 	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCNames</a>
 	 */
 	public EdgeEvent(String id, String label,	String sourceID, String targetID, double length) {
-		super(EventContentType.EDGE, id, label);
+		super(sourceID == null ? EventContentType.ROOT_EDGE : EventContentType.EDGE, id, label);
 
 		checkID(targetID, "target ID");
-		checkID(sourceID, "source ID");
+		if (sourceID != null) {
+			checkID(sourceID, "source ID");
+		}
 		this.sourceID = sourceID;
 		this.targetID = targetID;
 		this.length = length;
