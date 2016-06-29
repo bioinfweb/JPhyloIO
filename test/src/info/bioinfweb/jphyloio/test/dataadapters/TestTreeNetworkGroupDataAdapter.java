@@ -28,7 +28,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAd
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTreeAdapter;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -49,7 +49,7 @@ public class TestTreeNetworkGroupDataAdapter extends EmptyAnnotatedDataAdapter<L
 		if (linkedOTUs.length != 3) {
 			throw new IllegalArgumentException("Invalid number of linked OTUs (" + linkedOTUs.length + ").");
 		}
-		this.tree = new EdgeAndNodeMetaDataTree(id, label, nodeEdgeIDPrefix, linkedOTUs);
+		this.tree = new EdgeAndNodeMetaDataTreeAdapter(id, label, nodeEdgeIDPrefix, linkedOTUs);
 	}
 
 

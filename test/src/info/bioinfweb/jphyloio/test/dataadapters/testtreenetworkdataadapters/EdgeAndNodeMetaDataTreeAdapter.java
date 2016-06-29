@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters;
 
 
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
@@ -34,6 +35,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,14 +46,14 @@ import javax.xml.namespace.QName;
 
 
 
-public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements TreeNetworkDataAdapter {
+public class EdgeAndNodeMetaDataTreeAdapter extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements TreeNetworkDataAdapter {
 	private String id = null;
 	private String label = null;
 	private String nodeEdgeIDPrefix = "";
 	private String[] linkedOTUs;
 	
 	
-	public EdgeAndNodeMetaDataTree(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
+	public EdgeAndNodeMetaDataTreeAdapter(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
 		super();
 		this.id = id;
 		this.label = label;
@@ -65,7 +67,7 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 	}
 
 
-	public EdgeAndNodeMetaDataTree(String id, String label, String nodeEdgeIDPrefix) {
+	public EdgeAndNodeMetaDataTreeAdapter(String id, String label, String nodeEdgeIDPrefix) {
 		this(id, label, nodeEdgeIDPrefix, new String[]{null, null, null});
 	}
 
@@ -128,14 +130,15 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			if(nodeID.substring(nodeEdgeIDPrefix.length()).equals("n1")) {
 
-				receiver.add(new LiteralMetadataEvent("n1meta1", null, new URIOrStringIdentifier("a1", new QName("http://example.org/", "somePredicate")), 
-						LiteralContentSequenceType.SIMPLE));
-				receiver.add(new LiteralMetadataContentEvent(null, "100", new Integer(100)));
+				receiver.add(new LiteralMetadataEvent("n1meta1", null, 
+						new URIOrStringIdentifier("a1", new QName("http://example.org/", "somePredicate")),
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), LiteralContentSequenceType.SIMPLE));
+				receiver.add(new LiteralMetadataContentEvent(new Integer(100), "100"));
 				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				
 				receiver.add(new LiteralMetadataEvent("n1meta2", null, new URIOrStringIdentifier("a2", new QName("http://example.org/", "somePredicate")), 
 						LiteralContentSequenceType.SIMPLE));
-				receiver.add(new LiteralMetadataContentEvent(null, "ab 'c", "ab 'c"));
+				receiver.add(new LiteralMetadataContentEvent("ab 'c", "ab 'c"));
 				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			}
 		}
@@ -188,17 +191,17 @@ public class EdgeAndNodeMetaDataTree extends EmptyAnnotatedDataAdapter<LabeledID
 	@Override
 	public void writeEdgeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String edgeID) throws IOException {
 		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
-			if(edgeID.substring(nodeEdgeIDPrefix.length()).equals("eA")) {
-				receiver.add(new LiteralMetadataEvent("eAmeta1", null, new URIOrStringIdentifier("splitString", new QName("http://example.org/", "somePredicate")), 
-						LiteralContentSequenceType.SIMPLE));
-				receiver.add(new LiteralMetadataContentEvent(null, "ABC", true));
-				receiver.add(new LiteralMetadataContentEvent(null, "DEF", false));
+			if (edgeID.substring(nodeEdgeIDPrefix.length()).equals("eA")) {
+				receiver.add(new LiteralMetadataEvent("eAmeta1", null, 
+						new URIOrStringIdentifier("splitString", new QName("http://example.org/", "somePredicate")), LiteralContentSequenceType.SIMPLE));
+				receiver.add(new LiteralMetadataContentEvent("ABC", true));
+				receiver.add(new LiteralMetadataContentEvent("DEF", false));
 				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				
-				receiver.add(new LiteralMetadataEvent("eAmeta2", null, new URIOrStringIdentifier("array", new QName("http://example.org/", "somePredicate")), 
-						LiteralContentSequenceType.SIMPLE_ARRAY));
-				receiver.add(new LiteralMetadataContentEvent(null, "100", new Integer(100)));
-				receiver.add(new LiteralMetadataContentEvent(null, "abc", false));
+				receiver.add(new LiteralMetadataEvent("eAmeta2", null, 
+						new URIOrStringIdentifier("array", new QName("http://example.org/", "somePredicate")), 
+						new URIOrStringIdentifier(null, NewickConstants.DATA_TYPE_NEWICK_ARRAY), LiteralContentSequenceType.SIMPLE));
+				receiver.add(new LiteralMetadataContentEvent(Arrays.asList(new Integer(100), "abc"), null));
 				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			}
 		}

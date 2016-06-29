@@ -39,7 +39,7 @@ import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapte
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestSingleTokenSetAdapter;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTree;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTreeAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -109,9 +109,9 @@ public class NexusEventWriterTest implements NexusConstants {
 		StoreTreeNetworkGroupDataAdapter treeGroup2 = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
 				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + "1", null, "otus0"), null);
 		
-		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree0", "tree", "t0"));
-		treeGroup2.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree1", "tree", "t1", new String[]{"otu0", "otu1", "otu2"}));
-		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTree("tree2", "tree", "t2"));
+		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTreeAdapter("tree0", "tree", "t0"));
+		treeGroup2.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTreeAdapter("tree1", "tree", "t1", new String[]{"otu0", "otu1", "otu2"}));
+		treeGroup1.getTreesAndNetworks().add(new EdgeAndNodeMetaDataTreeAdapter("tree2", "tree", "t2"));
 		
 		treeGroup1.getTreeSets(null).setObjectStartEvent(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeSet1", "tree set 1", treeGroup1.getStartEvent(parameters).getID()));
 		treeGroup1.getTreeSets(null).getObjectMap().get("treeSet1").getObjectContent().add(new SetElementEvent("tree0", EventContentType.TREE));
