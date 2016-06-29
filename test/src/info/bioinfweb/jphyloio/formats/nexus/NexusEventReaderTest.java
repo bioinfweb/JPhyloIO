@@ -31,10 +31,12 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.xml.namespace.QName;
 
@@ -45,7 +47,7 @@ import static org.junit.Assert.* ;
 
 
 
-public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants {
+public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants, NewickConstants {
 	public NexusEventReaderTest() {
 		super();
 	}
@@ -1162,11 +1164,11 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, new Boolean(false), true, reader);
 			
 			String idA = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "A", otuIDA, reader);
-			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "1.000000000000000e+000", null, new Double(1.0), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, ",=\"", null, ",=\"", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0", null, new Double(0.0), true, reader);
-			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE_ARRAY, reader);
-			assertLiteralMetaContentEvent(null, "1.000000000000000e+000", null, new Double(1.0), false, reader);
-			assertLiteralMetaContentEvent(null, "1", null, new Double(1.0), true, reader);
+			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
+					new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY), null, reader);
+			assertLiteralMetaContentEvent("{\",=\"\"\",ABC}", Arrays.asList(",=\"", "ABC"), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob(percent)", PREDICATE_HAS_LITERAL_METADATA), null, "100", null, "100", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob+-sd", PREDICATE_HAS_LITERAL_METADATA), null, "100+-0", null, "100+-0", true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
@@ -1174,9 +1176,9 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			String idB = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "B", otuIDB, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "1.000000000000000e+000", null, new Double(1.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
-			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE_ARRAY, reader);
-			assertLiteralMetaContentEvent(null, "AB C", null, "AB C", false, reader);
-			assertLiteralMetaContentEvent(null, "ABC", null, "ABC", true, reader);
+			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
+					new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY), null, reader);
+			assertLiteralMetaContentEvent("{\"AB C\", ABC}", Arrays.asList("AB C", "ABC"), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob(percent)", PREDICATE_HAS_LITERAL_METADATA), null, "100", null, "100", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob+-sd", PREDICATE_HAS_LITERAL_METADATA), null, "100+-0", null, "100+-0", true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
@@ -1184,9 +1186,9 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			String idC = assertLinkedLabeledIDEvent(EventContentType.NODE, null, "C", otuIDC, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "6.364056912805381e-001", null, new Double(6.364056912805381e-001), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "7.249475639180907e-004", null, new Double(7.249475639180907e-004), true, reader);
-			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE_ARRAY, reader);
-			assertLiteralMetaContentEvent(null, "6.358930759420870e-001", null, new Double(6.358930759420870e-001), false, reader);
-			assertLiteralMetaContentEvent(null, "6.369183066189893e-001", null, new Double(6.369183066189893e-001), true, reader);
+			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
+					new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY), null, reader);
+			assertLiteralMetaContentEvent("{6.358930759420870e-001,6.369183066189893e-001}", Arrays.asList(new Double(6.358930759420870e-001), new Double(6.369183066189893e-001)), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob(percent)", PREDICATE_HAS_LITERAL_METADATA), null, "64", null, "64", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob+-sd", PREDICATE_HAS_LITERAL_METADATA), null, "64+-0", null, "64+-0", true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
@@ -1195,9 +1197,9 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			String idN1 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob", PREDICATE_HAS_LITERAL_METADATA), null, "1.000000000000000e+000", null, new Double(1.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob_stddev", PREDICATE_HAS_LITERAL_METADATA), null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
-			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE_ARRAY, reader);
-			assertLiteralMetaContentEvent(null, "1.000000000000000e+000", null, new Double(1.0), false, reader);
-			assertLiteralMetaContentEvent(null, "1.000000000000000e+000", null, new Double(1.0), true, reader);
+			assertLiteralMetaStartEvent(new URIOrStringIdentifier("prob_range", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
+					new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY), null, reader);
+			assertLiteralMetaContentEvent("{1.000000000000000e+000,1.000000000000000e+000}", Arrays.asList(new Double(1.0), new Double(1.0)), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob(percent)", PREDICATE_HAS_LITERAL_METADATA), null, "100", null, "100", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("prob+-sd", PREDICATE_HAS_LITERAL_METADATA), null, "100+-0", null, "100+-0", true, reader);
 			assertEndEvent(EventContentType.NODE, reader);
@@ -1205,17 +1207,19 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEdgeEvent(idN1, idB, 6.244293083853111e-001, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("length_mean", PREDICATE_HAS_LITERAL_METADATA), null, "6.345415111023917e-001", null, new Double(6.345415111023917e-001), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("length_median", PREDICATE_HAS_LITERAL_METADATA), null, "6.244293083853111e-001", null, new Double(6.244293083853111e-001), true, reader);
-			assertLiteralMetaStartEvent(new URIOrStringIdentifier("length_95%HPD", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE_ARRAY, reader);
-			assertLiteralMetaContentEvent(null, "4.360295861156825e-001", null, new Double(4.360295861156825e-001), false, reader);
-			assertLiteralMetaContentEvent(null, "8.441623753050405e-001", null, new Double(8.441623753050405e-001), true, reader);
+			assertLiteralMetaStartEvent(new URIOrStringIdentifier("length_95%HPD", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
+					new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY), null, reader);
+			assertLiteralMetaContentEvent("{4.360295861156825e-001,8.441623753050405e-001}",
+					Arrays.asList(new Double(4.360295861156825e-001), new Double(8.441623753050405e-001)), true, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEdgeEvent(idN1, idC, 7.039004236028111e-002, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("length_mean", PREDICATE_HAS_LITERAL_METADATA), null, "7.419012044002400e-002", null, new Double(7.419012044002400e-002), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("length_median", PREDICATE_HAS_LITERAL_METADATA), null, "7.039004236028111e-002", null, new Double(7.039004236028111e-002), true, reader);
-			assertLiteralMetaStartEvent(new URIOrStringIdentifier("length_95%HPD", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE_ARRAY, reader);
-			assertLiteralMetaContentEvent(null, "9.114712766459516e-003", null, new Double(9.114712766459516e-003), false, reader);
-			assertLiteralMetaContentEvent(null, "1.418351647155842e-001", null, new Double(1.418351647155842e-001), true, reader);
+			assertLiteralMetaStartEvent(new URIOrStringIdentifier("length_95%HPD", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
+					new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY), null, reader);
+			assertLiteralMetaContentEvent("{9.114712766459516e-003,1.418351647155842e-001}", 
+					Arrays.asList(new Double(9.114712766459516e-003), new Double(1.418351647155842e-001)), true, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 
 			String idN2 = assertLinkedLabeledIDEvent(EventContentType.NODE, null, null, null, reader);
@@ -1226,17 +1230,18 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants 
 			assertEdgeEvent(idN2, idA, .3682008685714568, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("length_mean", PREDICATE_HAS_LITERAL_METADATA), null, "3.744759260623280e-001", null, new Double(3.744759260623280e-001), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("length_median", PREDICATE_HAS_LITERAL_METADATA), null, "3.682008685714568e-001", null, new Double(3.682008685714568e-001), true, reader);
-			assertLiteralMetaStartEvent(new URIOrStringIdentifier("length_95%HPD", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE_ARRAY, reader);
-			assertLiteralMetaContentEvent(null, "2.494893056441154e-001", null, new Double(2.494893056441154e-001), false, reader);
-			assertLiteralMetaContentEvent(null, "5.088322191162278e-001", null, new Double(5.088322191162278e-001), true, reader);
+			assertLiteralMetaStartEvent(new URIOrStringIdentifier("length_95%HPD", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
+					new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY), null, reader);
+			assertLiteralMetaContentEvent("{2.494893056441154e-001,5.088322191162278e-001}", 
+					Arrays.asList(new Double(2.494893056441154e-001), new Double(5.088322191162278e-001)), true, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEdgeEvent(idN2, idN1, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("length_mean", PREDICATE_HAS_LITERAL_METADATA), null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("length_median", PREDICATE_HAS_LITERAL_METADATA), null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
-			assertLiteralMetaStartEvent(new URIOrStringIdentifier("length_95%HPD", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE_ARRAY, reader);
-			assertLiteralMetaContentEvent(null, "0.000000000000000e+000", null, new Double(0.0), false, reader);
-			assertLiteralMetaContentEvent(null, "0.000000000000000e+000", null, new Double(0.0), true, reader);
+			assertLiteralMetaStartEvent(new URIOrStringIdentifier("length_95%HPD", PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE,  
+					new URIOrStringIdentifier(null, DATA_TYPE_NEWICK_ARRAY), null, reader);
+			assertLiteralMetaContentEvent("{0.000000000000000e+000,0.000000000000000e+000}", Arrays.asList(new Double(0.0), new Double(0.0)), true, reader);
 			assertCommentEvent("comment 1", false, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 
