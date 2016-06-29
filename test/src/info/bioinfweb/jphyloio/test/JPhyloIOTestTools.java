@@ -254,7 +254,7 @@ public class JPhyloIOTestTools {
 	
 	
   public static String assertLiteralMetaStartEvent(URIOrStringIdentifier expectedPredicate, LiteralContentSequenceType expectedSequenceType,  
-  		JPhyloIOEventReader reader) throws Exception {
+  		URIOrStringIdentifier expectedOriginalType, String expectedAlternativeStringValue, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
@@ -263,11 +263,38 @@ public class JPhyloIOTestTools {
 		LiteralMetadataEvent metaInformationEvent = event.asLiteralMetadataEvent();
 		assertEquals(expectedSequenceType, metaInformationEvent.getSequenceType());  //TODO Also check other types?
 		assertEquals(expectedPredicate, metaInformationEvent.getPredicate());
+		assertEquals(expectedOriginalType, metaInformationEvent.getOriginalType());
+		assertEquals(expectedAlternativeStringValue, metaInformationEvent.getAlternativeStringValue());
 		
 		return metaInformationEvent.getID();
   }
   
+  
+  @Deprecated  //TODO Should this be deprecated or left as a convenience method?
+  public static String assertLiteralMetaStartEvent(URIOrStringIdentifier expectedPredicate, LiteralContentSequenceType expectedSequenceType,  
+  		JPhyloIOEventReader reader) throws Exception {
   	
+  	return assertLiteralMetaStartEvent(expectedPredicate, expectedSequenceType, null, null, reader);
+  }
+  
+  	
+  public static void assertLiteralMetaContentEvent(String expectedStringValue, Object expectedObjectValue, boolean testLiteralEndEvent, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);
+		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
+		assertEquals(expectedStringValue, contentEvent.getStringValue());
+		assertEquals(expectedObjectValue, contentEvent.getObjectValue());
+		
+		if (testLiteralEndEvent) {
+			assertEndEvent(EventContentType.META_LITERAL, reader);
+		}
+  }
+  
+  
+  @Deprecated
   public static void assertLiteralMetaContentEvent(URIOrStringIdentifier expectedOriginalType, 
   		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testLiteralEndEvent, 
   		JPhyloIOEventReader reader) throws Exception {
@@ -284,6 +311,13 @@ public class JPhyloIOTestTools {
 		if (testLiteralEndEvent) {
 			assertEndEvent(EventContentType.META_LITERAL, reader);
 		}
+  }
+  
+  
+  public static void assertLiteralMetaContentEvent(URIOrStringIdentifier expectedOriginalType, String expectedStringValue, 
+  		String expectedAlternativeStringValue, JPhyloIOEventReader reader, Object... expectedArrayValues) throws Exception {
+  	
+  	
   }
   
   

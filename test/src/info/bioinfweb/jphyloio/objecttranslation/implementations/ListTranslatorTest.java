@@ -31,7 +31,7 @@ import static org.junit.Assert.* ;
 
 
 public class ListTranslatorTest {
-	private void assertList(List<Object> list, Object... expectedEntries) {
+	private void assertListEntriesEqual(List<Object> list, Object... expectedEntries) {
 		assertEquals(expectedEntries.length, list.size());
 		int pos = 0;
 		for (Object entry : list) {
@@ -45,8 +45,8 @@ public class ListTranslatorTest {
 	@Test
 	public void test_representationToJava() throws UnsupportedOperationException, InvalidObjectSourceDataException {
 		ListTranslator translator = new ListTranslator();
-		assertList(translator.representationToJava("{}", null));
-		assertList(translator.representationToJava("{\"ABC\", 18, 20.2, 'AB, C', \"AB\"\"C\", \"{'ABC'}\", 2E500}", null), 
+		assertListEntriesEqual(translator.representationToJava("{}", null));
+		assertListEntriesEqual(translator.representationToJava("{\"ABC\", 18, 20.2, 'AB, C', \"AB\"\"C\", \"{'ABC'}\", 2E500}", null), 
 				"ABC", new Double(18), new Double(20.2), "AB, C", "AB\"C", "{'ABC'}", new BigDecimal("2E500"));
 	}
 }
