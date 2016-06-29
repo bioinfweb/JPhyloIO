@@ -28,14 +28,14 @@ public class URIOrStringIdentifier {
 	private QName uri;
 	
 	
-	public URIOrStringIdentifier(String stringRepresentation, QName predicate) {
+	public URIOrStringIdentifier(String stringRepresentation, QName uri) {
 		super();
-		if ((stringRepresentation == null) && (predicate == null)) {
-			throw new IllegalArgumentException("At least one of \"predicate\" or \"stringRepresentation\" must be different from null.");
+		if ((stringRepresentation == null) && (uri == null)) {
+			throw new IllegalArgumentException("At least one of \"uri\" or \"stringRepresentation\" must be different from null.");
 		}
 		else {
 			this.stringRepresentation = stringRepresentation;		
-			this.uri = predicate;
+			this.uri = uri;
 		}
 	}
 
