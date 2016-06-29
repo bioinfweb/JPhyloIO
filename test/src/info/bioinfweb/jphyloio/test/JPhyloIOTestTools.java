@@ -431,7 +431,12 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.EDGE, EventTopologyType.START, event);
+		if (expectedSourceID == null) {
+			assertEventType(EventContentType.ROOT_EDGE, EventTopologyType.START, event);
+		}
+		else {
+			assertEventType(EventContentType.EDGE, EventTopologyType.START, event);
+		}
 		
 		EdgeEvent edgeEvent = event.asEdgeEvent();
 		assertEquals(expectedSourceID, edgeEvent.getSourceID());
