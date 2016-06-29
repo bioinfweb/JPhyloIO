@@ -25,14 +25,14 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 /**
- * Event indicating a node in a tree or network. If a node represents a root node of a tree, 
- * {@link isRootNode()} will return {@code true}. A node in a network will never be a root node.
+ * Event indicating a node in a tree or network.
  * <p>
  * This event is a start event, which is followed by an end event of the same content type. Comment
  * and metainformation events maybe nested between this and its according end event. (See the description
  * of {@link JPhyloIOEventReader} for the complete grammar definition of JPhyloIO event streams.)
  * 
  * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
  */
 public class NodeEvent extends LinkedLabeledIDEvent {
 	private boolean isRootNode;
@@ -45,15 +45,21 @@ public class NodeEvent extends LinkedLabeledIDEvent {
 
 	
 	/**
-	 * Indicates whether this node is a true root of the tree it belongs to.
+	 * Indicates whether this node is a root of its tree or network. One tree or network may contain alternative
+	 * root nodes, but not all formats will support this.
 	 * <p>
-	 * As opposed to the presence of a root edge, that merely specifies if an edge with a certain length 
-	 * leading to a root node should be displayed, a true root node is only present if the tree should be 
-	 * considered rooted and not only be displayed as rooted.
+	 * Note that in case of trees this property indicates that this node can be one (alternative) root in a semantic
+	 * sense. The topological representation of the tree is independent of this and only determined by how its nodes 
+	 * are linked by edge events. The presence of a root edge defining a length of a tree branch leading to the node 
+	 * that is topologically at the root of the tree is also fully independent of this property.
 	 * <p>
-	 * A network node will never be a true root.
+	 * In <i>NeXML</i> root nodes are identified by having a {@code root="true"} 
+	 * <a href="http://nexml.org/doc/schema-1/trees/abstracttrees/#AbstractNode">attribute</a>. In <i>Newick</i> and 
+	 * <i>Nexus</i> only the property of the topological root node is modeled by the {@code [&R]} or {@code [&U]}
+	 * hot comments preceding a <i>Newick</i> string. The same applies for the {@code rooted} attribite of the {@code phylogeny}
+	 * <a href="http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h535307528">tag</a> in <i>PhyloXML</i>.
 	 * 
-	 * @return {@code true} if this node is a true root or {@code false} otherwise
+	 * @return {@code true} if this node is a possible root or {@code false} otherwise
 	 */
 	public boolean isRootNode() {
 		return isRootNode;
