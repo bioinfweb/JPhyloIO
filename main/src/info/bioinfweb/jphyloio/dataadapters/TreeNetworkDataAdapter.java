@@ -57,6 +57,7 @@ public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter<LabeledIDEv
 	 * @param parameters the parameter map of the calling writer that provides context information for the data request
 	 * @return {@code true} if the tree or network shall be considered rooted or {@code false} otherwise
 	 */
+	@Deprecated
 	public boolean considerRooted(ReadWriteParameterMap parameters);
 	
 	/**

@@ -164,7 +164,15 @@ public interface JPhyloIOEvent {
 	 * Casts this event to a tree or graph edge event.
 	 * 
 	 * @return a reference to this event as an edge event
-	 * @throws ClassCastException if this event is not an instance of {@link SingleTokenDefinitionEvent}
+	 * @throws ClassCastException if this event is not an instance of {@link EdgeEvent}
 	 */
 	public EdgeEvent asEdgeEvent() throws ClassCastException;
+	
+	/**
+	 * Casts this event to a tree or graph node event.
+	 * 
+	 * @return a reference to this event as a node event
+	 * @throws ClassCastException if this event is not an instance of {@link NodeEvent}
+	 */
+	public NodeEvent asNodeEvent() throws ClassCastException;
 }

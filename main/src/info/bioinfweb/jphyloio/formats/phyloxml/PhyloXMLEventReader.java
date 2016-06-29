@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
@@ -273,7 +274,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						String data = event.asCharacters().getData();
 					
 						if (streamDataProvider.isFirstContentEvent() && !isContinued) {
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(data, isContinued)); //TODO is here a better way to do this?
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(data, data));
 						}
 						else {
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(data, isContinued));
@@ -355,8 +356,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.setCreatePhylogenyStart(true);
 					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 					
-					readAttributes(streamDataProvider, element, "", ATTR_ROOTED, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED, ATTR_REROOTABLE, 
-							PREDICATE_PHYLOGENY_ATTR_REROOTABLE, ATTR_BRANCH_LENGTH_UNIT, PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, ATTR_TYPE, PREDICATE_PHYLOGENY_ATTR_TYPE);
+					readAttributes(streamDataProvider, element, "", ATTR_REROOTABLE, PREDICATE_PHYLOGENY_ATTR_REROOTABLE, ATTR_BRANCH_LENGTH_UNIT, 
+							PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, ATTR_TYPE, PREDICATE_PHYLOGENY_ATTR_TYPE);
 				}
 		});
 		
@@ -391,7 +392,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						createPhylogenyStart(streamDataProvider);
 					}
 					
-					streamDataProvider.getSourceNode().add(new NodeEdgeInfo(DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), Double.NaN, new ArrayList<JPhyloIOEvent>()));
+					NodeEdgeInfo nodeInfo = new NodeEdgeInfo(DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), Double.NaN, new ArrayList<JPhyloIOEvent>());
+					nodeInfo.setIsRoot(streamDataProvider.isRootedPhylogeny());
+					streamDataProvider.getSourceNode().add(nodeInfo);
 					streamDataProvider.setCreateNodeStart(true);
 					
 					streamDataProvider.getEdgeInfos().add(new NodeEdgeInfo(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
@@ -1158,9 +1161,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			
 			streamDataProvider.getCladeIDToNodeEventIDMap().put(streamDataProvider.getLastNodeID(), nodeInfo.getID());
 			
-			getStreamDataProvider().getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NODE, nodeInfo.getID(), nodeInfo.getLabel(), null));
+			getStreamDataProvider().getCurrentEventCollection().add(new NodeEvent(nodeInfo.getID(), nodeInfo.getLabel(), null, nodeInfo.isRoot()));
 			for (JPhyloIOEvent nextEvent : nodeInfo.getNestedEvents()) {
-				getStreamDataProvider().getCurrentEventCollection().add(nextEvent); //might lead to an exception, if nodeInfo.getNestedEvents() is the currentEventCollection at the time this method is called
+				getStreamDataProvider().getCurrentEventCollection().add(nextEvent);  // Might lead to an exception, if nodeInfo.getNestedEvents() is the currentEventCollection at the time this method is called
 			}
 		}		
 	}

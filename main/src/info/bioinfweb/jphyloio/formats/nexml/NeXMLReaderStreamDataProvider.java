@@ -19,9 +19,12 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
@@ -33,7 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 
@@ -69,9 +71,6 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	private Iterator<String> currentCharIDIterator = null;
 	private String currentExpectedCharID = null;
 	private boolean currentCellBuffered = false;
-	
-	private boolean isTrulyRooted = false;
-	private Set<String> rootNodeIDs;
 	
 	
 	public NeXMLReaderStreamDataProvider(NeXMLEventReader nexmlEventReader) {
@@ -359,35 +358,5 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	 */
 	public void setCurrentCellBuffered(boolean currentCellBuffered) {
 		this.currentCellBuffered = currentCellBuffered;
-	}
-
-
-	/**
-	 * Returns {@code true} if at least one node was encountered that specified {@code true} as the value of {@link NeXMLConstants.ATTR_ROOT}.
-	 * 
-	 * @return {@code true} if at least one root node was encountered
-	 */
-	public boolean isTrulyRooted() {
-		return isTrulyRooted;
-	}
-
-
-	public void setTrulyRooted(boolean isTrulyRooted) {
-		this.isTrulyRooted = isTrulyRooted;
-	}
-
-
-	/**
-	 * Returns a list of all encountered nodes that specified {@code true} as the value of {@link NeXMLConstants.ATTR_ROOT}.
-	 * 
-	 * @return a list of all encountered root nodes
-	 */
-	public Set<String> getRootNodeIDs() {
-		return rootNodeIDs;
-	}
-	
-
-	public void setRootNodeIDs(Set<String> rootNodeIDs) {
-		this.rootNodeIDs = rootNodeIDs;
 	}
 }

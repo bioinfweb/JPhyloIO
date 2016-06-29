@@ -163,4 +163,10 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	public EdgeEvent asEdgeEvent() throws ClassCastException {
 		return (EdgeEvent)this;
 	}
+
+
+	@Override
+	public NodeEvent asNodeEvent() throws ClassCastException {
+		return (NodeEvent)this;
+	}
 }

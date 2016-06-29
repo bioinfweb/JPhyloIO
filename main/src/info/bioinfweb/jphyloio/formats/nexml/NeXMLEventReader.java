@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
@@ -38,7 +39,6 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -63,7 +63,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -178,16 +177,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
 				boolean isRoot = XMLUtils.readBooleanAttr(element, ATTR_ROOT, false);
 				
-				if (isRoot) {
-					streamDataProvider.getRootNodeIDs().add(info.id);
-					streamDataProvider.setTrulyRooted(isRoot);
-				}
-				
-				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.NODE, info.id,	info.label, info.otuOrOtusID));
+				streamDataProvider.getCurrentEventCollection().add(new NodeEvent(info.id,	info.label, info.otuOrOtusID, isRoot));
 			}
 		};
 		
-		AbstractNeXMLElementReader readNodeEnd = new AbstractNeXMLElementReader() {			
+		AbstractNeXMLElementReader readNodeEnd = new AbstractNeXMLElementReader() {
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NODE));
@@ -210,15 +204,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					else {
 						streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(info.id, info.label, 
 								XMLUtils.readStringAttr(element, ATTR_SOURCE, null), targetID, length)); // The source ID will be null for rootedges, which is valid.
-						
-						if (streamDataProvider.getRootNodeIDs().contains(targetID)) {
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
-									null, new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), null, LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true))); // Since it is possible to have true roots in the default scenario no extra meta events for edges that are not true roots should be generated
-							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-							
-							streamDataProvider.getRootNodeIDs().remove(targetID);
-						}
 					}
 				}
 				catch (NumberFormatException e) {
@@ -882,7 +867,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, info.id,	info.label));
 				streamDataProvider.getElementTypeToCurrentIDMap().put(EventContentType.TREE, info.id);
-	  		streamDataProvider.setRootNodeIDs(new HashSet<String>());
 				
 				if (treeType == null) {
 					throw new JPhyloIOReaderException("Tree tag must have an attribute called \"" + ATTR_XSI_TYPE + "\".", element.getLocation());
@@ -893,29 +877,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_TREES, TAG_TREE, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				if (!streamDataProvider.getRootNodeIDs().isEmpty()) {
-					for (String rootNodeID : streamDataProvider.getRootNodeIDs()) {
-						streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(RESERVED_ID_PREFIX + DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
-								null, null, rootNodeID, Double.NaN)); // ID conflict theoretically possible
-	
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
-								null, new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), LiteralContentSequenceType.SIMPLE));  // ID conflict theoretically possible
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true)));
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));				
-						
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.EDGE));
-					}
-				}
-				
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(),
-						null, new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), LiteralContentSequenceType.SIMPLE)); // ID conflict theoretically possible
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(streamDataProvider.isTrulyRooted(), 
-						Boolean.toString(streamDataProvider.isTrulyRooted())));
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-				
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));
-				
-				streamDataProvider.getRootNodeIDs().clear();
 			}
 		});
 		
@@ -927,7 +889,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 	  		streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.NETWORK, info.id, info.label));
 	  		streamDataProvider.getElementTypeToCurrentIDMap().put(EventContentType.NETWORK, info.id);
-	  		streamDataProvider.setRootNodeIDs(new HashSet<String>());
 			}
 		});
 		
@@ -935,7 +896,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NETWORK));
-				streamDataProvider.getRootNodeIDs().clear();
 			}
 		});
 		
@@ -963,7 +923,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 						return EventContentType.EDGE;
 					}
 					else if (attributeName.equals(ATTR_NODE_EDGE_SET_LINKED_ROOTEDGE_IDS)) {
-						return EventContentType.EDGE;
+						return EventContentType.ROOT_EDGE;
 					}
 					else {
 						throw new IllegalArgumentException("No content type for the attribute name \"" + attributeName.getLocalPart() + "\" available.");

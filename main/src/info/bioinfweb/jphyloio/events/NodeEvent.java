@@ -38,8 +38,8 @@ public class NodeEvent extends LinkedLabeledIDEvent {
 	private boolean isRootNode;
 
 	
-	public NodeEvent(String id, String label, String linkedID, boolean isRootNode) {
-		super(EventContentType.NODE, id, label, linkedID);
+	public NodeEvent(String id, String label, String linkedOTUID, boolean isRootNode) {
+		super(EventContentType.NODE, id, label, linkedOTUID);
 		this.isRootNode = isRootNode;
 	}
 
@@ -56,7 +56,7 @@ public class NodeEvent extends LinkedLabeledIDEvent {
 	 * In <i>NeXML</i> root nodes are identified by having a {@code root="true"} 
 	 * <a href="http://nexml.org/doc/schema-1/trees/abstracttrees/#AbstractNode">attribute</a>. In <i>Newick</i> and 
 	 * <i>Nexus</i> only the property of the topological root node is modeled by the {@code [&R]} or {@code [&U]}
-	 * hot comments preceding a <i>Newick</i> string. The same applies for the {@code rooted} attribite of the {@code phylogeny}
+	 * hot comments preceding a <i>Newick</i> string. The same applies for the {@code rooted} attribute of the {@code phylogeny}
 	 * <a href="http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h535307528">tag</a> in <i>PhyloXML</i>.
 	 * 
 	 * @return {@code true} if this node is a possible root or {@code false} otherwise

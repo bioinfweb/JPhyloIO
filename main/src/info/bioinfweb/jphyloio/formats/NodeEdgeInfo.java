@@ -27,6 +27,7 @@ import java.util.Collection;
 public class NodeEdgeInfo {
 		private String id;
 		private String label;
+		private boolean isRoot = false;
 		
 		private String source;
 		private String target;
@@ -55,6 +56,16 @@ public class NodeEdgeInfo {
 
 		public void setLabel(String label) {
 			this.label = label;
+		}
+
+
+		public boolean isRoot() {
+			return isRoot;
+		}
+
+
+		public void setIsRoot(boolean isRoot) {
+			this.isRoot = isRoot;
 		}
 
 
