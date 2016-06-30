@@ -84,7 +84,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treesOrNetworks0", null, null, reader);
 				
-				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);		
+				assertLabeledIDEvent(EventContentType.TREE, "tree2", "Tree 1", reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, null, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.NODE, "n5", "A", null, reader);				

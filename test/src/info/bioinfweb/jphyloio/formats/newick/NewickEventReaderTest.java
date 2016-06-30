@@ -86,7 +86,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			
 			assertEdgeEvent(null, idN1, reader);
-			assertEndEvent(EventContentType.EDGE, reader);			
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);			
 
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
@@ -135,7 +135,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, id0, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
@@ -184,7 +184,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, id0, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
@@ -233,7 +233,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, id0, 0.0, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
@@ -355,7 +355,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			
 			assertEdgeEvent(null, idN2, 0.0, reader);
 			assertCommentEvent("20", false, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertNotEquals(idA, idB);
 			assertNotEquals(idA, idC);
@@ -419,7 +419,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEdgeEvent(null, idN2, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
@@ -464,7 +464,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEdgeEvent(id0, id3, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(null, id0, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
@@ -487,7 +487,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEdgeEvent(idN2, idN1, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(null, idN2, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 
 			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
@@ -510,7 +510,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEdgeEvent(idN2, idC, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(null, idN2, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 
 			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
@@ -575,7 +575,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEndEvent(EventContentType.EDGE, reader);
 			
 			assertEdgeEvent(null, idN3, Double.NaN, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertNotEquals(idADH2, idADH1);
 			assertNotEquals(idADH2, idN1);
@@ -649,7 +649,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, idA, Double.NaN, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
@@ -676,7 +676,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 
 			assertEdgeEvent(null, idA, 2.0, reader);
 			assertCommentEvent("comment", reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
@@ -702,7 +702,7 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 
 			assertEdgeEvent(null, idA, 2.0, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertCommentEvent("comment", reader);

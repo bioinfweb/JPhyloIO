@@ -1041,7 +1041,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 		assertEdgeEvent(nodeIDN2, nodeIDAranaeus, reader);
 		assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 		assertEdgeEvent(null, nodeIDN2, reader);
-		assertEndEvent(EventContentType.EDGE, reader);
+		assertEndEvent(EventContentType.ROOT_EDGE, reader);
 		assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 
 		assertNotEquals(nodeIDScarabaeus, nodeIDDrosophila);
@@ -1130,7 +1130,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEdgeEvent(nodeIDN2, nodeIDAranaeus, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(null, nodeIDN2, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 
 			assertCommentEvent("comment 2", reader);
@@ -1247,7 +1247,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertEdgeEvent(null, idN2, 0.0, reader);
 			assertCommentEvent("20", false, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertNotEquals(idA, idB);
 			assertNotEquals(idA, idC);
@@ -1328,7 +1328,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEdgeEvent(nodeIDN2, nodeIDSpider, reader);
 			assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
 			assertEdgeEvent(null, nodeIDN2, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 
 			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
 			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
@@ -1441,7 +1441,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEdgeEvent(nodeIDN2, nodeIDN1, reader);
 			assertEndEvent(EventContentType.EDGE, reader);
 			assertEdgeEvent(null, nodeIDN2, reader);
-			assertEndEvent(EventContentType.EDGE, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
 			
 			assertEndEvent(EventContentType.TREE, reader);
 
