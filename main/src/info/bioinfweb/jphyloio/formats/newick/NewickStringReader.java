@@ -25,12 +25,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -286,7 +281,8 @@ public class NewickStringReader implements ReadWriteConstants {
 			streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + 
 					streamDataProvider.getIDManager().createNewID(), null, sourceID, nodeInfo.getID(), nodeInfo.getLength()));
 			streamDataProvider.getCurrentEventCollection().addAll(nodeInfo.nestedEvents);
-			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.EDGE, EventTopologyType.END));
+			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(
+					sourceID == null ? EventContentType.ROOT_EDGE : EventContentType.EDGE, EventTopologyType.END));
 		}		
 	}
 	
