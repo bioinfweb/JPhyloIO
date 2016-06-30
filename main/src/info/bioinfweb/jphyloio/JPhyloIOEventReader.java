@@ -65,7 +65,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * 
  * TreeNetworkGroup = "TREE_NETWORK_GROUP.START", {TreeNetworkGroupContent,} "TREE_NETWORK_GROUP.END";
  * TreeNetworkGroupContent = Tree | Network | TreeNetworkSet;
- * Tree = "TREE.START", {TreeOrNetworkContent,} {NodeEdgeSet,} "TREE.END";
+ * Tree = "TREE.START", {TreeOrNetworkContent,} ["ROOT_EDGE.START",] {TreeOrNetworkContent,} {NodeEdgeSet,} "TREE.END";
  * Network = "NETWORK.START", {TreeOrNetworkContent,} {NodeEdgeSet,} "NETWORK.END";
  * TreeOrNetworkContent = Node | Edge | MetaInformation;
  * Node = "NODE.START", {MetaInformation,} "NODE.END";
