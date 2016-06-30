@@ -44,7 +44,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.MatrixRea
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets.AbstractNexusSetReader;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
-import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
+import info.bioinfweb.jphyloio.utils.SequenceTokensEventManager;
 
 import java.io.EOFException;
 import java.io.File;

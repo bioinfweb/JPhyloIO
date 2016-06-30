@@ -53,7 +53,7 @@ import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLSetContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLTokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
-import info.bioinfweb.jphyloio.tools.NodeEdgeIDLister;
+import info.bioinfweb.jphyloio.utils.NodeEdgeIDLister;
 
 import java.io.IOException;
 import java.util.EnumMap;

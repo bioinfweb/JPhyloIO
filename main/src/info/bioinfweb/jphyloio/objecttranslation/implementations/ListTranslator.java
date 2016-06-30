@@ -25,7 +25,7 @@ import java.util.List;
 
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
-import info.bioinfweb.jphyloio.formats.newick.NewickTools;
+import info.bioinfweb.jphyloio.formats.newick.NewickUtils;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 
@@ -45,7 +45,7 @@ public class ListTranslator extends SimpleValueTranslator<List<Object>> implemen
 		representation = representation.trim();
 		if (representation.startsWith("" + FIELD_START_SYMBOL) && representation.endsWith("" + FIELD_END_SYMBOL)) {
 			List<Object> result = new ArrayList<Object>();
-			NewickTools.ReadElement element = NewickTools.readNextElement(representation, 1, representation.length() - 1);
+			NewickUtils.ReadElement element = NewickUtils.readNextElement(representation, 1, representation.length() - 1);
 			while (element != null) {
 				if (element.getNumericValue() != null) {
 					result.add(element.getNumericValue());
@@ -53,7 +53,7 @@ public class ListTranslator extends SimpleValueTranslator<List<Object>> implemen
 				else {
 					result.add(element.getText());
 				}
-				element = NewickTools.readNextElement(representation, element.getEndPos(), representation.length() - 1);
+				element = NewickUtils.readNextElement(representation, element.getEndPos(), representation.length() - 1);
 			}
 			return result;
 		}

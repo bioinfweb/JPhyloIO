@@ -37,7 +37,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.tools.IDToNameManager;
+import info.bioinfweb.jphyloio.utils.IDToNameManager;
 
 
 

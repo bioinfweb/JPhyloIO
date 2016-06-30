@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 
 
 
-public class NewickTools implements NewickConstants {
+public class NewickUtils implements NewickConstants {
 	public static class ReadElement {
 		private String text;
 		private Number numericValue;

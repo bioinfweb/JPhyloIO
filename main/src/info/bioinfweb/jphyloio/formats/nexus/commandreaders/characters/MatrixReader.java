@@ -36,7 +36,7 @@ import info.bioinfweb.jphyloio.exception.UnsupportedFormatFeatureException;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
 import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.AbstractNexusCommandEventReader;
-import info.bioinfweb.jphyloio.tools.IDToNameManager;
+import info.bioinfweb.jphyloio.utils.IDToNameManager;
 
 
 

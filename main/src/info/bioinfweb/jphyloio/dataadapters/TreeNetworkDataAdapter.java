@@ -23,7 +23,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.tools.NodeEdgeIDLister;
+import info.bioinfweb.jphyloio.utils.NodeEdgeIDLister;
 
 import java.io.IOException;
 import java.util.Iterator;

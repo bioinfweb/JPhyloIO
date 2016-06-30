@@ -51,7 +51,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.tools.IDToNameManager;
+import info.bioinfweb.jphyloio.utils.IDToNameManager;
 
 
 

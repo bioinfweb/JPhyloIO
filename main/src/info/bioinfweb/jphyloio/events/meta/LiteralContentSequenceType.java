@@ -31,8 +31,6 @@ import javax.xml.stream.XMLEventReader;
  * @since 0.0.0
  */
 public enum LiteralContentSequenceType {
-	//TODO Are empty literals possible? In that case, they should have an additional type.
-	
 	/** Indicates that a single {@link LiteralMetadataContentEvent} representing a simple value will be nested. */
 	SIMPLE,
 	

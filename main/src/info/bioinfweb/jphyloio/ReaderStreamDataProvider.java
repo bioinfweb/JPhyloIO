@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio;
 import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
-import info.bioinfweb.jphyloio.tools.SequenceTokensEventManager;
+import info.bioinfweb.jphyloio.utils.SequenceTokensEventManager;
 
 import java.util.Collection;
 

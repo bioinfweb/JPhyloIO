@@ -36,17 +36,17 @@ import javax.xml.namespace.QName;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class NHXTools implements ReadWriteConstants, NewickConstants, PhyloXMLConstants {
+public class NHXUtils implements ReadWriteConstants, NewickConstants, PhyloXMLConstants {
 	private static final int NHX_KEY_COUNT = 6;
 
 
-	private static NHXTools firstInstance = null;
+	private static NHXUtils firstInstance = null;
 	
 	private Map<String, QName> predicateByKeyMap;
 	private Map<QName, String> keyByPredicateMap;
 	
 	
-	private NHXTools() {
+	private NHXUtils() {
 		super();
 		createMaps();
 	}
@@ -73,9 +73,9 @@ public class NHXTools implements ReadWriteConstants, NewickConstants, PhyloXMLCo
 	 * 
 	 * @return the singleton instance
 	 */
-	public static NHXTools getInstance() {
+	public static NHXUtils getInstance() {
 		if (firstInstance == null) {
-			firstInstance = new NHXTools();
+			firstInstance = new NHXUtils();
 		}
 		return firstInstance;
 	}

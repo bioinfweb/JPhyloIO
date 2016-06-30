@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.tools;
+package info.bioinfweb.jphyloio.utils;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;

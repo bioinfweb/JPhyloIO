@@ -3,4 +3,4 @@
  * 
  * @author Ben St&ouml;ver
  */
-package info.bioinfweb.jphyloio.tools;
+package info.bioinfweb.jphyloio.utils;

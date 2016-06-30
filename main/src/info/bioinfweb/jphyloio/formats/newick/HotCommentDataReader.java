@@ -224,7 +224,7 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 			int splitPos = parts[i].indexOf(ALLOCATION_SYMBOL);
 			if (splitPos > 0) {
 				String key = parts[i].substring(0, splitPos);
-				addLiteralMetaStart(NHX_KEY_PREFIX + key, NHXTools.getInstance().predicateByKey(key), null, streamDataProvider, newEvents);
+				addLiteralMetaStart(NHX_KEY_PREFIX + key, NHXUtils.getInstance().predicateByKey(key), null, streamDataProvider, newEvents);
 				addLiteralMetaContent(readTextElementData(parts[i].substring(splitPos + 1, parts[i].length())), newEvents);
 				addLiteralMetaEnd(newEvents);
 			}
