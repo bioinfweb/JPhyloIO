@@ -83,6 +83,9 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * Additionally {@link CommentEvent}s ({@code "COMMENT.SOLE"}) may occur at any position in the stream, which 
  * is not shown in the grammar for greater clarity.
  * <p>
+ * Note that one event may only reference other events that have been fired before, although this is not directly expressed by the
+ * grammar in all cases. (Examples are edges referencing nodes or sequences referencing OTUs.)   
+ * <p>
  * The documentation of {@link EventContentType} contains information on which event classes are used for which
  * event type.
  * 
