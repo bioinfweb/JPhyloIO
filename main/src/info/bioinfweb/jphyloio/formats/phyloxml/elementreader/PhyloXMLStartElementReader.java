@@ -74,7 +74,7 @@ public class PhyloXMLStartElementReader extends AbstractXMLElementReader<PhyloXM
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
 		if (isEdgeMeta) {
-			streamDataProvider.setCurrentEventCollection(streamDataProvider.getEdgeInfos().peek().getNestedEvents());
+			streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEdgeEvents());
 		}
 		
 		if (resourcePredicate != null) {
@@ -90,7 +90,7 @@ public class PhyloXMLStartElementReader extends AbstractXMLElementReader<PhyloXM
 					String attributeValue = event.asStartElement().getAttributeByName(attribute.getName()).getValue();
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), datatype, LiteralContentSequenceType.SIMPLE));
+							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), null, LiteralContentSequenceType.SIMPLE));
 
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
 							

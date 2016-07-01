@@ -100,7 +100,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>> nodeStartReader = new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();
+				StartElement element = event.asStartElement();				
 				String id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
@@ -116,7 +116,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				branchInfo.setTarget(id);
 				
 				streamDataProvider.getSourceNode().add(new NodeEdgeInfo(id, Double.NaN, new ArrayList<JPhyloIOEvent>()));
-				streamDataProvider.getEdgeInfos().add(branchInfo);
+//				streamDataProvider.getEdgeInfos().add(branchInfo); //TODO use new node/branch structure for reading (see also: PhyloXMLEventReader)
 				
 				readAttributes(streamDataProvider, element, ""); //TODO which attributes should be read?
 			}
@@ -126,7 +126,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				streamDataProvider.resetCurrentEventCollection();
-				Collection<JPhyloIOEvent> nestedEdgeEvents = streamDataProvider.getSourceNode().pop().getNestedEvents();
+				Collection<JPhyloIOEvent> nestedEdgeEvents = streamDataProvider.getSourceNode().pop().getNestedNodeEvents();
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NODE));
 				for (JPhyloIOEvent nextEvent : nestedEdgeEvents) {
 					streamDataProvider.getCurrentEventCollection().add(nextEvent);
@@ -191,7 +191,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				StartElement element = event.asStartElement();				
 				double length = XMLUtils.readDoubleAttr(element, ATTR_BRANCH_LENGTH, Double.NaN);
 				
-				streamDataProvider.getEdgeInfos().peek().setLength(length);
+//				streamDataProvider.getEdgeInfos().peek().setLength(length);
 				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 				
 				readAttributes(streamDataProvider, element, ""); //TODO which attributes should be read?
@@ -202,12 +202,12 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				Collection<JPhyloIOEvent> nestedEvents = streamDataProvider.resetCurrentEventCollection();
-				NodeEdgeInfo info = streamDataProvider.getEdgeInfos().pop();
+//				NodeEdgeInfo info = streamDataProvider.getEdgeInfos().pop();
 				
-				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEvents());
+				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedNodeEvents());
 				
-				streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(info.getID(), info.getLabel(), info.getSource(), 
-						info.getTarget(), info.getLength()));
+//				streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(info.getID(), info.getLabel(), info.getSource(), 
+//						info.getTarget(), info.getLength()));
 				for (JPhyloIOEvent nextEvent : nestedEvents) {
 					streamDataProvider.getCurrentEventCollection().add(nextEvent);
 				}
@@ -220,7 +220,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
-				streamDataProvider.getEdgeInfos().peek().setLabel(label); //TODO which text is used as a label if more than one text labels exist?
+//				streamDataProvider.getEdgeInfos().peek().setLabel(label); //TODO which text is used as a label if more than one text labels exist?
 				
 				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(getFormatID() + "." + streamDataProvider.getParentName() 
 						+ "." + element.getName().getLocalPart(), null, null, LiteralContentSequenceType.SIMPLE));

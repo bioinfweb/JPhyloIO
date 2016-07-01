@@ -280,7 +280,7 @@ public class NewickStringReader implements ReadWriteConstants {
 			NodeEdgeInfo nodeInfo = nodeInfos.poll();
 			streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + 
 					streamDataProvider.getIDManager().createNewID(), null, sourceID, nodeInfo.getID(), nodeInfo.getLength()));
-			streamDataProvider.getCurrentEventCollection().addAll(nodeInfo.nestedEvents);
+			streamDataProvider.getCurrentEventCollection().addAll(nodeInfo.nestedNodeEvents);
 			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(
 					sourceID == null ? EventContentType.ROOT_EDGE : EventContentType.EDGE, EventTopologyType.END));
 		}		

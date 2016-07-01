@@ -25,86 +25,93 @@ import java.util.Collection;
 
 
 public class NodeEdgeInfo {
-		private String id;
-		private String label;
-		private boolean isRoot = false;
-		
-		private String source;
-		private String target;
-		private double length;
-		
-		public Collection<JPhyloIOEvent> nestedEvents;
+	private String id;
+	private String label;
+	private boolean isRoot = false;
+	
+	private String source;
+	private String target;
+	private double length;
+	
+	public Collection<JPhyloIOEvent> nestedNodeEvents;
+	public Collection<JPhyloIOEvent> nestedEdgeEvents;
 
-		
-		public NodeEdgeInfo(String id, double length, Collection<JPhyloIOEvent> nestedEvents) {
-			super();
-			this.id = id;
-			this.length = length;
-			this.nestedEvents = nestedEvents;
-		}
-		
+	
+	public NodeEdgeInfo(String id, double length, Collection<JPhyloIOEvent> nestedNodeEvents) {
+		this(id, length, nestedNodeEvents, null);
+	}
+	
+	
+	public NodeEdgeInfo(String id, double length, Collection<JPhyloIOEvent> nestedNodeEvents, Collection<JPhyloIOEvent> nestedEdgeEvents) {
+		super();
+		this.id = id;
+		this.length = length;
+		this.nestedNodeEvents = nestedNodeEvents;
+		this.nestedEdgeEvents = nestedEdgeEvents;
+	}
+	
 
-		public String getID() {
-			return id;
-		}
-		
+	public String getID() {
+		return id;
+	}
+	
 
-		public String getLabel() {
-			return label;
-		}
-
-
-		public void setLabel(String label) {
-			this.label = label;
-		}
-
-
-		public boolean isRoot() {
-			return isRoot;
-		}
+	public String getLabel() {
+		return label;
+	}
 
 
-		public void setIsRoot(boolean isRoot) {
-			this.isRoot = isRoot;
-		}
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 
-		public String getSource() {
-			return source;
-		}
+	public boolean isRoot() {
+		return isRoot;
+	}
 
 
-		public void setSource(String source) {
-			this.source = source;
-		}
+	public void setIsRoot(boolean isRoot) {
+		this.isRoot = isRoot;
+	}
 
 
-		public String getTarget() {
-			return target;
-		}
+	public String getSource() {
+		return source;
+	}
 
 
-		public void setTarget(String target) {
-			this.target = target;
-		}
+	public void setSource(String source) {
+		this.source = source;
+	}
 
 
-		public double getLength() {
-			return length;
-		}
-		
-
-		public void setLength(double length) {
-			this.length = length;
-		}
+	public String getTarget() {
+		return target;
+	}
 
 
-		public Collection<JPhyloIOEvent> getNestedEvents() {
-			return nestedEvents;
-		}
+	public void setTarget(String target) {
+		this.target = target;
+	}
 
 
-		public void setNestedEvents(Collection<JPhyloIOEvent> nestedEvents) {
-			this.nestedEvents = nestedEvents;
-		}		
+	public double getLength() {
+		return length;
+	}
+	
+
+	public void setLength(double length) {
+		this.length = length;
+	}
+
+
+	public Collection<JPhyloIOEvent> getNestedNodeEvents() {
+		return nestedNodeEvents;
+	}
+
+
+	public Collection<JPhyloIOEvent> getNestedEdgeEvents() {
+		return nestedEdgeEvents;
+	}
 }

@@ -23,6 +23,7 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 
+import java.util.Queue;
 import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
@@ -38,7 +39,7 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	private String incompleteToken = null;
 	
 	private Stack<NodeEdgeInfo> sourceNode = new Stack<NodeEdgeInfo>();
-	private Stack<NodeEdgeInfo> edgeInfos = new Stack<NodeEdgeInfo>();
+	private Stack<Queue<NodeEdgeInfo>> edgeInfos = new Stack<Queue<NodeEdgeInfo>>();
 	
 	private CharacterStateSetType characterSetType;	
 	
@@ -108,7 +109,7 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	}
 
 
-	public Stack<NodeEdgeInfo> getEdgeInfos() {
+	public Stack<Queue<NodeEdgeInfo>> getEdgeInfos() {
 		return edgeInfos;
 	}
 }

@@ -906,8 +906,15 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_EDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
+		
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_ROOTEDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
-		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_ROOTEDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
+		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_ROOTEDGE, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
+			@Override
+			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.ROOT_EDGE));
+			}
+		});
+				
 		putElementReader(new XMLElementReaderKey(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.START_ELEMENT), readEdgeStart);
 		putElementReader(new XMLElementReaderKey(TAG_NETWORK, TAG_EDGE, XMLStreamConstants.END_ELEMENT), readEdgeEnd);
 		
