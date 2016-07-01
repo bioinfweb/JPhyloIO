@@ -20,8 +20,6 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 import static info.bioinfweb.commons.testing.XMLAssert.*;
-
-
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
@@ -61,6 +59,7 @@ import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoA
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -105,7 +104,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
-		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader(file));
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
 		try {
 			StartElement element;
 			
@@ -120,11 +120,12 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), element);			
 //			
 //			
-//			assertEndElement(TAG_ROOT, reader);			
+//			assertEndElement(TAG_ROOT, reader);
 //			
 //			assertEndDocument(reader);
 		}
 		finally {
+			fileReader.close();
 			reader.close();
 			file.delete();
 		}
