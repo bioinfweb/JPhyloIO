@@ -24,7 +24,7 @@ import java.io.Writer;
 import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.AbstractEventWriter;
-import info.bioinfweb.jphyloio.dataadapters.DataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ElementDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
@@ -45,13 +45,13 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 	private NexusWriterStreamDataProvider streamDataProvider;
 	private String commandName;
 	private EventContentType linkedContentType;
-	private Iterator<? extends DataAdapter<? extends LabeledIDEvent>> dataSourceIterator;
+	private Iterator<? extends ElementDataAdapter<? extends LabeledIDEvent>> dataSourceIterator;
 	private AbstractNexusEventReceiver receiver;
 	private boolean executed = false;
 	
 	
 	public AbstractNexusSetWriter(NexusWriterStreamDataProvider streamDataProvider, String commandName,	EventContentType linkedContentType,	
-			Iterator<? extends DataAdapter<? extends LabeledIDEvent>> dataSourceIterator,	AbstractNexusEventReceiver receiver) {
+			Iterator<? extends ElementDataAdapter<? extends LabeledIDEvent>> dataSourceIterator,	AbstractNexusEventReceiver receiver) {
 		
 		super();
 		this.streamDataProvider = streamDataProvider;
@@ -62,9 +62,9 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 	}
 
 
-	protected abstract ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource);
+	protected abstract ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(ElementDataAdapter<? extends LabeledIDEvent> dataSource);
 	
-	protected abstract String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource);
+	protected abstract String getLinkedBlockName(ElementDataAdapter<? extends LabeledIDEvent> dataSource);
 	
 	
 	private void logIgnoredMetadata(BasicEventReceiver<Writer> receiver, String setName) {
@@ -85,7 +85,7 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 		}
 		
 		while (dataSourceIterator.hasNext()) {
-			DataAdapter<? extends LabeledIDEvent> dataSource = dataSourceIterator.next();
+			ElementDataAdapter<? extends LabeledIDEvent> dataSource = dataSourceIterator.next();
 			ObjectListDataAdapter<LinkedLabeledIDEvent> sets = getSets(dataSource);
 			Iterator<String> charSetIDIterator = sets.getIDIterator(streamDataProvider.getParameters());
 			if (charSetIDIterator.hasNext()) {

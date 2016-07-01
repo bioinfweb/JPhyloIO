@@ -125,10 +125,4 @@ public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter<Concrete
 	public Iterator<TreeNetworkGroupDataAdapter> getTreeNetworkGroupIterator(ReadWriteParameterMap parameters) {
 		return treeNetworkGroups.iterator();
 	}
-
-
-	@Override
-	public ConcreteJPhyloIOEvent getStartEvent(ReadWriteParameterMap parameters) {
-		return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
-	}
 }

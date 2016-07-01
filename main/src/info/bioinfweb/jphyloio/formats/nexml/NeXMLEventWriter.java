@@ -137,7 +137,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	}
 
 
-	private void writeOrCheckMetaData(AnnotatedDataAdapter<?> adapter, boolean check) throws IOException {
+	private void writeOrCheckMetaData(AnnotatedDataAdapter adapter, boolean check) throws IOException {
 		JPhyloIOEventReceiver receiver;
 
 		if (check) {

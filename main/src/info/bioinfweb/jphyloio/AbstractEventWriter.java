@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio;
 
 import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.dataadapters.DataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ElementDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -187,7 +187,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	 * @return the referenced list or {@code null}, if the specified event does not reference any OTU
 	 * @throws IllegalArgumentException if no OTU list with the specified ID is available in {@code document}
 	 */
-	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, DataAdapter<LinkedLabeledIDEvent> source, 
+	public static OTUListDataAdapter getReferencedOTUList(DocumentDataAdapter document, ElementDataAdapter<LinkedLabeledIDEvent> source, 
 			ReadWriteParameterMap parameters) {
 		
 		OTUListDataAdapter result = null;

@@ -37,7 +37,7 @@ import java.util.Iterator;
  * @since 0.0.0
  * @see NodeEdgeIDLister
  */
-public interface TreeNetworkDataAdapter extends AnnotatedDataAdapter<LabeledIDEvent> {
+public interface TreeNetworkDataAdapter extends ElementDataAdapter<LabeledIDEvent> {
 	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition. Alternative iterators or returning events in WLR order may solve the problem.
 	
 	/**

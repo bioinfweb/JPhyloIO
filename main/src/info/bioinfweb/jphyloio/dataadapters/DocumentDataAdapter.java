@@ -43,7 +43,7 @@ import java.util.Iterator;
  * @see MatrixDataAdapter
  * @see TreeNetworkDataAdapter
  */
-public interface DocumentDataAdapter extends AnnotatedDataAdapter<ConcreteJPhyloIOEvent> {
+public interface DocumentDataAdapter extends AnnotatedDataAdapter {
 	/**
 	 * Returns an iterator providing access to all OTU lists contained in the document
 	 * to be written. 

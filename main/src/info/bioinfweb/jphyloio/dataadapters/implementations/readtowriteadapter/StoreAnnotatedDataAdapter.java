@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
-public abstract class StoreAnnotatedDataAdapter<E extends JPhyloIOEvent> implements AnnotatedDataAdapter<E> {
+public abstract class StoreAnnotatedDataAdapter<E extends JPhyloIOEvent> implements AnnotatedDataAdapter {
 	private List<JPhyloIOEvent> annotations;
 	
 	

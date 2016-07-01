@@ -100,12 +100,6 @@ public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter<Conc
 	}
 	
 	
-	@Override
-	public ConcreteJPhyloIOEvent getStartEvent(ReadWriteParameterMap parameters) {
-		return new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START);
-	}
-
-
 	public ListOrderedMap<String, OTUListDataAdapter> getOTUListsMap() {
 		return otuListsMap;
 	}

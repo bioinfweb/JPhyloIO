@@ -34,7 +34,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.DataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ElementDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
@@ -177,7 +177,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	}
 	
 	
-	private void logIgnoredMetadata(AnnotatedDataAdapter<?> adapter, String objectName) {
+	private void logIgnoredMetadata(AnnotatedDataAdapter adapter, String objectName) {
 		//TODO Replace by receiver logging ignored metadata
 //		if (adapter.getMetadataAdapter() != null) {
 //			logger.addWarning(objectName + 
@@ -798,12 +798,12 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				new ReferenceOnlySetReceiver(getStreamDataProvider(), EnumSet.of(EventContentType.OTU, EventContentType.OTU_SET))) {
 			
 			@Override
-			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
+			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(ElementDataAdapter<? extends LabeledIDEvent> dataSource) {
 				return ((OTUListDataAdapter)dataSource).getOTUSets(getParameters());
 			}
 			
 			@Override
-			protected String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource) {
+			protected String getLinkedBlockName(ElementDataAdapter<? extends LabeledIDEvent> dataSource) {
 				return BLOCK_NAME_TAXA;
 			}
 		}.write();
@@ -813,12 +813,12 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 				new CharacterSetEventReceiver(getStreamDataProvider())) {
 			
 			@Override
-			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
+			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(ElementDataAdapter<? extends LabeledIDEvent> dataSource) {
 				return ((MatrixDataAdapter)dataSource).getCharacterSets(getParameters());
 			}
 			
 			@Override
-			protected String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource) {
+			protected String getLinkedBlockName(ElementDataAdapter<? extends LabeledIDEvent> dataSource) {
 				return matrixIDToBlockTypeMap.get(dataSource.getStartEvent(parameters).getID()).toBlockName();
 			}
 		}.write();
@@ -830,12 +830,12 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 						EnumSet.of(EventContentType.NETWORK))) {
 			
 			@Override
-			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(DataAdapter<? extends LabeledIDEvent> dataSource) {
+			protected ObjectListDataAdapter<LinkedLabeledIDEvent> getSets(ElementDataAdapter<? extends LabeledIDEvent> dataSource) {
 				return ((TreeNetworkGroupDataAdapter)dataSource).getTreeSets(getParameters());
 			}
 			
 			@Override
-			protected String getLinkedBlockName(DataAdapter<? extends LabeledIDEvent> dataSource) {
+			protected String getLinkedBlockName(ElementDataAdapter<? extends LabeledIDEvent> dataSource) {
 				return BLOCK_NAME_TREES;
 			}
 		}.write();

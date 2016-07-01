@@ -34,13 +34,10 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class EmptyAnnotatedDataAdapter<E extends JPhyloIOEvent> implements AnnotatedDataAdapter<E> {
+public abstract class EmptyAnnotatedDataAdapter<E extends JPhyloIOEvent> implements AnnotatedDataAdapter {
 	/**
 	 * This default implementation does nothing and can be overwritten by inherited classes if necessary.
 	 */
 	@Override
-	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
+	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {}
 }

@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
  * @see DocumentDataAdapter
  * @see JPhyloIOEventWriter
  */
-public interface OTUListDataAdapter extends ObjectListDataAdapter<LabeledIDEvent>, AnnotatedDataAdapter<LabeledIDEvent> {
+public interface OTUListDataAdapter extends ObjectListDataAdapter<LabeledIDEvent>, ElementDataAdapter<LabeledIDEvent> {
 	/**
 	 * Returns a list of OTU sets defined for the OTU list modeled by this instance.
 	 * 

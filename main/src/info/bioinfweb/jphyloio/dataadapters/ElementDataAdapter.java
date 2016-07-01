@@ -24,7 +24,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
-public interface DataAdapter<E extends JPhyloIOEvent> {
+public interface ElementDataAdapter<E extends JPhyloIOEvent> extends AnnotatedDataAdapter {
 	/**
 	 * Returns the start event of this data element. The returned event can be used to determine the label and ID 
 	 * of the modeled data element or an optionally linked data element.

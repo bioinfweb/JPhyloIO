@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 import java.io.IOException;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+
 
 
 /**
@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
  * 
  * @author Ben St&ouml;ver
  */
-public interface AnnotatedDataAdapter<E extends JPhyloIOEvent> extends DataAdapter<E> {
+public interface AnnotatedDataAdapter {
 	/**
 	 * Writes events describing the metadata associated with the object represented by this instance.
 	 * 
