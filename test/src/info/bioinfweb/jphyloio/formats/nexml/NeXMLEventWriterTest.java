@@ -143,14 +143,14 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		
 		// Add character definitions to matrix data adapter
 		String charDefinitionID;
-		for (long i = 0; i < 10; i++) {
+		for (long i = 0; i < 5; i++) {
 			charDefinitionID = DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + getIDIndex();
 			matrix.getCharacterDefinitions(parameters).getObjectMap().put(charDefinitionID, createCharacterDefinition(charDefinitionID, i));
 		}
 		
 		// Add token set of type DNA to matrix data adapter
 		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
-		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 8));
+		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 5));
 			
 		// Add char sets to matrix data adapter
 		String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
@@ -325,7 +325,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
-	protected StoreMatrixDataAdapter createContinuousCellsMatrix(ReadWriteParameterMap parameters, String otusID) {
+	protected StoreMatrixDataAdapter createContinuousCellsMatrix(String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + getIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "continuous data", otusID);
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
@@ -354,6 +354,12 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	private void addSingleSequenceToken(StoreObjectData<LinkedLabeledIDEvent> singleTokenAdapter, String label, String token) {
 		singleTokenAdapter.getObjectContent().add(new SingleSequenceTokenEvent(label, token));
+		
+//		singleTokenAdapter.getObjectContent().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+//				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.SIMPLE));		
+//		singleTokenAdapter.getObjectContent().add(new LiteralMetadataContentEvent("Some text", false));		
+//		singleTokenAdapter.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
 		singleTokenAdapter.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
 	}
 	
@@ -441,8 +447,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		metaData.add(new CommentEvent("This is a ", true));
 		metaData.add(new CommentEvent("divided comment.", false));
 		
-		metaData.add(new LiteralMetadataContentEvent(null, "This is a long ", true));
-		metaData.add(new LiteralMetadataContentEvent(null, "literal text", false));
+		metaData.add(new LiteralMetadataContentEvent("This is a long ", true));
+		metaData.add(new LiteralMetadataContentEvent("literal text", false));
 		
 		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		

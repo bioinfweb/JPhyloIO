@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
@@ -102,19 +103,19 @@ public class EdgeAndNodeMetaDataTreeAdapter extends EmptyAnnotatedDataAdapter<La
 
 	
 	@Override
-	public LinkedLabeledIDEvent getNodeStartEvent(ReadWriteParameterMap parameters, String nodeID) {
+	public NodeEvent getNodeStartEvent(ReadWriteParameterMap parameters, String nodeID) {
 		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
 			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
 				case "n1":
-					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node '_1", null);
+					return new NodeEvent(nodeID, "Node '_1", null, false);
 				case "nRoot":  
-					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node " + nodeID, null);
+					return new NodeEvent(nodeID, "Node " + nodeID, null, true);
 				case "nA":
-					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[0]);
+					return new NodeEvent(nodeID, "Node " + nodeID, linkedOTUs[0], false);
 				case "nB":
-					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[1]);
+					return new NodeEvent(nodeID, "Node " + nodeID, linkedOTUs[1], false);
 				case "nC":
-					return new LinkedLabeledIDEvent(EventContentType.NODE, nodeID, "Node " + nodeID, linkedOTUs[2]);
+					return new NodeEvent(nodeID, "Node " + nodeID, linkedOTUs[2], false);
 				default:
 					throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
 			}

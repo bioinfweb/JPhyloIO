@@ -99,9 +99,6 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEdgeEvent(node5, node4, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);
-				
 				assertEndEvent(EventContentType.TREE, reader);
 				
 				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
@@ -149,9 +146,6 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEdgeEvent(node5, node4, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);
-				
 				assertEndEvent(EventContentType.TREE, reader);
 				
 				assertLabeledIDEvent(EventContentType.TREE, null, "Tree 2", reader);
@@ -173,9 +167,6 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.EDGE, reader);
 				assertEdgeEvent(node5, node4, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
@@ -346,10 +337,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 						"node", null, "node", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
 						"-0.545", null, -0.545, true, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
-				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);				
+				assertEndEvent(EventContentType.META_RESOURCE, reader);		
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
@@ -442,9 +430,6 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_IDREF1), null, "ID1", null, "ID1", true, reader);	
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);
-				
 				assertEndEvent(EventContentType.TREE, reader);
 				
 				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
@@ -528,11 +513,6 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_TYPE), null, "extraEdge", null, "extraEdge", true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent(null, node5, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
 				assertEndEvent(EventContentType.NETWORK, reader);
 				
@@ -711,9 +691,6 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				
 				assertEdgeEvent(node5, node4, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
@@ -957,10 +934,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertAttribute(new QName("http://example.org", "attr", "ex"), "D", element);
 				assertXMLContentEvent("example Text 4", XMLStreamConstants.CHARACTERS, null, "example Text 4", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				
-				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);
-				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);			
+				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, true, reader);		
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
@@ -1032,10 +1006,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEdgeEvent(node5, node4, reader);
-				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);				
+				assertEndEvent(EventContentType.EDGE, reader);				
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
@@ -1092,10 +1063,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEdgeEvent(node5, node4, reader);
-				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent(null, node5, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);				
+				assertEndEvent(EventContentType.EDGE, reader);			
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				

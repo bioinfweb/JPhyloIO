@@ -37,6 +37,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.S
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 
 import java.io.BufferedReader;
@@ -132,7 +133,7 @@ public class FASTAEventWriterLogTest {
 			}
 
 			@Override
-			public LinkedLabeledIDEvent getNodeStartEvent(ReadWriteParameterMap parameters, String id) {
+			public NodeEvent getNodeStartEvent(ReadWriteParameterMap parameters, String id) {
 				return null;
 			}
 
