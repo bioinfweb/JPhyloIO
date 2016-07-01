@@ -3,10 +3,10 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ex="http://www.example.net/">
 	<otus id="taxonlist">
 		<meta datatype="rdf:Literal" id="meta1" property="ex:hasCustomNeXML" xsi:type="nex:LiteralMeta" content="customNeXML">
-			<otus id="taxonlist">				
+			<otus id="taxonlist">
 				<otu id="taxon1"/>
 				<otu id="taxon2" label="species2"/>
-				<otu id="taxon3"/>		
+				<otu id="taxon3"/>
 			</otus>
 		</meta>
 		<otu id="taxon1"/>

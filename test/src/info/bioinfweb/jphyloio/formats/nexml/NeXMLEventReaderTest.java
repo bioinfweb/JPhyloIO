@@ -19,27 +19,9 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharacterDefinitionEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharacterSetIntervalEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertCharactersEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEdgeEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEndEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertEventType;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLabeledIDEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLinkedLabeledIDEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertLiteralMetaStartEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertPartEndEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertResourceMetaEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSetElementEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSingleTokenDefinitionEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSingleTokenEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertSplitCharactersEventLongTokens;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertTokenSetDefinitionEvent;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertXMLContentEvent;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+import static org.junit.Assert.*;
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -49,7 +31,6 @@ import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.events.type.EventType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 
 import java.io.File;
@@ -69,15 +50,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
-			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/nexml_treebase_example.xml"), parameters);
-//			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocumentWithMetadata.xml"), parameters);
+			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocumentWithMetadata.xml"), parameters);
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();
 //					System.out.println(event.getType());
-					if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
-//						System.out.println(event.asLiteralMetadataContentEvent().getStringValue() + " " + event.asLiteralMetadataContentEvent().getObjectValue());
-					}
 				}
 			}
 			finally {
@@ -109,16 +86,16 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				String taxon2 = assertLabeledIDEvent(EventContentType.OTU, null, "species2", reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				String taxon3 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
+				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -126,12 +103,12 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterDefinitionEvent(null, null, 3, true, reader);
 				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, null, alignment, reader);
 				assertCharacterSetIntervalEvent(0, 1, reader);
 				assertCharacterSetIntervalEvent(2, 4, reader);				
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset2", null, "alignment", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, null, alignment, reader);				
 				assertCharacterSetIntervalEvent(2, 3, reader);
 				assertCharacterSetIntervalEvent(4, 5, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
@@ -149,88 +126,68 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 5, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row1", taxon1, reader);
 				assertCharactersEvent("AACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "species2", "taxon2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "species2", taxon2, reader);
 				assertCharactersEvent("ACGTT", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row3", "row3", "taxon3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row3", taxon3, reader);
 				assertCharactersEvent("ACCTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup", "treegroup", "taxonlist", reader);
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, "treegroup", taxonList, reader);
 				
-				assertLabeledIDEvent(EventContentType.TREE, "tree", null, reader);
+				assertLabeledIDEvent(EventContentType.TREE, null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node1", "node1", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node1 = assertNodeEvent(null, "node1", false, taxon1, true, reader);				
+				String node2 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node3 = assertNodeEvent(null, "node3", false, taxon3, true, reader);
+				String node4 = assertNodeEvent(null, null, false, null, true, reader);
+				String node5 = assertNodeEvent(null, null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node2", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				assertEdgeEvent(null, node4, 0.778, reader);
+				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node3", "node3", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node4", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node5", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent(null, "node4", 0.778, reader);
+				assertEdgeEvent(node4, node5, 1, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node4", "node5", 1, reader);
+				assertEdgeEvent(node4, node3, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node4", "node3", reader);
+				assertEdgeEvent(node5, node1, 0.98, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node5", "node1", 0.98, reader);
+				assertEdgeEvent(node5, node2, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent("node5", "node2", reader);
-				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, false, true, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
-				assertLabeledIDEvent(EventContentType.NETWORK, "network", null, reader);
+				assertLabeledIDEvent(EventContentType.NETWORK, null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node6", "node6", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node6 = assertNodeEvent(null, "node6", false, taxon1, true, reader);				
+				String node7 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node8 = assertNodeEvent(null, "node8", false, taxon3, true, reader);
+				String node9 = assertNodeEvent(null, null, false, null, true, reader);
+				String node10 = assertNodeEvent(null, null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node7", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node8", "node8", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node9", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node10", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent("node9", "node10", 0.44, reader);
+				assertEdgeEvent(node9, node10, 0.44, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node9", "node8", 0.67, reader);
+				assertEdgeEvent(node9, node8, 0.67, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node10", "node6", reader);
+				assertEdgeEvent(node10, node6, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node10", "node7", reader);
+				assertEdgeEvent(node10, node7, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node7", "node8", reader);
+				assertEdgeEvent(node7, node8, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEndEvent(EventContentType.NETWORK, reader);
@@ -258,17 +215,22 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "hasCustomXML", "ex")), LiteralContentSequenceType.XML, reader);
-				assertXMLContentEvent(null, "characters", "customXML", XMLStreamConstants.CHARACTERS, null, "characters", false, reader);
-				assertXMLContentEvent(null, null, "customXML", XMLStreamConstants.START_ELEMENT, new QName("http://www.example.net/", "customTag", "ex"), null, false, reader);
-				assertXMLContentEvent(null, "some more ", "customXML", XMLStreamConstants.CHARACTERS, null, "some more ", false, reader);
-				assertXMLContentEvent(null, null, "customXML", XMLStreamConstants.START_ELEMENT, new QName("http://www.example.net/", "nestedTag", "ex"), null, false, reader);
-				assertXMLContentEvent(null, null, "customXML", XMLStreamConstants.END_ELEMENT, new QName("http://www.example.net/", "nestedTag", "ex"), null, false, reader);
-				assertXMLContentEvent(null, "characters", "customXML", XMLStreamConstants.CHARACTERS, null, "characters", false, reader);
-				assertXMLContentEvent(null, null, "customXML", XMLStreamConstants.END_ELEMENT, new QName("http://www.example.net/", "customTag", "ex"), null, true, reader);
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "hasCustomXML", "ex")), LiteralContentSequenceType.XML, 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "Literal", "rdf")), "customXML", reader);
+				assertXMLContentEvent("characters", XMLStreamConstants.CHARACTERS, null, "characters", false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.example.net/", "customTag", "ex"), null, false, reader);
+				assertXMLContentEvent("some more ", XMLStreamConstants.CHARACTERS, null, "some more ", false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.example.net/", "nestedTag", "ex"), null, false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.example.net/", "nestedTag", "ex"), null, false, reader);
+				assertXMLContentEvent("characters", XMLStreamConstants.CHARACTERS, null, "characters", false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.example.net/", "customTag", "ex"), null, true, reader);
+				
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), LiteralContentSequenceType.XML, null, 
+						null, reader);
+				assertXMLContentEvent("47", XMLStreamConstants.CHARACTERS, null, "47", true, reader);
 				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
-						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "someString1", null, null, true, reader);
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "someString1", null, "someString1", true, reader);
 				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", "forty-seven", 47, true, reader);
@@ -281,7 +243,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "rel", "ex")), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
-						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "someString2", null, null, true, reader);
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "someString2", "alternativeString", "someString2", true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "rel", "ex")), null, null, false, reader);
@@ -294,21 +256,22 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "rel", "ex")), new URI("http://www.test.org/test1"), 
 						null, true, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", "47", 47, true, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				String taxon2 = assertLabeledIDEvent(EventContentType.OTU, null, "species2", reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				String taxon3 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
-				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), LiteralContentSequenceType.SIMPLE, reader);
+				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), LiteralContentSequenceType.SIMPLE, 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), null, reader);
 				assertEndEvent(EventContentType.META_LITERAL, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_FORMAT), null, null, false, reader);
@@ -327,14 +290,14 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterDefinitionEvent(null, null, 3, true, reader);
 				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, null, alignment, reader);				
 				assertCharacterSetIntervalEvent(0, 1, reader);
 				assertCharacterSetIntervalEvent(2, 4, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset2", null, "alignment", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, null, alignment, reader);				
 				assertCharacterSetIntervalEvent(2, 3, reader);
 				assertCharacterSetIntervalEvent(4, 5, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
@@ -352,7 +315,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertSingleTokenDefinitionEvent("N", CharacterSymbolMeaning.CHARACTER_STATE, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
-						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "N", null, null, true, reader);
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd")), "N", null, "N", true, reader);
 				assertEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION, reader);
 				assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
 				assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
@@ -367,102 +330,84 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row1", taxon1, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertCharactersEvent("AACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "species2", "taxon2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "species2", taxon2, reader);
 				assertCharactersEvent("ACGTT", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row3", "row3", "taxon3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row3", taxon3, reader);
 				assertCharactersEvent("ACCTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup", "treegroup", "taxonlist", reader);
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, "treegroup", taxonList, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				
-				assertLabeledIDEvent(EventContentType.TREE, "tree", null, reader);
+				assertLabeledIDEvent(EventContentType.TREE, null, null, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node1", "node1", "taxon1", reader);
+				String node1 = assertNodeEvent(null, "node1", false, taxon1, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertEndEvent(EventContentType.NODE, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node2", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node3", "node3", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node4", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node5", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node2 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node3 = assertNodeEvent(null, "node3", false, taxon3, true, reader);
+				String node4 = assertNodeEvent(null, null, false, null, true, reader);
+				String node5 = assertNodeEvent(null, null, false, null, true, reader);
 				
 				assertEdgeEvent(null, "node4", 0.778, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+				assertEndEvent(EventContentType.ROOT_EDGE, reader);
+				
+				assertEdgeEvent(node4, node5, 1, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node4", "node5", 1, reader);
-				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent("node4", "node3", reader);
+				assertEdgeEvent(node4, node3, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node5", "node1", 0.98, reader);
+				assertEdgeEvent(node5, node1, 0.98, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node5", "node2", reader);
+				assertEdgeEvent(node5, node2, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, false, true, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
-				assertLabeledIDEvent(EventContentType.NETWORK, "network", null, reader);
+				assertLabeledIDEvent(EventContentType.NETWORK, null, null, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node6", "node6", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node6 = assertNodeEvent(null, "node6", false, taxon1, true, reader);				
+				String node7 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node8 = assertNodeEvent(null, "node8", false, taxon3, true, reader);
+				String node9 = assertNodeEvent(null, null, false, null, true, reader);
+				String node10 = assertNodeEvent(null, null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node7", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node8", "node8", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node9", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node10", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent("node9", "node10", 0.44, reader);
+				assertEdgeEvent(node9, node10, 0.44, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node9", "node8", 0.67, reader);
+				assertEdgeEvent(node9, node8, 0.67, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node10", "node6", reader);
+				assertEdgeEvent(node10, node6, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node10", "node7", reader);
+				assertEdgeEvent(node10, node7, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node7", "node8", reader);
+				assertEdgeEvent(node7, node8, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEndEvent(EventContentType.NETWORK, reader);
@@ -490,23 +435,30 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader);
 				
-				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "hasCustomNeXML", "ex")), LiteralContentSequenceType.XML, reader);
-				assertXMLContentEvent(null, null, "customNeXML", XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otus"), null, false, reader);
-				assertXMLContentEvent(null, null, "customNeXML", XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent(null, null, "customNeXML", XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent(null, null, "customNeXML", XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent(null, null, "customNeXML", XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent(null, null, "customNeXML", XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent(null, null, "customNeXML", XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent(null, null, "customNeXML", XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otus"), null, true, reader);
+				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "hasCustomNeXML", "ex")), LiteralContentSequenceType.XML, 
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "Literal", "rdf")), "customNeXML", reader);
+				assertXMLContentEvent("\n\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t", false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otus"), null, false, reader);
+				assertXMLContentEvent("\n\t\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t\t", false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
+				assertXMLContentEvent("\n\t\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t\t", false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
+				assertXMLContentEvent("\n\t\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t\t", false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
+				assertXMLContentEvent("\n\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t", false, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otus"), null, false, reader);
+				assertXMLContentEvent("\n\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t", true, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, "species2", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				
 				assertEndEvent(EventContentType.OTU_LIST, reader);
@@ -531,25 +483,25 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				String taxon2 = assertLabeledIDEvent(EventContentType.OTU, null, "species2", reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				String taxon3 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.OTU_SET, "otuSet", null, "taxonlist", reader);
-				assertSetElementEvent("taxon1", EventContentType.OTU, reader);
-				assertSetElementEvent("taxon3", EventContentType.OTU, reader);
+				assertLinkedLabeledIDEvent(EventContentType.OTU_SET, null, null, taxonList, reader);
+				assertSetElementEvent(taxon1, EventContentType.OTU, reader);
+				assertSetElementEvent(taxon3, EventContentType.OTU, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertPartEndEvent(EventContentType.OTU_SET, true, reader);
 				
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
+				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -557,7 +509,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterDefinitionEvent(null, null, 3, true, reader);
 				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charSet", null, "alignment", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, null, alignment, reader);				
 				assertCharacterSetIntervalEvent(0, 1, reader);
 				assertCharacterSetIntervalEvent(2, 4, reader);				
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);			
@@ -575,121 +527,101 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 5, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				String row1 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row1", taxon1, reader);
 				assertCharactersEvent("AACTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "species2", "taxon2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "species2", taxon2, reader);
 				assertCharactersEvent("ACGTT", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row3", "row3", "taxon3", reader);
+				String row3 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row3", taxon3, reader);
 				assertCharactersEvent("ACCTG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE_SET, "rowSet", null, "alignment", reader);
-				assertSetElementEvent("row1", EventContentType.SEQUENCE, reader);
-				assertSetElementEvent("row3", EventContentType.SEQUENCE, reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE_SET, null, null, alignment, reader);
+				assertSetElementEvent(row1, EventContentType.SEQUENCE, reader);
+				assertSetElementEvent(row3, EventContentType.SEQUENCE, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE_SET, true, reader);
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup", "treegroup", "taxonlist", reader);
+				String treeGroup = assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, "treegroup", taxonList, reader);
 				
-				assertLabeledIDEvent(EventContentType.TREE, "tree", null, reader);
+				String tree = assertLabeledIDEvent(EventContentType.TREE, null, null, reader).getID();
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node1", "node1", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node1 = assertNodeEvent(null, "node1", false, taxon1, true, reader);				
+				String node2 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node3 = assertNodeEvent(null, "node3", false, taxon3, true, reader);
+				String node4 = assertNodeEvent(null, null, false, null, true, reader);
+				String node5 = assertNodeEvent(null, null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node2", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String rootedge = assertEdgeEvent(null, node4, 0.778, reader).getID();
+				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node3", "node3", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node4", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node5", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent(null, "node4", 0.778, reader);
+				assertEdgeEvent(node4, node5, 1, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node4", "node5", 1, reader);
+				String edge2 = assertEdgeEvent(node4, node3, reader).getID();
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node4", "node3", reader);
+				String edge3 = assertEdgeEvent(node5, node1, 0.98, reader).getID();
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node5", "node1", 0.98, reader);
+				assertEdgeEvent(node5, node2, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node5", "node2", reader);
-				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE_EDGE_SET, "nodeEdgeSet1", null, "tree", reader);
-				assertSetElementEvent("node1", EventContentType.NODE, reader);
-				assertSetElementEvent("node4", EventContentType.NODE, reader);
-				assertSetElementEvent("rootedge", EventContentType.EDGE, reader);
-				assertSetElementEvent("edge2", EventContentType.EDGE, reader);
-				assertSetElementEvent("edge3", EventContentType.EDGE, reader);
+				assertLinkedLabeledIDEvent(EventContentType.NODE_EDGE_SET, null, null, tree, reader);
+				assertSetElementEvent(node1, EventContentType.NODE, reader);
+				assertSetElementEvent(node4, EventContentType.NODE, reader);
+				assertSetElementEvent(rootedge, EventContentType.ROOT_EDGE, reader);
+				assertSetElementEvent(edge2, EventContentType.EDGE, reader);
+				assertSetElementEvent(edge3, EventContentType.EDGE, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertPartEndEvent(EventContentType.NODE_EDGE_SET, true, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "false", null, false, true, reader);
-				
 				assertEndEvent(EventContentType.TREE, reader);
 				
-				assertLabeledIDEvent(EventContentType.NETWORK, "network", null, reader);
+				String network = assertLabeledIDEvent(EventContentType.NETWORK, null, null, reader).getID();
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node6", "node6", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node6 = assertNodeEvent(null, "node6", false, taxon1, true, reader);				
+				String node7 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node8 = assertNodeEvent(null, "node8", false, taxon3, true, reader);
+				String node9 = assertNodeEvent(null, null, false, null, true, reader);
+				String node10 = assertNodeEvent(null, null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node7", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node8", "node8", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node9", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node10", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent("node9", "node10", 0.44, reader);
+				assertEdgeEvent(node9, node10, 0.44, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node9", "node8", 0.67, reader);
+				assertEdgeEvent(node9, node8, 0.67, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node10", "node6", reader);
+				String edge7 = assertEdgeEvent(node10, node6, reader).getID();
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node10", "node7", reader);
+				String edge8 = assertEdgeEvent(node10, node7, reader).getID();
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node7", "node8", reader);
+				assertEdgeEvent(node7, node8, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE_EDGE_SET, "nodeEdgeSet2", null, "network", reader);
-				assertSetElementEvent("node7", EventContentType.NODE, reader);
-				assertSetElementEvent("node10", EventContentType.NODE, reader);
-				assertSetElementEvent("edge7", EventContentType.EDGE, reader);
-				assertSetElementEvent("edge8", EventContentType.EDGE, reader);
+				assertLinkedLabeledIDEvent(EventContentType.NODE_EDGE_SET, null, null, network, reader);
+				assertSetElementEvent(node7, EventContentType.NODE, reader);
+				assertSetElementEvent(node10, EventContentType.NODE, reader);
+				assertSetElementEvent(edge7, EventContentType.EDGE, reader);
+				assertSetElementEvent(edge8, EventContentType.EDGE, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertPartEndEvent(EventContentType.NODE_EDGE_SET, true, reader);
 				
 				assertEndEvent(EventContentType.NETWORK, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, "treeNetworkSet", null, "treegroup", reader);
-				assertSetElementEvent("tree", EventContentType.TREE, reader);
-				assertSetElementEvent("network", EventContentType.NETWORK, reader);
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, null, null, treeGroup, reader);
+				assertSetElementEvent(tree, EventContentType.TREE, reader);
+				assertSetElementEvent(network, EventContentType.NETWORK, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
 				assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
@@ -717,25 +649,25 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				String taxonList1 = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				String taxon2 = assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
-				assertEndEvent(EventContentType.OTU, reader);
-				assertEndEvent(EventContentType.OTU_LIST, reader);
-				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist2", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon4", null, reader);
-				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon5", "species5", reader);
-				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon6", null, reader);
+				String taxon3 = assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment1", ALIGNMENT_TYPE_DNA, "taxonlist1", reader);
+				String taxonList2 = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				String taxon4 = assertLabeledIDEvent(EventContentType.OTU, "taxon4", null, reader).getID();
+				assertEndEvent(EventContentType.OTU, reader);
+				String taxon5 = assertLabeledIDEvent(EventContentType.OTU, "taxon5", "species5", reader).getID();
+				assertEndEvent(EventContentType.OTU, reader);
+				String taxon6 = assertLabeledIDEvent(EventContentType.OTU, "taxon6", null, reader).getID();
+				assertEndEvent(EventContentType.OTU, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);
+				
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList1, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -760,21 +692,21 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(4, 5, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row1", taxon1, reader);
 				assertCharactersEvent("AATCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "species2", "taxon2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "species2", taxon2, reader);
 				assertCharactersEvent("ACGCT", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row3", "row3", "taxon3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row3", taxon3, reader);
 				assertCharactersEvent("ACTCG", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment2", ALIGNMENT_TYPE_DNA, "taxonlist2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment2", ALIGNMENT_TYPE_DNA, taxonList2, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -788,13 +720,13 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 3, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row4", "species5", "taxon5", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row4", "species5", taxon5, reader);
 				assertSingleTokenEvent("A", true, reader);
 				assertSingleTokenEvent("G", true, reader);
 				assertSingleTokenEvent("A", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row5", "row5", "taxon4", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row5", "row5", taxon4, reader);
 				assertSingleTokenEvent("A", true, reader);
 				assertSingleTokenEvent("G", true, reader);
 				assertSingleTokenEvent("T", true, reader);
@@ -802,7 +734,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment3", ALIGNMENT_TYPE_DNA, "taxonlist1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment3", ALIGNMENT_TYPE_DNA, taxonList1, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -814,198 +746,142 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 3, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row6", "row6", "taxon1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row6", taxon1, reader);
 				assertCharactersEvent("ACC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row7", "species2", "taxon2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "species2", taxon2, reader);
 				assertCharactersEvent("CAC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row8", "row8", "taxon3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row8", taxon3, reader);
 				assertCharactersEvent("AAC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup1", "treegroup1", "taxonlist1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup1", "treegroup1", taxonList1, reader);
 				
-				assertLabeledIDEvent(EventContentType.TREE, "tree1", null, reader);
+				assertLabeledIDEvent(EventContentType.TREE, null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node1", "node1", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node1 = assertNodeEvent(null, "node1", false, taxon1, true, reader);				
+				String node2 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node3 = assertNodeEvent(null, "node3", false, taxon3, true, reader);
+				String node4 = assertNodeEvent(null, null, false, null, true, reader);
+				String node5 = assertNodeEvent(null, null, true, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node2", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				assertEdgeEvent(null, node4, 0.778, reader);
+				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node3", "node3", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node4", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node5", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent(null, "node4", 0.778, reader);
+				assertEdgeEvent(node4, node5, 1, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node4", "node5", 1, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), null, "true", null, true, true, reader);
+				assertEdgeEvent(node4, node3, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node4", "node3", reader);
+				assertEdgeEvent(node5, node1, 0.98, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node5", "node1", 0.98, reader);
+				assertEdgeEvent(node5, node2, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent("node5", "node2", reader);
-				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, true, true, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
-				assertLabeledIDEvent(EventContentType.NETWORK, "network1", null, reader);
+				assertLabeledIDEvent(EventContentType.NETWORK, null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node6", "node6", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node6 = assertNodeEvent(null, "node6", false, taxon1, true, reader);				
+				String node7 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node8 = assertNodeEvent(null, "node8", false, taxon3, true, reader);
+				String node9 = assertNodeEvent(null, null, false, null, true, reader);
+				String node10 = assertNodeEvent(null, null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node7", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node8", "node8", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node9", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node10", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent("node9", "node10", 0.44, reader);
+				assertEdgeEvent(node9, node10, 0.44, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node9", "node8", 0.67, reader);
+				assertEdgeEvent(node9, node8, 0.67, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node10", "node6", reader);
+				assertEdgeEvent(node10, node6, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node10", "node7", reader);
+				assertEdgeEvent(node10, node7, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node7", "node8", reader);
+				assertEdgeEvent(node7, node8, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEndEvent(EventContentType.NETWORK, reader);
 				
-				assertLabeledIDEvent(EventContentType.TREE, "tree2", null, reader);
+				assertLabeledIDEvent(EventContentType.TREE, null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node11", "node11", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node11 = assertNodeEvent(null, "node11", false, taxon1, true, reader);				
+				String node12 = assertNodeEvent(null, "species2", false, taxon2, true, reader);
+				String node13 = assertNodeEvent(null, "node13", false, taxon3, true, reader);
+				String node14 = assertNodeEvent(null, null, false, null, true, reader);
+				String node15 = assertNodeEvent(null, null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node12", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node13", "node13", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node14", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node15", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent("node14", "node15", 17, reader);
+				assertEdgeEvent(node14, node15, 17, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node14", "node13", reader);
+				assertEdgeEvent(node14, node13, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node15", "node11", 89, reader);
+				assertEdgeEvent(node15, node11, 89, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node15", "node12", reader);
+				assertEdgeEvent(node15, node12, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, true, true, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
-				assertLabeledIDEvent(EventContentType.NETWORK, "network2", null, reader);
+				assertLabeledIDEvent(EventContentType.NETWORK, null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node16", "node16", "taxon1", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node16 = assertNodeEvent("node16", "node16", false, taxon1, true, reader);				
+				String node17 = assertNodeEvent("node17", "species2", false, taxon2, true, reader);
+				String node18 = assertNodeEvent("node18", "node18", false, taxon3, true, reader);
+				String node19 = assertNodeEvent("node19", null, false, null, true, reader);
+				String node20 = assertNodeEvent("node20", null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node17", "species2", "taxon2", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node18", "node18", "taxon3", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node19", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node20", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent("node19", "node20", 44, reader);
+				assertEdgeEvent(node19, node20, 44, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node19", "node18", 67, reader);
+				assertEdgeEvent(node19, node18, 67, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node20", "node16", reader);
+				assertEdgeEvent(node20, node16, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node20", "node17", reader);
+				assertEdgeEvent(node20, node17, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node17", "node18", reader);
+				assertEdgeEvent(node17, node18, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEndEvent(EventContentType.NETWORK, reader);
 				
 				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treegroup2", "treegroup2", "taxonlist2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, "treegroup2", taxonList2, reader);
 				
-				assertLabeledIDEvent(EventContentType.TREE, "tree3", null, reader);
+				assertLabeledIDEvent(EventContentType.TREE, null, null, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node21", "node21", "taxon4", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
+				String node21 = assertNodeEvent(null, "node21", false, taxon4, true, reader);				
+				String node22 = assertNodeEvent(null, "species5", false, taxon5, true, reader);
+				String node23 = assertNodeEvent(null, "node23", false, taxon6, true, reader);
+				String node24 = assertNodeEvent(null, null, true, null, true, reader);
+				String node25 = assertNodeEvent(null, null, false, null, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node22", "species5", "taxon5", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node23", "node23", "taxon6", reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node24", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.NODE, "node25", null, null, reader);				
-				assertEndEvent(EventContentType.NODE, reader);
-				
-				assertEdgeEvent("node24", "node25", 1, reader);
+				assertEdgeEvent(node24, node25, 1, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node24", "node23", reader);
+				assertEdgeEvent(node24, node23, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node25", "node21", 0.98, reader);
+				assertEdgeEvent(node25, node21, 0.98, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent("node25", "node22", reader);
+				assertEdgeEvent(node25, node22, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertEdgeEvent(null, "node24", reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TRUE_ROOT), null, "true", null, true, true, reader);
-				assertEndEvent(EventContentType.EDGE, reader);
-				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DISPLAY_TREE_ROOTED), null, "true", null, true, true, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
@@ -1033,20 +909,20 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t1", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t2", null, reader);
+				String taxon2 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t3", null, reader);
+				String taxon3 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t4", null, reader);
+				String taxon4 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t5", null, reader);
+				String taxon5 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_RESTRICTION, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_RESTRICTION, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1059,21 +935,21 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 4, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "RestrictionSiteRow1", "RestrictionSiteRow1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "RestrictionSiteRow1", taxon1, reader);
 				assertCharactersEvent("0101", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "RestrictionSiteRow2", "RestrictionSiteRow2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "RestrictionSiteRow2", taxon2, reader);
 				assertCharactersEvent("0101", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "RestrictionSiteRow3", "RestrictionSiteRow3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "RestrictionSiteRow3", taxon3, reader);
 				assertCharactersEvent("0101", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m3", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_CONTINUOUS, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, "this is character 1", 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1085,7 +961,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 5, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow1", "ContinuousCellsRow1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "ContinuousCellsRow1", taxon1, reader);
 				assertSingleTokenEvent("-1.545414144070023", true, reader);
 				assertSingleTokenEvent("-2.3905621575431044", true, reader);
 				assertSingleTokenEvent("-2.9610221833467265", true, reader);
@@ -1093,7 +969,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertSingleTokenEvent("0.22968509237534918", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow2", "ContinuousCellsRow2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "ContinuousCellsRow2", taxon2, reader);
 				assertSingleTokenEvent("-1.6259836379710066", true, reader);
 				assertSingleTokenEvent("3.649352410850134", true, reader);
 				assertSingleTokenEvent("1.778885099660406", true, reader);
@@ -1101,7 +977,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertSingleTokenEvent("0.22335354995610862", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);		
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow3", "ContinuousCellsRow3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "ContinuousCellsRow3", taxon3, reader);
 				assertSingleTokenEvent("-1.5798979984134964", true, reader);
 				assertSingleTokenEvent("2.9548251411133157", true, reader);
 				assertSingleTokenEvent("1.522005675256233", true, reader);
@@ -1109,7 +985,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertSingleTokenEvent("-0.938129801832388", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);		
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow4", "ContinuousCellsRow4", "t4", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "ContinuousCellsRow4", taxon4, reader);
 				assertSingleTokenEvent("2.7436692306788086", true, reader);
 				assertSingleTokenEvent("-0.7151148143399818", true, reader);
 				assertSingleTokenEvent("4.592207937774776", true, reader);
@@ -1117,7 +993,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertSingleTokenEvent("0.5769509574453064", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);		
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "ContinuousCellsRow5", "ContinuousCellsRow5", "t5", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "ContinuousCellsRow5", taxon5, reader);
 				assertSingleTokenEvent("3.1060827493657683", true, reader);
 				assertSingleTokenEvent("-1.0453787389160105", true, reader);
 				assertSingleTokenEvent("2.67416332763427", true, reader);
@@ -1127,7 +1003,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "characters3", ALIGNMENT_TYPE_DNA, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1168,21 +1044,21 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 16, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "DNASequence1", "DNASequence1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "DNASequence1", taxon1, reader);
 				assertCharactersEvent("ACGCTCGCATCGCATC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "DNASequence2", "DNASequence2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "DNASequence2", taxon2, reader);
 				assertCharactersEvent("ACGCTCGCATCGCATC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "DNASequence3", "DNASequence3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "DNASequence3", taxon3, reader);
 				assertCharactersEvent("ACGCTCGCATCGCATC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "rnaseqs4", ALIGNMENT_TYPE_RNA, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_RNA, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1227,21 +1103,21 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "rnarow1", "rnarow1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "rnarow1", taxon1, reader);
 				assertCharactersEvent("ACGCUCGCAUCGCAUC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "rnarow2", "rnarow2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "rnarow2", taxon2, reader);
 				assertCharactersEvent("ACGCUCGCAUCGCAUC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "rnarow3", "rnarow3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "rnarow3", taxon3, reader);
 				assertCharactersEvent("ACGCUCGCAUCGCAUC", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "contchars5", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_CONTINUOUS, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1253,23 +1129,23 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 5, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw1", taxon1, reader);
 				assertCharactersEvent(new String[]{"-1.545414144070023", "-2.3905621575431044", "-2.9610221833467265", "0.7868662069161243", "0.22968509237534918"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw2", "controw2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw2", taxon2, reader);
 				assertCharactersEvent(new String[]{"-1.6259836379710066", "3.649352410850134", "1.778885099660406", "-1.2580877968480846", "0.22335354995610862"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw3", "controw3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw3", taxon3, reader);
 				assertCharactersEvent(new String[]{"-1.5798979984134964", "2.9548251411133157", "1.522005675256233", "-0.8642016921755289", "-0.938129801832388"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw4", "controw4", "t4", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw4", taxon4, reader);
 				assertCharactersEvent(new String[]{"2.7436692306788086", "-0.7151148143399818", "4.592207937774776", "-0.6898841440534845", "0.5769509574453064"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw5", "controw5", "t5", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw5", taxon5, reader);
 				assertCharactersEvent(new String[]{"3.1060827493657683", "-1.0453787389160105", "2.67416332763427", "-1.4045634106692808", "0.019890469925520196"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
@@ -1299,20 +1175,20 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t1", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t2", null, reader);
+				String taxon2 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t3", null, reader);
+				String taxon3 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t4", null, reader);
+				String taxon4 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t5", null, reader);
+				String taxon5 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_STANDARD, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1326,34 +1202,34 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 2, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow1", "StandardCategoricalStateCellsRow1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow1", taxon1, reader);
 				assertSingleTokenEvent("1", true, reader);
 				assertSingleTokenEvent("2", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow2", "StandardCategoricalStateCellsRow2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow2", taxon2, reader);
 				assertSingleTokenEvent("2", true, reader);
 				assertSingleTokenEvent("2", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow3", "StandardCategoricalStateCellsRow3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow3", taxon3, reader);
 				assertSingleTokenEvent("3", true, reader);
 				assertSingleTokenEvent("4", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow4", "StandardCategoricalStateCellsRow4", "t4", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow4", taxon4, reader);
 				assertSingleTokenEvent("2", true, reader);
 				assertSingleTokenEvent("3", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow5", "StandardCategoricalStateCellsRow5", "t5", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow5", taxon5, reader);
 				assertSingleTokenEvent("4", true, reader);
 				assertSingleTokenEvent("1", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_STANDARD, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1367,23 +1243,23 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 2, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr1", "standardr1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr1", taxon1, reader);
 				assertCharactersEvent("12", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr2", "standardr2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr2", taxon2, reader);
 				assertCharactersEvent("22", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr3", "standardr3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr3", taxon3, reader);
 				assertCharactersEvent("34", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr4", "standardr4", "t4", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr4", taxon4, reader);
 				assertCharactersEvent("23", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr5", "standardr5", "t5", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr5", taxon5, reader);
 				assertCharactersEvent("41", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
@@ -1413,20 +1289,20 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t1", null, reader);
+				String taxonList1 = assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader).getID();
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t2", null, reader);
+				String taxon2 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t3", null, reader);
+				String taxon3 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t4", null, reader);
+				String taxon4 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t5", null, reader);
+				String taxon5 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_STANDARD, taxonList1, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1440,34 +1316,34 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 2, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow1", "StandardCategoricalStateCellsRow1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow1", taxon1, reader);
 				assertSingleTokenEvent("1", true, reader);
 				assertSingleTokenEvent("2", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow2", "StandardCategoricalStateCellsRow2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow2", taxon2, reader);
 				assertSingleTokenEvent("2", true, reader);
 				assertSingleTokenEvent("2", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow3", "StandardCategoricalStateCellsRow3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow3", taxon3, reader);
 				assertSingleTokenEvent("3", true, reader);
 				assertSingleTokenEvent("4", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow4", "StandardCategoricalStateCellsRow4", "t4", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow4", taxon4, reader);
 				assertSingleTokenEvent("2", true, reader);
 				assertSingleTokenEvent("3", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "StandardCategoricalStateCellsRow5", "StandardCategoricalStateCellsRow5", "t5", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "StandardCategoricalStateCellsRow5", taxon5, reader);
 				assertSingleTokenEvent("4", true, reader);
 				assertSingleTokenEvent("1", true, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m2", ALIGNMENT_TYPE_STANDARD, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_STANDARD, taxonList1, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1481,23 +1357,23 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 2, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr1", "standardr1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr1", taxon1, reader);
 				assertCharactersEvent(new String[]{"standardstates1", "blue"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr2", "standardr2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr2", taxon2, reader);
 				assertCharactersEvent(new String[]{"blue", "blue"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr3", "standardr3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr3", taxon3, reader);
 				assertCharactersEvent(new String[]{"standardstates3", "green"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr4", "standardr4", "t4", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr4", taxon4, reader);
 				assertCharactersEvent(new String[]{"blue", "standardstates3"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "standardr5", "standardr5", "t5", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "standardr5", taxon5, reader);
 				assertCharactersEvent(new String[]{"green", "standardstates1"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);	
 				
@@ -1525,16 +1401,16 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, "species2", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertEndEvent(EventContentType.OTU_LIST, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
+				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1542,12 +1418,12 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterDefinitionEvent(null, null, 3, true, reader);
 				assertCharacterDefinitionEvent(null, null, 4, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset1", null, "alignment", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, null, alignment, reader);				
 				assertCharacterSetIntervalEvent(0, 1, reader);
 				assertCharacterSetIntervalEvent(2, 4, reader);				
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, "charset2", null, "alignment", reader);				
+				assertLinkedLabeledIDEvent(EventContentType.CHARACTER_SET, null, null, alignment, reader);				
 				
 				fail("Exception not thrown");
 			}
@@ -1568,16 +1444,16 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, "species2", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertEndEvent(EventContentType.OTU_LIST, reader);
+				assertEndEvent(EventContentType.OTU_LIST, reader);	
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1593,7 +1469,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 5, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row1", taxon1, reader);
 				assertSingleTokenEvent("A", true, reader);
 				
 				fail("Exception not thrown");		
@@ -1615,18 +1491,18 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, "species2", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1653,16 +1529,16 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxonlist", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon2", "species2", reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, "species2", reader);
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxonlist", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1718,16 +1594,16 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
-			assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa", null, reader);
-			assertLabeledIDEvent(EventContentType.OTU, "taxon1", null, reader);
+			String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+			String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
-			assertLabeledIDEvent(EventContentType.OTU, "taxon2", null, reader);
+			String taxon2 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 			assertEndEvent(EventContentType.OTU, reader);
-			assertLabeledIDEvent(EventContentType.OTU, "taxon3", null, reader);
+			assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 			assertEndEvent(EventContentType.OTU, reader);
 			assertEndEvent(EventContentType.OTU_LIST, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, "taxa", reader);
+			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
 			
 			assertCharacterDefinitionEvent(null, null, 0, true, reader);
 			assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1741,7 +1617,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertCharacterSetIntervalEvent(0, 3, reader);
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row1", "row1", "taxon1", reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row1", taxon1, reader);
 			
 			assertSingleTokenEvent("A", false, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://bioinfweb.info/xmlns/example", "hasLiteralMeta", "foo")), 
@@ -1765,7 +1641,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, reader);
 			
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);			
-			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "row2", "row2", "taxon2", reader);
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "row2", taxon2, reader);
 			assertSingleTokenEvent("A", true, reader);
 			assertSingleTokenEvent("G", true, reader);
 			assertSingleTokenEvent("T", true, reader);			
@@ -1790,20 +1666,20 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			try {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 				
-				assertLabeledIDEvent(EventContentType.OTU_LIST, "taxa1", null, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t1", null, reader);
+				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t2", null, reader);
+				String taxon2 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t3", null, reader);
+				String taxon3 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t4", null, reader);
+				String taxon4 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
-				assertLabeledIDEvent(EventContentType.OTU, "t5", null, reader);
+				String taxon5 = assertLabeledIDEvent(EventContentType.OTU, null, null, reader).getID();
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_CONTINUOUS, "taxa1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_CONTINUOUS, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1815,23 +1691,23 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertCharacterSetIntervalEvent(0, 5, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw1", "controw1", "t1", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw1", taxon1, reader);
 				assertSplitCharactersEventLongTokens("data/NeXML/longContinuousSequence.txt", reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);				
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw2", "controw2", "t2", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw2", taxon2, reader);
 				assertCharactersEvent(new String[]{"-1.6259836379710066", "3.649352410850134", "1.778885099660406", "-1.2580877968480846", "0.22335354995610862"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw3", "controw3", "t3", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw3", taxon3, reader);
 				assertCharactersEvent(new String[]{"-1.5798979984134964", "2.9548251411133157", "1.522005675256233", "-0.8642016921755289", "-0.938129801832388"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw4", "controw4", "t4", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw4", taxon4, reader);
 				assertCharactersEvent(new String[]{"2.7436692306788086", "-0.7151148143399818", "4.592207937774776", "-0.6898841440534845", "0.5769509574453064"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "controw5", "controw5", "t5", reader);
+				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "controw5", taxon5, reader);
 				assertCharactersEvent(new String[]{"3.1060827493657683", "-1.0453787389160105", "2.67416332763427", "-1.4045634106692808", "0.019890469925520196"}, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				

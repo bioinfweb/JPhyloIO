@@ -25,7 +25,6 @@ import static info.bioinfweb.commons.testing.Assert2.*;
 import java.io.FileReader;
 import java.net.URI;
 import java.util.Collection;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -264,7 +263,7 @@ public class JPhyloIOTestTools {
 		assertEventType(EventContentType.META_LITERAL, EventTopologyType.START, event);
 		
 		LiteralMetadataEvent metaInformationEvent = event.asLiteralMetadataEvent();
-		assertEquals(expectedSequenceType, metaInformationEvent.getSequenceType());  //TODO Also check other types?
+		assertEquals(expectedSequenceType, metaInformationEvent.getSequenceType());
 		assertEquals(expectedPredicate, metaInformationEvent.getPredicate());
 		assertEquals(expectedOriginalType, metaInformationEvent.getOriginalType());
 		assertEquals(expectedAlternativeStringValue, metaInformationEvent.getAlternativeStringValue());
@@ -273,7 +272,6 @@ public class JPhyloIOTestTools {
   }
   
   
-  @Deprecated  //TODO Should this be deprecated or left as a convenience method?
   public static String assertLiteralMetaStartEvent(URIOrStringIdentifier expectedPredicate, LiteralContentSequenceType expectedSequenceType,  
   		JPhyloIOEventReader reader) throws Exception {
   	
@@ -298,33 +296,6 @@ public class JPhyloIOTestTools {
 		if (testLiteralEndEvent) {
 			assertEndEvent(EventContentType.META_LITERAL, reader);
 		}
-  }
-  
-  
-  @Deprecated
-  public static void assertLiteralMetaContentEvent(URIOrStringIdentifier expectedOriginalType, 
-  		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testLiteralEndEvent, 
-  		JPhyloIOEventReader reader) throws Exception {
-  	
-		assertTrue(reader.hasNextEvent());
-		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);
-		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
-		assertEquals(expectedOriginalType, contentEvent.getOriginalType());
-		assertEquals(expectedStringValue, contentEvent.getStringValue());
-		assertEquals(expectedObjectValue, contentEvent.getObjectValue());
-		assertEquals(expectedAlternativeStringValue, contentEvent.getAlternativeStringValue());
-		
-		if (testLiteralEndEvent) {
-			assertEndEvent(EventContentType.META_LITERAL, reader);
-		}
-  }
-  
-  
-  public static void assertLiteralMetaContentEvent(URIOrStringIdentifier expectedOriginalType, String expectedStringValue, 
-  		String expectedAlternativeStringValue, JPhyloIOEventReader reader, Object... expectedArrayValues) throws Exception {
-  	
-  	
   }
   
   
@@ -368,15 +339,13 @@ public class JPhyloIOTestTools {
   }
   
   
-  public static void assertSeparatedStringLiteralContentEvent(URIOrStringIdentifier expectedOriginalType,	String expectedStringValueFile, 
-  		boolean testEndEvent, JPhyloIOEventReader eventReader) throws Exception {
+  public static void assertSeparatedStringLiteralContentEvent(String expectedStringValueFile, boolean testEndEvent, 
+  		JPhyloIOEventReader eventReader) throws Exception {
   	
   	FileReader valueReader = new FileReader(expectedStringValueFile);
   	try {
   		while (eventReader.hasNextEvent() && eventReader.peek().getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
-  			LiteralMetadataContentEvent event = eventReader.next().asLiteralMetadataContentEvent();
-  			assertEquals(expectedOriginalType, event.getOriginalType());
-  			assertEquals(expectedOriginalType, event.getOriginalType());
+  			LiteralMetadataContentEvent event = eventReader.next().asLiteralMetadataContentEvent();  			
   			for (int i = 0; i < event.getStringValue().length(); i++) {
   				int c = valueReader.read();
   				assertNotEquals(-1, c);
@@ -483,14 +452,14 @@ public class JPhyloIOTestTools {
   }
 
 
-  public static void assertEdgeEvent(String expectedSourceID, String expectedTargetID, 
+  public static EdgeEvent assertEdgeEvent(String expectedSourceID, String expectedTargetID, 
   		JPhyloIOEventReader reader) throws Exception {
   	
-  	assertEdgeEvent(expectedSourceID, expectedTargetID, Double.NaN, reader);
+  	return assertEdgeEvent(expectedSourceID, expectedTargetID, Double.NaN, reader);
   }
   
   	
-  public static void assertEdgeEvent(String expectedSourceID, String expectedTargetID, 
+  public static EdgeEvent assertEdgeEvent(String expectedSourceID, String expectedTargetID, 
   		double expectedLength, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
@@ -511,6 +480,8 @@ public class JPhyloIOTestTools {
 		else {
 			assertEquals(expectedLength, edgeEvent.getLength(), 0.0000001);
 		}
+		
+		return edgeEvent;
   }
   
   

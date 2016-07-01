@@ -150,7 +150,7 @@
 			<node id="node22" otu="taxon5"/>
 			<node id="node23" otu="taxon6"/>
 			<node id="node24" root="true"/>
-			<node id="node25"/>			
+			<node id="node25"/>
 			<edge id="edge19" source="node24" target="node25" length="1"/>
 			<edge id="edge20" source="node24" target="node23"/>
 			<edge id="edge21" source="node25" target="node21" length="0.98"/>

@@ -317,7 +317,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertNotEquals(idDE, idF);			
 			assertEndEvent(EventContentType.OTU_LIST, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "someMatrix", otusID, reader);  //TODO Check linked OTU ID
+			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "someMatrix", otusID, reader);
 			
 			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "4", null, new Long(4), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
