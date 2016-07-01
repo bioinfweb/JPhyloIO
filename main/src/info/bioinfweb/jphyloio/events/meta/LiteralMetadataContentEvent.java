@@ -70,18 +70,6 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, Object objectValue) {
 		this(originalType, stringValue, objectValue, null, false);
 	}
-	
-	
-	@Deprecated
-	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, Object objectValue, String alternativeStringValue) {
-		this(originalType, stringValue, objectValue, alternativeStringValue, false);
-	}
-	
-	
-	@Deprecated
-	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, String alternativeStringValue) {
-		this(originalType, stringValue, null, alternativeStringValue, false);
-	}
 
 	
 	@Deprecated
@@ -108,25 +96,6 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 					this.alternativeStringValue = alternativeStringValue;
 				}
 			}
-		}
-	}
-	
-	
-	@Deprecated
-	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent, String alternativeStringValue) {
-		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
-		
-		if (!xmlEvent.isCharacters() && continuedInNextEvent) {
-			throw new IllegalArgumentException("Only character XML events may be continued in the next event. "
-					+ "The specified event had the type " + xmlEvent.getEventType() + ".");
-		}
-		else {
-			if (xmlEvent.isCharacters()) {
-				this.stringValue = xmlEvent.asCharacters().getData();  //TODO Also store tags as string representations?
-			}
-			this.alternativeStringValue = alternativeStringValue;
-			this.objectValue = xmlEvent;
-			this.originalType = null;  //TODO Should something else be stored here (e.g. the XML event type)?
 		}
 	}
 	
@@ -228,12 +197,6 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	public boolean hasValue() {
 		return (getStringValue() != null) || (getObjectValue() != null);
 	}
-
-
-	@Deprecated
-	public URIOrStringIdentifier getOriginalType() {
-		return originalType;
-	}
 	
 	
 	public boolean hasXMLEventValue() {
@@ -243,29 +206,5 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	
 	public XMLEvent getXMLEvent() {  //TODO Should simple strings also be converted to a characters event here or in the constructor?
 		return (XMLEvent)getObjectValue();
-	}
-
-
-	/**
-	 * Determines whether an alternative string representation is available for the value modeled by this event.
-	 * 
-	 * @return {@code true} if an alternative representation is available or {@code false} otherwise
-	 */
-	@Deprecated
-	public boolean hasAlternativeStringValue() {
-		return getAlternativeStringValue() != null;
-	}
-	
-	
-	/**
-	 * Returns the alternative string representation of the literal value modeled by this event.
-	 * <p>
-	 * Some formats may provide alternative representations of a value, e.g. a human and a machine readable one.
-	 * 
-	 * @return the alternative representation or {@code null} if there is none
-	 */
-	@Deprecated
-	public String getAlternativeStringValue() {
-		return alternativeStringValue;
 	}
 }

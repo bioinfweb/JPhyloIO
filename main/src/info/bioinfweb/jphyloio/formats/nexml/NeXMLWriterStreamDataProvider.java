@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
@@ -51,8 +52,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private Set<String> nameSpaces = new TreeSet<String>();
 	private Set<String> namespacePrefixes = new HashSet<String>();
 	
-	private LiteralMetadataEvent currentLiteralMetaStartEvent;
-	private LiteralContentSequenceType currentLiteralMetaType;
+	private LiteralContentSequenceType currentLiteralMetaSequenceType;
+	private URIOrStringIdentifier currentLiteralMetaDatatype;
 	private StringBuffer commentContent = new StringBuffer();
 	private boolean literalContentIsContinued = false;
 	
@@ -128,23 +129,23 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 
 
-	public LiteralMetadataEvent getCurrentLiteralMetaStartEvent() {
-		return currentLiteralMetaStartEvent;
+	public LiteralContentSequenceType getCurrentLiteralMetaSequenceType() {
+		return currentLiteralMetaSequenceType;
 	}
 
 
-	public void setCurrentLiteralMetaStartEvent(LiteralMetadataEvent literalWithoutXMLContent) {
-		this.currentLiteralMetaStartEvent = literalWithoutXMLContent;
+	public void setCurrentLiteralMetaSequenceType(LiteralContentSequenceType currentLiteralMetaType) {
+		this.currentLiteralMetaSequenceType = currentLiteralMetaType;
 	}
 
 
-	public LiteralContentSequenceType getCurrentLiteralMetaType() {
-		return currentLiteralMetaType;
+	public URIOrStringIdentifier getCurrentLiteralMetaDatatype() {
+		return currentLiteralMetaDatatype;
 	}
 
 
-	public void setCurrentLiteralMetaType(LiteralContentSequenceType currentLiteralMetaType) {
-		this.currentLiteralMetaType = currentLiteralMetaType;
+	public void setCurrentLiteralMetaDatatype(URIOrStringIdentifier currentLiteralMetaDatatype) {
+		this.currentLiteralMetaDatatype = currentLiteralMetaDatatype;
 	}
 
 
