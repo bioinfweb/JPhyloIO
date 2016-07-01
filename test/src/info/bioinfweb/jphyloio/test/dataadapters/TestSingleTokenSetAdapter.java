@@ -53,12 +53,6 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter<Concret
 
 
 	@Override
-	public ConcreteJPhyloIOEvent getStartEvent(ReadWriteParameterMap parameters) {
-		return null;
-	}
-
-
-	@Override
 	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
 		return Arrays.asList(new String[]{"tokenSet0"}).iterator();
 	}
