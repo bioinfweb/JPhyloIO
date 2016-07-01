@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 
 import java.util.Iterator;
 
