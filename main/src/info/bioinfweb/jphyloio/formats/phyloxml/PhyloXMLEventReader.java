@@ -1186,26 +1186,28 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		while (!edgeInfos.isEmpty()) {
 			edgeInfo = edgeInfos.poll();
 			
-			getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-					sourceID, edgeInfo.getID(), edgeInfo.getLength()));
+			if (!((sourceID == null) && Double.isNaN(edgeInfo.getLength()) && edgeInfo.getNestedEdgeEvents().isEmpty())) { // Do not add root edge if no information about it is present
+				getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+						sourceID, edgeInfo.getID(), edgeInfo.getLength()));
+				
+				if (!getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false)) {
+					streamDataProvider.getCurrentEventCollection().add(
+							new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+							new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
+							LiteralContentSequenceType.SIMPLE));
 			
-			if (!getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false)) {
-				streamDataProvider.getCurrentEventCollection().add(
-						new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-						new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
-						LiteralContentSequenceType.SIMPLE));
-		
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(false, Boolean.toString(false)));
-						
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(false, Boolean.toString(false)));
+							
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				}
+				
+				for (JPhyloIOEvent nextEvent : edgeInfo.getNestedEdgeEvents()) {
+					getStreamDataProvider().getCurrentEventCollection().add(nextEvent);
+				}
+				
+				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(
+						sourceID == null ? EventContentType.ROOT_EDGE : EventContentType.EDGE, EventTopologyType.END));
 			}
-			
-			for (JPhyloIOEvent nextEvent : edgeInfo.getNestedEdgeEvents()) {
-				getStreamDataProvider().getCurrentEventCollection().add(nextEvent);
-			}
-			
-			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(
-					sourceID == null ? EventContentType.ROOT_EDGE : EventContentType.EDGE, EventTopologyType.END));
 		}
 	}
 	

@@ -35,6 +35,7 @@ import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
@@ -234,14 +235,9 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	private void writeOTUSTags(DocumentDataAdapter document) throws IOException, XMLStreamException {
 		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator(getParameters());
-		if (otusIterator.hasNext()) {
-			OTUListDataAdapter otuList = otusIterator.next();
-			writeOTUSTag(otuList);
-			if (otusIterator.hasNext()) {
-				do {
-					writeOTUSTag(otusIterator.next());
-				}	while (otusIterator.hasNext());
-			}
+	
+		while (otusIterator.hasNext()) {
+			writeOTUSTag(otusIterator.next());			
 		}
 
 		if (streamDataProvider.isWriteUndefinedOtuList()) {
@@ -287,13 +283,9 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 	private void checkOTUSTags(DocumentDataAdapter document) throws IOException {
 		Iterator<OTUListDataAdapter> otusIterator = document.getOTUListIterator(getParameters());
-		if (otusIterator.hasNext()) {
+		
+		while (otusIterator.hasNext()) {
 			checkOTUsTag(otusIterator.next());
-			if (otusIterator.hasNext()) {
-				do {
-					checkOTUsTag(otusIterator.next());
-				}	while (otusIterator.hasNext());
-			}
 		}
 	}
 
@@ -315,13 +307,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	private void writeCharactersTags(DocumentDataAdapter document) throws IOException, XMLStreamException {
 		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator(getParameters());
-		if (matricesIterator.hasNext()) {
+		while (matricesIterator.hasNext()) {
 			writeCharactersTag(matricesIterator.next());
-			if (matricesIterator.hasNext()) {
-				do {
-					writeCharactersTag(matricesIterator.next());
-				}	while (matricesIterator.hasNext());
-			}
 		}
 	}
 
@@ -584,7 +571,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		alignment.writeSequencePartContentData(getParameters(), metaDataReceiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(getParameters(), sequenceEvent.getID()));
 
-		if (alignmentInfo.isWriteCellsTags()) { //TODO cell meta data must be nested under cell tag
+		if (alignmentInfo.isWriteCellsTags()) {
 			alignment.writeSequencePartContentData(getParameters(), tokenReceiver, sequenceEvent.getID(), 0, alignment.getSequenceLength(getParameters(), sequenceEvent.getID()));
 		}
 		else {
@@ -707,6 +694,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	private void checkCharacterDefinitions(ObjectListDataAdapter<CharacterDefinitionEvent> characterDefinitions) throws IOException {
 		Iterator<String> charIDs = characterDefinitions.getIDIterator(getParameters());
+		
 		while (charIDs.hasNext()) {
 			writeOrCheckObjectMetaData(characterDefinitions, charIDs.next(), true);
 		}
@@ -823,8 +811,12 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork, getParameters());
 
 		for (String nodeID : lister.getNodeIDs()) {
+			NodeEvent node = treeOrNetwork.getNodeStartEvent(getParameters(), nodeID);
 			getXMLWriter().writeStartElement(TAG_NODE.getLocalPart());
-			streamDataProvider.writeLinkedLabeledIDAttributes(treeOrNetwork.getNodeStartEvent(getParameters(), nodeID), TAG_OTU, false);
+			streamDataProvider.writeLinkedLabeledIDAttributes(node, TAG_OTU, false);
+			if (node.isRootNode()) {
+				getXMLWriter().writeAttribute(ATTR_ROOT.getLocalPart(), Boolean.toString(node.isRootNode()));
+			}
 			treeOrNetwork.writeNodeContentData(getParameters(), receiver, nodeID);
 			getXMLWriter().writeEndElement();
 		}
@@ -847,7 +839,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 
 		if (edge.hasSource()) {
-			getXMLWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart()); //TODO check if max. 1 rootedge is written?
+			getXMLWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart()); // Maximum one root can be contained in the adapter
 		}
 		else {
 			getXMLWriter().writeStartElement(TAG_EDGE.getLocalPart());
@@ -867,6 +859,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 	private void checkTreeAndNetworkGroups(DocumentDataAdapter document) throws IOException {
 		Iterator<TreeNetworkGroupDataAdapter> treeAndNetworkGroupIterator = document.getTreeNetworkGroupIterator(getParameters());
+		
 		while (treeAndNetworkGroupIterator.hasNext()) {
 			checkTreesAndNetworkGroup(treeAndNetworkGroupIterator.next());
 		}

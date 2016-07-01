@@ -112,15 +112,22 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		
 		switch (streamDataProvider.getCurrentLiteralMetaSequenceType()) {
 			case SIMPLE:
-				QName datatype = streamDataProvider.getCurrentLiteralMetaDatatype().getURI();
+				QName datatype = null;
+				
+				if (streamDataProvider.getCurrentLiteralMetaDatatype() != null) {
+					datatype = streamDataProvider.getCurrentLiteralMetaDatatype().getURI();
+				}
+				
 				ObjectTranslator<?> translator = parameters.getObjectTranslatorFactory().getDefaultTranslator(datatype);
-				if ((event.getObjectValue() != null) && (translator != null) && translator.hasStringRepresentation() 
-						&& translator.getObjectClass().isInstance(event.getObjectValue().getClass())) {
+				if ((event.getObjectValue() != null) && (translator != null) && translator.hasStringRepresentation()) {
 
 					try {
 						streamDataProvider.getXMLStreamWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
 					}
-					catch (ClassCastException e) {} //TODO still necessary to catch this?
+					catch (ClassCastException e) {
+						throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
+								+ "Therefore it could not be parsed.");
+					}
 				}
 				else if (event.getStringValue() != null) {
 					writer.writeCharacters(event.getStringValue());
@@ -151,9 +158,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 							break;
 					}
 				}
-				break;
-			default:
-				break;
+				break;			
 		}
 		
 		streamDataProvider.setLiteralContentIsContinued(event.isContinuedInNextEvent());

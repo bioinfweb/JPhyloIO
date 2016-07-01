@@ -23,6 +23,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.utils.NodeEdgeIDLister;
 
 import java.io.IOException;
@@ -89,7 +90,7 @@ public interface TreeNetworkDataAdapter extends ElementDataAdapter<LabeledIDEven
 	 * @return the event that describes the specified node
 	 * @throws IllegalArgumentException if no node start event for the specified ID is present
 	 */
-	public LinkedLabeledIDEvent getNodeStartEvent(ReadWriteParameterMap parameters, String id);
+	public NodeEvent getNodeStartEvent(ReadWriteParameterMap parameters, String id);
 	
 	/**
 	 * Writes the events nested in the specified node.
