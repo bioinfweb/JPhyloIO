@@ -600,13 +600,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void checkCharactersTags(DocumentDataAdapter document) throws IllegalArgumentException, IOException {
 		Iterator<MatrixDataAdapter> matricesIterator = document.getMatrixIterator(getParameters());
 
-		if (matricesIterator.hasNext()) {
+		while (matricesIterator.hasNext()) {
 			checkMatrix(matricesIterator.next());
-			if (matricesIterator.hasNext()) {
-				do {
-					checkMatrix(matricesIterator.next());
-				}	while (matricesIterator.hasNext());
-			}
 		}
 	}
 
