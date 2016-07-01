@@ -24,6 +24,13 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
+/**
+ * Data adapters that model a data element identified by a certain start event should implement this interface.
+ * 
+ * @author Ben St&ouml;ver
+ *
+ * @param <E> the type of start element that identifies the modeled data element
+ */
 public interface ElementDataAdapter<E extends JPhyloIOEvent> extends AnnotatedDataAdapter {
 	/**
 	 * Returns the start event of this data element. The returned event can be used to determine the label and ID 
