@@ -127,7 +127,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		finally {
 			fileReader.close();
 			reader.close();
-			file.delete();
+//			file.delete();
 		}
 	}
 	
@@ -463,6 +463,14 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		
 		metaData.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		metaData.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));
+		
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
+		metaData.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, new QName(W3CXSConstants.DATA_TYPE_QNAME.getNamespaceURI(), W3CXSConstants.DATA_TYPE_QNAME.getLocalPart())), 
+				LiteralContentSequenceType.SIMPLE));
+
+		metaData.add(new LiteralMetadataContentEvent(new QName("www.another-test.net", "test2", "pre"), null));
 		
 		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
