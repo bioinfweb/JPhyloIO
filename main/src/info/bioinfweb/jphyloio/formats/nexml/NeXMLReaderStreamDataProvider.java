@@ -39,8 +39,6 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TreeMap;
 
-import javax.xml.namespace.QName;
-
 
 
 public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<NeXMLEventReader> {	
@@ -49,7 +47,6 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	private EnumMap<EventContentType, String> elementTypeToCurrentIDMap = new EnumMap<EventContentType, String>(EventContentType.class);
 	
 	private Stack<EventContentType> metaType = new Stack<EventContentType>();
-	private QName currentMetaContentDatatype;
 	private LiteralContentSequenceType currentLiteralContentSequenceType;
 	private String alternativeStringRepresentation;
 	private URIOrStringIdentifier additionalResourceMetaRel;
@@ -111,21 +108,6 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	 */
 	public Stack<EventContentType> getMetaType() {
 		return metaType;
-	}
-
-
-	/**
-	 * Returns the datatype of character content nested under the current literal meta element. 
-	 * 
-	 * @return the datatype of character content nested under the current literal meta element
-	 */
-	public QName getCurrentMetaContentDatatype() {
-		return currentMetaContentDatatype;
-	}
-
-
-	public void setCurrentMetaContentDatatype(QName nestedMetaType) {
-		this.currentMetaContentDatatype = nestedMetaType;
 	}
 
 	
@@ -213,7 +195,7 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 	 */
 	public Map<String, NeXMLReaderTokenSetInformation> getTokenSets() {
 		return tokenSets;
-	}	
+	}
 
 
 	/**

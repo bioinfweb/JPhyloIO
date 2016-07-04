@@ -38,6 +38,7 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.AbstractNeXMLDataReceiver;
@@ -87,16 +88,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	protected void doWriteDocument() throws IOException, XMLStreamException {
 		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this, getXMLWriter());
 		
-		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(NEXML_NAMESPACE), NEXML_DEFAULT_PRE, NEXML_NAMESPACE); //TODO only use this if namespaces were not declared previously
-		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI),
-				XMLReadWriteUtils.XSI_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(XMLConstants.W3C_XML_SCHEMA_NS_URI),
-				XMLReadWriteUtils.XSD_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		streamDataProvider.setNamespacePrefix(getXMLWriter().getPrefix(XMLReadWriteUtils.NAMESPACE_RDF),
-				XMLReadWriteUtils.RDF_DEFAULT_PRE, XMLReadWriteUtils.NAMESPACE_RDF);
-
 		checkDocument(getDocument());
-
+		
+		streamDataProvider.setNamespacePrefix(streamDataProvider.getNexPrefix(), NEXML_NAMESPACE);
+		streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+		streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getXSDPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		//TODO also add RDF namespace?
+		
 		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
 
 		getXMLWriter().writeDefaultNamespace(NEXML_NAMESPACE);
@@ -341,7 +339,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 						alignmentType.append(TYPE_CONTIN_CELLS);
 						break;
 					case DISCRETE:
-					case UNKNOWN: //should not occur if previous code worked correctly
+					case UNKNOWN:  // Should not occur if previous code worked correctly
 						alignmentType.append(TYPE_STANDARD_CELLS);
 						break;
 					default:
@@ -363,7 +361,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 						alignmentType.append(TYPE_CONTIN_SEQ);
 						break;
 					case DISCRETE:
-					case UNKNOWN: //should not occur if previous code worked correctly
+					case UNKNOWN:  // Should not occur if previous code worked correctly
 						alignmentType.append(TYPE_STANDARD_SEQ);
 						break;
 					default:
@@ -378,7 +376,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 			writeFormatTag(alignment);
 	
-			getXMLWriter().writeStartElement(TAG_MATRIX.getLocalPart()); // Tag does not have any attributes
+			getXMLWriter().writeStartElement(TAG_MATRIX.getLocalPart());  // Tag does not have any attributes
 	
 			Iterator<String> sequenceIDIterator = alignment.getSequenceIDIterator(getParameters());
 			while (sequenceIDIterator.hasNext()) {
@@ -403,7 +401,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeFormatTag(MatrixDataAdapter alignment) throws XMLStreamException, IllegalArgumentException, IOException {
 		getXMLWriter().writeStartElement(TAG_FORMAT.getLocalPart());
 
-		writeTokenSetDefinitions(alignment); // Only written if data is not continuous		
+		writeTokenSetDefinitions(alignment);  // Only written if data is not continuous		
 		writeCharacterDefinitionTags(alignment);
 		writeCharacterSets(alignment);
 
@@ -429,19 +427,19 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), alignmentInfo, tokenSetID, streamDataProvider);
 
 				switch (alignmentInfo.getAlignmentType()) {
-					case CONTINUOUS: // Can not have a states tag
-					case NUCLEOTIDE: // Should not occur
+					case CONTINUOUS:  // Can not have a states tag
+					case NUCLEOTIDE:  // Should not occur
 						break;
 					case DNA:
 					case RNA:
-					case AMINO_ACID: // Molecular data
+					case AMINO_ACID:  // Molecular data
 						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						streamDataProvider.writeLabeledIDAttributes(startEvent);						
 						tokenSetDefinitions.writeContentData(getParameters(), molecularDataReceiver, tokenSetID);
 						molecularDataReceiver.addRemainingEvents(alignmentInfo.getAlignmentType());
 						getXMLWriter().writeEndElement();						
 						break;
-					default: // Discrete data
+					default:  // Discrete data
 						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						streamDataProvider.writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(getParameters(), receiver, tokenSetID);
@@ -456,12 +454,12 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		if (alignmentInfo.isWriteDefaultTokenSet()) {
 			switch (alignmentInfo.getAlignmentType()) {
-				case CONTINUOUS: // Can not have a states tag
-				case NUCLEOTIDE: // Should not occur
+				case CONTINUOUS:  // Can not have a states tag
+				case NUCLEOTIDE:  // Should not occur
 					break;
 				case DNA:
 				case RNA:
-				case AMINO_ACID: // Molecular data
+				case AMINO_ACID:  // Molecular data
 					getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 					streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), DEFAULT_TOKEN_DEFINITION_SET_ID, null));
 					molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), alignmentInfo, DEFAULT_TOKEN_DEFINITION_SET_ID, 
@@ -469,7 +467,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					molecularDataReceiver.addRemainingEvents(alignmentInfo.getAlignmentType());
 					getXMLWriter().writeEndElement();
 					break;
-				default: // Discrete data
+				default:  // Discrete data
 					getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 					streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), DEFAULT_TOKEN_DEFINITION_SET_ID, null));
 					if (!alignmentInfo.getIDToTokenSetInfoMap().get(DEFAULT_TOKEN_DEFINITION_SET_ID).getOccuringTokens().isEmpty()) {
@@ -484,7 +482,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	private void writeCharacterDefinitionTags(MatrixDataAdapter alignment) throws XMLStreamException, IOException {
 		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
-	
+		streamDataProvider.setIDIndex(0);
+		
 		// Write character definitions from adapter
 		if (alignment.getCharacterDefinitions(getParameters()).getCount(getParameters()) > 0) {
 			Iterator<String> charDefinitionIDIterator = alignment.getCharacterDefinitions(getParameters()).getIDIterator(getParameters());
@@ -532,10 +531,14 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLCharacterSetEventReceiver receiver = new NeXMLCharacterSetEventReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		NeXMLWriterAlignmentInformation alignmentInfo = streamDataProvider.getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
 
-		streamDataProvider.setIDIndex(0);
-
 		while (characterSetIDs.hasNext()) {
-			String charSetID = characterSetIDs.next();			
+			String charSetID = characterSetIDs.next();
+			
+			String linkedMatrixID = alignment.getCharacterSets(getParameters()).getObjectStartEvent(getParameters(), charSetID).getLinkedID();
+			if ((linkedMatrixID != null) && !streamDataProvider.getDocumentIDs().contains(linkedMatrixID)) {
+				throw new InconsistentAdapterDataException("The character set with the ID \"" + charSetID 
+						+ "\" linked to the matrix ID \"" + linkedMatrixID + "\" which does not exist in the adapter data.");
+			}
 
 			StringBuffer value = new StringBuffer();
 			for (long columnIndex : alignmentInfo.getCharSets().get(charSetID)) {
@@ -751,7 +754,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			NeXMLCollectCharSetDataReceiver receiver = new NeXMLCollectCharSetDataReceiver(getXMLWriter(), getParameters(), streamDataProvider, charSetID);
 			streamDataProvider.addToDocumentIDs(charSetID);
 			
-			//TODO Possibly check if char set links correct matrix ID
 			alignmentInfo.getCharSets().put(charSetID, new TreeSet<Long>());
 			charSets.writeContentData(getParameters(), receiver, charSetID);
 		}

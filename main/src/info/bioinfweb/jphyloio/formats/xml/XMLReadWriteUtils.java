@@ -32,10 +32,12 @@ public class XMLReadWriteUtils {
 	public static final String XSD_DEFAULT_PRE = "xsd";
 	public static final String RDF_DEFAULT_PRE = "rdf";
 	
+  public static final String DEFAULT_NAMESPACE_PREFIX = "prefix";
+	
 	
 	public static String getXSIPrefix(XMLStreamWriter writer) throws XMLStreamException {
 		String prefix = writer.getPrefix(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-		if (prefix == null) { //TODO should not happen, leave out this part?
+		if (prefix == null || prefix.isEmpty()) {
 			prefix = XSI_DEFAULT_PRE;
 		}
 		return prefix;
@@ -44,7 +46,7 @@ public class XMLReadWriteUtils {
 	
 	public static String getXSDPrefix(XMLStreamWriter writer) throws XMLStreamException {
 		String prefix = writer.getPrefix(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		if (prefix == null) { //TODO should not happen, leave out this part?
+		if (prefix == null || prefix.isEmpty()) {
 			prefix = XSD_DEFAULT_PRE;
 		}
 		return prefix;
@@ -53,9 +55,28 @@ public class XMLReadWriteUtils {
 	
 	public static String getRDFPrefix(XMLStreamWriter writer) throws XMLStreamException {
 		String prefix = writer.getPrefix(NAMESPACE_RDF);
-		if (prefix == null) { //TODO should not happen, leave out this part?
+		if (prefix == null || prefix.isEmpty()) {
 			prefix = RDF_DEFAULT_PRE;
 		}
 		return prefix;
+	}
+	
+	
+	public static String getNamespacePrefix(XMLStreamWriter writer, String givenPrefix, String namespaceURI) throws XMLStreamException {
+		if (givenPrefix == null || givenPrefix.isEmpty()) {
+			if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)) {
+				givenPrefix = getXSIPrefix(writer);
+			}
+			else if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+				givenPrefix = getXSDPrefix(writer);
+			}
+			else if (namespaceURI.equals(NAMESPACE_RDF)) {
+				givenPrefix = getRDFPrefix(writer);
+			}
+			else { //TODO return format specific prefixes here (nex, phy, ...)?
+				givenPrefix = DEFAULT_NAMESPACE_PREFIX;
+			}
+		}
+		return givenPrefix;
 	}
 }

@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -46,10 +45,8 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private XMLStreamWriter writer;
 	
 	private Set<String> documentIDs = new HashSet<String>();
-	private int idIndex = 0;
-	
-	private Set<String> nameSpaces = new TreeSet<String>();
 	private Set<String> namespacePrefixes = new HashSet<String>();
+	private int idIndex = 0;	
 	
 	private LiteralContentSequenceType currentLiteralMetaSequenceType;
 	private URIOrStringIdentifier currentLiteralMetaDatatype;
@@ -89,7 +86,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	
 	public String getNexPrefix() throws XMLStreamException {
 		String prefix = getXMLStreamWriter().getPrefix(NEXML_NAMESPACE);
-		if (prefix == null) { //TODO should not happen, leave out this part?
+		if (prefix == null || prefix.isEmpty()) {
 			prefix = NEXML_DEFAULT_PRE;
 		}
 		return prefix;
@@ -145,11 +142,6 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public void setCurrentLiteralMetaDatatype(URIOrStringIdentifier currentLiteralMetaDatatype) {
 		this.currentLiteralMetaDatatype = currentLiteralMetaDatatype;
-	}
-
-
-	public Set<String> getNameSpaces() {
-		return nameSpaces;
 	}
 
 
@@ -286,18 +278,10 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		}
 	}
 	
+	
 	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
-		setNamespacePrefix(prefix, DEFAULT_NAMESPACE_PREFIX, namespace);
-	}
-	
-	
-	public void setNamespacePrefix(String prefix, String defaultPrefix, String namespace) throws XMLStreamException {
 		if (namespace != null) {
-			if (!(((prefix == null) || prefix.isEmpty()) && (getXMLStreamWriter().getPrefix(namespace) != null))) {				
-				if (((prefix == null) || prefix.isEmpty())) {
-					prefix = defaultPrefix;
-				}
-						
+			if (getXMLStreamWriter().getPrefix(namespace) == null) {  // No prefix was set before for this namespace
 				int index = 1;
 				String nameSpacePrefix = prefix;
 				if (!getNamespacePrefixes().add(nameSpacePrefix)) {
@@ -308,7 +292,6 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 				}
 
 				getXMLStreamWriter().setPrefix(nameSpacePrefix, namespace);
-				getNameSpaces().add(namespace);			
 			}
 		}
 	}

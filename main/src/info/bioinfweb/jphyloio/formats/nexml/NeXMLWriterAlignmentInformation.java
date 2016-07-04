@@ -31,19 +31,17 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
-	private boolean writeAlignment = true;
-	
+	private boolean writeAlignment = true;	
 	private boolean writeCellsTags;
 	
 	private long alignmentLength; // Length of the longest sequence found in the alignment adapter
 	private CharacterStateSetType alignmentType;
+	
 	private CharacterStateSetType tokenSetType;
 	private CharacterStateSetType tokenType;
-	private boolean writeDefaultTokenSet = false;
-	
+	private boolean writeDefaultTokenSet = false;	
 	private Map<String, NeXMLWriterTokenSetInformation> idToTokenSetInfoMap = new HashMap<String, NeXMLWriterTokenSetInformation>();
 	
-	private Map<String, String> charSetToTokenSetMap = new HashMap<String, String>();
 	private Map<String, SortedSet<Long>> charSets = new HashMap<String, SortedSet<Long>>();
 	Map<Long, String> columnIndexToIDMap = new HashMap<Long, String>();
 	private Map<Long, String> columnIndexToStatesMap = new HashMap<Long, String>();
@@ -128,11 +126,6 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 
 	public Map<String, NeXMLWriterTokenSetInformation> getIDToTokenSetInfoMap() {
 		return idToTokenSetInfoMap;
-	}
-
-
-	public Map<String, String> getCharSetToTokenSetMap() {
-		return charSetToTokenSetMap;
 	}
 	
 

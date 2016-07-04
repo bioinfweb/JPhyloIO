@@ -30,45 +30,31 @@ public class NeXMLSingleTokenDefinitionInformation {
 	private Collection<String> constituents;
 	
 	
-	public NeXMLSingleTokenDefinitionInformation(String id, String label, String symbol) {
+	public NeXMLSingleTokenDefinitionInformation(String id, String label, String symbol, Collection<String> constituents) {
 		super();
 		this.id = id;
 		this.label = label;
 		this.symbol = symbol;
+		this.constituents = constituents;
 	}
 
+	
+	protected String getID() {
+		return id;
+	}
+	
 
 	protected String getLabel() {
 		return label;
 	}
-
-
-	protected void setLabel(String label) {
-		this.label = label;
-	}
-
+	
 
 	protected String getSymbol() {
 		return symbol;
 	}
 
 
-	protected void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
-
-
 	protected Collection<String> getConstituents() {
 		return constituents;
-	}
-
-
-	protected void setConstituents(Collection<String> constituents) {
-		this.constituents = constituents;
-	}
-
-
-	protected String getID() {
-		return id;
 	}
 }

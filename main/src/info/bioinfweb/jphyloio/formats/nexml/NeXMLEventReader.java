@@ -140,17 +140,17 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				if (streamDataProvider.getAdditionalResourceMetaRel() == null) {
 					URIOrStringIdentifier predicate = null;
 					
-					if (streamDataProvider.getParentName().equals(TAG_FORMAT.getLocalPart())) {					
+					if (streamDataProvider.getParentName().equals(TAG_FORMAT.getLocalPart())) {
 						predicate = new URIOrStringIdentifier(null, PREDICATE_FORMAT);
-					}					
+					}
 					else if (streamDataProvider.getParentName().equals(TAG_MATRIX.getLocalPart())) {
 						predicate = new URIOrStringIdentifier(null, PREDICATE_MATRIX);
-					}
+					}					
+					// Add cases if element reader is registered for more parent tags
 					
-					//add cases if element reader is registered for more parent tags				
 					if (predicate != null) {
 			    	streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(RESERVED_ID_PREFIX + DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-			    			null, predicate, null, null)); // ID conflict theoretically possible
+			    			null, predicate, null, null));  // ID conflict theoretically possible
 			    	streamDataProvider.setAdditionalResourceMetaRel(predicate);
 					}
 				}
@@ -231,9 +231,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	  			throw new JPhyloIOReaderException("State tag must have an attribute called \"" + ATTR_SYMBOL + "\".", element.getLocation());
 	  		}
 	  		
-	  		streamDataProvider.setCurrentSingleTokenDefinition(new NeXMLSingleTokenDefinitionInformation(info.id, info.label, symbol));
-	  		streamDataProvider.getCurrentSingleTokenDefinition().setConstituents(new ArrayList<String>());
-				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>()); //meta events nested under this state set are buffered here
+	  		streamDataProvider.setCurrentSingleTokenDefinition(new NeXMLSingleTokenDefinitionInformation(info.id, info.label, symbol, new ArrayList<String>()));
+				streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());  // Meta events nested under this state set are buffered here
 			}
 		};
 		

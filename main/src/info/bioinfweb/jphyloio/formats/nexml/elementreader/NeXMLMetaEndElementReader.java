@@ -40,7 +40,6 @@ public class NeXMLMetaEndElementReader extends AbstractNeXMLElementReader {
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			streamDataProvider.setAlternativeStringRepresentation(null);
 			streamDataProvider.setCurrentLiteralContentSequenceType(null);
-			streamDataProvider.setCurrentMetaContentDatatype(null);
 		}
 		else if (type.equals(EventContentType.META_RESOURCE)) {
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));

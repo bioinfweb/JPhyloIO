@@ -94,14 +94,20 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	public static void checkLiteralMeta (NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) 
 			throws XMLStreamException, JPhyloIOWriterException {
 		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+			QName resourceIdentifier;
+			
 			streamDataProvider.addToDocumentIDs(event.getID());
 			
 			if (event.getPredicate() != null) {
-				streamDataProvider.setNamespacePrefix(event.getPredicate().getURI().getPrefix(), event.getPredicate().getURI().getNamespaceURI());
+				resourceIdentifier = event.getPredicate().getURI();
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 			
 			if ((event.getOriginalType() != null) && (event.getOriginalType().getURI() != null)) {
-				streamDataProvider.setNamespacePrefix(event.getOriginalType().getURI().getPrefix(), event.getOriginalType().getURI().getNamespaceURI());
+				resourceIdentifier = event.getOriginalType().getURI();
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 		}
 	}
@@ -118,9 +124,9 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 					datatype = streamDataProvider.getCurrentLiteralMetaDatatype().getURI();
 				}
 				
+				//TODO Write correct prefix if datatype is QName
 				ObjectTranslator<?> translator = parameters.getObjectTranslatorFactory().getDefaultTranslator(datatype);
 				if ((event.getObjectValue() != null) && (translator != null) && translator.hasStringRepresentation()) {
-
 					try {
 						streamDataProvider.getXMLStreamWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
 					}
@@ -131,6 +137,10 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				}
 				else if (event.getStringValue() != null) {
 					writer.writeCharacters(event.getStringValue());
+				}
+				else {
+					//TODO What should be written if neither a translator could be found nor a stringValue is present? Object.toString()? 
+					// e.g. in case the datatype is Array nothing is written at the moment
 				}
 				break;
 			case XML:
@@ -154,7 +164,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 						case XMLStreamConstants.CHARACTERS:
 							writer.writeCharacters(xmlContentEvent.asCharacters().getData());
 							break;
-						default: //TODO handle start and end document?
+						default: //TODO Handle start and end document?
 							break;
 					}
 				}
@@ -166,16 +176,22 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	
 	
 	public static void checkLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException {
+		QName resourceIdentifier;
+		
 		if (event.hasXMLEventValue()) {
 			if (event.getXMLEvent().getEventType() == XMLStreamConstants.START_ELEMENT) {
 				StartElement element = event.getXMLEvent().asStartElement();
-				streamDataProvider.setNamespacePrefix(element.getName().getPrefix(), element.getName().getNamespaceURI());
+				resourceIdentifier = element.getName();
+				
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 		}
 		
-		if ((event.getObjectValue() != null) && QName.class.isInstance(event.getObjectValue().getClass())) { //TODO does this work?
+		if ((event.getObjectValue() != null) && (event.getObjectValue() instanceof QName)) {
 			QName objectValue = (QName)event.getObjectValue();
-			streamDataProvider.setNamespacePrefix(objectValue.getPrefix(), objectValue.getNamespaceURI());
+			streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), objectValue.getPrefix(), 
+					objectValue.getNamespaceURI()), objectValue.getNamespaceURI());
 		}
 	}
 	
@@ -206,7 +222,9 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			streamDataProvider.addToDocumentIDs(event.getID());
 			
 			if (event.getRel() != null) {
-				streamDataProvider.setNamespacePrefix(event.getRel().getURI().getPrefix(), event.getRel().getURI().getNamespaceURI());
+				QName resourceIdentifier = event.getRel().getURI();
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 		}
 	}

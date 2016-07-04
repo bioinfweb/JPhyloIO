@@ -66,7 +66,6 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 				originalType = new URIOrStringIdentifier(null, datatype);
 			}
 			
-			streamDataProvider.setCurrentMetaContentDatatype(datatype);
 			streamDataProvider.setAlternativeStringRepresentation(content);
 			
 			LiteralContentSequenceType contentType = LiteralContentSequenceType.XML;

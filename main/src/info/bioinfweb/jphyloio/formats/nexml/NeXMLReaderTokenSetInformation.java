@@ -32,11 +32,9 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 public class NeXMLReaderTokenSetInformation {
 	private String id = null;
 	private String label = null;
-	private CharacterStateSetType setType;
-	
-	private Collection<JPhyloIOEvent> nestedEvents = new ArrayList<JPhyloIOEvent>();
-	
-	private Map<Integer, String> symbolTranslationMap = new HashMap<Integer, String>(); //is only used for standard data
+	private CharacterStateSetType setType;	
+	private Collection<JPhyloIOEvent> nestedEvents = new ArrayList<JPhyloIOEvent>();	
+	private Map<Integer, String> symbolTranslationMap = new HashMap<Integer, String>(); // Is only used for standard data
 	
 	
 	public NeXMLReaderTokenSetInformation(String id, String label, CharacterStateSetType setType) {
@@ -60,18 +58,8 @@ public class NeXMLReaderTokenSetInformation {
 	}
 	
 	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	
 	public String getLabel() {
 		return label;
-	}
-	
-	
-	public void setLabel(String label) {
-		this.label = label;
 	}
 	
 	
@@ -79,11 +67,6 @@ public class NeXMLReaderTokenSetInformation {
 		return setType;
 	}
 	
-	
-	public void setSetType(CharacterStateSetType setType) {
-		this.setType = setType;
-	}
-
 
 	protected Collection<JPhyloIOEvent> getNestedEvents() {
 		return nestedEvents;
