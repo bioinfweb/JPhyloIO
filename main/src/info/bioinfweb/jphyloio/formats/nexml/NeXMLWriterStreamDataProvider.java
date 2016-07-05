@@ -82,15 +82,6 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	public NeXMLEventWriter getEventWriter() {
 		return eventWriter;
 	}
-	
-	
-	public String getNexPrefix() throws XMLStreamException {
-		String prefix = getXMLStreamWriter().getPrefix(NEXML_NAMESPACE);
-		if (prefix == null || prefix.isEmpty()) {
-			prefix = NEXML_DEFAULT_PRE;
-		}
-		return prefix;
-	}
 
 	
 	public Set<String> getDocumentIDs() {
@@ -279,9 +270,18 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
+	public String getNeXMLPrefix(XMLStreamWriter writer) throws XMLStreamException {
+		String prefix = writer.getPrefix(NeXMLConstants.NEXML_NAMESPACE);
+		if (prefix == null || prefix.isEmpty()) {
+			prefix = NeXMLConstants.NEXML_DEFAULT_PRE;
+		}
+		return prefix;
+	}
+	
+	
 	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
 		if (namespace != null) {
-			if (getXMLStreamWriter().getPrefix(namespace) == null) {  // No prefix was set before for this namespace
+			if (getXMLStreamWriter().getPrefix(namespace) == null) {  // URI is not yet bound to a prefix
 				int index = 1;
 				String nameSpacePrefix = prefix;
 				if (!getNamespacePrefixes().add(nameSpacePrefix)) {

@@ -49,7 +49,7 @@ public class CommentEvent extends ContinuedEvent {
 
 
 	/**
-	 * Creates a new instance of this class that is not contunied in the next event.
+	 * Creates a new instance of this class that is not continued in the next event.
 	 * 
 	 * @param content the content of the represented comment
 	 */

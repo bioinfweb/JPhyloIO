@@ -49,6 +49,7 @@ import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectSequenceDataR
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectTokenSetDefinitionDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLMetaDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLMolecularDataTokenDefinitionReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLPredicateMetaReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLSequenceMetaDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLSequenceTokensReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLSetContentReceiver;
@@ -90,16 +91,15 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		
 		checkDocument(getDocument());
 		
-		streamDataProvider.setNamespacePrefix(streamDataProvider.getNexPrefix(), NEXML_NAMESPACE);
+		streamDataProvider.setNamespacePrefix(streamDataProvider.getNeXMLPrefix(getXMLWriter()), NEXML_NAMESPACE);
 		streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
 		streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getXSDPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		//TODO also add RDF namespace?
 		
 		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
 
 		getXMLWriter().writeDefaultNamespace(NEXML_NAMESPACE);
 		getXMLWriter().writeAttribute(ATTR_VERSION.getLocalPart(), NEXML_VERSION);
-		getXMLWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), getClass().getName()); //TODO is this necessary/correct?
+		getXMLWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), getClass().getName()); //TODO use "JPhyloIO" as generator?
 		
 		for (String prefix : streamDataProvider.getNamespacePrefixes()) {
 			getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
@@ -320,7 +320,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			streamDataProvider.setCurrentAlignmentInfo(alignmentInfo);
 			
 			StringBuffer alignmentType = new StringBuffer();
-			alignmentType.append(streamDataProvider.getNexPrefix());
+			alignmentType.append(streamDataProvider.getNeXMLPrefix(getXMLWriter()));
 			alignmentType.append(":");
 	
 			if (alignmentInfo.isWriteCellsTags()) {
@@ -372,11 +372,17 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()),
 					ATTR_XSI_TYPE.getNamespaceURI(), ATTR_XSI_TYPE.getLocalPart(), alignmentType.toString());
 			
-			writeOrCheckMetaData(alignment, false); //TODO write meta data with a format or matrix predicate nested under the according tag
+			NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLPredicateMetaReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
+					false, PREDICATE_FORMAT, PREDICATE_MATRIX);  // Do not write format and matrix meta data here
+			alignment.writeMetadata(getParameters(), predicateDataReceiver);
 	
 			writeFormatTag(alignment);
 	
 			getXMLWriter().writeStartElement(TAG_MATRIX.getLocalPart());  // Tag does not have any attributes
+			
+			predicateDataReceiver = new NeXMLPredicateMetaReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
+					true, PREDICATE_MATRIX);
+			alignment.writeMetadata(getParameters(), predicateDataReceiver);  // Matrix meta data is written here
 	
 			Iterator<String> sequenceIDIterator = alignment.getSequenceIDIterator(getParameters());
 			while (sequenceIDIterator.hasNext()) {
@@ -400,6 +406,10 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 	private void writeFormatTag(MatrixDataAdapter alignment) throws XMLStreamException, IllegalArgumentException, IOException {
 		getXMLWriter().writeStartElement(TAG_FORMAT.getLocalPart());
+		
+		NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLPredicateMetaReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
+				true, PREDICATE_FORMAT);
+		alignment.writeMetadata(getParameters(), predicateDataReceiver);  // Format meta data is written here
 
 		writeTokenSetDefinitions(alignment);  // Only written if data is not continuous		
 		writeCharacterDefinitionTags(alignment);
@@ -792,7 +802,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeTreeOrNetworkTag(TreeNetworkDataAdapter treeOrNetwork) throws XMLStreamException, IOException {
 		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		StringBuffer treeType = new StringBuffer();
-		treeType.append(streamDataProvider.getNexPrefix());
+		treeType.append(streamDataProvider.getNeXMLPrefix(getXMLWriter()));
 		treeType.append(":");
 
 		if (treeOrNetwork.isTree(getParameters())) {

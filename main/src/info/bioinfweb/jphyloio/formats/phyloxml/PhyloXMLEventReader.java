@@ -168,7 +168,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				String parentTag = streamDataProvider.getParentName();
 				
 				String appliesTo = XMLUtils.readStringAttr(element, ATTR_APPLIES_TO, null);
-				URIOrStringIdentifier predicate = new URIOrStringIdentifier(null, qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_REF, null), element));
+				URIOrStringIdentifier predicate = new URIOrStringIdentifier(null, parseQName(XMLUtils.readStringAttr(element, ATTR_REF, null), element));
 				
 				boolean appliesToAsAttribute = true;
 				boolean resetEventCollection = false;				

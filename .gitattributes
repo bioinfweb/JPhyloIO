@@ -167,6 +167,7 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLCollectTokenSetDef
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLHandleSequenceDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLMetaDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLMolecularDataTokenDefinitionReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLPredicateMetaReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLSequenceMetaDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLSequenceTokensReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLSetContentReceiver.java -text svneol=unset#text/plain

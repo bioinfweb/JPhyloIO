@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -43,8 +44,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-
-import org.semanticweb.owlapi.io.XMLUtils;
 
 
 
@@ -190,7 +189,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	public QName qNameFromCURIE(String curie, StartElement element) throws JPhyloIOReaderException {
+	public QName parseQName(String curie, StartElement element) throws JPhyloIOReaderException {
 		String prefix = null;
 		String localPart = null;
 		String namespaceURI = null;
@@ -198,15 +197,15 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 		
 		if (curie != null) {
 			if (curie.contains(":")) {
-				prefix = curie.substring(0, curie.indexOf(':'));
-				localPart = curie.substring(curie.indexOf(':') + 1);				
+				prefix = curie.substring(0, curie.indexOf(XMLUtils.QNAME_SEPARATOR));
+				localPart = curie.substring(curie.indexOf(XMLUtils.QNAME_SEPARATOR) + 1);
 
-				if (!XMLUtils.isNCName(prefix)) {
+				if (!org.semanticweb.owlapi.io.XMLUtils.isNCName(prefix)) {
 					prefix = null;
 				}
 				
 				namespaceURI =  element.getNamespaceContext().getNamespaceURI(prefix);
-				if (namespaceURI == null) { // prefix value was not defined
+				if (namespaceURI == null) {  // Prefix value was not defined
 					if (prefix.equals(XMLReadWriteUtils.XSD_DEFAULT_PRE)) {
 						namespaceURI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 					}
@@ -217,7 +216,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 			}
 			
 			if (prefix == null) {
-				qName = new QName(element.getNamespaceContext().getNamespaceURI(""), curie); // if no prefix was specified or it was invalid, the default namespace is used
+				qName = new QName(element.getNamespaceContext().getNamespaceURI(""), curie);  // If no prefix was specified or it was invalid, the default namespace is used
 			}
 			else {
 				qName = new QName(namespaceURI, localPart, prefix);

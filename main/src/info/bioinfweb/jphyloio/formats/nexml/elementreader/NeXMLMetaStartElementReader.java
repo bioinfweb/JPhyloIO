@@ -50,15 +50,15 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 			XMLStreamException {
 		StartElement element = event.asStartElement();
   	LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
-  	QName type = streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null), element);
+  	QName type = streamDataProvider.getEventReader().parseQName(XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null), element);
   	URIOrStringIdentifier predicate;  	
 		
 		if (type.getLocalPart().equals(TYPE_LITERAL_META)) {
 			streamDataProvider.getMetaType().push(EventContentType.META_LITERAL);
 			
 			predicate = new URIOrStringIdentifier(null, 
-					streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null), element));
-			QName datatype = streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);		  			
+					streamDataProvider.getEventReader().parseQName(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null), element));
+			QName datatype = streamDataProvider.getEventReader().parseQName(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);		  			
 			String content = XMLUtils.readStringAttr(element, ATTR_CONTENT, null);
 			
 			URIOrStringIdentifier originalType = null;
@@ -119,7 +119,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 		else if (type.getLocalPart().equals(TYPE_RESOURCE_META)) {
 			streamDataProvider.getMetaType().push(EventContentType.META_RESOURCE);
 			predicate = new URIOrStringIdentifier(null, 
-					streamDataProvider.getEventReader().qNameFromCURIE(XMLUtils.readStringAttr(element, ATTR_REL, null), element));
+					streamDataProvider.getEventReader().parseQName(XMLUtils.readStringAttr(element, ATTR_REL, null), element));
 			String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);
 			String uri = XMLUtils.readStringAttr(element, ATTR_HREF, null);
 			URI href = null;

@@ -354,7 +354,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_META, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				if ((streamDataProvider.getMetaType() != null) && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events
+				if ((streamDataProvider.getMetaType() != null) && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events
 					String content = event.asCharacters().getData();
 					boolean isContinued = streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS);
 					
@@ -385,7 +385,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events					
+				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events					
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataContentEvent(event.asStartElement(), false));
 				}
@@ -395,7 +395,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {				
-				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events
+				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asCharacters(), 
 							streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS)));
 				}
@@ -405,7 +405,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) { //content events are only allowed under literal meta events					
+				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events					
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataContentEvent(event.asEndElement(), false));
 				}
@@ -481,7 +481,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 				String tokenSetType = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
 				if (tokenSetType != null) {
-					tokenSetType = qNameFromCURIE(tokenSetType, element).getLocalPart();
+					tokenSetType = parseQName(tokenSetType, element).getLocalPart();
 				}
 				else {
 					throw new JPhyloIOReaderException("Character tag must have an attribute called \"" + ATTR_XSI_TYPE + "\".", element.getLocation());

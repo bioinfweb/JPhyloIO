@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
+
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -62,20 +65,30 @@ public class XMLReadWriteUtils {
 	}
 	
 	
-	public static String getNamespacePrefix(XMLStreamWriter writer, String givenPrefix, String namespaceURI) throws XMLStreamException {
+	public static String getNamespacePrefix(XMLStreamWriter writer, String givenPrefix, String namespaceURI) throws XMLStreamException {		
 		if (givenPrefix == null || givenPrefix.isEmpty()) {
-			if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)) {
-				givenPrefix = getXSIPrefix(writer);
-			}
-			else if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-				givenPrefix = getXSDPrefix(writer);
-			}
-			else if (namespaceURI.equals(NAMESPACE_RDF)) {
-				givenPrefix = getRDFPrefix(writer);
-			}
-			else { //TODO return format specific prefixes here (nex, phy, ...)?
-				givenPrefix = DEFAULT_NAMESPACE_PREFIX;
-			}
+			givenPrefix = writer.getPrefix(namespaceURI);
+			
+			if (givenPrefix == null || givenPrefix.isEmpty()) {
+				if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)) {
+					givenPrefix = XSI_DEFAULT_PRE;
+				}
+				else if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+					givenPrefix = XSD_DEFAULT_PRE;
+				}
+				else if (namespaceURI.equals(NAMESPACE_RDF)) {
+					givenPrefix = RDF_DEFAULT_PRE;
+				}
+				else if (namespaceURI.equals(NeXMLConstants.NEXML_NAMESPACE)) {
+					givenPrefix = NeXMLConstants.NEXML_DEFAULT_PRE;
+				}
+				else if (namespaceURI.equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {
+					givenPrefix = PhyloXMLConstants.PHYLOXML_DEFAULT_PRE;
+				}
+				else {
+					givenPrefix = DEFAULT_NAMESPACE_PREFIX;
+				}
+			}			
 		}
 		return givenPrefix;
 	}
