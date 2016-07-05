@@ -24,7 +24,6 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -33,7 +32,6 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.S
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreMatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreOTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectData;
-import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -52,14 +50,11 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.test.dataadapters.TestTreeNetworkGroupDataAdapter;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -68,7 +63,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventFactory;
@@ -127,7 +121,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		finally {
 			fileReader.close();
 			reader.close();
-//			file.delete();
+			file.delete();
 		}
 	}
 	
@@ -155,6 +149,38 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		// Add char sets to matrix data adapter
 		String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
 		matrix.getCharacterSets(parameters).getObjectMap().put(charSetID, createCharSet(charSetID));
+		
+		// Add metadata to matrix data adapter
+		matrix.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_FORMAT), null, null));		
+		matrix.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.SIMPLE));		
+		matrix.getAnnotations().add(new LiteralMetadataContentEvent("some text (format)", false));
+		matrix.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		matrix.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
+		matrix.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_MATRIX), null, null));		
+		matrix.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.SIMPLE));		
+		matrix.getAnnotations().add(new LiteralMetadataContentEvent("some text (matrix)", false));
+		matrix.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		matrix.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_HAS_LITERAL_METADATA), null, null));		
+		matrix.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.SIMPLE));		
+		matrix.getAnnotations().add(new LiteralMetadataContentEvent("some more text (matrix)", false));
+		matrix.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		matrix.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		matrix.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
+		matrix.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_HAS_LITERAL_METADATA), null, null));		
+		matrix.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.SIMPLE));		
+		matrix.getAnnotations().add(new LiteralMetadataContentEvent("some text (characters)", false));
+		matrix.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		matrix.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		// Add sequence matrix to matrix data adapter
 		document.getMatrices().add(matrix);
