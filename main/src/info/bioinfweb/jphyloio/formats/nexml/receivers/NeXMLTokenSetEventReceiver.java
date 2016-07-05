@@ -47,6 +47,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
+/**
+ * Receiver that is used to write token sets.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	NeXMLWriterAlignmentInformation alignmentInfo;
 	String tokenSetID;

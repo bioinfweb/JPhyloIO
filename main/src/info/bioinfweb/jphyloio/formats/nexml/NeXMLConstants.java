@@ -26,6 +26,11 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Defines constants necessary to read and write NeXML files.
+ * 
+ * @author Sarah Wiechers
+ */
 public interface NeXMLConstants {
 	public static final String NEXML_FORMAT_NAME = "NeXML";
 	public static final String NEXML_VERSION = "0.9";

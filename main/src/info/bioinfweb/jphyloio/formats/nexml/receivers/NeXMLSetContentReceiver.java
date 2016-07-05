@@ -31,7 +31,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * Receiver that is used to write sets other than character and token sets.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLSetContentReceiver extends NeXMLMetaDataReceiver {
 
 	

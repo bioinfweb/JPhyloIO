@@ -31,6 +31,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
+/**
+ * Receiver that collects the IDs of character set elements.
+ * 
+ * @author Sarah Wiechers 
+ */
 public class NeXMLCollectCharSetDataReceiver extends NeXMLCollectNamespaceReceiver {
 	private String charSetID;
 	

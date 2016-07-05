@@ -44,6 +44,11 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * Abstract element reader that processes start elements of NeXML meta tags.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 	@Override
 	public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
@@ -96,21 +101,33 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 			}
 			else if ((datatype != null) && !datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
 				Object objectValue = null;
-				String nestedContent = XMLUtils.readCharactersAsString(streamDataProvider.getXMLReader()); //TODO check if translator can read from string or if the reader itself needs to be provided
 				
-				if (nestedContent != null) {
-					try {
-						if (!"".equals(nestedContent.trim())) {
-							objectValue = translator.representationToJava(nestedContent, streamDataProvider);
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, nestedContent));
+				if (translator.hasStringRepresentation()) { // TODO is there another method to check if the translator can process a String?			
+					String nestedContent = XMLUtils.readCharactersAsString(streamDataProvider.getXMLReader());
+					
+					if (nestedContent != null) {
+						try {
+							if (!"".equals(nestedContent.trim())) {
+								objectValue = translator.representationToJava(nestedContent, streamDataProvider);
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, nestedContent));
+							}
+							else if ((content != null) && !content.isEmpty()) {
+								objectValue = translator.representationToJava(content, streamDataProvider);
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, content));
+							}
 						}
-						else if ((content != null) && !content.isEmpty()) {
-							objectValue = translator.representationToJava(content, streamDataProvider);
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, content));
+						catch (InvalidObjectSourceDataException e) {
+							throw new JPhyloIOReaderException("The nested content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
 						}
 					}
+				}
+				else {
+					try {
+						objectValue = translator.readXMLRepresentation(streamDataProvider.getXMLReader(), streamDataProvider);
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, null));
+					}
 					catch (InvalidObjectSourceDataException e) {
-						throw new JPhyloIOReaderException("The nested content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
+						throw new JPhyloIOReaderException("The nested XML content of this meta tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", event.getLocation());
 					}
 				}
 			}

@@ -28,6 +28,12 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
+/**
+ * Implements basic functionality for event receivers writing NeXML.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public abstract class AbstractNeXMLDataReceiver extends BasicEventReceiver<XMLStreamWriter> implements NeXMLConstants {
 	private NeXMLWriterStreamDataProvider streamDataProvider;
 	

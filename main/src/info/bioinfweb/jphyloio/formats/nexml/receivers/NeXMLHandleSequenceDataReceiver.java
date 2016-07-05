@@ -23,6 +23,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSequenceContentReceiver;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
+import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
@@ -34,7 +35,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * General implementation of a receiver that processes sequence tokens.
+ * 
+ * @author Sarah Wiechers
+ */
 public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {
 	private boolean nestedUnderSingleToken = false;
 	private long tokenIndex = 0;
@@ -52,6 +57,11 @@ public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceCo
 	}
 
 
+	/**
+	 * Determines whether the current event is nested under a {@link SingleTokenDefinitionEvent} or not.
+	 * 
+	 * @return {@code true} if the current event is nested under a {@link SingleTokenDefinitionEvent}
+	 */
 	public boolean isNestedUnderSingleToken() {
 		return nestedUnderSingleToken;
 	}
@@ -62,6 +72,11 @@ public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceCo
 	}
 	
 	
+	/**
+	 * Returns the index of the alignment character the currently handled token belongs to.
+	 * 
+	 * @return the character index of the currently handled token
+	 */
 	public long getTokenIndex() {
 		return tokenIndex;
 	}

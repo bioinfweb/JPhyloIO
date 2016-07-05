@@ -29,7 +29,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * Receiver that writes sequence meta data but ignores other events that were processed previously. 
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLSequenceMetaDataReceiver extends NeXMLMetaDataReceiver {
 
 	

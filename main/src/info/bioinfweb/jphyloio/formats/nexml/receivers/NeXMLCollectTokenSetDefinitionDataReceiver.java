@@ -39,7 +39,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * Class that checks the contents of a token set.
+ * <p>
+ * The {@link CharacterStateSetType} of the token set will be different from the one given in the start event of the according set,
+ * if a {@link SingleTokenDefinitionEvent} defines a token that is not allowed under the current type of token set 
+ * or if the original token set type was {@link CharacterStateSetType#NUCLEOTIDE}.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectNamespaceReceiver {
 	NeXMLWriterAlignmentInformation alignmentInfo;
 	String tokenSetDefinitionID;

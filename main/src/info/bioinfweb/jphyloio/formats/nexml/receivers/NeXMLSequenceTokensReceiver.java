@@ -36,6 +36,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
+/**
+ * Receiver that is used to write sequence tokens.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver {
 	NeXMLWriterAlignmentInformation alignmentInfo;
 	
@@ -80,7 +85,7 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 
 
 	@Override
-	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException { //TODO write if parent was null?
+	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
 		if (!isNestedUnderSingleToken()) {
 			AbstractNeXMLDataReceiverMixin.handleComment(getStreamDataProvider(), event);
 		}

@@ -25,6 +25,8 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -36,7 +38,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * Receiver that allows to ignore certain metadata.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLPredicateMetaReceiver extends NeXMLMetaDataReceiver {
 	private List<QName> predicates = new ArrayList<QName>();
 	private boolean writePredicateMetadata;
@@ -44,6 +50,16 @@ public class NeXMLPredicateMetaReceiver extends NeXMLMetaDataReceiver {
 	private long metaLevel = 0;
 
 	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param writer the XML writer of the calling {@link NeXMLEventWriter}
+	 * @param parameterMap the parameter map of the calling {@link NeXMLEventWriter}
+	 * @param streamDataProvider the stream data provider of the calling {@link NeXMLEventReader}
+	 * @param writePredicateMetadata specify {code true} here if only metadata nested under the specified predicates should be written 
+	 * or {@code false} if metadata under these predicates should be ignored
+	 * @param predicates the predicates to be processed differently
+	 */
 	public NeXMLPredicateMetaReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider, 
 			boolean writePredicateMetadata, QName... predicates) {
 		

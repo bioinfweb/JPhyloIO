@@ -36,8 +36,10 @@ import javax.xml.namespace.QName;
 public abstract class AbstractIDLinkSetElementReader extends AbstractSetElementReader {
 	/**
 	 * Creates a new instance of this class.
-	 * 
-	 * @param linkedIDsAttributes one or more names of attribute that contain links to other objects (events) 
+	 *
+	 * @param setType the type of the set to be read
+	 * @param linkedIDType the type of the elements contained in the set to be read
+	 * @param linkedIDsAttributes one or more names of attribute that contain links to other objects (events)
 	 */
 	public AbstractIDLinkSetElementReader(EventContentType setType, EventContentType linkedIDType, QName... linkedIDsAttributes) {
 		super(setType, linkedIDType, linkedIDsAttributes);

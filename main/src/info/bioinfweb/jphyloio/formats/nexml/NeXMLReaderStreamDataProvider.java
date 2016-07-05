@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractNeXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import java.util.ArrayList;
@@ -40,7 +41,12 @@ import java.util.Stack;
 import java.util.TreeMap;
 
 
-
+/**
+ * Stores data that shall be shared among different implementations of {@link AbstractNeXMLElementReader}
+ * reading from the same document.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<NeXMLEventReader> {	
 	private boolean allowLongTokens;
 	

@@ -29,7 +29,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 
-
+/**
+ * Abstract element reader that processes end elements of NeXML meta tags.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLMetaEndElementReader extends AbstractNeXMLElementReader {
 
 	@Override

@@ -49,7 +49,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * Receiver that writes token definitions for molecular data, such as DNA, RNA or protein sequences.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataReceiver {
 	private NeXMLTokenSetEventReceiver receiver;
 	private Set<Character> tokens = new HashSet<Character>();
@@ -66,6 +70,13 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 	}
 
 
+	/**
+	 * Determines which tokens are missing in the current DNA token set.
+	 * 
+	 * @param receiver the receiver to add the missing events to
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
 	private void writeDNATokenDefinitions(NeXMLTokenSetEventReceiver receiver) throws IOException, XMLStreamException {
 		LinkedHashSet<Character> remainingTokens = new LinkedHashSet<Character>();
 		
@@ -88,7 +99,14 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.DNA, states);
 	}
 
-
+	
+	/**
+	 * Determines which tokens are missing in the current RNA token set.
+	 * 
+	 * @param receiver the receiver to add the missing events to
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
 	private void writeRNATokenDefinitions(NeXMLTokenSetEventReceiver receiver) throws IOException, XMLStreamException {
 		LinkedHashSet<Character> remainingTokens = new LinkedHashSet<Character>();
 		
@@ -112,6 +130,13 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 	}
 
 
+	/**
+	 * Determines which tokens are missing in the current amino acid token set.
+	 * 
+	 * @param receiver the receiver to add the missing events to
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
 	private void writeAminoAcidTokenDefinitions(NeXMLTokenSetEventReceiver receiver) throws IOException, XMLStreamException {
 		LinkedHashSet<Character> remainingTokens = new LinkedHashSet<Character>();
 		
@@ -135,6 +160,17 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 	}
 
 
+	/**
+	 * Creates a series of {@link SingleTokenDefinitionEvent}s and according end events from the tokens that are missing in the current token set 
+	 * and adds them to the given receiver.
+	 * 
+	 * @param receiver the receiver to add the created events to
+	 * @param remainingTokens the tokens missing in the current token set
+	 * @param alignmentType the {@link CharacterStateSetType} of the current alignment
+	 * @param atomicStates the atomic states associated with this {@link CharacterStateSetType}
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
 	private void writeTokenDefinitionEvents(NeXMLTokenSetEventReceiver receiver, Set<Character> remainingTokens, CharacterStateSetType alignmentType,
 			Collection<String> atomicStates) throws IOException, XMLStreamException {
 		List<String> constituents;
@@ -191,6 +227,13 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 	}
 
 
+	/**
+	 * Determines the type of alignment to which additional token definitions need to be added.
+	 * 
+	 * @param type the {@link CharacterStateSetType} of the current token set
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
 	public void addRemainingEvents(CharacterStateSetType type) throws IOException, XMLStreamException {
 		switch (type) {
 			case NUCLEOTIDE:

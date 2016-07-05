@@ -33,7 +33,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * Receiver that collects namespace definitions occurring in document metadata by calling the according methods of 
+ * the {@link AbstractNeXMLDataReceiverMixin}.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
 	public NeXMLCollectNamespaceReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {

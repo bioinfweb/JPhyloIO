@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexml.receivers;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -30,7 +31,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * Receiver that ensures no other events than character set intervals are contained in a character set.
+ * <p>
+ * Set element IDs were already collected in {@link NeXMLCollectCharSetDataReceiver} and are written 
+ * directly in the {@link NeXMLEventWriter}.
+ * 
+ * @author Sarah Wiechers 
+ */
 public class NeXMLCharacterSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 

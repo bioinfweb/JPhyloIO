@@ -38,7 +38,7 @@ import javax.xml.stream.XMLStreamWriter;
  * @param <O> the type of Java object this translator instance is able to handle
  */
 public interface ObjectTranslator<O> {
-	//TODO How are object values represented in events, of they are read from a whole sequence of XML-events?
+	//TODO How are object values represented in events, if they are read from a whole sequence of XML-events?
 	//     Is it an alternative to either output the XMLEvents as objects values or directly parse them to output one single object value
 	//     or should parsing of XML not at all be supported? => Probably the first alternative.
 	

@@ -34,7 +34,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
-
+/**
+ * Receiver that collects information about the sequence tokens contained in a document.
+ * <p>
+ * It is checked if the document contains tokens with additional information attached (labels or metadata) 
+ * (and therefore cells tags will have to be written to the document later on)
+ * and which {@link CharacterStateSetType} these tokens indicate.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataReceiver {
 	public NeXMLCollectSequenceDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			boolean longTokens, NeXMLWriterStreamDataProvider streamDataProvider) {
