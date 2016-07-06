@@ -159,12 +159,14 @@ main/src/info/bioinfweb/jphyloio/formats/nexml/elementreader/package-info.java -
 main/src/info/bioinfweb/jphyloio/formats/nexml/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/AbstractNeXMLDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/AbstractNeXMLDataReceiverMixin.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLAttributeMetadataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLCharacterSetEventReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLCollectCharSetDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLCollectNamespaceReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLCollectSequenceDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLCollectTokenSetDefinitionDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLHandleSequenceDataReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLIgnoreCertainMetadataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLMetaDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLMolecularDataTokenDefinitionReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/nexml/receivers/NeXMLPredicateMetaReceiver.java -text svneol=unset#text/plain

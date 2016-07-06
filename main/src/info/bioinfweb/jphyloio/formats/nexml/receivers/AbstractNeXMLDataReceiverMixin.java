@@ -142,7 +142,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 							}
 						}
 					}
-					else if (event.getStringValue() == null){ //TODO What should be written if neither a translator could be found nor a stringValue is present? Check if XML representation is available?
+					else if (event.getStringValue() == null) { //TODO What should be written if neither a translator could be found nor a stringValue is present? Check if XML representation is available?
 						writer.writeCharacters(event.getObjectValue().toString());
 					}
 				}

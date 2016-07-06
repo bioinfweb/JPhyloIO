@@ -42,11 +42,13 @@ import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.AbstractNeXMLDataReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLAttributeMetadataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCharacterSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectCharSetDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectNamespaceReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectSequenceDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectTokenSetDefinitionDataReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLIgnoreCertainMetadataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLMetaDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLMolecularDataTokenDefinitionReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLPredicateMetaReceiver;
@@ -66,6 +68,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 
@@ -372,7 +375,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()),
 					ATTR_XSI_TYPE.getNamespaceURI(), ATTR_XSI_TYPE.getLocalPart(), alignmentType.toString());
 			
-			NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLPredicateMetaReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
+			NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLIgnoreCertainMetadataReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
 					false, PREDICATE_FORMAT, PREDICATE_MATRIX);  // Do not write format and matrix meta data here
 			alignment.writeMetadata(getParameters(), predicateDataReceiver);
 	
@@ -380,7 +383,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 			getXMLWriter().writeStartElement(TAG_MATRIX.getLocalPart());  // Tag does not have any attributes
 			
-			predicateDataReceiver = new NeXMLPredicateMetaReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
+			predicateDataReceiver = new NeXMLIgnoreCertainMetadataReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
 					true, PREDICATE_MATRIX);
 			alignment.writeMetadata(getParameters(), predicateDataReceiver);  // Matrix meta data is written here
 	
@@ -407,7 +410,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	private void writeFormatTag(MatrixDataAdapter alignment) throws XMLStreamException, IllegalArgumentException, IOException {
 		getXMLWriter().writeStartElement(TAG_FORMAT.getLocalPart());
 		
-		NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLPredicateMetaReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
+		NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLIgnoreCertainMetadataReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
 				true, PREDICATE_FORMAT);
 		alignment.writeMetadata(getParameters(), predicateDataReceiver);  // Format meta data is written here
 
@@ -511,7 +514,18 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), alignmentInfo.getColumnIndexToStatesMap().get(charDefEvent.getIndex()));
 				}
 				
-				writeOrCheckObjectMetaData(alignment.getCharacterDefinitions(getParameters()), charID, false);
+				NeXMLAttributeMetadataReceiver attributeReceiver = new NeXMLAttributeMetadataReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
+						PREDICATE_CHAR_ATTR_TOKENS, PREDICATE_CHAR_ATTR_CODON_POSITION);
+				alignment.getCharacterDefinitions(getParameters()).writeContentData(getParameters(), attributeReceiver, charID);
+				if (!attributeReceiver.getAttributeToValueMap().isEmpty()) {
+					for (QName attribute : attributeReceiver.getAttributeToValueMap().keySet()) {
+						getXMLWriter().writeAttribute(attribute.getLocalPart(), attributeReceiver.getAttributeToValueMap().get(attribute));
+					}
+				}
+				
+				NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLIgnoreCertainMetadataReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
+						false, PREDICATE_CHAR_ATTR_TOKENS, PREDICATE_CHAR_ATTR_CODON_POSITION);
+				alignment.getCharacterDefinitions(getParameters()).writeContentData(getParameters(), predicateDataReceiver, charID);  // Metadata created from attributes is not written again
 				
 				getXMLWriter().writeEndElement();
 			}

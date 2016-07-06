@@ -20,32 +20,25 @@ package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
+
 /**
- * Receiver that allows to ignore certain metadata.
+ * General implementation of a receiver that allows to treat certain metadata in a special way.
  * 
  * @author Sarah Wiechers
  */
-public class NeXMLPredicateMetaReceiver extends NeXMLMetaDataReceiver {
+public abstract class NeXMLPredicateMetaReceiver extends NeXMLMetaDataReceiver {
 	private List<QName> predicates = new ArrayList<QName>();
-	private boolean writePredicateMetadata;
 	private boolean isUnderPredicate;
 	private long metaLevel = 0;
 
@@ -56,82 +49,45 @@ public class NeXMLPredicateMetaReceiver extends NeXMLMetaDataReceiver {
 	 * @param writer the XML writer of the calling {@link NeXMLEventWriter}
 	 * @param parameterMap the parameter map of the calling {@link NeXMLEventWriter}
 	 * @param streamDataProvider the stream data provider of the calling {@link NeXMLEventReader}
-	 * @param writePredicateMetadata specify {code true} here if only metadata nested under the specified predicates should be written 
-	 * or {@code false} if metadata under these predicates should be ignored
-	 * @param predicates the predicates to be processed differently
+	 * @param predicates the predicates to be processed in a special way
 	 */
 	public NeXMLPredicateMetaReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider, 
-			boolean writePredicateMetadata, QName... predicates) {
+			QName... predicates) {
 		
 		super(writer, parameterMap, streamDataProvider);
 		
 		for (int i = 0; i < predicates.length; i++) {
 			this.predicates.add(predicates[i]);
 		}
-		
-		this.writePredicateMetadata = writePredicateMetadata;
+	}
+	
+
+	protected long getMetaLevel() {
+		return metaLevel;
 	}
 
 
-	@Override
-	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		if (isUnderPredicate) {
-			metaLevel++;
-		}
-		
-		if ((isUnderPredicate && writePredicateMetadata) || (!isUnderPredicate && !writePredicateMetadata)) {
-			super.handleLiteralMetaStart(event);
-		}		
+	protected void setMetaLevel(long metaLevel) {
+		this.metaLevel = metaLevel;
+	}
+	
+	
+	protected void changeMetaLevel(long addend) {
+		metaLevel = metaLevel + addend;
 	}
 
 
-	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if ((isUnderPredicate && writePredicateMetadata) || (!isUnderPredicate && !writePredicateMetadata)) {
-			super.handleLiteralContentMeta(event);
-		}
+	public boolean isUnderPredicate() {
+		return isUnderPredicate;
 	}
 
 
-	@Override
-	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		if (!isUnderPredicate) {
-			if (event.getRel().getURI() != null) {				
-				isUnderPredicate = predicates.contains(event.getRel().getURI());
-			}
-		}
-		
-		if (isUnderPredicate) {
-			metaLevel++;
-			if (writePredicateMetadata) {
-				super.handleResourceMetaStart(event);
-			}
-		}
-		else if (!isUnderPredicate && !writePredicateMetadata) {
-			super.handleResourceMetaStart(event);
-		}
+	public void setUnderPredicate(boolean isUnderPredicate) {
+		this.isUnderPredicate = isUnderPredicate;
 	}
 
 
-	@Override
-	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
-		if ((isUnderPredicate && writePredicateMetadata) || (!isUnderPredicate && !writePredicateMetadata)) {
-			super.handleComment(event);
-		}		
-	}
-
-
-	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if ((isUnderPredicate && writePredicateMetadata) || (!isUnderPredicate && !writePredicateMetadata)) {			
-			super.handleMetaEndEvent(event);
-		}		
-		
-		if (isUnderPredicate) {
-			metaLevel--;
-			if (metaLevel == 0) {
-				isUnderPredicate = false;
-			}
-		}
+	protected List<QName> getPredicates() {
+		return predicates;
 	}
 }
