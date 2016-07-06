@@ -279,6 +279,22 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		StoreObjectData<CharacterDefinitionEvent> characterDefinition = new StoreObjectData<CharacterDefinitionEvent>(
 				new CharacterDefinitionEvent(charDefinitionID, "char definition", index), new ArrayList<JPhyloIOEvent>());
 		
+		characterDefinition.getObjectContent().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_CHAR_ATTR_TOKENS), null, null));		
+		characterDefinition.getObjectContent().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ATTR_TOKENS), LiteralContentSequenceType.SIMPLE));
+		characterDefinition.getObjectContent().add(new LiteralMetadataContentEvent(5, "5"));
+		characterDefinition.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		characterDefinition.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
+		characterDefinition.getObjectContent().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_CHAR_ATTR_CODON_POSITION), null, null));		
+		characterDefinition.getObjectContent().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ATTR_CODON_POSITION), LiteralContentSequenceType.SIMPLE));
+		characterDefinition.getObjectContent().add(new LiteralMetadataContentEvent(2, "2"));
+		characterDefinition.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		characterDefinition.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
 		return characterDefinition;
 	}
 	
