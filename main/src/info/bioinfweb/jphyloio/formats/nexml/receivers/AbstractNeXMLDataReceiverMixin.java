@@ -71,15 +71,15 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				ATTR_XSI_TYPE.getLocalPart(), metaType);
 		
 		if (event.getPredicate().getURI() != null) {
-			QName predicate = event.getPredicate().getURI();
-			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), writer.getPrefix(predicate.getNamespaceURI()) + ":" + predicate.getLocalPart());
+			QName predicate = event.getPredicate().getURI();			
+			writer.writeAttribute(ATTR_PROPERTY.getLocalPart(), obtainPrefix(streamDataProvider, predicate.getNamespaceURI()) + ":" + predicate.getLocalPart());
 		}
 		else if (event.getPredicate().getStringRepresentation() != null) {
 			 //TODO How to use alternative string representation if no QName is present?
 		}
 		
 		if ((event.getOriginalType() != null) && (event.getOriginalType().getURI() != null)) { // Attribute is optional
-			writer.writeAttribute(ATTR_DATATYPE.getLocalPart(), writer.getPrefix(event.getOriginalType().getURI().getNamespaceURI()) 
+			writer.writeAttribute(ATTR_DATATYPE.getLocalPart(), obtainPrefix(streamDataProvider, event.getOriginalType().getURI().getNamespaceURI()) 
 					+ ":" + event.getOriginalType().getURI().getLocalPart());
 		}
 		
@@ -120,7 +120,6 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		switch (streamDataProvider.getCurrentLiteralMetaSequenceType()) {
 			case SIMPLE:
 				QName datatype = null;
-				
 				if (streamDataProvider.getCurrentLiteralMetaDatatype() != null) {
 					datatype = streamDataProvider.getCurrentLiteralMetaDatatype().getURI();
 				}
@@ -142,11 +141,14 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 							}
 						}
 					}
-					else if (event.getStringValue() == null) { //TODO What should be written if neither a translator could be found nor a stringValue is present? Check if XML representation is available?
+					else if (event.getStringValue() != null) {						
+						writer.writeCharacters(event.getStringValue());
+					}
+					else { //TODO What should be written if neither a translator could be found nor a stringValue is present? Check if XML representation is available?
 						writer.writeCharacters(event.getObjectValue().toString());
 					}
 				}
-				else if (event.getStringValue() != null) {
+				else if (event.getStringValue() != null) {					
 					writer.writeCharacters(event.getStringValue());
 				}
 				break;
@@ -157,12 +159,14 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 					switch (xmlContentEvent.getEventType()) {
 						case XMLStreamConstants.START_ELEMENT:
 							StartElement element = xmlContentEvent.asStartElement();
-							writer.writeStartElement(writer.getPrefix(element.getName().getNamespaceURI()), element.getName().getLocalPart(), element.getName().getNamespaceURI());
+							writer.writeStartElement(obtainPrefix(streamDataProvider, element.getName().getNamespaceURI()), element.getName().getLocalPart(), 
+									element.getName().getNamespaceURI());
 							@SuppressWarnings("unchecked")
 							Iterator<Attribute> attributes = element.getAttributes();
 							while (attributes.hasNext()) {
 								Attribute attribute = attributes.next();
-								writer.writeAttribute(writer.getPrefix(attribute.getName().getNamespaceURI()), attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
+								writer.writeAttribute(obtainPrefix(streamDataProvider, attribute.getName().getNamespaceURI()), attribute.getName().getNamespaceURI(), 
+										attribute.getName().getLocalPart(), attribute.getValue());
 							}
 							break;
 						case XMLStreamConstants.END_ELEMENT:
@@ -215,7 +219,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		
 		if (event.getRel().getURI() != null) {
 			QName predicate = event.getRel().getURI();			
-			writer.writeAttribute(ATTR_REL.getLocalPart(), writer.getPrefix(predicate.getNamespaceURI()) + ":" + predicate.getLocalPart());		
+			writer.writeAttribute(ATTR_REL.getLocalPart(), obtainPrefix(streamDataProvider, predicate.getNamespaceURI()) + ":" + predicate.getLocalPart());		
 		}
 		else if (event.getRel().getStringRepresentation() != null) {
 			 //TODO How to use alternative string representation if no QName is present?
@@ -265,5 +269,15 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			streamDataProvider.getXMLStreamWriter().writeComment(streamDataProvider.getCommentContent().toString());
 			streamDataProvider.getCommentContent().delete(0, streamDataProvider.getCommentContent().length());			
 		}
+	}
+	
+	
+	private static String obtainPrefix(NeXMLWriterStreamDataProvider streamDataProvider, String namespaceURI) throws XMLStreamException {
+		String prefix = streamDataProvider.getXMLStreamWriter().getPrefix(namespaceURI);
+		if (prefix == null) {
+			prefix = streamDataProvider.getNeXMLPrefix(streamDataProvider.getXMLStreamWriter());
+		}
+		
+		return prefix;
 	}
 }

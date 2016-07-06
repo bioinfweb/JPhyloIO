@@ -280,7 +280,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	
 	
 	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
-		if (namespace != null) {
+		if (!((namespace == null) || namespace.isEmpty())) {
 			if (getXMLStreamWriter().getPrefix(namespace) == null) {  // URI is not yet bound to a prefix
 				int index = 1;
 				String nameSpacePrefix = prefix;
