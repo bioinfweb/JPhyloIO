@@ -95,6 +95,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		// Write file:
 		createSimpleDocument();
 		NeXMLEventWriter writer = new NeXMLEventWriter();
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_STANDARD_DATA_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -121,7 +122,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		finally {
 			fileReader.close();
 			reader.close();
-			file.delete();
+//			file.delete();
 		}
 	}
 	
@@ -144,7 +145,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		
 		// Add token set of type DNA to matrix data adapter
 		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + getIDIndex();
-		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 5));
+		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 10));
 			
 		// Add char sets to matrix data adapter
 		String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + getIDIndex();
@@ -408,34 +409,38 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	protected StoreObjectData<TokenSetDefinitionEvent> createTokenSet(String id, CharacterStateSetType type, long alignmentLength) {
 		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
-				new TokenSetDefinitionEvent(CharacterStateSetType.DNA, id, "tokenSet"), new ArrayList<JPhyloIOEvent>());
+				new TokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, id, "tokenSet"), new ArrayList<JPhyloIOEvent>());
 
 		// Add single token definitions
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Wurst", "W", CharacterSymbolMeaning.CHARACTER_STATE, 
 				CharacterSymbolType.ATOMIC_STATE));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Guanin", "G", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Cytosin", "C", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-		
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Thymine", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.ATOMIC_STATE));
-		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
-		
-		// Add single token definition for ambiguity code
-		Set<String> ambiguityCodeB = new HashSet<String>();
-		ambiguityCodeB.add("C");
-		ambiguityCodeB.add("G");
-		ambiguityCodeB.add("T");
-
-		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "ambiguity code", "B", CharacterSymbolMeaning.CHARACTER_STATE, 
-				CharacterSymbolType.UNCERTAIN, ambiguityCodeB));
-		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+//		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Adenin", "A", CharacterSymbolMeaning.CHARACTER_STATE, 
+//				CharacterSymbolType.ATOMIC_STATE));
+//		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+//		
+//		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Guanin", "G", CharacterSymbolMeaning.CHARACTER_STATE, 
+//				CharacterSymbolType.ATOMIC_STATE));
+//		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+//		
+//		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Cytosin", "C", CharacterSymbolMeaning.CHARACTER_STATE, 
+//				CharacterSymbolType.ATOMIC_STATE));
+//		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+//		
+//		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "Thymine", "T", CharacterSymbolMeaning.CHARACTER_STATE, 
+//				CharacterSymbolType.ATOMIC_STATE));
+//		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+//		
+//		// Add single token definition for ambiguity code
+//		Set<String> ambiguityCodeB = new HashSet<String>();
+//		ambiguityCodeB.add("C");
+//		ambiguityCodeB.add("G");
+//		ambiguityCodeB.add("T");
+//
+//		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + getIDIndex(), "ambiguity code", "B", CharacterSymbolMeaning.CHARACTER_STATE, 
+//				CharacterSymbolType.UNCERTAIN, ambiguityCodeB));
+//		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
 		// Add validity interval for token set
 		tokenSet.getObjectContent().add(new CharacterSetIntervalEvent(0, alignmentLength));

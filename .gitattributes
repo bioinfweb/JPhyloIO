@@ -358,6 +358,7 @@ test/data/NeXML/UnknownCharID_CharSet.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownStateID.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownTag.xml -text svneol=unset#text/plain
 test/data/NeXML/UnknownTokenSetID.xml -text svneol=unset#text/plain
+test/data/NeXML/freeAnnotations/DefaultPredicateWithAttribute.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/EditedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/MaskedNameAsCURIEPredicate.xml -text svneol=unset#text/plain
 test/data/NeXML/freeAnnotations/NameAsCURIEPredicate.xml -text svneol=unset#text/plain

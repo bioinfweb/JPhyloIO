@@ -19,14 +19,12 @@
 package info.bioinfweb.jphyloio.formats.xtg;
 
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.fail;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
-import info.bioinfweb.jphyloio.formats.pde.PDEEventReader;
 
 import java.io.File;
 
@@ -36,49 +34,21 @@ import org.junit.Test;
 
 public class XTGEventReaderTest {
 	@Test
-	public void testOutputNeXML() {
+	public void testOutput() {
 		try {
 			XTGEventReader reader = new XTGEventReader(new File("data/XTG/NoNamespaceShortened.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();					
-					System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
-					
-					if (!event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-//						System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
-					}
-					
+					System.out.println(event.getType());
+
 					if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-//						System.out.println("ID: " + event.asLabeledIDEvent().getID() + " Label: " + event.asLabeledIDEvent().getLabel());
+						System.out.println("ID: " + event.asNodeEvent().getID() + " Label: " + event.asNodeEvent().getLabel());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-//						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.META_INFORMATION, EventTopologyType.START))) {
-//						System.out.println("Key: " + event.asMetaInformationEvent().getKey());
-					}
-					else if (!event.getType().getContentType().equals(EventContentType.META_INFORMATION)) {
-//						System.out.println(event.getType().getContentType() + " " + event.getType().getTopologyType());
-					}
+						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
+					}					
 				}
-			}
-			finally {
-				reader.close();
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
-		}
-	}
-
-	
-	@Test
-	public void readXTGWithoutNamespace() {
-		try {
-			XTGEventReader reader = new XTGEventReader(new File("data/XTG/NoNamespaceShortened.xml"), new ReadWriteParameterMap());
-			try {
-				
 			}
 			finally {
 				reader.close();

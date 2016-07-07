@@ -2,14 +2,14 @@
 <TreegraphDocument>
 	<GlobalFormats ShowRooted="false"></GlobalFormats>
 	<Tree>
-		<Node UniqueName="alf41zs4p1">
+		<Node Text="N1" UniqueName="alf41zs4p1">
 			<Branch LineColor="#000000" LineWidth="0.3"></Branch>
-			<Node UniqueName="flal1nlj6m">
+			<Node Text="N2" UniqueName="flal1nlj6m">
 				<Branch LineColor="#000000" LineWidth="0.3">
 					<TextLabel Text="1.0"></TextLabel>					
 				</Branch>				
 			</Node>
-			<Node UniqueName="9faghvrb6i">
+			<Node Text="N3" UniqueName="9faghvrb6i">
 				<Branch LineColor="#000000" LineWidth="0.3">
 					<TextLabel Text="1.0"></TextLabel>					
 				</Branch>

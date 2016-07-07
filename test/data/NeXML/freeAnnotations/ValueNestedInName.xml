@@ -5,7 +5,7 @@
     
   <otus id="otus1" label="Taxon list">
     <otu id="otu1" label="Taxon 1">
-      <!-- Does validate and allows any user defined name. -->
+      <!-- Does validate and allows any user defined name. Note that the content attribute of the parent resource meta is not part of the schema. -->
       <meta id="meta1" rel="foo:freeAnnotation" xsi:type="nex:ResourceMeta" content="my support value">
         <meta datatype="xsd:integer" id="meta3" property="foo:isValue" content="95" xsi:type="nex:LiteralMeta" />
       </meta>

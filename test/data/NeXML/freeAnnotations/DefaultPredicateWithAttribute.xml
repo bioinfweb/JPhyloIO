@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9"
+    xmlns:jpiop="http://bioinfweb.info/xmlns/JPhyloIO/General/Predicates/" xmlns:jpiog="http://bioinfweb.info/xmlns/JPhyloIO/General/">
+    
+  <otus id="otus1" label="Taxon list">
+    <otu id="otu1" label="Taxon 1">
+      <!-- Does validate. -->
+      <meta datatype="xsd:integer" id="meta1" property="jpiop:hasLiteralMetadata" content="95" xsi:type="nex:LiteralMeta" jpiog:stringKey="my support value" />
+    </otu>
+  </otus>
+</nex:nexml>
