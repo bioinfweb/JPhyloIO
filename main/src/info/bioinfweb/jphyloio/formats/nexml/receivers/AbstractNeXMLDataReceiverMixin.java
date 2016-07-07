@@ -72,11 +72,14 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getXMLStreamWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
 				ATTR_XSI_TYPE.getLocalPart(), metaType);
 		
-		if (event.getPredicate().getURI() != null) {
+		if (event.getPredicate().getURI() != null) { //TODO add entry to readWriteParameterMap to allow not writing metadata without QName predicate at all
 			predicate = event.getPredicate().getURI();			
 		}
-		else {  // URIORSTringIdentifier checks if either string representation or URI are present, both can not be null
-			predicate = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;  //TODO add entry to readWriteParameterMap to allow not writing metadata without QName predicate at all
+		else {
+			predicate = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
+		}
+		
+		if (event.getPredicate().getStringRepresentation() != null) {  // URIORSTringIdentifier checks if either string representation or URI are present, both can not be null
 			writer.writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), event.getPredicate().getStringRepresentation());
 		}
 		
@@ -103,7 +106,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			
 			streamDataProvider.addToDocumentIDs(event.getID());
 			
-			if ((event.getPredicate() != null) && (event.getPredicate().getURI() != null)) {
+			if (event.getPredicate().getURI() != null) {
 				resourceIdentifier = event.getPredicate().getURI();
 				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
@@ -112,7 +115,9 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
 				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-				
+			}
+			
+			if (event.getPredicate().getStringRepresentation() != null)  {				
 				resourceIdentifier = ReadWriteConstants.ATTRIBUTE_STRING_KEY;
 				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
@@ -239,11 +244,14 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getXMLStreamWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
 				ATTR_XSI_TYPE.getLocalPart(), metaType);
 		
-		if (event.getRel().getURI() != null) {
+		if (event.getRel().getURI() != null) {  //TODO add entry to readWriteParameterMap to allow not writing metadata without QName predicate at all
 			predicate = event.getRel().getURI();		
 		}
-		else {  // URIORSTringIdentifier checks if either string representation or URI are present, both can not be null
-			predicate = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;  //TODO add entry to readWriteParameterMap to allow not writing metadata without QName predicate at all
+		else {
+			predicate = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
+		}
+		
+		if (event.getRel().getStringRepresentation() != null)  {  // URIORSTringIdentifier checks if either string representation or URI are present, both can not be null
 			writer.writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), 
 					event.getRel().getStringRepresentation());
 		}
@@ -261,7 +269,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			QName resourceIdentifier;
 			streamDataProvider.addToDocumentIDs(event.getID());
 			
-			if ((event.getRel() != null) && (event.getRel().getURI() != null)) {
+			if (event.getRel().getURI() != null) {
 				resourceIdentifier = event.getRel().getURI();
 				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
@@ -269,8 +277,10 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			else {
 				resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
 				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
-						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-				
+						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());				
+			}
+			
+			if (event.getRel().getStringRepresentation() != null) {
 				resourceIdentifier = ReadWriteConstants.ATTRIBUTE_STRING_KEY;
 				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());

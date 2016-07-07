@@ -19,30 +19,22 @@
 package info.bioinfweb.jphyloio.formats.xtg;
 
 
-import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
-import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.XMLToMetaElementStartReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +42,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Queue;
 
 import javax.xml.stream.XMLEventReader;
@@ -112,7 +103,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				String id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
-//				createNodeEvents(streamDataProvider); //TODO already create events at start of next node to avoid too much buffering
+				createNodeEvents(streamDataProvider);  // Create node events for previous node
 				
 				// Add node info for this node
 				NodeEdgeInfo nodeInfo = new NodeEdgeInfo(id, Double.NaN, new ArrayList<JPhyloIOEvent>(), new ArrayList<JPhyloIOEvent>());
@@ -133,18 +124,11 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				createNodeEvents(streamDataProvider);
+				streamDataProvider.setCreateNodeStart(false);
 				
 				createEdgeEvents(streamDataProvider);
 				
 				streamDataProvider.getSourceNode().pop();
-				streamDataProvider.setCreateNodeStart(true);
-			}
-		};
-		
-		AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>> createMetaEnd = new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
-			@Override
-			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			}
 		};
 		
@@ -175,7 +159,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				String treeID = DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
 				
-				streamDataProvider.getEdgeInfos().add(new ArrayDeque<NodeEdgeInfo>());				
+				streamDataProvider.getEdgeInfos().add(new ArrayDeque<NodeEdgeInfo>());
+				streamDataProvider.setCreateNodeStart(false); // Do not create node events at start of root node
 				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, treeID, null, null));	
 			}
 		});
@@ -226,7 +211,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			}
 		});
 		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.END_ELEMENT), createMetaEnd);		
+//		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.END_ELEMENT), createMetaEnd);		
 		
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.START_ELEMENT), emptyReader);
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.END_ELEMENT), emptyReader);
@@ -235,8 +220,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND_MARGIN, XMLStreamConstants.START_ELEMENT), emptyReader);
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND_MARGIN, XMLStreamConstants.END_ELEMENT), emptyReader);
 		
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new XMLToMetaElementStartReader());
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), createMetaEnd);
+//		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new XMLToMetaElementStartReader());
+//		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), createMetaEnd);
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
 	}
 	
@@ -246,14 +231,16 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			streamDataProvider.resetCurrentEventCollection();
 		}
 		
-		NodeEdgeInfo nodeInfo = streamDataProvider.getSourceNode().peek();
-		
-		getStreamDataProvider().getCurrentEventCollection().add(new NodeEvent(nodeInfo.getID(), nodeInfo.getLabel(), null, nodeInfo.isRoot()));
-		for (JPhyloIOEvent nextEvent : nodeInfo.getNestedNodeEvents()) {
-			getStreamDataProvider().getCurrentEventCollection().add(nextEvent);  // Might lead to an exception, if nodeInfo.getNestedEvents() is the currentEventCollection at the time this method is called
+		if (streamDataProvider.isCreateNodeStart()) {
+			NodeEdgeInfo nodeInfo = streamDataProvider.getSourceNode().peek();
+			
+			getStreamDataProvider().getCurrentEventCollection().add(new NodeEvent(nodeInfo.getID(), nodeInfo.getLabel(), null, nodeInfo.isRoot()));
+			for (JPhyloIOEvent nextEvent : nodeInfo.getNestedNodeEvents()) {
+				getStreamDataProvider().getCurrentEventCollection().add(nextEvent);  // Might lead to an exception, if nodeInfo.getNestedEvents() is the currentEventCollection at the time this method is called
+			}
+			
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NODE));
 		}
-		
-		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NODE));
 	}
 	
 	
