@@ -34,7 +34,7 @@ import javax.xml.stream.events.XMLEvent;
  * Values can be represented in the following ways:
  * <ul>
  *   <li>An instance can represent a single object value directly.</li>
- *   <li>A sequence of events can represent values of an array (e.g. read from a Newick hot comment).</li>
+ *   <li>A sequence of events can represent a longer string that is distributed among several events.</li>
  *   <li>A sequence of events can represent a more complex XML representation of the literal value. In such cases one event 
  *       instance will represent each {@link XMLEvent} created from the encountered XML.</li>
  * </ul>
@@ -47,6 +47,10 @@ import javax.xml.stream.events.XMLEvent;
  * for performance reasons, while {@link #isContinuedInNextEvent()} will be {@code true} in all but the last event of such a 
  * sequence. If a string is separated among multiple events, the object value in all of these events will be {@code null}. 
  * (That is because only the whole string is considered as the object and not its parts.)
+ * <p>
+ * <i>JPhyloIO</i> event objects are generally immutable. Anyway complex object values may have editable properties themselves. 
+ * In application code, it should be absolutely avoided to edit such properties while the according event object is still in use, 
+ * especially if the event contains a string representation of that object (which cannot be edited accordingly).
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
