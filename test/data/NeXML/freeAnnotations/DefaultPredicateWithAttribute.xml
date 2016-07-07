@@ -5,7 +5,9 @@
     
   <otus id="otus1" label="Taxon list">
     <otu id="otu1" label="Taxon 1">
-      <!-- Does validate. -->
+      <!-- Does validate and allows any user defined name. Note that it is allowed by the NeXML scheme to write any additional 
+      attribute. An entry to the parameter map could allow to choose not to write the additional attribute or no meta element 
+      at all, if no QName predicate was present. -->
       <meta datatype="xsd:integer" id="meta1" property="jpiop:hasLiteralMetadata" content="95" xsi:type="nex:LiteralMeta" jpiog:stringKey="my support value" />
     </otu>
   </otus>

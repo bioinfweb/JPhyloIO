@@ -95,7 +95,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		// Write file:
 		createSimpleDocument();
 		NeXMLEventWriter writer = new NeXMLEventWriter();
-		parameters.put(ReadWriteParameterMap.KEY_NEXML_STANDARD_DATA_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -122,7 +122,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		finally {
 			fileReader.close();
 			reader.close();
-//			file.delete();
+			file.delete();
 		}
 	}
 	
@@ -519,6 +519,13 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 
 		metaData.add(new LiteralMetadataContentEvent(new QName("www.another-test.net", "test2", "pre"), null));
 		
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
+		metaData.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier("my string key", null), new URIOrStringIdentifier(null, 
+				new QName(W3CXSConstants.DATA_TYPE_INTEGER.getNamespaceURI(), W3CXSConstants.DATA_TYPE_INTEGER.getLocalPart())), 
+				LiteralContentSequenceType.SIMPLE));
+		metaData.add(new LiteralMetadataContentEvent(25, "25"));		
 		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
 		return metaData;
