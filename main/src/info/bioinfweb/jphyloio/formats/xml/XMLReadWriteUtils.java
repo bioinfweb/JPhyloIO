@@ -35,7 +35,7 @@ public class XMLReadWriteUtils {
 	public static final String XSD_DEFAULT_PRE = "xsd";
 	public static final String RDF_DEFAULT_PRE = "rdf";
 	
-  public static final String DEFAULT_NAMESPACE_PREFIX = "prefix";
+  public static final String DEFAULT_NAMESPACE_PREFIX = "p";
 	
 	
 	public static String getXSIPrefix(XMLStreamWriter writer) throws XMLStreamException {

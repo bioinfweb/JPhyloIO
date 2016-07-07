@@ -174,7 +174,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
 		
 		if (label != null) {
-			if (getParameterMap().getBoolean(ReadWriteParameterMap.KEY_NEXML_STANDARD_DATA_LABEL, false)) {
+			if (getParameterMap().getBoolean(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL, false)) {
 				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
 			}
 			else {

@@ -112,7 +112,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				String id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
-				createNodeEvents(streamDataProvider);
+//				createNodeEvents(streamDataProvider); //TODO already create events at start of next node to avoid too much buffering
 				
 				// Add node info for this node
 				NodeEdgeInfo nodeInfo = new NodeEdgeInfo(id, Double.NaN, new ArrayList<JPhyloIOEvent>(), new ArrayList<JPhyloIOEvent>());
@@ -212,7 +212,9 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_BRANCH, XMLStreamConstants.END_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {				
-				streamDataProvider.resetCurrentEventCollection();			
+				if (streamDataProvider.hasSpecialEventCollection()) {
+					streamDataProvider.resetCurrentEventCollection();
+				}
 			}
 		});
 		
