@@ -28,12 +28,17 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.nexml.TokenDefinitionLabelHandling;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -67,13 +73,13 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	}
 	
 	
-	private void writeState(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
+	private void writeState(SingleTokenDefinitionEvent event) throws XMLStreamException, IOException {
 		getWriter().writeStartElement(TAG_STATE.getLocalPart());
 		writeTokenDefinitionAttributes(event);
 	}
 	
 	
-	private void writeStateSet(SingleTokenDefinitionEvent event, boolean isPolymorphic) throws XMLStreamException, JPhyloIOWriterException {
+	private void writeStateSet(SingleTokenDefinitionEvent event, boolean isPolymorphic) throws XMLStreamException, IOException {
 		String memberID = null;
 		String tokenName = event.getTokenName();
 		
@@ -129,7 +135,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	}
 	
 	
-	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException, JPhyloIOWriterException {
+	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException, IOException {
 		String tokenName = event.getTokenName();
 		String tokenSymbol = tokenName;
 		String label = event.getLabel();
@@ -168,10 +174,48 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
 		
 		if (label != null) {
-			getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label); //TODO if label was overwritten write it as meta data
+			if (getParameterMap().getBoolean(ReadWriteParameterMap.KEY_NEXML_STANDARD_DATA_LABEL, false)) {
+				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
+			}
+			else {
+				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
+			}
 		}
 		
-		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);		
+		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);
+		
+		switch (getParameterMap().getLabelHandling()) {
+			case NEITHER:
+				break;
+			case BOTH:
+				if ((event.getLabel() != null) && !event.getLabel().isEmpty()) {
+					writeMetaElement(PREDICATE_ORIGINAL_LABEL, event.getLabel());
+				}
+				
+				if (!event.getTokenName().isEmpty()) {
+					writeMetaElement(PREDICATE_ORIGINAL_TOKEN_NAME, event.getTokenName());
+				}
+				break;
+			case DISCARDED:
+				if (!label.equals(event.getLabel()) && ((event.getLabel() != null) && !event.getLabel().isEmpty())) { //TODO check if token name was discarded
+					writeMetaElement(PREDICATE_ORIGINAL_LABEL, event.getLabel());
+				}
+				
+				if (!tokenSymbol.equals(event.getTokenName()) && !label.equals(event.getTokenName()) && !event.getTokenName().isEmpty()) {
+					writeMetaElement(PREDICATE_ORIGINAL_TOKEN_NAME, event.getTokenName());
+				}				
+				break;
+		}		
+	}
+	
+	
+	private void writeMetaElement(QName predicate, String content) throws XMLStreamException, IOException {
+		AbstractNeXMLDataReceiverMixin.handleLiteralMeta(getStreamDataProvider(), 
+				new LiteralMetadataEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_META_ID_PREFIX), null, new URIOrStringIdentifier(null, predicate), 
+						LiteralContentSequenceType.SIMPLE));
+		AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(getStreamDataProvider(), getParameterMap(), 
+				new LiteralMetadataContentEvent(content, content));
+		AbstractNeXMLDataReceiverMixin.handleMetaEndEvent(getStreamDataProvider(), ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 	}
 	
 	

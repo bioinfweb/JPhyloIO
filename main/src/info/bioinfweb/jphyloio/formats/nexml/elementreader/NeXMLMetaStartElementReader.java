@@ -102,7 +102,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 			else if ((datatype != null) && !datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null)) {
 				Object objectValue = null;
 				
-				if (translator.hasStringRepresentation()) { // TODO is there another method to check if the translator can process a String?			
+				if (translator.hasStringRepresentation()) {
 					String nestedContent = XMLUtils.readCharactersAsString(streamDataProvider.getXMLReader());
 					
 					if (nestedContent != null) {

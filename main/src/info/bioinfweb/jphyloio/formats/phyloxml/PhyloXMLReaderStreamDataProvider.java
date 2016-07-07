@@ -34,7 +34,6 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	
 	private boolean createTreeGroupStart;
 	private boolean createPhylogenyStart;
-	private boolean createNodeStart;
 	private boolean createTreeGroupEnd;
 	
 	private boolean isRootedPhylogeny;
@@ -71,16 +70,6 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	protected void setCreateTreeGroupStart(boolean createTreeGroupStart) {
 		this.createTreeGroupStart = createTreeGroupStart;
-	}
-
-
-	public boolean isCreateNodeStart() {
-		return createNodeStart;
-	}
-
-
-	public void setCreateNodeStart(boolean createNodeStart) {
-		this.createNodeStart = createNodeStart;
 	}
 
 

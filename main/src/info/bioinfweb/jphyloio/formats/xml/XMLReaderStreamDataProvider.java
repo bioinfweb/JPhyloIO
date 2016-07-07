@@ -36,12 +36,14 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	
 	private Stack<String> nestedMetaNames = new Stack<String>();
 	
+	private CharacterStateSetType characterSetType;
+	
 	private String incompleteToken = null;
 	
 	private Stack<NodeEdgeInfo> sourceNode = new Stack<NodeEdgeInfo>();
 	private Stack<Queue<NodeEdgeInfo>> edgeInfos = new Stack<Queue<NodeEdgeInfo>>();
 	
-	private CharacterStateSetType characterSetType;	
+	private boolean createNodeStart;
 	
 	
 	public XMLReaderStreamDataProvider(R eventReader) {
@@ -111,5 +113,15 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 
 	public Stack<Queue<NodeEdgeInfo>> getEdgeInfos() {
 		return edgeInfos;
+	}
+
+
+	public boolean isCreateNodeStart() {
+		return createNodeStart;
+	}
+
+
+	public void setCreateNodeStart(boolean createNodeStart) {
+		this.createNodeStart = createNodeStart;
 	}
 }

@@ -128,7 +128,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				if ((event.getObjectValue() != null)) {
 					if ((translator != null) && translator.hasStringRepresentation()) {
 						if (event.getObjectValue() instanceof QName) { //TODO Refactor QName-translator instead?
-							QName objectValue = (QName)event.getObjectValue();						
+							QName objectValue = (QName)event.getObjectValue();
 							writer.writeCharacters(writer.getPrefix(objectValue.getNamespaceURI()) + XMLUtils.QNAME_SEPARATOR + objectValue.getLocalPart());
 						}
 						else {
@@ -141,10 +141,10 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 							}
 						}
 					}
-					else if (event.getStringValue() != null) {						
+					else if (event.getStringValue() != null) {		
 						writer.writeCharacters(event.getStringValue());
 					}
-					else { //TODO What should be written if neither a translator could be found nor a stringValue is present? Check if XML representation is available?
+					else {
 						writer.writeCharacters(event.getObjectValue().toString());
 					}
 				}
@@ -159,8 +159,9 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 					switch (xmlContentEvent.getEventType()) {
 						case XMLStreamConstants.START_ELEMENT:
 							StartElement element = xmlContentEvent.asStartElement();
-							writer.writeStartElement(obtainPrefix(streamDataProvider, element.getName().getNamespaceURI()), element.getName().getLocalPart(), 
-									element.getName().getNamespaceURI());
+//							writer.writeStartElement(obtainPrefix(streamDataProvider, element.getName().getNamespaceURI()), element.getName().getLocalPart(), 
+//									element.getName().getNamespaceURI());
+							writer.writeStartElement(element.getName().getNamespaceURI(), element.getName().getLocalPart()); // TODO comment
 							@SuppressWarnings("unchecked")
 							Iterator<Attribute> attributes = element.getAttributes();
 							while (attributes.hasNext()) {
@@ -193,7 +194,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			if (event.getXMLEvent().getEventType() == XMLStreamConstants.START_ELEMENT) {
 				StartElement element = event.getXMLEvent().asStartElement();
 				resourceIdentifier = element.getName();
-				
+				//TODO add namespaces of attributes
 				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}

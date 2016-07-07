@@ -147,4 +147,7 @@ public interface NeXMLConstants {
 	
 	public static final QName PREDICATE_FORMAT = new QName(NEXML_PREDICATE_NAMESPACE, "Format");
 	public static final QName PREDICATE_MATRIX = new QName(NEXML_PREDICATE_NAMESPACE, "Matrix");
+	
+	public static final QName PREDICATE_ORIGINAL_LABEL = new QName(NEXML_PREDICATE_NAMESPACE, "originalLabel");
+	public static final QName PREDICATE_ORIGINAL_TOKEN_NAME = new QName(NEXML_PREDICATE_NAMESPACE, "originalTokenName");
 }

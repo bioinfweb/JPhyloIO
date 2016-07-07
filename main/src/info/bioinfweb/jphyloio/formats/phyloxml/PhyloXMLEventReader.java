@@ -374,17 +374,14 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						createPhylogenyStart(streamDataProvider);
 					}
 					
-					createEdgeEvents(streamDataProvider); // Add root edge event //TODO only add if phylogeny is truly rooted?
+					createEdgeEvents(streamDataProvider); // Add root edge event
 					
 					streamDataProvider.getSourceNode().clear();
 					streamDataProvider.getEdgeInfos().clear();
 					
-					if (getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false)) {
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));			
-					}
-					else {
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NETWORK));
-					}
+					streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(
+							getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false) ? EventContentType.TREE : EventContentType.NETWORK, 
+							EventTopologyType.END));
 				}
 		});
 		
@@ -402,8 +399,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 							XMLUtils.readDoubleAttr(event.asStartElement(), ATTR_BRANCH_LENGTH, Double.NaN), new ArrayList<JPhyloIOEvent>(), new ArrayList<JPhyloIOEvent>());
 					nodeInfo.setIsRoot(streamDataProvider.isRootedPhylogeny());
 					streamDataProvider.getSourceNode().add(nodeInfo);
-					streamDataProvider.setCreateNodeStart(true);					
-				
+					streamDataProvider.setCreateNodeStart(true);
+					
 					streamDataProvider.getEdgeInfos().add(new ArrayDeque<NodeEdgeInfo>());	// Add edge info for this level
 					
 					streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedNodeEvents());
@@ -1077,7 +1074,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					StartElement element = event.asStartElement();
 	
 					if (streamDataProvider.getParentName().equals(TAG_CLADE.getLocalPart())) {
-						streamDataProvider.getEventReader().createNodeEvents(streamDataProvider);
+						createNodeEvents(streamDataProvider);
 						streamDataProvider.setCreateNodeStart(false);
 					}
 					else if (streamDataProvider.getParentName().equals(TAG_ROOT.getLocalPart()) && streamDataProvider.isCreateTreeGroupEnd()) {

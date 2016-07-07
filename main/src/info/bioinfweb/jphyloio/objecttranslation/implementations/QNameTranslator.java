@@ -48,7 +48,7 @@ public class QNameTranslator extends IllegalArgumentExceptionSimpleValueTranslat
 	@Override
 	protected QName parseValue(String representation, ReaderStreamDataProvider<?> streamDataProvider)	throws IllegalArgumentException {
 		if (streamDataProvider instanceof XMLReaderStreamDataProvider<?>) {
-			return DatatypeConverter.parseQName(representation,  ((JPhyloIOXMLEventReader)streamDataProvider.getEventReader()).getNamespaceContext());
+			return DatatypeConverter.parseQName(representation, ((JPhyloIOXMLEventReader)streamDataProvider.getEventReader()).getNamespaceContext());  //TODO Is it allowed in parseQName() if namespaceContext is null?
 		}
 		else {
 			int splitPos = representation.indexOf(XMLUtils.QNAME_SEPARATOR);
@@ -65,7 +65,7 @@ public class QNameTranslator extends IllegalArgumentExceptionSimpleValueTranslat
 
 
 	@Override
-	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException {  //TODO Provide WriterStreamDataProvider here
 		QName qName = (QName)object;
 		//TODO Also use DatatypeConverter here instead.
 		if ("".equals(qName.getPrefix())) {  // Constructing instances with null is not possible.

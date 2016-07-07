@@ -24,7 +24,10 @@ import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
+import info.bioinfweb.jphyloio.formats.nexml.TokenDefinitionLabelHandling;
 import info.bioinfweb.jphyloio.formats.nexml.TokenTranslationStrategy;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
@@ -169,6 +172,26 @@ public class ReadWriteParameterMap extends ParameterMap {
 	 * {@link TokenTranslationStrategy#SYMBOL_TO_LABEL} will be used as the default.
 	 */
 	public static final String KEY_NEXML_TOKEN_TRANSLATION_STRATEGY = KEY_PREFIX + "neXMLTokenTranslationStrategy";
+	
+	/**
+	 * This parameter will only be used by {@link NeXMLEventWriter} and allows to define whether the token name or the label 
+	 * of a {@link SingleTokenDefinitionEvent} shall be written to the label-attribute of a state element in a 
+	 * NeXML characters block of type {@code standard}.
+	 * <p>
+	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, the event label will always be 
+	 * written to the label attribute. If {@code true} is specified, the name of the token defined in the event will be used.
+	 */
+	public static final String KEY_NEXML_STANDARD_DATA_LABEL = KEY_PREFIX + "neXMLstandardDataLabel";
+	
+	/**
+	 * This parameter will only be used by {@link NeXMLEventWriter} and allows to define whether the token name and the label 
+	 * of a {@link SingleTokenDefinitionEvent} shall be represented as metadata always, never or only if one of these properties 
+	 * could not be written to the label-attribute of a state element in a NeXML characters block of type {@code standard}.
+	 * <p>
+	 * It must have the type {@link TokenDefinitionLabelHandling}. If it is omitted 
+	 * {@link TokenDefinitionLabelHandling#NEITHER} will be used as the default.
+	 */
+	public static final String KEY_NEXML_STANDARD_DATA_LABEL_METADATA = KEY_PREFIX + "neXMLstandardDataLabelMetadata";
 	
 	/** 
 	 * Identifies a comment describing the application generating the output, which shall be added at the beginning
@@ -347,6 +370,12 @@ public class ReadWriteParameterMap extends ParameterMap {
 	public TokenTranslationStrategy getTranslateTokens() {
 		return getObject(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, 
 				TokenTranslationStrategy.SYMBOL_TO_LABEL, TokenTranslationStrategy.class);
+	}
+	
+	
+	public TokenDefinitionLabelHandling getLabelHandling() {
+		return getObject(ReadWriteParameterMap.KEY_NEXML_STANDARD_DATA_LABEL_METADATA, 
+				TokenDefinitionLabelHandling.NEITHER, TokenDefinitionLabelHandling.class);
 	}
 
 
