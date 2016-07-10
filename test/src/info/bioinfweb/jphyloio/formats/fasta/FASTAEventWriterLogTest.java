@@ -125,6 +125,16 @@ public class FASTAEventWriterLogTest {
 		
 		treeGroup.getTreesAndNetworks().add(new TreeNetworkDataAdapter() {
 			@Override
+			public ObjectListDataAdapter<NodeEvent> getNodes(ReadWriteParameterMap parameters) {
+				return new EmptyObjectListDataAdapter<NodeEvent>();
+			}
+
+			@Override
+			public ObjectListDataAdapter<EdgeEvent> getEdges(ReadWriteParameterMap parameters) {
+				return new EmptyObjectListDataAdapter<EdgeEvent>();
+			}
+
+			@Override
 			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver)	throws IOException {}
 
 			@Override
@@ -133,41 +143,10 @@ public class FASTAEventWriterLogTest {
 			}
 
 			@Override
-			public NodeEvent getNodeStartEvent(ReadWriteParameterMap parameters, String id) {
-				return null;
-			}
-
-			@Override
-			public EdgeEvent getEdgeStartEvent(ReadWriteParameterMap parameters, String id) {
-				return null;
-			}
-
-			@Override
-			public void writeNodeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String nodeID) throws IllegalArgumentException, IOException {}
-			
-			@Override
-			public void writeEdgeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String edgeID) throws IllegalArgumentException, IOException {}
-			
-			@Override
 			public boolean isTree(ReadWriteParameterMap parameters) {
 				return false;
 			}
 			
-			@Override
-			public boolean considerRooted(ReadWriteParameterMap parameters) {
-				return false;
-			}
-
-			@Override
-			public Iterator<String> getRootEdgeIDs(ReadWriteParameterMap parameters) {
-				return Collections.emptyIterator();
-			}
-			
-			@Override
-			public Iterator<String> getEdgeIDsFromNode(ReadWriteParameterMap parameters, String nodeID)	throws IllegalArgumentException {
-				return Collections.emptyIterator();
-			}
-
 			@SuppressWarnings("unchecked")
 			@Override
 			public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {

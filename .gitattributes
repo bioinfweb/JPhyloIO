@@ -533,4 +533,3 @@ test/src/info/bioinfweb/jphyloio/test/tests/jaxb/CustomObject.java -text svneol=
 test/src/info/bioinfweb/jphyloio/test/tests/jaxb/JAXBTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/nexml/MetadataTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/nexml/ReadingCustomXMLTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/utils/NodeEdgeIDListerTest.java -text svneol=unset#text/plain
