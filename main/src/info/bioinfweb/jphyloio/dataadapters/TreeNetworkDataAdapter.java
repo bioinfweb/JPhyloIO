@@ -24,10 +24,6 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
-import info.bioinfweb.jphyloio.utils.NodeEdgeIDLister;
-
-import java.io.IOException;
-import java.util.Iterator;
 
 
 
@@ -39,95 +35,104 @@ import java.util.Iterator;
  * @see NodeEdgeIDLister
  */
 public interface TreeNetworkDataAdapter extends ElementDataAdapter<LabeledIDEvent> {
-	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition. Alternative iterators or returning events in WLR order may solve the problem.
+	public boolean isTree(ReadWriteParameterMap parameters);	
 	
-	/**
-	 * Determines whether this instance represents a phylogenetic tree or a phylogenetic network.
-	 * (Not all formats accept networks.)
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @return {@code true} if this instance represents a tree or {@code false} otherwise
-	 */
-	public boolean isTree(ReadWriteParameterMap parameters);
+	public ObjectListDataAdapter<NodeEvent> getNodes(ReadWriteParameterMap parameters);
 	
-	/**
-	 * Defines whether the represented tree or network shall be considered as rooted (at the specified root edge(s))
-	 * or if it shall be considered as an unrooted network (where the specified root edge(s) just specify the position
-	 * to start drawing the network or unrooted tree). 
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @return {@code true} if the tree or network shall be considered rooted or {@code false} otherwise
-	 */
-	@Deprecated
-	public boolean considerRooted(ReadWriteParameterMap parameters);
+	public ObjectListDataAdapter<EdgeEvent> getEdges(ReadWriteParameterMap parameters);
 	
-	/**
-	 * Returns an iterator returning the IDs of all root edges of the represented phylogenetic
-	 * tree or network.
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @return an iterator returning the edge IDs (Must return at least one element.)
-	 */
-	public Iterator<String> getRootEdgeIDs(ReadWriteParameterMap parameters);
-
-	/**
-	 * Returns an iterator returning the IDs of all edges starting at the specified node. This includes 
-	 * all edges that reference the specified node as their source, but not edges that have this node as
-	 * their target.
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @param nodeID the ID of the parent node
-	 * @return an iterator returning the edge IDs (Maybe an empty iterator but not {@code null}.)
-	 * @throws IllegalArgumentException if an unknown node ID was specified
-	 */
-	public Iterator<String> getEdgeIDsFromNode(ReadWriteParameterMap parameters, String nodeID) throws IllegalArgumentException;  //TODO Using this pattern may include circular references in networks.
-
-	/**
-	 * Returns the start event of a node determined by the specified node ID.
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @param id the ID of the requested node
-	 * @return the event that describes the specified node
-	 * @throws IllegalArgumentException if no node start event for the specified ID is present
-	 */
-	public NodeEvent getNodeStartEvent(ReadWriteParameterMap parameters, String id);
-	
-	/**
-	 * Writes the events nested in the specified node.
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @param receiver the receiver for the events
-	 * @param nodeID the ID of the requested node
-	 * @throws IllegalArgumentException if an unknown node ID was specified
-	 */
-	public void writeNodeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String nodeID) throws IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
-	
-	/**
-	 * Returns the start event of an edge determined by the specified ID.
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @param id the ID of the requested edge
-	 * @return an instance of EdgeEvent that describes the specified edge
-	 * @throws IllegalArgumentException if no to EdgeEvent for the specified ID is present 
-	 */
-	public EdgeEvent getEdgeStartEvent(ReadWriteParameterMap parameters, String id);
-	
-	/**
-	 * Writes the events nested in the specified node.
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @param receiver the receiver for the events
-	 * @param edgeID the ID of the requested edge
-	 * @throws IOException if a I/O error occurs while writing the data
-	 * @throws IllegalArgumentException if an unknown edge ID was specified
-	 */
-	public void writeEdgeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
-	
-	/**
-	 * Returns a list of node-and-edge-sets defined for the tree modeled by this instance.
-	 *
-	 * @param parameters the parameter map of the calling writer that provides context information for the data request
-	 * @return a (possibly empty) list of node-edge-sets
-	 */
 	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters);
+
+	
+//	//TODO Additional methods are needed, since NeXML expects all node definitions before the first edge definition. Alternative iterators or returning events in WLR order may solve the problem.
+//	
+//	/**
+//	 * Determines whether this instance represents a phylogenetic tree or a phylogenetic network.
+//	 * (Not all formats accept networks.)
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @return {@code true} if this instance represents a tree or {@code false} otherwise
+//	 */
+//	public boolean isTree(ReadWriteParameterMap parameters);
+//	
+//	/**
+//	 * Defines whether the represented tree or network shall be considered as rooted (at the specified root edge(s))
+//	 * or if it shall be considered as an unrooted network (where the specified root edge(s) just specify the position
+//	 * to start drawing the network or unrooted tree). 
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @return {@code true} if the tree or network shall be considered rooted or {@code false} otherwise
+//	 */
+//	@Deprecated
+//	public boolean considerRooted(ReadWriteParameterMap parameters);
+//	
+//	/**
+//	 * Returns an iterator returning the IDs of all root edges of the represented phylogenetic
+//	 * tree or network.
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @return an iterator returning the edge IDs (Must return at least one element.)
+//	 */
+//	public Iterator<String> getRootEdgeIDs(ReadWriteParameterMap parameters);
+//
+//	/**
+//	 * Returns an iterator returning the IDs of all edges starting at the specified node. This includes 
+//	 * all edges that reference the specified node as their source, but not edges that have this node as
+//	 * their target.
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @param nodeID the ID of the parent node
+//	 * @return an iterator returning the edge IDs (Maybe an empty iterator but not {@code null}.)
+//	 * @throws IllegalArgumentException if an unknown node ID was specified
+//	 */
+//	public Iterator<String> getEdgeIDsFromNode(ReadWriteParameterMap parameters, String nodeID) throws IllegalArgumentException;  //TODO Using this pattern may include circular references in networks.
+//
+//	/**
+//	 * Returns the start event of a node determined by the specified node ID.
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @param id the ID of the requested node
+//	 * @return the event that describes the specified node
+//	 * @throws IllegalArgumentException if no node start event for the specified ID is present
+//	 */
+//	public NodeEvent getNodeStartEvent(ReadWriteParameterMap parameters, String id);
+//	
+//	/**
+//	 * Writes the events nested in the specified node.
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @param receiver the receiver for the events
+//	 * @param nodeID the ID of the requested node
+//	 * @throws IllegalArgumentException if an unknown node ID was specified
+//	 */
+//	public void writeNodeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String nodeID) throws IOException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+//	
+//	/**
+//	 * Returns the start event of an edge determined by the specified ID.
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @param id the ID of the requested edge
+//	 * @return an instance of EdgeEvent that describes the specified edge
+//	 * @throws IllegalArgumentException if no to EdgeEvent for the specified ID is present 
+//	 */
+//	public EdgeEvent getEdgeStartEvent(ReadWriteParameterMap parameters, String id);
+//	
+//	/**
+//	 * Writes the events nested in the specified node.
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @param receiver the receiver for the events
+//	 * @param edgeID the ID of the requested edge
+//	 * @throws IOException if a I/O error occurs while writing the data
+//	 * @throws IllegalArgumentException if an unknown edge ID was specified
+//	 */
+//	public void writeEdgeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String edgeID) throws IOException, IllegalArgumentException;  //TODO Can metadata be written directly to all formats, without storing metaevents?
+//	
+//	/**
+//	 * Returns a list of node-and-edge-sets defined for the tree modeled by this instance.
+//	 *
+//	 * @param parameters the parameter map of the calling writer that provides context information for the data request
+//	 * @return a (possibly empty) list of node-edge-sets
+//	 */
+//	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters);
 }

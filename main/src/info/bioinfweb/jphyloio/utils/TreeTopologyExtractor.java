@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.utils;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.AlternativeTreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 
 import java.util.HashMap;
@@ -37,13 +37,13 @@ public class TreeTopologyExtractor {
 	private String paintStartID;
 	
 
-	public TreeTopologyExtractor(AlternativeTreeNetworkDataAdapter adapter, ReadWriteParameterMap parameters) {
+	public TreeTopologyExtractor(TreeNetworkDataAdapter adapter, ReadWriteParameterMap parameters) {
 		super();		
 		fillTopologicalMap(adapter, parameters);
 	}
 	
 	
-	private void fillTopologicalMap(AlternativeTreeNetworkDataAdapter adapter, ReadWriteParameterMap parameters) {
+	private void fillTopologicalMap(TreeNetworkDataAdapter adapter, ReadWriteParameterMap parameters) {
 		Set<String> possiblePaintStarts = new HashSet<String>();
 		
 		// Process node events
@@ -87,7 +87,7 @@ public class TreeTopologyExtractor {
 	}
 
 
-	public Map<String, TopoplogicalNodeInfo> getIdToNodeInfoMap() {
+	public Map<String, TopoplogicalNodeInfo> getIDToNodeInfoMap() {
 		return idToNodeInfoMap;
 	}
 

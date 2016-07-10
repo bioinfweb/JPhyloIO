@@ -20,8 +20,8 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.AlternativeTreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -32,7 +32,7 @@ import java.util.List;
 
 
 
-public class StoreAlternativeTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabeledIDEvent> implements AlternativeTreeNetworkDataAdapter {
+public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabeledIDEvent> implements TreeNetworkDataAdapter {
 	private LabeledIDEvent startEvent;
 	private boolean isTree;
 	private StoreObjectListDataAdapter<NodeEvent> nodes = new StoreObjectListDataAdapter<NodeEvent>();
@@ -40,7 +40,7 @@ public class StoreAlternativeTreeNetworkDataAdapter extends StoreAnnotatedDataAd
 	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> nodeEdgeSets = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	
 	
-	public StoreAlternativeTreeNetworkDataAdapter(LabeledIDEvent startEvent, boolean isTree, List<JPhyloIOEvent> annotations) {
+	public StoreTreeNetworkDataAdapter(LabeledIDEvent startEvent, boolean isTree, List<JPhyloIOEvent> annotations) {
 		super(annotations);
 		this.startEvent = startEvent;
 		this.isTree = isTree;
@@ -60,13 +60,13 @@ public class StoreAlternativeTreeNetworkDataAdapter extends StoreAnnotatedDataAd
 
 
 	@Override
-	public ObjectListDataAdapter<NodeEvent> getNodes(ReadWriteParameterMap parameters) {
+	public StoreObjectListDataAdapter<NodeEvent> getNodes(ReadWriteParameterMap parameters) {
 		return nodes;
 	}
 
 
 	@Override
-	public ObjectListDataAdapter<EdgeEvent> getEdges(ReadWriteParameterMap parameters) {
+	public StoreObjectListDataAdapter<EdgeEvent> getEdges(ReadWriteParameterMap parameters) {
 		return edges;
 	}
 

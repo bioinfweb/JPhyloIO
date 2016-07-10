@@ -23,10 +23,14 @@ import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
+import info.bioinfweb.jphyloio.utils.TopoplogicalNodeInfo;
+import info.bioinfweb.jphyloio.utils.TreeTopologyExtractor;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -42,6 +46,9 @@ import java.util.Iterator;
 public class NewickStringWriter implements NewickConstants {
 	private Writer writer;
 	private TreeNetworkDataAdapter tree;
+	private ObjectListDataAdapter<EdgeEvent> edges;
+	private ObjectListDataAdapter<NodeEvent> nodes;
+	private TreeTopologyExtractor topologyExtractor;
 	private NewickWriterNodeLabelProcessor nodeLabelProcessor;
 	private ReadWriteParameterMap parameters;
 	
@@ -117,35 +124,34 @@ public class NewickStringWriter implements NewickConstants {
 	}
 	
 	
-	private void writeSubtree(String rootEdgeID) throws IOException {
-		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = 
-				new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters);
-		tree.writeEdgeContentData(parameters, edgeReceiver, rootEdgeID);  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
-		String nodeID = tree.getEdgeStartEvent(parameters, rootEdgeID).getTargetID();
-		Iterator<String> childEdgeIDIterator = tree.getEdgeIDsFromNode(parameters, nodeID);
-		if (childEdgeIDIterator.hasNext()) {
+	private void writeSubtree(String nodeID) throws IOException {
+		TopoplogicalNodeInfo nodeInfo = topologyExtractor.getIDToNodeInfoMap().get(nodeID);
+		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters);
+		edges.writeContentData(parameters, edgeReceiver, nodeInfo.getAfferentBranchID());  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
+		Iterator<String> childNodeIDIterator = nodeInfo.getChildNodeIDs().iterator();
+		if (childNodeIDIterator.hasNext()) {
 			writer.write(SUBTREE_START);
-			writeSubtree(childEdgeIDIterator.next());
-			while (childEdgeIDIterator.hasNext()) {
+			writeSubtree(childNodeIDIterator.next());
+			while (childNodeIDIterator.hasNext()) {
 				writer.write(ELEMENT_SEPERATOR + " ");
-				writeSubtree(childEdgeIDIterator.next());
+				writeSubtree(childNodeIDIterator.next());
 			}
 			writer.write(SUBTREE_END);
 		}
 		
 		NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent> nodeReceiver = 
 				new NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent>(writer, parameters);
-		tree.writeNodeContentData(parameters, nodeReceiver, nodeID);
+		nodes.writeContentData(parameters, nodeReceiver, nodeID);
 		
 		// Write node data:
-		writer.write(formatToken(nodeLabelProcessor.createNodeName(tree.getNodeStartEvent(parameters, nodeID)), NAME_DELIMITER));
+		writer.write(formatToken(nodeLabelProcessor.createNodeName(tree.getNodes(parameters).getObjectStartEvent(parameters, nodeID)), NAME_DELIMITER));
 		nodeReceiver.writeMetadata();
 		nodeReceiver.writeComments();
 		
 		// Write edge data:
-		if (tree.getEdgeStartEvent(parameters, rootEdgeID).hasLength()) {
+		if (edges.getObjectStartEvent(parameters, nodeInfo.getAfferentBranchID()).hasLength()) {
 			writer.write(LENGTH_SEPERATOR);
-			writer.write(Double.toString(tree.getEdgeStartEvent(parameters, rootEdgeID).getLength()));
+			writer.write(Double.toString(edges.getObjectStartEvent(parameters, nodeInfo.getAfferentBranchID()).getLength()));
 		}
 		edgeReceiver.writeMetadata();
 		edgeReceiver.writeComments();
@@ -154,14 +160,20 @@ public class NewickStringWriter implements NewickConstants {
 	
 	private void writeRootedInformation() throws IOException {
 		writer.write(COMMENT_START);
-		if (tree.considerRooted(parameters)) {
-			writer.write(ROOTED_HOT_COMMENT.toUpperCase());
-		}
-		else {
-			writer.write(UNROOTED_HOT_COMMENT.toUpperCase());
-		}
+		writer.write(ROOTED_HOT_COMMENT.toUpperCase());
 		writer.write(COMMENT_END);
 		writer.write(" ");
+
+		//TODO Where does the rooted information currently come from? 
+//		writer.write(COMMENT_START);
+//		if (tree.considerRooted(parameters)) {
+//			writer.write(ROOTED_HOT_COMMENT.toUpperCase());
+//		}
+//		else {
+//			writer.write(UNROOTED_HOT_COMMENT.toUpperCase());
+//		}
+//		writer.write(COMMENT_END);
+//		writer.write(" ");
 	}
 
 	
@@ -185,21 +197,12 @@ public class NewickStringWriter implements NewickConstants {
 //						"A tree definition contains tree metadata, which cannot be written to Newick/NHX and is therefore ignored.");
 //			}
 			
-			Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs(parameters);
-			if (rootEdgeIterator.hasNext()) {
-				String rootEdgeID = rootEdgeIterator.next();
-				if (rootEdgeIterator.hasNext()) {
-					logger.addWarning("A tree definition contains more than one root edge, which is not supported "
-							+ "by the Newick/NHX format. Only the first root edge will be considered.");
-				}
-				writeRootedInformation();
-				writeSubtree(rootEdgeID);
-			}
-			else {
-				logger.addWarning("A specified tree does not specify any root edge. (Event unrooted trees need a "
-						+ "root edge definition defining the edge to start writing tree to the Newick/NHX format.) No "
-						+ "Newick string was written.");
-			}
+			edges = tree.getEdges(parameters);
+			nodes = tree.getNodes(parameters);
+			topologyExtractor = new TreeTopologyExtractor(tree, parameters);
+			
+			writeRootedInformation();
+			writeSubtree(topologyExtractor.getPaintStartID());
 			writer.write(TERMINAL_SYMBOL);
 			AbstractEventWriter.writeLineBreak(writer, parameters);
 		}
