@@ -37,7 +37,7 @@ public interface NeXMLConstants {
 	public static final String NEXML_DEFAULT_PRE = "nex";
 	public static final String NEXML_NAMESPACE = "http://www.nexml.org/2009";
 
-	public static final String DEFAULT_TOKEN_DEFINITION_SET_ID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + "DEFAULT";
+	public static final String DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + "DEFAULT";
 
 	public static final QName TAG_ROOT = new QName(NEXML_NAMESPACE, "nexml");
 	public static final QName TAG_META = new QName(NEXML_NAMESPACE, "meta");

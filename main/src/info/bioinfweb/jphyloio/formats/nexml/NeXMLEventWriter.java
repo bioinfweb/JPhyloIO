@@ -474,17 +474,17 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				case RNA:
 				case AMINO_ACID:  // Molecular data
 					getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
-					streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), DEFAULT_TOKEN_DEFINITION_SET_ID, null));
-					molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), alignmentInfo, DEFAULT_TOKEN_DEFINITION_SET_ID, 
+					streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), alignmentInfo.getDefaultTokenSetID(), null));
+					molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getXMLWriter(), getParameters(), alignmentInfo, alignmentInfo.getDefaultTokenSetID(), 
 							streamDataProvider);
 					molecularDataReceiver.addRemainingEvents(alignmentInfo.getAlignmentType());
 					getXMLWriter().writeEndElement();
 					break;
 				default:  // Discrete data
 					getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
-					streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), DEFAULT_TOKEN_DEFINITION_SET_ID, null));
-					if (!alignmentInfo.getIDToTokenSetInfoMap().get(DEFAULT_TOKEN_DEFINITION_SET_ID).getOccuringTokens().isEmpty()) {
-						receiver = new NeXMLTokenSetEventReceiver(getXMLWriter(), getParameters(), alignmentInfo, DEFAULT_TOKEN_DEFINITION_SET_ID, streamDataProvider);
+					streamDataProvider.writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), alignmentInfo.getDefaultTokenSetID(), null));
+					if (!alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getDefaultTokenSetID()).getOccuringTokens().isEmpty()) {
+						receiver = new NeXMLTokenSetEventReceiver(getXMLWriter(), getParameters(), alignmentInfo, alignmentInfo.getDefaultTokenSetID(), streamDataProvider);
 						receiver.writeRemainingStandardTokenDefinitions();
 					}
 					getXMLWriter().writeEndElement();
@@ -641,12 +641,16 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		// Check token sets
 		checkTokenSets(alignment);
 		
-		alignmentInfo.setAlignmentLength(determineMaxSequenceLength(alignment, getParameters()));
+		long alignmentLength = determineMaxSequenceLength(alignment, getParameters());
+		alignmentInfo.setAlignmentLength(alignmentLength);
+		
+		String defaultTokenSetID = streamDataProvider.createNewID(DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX);
+		alignmentInfo.setDefaultTokenSetID(defaultTokenSetID);
 		
 		// Determine which token set is valid in which alignment column		
 		for (long i = 0; i < alignmentInfo.getAlignmentLength(); i++) {
-			if (alignmentInfo.getColumnIndexToStatesMap().get(i) == null) {
-				alignmentInfo.getColumnIndexToStatesMap().put(i, DEFAULT_TOKEN_DEFINITION_SET_ID);
+			if (alignmentInfo.getColumnIndexToStatesMap().get(i) == null) {				
+				alignmentInfo.getColumnIndexToStatesMap().put(i, defaultTokenSetID);
 				alignmentInfo.setWriteDefaultTokenSet(true);
 			}
 		}
@@ -655,8 +659,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		if (alignmentInfo.isWriteDefaultTokenSet()) {
 			NeXMLWriterTokenSetInformation tokenSetInfo = new NeXMLWriterTokenSetInformation();
 			tokenSetInfo.setNucleotideType(false);
-			streamDataProvider.addToDocumentIDs(DEFAULT_TOKEN_DEFINITION_SET_ID);
-			alignmentInfo.getIDToTokenSetInfoMap().put(DEFAULT_TOKEN_DEFINITION_SET_ID, tokenSetInfo);
+			streamDataProvider.addToDocumentIDs(defaultTokenSetID);
+			alignmentInfo.getIDToTokenSetInfoMap().put(defaultTokenSetID, tokenSetInfo);
 		}
 		
 		// Check character and sequence sets
@@ -689,7 +693,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		setTokenList(alignmentInfo);
 		
 		// Check if alignment is empty
-		alignmentInfo.setWriteAlignment((alignment.getSequenceCount(getParameters()) > 0) && (determineMaxSequenceLength(alignment, getParameters()) > 0));
+		alignmentInfo.setWriteAlignment((alignment.getSequenceCount(getParameters()) > 0) && (alignmentLength > 0));
 	}
 	
 	

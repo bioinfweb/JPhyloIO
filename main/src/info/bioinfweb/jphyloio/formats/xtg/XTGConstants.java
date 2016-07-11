@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.xtg;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
+
 import javax.xml.namespace.QName;
 
 
@@ -144,4 +146,24 @@ public interface XTGConstants {
   public static final QName ATTR_LONG_INTERVAL = new QName("LongInterval");
   public static final QName ATTR_SCALE_BAR_START = new QName("StartLeft");
   public static final QName ATTR_SCALE_BAR_INCREASE = new QName("Increasing");
+  
+  
+  public static final String XTG_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_FORMATS_NAMESPACE_PREFIX + "XTG/";	
+	public static final String XTG_PREDICATE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
+	
+	public static final QName PREDICATE_GLOBAL_FORMATS = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats");
+	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_BG_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BgColor");
+	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_BRANCH_LENGTH_SCALE = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BranchLengthScale");
+	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_SCALE_BAR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowScaleBar");
+	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_ROOTED = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowRooted");
+	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_ALIGN_TO_SUBTREE = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AlignToSubtree");
+	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_POSITION_LABELS_TO_LEFT = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LabelsLeft");
+	
+	public static final QName PREDICATE_DOCUMENT_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin");
+	public static final QName PREDICATE_DOCUMENT_MARGIN_ATTR_LEFT = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Left");
+	public static final QName PREDICATE_DOCUMENT_MARGIN_ATTR_TOP = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Top");
+	public static final QName PREDICATE_DOCUMENT_MARGIN_ATTR_RIGHT = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Right");
+	public static final QName PREDICATE_DOCUMENT_MARGIN_ATTR_BOTTOM = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Bottom");
+	
+	
 }

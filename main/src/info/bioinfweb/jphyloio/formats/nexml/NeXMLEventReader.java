@@ -550,7 +550,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				// Token set definitions
 				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.CONTINUOUS)) { // Continuous data character tags usually do not specify a token set so a new is generated here
 					streamDataProvider.getCurrentEventCollection().add(new TokenSetDefinitionEvent(
-							CharacterStateSetType.CONTINUOUS, RESERVED_ID_PREFIX + DEFAULT_TOKEN_DEFINITION_SET_ID + streamDataProvider.getIDManager().createNewID(), null));
+							CharacterStateSetType.CONTINUOUS, RESERVED_ID_PREFIX + DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null));
 					streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(0, streamDataProvider.getCharIDs().size()));					
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 				}

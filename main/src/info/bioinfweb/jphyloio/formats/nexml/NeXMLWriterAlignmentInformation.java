@@ -34,16 +34,17 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 	private boolean writeAlignment = true;	
 	private boolean writeCellsTags;
 	
-	private long alignmentLength; // Length of the longest sequence found in the alignment adapter
+	private long alignmentLength;  // Length of the longest sequence found in the alignment adapter
 	private CharacterStateSetType alignmentType;
 	
 	private CharacterStateSetType tokenSetType;
 	private CharacterStateSetType tokenType;
 	private boolean writeDefaultTokenSet = false;	
 	private Map<String, NeXMLWriterTokenSetInformation> idToTokenSetInfoMap = new HashMap<String, NeXMLWriterTokenSetInformation>();
+	private String defaultTokenSetID;
 	
 	private Map<String, SortedSet<Long>> charSets = new HashMap<String, SortedSet<Long>>();
-	Map<Long, String> columnIndexToIDMap = new HashMap<Long, String>();
+	private Map<Long, String> columnIndexToIDMap = new HashMap<Long, String>();
 	private Map<Long, String> columnIndexToStatesMap = new HashMap<Long, String>();
 	
 	private Set<String> definedTokens = new HashSet<String>();
@@ -120,7 +121,7 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 
 
 	public boolean hasTokenDefinitionSet() {
-		return !(getIDToTokenSetInfoMap().isEmpty() || (getIDToTokenSetInfoMap().size() == 1 && getIDToTokenSetInfoMap().containsKey(DEFAULT_TOKEN_DEFINITION_SET_ID)));
+		return !(getIDToTokenSetInfoMap().isEmpty() || (getIDToTokenSetInfoMap().size() == 1 && getIDToTokenSetInfoMap().containsKey(DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX)));
 	}
 
 
@@ -128,6 +129,16 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 		return idToTokenSetInfoMap;
 	}
 	
+
+	public String getDefaultTokenSetID() {
+		return defaultTokenSetID;
+	}
+
+
+	public void setDefaultTokenSetID(String defaultTokenSetID) {
+		this.defaultTokenSetID = defaultTokenSetID;
+	}
+
 
 	public Map<String, SortedSet<Long>> getCharSets() {
 		return charSets;
