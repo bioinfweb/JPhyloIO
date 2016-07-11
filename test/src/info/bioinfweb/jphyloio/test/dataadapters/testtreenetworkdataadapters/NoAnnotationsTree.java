@@ -20,25 +20,20 @@ package info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 
 
-
-public class NoAnnotationsTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements TreeNetworkDataAdapter {
+public class NoAnnotationsTree extends StoreTreeNetworkDataAdapter implements TreeNetworkDataAdapter {
 	private String id = null;
 	private String label = null;
 	private String nodeEdgeIDPrefix = "";
@@ -46,7 +41,7 @@ public class NoAnnotationsTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent>
 	
 	
 	public NoAnnotationsTree(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
-		super();
+		super(new LabeledIDEvent(EventContentType.TREE, id, label), true, null);
 		this.id = id;
 		this.label = label;
 		if (linkedOTUs.length != 3) {
@@ -55,12 +50,33 @@ public class NoAnnotationsTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent>
 		else {
 			this.linkedOTUs = linkedOTUs;
 		}
-		this.nodeEdgeIDPrefix = nodeEdgeIDPrefix;
-	}
+		this.nodeEdgeIDPrefix = nodeEdgeIDPrefix;		
 
+		addEdges(getEdges(null));
+		addNodes(getNodes(null));
+	}
+	
 
 	public NoAnnotationsTree(String id, String label, String nodeEdgeIDPrefix) {
 		this(id, label, nodeEdgeIDPrefix, new String[]{null, null, null});
+	}
+	
+
+	private void addEdges(StoreObjectListDataAdapter<EdgeEvent> edges) {
+		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "eRoot", "Root edge", null, nodeEdgeIDPrefix + "nRoot", 1.5));
+		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "e1", "Internal edge", nodeEdgeIDPrefix + "nRoot", nodeEdgeIDPrefix + "n1", 1.0));		
+		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "eA", "Leaf edge A", nodeEdgeIDPrefix + "n1", nodeEdgeIDPrefix + "nA", 1.1));		
+		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "eB", "Leaf edge B", nodeEdgeIDPrefix + "n1", nodeEdgeIDPrefix + "nB", 0.9));
+		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "eC", "Leaf edge C", nodeEdgeIDPrefix + "nRoot", nodeEdgeIDPrefix + "nC", 2.0));
+	}
+
+
+	private void addNodes(StoreObjectListDataAdapter<NodeEvent> nodes) {
+		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "n1", "Node '_1", null, false));		
+		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nRoot", "Node " + nodeEdgeIDPrefix + "nRoot", null, true));
+		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nA", "Node " + nodeEdgeIDPrefix + "nA", linkedOTUs != null ? linkedOTUs[0] : null, false));
+		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nB", "Node " + nodeEdgeIDPrefix + "nB", linkedOTUs != null ? linkedOTUs[1] : null, false));
+		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nC", "Node " + nodeEdgeIDPrefix + "nC", linkedOTUs != null ? linkedOTUs[2] : null, false));
 	}
 
 
@@ -79,94 +95,7 @@ public class NoAnnotationsTree extends EmptyAnnotatedDataAdapter<LabeledIDEvent>
 	public boolean isTree(ReadWriteParameterMap parameters) {
 		return true;
 	}
-
 	
-	@Override
-	public boolean considerRooted(ReadWriteParameterMap parameters) {
-		return true;
-	}
-
-
-	@Override
-	public Iterator<String> getRootEdgeIDs(ReadWriteParameterMap parameters) {
-		return Arrays.asList(new String[]{nodeEdgeIDPrefix + "eRoot"}).iterator();
-	}
-
-	
-	@Override
-	public NodeEvent getNodeStartEvent(ReadWriteParameterMap parameters, String nodeID) {
-		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
-			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
-				case "n1":
-					return new NodeEvent(nodeID, "Node '_1", null, false);
-				case "nRoot":  
-					return new NodeEvent(nodeID, "Node " + nodeID, null, true);
-				case "nA":
-					return new NodeEvent(nodeID, "Node " + nodeID, linkedOTUs[0], false);
-				case "nB":
-					return new NodeEvent(nodeID, "Node " + nodeID, linkedOTUs[1], false);
-				case "nC":
-					return new NodeEvent(nodeID, "Node " + nodeID, linkedOTUs[2], false);
-				default:
-					throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
-			}
-		}
-		else {
-			throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
-		}
-	}
-
-
-	@Override
-	public void writeNodeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String nodeID) throws IOException {}
-
-	
-	@Override
-	public Iterator<String> getEdgeIDsFromNode(ReadWriteParameterMap parameters, String nodeID)	throws IllegalArgumentException {
-		if (nodeID.startsWith(nodeEdgeIDPrefix)) {
-			switch (nodeID.substring(nodeEdgeIDPrefix.length())) {
-				case "nRoot":
-					return Arrays.asList(new String[]{nodeEdgeIDPrefix + "e1", nodeEdgeIDPrefix + "eC"}).iterator();
-				case "n1":
-					return Arrays.asList(new String[]{nodeEdgeIDPrefix + "eA", nodeEdgeIDPrefix + "eB"}).iterator();
-				case "nA":
-				case "nB":
-				case "nC":
-					return Collections.emptyIterator();
-				default:  // fall through to exception below
-			}
-		}
-		throw new IllegalArgumentException("No node with the ID \"" + nodeID + "\" available.");
-	}
-
-	
-	@Override
-	public EdgeEvent getEdgeStartEvent(ReadWriteParameterMap parameters, String edgeID) {
-		if (edgeID.startsWith(nodeEdgeIDPrefix)) {
-			switch (edgeID.substring(nodeEdgeIDPrefix.length())) {
-				case "eRoot":
-					return new EdgeEvent(edgeID, "Root edge", null, nodeEdgeIDPrefix + "nRoot", 1.5);
-				case "e1":
-					return new EdgeEvent(edgeID, "Internal edge", nodeEdgeIDPrefix + "nRoot", nodeEdgeIDPrefix + "n1", 1.0);
-				case "eA":
-					return new EdgeEvent(edgeID, "Leaf edge A", nodeEdgeIDPrefix + "n1", nodeEdgeIDPrefix + "nA", 1.1);
-				case "eB":
-					return new EdgeEvent(edgeID, "Leaf edge B", nodeEdgeIDPrefix + "n1", nodeEdgeIDPrefix + "nB", 0.9);
-				case "eC":
-					return new EdgeEvent(edgeID, "Leaf edge C", nodeEdgeIDPrefix + "nRoot", nodeEdgeIDPrefix + "nC", 2.0);
-				default:
-					throw new IllegalArgumentException("No edge with the ID \"" + edgeID + "\" available.");
-			}
-		}
-		else {
-			throw new IllegalArgumentException("No edge with the ID \"" + edgeID + "\" available.");
-		}
-	}
-
-
-	@Override
-	public void writeEdgeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String edgeID) throws IOException {}
-
 
 	@SuppressWarnings("unchecked")
 	@Override
