@@ -160,20 +160,14 @@ public class NewickStringWriter implements NewickConstants {
 	
 	private void writeRootedInformation() throws IOException {
 		writer.write(COMMENT_START);
-		writer.write(ROOTED_HOT_COMMENT.toUpperCase());
+		if (nodes.getObjectStartEvent(parameters, topologyExtractor.getPaintStartID()).isRootNode()) {
+			writer.write(ROOTED_HOT_COMMENT.toUpperCase());
+		}
+		else {
+			writer.write(UNROOTED_HOT_COMMENT.toUpperCase());
+		}
 		writer.write(COMMENT_END);
 		writer.write(" ");
-
-		//TODO Where does the rooted information currently come from? 
-//		writer.write(COMMENT_START);
-//		if (tree.considerRooted(parameters)) {
-//			writer.write(ROOTED_HOT_COMMENT.toUpperCase());
-//		}
-//		else {
-//			writer.write(UNROOTED_HOT_COMMENT.toUpperCase());
-//		}
-//		writer.write(COMMENT_END);
-//		writer.write(" ");
 	}
 
 	

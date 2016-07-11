@@ -39,6 +39,7 @@ public class TreeTopologyExtractor {
 
 	public TreeTopologyExtractor(TreeNetworkDataAdapter adapter, ReadWriteParameterMap parameters) {
 		super();		
+		//TODO Should an exception be thrown, if adapter.isTree(parameters) return false?
 		fillTopologicalMap(adapter, parameters);
 	}
 	
