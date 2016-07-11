@@ -21,10 +21,14 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
+import info.bioinfweb.jphyloio.utils.TopoplogicalNodeInfo;
+import info.bioinfweb.jphyloio.utils.TreeTopologyExtractor;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -96,8 +100,10 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	private void writePhylogenyTag(TreeNetworkDataAdapter tree) throws XMLStreamException, IOException {
 		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), PropertyOwner.PHYLOGENY);		
 		LabeledIDEvent startEvent = tree.getStartEvent(getParameters());
-		Iterator<String> rootEdgeIterator = tree.getRootEdgeIDs(getParameters());
-		boolean rooted = rootEdgeIterator.hasNext();
+		TreeTopologyExtractor topologyExtractor = new TreeTopologyExtractor(tree, getParameters());
+		
+		String rootNodeID = topologyExtractor.getPaintStartID();		
+		boolean rooted = tree.getNodes(getParameters()).getObjectStartEvent(getParameters(), rootNodeID).isRootNode();
 		
 		getXMLWriter().writeStartElement(TAG_PHYLOGENY.getLocalPart());
 		getXMLWriter().writeAttribute(ATTR_ROOTED.getLocalPart(), Boolean.toString(rooted));
@@ -106,13 +112,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 		writeSimpleTag(TAG_NAME.getLocalPart(), startEvent.getLabel());
 		writeSimpleTag(TAG_ID.getLocalPart(), startEvent.getID());
 		
-		if (rooted) {
-			String rootEdgeID = rootEdgeIterator.next();
-			if (rootEdgeIterator.hasNext()) {
-				getLogger().addWarning("A tree definition contains more than one root edge, which is not supported "
-						+ "by the PhyloXML format. Only the first root edge will be considered.");
-			}
-			writeCladeTag(tree, rootEdgeID);
+		if (rootNodeID != null) { // TODO should already be checked in the utils class
+			writeCladeTag(tree, topologyExtractor, rootNodeID);
 		}
 		else {
 			getLogger().addWarning("A specified tree does not specify any root edge. (Event unrooted trees need a "
@@ -126,30 +127,28 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	}
 	
 	
-	private void writeCladeTag(TreeNetworkDataAdapter tree, String rootEdgeID) throws XMLStreamException, IOException {
+	private void writeCladeTag(TreeNetworkDataAdapter tree, TreeTopologyExtractor topologyExtractor, String rootNodeID) throws XMLStreamException, IOException {
 		PhyloXMLMetaDataReceiver nodeReceiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), PropertyOwner.CLADE);
 		PhyloXMLMetaDataReceiver edgeReceiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), PropertyOwner.PARENT_BRANCH);
-		String nodeID = tree.getEdgeStartEvent(getParameters(), rootEdgeID).getTargetID();
+		
+		NodeEvent rootNode = tree.getNodes(getParameters()).getObjectStartEvent(getParameters(), rootNodeID);
+		EdgeEvent afferentEdge = tree.getEdges(getParameters()).getObjectStartEvent(getParameters(), 
+				topologyExtractor.getIDToNodeInfoMap().get(rootNodeID).getAfferentBranchID());
 		
 		getXMLWriter().writeStartElement(TAG_CLADE.getLocalPart());
 		
-		writeSimpleTag(TAG_NAME.getLocalPart(), tree.getNodeStartEvent(getParameters(), nodeID).getLabel());
-		writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(tree.getEdgeStartEvent(getParameters(), rootEdgeID).getLength()));
-		writeSimpleTag(TAG_NODE_ID.getLocalPart(), nodeID);
+		writeSimpleTag(TAG_NAME.getLocalPart(), rootNode.getLabel());
+		writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(afferentEdge.getLength()));
+		writeSimpleTag(TAG_NODE_ID.getLocalPart(), rootNodeID);
 		
-		//TODO should sequences be written here?	
+		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
+		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());
 		
-		tree.writeNodeContentData(getParameters(), nodeReceiver, nodeID);
-		tree.writeEdgeContentData(getParameters(), edgeReceiver, rootEdgeID); //TODO write both meta data contents?
-		
-		Iterator<String> childEdgeIDIterator = tree.getEdgeIDsFromNode(getParameters(), nodeID);
-		
-		while (childEdgeIDIterator.hasNext()) {
-			writeCladeTag(tree, childEdgeIDIterator.next());
+		for (String childID : topologyExtractor.getIDToNodeInfoMap().get(rootNodeID).getChildNodeIDs()) {		
+			writeCladeTag(tree, topologyExtractor, childID);
 		}
 		
 		getXMLWriter().writeEndElement();
-
 	}
 	
 	

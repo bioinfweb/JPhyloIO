@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.SequenceUtils;
+import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
@@ -58,7 +59,6 @@ import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLSetContentReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLTokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
-import info.bioinfweb.jphyloio.utils.NodeEdgeIDLister;
 
 import java.io.IOException;
 import java.util.EnumMap;
@@ -324,7 +324,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			
 			StringBuffer alignmentType = new StringBuffer();
 			alignmentType.append(streamDataProvider.getNeXMLPrefix(getXMLWriter()));
-			alignmentType.append(":");
+			alignmentType.append(XMLUtils.QNAME_SEPARATOR);
 	
 			if (alignmentInfo.isWriteCellsTags()) {
 				switch (alignmentInfo.getAlignmentType()) {
@@ -817,7 +817,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 		StringBuffer treeType = new StringBuffer();
 		treeType.append(streamDataProvider.getNeXMLPrefix(getXMLWriter()));
-		treeType.append(":");
+		treeType.append(XMLUtils.QNAME_SEPARATOR);
 
 		if (treeOrNetwork.isTree(getParameters())) {
 			getXMLWriter().writeStartElement(TAG_TREE.getLocalPart());
@@ -830,31 +830,35 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		streamDataProvider.writeLabeledIDAttributes(treeOrNetwork.getStartEvent(getParameters()));
 		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), ATTR_XSI_TYPE.getNamespaceURI(),
-				ATTR_XSI_TYPE.getLocalPart(), treeType.toString()); //trees and networks are always written as float type
+				ATTR_XSI_TYPE.getLocalPart(), treeType.toString());  // Trees and networks are always written as float type
 
 		writeOrCheckMetaData(treeOrNetwork, false);
-
-		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork, getParameters());
-
-		for (String nodeID : lister.getNodeIDs()) {
-			NodeEvent node = treeOrNetwork.getNodeStartEvent(getParameters(), nodeID);
+		
+		// Write node elements
+		Iterator<String> nodeIDIterator = treeOrNetwork.getNodes(getParameters()).getIDIterator(getParameters());
+		while (nodeIDIterator.hasNext()) {
+			String nodeID = nodeIDIterator.next();
+			NodeEvent node = treeOrNetwork.getNodes(getParameters()).getObjectStartEvent(getParameters(), nodeID);
 			getXMLWriter().writeStartElement(TAG_NODE.getLocalPart());
 			streamDataProvider.writeLinkedLabeledIDAttributes(node, TAG_OTU, false);
 			if (node.isRootNode()) {
 				getXMLWriter().writeAttribute(ATTR_ROOT.getLocalPart(), Boolean.toString(node.isRootNode()));
 			}
-			treeOrNetwork.writeNodeContentData(getParameters(), receiver, nodeID);
+			treeOrNetwork.getNodes(getParameters()).writeContentData(getParameters(), receiver, nodeID);
 			getXMLWriter().writeEndElement();
 		}
-
-		for (String edgeID : lister.getEdgeIDs()) {
-			writeEdgeOrRootedgeTag(treeOrNetwork, treeOrNetwork.getEdgeStartEvent(getParameters(), edgeID));
+		
+		// Write edge elements
+		Iterator<String> edgeIDIterator = treeOrNetwork.getEdges(getParameters()).getIDIterator(getParameters());
+		while (edgeIDIterator.hasNext()) {
+			String edgeID = edgeIDIterator.next();
+			writeEdgeOrRootedgeTag(treeOrNetwork, treeOrNetwork.getEdges(getParameters()).getObjectStartEvent(getParameters(), edgeID));
 		}
 		
+		// Write node edge sets
 		EnumMap<EventContentType, String> elementTypeToLinkAttributeMap = new EnumMap<EventContentType, String>(EventContentType.class);
 		elementTypeToLinkAttributeMap.put(EventContentType.NODE, ATTR_NODE_EDGE_SET_LINKED_NODE_IDS.getLocalPart());
-		elementTypeToLinkAttributeMap.put(EventContentType.EDGE, ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS.getLocalPart());
-		
+		elementTypeToLinkAttributeMap.put(EventContentType.EDGE, ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS.getLocalPart());		
 		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.NODE_EDGE_SET, treeOrNetwork.getNodeEdgeSets(getParameters()));
 
 		getXMLWriter().writeEndElement();
@@ -865,7 +869,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 
 		if (edge.hasSource()) {
-			getXMLWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart()); // Maximum one root can be contained in the adapter
+			getXMLWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart()); // At most one root can be contained in the adapter
 		}
 		else {
 			getXMLWriter().writeStartElement(TAG_EDGE.getLocalPart());
@@ -878,7 +882,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 			getXMLWriter().writeAttribute(ATTR_LENGTH.getLocalPart(), Double.toString(edge.getLength()));
 		}
 
-		tree.writeEdgeContentData(getParameters(), receiver, edge.getID());
+		tree.getEdges(getParameters()).writeContentData(getParameters(), receiver, edge.getID());
 		getXMLWriter().writeEndElement();
 	}
 
@@ -913,7 +917,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 	private void checkTreeOrNetwork(TreeNetworkDataAdapter treeOrNetwork) throws IOException {
 		NeXMLCollectNamespaceReceiver receiver = new NeXMLCollectNamespaceReceiver(getXMLWriter(), getParameters(), streamDataProvider);
-		NodeEdgeIDLister lister = new NodeEdgeIDLister(treeOrNetwork, getParameters());
 		Set<String> referencedNodeIDs = new HashSet<String>();
 
 		streamDataProvider.addToDocumentIDs(treeOrNetwork.getStartEvent(getParameters()).getID());
@@ -921,22 +924,36 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		writeOrCheckMetaData(treeOrNetwork, true);
 		checkSets(treeOrNetwork.getNodeEdgeSets(getParameters()));
 
-		for (String edgeID : lister.getEdgeIDs()) {
-			EdgeEvent edge = treeOrNetwork.getEdgeStartEvent(getParameters(), edgeID);
+		// Check edges
+		Iterator<String> edgeIDIterator = treeOrNetwork.getEdges(getParameters()).getIDIterator(getParameters());
+		while (edgeIDIterator.hasNext()) {
+			String edgeID = edgeIDIterator.next();
+			EdgeEvent edge = treeOrNetwork.getEdges(getParameters()).getObjectStartEvent(getParameters(), edgeID);
+			
 			streamDataProvider.addToDocumentIDs(edgeID);
-
-			treeOrNetwork.writeEdgeContentData(getParameters(), receiver, edgeID);
+			treeOrNetwork.getEdges(getParameters()).writeContentData(getParameters(), receiver, edgeID);
 			referencedNodeIDs.add(edge.getSourceID());
 			referencedNodeIDs.add(edge.getTargetID());
 		}
 
 		referencedNodeIDs.remove(null);
+		
+		// Check nodes
+		Set<String> nodeIDs = new HashSet<String>();
+		Iterator<String> nodeIDIterator = treeOrNetwork.getNodes(getParameters()).getIDIterator(getParameters());
+		while(nodeIDIterator.hasNext()) {
+			String nodeID = nodeIDIterator.next();
+			nodeIDs.add(nodeID);
+			streamDataProvider.addToDocumentIDs(nodeID);
+			
+			treeOrNetwork.getNodes(getParameters()).writeContentData(getParameters(), receiver, nodeID);
+		}
 
-		if (!(referencedNodeIDs.size() == lister.getNodeIDs().size())) {
+		if (!(referencedNodeIDs.size() == nodeIDs.size())) {
 			StringBuffer message = new StringBuffer("The nodes ");
 
 			for (String nodeID : referencedNodeIDs) {
-				if (!lister.getNodeIDs().contains(nodeID)) {
+				if (!nodeIDs.contains(nodeID)) {
 					message.append(nodeID);
 					message.append(", ");
 				}
@@ -944,11 +961,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 			message.append("are referenced by edges but not defined in the document.");
 			throw new JPhyloIOWriterException(message.toString());
-		}
-
-		for (String nodeID : lister.getNodeIDs()) {
-			streamDataProvider.addToDocumentIDs(nodeID);
-			treeOrNetwork.writeNodeContentData(getParameters(), receiver, nodeID);
 		}
 	}
 }
