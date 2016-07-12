@@ -704,6 +704,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					alignmentInfo.getDefinedTokens().add(Character.toString(aminoAcidToken));					
 				}
 				alignmentInfo.getDefinedTokens().remove("J");
+				//TODO add special tokens (-, ?, *)
 				break;
 			case DNA:
 				for (Character nucleotideToken : SequenceUtils.getNucleotideCharacters()) {
