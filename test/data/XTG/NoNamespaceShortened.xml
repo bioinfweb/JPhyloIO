@@ -6,7 +6,7 @@
 			<Branch LineColor="#000000" LineWidth="0.3"></Branch>
 			<Node Text="N2" UniqueName="flal1nlj6m">
 				<Branch LineColor="#000000" LineWidth="0.3">
-					<TextLabel Text="1.0"></TextLabel>					
+					<TextLabel Text="1.0"></TextLabel>
 				</Branch>				
 			</Node>
 			<Node Text="N3" UniqueName="9faghvrb6i">
