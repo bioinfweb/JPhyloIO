@@ -195,7 +195,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 				}
 				break;
 			case DISCARDED:
-				if (!label.equals(event.getLabel()) && ((event.getLabel() != null) && !event.getLabel().isEmpty())) { //TODO check if token name was discarded
+				if (((event.getLabel() != null) && !event.getLabel().isEmpty()) && !label.equals(event.getLabel())) { //TODO check if token name was discarded
 					writeMetaElement(PREDICATE_ORIGINAL_LABEL, event.getLabel());
 				}
 				
