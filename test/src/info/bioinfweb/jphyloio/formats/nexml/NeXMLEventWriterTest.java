@@ -19,7 +19,9 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import static info.bioinfweb.commons.testing.XMLAssert.assertStartDocument;
+import static info.bioinfweb.commons.testing.XMLAssert.*;
+import static org.junit.Assert.*;
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
@@ -52,6 +54,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTreeAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 
@@ -66,13 +69,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Comment;
 import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 import org.junit.Test;
 
@@ -94,11 +102,30 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	@Test
 	public void assertSimpleDocument() throws IOException, XMLStreamException, FactoryConfigurationError {
 		File file = new File("data/testOutput/NeXMLTest.xml");
+		boolean writeMetadata = false;
+		boolean writeSets = true;
 		
+		// Add OTU list to document data adapter
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();
+		document.getOTUListsMap().put(otuListID, createOTUList(otuListID, writeMetadata, writeSets));
+		
+		// Add matrix to document data adapter
+		StoreMatrixDataAdapter matrix = createDNASequenceMatrix(writeSets, false, writeMetadata, otuListID);
+		document.getMatrices().add(matrix);
+		
+		// Add tree group to document data adapter
+		document.getTreesNetworks().add(createTrees(otuListID, writeMetadata, true, writeSets));
+		
+		// Add metadata to document data adapter
+		if (writeMetadata) {
+			document.getAnnotations().addAll(createMetaData(null));
+		}
+			
 		// Write file:
-		createSimpleDocument(false);
 		NeXMLEventWriter writer = new NeXMLEventWriter();
 		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -109,15 +136,143 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			
 			assertStartDocument(reader);
 			
-//			element = assertStartElement(TAG_ROOT, reader);
-//			assertNameSpaceCount(5, element);
-//			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-//			assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), element);
-//			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
-//			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
-//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), element);			
-//			
-//			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNameSpaceCount(5, element);
+			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
+			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/NeXML/Predicates/", XMLConstants.XMLNS_ATTRIBUTE, "p"), element);
+			
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_VERSION, "0.9", element);
+			
+			String generator = assertAttribute(ATTR_GENERATOR, element);
+			assertTrue(generator, generator.matches(
+					"exampleApplication 1.0 JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+"));
+			
+			assertTrue(reader.hasNext());		
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by exampleApplication 1.0 using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+. <http://bioinfweb.info/JPhyloIO/>"));
+			
+			element = assertStartElement(TAG_OTUS, reader);
+			assertAttributeCount(3, element);
+			String otusID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "taxonlist", element);
+			
+			for (int i = 0; i < 5; i++) {
+				element = assertStartElement(TAG_OTU, reader);
+				assertAttributeCount(3, element);
+				assertNotNull(element.getAttributeByName(ATTR_ID));
+				assertNotNull(element.getAttributeByName(ATTR_ABOUT));
+				assertAttribute(ATTR_LABEL, "taxon", element);
+				assertEndElement(TAG_OTU, reader);
+			}
+			
+			element = assertStartElement(TAG_SET, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_OTU_SET_LINKED_IDS, "otu1 otu2 otu3 ", element);
+			assertEndElement(TAG_SET, reader);
+			
+			element = assertStartElement(TAG_SET, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_OTU_SET_LINKED_IDS, "otu1 otu2 otu3 otu4 ", element);
+			assertEndElement(TAG_SET, reader);
+			
+			element = assertStartElement(TAG_SET, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_OTU_SET_LINKED_IDS, "otu0 otu1 otu2 otu3 otu4 ", element);
+			assertEndElement(TAG_SET, reader);
+			
+			assertEndElement(TAG_OTUS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, "nex:DnaSeqs", element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			String tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenC = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "C", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenG = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "G", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenA = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "A", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenT = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "T", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			assertUncertainStateSet("B", null, reader, tokenC, tokenG, tokenT);
+			assertUncertainStateSet("D", null, reader, tokenA, tokenG, tokenT);
+			assertUncertainStateSet("H", null, reader, tokenA, tokenC, tokenT);
+			assertUncertainStateSet("K", null, reader, tokenG, tokenT);
+			assertUncertainStateSet("M", null, reader, tokenA, tokenC);
+			assertUncertainStateSet("N", null, reader, tokenA, tokenT, tokenC, tokenG);
+			assertUncertainStateSet("R", null, reader, tokenA, tokenG);
+			assertUncertainStateSet("S", null, reader, tokenC, tokenG);
+			assertUncertainStateSet("V", null, reader, tokenA, tokenC, tokenG);
+			assertUncertainStateSet("W", null, reader, tokenA, tokenT);
+			assertUncertainStateSet("X", null, reader, tokenA, tokenT, tokenC, tokenG);
+			assertUncertainStateSet("Y", null, reader, tokenC, tokenT);
+			assertUncertainStateSet("-", "gap", reader);
+			assertUncertainStateSet("?", "missing data", reader, tokenC, tokenG, tokenA, tokenT);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			String char0 = assertCharacterDefinition("column definition", tokenSetID, "25", "25", reader);
+			assertCharacterDefinition("column definition", tokenSetID, "25", "25", reader);
+			assertCharacterDefinition("column definition", tokenSetID, "25", "25", reader);
+			String char3 = assertCharacterDefinition("column definition", tokenSetID, "25", "25", reader);
+			String char4 = assertCharacterDefinition("column definition", tokenSetID, "25", "25", reader);
+			String char5 = assertCharacterDefinition(null, tokenSetID, null, null, reader);
+			
+			element = assertStartElement(TAG_SET, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "character set", element);
+			assertAttribute(ATTR_CHAR_SET_LINKED_IDS, char0 + " " + char3 + " " + char4 + " " + char5 + " ", element);
+			assertEndElement(TAG_SET, reader);
+			
+			assertEndElement(TAG_FORMAT, reader);
+			
 //			assertEndElement(TAG_ROOT, reader);
 //			
 //			assertEndDocument(reader);
@@ -130,26 +285,67 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
-	private void createSimpleDocument(boolean writeMetadata) {
-		// Add OTU list to document data adapter
-		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();
-		document.getOTUListsMap().put(otuListID, createOTUList(otuListID, writeMetadata, false));
+	private void assertUncertainStateSet(String symbol, String label, XMLEventReader reader, String... memberID) throws XMLStreamException {
+		StartElement element = assertStartElement(TAG_UNCERTAIN, reader);	
 		
-		if (writeMetadata) {
-			document.getAnnotations().addAll(createMetaData(null));
+		if (label != null) {
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_LABEL, label, element);
+		}
+		else {
+			assertAttributeCount(3, element);
 		}
 		
-		StoreMatrixDataAdapter matrix = createDNASequenceMatrix(true, false, writeMetadata, otuListID);
-		document.getMatrices().add(matrix);
+		assertAttribute(ATTR_ID, element);
+		assertAttribute(ATTR_ABOUT, element);
+		assertAttribute(ATTR_SYMBOL, symbol, element);
 		
-		// Add tree group to document data adapter
-		document.getTreesNetworks().add(createTrees(otuListID, writeMetadata, true, false));
+		for (int i = 0; i < memberID.length; i++) {
+			element = assertStartElement(TAG_MEMBER, reader);
+			assertAttributeCount(1, element);
+			assertAttribute(ATTR_STATE_SET_LINKED_IDS, memberID[i], element);
+			assertEndElement(TAG_MEMBER, reader);
+		}
+		
+		assertEndElement(TAG_UNCERTAIN, reader);
 	}
 	
 	
-	private void addSimpleMetadatum(List<JPhyloIOEvent> annotations) {
+	private String assertCharacterDefinition(String label, String states, String codonPosition, String tokens, XMLEventReader reader) throws XMLStreamException {
+		StartElement element = assertStartElement(TAG_CHAR, reader);
+		int count = 3;
+		
+		String id = assertAttribute(ATTR_ID, element);
+		assertAttribute(ATTR_ABOUT, element);
+		assertAttribute(ATTR_STATES, states, element);
+		
+		if (label != null) {
+			assertAttribute(ATTR_LABEL, label, element);
+			count++;
+		}
+		if (codonPosition != null) {
+			assertAttribute(ATTR_CODON_POSITION, codonPosition, element);
+			count++;
+		}
+		if (tokens != null) {
+			assertAttribute(ATTR_TOKENS, tokens, element);
+			count++;
+		}
+		
+		assertAttributeCount(count, element);
+		assertEndElement(TAG_CHAR, reader);
+		
+		return id;
+	}
+	
+	
+	private void addLiteralMetadata(List<JPhyloIOEvent> annotations, QName predicate) {
+		if (predicate == null) {
+			predicate = new QName("http://meta.net/", "predicate");
+		}
+		
 		annotations.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, 
+				new URIOrStringIdentifier(null, predicate), new URIOrStringIdentifier(null, 
 				new QName(W3CXSConstants.DATA_TYPE_INTEGER.getNamespaceURI(), W3CXSConstants.DATA_TYPE_INTEGER.getLocalPart())), 
 				LiteralContentSequenceType.SIMPLE));
 		annotations.add(new LiteralMetadataContentEvent(25, "25"));		
@@ -160,7 +356,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	private void addResourceMetadata(List<JPhyloIOEvent> annotations, URIOrStringIdentifier resourcePredicate) {
 		annotations.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
 			resourcePredicate, null, null));		
-		addSimpleMetadatum(annotations);	
+		addLiteralMetadata(annotations, null);
 		annotations.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 	}
 	
@@ -227,7 +423,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, id, "taxonlist"), null);
 		
 		if (writeMetaData) {
-			addSimpleMetadatum(otuList.getAnnotations());
+			addLiteralMetadata(otuList.getAnnotations(), null);
 		}
 		
 		for (int i = 0; i < 5; i++) {
@@ -236,18 +432,17 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 					otuID, "taxon"), null));
 			
 			if (writeMetaData) {
-				addSimpleMetadatum(otuList.getOtus().getObjectContent(otuID));
+				addLiteralMetadata(otuList.getOtus().getObjectContent(otuID), null);
 			}
 		}
 		
 		if (writeSets) {
-			// Add OTU set
 			String otuSetID = DEFAULT_OTU_SET_ID_PREFIX + obtainCurrentIDIndex();
 			StoreObjectData<LinkedLabeledIDEvent> otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
 					new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetID, null, id));
 			
 			if (writeMetaData) {
-				addSimpleMetadatum(otuSet.getObjectContent());
+				addLiteralMetadata(otuSet.getObjectContent(), null);
 			}
 			
 			otuSet.getObjectContent().add(new SetElementEvent("otu1", EventContentType.OTU));
@@ -258,21 +453,21 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		
 			// Add OTU set referencing another set
 			String otuSetReferencingSetID = DEFAULT_OTU_SET_ID_PREFIX + obtainCurrentIDIndex();
-			otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
+			StoreObjectData<LinkedLabeledIDEvent> otuSet2 = new StoreObjectData<LinkedLabeledIDEvent>(
 					new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetReferencingSetID, null, id));
-			otuSet.getObjectContent().add(new SetElementEvent(otuSetID, EventContentType.OTU_SET));		
-			otuSet.getObjectContent().add(new SetElementEvent("otu4", EventContentType.OTU)); //TODO use real OTU IDs
+			otuSet2.getObjectContent().add(new SetElementEvent(otuSetID, EventContentType.OTU_SET));		
+			otuSet2.getObjectContent().add(new SetElementEvent("otu4", EventContentType.OTU)); //TODO use real OTU IDs
 			
-			otuList.getOTUSets(parameters).getObjectMap().put(otuSetReferencingSetID, otuSet);
+			otuList.getOTUSets(parameters).getObjectMap().put(otuSetReferencingSetID, otuSet2);
 			
-		// Add OTU set referencing another set
+			// Add OTU set referencing another set
 			String otuSetReferencingSetID2 = DEFAULT_OTU_SET_ID_PREFIX + obtainCurrentIDIndex();
-			otuSet = new StoreObjectData<LinkedLabeledIDEvent>(
+			StoreObjectData<LinkedLabeledIDEvent> otuSet3 = new StoreObjectData<LinkedLabeledIDEvent>(
 					new LinkedLabeledIDEvent(EventContentType.OTU_SET, otuSetReferencingSetID2, null, id));
-			otuSet.getObjectContent().add(new SetElementEvent(otuSetReferencingSetID, EventContentType.OTU_SET));		
-			otuSet.getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU)); //TODO use real OTU IDs
+			otuSet3.getObjectContent().add(new SetElementEvent(otuSetReferencingSetID, EventContentType.OTU_SET));		
+			otuSet3.getObjectContent().add(new SetElementEvent("otu0", EventContentType.OTU)); //TODO use real OTU IDs
 			
-			otuList.getOTUSets(parameters).getObjectMap().put(otuSetReferencingSetID2, otuSet);
+			otuList.getOTUSets(parameters).getObjectMap().put(otuSetReferencingSetID2, otuSet3);
 		}
 		
 		return otuList;
@@ -287,7 +482,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		if (writeMetadata) {
 			addResourceMetadata(matrix.getAnnotations(), new URIOrStringIdentifier(null, PREDICATE_FORMAT));
 			addResourceMetadata(matrix.getAnnotations(), new URIOrStringIdentifier(null, PREDICATE_MATRIX));
-			addSimpleMetadatum(matrix.getAnnotations());
+			addLiteralMetadata(matrix.getAnnotations(), null);
 		}
 		
 		// Add character definitions
@@ -336,11 +531,11 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		StoreObjectData<CharacterDefinitionEvent> characterDefinition = new StoreObjectData<CharacterDefinitionEvent>(
 				new CharacterDefinitionEvent(charDefinitionID, "column definition", index), new ArrayList<JPhyloIOEvent>());
 		
-		addResourceMetadata(characterDefinition.getObjectContent(), new URIOrStringIdentifier(null, PREDICATE_CHAR_ATTR_TOKENS));
-		addResourceMetadata(characterDefinition.getObjectContent(), new URIOrStringIdentifier(null, PREDICATE_CHAR_ATTR_CODON_POSITION));
+		addLiteralMetadata(characterDefinition.getObjectContent(), PREDICATE_CHAR_ATTR_TOKENS);
+		addLiteralMetadata(characterDefinition.getObjectContent(), PREDICATE_CHAR_ATTR_CODON_POSITION);
 		
 		if (writeMetadata) {
-			addSimpleMetadatum(characterDefinition.getObjectContent());
+			addLiteralMetadata(characterDefinition.getObjectContent(), null);
 		}
 		
 		return characterDefinition;
@@ -415,7 +610,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		content.add(new SingleSequenceTokenEvent(label, token));
 		
 		if (writeMetadata) {
-			addSimpleMetadatum(content);
+			addLiteralMetadata(content, null);
 		}
 		
 		content.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_SEQUENCE_TOKEN));
@@ -427,7 +622,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 				new TokenSetDefinitionEvent(type, id, "tokenSet"), new ArrayList<JPhyloIOEvent>());
 
 		if (writeMetadata) {
-			addSimpleMetadatum(tokenSet.getObjectContent());
+			addLiteralMetadata(tokenSet.getObjectContent(), null);
 		}
 		
 		// Add single token definitions
@@ -438,7 +633,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 							Character.toString(SequenceUtils.DNA_CHARS.charAt(i)), CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE));
 					
 					if (writeMetadata) {
-						addSimpleMetadatum(tokenSet.getObjectContent());
+						addLiteralMetadata(tokenSet.getObjectContent(), null);
 					}
 					
 					tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
@@ -506,12 +701,11 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 				new LinkedLabeledIDEvent(EventContentType.CHARACTER_SET, characterSetID, "character set", null), new ArrayList<JPhyloIOEvent>());		
 
 		if (writeMetadata) {
-			addSimpleMetadatum(charSet.getObjectContent());
+			addLiteralMetadata(charSet.getObjectContent(), null);
 		}
 		
-		charSet.getObjectContent().add(new CharacterSetIntervalEvent(0, 2));
-		charSet.getObjectContent().add(new CharacterSetIntervalEvent(4, 5));
-		charSet.getObjectContent().add(new CharacterSetIntervalEvent(6, 9));
+		charSet.getObjectContent().add(new CharacterSetIntervalEvent(0, 1));
+		charSet.getObjectContent().add(new CharacterSetIntervalEvent(3, 6));
 		
 		return charSet;
 	}
@@ -523,14 +717,14 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 				treeGroupID, "treesAndNetworks", otuListID), new ArrayList<JPhyloIOEvent>());
 		
 		if (writeMetadata) {
-			addSimpleMetadatum(trees.getAnnotations());
+			addLiteralMetadata(trees.getAnnotations(), null);
 		}
 		
 		StoreTreeNetworkDataAdapter tree1 = createTreeOrNetwork(otuListID, writeTree, writeMetadata);
 		trees.getTreesAndNetworks().add(tree1);
 		
 		if (writeSet) {
-			StoreTreeNetworkDataAdapter tree2 = createTreeOrNetwork(otuListID, !writeTree, writeMetadata);
+			StoreTreeNetworkDataAdapter tree2 = createTreeOrNetwork(otuListID, writeTree, writeMetadata); //TODO also add network
 			trees.getTreesAndNetworks().add(tree2);
 			
 			String treeNetworkSetID = DEFAULT_TREE_NETWORK_SET_ID_PREFIX + obtainCurrentIDIndex();
@@ -538,7 +732,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 					new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_SET, treeNetworkSetID, null, otuListID));
 			
 			if (writeMetadata) {
-				addSimpleMetadatum(treeNetworkSet.getObjectContent());
+				addLiteralMetadata(treeNetworkSet.getObjectContent(), null);
 			}
 			
 			treeNetworkSet.getObjectContent().add(new SetElementEvent(tree1.getStartEvent(parameters).getID(), 
@@ -561,12 +755,12 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			treeOrNetworkID = DEFAULT_TREE_ID_PREFIX + obtainCurrentIDIndex();
 			
 			if (writeMetadata) {
-				treeOrNetwork = new EdgeAndNodeMetaDataTreeAdapter(treeOrNetworkID, "tree", otuListID);
+				treeOrNetwork = new EdgeAndNodeMetaDataTreeAdapter(treeOrNetworkID, "tree", otuListID + obtainCurrentIDIndex());
 
-				addSimpleMetadatum(treeOrNetwork.getAnnotations());				 
+				addLiteralMetadata(treeOrNetwork.getAnnotations(), null);				 
 			}
 			else {
-				treeOrNetwork = new NoAnnotationsTree(treeOrNetworkID, "tree", otuListID);
+				treeOrNetwork = new NoAnnotationsTree(treeOrNetworkID, "tree", otuListID + obtainCurrentIDIndex());
 			}
 		}
 		else {
