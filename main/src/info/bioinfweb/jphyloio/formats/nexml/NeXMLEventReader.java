@@ -683,7 +683,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 				streamDataProvider.getCurrentEventCollection().add(new CharacterDefinitionEvent(info.id, info.label, streamDataProvider.getCharIDs().size() - 1));
 
-				readAttributes(streamDataProvider, element, RESERVED_ID_PREFIX, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION);			
+				readAttributes(streamDataProvider, element, RESERVED_ID_PREFIX, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION);
 			}
 		});
 		

@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
+import java.nio.channels.WritePendingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,33 +56,26 @@ public class NeXMLAttributeMetadataReceiver extends NeXMLPredicateMetaReceiver {
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		if (isUnderPredicate()) {
-			changeMetaLevel(1);
+		if (getPredicates().contains(event.getPredicate().getURI())) {
+			setUnderPredicate(true);
 			currentAttributeName = event.getPredicate().getURI();
-		}		
+		}
+		else {
+			setUnderPredicate(false);
+		}
 	}
 
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (isUnderPredicate()) {
+		if (isUnderPredicate()) {			
 			attributeToValueMap.put(currentAttributeName, event.getStringValue());
 		}
 	}
 
 
 	@Override
-	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		if (!isUnderPredicate()) {
-			if (event.getRel().getURI() != null) {				
-				setUnderPredicate(getPredicates().contains(event.getRel().getURI()));
-			}
-		}
-		
-		if (isUnderPredicate()) {
-			changeMetaLevel(1);			
-		}		
-	}
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {}
 
 
 	@Override
@@ -90,11 +84,6 @@ public class NeXMLAttributeMetadataReceiver extends NeXMLPredicateMetaReceiver {
 
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {		
-		if (isUnderPredicate()) {
-			changeMetaLevel(-1);
-			if (getMetaLevel() == 0) {
-				setUnderPredicate(false);
-			}
-		}
+		setUnderPredicate(false);		
 	}
 }

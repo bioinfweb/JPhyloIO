@@ -224,7 +224,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					else {
 						throw new JPhyloIOWriterException("A circular reference was encountered when writing sets.");
 					}
-				}				
+				}
 			}
 				
 			for (EventContentType type : elementTypeToLinkAttributeMap.keySet()) {
@@ -234,8 +234,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					setElements.append(" ");
 				}
 				
-				getXMLWriter().writeAttribute(elementTypeToLinkAttributeMap.get(type), setElements.toString());
-			}
+				getXMLWriter().writeAttribute(elementTypeToLinkAttributeMap.get(type), setElements.toString()); //TODO all metadata has to be written after the last attribute
+			}			
 			
 			getXMLWriter().writeEndElement();
 			encounteredSetIDs.clear();
@@ -541,12 +541,17 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				alignment.getCharacterDefinitions(getParameters()).writeContentData(getParameters(), attributeReceiver, charID);
 				if (!attributeReceiver.getAttributeToValueMap().isEmpty()) {
 					for (QName attribute : attributeReceiver.getAttributeToValueMap().keySet()) {
-						getXMLWriter().writeAttribute(attribute.getLocalPart(), attributeReceiver.getAttributeToValueMap().get(attribute));
+						if (attribute.equals(PREDICATE_CHAR_ATTR_CODON_POSITION)) {
+							getXMLWriter().writeAttribute(ATTR_CODON_POSITION.getLocalPart(), attributeReceiver.getAttributeToValueMap().get(attribute));
+						}
+						else if (attribute.equals(PREDICATE_CHAR_ATTR_TOKENS)) {
+							getXMLWriter().writeAttribute(ATTR_TOKENS.getLocalPart(), attributeReceiver.getAttributeToValueMap().get(attribute));
+						}						
 					}
 				}
 				
 				NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLIgnoreCertainMetadataReceiver(getXMLWriter(), getParameters(), streamDataProvider, 
-						false, PREDICATE_CHAR_ATTR_TOKENS, PREDICATE_CHAR_ATTR_CODON_POSITION);
+						false, PREDICATE_CHAR_ATTR_TOKENS, PREDICATE_CHAR_ATTR_CODON_POSITION); //TODO refactor so literal meta with predicates is also ignored
 				alignment.getCharacterDefinitions(getParameters()).writeContentData(getParameters(), predicateDataReceiver, charID);  // Metadata created from attributes is not written again
 				
 				getXMLWriter().writeEndElement();
@@ -564,6 +569,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 				getXMLWriter().writeEmptyElement(TAG_CHAR.getLocalPart());
 
 				getXMLWriter().writeAttribute(ATTR_ID.getLocalPart(), charID);
+				getXMLWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + charID);
+				
 				if (!alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
 					getXMLWriter().writeAttribute(ATTR_STATES.getLocalPart(), alignmentInfo.getColumnIndexToStatesMap().get(i));
 				}

@@ -61,11 +61,19 @@ public class NeXMLIgnoreCertainMetadataReceiver extends NeXMLPredicateMetaReceiv
 	
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		if (isUnderPredicate()) {
-			changeMetaLevel(1);
+		if (!isUnderPredicate()) {
+			if (getPredicates().contains(event.getPredicate().getURI())) {
+				setUnderPredicate(true);
+			}
 		}
 		
-		if ((isUnderPredicate() && writePredicateMetadata) || (!isUnderPredicate() && !writePredicateMetadata)) {
+		if (isUnderPredicate()) {
+			changeMetaLevel(1);
+			if (writePredicateMetadata) {
+				super.handleLiteralMetaStart(event);
+			}
+		}
+		else if (!isUnderPredicate() && !writePredicateMetadata) {
 			super.handleLiteralMetaStart(event);
 		}
 	}
