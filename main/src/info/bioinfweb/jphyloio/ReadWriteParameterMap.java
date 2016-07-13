@@ -195,12 +195,20 @@ public class ReadWriteParameterMap extends ParameterMap {
 	public static final String KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA = KEY_PREFIX + "neXMLstandardDataLabelMetadata";
 	
 	/** 
-	 * Identifies a comment describing the application generating the output, which shall be added at the beginning
-	 * of formats that support this.
+	 * Identifies the name of the application generating the output. This information, as well as the application version, 
+	 * shall be added at the beginning of formats that support this.
 	 * <p>
 	 * The value should be a {@link String}.
 	 */
-	public static final String KEY_APPLICATION_COMMENT = KEY_PREFIX + "applicationComment";
+	public static final String KEY_APPLICATION_NAME = KEY_PREFIX + "applicationName";
+	
+	/** 
+	 * Identifies the version number of the application generating the output. This information, as well as the application name, 
+	 * shall be added at the beginning of formats that support this.
+	 * <p>
+	 * The value should be a {@link double}.
+	 */
+	public static final String KEY_APPLICATION_VERSION = KEY_PREFIX + "applicationVersion";
 	
 	/** 
 	 * If a line separator different from that of the current operating system shall be used by a writer, it can be 

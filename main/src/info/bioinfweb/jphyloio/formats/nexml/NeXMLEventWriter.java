@@ -22,7 +22,9 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -48,6 +50,7 @@ import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCharacterSetEventRec
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectCharSetDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectNamespaceReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectSequenceDataReceiver;
+import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectSetMetadataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLCollectTokenSetDefinitionDataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLIgnoreCertainMetadataReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.receivers.NeXMLMetaDataReceiver;
@@ -102,11 +105,28 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		getXMLWriter().writeDefaultNamespace(NEXML_NAMESPACE);
 		getXMLWriter().writeAttribute(ATTR_VERSION.getLocalPart(), NEXML_VERSION);
-		getXMLWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), getClass().getName()); //TODO use "JPhyloIO" as generator?
+		
+		StringBuilder generator = new StringBuilder();		
+		
+		if (getParameters().getString(ReadWriteParameterMap.KEY_APPLICATION_NAME) != null) {			
+			generator.append(getParameters().getString(ReadWriteParameterMap.KEY_APPLICATION_NAME));
+			generator.append(" ");
+			
+			if (getParameters().getString(ReadWriteParameterMap.KEY_APPLICATION_VERSION) != null) {				
+				generator.append(getParameters().getString(ReadWriteParameterMap.KEY_APPLICATION_VERSION));
+				generator.append(" ");
+			}			
+		}
+		
+		generator.append(JPhyloIO.getInstance().getLibraryNameAndVersion());
+		
+		getXMLWriter().writeAttribute(ATTR_GENERATOR.getLocalPart(), generator.toString());
 		
 		for (String prefix : streamDataProvider.getNamespacePrefixes()) {
 			getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
 		}
+		
+		getXMLWriter().writeComment(" " + getFileStartInfo(getParameters()));
 
 		writeOrCheckMetaData(getDocument(), false);
 
@@ -229,7 +249,9 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		while (idIterator.hasNext()) {
 			String setID = idIterator.next();
 			streamDataProvider.addToDocumentIDs(setID);
-			writeOrCheckObjectMetaData(setAdapter, setID, true);
+			
+			NeXMLCollectSetMetadataReceiver receiver = new NeXMLCollectSetMetadataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
+			setAdapter.writeContentData(getParameters(), receiver, setID);
 		}
 	}
 	
