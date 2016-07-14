@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio;
 
 
+import java.util.List;
+
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
@@ -36,8 +38,9 @@ public interface JPhyloIOEventListener {
 	 * be notified of these events. 
 	 * 
 	 * @param source the reader from which the event was fired 
+	 * @param parentEvents an unmodifiable list containing all parent events of the current event
 	 * @param event the event that was fired from the parsed document
 	 * @throws Exception any exception thrown by the implementation
 	 */
-	public void processEvent(JPhyloIOEventReader source, JPhyloIOEvent event) throws Exception;
+	public void processEvent(JPhyloIOEventReader source, List<JPhyloIOEvent> parentEvents, JPhyloIOEvent event) throws Exception;
 }

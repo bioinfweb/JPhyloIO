@@ -21,11 +21,14 @@ package info.bioinfweb.jphyloio;
 
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 
 
@@ -36,9 +39,21 @@ import java.util.Set;
  * @author Ben St&ouml;ver
  */
 public class EventForwarder {
-	private List<JPhyloIOEventListener> listeners = new ArrayList<JPhyloIOEventListener>();
+	private JPhyloIOEventReader reader;
+	private Stack<JPhyloIOEvent> parentEvents;
+	private List<JPhyloIOEvent> unmodifiableParentEvents;
+	private List<JPhyloIOEventListener> listeners;
 	
 	
+	public EventForwarder(JPhyloIOEventReader reader) {
+		super();
+		this.reader = reader;
+		parentEvents = new Stack<JPhyloIOEvent>();
+		unmodifiableParentEvents = Collections.unmodifiableList(parentEvents);
+		listeners = new ArrayList<JPhyloIOEventListener>();
+	}
+
+
 	/**
 	 * Returns the list of listeners to which this instance forwards its consumed events.
 	 * 
@@ -55,13 +70,8 @@ public class EventForwarder {
 	 * @param reader the reader to read the events from
 	 * @throws Exception if {@code reader} throws an exception while parsing
 	 */
-	public void readAll(JPhyloIOEventReader reader) throws Exception {
-		while (reader.hasNextEvent()) {
-			JPhyloIOEvent event = reader.next();
-			for (JPhyloIOEventListener listener : listeners) {
-				listener.processEvent(reader, event);
-			}
-		}
+	public void readAll() throws Exception {
+		doReadUntil(null);
 	}
 	
 	
@@ -73,8 +83,8 @@ public class EventForwarder {
 	 * @param type the type of the event that shall trigger the end of reading
 	 * @throws Exception if {@code reader} throws an exception while parsing
 	 */
-	public void readUntil(JPhyloIOEventReader reader, EventContentType type) throws Exception {
-		readUntil(reader, EnumSet.of(type));
+	public void readUntil(EventContentType type) throws Exception {
+		doReadUntil(EnumSet.of(type));
 	}
 	
 	
@@ -86,11 +96,24 @@ public class EventForwarder {
 	 * @param types a set of types of the events that shall trigger the end of reading
 	 * @throws Exception if {@code reader} throws an exception while parsing
 	 */
-	public void readUntil(JPhyloIOEventReader reader, Set<EventContentType> types) throws Exception {
-		while (reader.hasNextEvent() && !types.contains(reader.peek().getType())) {
+	public void readUntil(Set<EventContentType> types) throws Exception {
+		doReadUntil(types);
+	}
+	
+	
+	private void doReadUntil(Set<EventContentType> types) throws Exception {
+		while (reader.hasNextEvent() && ((types == null) || !types.contains(reader.peek().getType()))) {
 			JPhyloIOEvent event = reader.next();
+			if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
+				parentEvents.pop();  // Throws an exception, if more end than start events are encountered.
+			}
+			
 			for (JPhyloIOEventListener listener : listeners) {
-				listener.processEvent(reader, event);
+				listener.processEvent(reader, unmodifiableParentEvents, event);
+			}
+			
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				parentEvents.add(event);
 			}
 		}
 	}
