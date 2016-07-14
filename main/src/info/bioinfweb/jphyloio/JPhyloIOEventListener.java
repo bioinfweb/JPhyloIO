@@ -31,9 +31,9 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
  */
 public interface JPhyloIOEventListener {
 	/**
-	 * Called after an event was received from a reader instance. Implementing classes should never consume
-	 * events directly from {@code source}, because other registered event listeners would not be notified 
-	 * by these events. 
+	 * Called after an event was received from a reader instance. Implementing classes should never request
+	 * additional events directly from {@code source}, because other registered event listeners would not 
+	 * be notified of these events. 
 	 * 
 	 * @param source the reader from which the event was fired 
 	 * @param event the event that was fired from the parsed document
