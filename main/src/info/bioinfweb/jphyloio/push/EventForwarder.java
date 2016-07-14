@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio;
+package info.bioinfweb.jphyloio.push;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -40,16 +41,14 @@ import java.util.Stack;
  */
 public class EventForwarder {
 	private JPhyloIOEventReader reader;
-	private Stack<JPhyloIOEvent> parentEvents;
-	private List<JPhyloIOEvent> unmodifiableParentEvents;
+	private ParentEventInformation parentEventInformation;
 	private List<JPhyloIOEventListener> listeners;
 	
 	
 	public EventForwarder(JPhyloIOEventReader reader) {
 		super();
 		this.reader = reader;
-		parentEvents = new Stack<JPhyloIOEvent>();
-		unmodifiableParentEvents = Collections.unmodifiableList(parentEvents);
+		parentEventInformation = new ParentEventInformation();
 		listeners = new ArrayList<JPhyloIOEventListener>();
 	}
 
@@ -105,15 +104,15 @@ public class EventForwarder {
 		while (reader.hasNextEvent() && ((types == null) || !types.contains(reader.peek().getType()))) {
 			JPhyloIOEvent event = reader.next();
 			if (event.getType().getTopologyType().equals(EventTopologyType.END)) {
-				parentEvents.pop();  // Throws an exception, if more end than start events are encountered.
+				parentEventInformation.pop();  // Throws an exception, if more end than start events are encountered.
 			}
 			
 			for (JPhyloIOEventListener listener : listeners) {
-				listener.processEvent(reader, unmodifiableParentEvents, event);
+				listener.processEvent(reader, parentEventInformation, event);
 			}
 			
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				parentEvents.add(event);
+				parentEventInformation.add(event);
 			}
 		}
 	}
