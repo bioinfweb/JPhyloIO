@@ -121,7 +121,7 @@ public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 
 
 	public boolean hasTokenDefinitionSet() {
-		return !(getIDToTokenSetInfoMap().isEmpty() || (getIDToTokenSetInfoMap().size() == 1 && getIDToTokenSetInfoMap().containsKey(DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX)));
+		return !(getIDToTokenSetInfoMap().isEmpty() || (getIDToTokenSetInfoMap().size() == 1 && getIDToTokenSetInfoMap().containsKey(getDefaultTokenSetID())));
 	}
 
 

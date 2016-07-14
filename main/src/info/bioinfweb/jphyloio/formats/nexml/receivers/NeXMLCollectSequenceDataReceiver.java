@@ -81,7 +81,6 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		
-		
 		if (!alignmentInfo.hasTokenDefinitionSet()) { // No token set was contained in the data adapter
 			alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getOccuringTokens().add(token);
 			

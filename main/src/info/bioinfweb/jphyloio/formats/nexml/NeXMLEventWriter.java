@@ -234,7 +234,9 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 					setElements.append(" ");
 				}
 				
-				getXMLWriter().writeAttribute(elementTypeToLinkAttributeMap.get(type), setElements.toString()); //TODO all metadata has to be written after the last attribute
+				if (setElements.length() != 0) {
+					getXMLWriter().writeAttribute(elementTypeToLinkAttributeMap.get(type), setElements.toString()); //TODO all metadata has to be written after the last attribute
+				}
 			}			
 			
 			getXMLWriter().writeEndElement();
@@ -892,7 +894,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		// Write node edge sets
 		EnumMap<EventContentType, String> elementTypeToLinkAttributeMap = new EnumMap<EventContentType, String>(EventContentType.class);
 		elementTypeToLinkAttributeMap.put(EventContentType.NODE, ATTR_NODE_EDGE_SET_LINKED_NODE_IDS.getLocalPart());
-		elementTypeToLinkAttributeMap.put(EventContentType.EDGE, ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS.getLocalPart());		
+		elementTypeToLinkAttributeMap.put(EventContentType.EDGE, ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS.getLocalPart());
+		elementTypeToLinkAttributeMap.put(EventContentType.ROOT_EDGE, ATTR_NODE_EDGE_SET_LINKED_ROOTEDGE_IDS.getLocalPart());
 		writeSetTags(elementTypeToLinkAttributeMap, EventContentType.NODE_EDGE_SET, treeOrNetwork.getNodeEdgeSets(getParameters()));
 
 		getXMLWriter().writeEndElement();
@@ -903,7 +906,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		NeXMLMetaDataReceiver receiver = new NeXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider);
 
 		if (edge.hasSource()) {
-			getXMLWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart()); // At most one root can be contained in the adapter
+			getXMLWriter().writeStartElement(TAG_ROOTEDGE.getLocalPart());  // At most one root can be contained in the adapter
 		}
 		else {
 			getXMLWriter().writeStartElement(TAG_EDGE.getLocalPart());
@@ -912,7 +915,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 		getXMLWriter().writeAttribute(ATTR_TARGET.getLocalPart(), edge.getTargetID());
 		streamDataProvider.writeLabeledIDAttributes(edge);
 
-		if (edge.getLength() != Double.NaN) {
+		if (!Double.isNaN(edge.getLength())) {
 			getXMLWriter().writeAttribute(ATTR_LENGTH.getLocalPart(), Double.toString(edge.getLength()));
 		}
 
