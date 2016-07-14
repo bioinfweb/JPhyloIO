@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
@@ -53,11 +52,13 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private StringBuffer commentContent = new StringBuffer();
 	private boolean literalContentIsContinued = false;
 	
-	private EnumMap<EventContentType, Set<String>> eventTypeToSetElementsMap = new EnumMap<EventContentType, Set<String>>(EventContentType.class);
+	private Map<String, EnumMap<EventContentType, Set<String>>> setIDToSetElementsMap = new HashMap<String, EnumMap<EventContentType,Set<String>>>();
 	
 	private boolean hasOTUList = true;
 	private boolean writeUndefinedOTU = false;
 	private boolean writeUndefinedOtuList = false;
+	private String undefinedOTUID;
+	private String undefinedOTUsID;
 	
 	private NeXMLWriterAlignmentInformation currentAlignmentInfo;
 	private Map<String, NeXMLWriterAlignmentInformation> idToAlignmentInfo = new HashMap<String, NeXMLWriterAlignmentInformation>();
@@ -154,12 +155,12 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	public void setLiteralContentIsContinued(boolean literalContentIsContinued) {
 		this.literalContentIsContinued = literalContentIsContinued;
 	}
-
-
-	public EnumMap<EventContentType, Set<String>> getEventTypeToSetElementsMap() {
-		return eventTypeToSetElementsMap;
-	}
 	
+
+	public Map<String, EnumMap<EventContentType, Set<String>>> getSetIDToSetElementsMap() {
+		return setIDToSetElementsMap;
+	}
+
 
 	public NeXMLWriterAlignmentInformation getCurrentAlignmentInfo() {
 		return currentAlignmentInfo;
@@ -216,6 +217,26 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	}
 	
 	
+	public String getUndefinedOTUID() {
+		return undefinedOTUID;
+	}
+
+
+	public void setUndefinedOTUID(String undefinedOTUID) {
+		this.undefinedOTUID = undefinedOTUID;
+	}
+
+
+	public String getUndefinedOTUsID() {
+		return undefinedOTUsID;
+	}
+
+
+	public void setUndefinedOTUsID(String undefinedOTUsID) {
+		this.undefinedOTUsID = undefinedOTUsID;
+	}
+
+
 	public String createNewID(String prefix) {
 		String id;
 		
@@ -260,11 +281,11 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 			}
 		}
 		else if (forceOTULink) {
-			if (linkAttribute.equals(TAG_OTUS)) {				
-				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTUS_ID);			
+			if (linkAttribute.equals(TAG_OTUS)) {
+				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), getUndefinedOTUsID());			
 			}
-			else if (linkAttribute.equals(TAG_OTU)) {			
-				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), UndefinedOTUListDataAdapter.UNDEFINED_OTU_ID);
+			else if (linkAttribute.equals(TAG_OTU)) {
+				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), getUndefinedOTUID());
 			}
 		}
 	}

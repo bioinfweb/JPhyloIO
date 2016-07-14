@@ -30,14 +30,14 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 /**
- * Receiver that writes sequence meta data but ignores other events that were processed previously. 
+ * Receiver that writes meta data but ignores other events that were processed previously. 
  * 
  * @author Sarah Wiechers
  */
-public class NeXMLSequenceMetaDataReceiver extends NeXMLMetaDataReceiver {
+public class NeXMLOnlyWriteMetaDataReceiver extends NeXMLMetaDataReceiver {
 
 	
-	public NeXMLSequenceMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
+	public NeXMLOnlyWriteMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
 			NeXMLWriterStreamDataProvider streamDataProvider) {
 		super(writer, parameterMap, streamDataProvider);
 	}

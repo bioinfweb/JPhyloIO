@@ -35,17 +35,22 @@ import java.util.Iterator;
 
 
 public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLConstants {
-	private LabeledIDEvent undefinedOTU = new LabeledIDEvent(EventContentType.OTU, UNDEFINED_OTU_ID, UNDEFINED_OTU_LABEL);
+	private String undefinedOTUsID;
+	private String undefinedOTUID;	
+	private LabeledIDEvent undefinedOTU = new LabeledIDEvent(EventContentType.OTU, undefinedOTUID, UNDEFINED_OTU_LABEL);
 
 
-	public UndefinedOTUListDataAdapter() {
+	public UndefinedOTUListDataAdapter(String undefinedOTUsID, String undefinedOTUID) {
 		super();
+		
+		this.undefinedOTUsID = undefinedOTUsID;
+		this.undefinedOTUID = undefinedOTUID;
 	}
 
 
 	@Override
 	public LabeledIDEvent getObjectStartEvent(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException {
-		if (id.equals(UNDEFINED_OTU_ID)) {
+		if (id.equals(undefinedOTUID)) {
 			return undefinedOTU;
 		}
 		else {
@@ -62,7 +67,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 
 	@Override
 	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
-		return Arrays.asList(new String[]{UNDEFINED_OTU_ID}).iterator();
+		return Arrays.asList(new String[]{undefinedOTUID}).iterator();
 	}
 
 
@@ -81,7 +86,7 @@ public class UndefinedOTUListDataAdapter implements OTUListDataAdapter, NeXMLCon
 
 	@Override
 	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
-		return new LabeledIDEvent(EventContentType.OTU_LIST, UNDEFINED_OTUS_ID, UNDEFINED_OTUS_LABEL);
+		return new LabeledIDEvent(EventContentType.OTU_LIST, undefinedOTUsID, UNDEFINED_OTUS_LABEL);
 	}
 
 	

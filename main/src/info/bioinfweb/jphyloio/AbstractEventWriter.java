@@ -407,16 +407,22 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			applicationInfo.append(parameters.getString(ReadWriteParameterMap.KEY_APPLICATION_NAME));			
 			applicationInfo.append(" ");
 			
-			if (parameters.getString(ReadWriteParameterMap.KEY_APPLICATION_VERSION) != null) {			
-				applicationInfo.append(parameters.getString(ReadWriteParameterMap.KEY_APPLICATION_VERSION));
+			if (parameters.getObject(ReadWriteParameterMap.KEY_APPLICATION_VERSION, null) != null) {
+				applicationInfo.append(parameters.getObject(ReadWriteParameterMap.KEY_APPLICATION_VERSION, null).toString());
 				applicationInfo.append(" ");
-			}			
+			}
+			
+			if (parameters.getString(ReadWriteParameterMap.KEY_APPLICATION_URL) != null) {
+				applicationInfo.append("<");
+				applicationInfo.append(parameters.getString(ReadWriteParameterMap.KEY_APPLICATION_URL));
+				applicationInfo.append("> ");
+			}
 		}
 		else {
 			applicationInfo.append("an application ");
 		}
 		
-		applicationInfo.append("using " + JPhyloIO.getInstance().getLibraryNameAndVersion() + ". <" + JPhyloIO.getInstance().getProjectURL().toString() + ">");
+		applicationInfo.append("using " + JPhyloIO.getInstance().getLibraryNameAndVersion() + " <" + JPhyloIO.getInstance().getProjectURL().toString() + "> .");
 		
 		return applicationInfo.toString();
 	}
