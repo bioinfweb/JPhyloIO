@@ -273,7 +273,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 
 		if (streamDataProvider.isWriteUndefinedOtuList()) {
 			streamDataProvider.setUndefinedOTUID(streamDataProvider.createNewID(UNDEFINED_OTU_ID_PREFIX));
-			streamDataProvider.setUndefinedOTUsID(streamDataProvider.createNewID(UNDEFINED_OTUS_ID_PREFIX));
+			streamDataProvider.setUndefinedOTUsID(streamDataProvider.createNewID(UNDEFINED_OTUS_ID_PREFIX)); //TODO clear after this document was written
 			UndefinedOTUListDataAdapter undefinedOTUs = new UndefinedOTUListDataAdapter(streamDataProvider.getUndefinedOTUsID(), streamDataProvider.getUndefinedOTUID());
 			writeOTUSTag(undefinedOTUs);
 		}

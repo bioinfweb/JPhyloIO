@@ -90,7 +90,7 @@ public class NeXMLIgnoreCertainMetadataReceiver extends NeXMLPredicateMetaReceiv
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		if (!isUnderPredicate()) {
-			if (event.getRel().getURI() != null) {				
+			if (event.getRel().getURI() != null) {
 				setUnderPredicate(getPredicates().contains(event.getRel().getURI()));
 			}
 		}
@@ -98,7 +98,9 @@ public class NeXMLIgnoreCertainMetadataReceiver extends NeXMLPredicateMetaReceiv
 		if (isUnderPredicate()) {
 			changeMetaLevel(1);
 			if (writePredicateMetadata) {
-				super.handleResourceMetaStart(event);
+				if (getMetaLevel() != 1) {  // Do not write resource meta on top level
+					super.handleResourceMetaStart(event);
+				}
 			}
 		}
 		else if (!isUnderPredicate() && !writePredicateMetadata) {
@@ -111,15 +113,17 @@ public class NeXMLIgnoreCertainMetadataReceiver extends NeXMLPredicateMetaReceiv
 	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
 		if ((isUnderPredicate() && writePredicateMetadata) || (!isUnderPredicate() && !writePredicateMetadata)) {
 			super.handleComment(event);
-		}		
+		}
 	}
 
 
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if ((isUnderPredicate() && writePredicateMetadata) || (!isUnderPredicate() && !writePredicateMetadata)) {			
-			super.handleMetaEndEvent(event);
-		}		
+		if ((isUnderPredicate() && writePredicateMetadata) || (!isUnderPredicate() && !writePredicateMetadata)) {
+			if (getMetaLevel() != 1) {  // Do not write end of resource meta on top level
+				super.handleMetaEndEvent(event);
+			}
+		}
 		
 		if (isUnderPredicate()) {
 			changeMetaLevel(-1);
