@@ -22,23 +22,31 @@ package info.bioinfweb.jphyloio.utils;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 
 
-public class DataAdapterUtils {
+
+public class JPhyloIOWritingUtils {
 	private static List<String> createTokenList(int maxTokenCount) {
 		return new ArrayList<String>(
 				Math.min(ReadWriteConstants.DEFAULT_MAX_TOKENS_TO_READ, maxTokenCount));
 	}
 	
 	
-	public static void writeCharSequencePartContent(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
-			long endColumn, CharSequence source) throws IOException, IllegalArgumentException {
+	public static void writeCharSequencePartContent(JPhyloIOEventReceiver receiver, long startColumn, long endColumn, 
+			CharSequence source) throws IOException, IllegalArgumentException {
 		
 		startColumn = Math.max(0, startColumn);
 		endColumn = Math.min(source.length(), endColumn);
@@ -47,8 +55,8 @@ public class DataAdapterUtils {
 	}
 	
 	
-	public static void writeListSequencePartContent(JPhyloIOEventReceiver receiver, String sequenceID, long startColumn, 
-			long endColumn, List<?> source) throws IOException, IllegalArgumentException {
+	public static void writeListSequencePartContent(JPhyloIOEventReceiver receiver, long startColumn,	long endColumn, 
+			List<?> source) throws IOException, IllegalArgumentException {
 		
 		startColumn = Math.max(0, startColumn);
 		endColumn = Math.min(source.size(), endColumn);
@@ -67,5 +75,31 @@ public class DataAdapterUtils {
 		if (tokenCount > 0) {
 			receiver.add(new SequenceTokensEvent(tokens));
 		}
+	}
+	
+	
+	public static void writeSimpleLiteralMetadata(JPhyloIOEventReceiver receiver, String id, String label, 
+			URIOrStringIdentifier predicate, URIOrStringIdentifier originalType, Object objectValue, String stringRepresentation)
+			throws IOException {
+		
+		receiver.add(new LiteralMetadataEvent(id, label, predicate, originalType, LiteralContentSequenceType.SIMPLE));
+		receiver.add(new LiteralMetadataContentEvent(objectValue, stringRepresentation));
+		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+	}
+	
+	
+	public static void writeSimpleLiteralMetadata(JPhyloIOEventReceiver receiver, String id, String label, 
+			QName predicate, QName originalType, Object objectValue, String stringRepresentation)
+			throws IOException {
+		
+		writeSimpleLiteralMetadata(receiver, id, label, new URIOrStringIdentifier(null, predicate), 
+				new URIOrStringIdentifier(null, originalType), objectValue, stringRepresentation);
+	}
+	
+	
+	public static void writeSimpleLiteralMetadata(JPhyloIOEventReceiver receiver, String id, String label, 
+			QName predicate, QName originalType, Object objectValue) throws IOException {
+		
+		writeSimpleLiteralMetadata(receiver, id, label, predicate, originalType, objectValue, null);
 	}
 }

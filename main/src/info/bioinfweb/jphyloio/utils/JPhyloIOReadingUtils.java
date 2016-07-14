@@ -27,7 +27,7 @@ import java.io.IOException;
 
 
 
-public class JPhyloIOUtils {
+public class JPhyloIOReadingUtils {
 	/**
    * Reads all events from the reader until one more end element than start elements is found.
    * 
