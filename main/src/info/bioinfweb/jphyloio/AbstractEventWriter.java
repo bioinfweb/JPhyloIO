@@ -422,7 +422,11 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 			applicationInfo.append("an application ");
 		}
 		
-		applicationInfo.append("using " + JPhyloIO.getInstance().getLibraryNameAndVersion() + " <" + JPhyloIO.getInstance().getProjectURL().toString() + "> .");
+		applicationInfo.append("using ");
+		applicationInfo.append(JPhyloIO.getInstance().getLibraryNameAndVersion());
+		applicationInfo.append(" <"); 
+		applicationInfo.append(JPhyloIO.getInstance().getProjectURL().toString());
+		applicationInfo.append(">.");
 		
 		return applicationInfo.toString();
 	}
