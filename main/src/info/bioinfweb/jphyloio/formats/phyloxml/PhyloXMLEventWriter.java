@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLMetaDataReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.utils.TopoplogicalNodeInfo;
@@ -60,11 +61,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 //		TODO write namespaces collected in document
 
 		writePhylogenyTags();
-
-		//TODO Use receiver to log ignored metadata
-//		if (getDocument().getMetadataAdapter() != null) {
-//			getLogger().addWarning("The document contained document meta data which could not be written since the PhyloXML format does not support this.");
-//		}
+		
+		getDocument().writeMetadata(getParameters(), receiver); //TODO only write custom XML here, warning if other metadata is encountered
 		
 		getXMLWriter().writeEndElement();
 	}

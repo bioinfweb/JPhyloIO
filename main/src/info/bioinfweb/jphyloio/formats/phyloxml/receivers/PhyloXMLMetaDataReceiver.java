@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.phyloxml;
+package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -27,6 +27,8 @@ import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
+import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 
 import java.io.IOException;
 
