@@ -62,14 +62,14 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	
 	
 	public static void handleLiteralMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataEvent event) throws XMLStreamException, JPhyloIOWriterException {
-		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();
-		String metaType = streamDataProvider.getNeXMLPrefix(streamDataProvider.getXMLStreamWriter()) + ":" + TYPE_LITERAL_META;
+		XMLStreamWriter writer = streamDataProvider.getWriter();
+		String metaType = streamDataProvider.getNeXMLPrefix(streamDataProvider.getWriter()) + ":" + TYPE_LITERAL_META;
 		QName predicate;
 		
 		writer.writeStartElement(TAG_META.getLocalPart());
 		streamDataProvider.writeLabeledIDAttributes(event, null);
 		
-		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getXMLStreamWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
+		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
 				ATTR_XSI_TYPE.getLocalPart(), metaType);
 		
 		if (event.getPredicate().getURI() != null) { //TODO add entry to readWriteParameterMap to allow not writing metadata without QName predicate at all
@@ -108,24 +108,24 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			
 			if (event.getPredicate().getURI() != null) {
 				resourceIdentifier = event.getPredicate().getURI();
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 			else {
 				resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 			
 			if (event.getPredicate().getStringRepresentation() != null)  {				
 				resourceIdentifier = ReadWriteConstants.ATTRIBUTE_STRING_KEY;
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 			
 			if ((event.getOriginalType() != null) && (event.getOriginalType().getURI() != null)) {
 				resourceIdentifier = event.getOriginalType().getURI();
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 		}
@@ -133,7 +133,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	
 
 	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameters, LiteralMetadataContentEvent event) throws XMLStreamException, JPhyloIOWriterException {		
-		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();
+		XMLStreamWriter writer = streamDataProvider.getWriter();
 		
 		switch (streamDataProvider.getCurrentLiteralMetaSequenceType()) {
 			case SIMPLE:
@@ -151,7 +151,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 						}
 						else {
 							try {
-								streamDataProvider.getXMLStreamWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
+								streamDataProvider.getWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
 							}
 							catch (ClassCastException e) {
 								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
@@ -210,7 +210,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				StartElement element = event.getXMLEvent().asStartElement();
 				resourceIdentifier = element.getName();
 				
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 				
 				@SuppressWarnings("unchecked")
@@ -219,7 +219,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 					Attribute attribute = attributesIterator.next();
 					resourceIdentifier = attribute.getName();
 					
-					streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+					streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 							resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 				}				
 			}
@@ -227,21 +227,21 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		
 		if ((event.getObjectValue() != null) && (event.getObjectValue() instanceof QName)) {
 			QName objectValue = (QName)event.getObjectValue();
-			streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), objectValue.getPrefix(), 
+			streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), objectValue.getPrefix(), 
 					objectValue.getNamespaceURI()), objectValue.getNamespaceURI());
 		}
 	}
 	
 	
 	public static void handleResourceMeta(NeXMLWriterStreamDataProvider streamDataProvider, ResourceMetadataEvent event) throws ClassCastException, XMLStreamException, JPhyloIOWriterException {
-		XMLStreamWriter writer = streamDataProvider.getXMLStreamWriter();		
-		String metaType = streamDataProvider.getNeXMLPrefix(streamDataProvider.getXMLStreamWriter()) + ":" + TYPE_RESOURCE_META;
+		XMLStreamWriter writer = streamDataProvider.getWriter();		
+		String metaType = streamDataProvider.getNeXMLPrefix(streamDataProvider.getWriter()) + ":" + TYPE_RESOURCE_META;
 		QName predicate;
 		
 		writer.writeStartElement(TAG_META.getLocalPart());		
 		streamDataProvider.writeLabeledIDAttributes(event, event.getAbout());
 		
-		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getXMLStreamWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
+		writer.writeAttribute(XMLReadWriteUtils.getXSIPrefix(streamDataProvider.getWriter()), ATTR_XSI_TYPE.getNamespaceURI(), 
 				ATTR_XSI_TYPE.getLocalPart(), metaType);
 		
 		if (event.getRel().getURI() != null) {  //TODO add entry to readWriteParameterMap to allow not writing metadata without QName predicate at all
@@ -271,18 +271,18 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			
 			if (event.getRel().getURI() != null) {
 				resourceIdentifier = event.getRel().getURI();
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 			else {
 				resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());				
 			}
 			
 			if (event.getRel().getStringRepresentation() != null) {
 				resourceIdentifier = ReadWriteConstants.ATTRIBUTE_STRING_KEY;
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getXMLStreamWriter(), resourceIdentifier.getPrefix(), 
+				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			}
 		}
@@ -299,7 +299,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			streamDataProvider.setCurrentLiteralMetaSequenceType(null);
 		}		
 		
-		streamDataProvider.getXMLStreamWriter().writeEndElement();
+		streamDataProvider.getWriter().writeEndElement();
 	}
 	
 	
@@ -311,16 +311,16 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 		}
 		
 		if (!event.isContinuedInNextEvent()) {
-			streamDataProvider.getXMLStreamWriter().writeComment(streamDataProvider.getCommentContent().toString());
+			streamDataProvider.getWriter().writeComment(streamDataProvider.getCommentContent().toString());
 			streamDataProvider.getCommentContent().delete(0, streamDataProvider.getCommentContent().length());			
 		}
 	}
 	
 	
 	private static String obtainPrefix(NeXMLWriterStreamDataProvider streamDataProvider, String namespaceURI) throws XMLStreamException {
-		String prefix = streamDataProvider.getXMLStreamWriter().getPrefix(namespaceURI);
+		String prefix = streamDataProvider.getWriter().getPrefix(namespaceURI);
 		if (prefix == null) { //TODO throw exception? All namespaces should be bound to a prefix at this point
-			prefix = streamDataProvider.getNeXMLPrefix(streamDataProvider.getXMLStreamWriter());
+			prefix = streamDataProvider.getNeXMLPrefix(streamDataProvider.getWriter());
 		}
 		
 		return prefix;

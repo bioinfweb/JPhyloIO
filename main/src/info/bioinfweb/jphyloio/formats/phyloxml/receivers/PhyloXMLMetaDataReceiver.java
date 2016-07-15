@@ -27,7 +27,9 @@ import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 
 import java.io.IOException;
@@ -42,15 +44,22 @@ import javax.xml.stream.events.XMLEvent;
 
 
 public class PhyloXMLMetaDataReceiver extends BasicEventReceiver<XMLStreamWriter> implements PhyloXMLConstants {
+	private NeXMLWriterStreamDataProvider streamDataProvider;
+	
 	private PropertyOwner propertyOwner;
 	private LiteralContentSequenceType metaContentType;
 	
 	
-	public PhyloXMLMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner) {
+	public PhyloXMLMetaDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, PhyloXMLWriterStreamDataProvider streamDataProvider, PropertyOwner propertyOwner) {
 		super(writer, parameterMap);
 		this.propertyOwner = propertyOwner;
 	}
 	
+
+	public NeXMLWriterStreamDataProvider getStreamDataProvider() {
+		return streamDataProvider;
+	}
+
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
@@ -150,7 +159,16 @@ public class PhyloXMLMetaDataReceiver extends BasicEventReceiver<XMLStreamWriter
 
 	@Override
 	protected void handleComment(CommentEvent event) throws IOException, XMLStreamException {
-		// TODO Auto-generated method stub
+		String comment = event.getContent();
+		
+		if (!comment.isEmpty()) {
+			streamDataProvider.getCommentContent().append(comment);
+		}
+		
+		if (!event.isContinuedInNextEvent()) {
+			streamDataProvider.getWriter().writeComment(streamDataProvider.getCommentContent().toString());
+			streamDataProvider.getCommentContent().delete(0, streamDataProvider.getCommentContent().length());			
+		}
 	}
 	
 

@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -39,17 +40,12 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
-	private NeXMLEventWriter eventWriter;
-	private XMLStreamWriter writer;
-	
+public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<NeXMLEventWriter> implements NeXMLConstants {	
 	private Set<String> documentIDs = new HashSet<String>();
-	private Set<String> namespacePrefixes = new HashSet<String>();
-	private int idIndex = 0;	
+	private int idIndex = 0;
 	
 	private LiteralContentSequenceType currentLiteralMetaSequenceType;
-	private URIOrStringIdentifier currentLiteralMetaDatatype;
-	private StringBuffer commentContent = new StringBuffer();
+	private URIOrStringIdentifier currentLiteralMetaDatatype;	
 	private boolean literalContentIsContinued = false;
 	
 	private Map<String, EnumMap<EventContentType, Set<String>>> setIDToSetElementsMap = new HashMap<String, EnumMap<EventContentType,Set<String>>>();
@@ -66,25 +62,19 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	private NeXMLWriterTokenSetInformation currentTokenSetInfo;
 	
 	private String singleToken = null;
-	
-	
-	public NeXMLWriterStreamDataProvider(NeXMLEventWriter eventWriter, XMLStreamWriter writer) {
-		super();
-		this.eventWriter = eventWriter;
-		this.writer = writer;
+
+
+	public NeXMLWriterStreamDataProvider(NeXMLEventWriter eventWriter) {
+		super(eventWriter);
 	}
 
 
-	public XMLStreamWriter getXMLStreamWriter() {
-		return writer;
+	@Override
+	public NeXMLEventWriter getEventWriter() { //TODO is this really necessary?
+		return (NeXMLEventWriter)super.getEventWriter();
 	}
 
 
-	public NeXMLEventWriter getEventWriter() {
-		return eventWriter;
-	}
-
-	
 	public Set<String> getDocumentIDs() {
 		return documentIDs;
 	}
@@ -134,17 +124,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 	public void setCurrentLiteralMetaDatatype(URIOrStringIdentifier currentLiteralMetaDatatype) {
 		this.currentLiteralMetaDatatype = currentLiteralMetaDatatype;
-	}
-
-
-	public Set<String> getNamespacePrefixes() {
-		return namespacePrefixes;
-	}
-
-
-	public StringBuffer getCommentContent() {
-		return commentContent;
-	}
+	}	
 
 
 	public boolean isLiteralContentContinued() {
@@ -255,14 +235,14 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 
 
 	public void writeLabeledIDAttributes(LabeledIDEvent event, String about) throws XMLStreamException, JPhyloIOWriterException {
-		getXMLStreamWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
+		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
 		
 		if (about != null) {
-			getXMLStreamWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + about);
+			getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + about);
 		}
 		
 		if (event.hasLabel()) {
-			getXMLStreamWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
+			getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
 		}
 	}
 	
@@ -274,7 +254,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 				if (!getDocumentIDs().contains(event.getLinkedID())) {
 					throw new InconsistentAdapterDataException("An element links to a non-existent OTU list or OTU.");
 				}
-				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
+				getWriter().writeAttribute(linkAttribute.getLocalPart(), event.getLinkedID());
 			}
 			else {
 				throw new InconsistentAdapterDataException("An element links to an OTU list or OTU though no OTU list exists in the document.");
@@ -282,10 +262,10 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 		}
 		else if (forceOTULink) {
 			if (linkAttribute.equals(TAG_OTUS)) {
-				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), getUndefinedOTUsID());			
+				getWriter().writeAttribute(linkAttribute.getLocalPart(), getUndefinedOTUsID());			
 			}
 			else if (linkAttribute.equals(TAG_OTU)) {
-				getXMLStreamWriter().writeAttribute(linkAttribute.getLocalPart(), getUndefinedOTUID());
+				getWriter().writeAttribute(linkAttribute.getLocalPart(), getUndefinedOTUID());
 			}
 		}
 	}
@@ -302,7 +282,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 	
 	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
 		if (!((namespace == null) || namespace.isEmpty())) {
-			if (getXMLStreamWriter().getPrefix(namespace) == null) {  // URI is not yet bound to a prefix
+			if (getWriter().getPrefix(namespace) == null) {  // URI is not yet bound to a prefix
 				int index = 1;
 				String nameSpacePrefix = prefix;
 				if (!getNamespacePrefixes().add(nameSpacePrefix)) {
@@ -312,7 +292,7 @@ public class NeXMLWriterStreamDataProvider implements NeXMLConstants {
 					} while (!getNamespacePrefixes().add(nameSpacePrefix));
 				}
 
-				getXMLStreamWriter().setPrefix(nameSpacePrefix, namespace);
+				getWriter().setPrefix(nameSpacePrefix, namespace);
 			}
 		}
 	}

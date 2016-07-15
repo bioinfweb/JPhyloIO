@@ -92,7 +92,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter implements NeXMLCon
 	
 	@Override
 	protected void doWriteDocument() throws IOException, XMLStreamException {
-		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this, getXMLWriter());
+		this.streamDataProvider = new NeXMLWriterStreamDataProvider(this);
 		
 		checkDocument(getDocument());
 		
