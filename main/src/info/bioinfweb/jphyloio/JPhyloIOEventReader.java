@@ -105,6 +105,15 @@ public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	 */
 	
 	/**
+	 * The returned object provides information on the start events fired by this reader until now. It allows
+	 * applications to determine information on the nesting of the current event.
+	 * 
+	 * @return the parent information object
+	 */
+	public ParentEventInformation getParentInformation();
+		
+
+	/**
 	 * Checks if another event could be parsed from the underlying document.
 	 * 
 	 * @return {@code true} if another event is waiting, {@code false} if the end of the underlying document was reached

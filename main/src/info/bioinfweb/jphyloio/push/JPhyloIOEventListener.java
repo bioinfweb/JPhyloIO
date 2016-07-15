@@ -37,9 +37,8 @@ public interface JPhyloIOEventListener {
 	 * be notified of these events. 
 	 * 
 	 * @param source the reader from which the event was fired 
-	 * @param parentEvents an object providing all parent events of the current event
 	 * @param event the event that was fired from the parsed document
 	 * @throws Exception any exception thrown by the implementation
 	 */
-	public void processEvent(JPhyloIOEventReader source, ParentEventInformation parentEvents, JPhyloIOEvent event) throws Exception;
+	public void processEvent(JPhyloIOEventReader source, JPhyloIOEvent event) throws Exception;
 }

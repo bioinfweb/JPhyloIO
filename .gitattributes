@@ -30,6 +30,7 @@ main/src/info/bioinfweb/jphyloio/JPhyloIOEventReader.java -text svneol=unset#tex
 main/src/info/bioinfweb/jphyloio/JPhyloIOEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/JPhyloIOFormatSpecificObject.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/LabelEditingReporter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/ParentEventInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/ReadWriteConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/ReadWriteParameterMap.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/ReaderStreamDataProvider.java -text svneol=unset#text/plain
@@ -311,7 +312,6 @@ main/src/info/bioinfweb/jphyloio/objecttranslation/implementations/package-info.
 main/src/info/bioinfweb/jphyloio/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/push/EventForwarder.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/push/JPhyloIOEventListener.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/push/ParentEventInformation.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/IDToNameManager.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/JPhyloIOEventFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/JPhyloIOReadingUtils.java -text svneol=unset#text/plain

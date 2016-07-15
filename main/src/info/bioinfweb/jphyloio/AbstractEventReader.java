@@ -31,6 +31,7 @@ import info.bioinfweb.commons.LongIDManager;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
 import info.bioinfweb.jphyloio.utils.SequenceTokensEventManager;
 
@@ -47,6 +48,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	private JPhyloIOEvent next = null;
 	private JPhyloIOEvent previous = null;
 	private JPhyloIOEvent lastNonComment = null;
+	private ParentEventInformation parentEventInformation = new ParentEventInformation();
 	private P streamDataProvider;  // Must not be set to anything here.
 	private Queue<JPhyloIOEvent> upcomingEvents = new LinkedList<JPhyloIOEvent>();
 	private Stack<Collection<JPhyloIOEvent>> eventCollections = new Stack<Collection<JPhyloIOEvent>>();
@@ -68,6 +70,18 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	
 	
 	/**
+	 * The returned object provides information on the start events fired by this reader until now. It allows
+	 * applications to determine information on the nesting of the current event.
+	 * 
+	 * @return the parent information object
+	 */
+	@Override
+	public ParentEventInformation getParentInformation() {
+		return parentEventInformation;
+	}
+
+
+	/**
 	 * This method is called in the constructor of {@link AbstractEventReader} to initialize the stream
 	 * data provider that will be returned by {@link #getStreamDataProvider()}. Inherit classes that use
 	 * their own stream data provider implementation should overwrite this method.
@@ -76,6 +90,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	 * 
 	 * @return the stream data provider to be used with this instance
 	 */
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	protected P createStreamDataProvider() {
 		return (P)new ReaderStreamDataProvider(this);  // Cannot be created generic, since this implementation is used by different inherited classes.
 	}
@@ -225,6 +240,13 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 			throw new NoSuchElementException("The end of the document was already reached.");
 		}
 		else {
+			if ((previous != null) && previous.getType().getTopologyType().equals(EventTopologyType.START)) {
+				parentEventInformation.add(previous);
+			}
+			if ((next != null) && next.getType().getTopologyType().equals(EventTopologyType.END)) {
+				parentEventInformation.pop();
+			}
+			
 			previous = next;  // previous needs to be set before readNextEvent() is called, because it could be accessed in there.
 			if (!(previous instanceof CommentEvent)) {  // Also works for possible future subelements of CommentEvent
 				lastNonComment = previous;
