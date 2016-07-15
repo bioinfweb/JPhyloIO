@@ -78,4 +78,26 @@ public class ParentEventInformation {
 	public JPhyloIOEvent getParentFromTop(int index) {
 		return parentEvents.get(index);
 	}
+	
+	
+	/**
+	 * Checks whether the current parent events have the specified content type(s).
+	 * 
+	 * @param types the expected content types of the parent events (The first parameter must match the direct parent, 
+	 *        the second the grandparent and so on.) 
+	 * @return {@code true} the lowest elements in the sequence of parent events have the specified content types in the
+	 *         specified order or {@code false} otherwise 
+	 * @throws NullPointerException if at least one specified content type is {@code null} 
+	 */
+	public boolean isParentSequence(EventContentType... types) {
+		boolean result = size() >= types.length;
+		if (result) {
+			for (int i = 0; i < types.length; i++) {
+				if (!types[i].equals(getParentFromBottom(i).getType().getContentType())) {
+					return false;
+				}
+			}
+		}
+		return result;
+	}
 }
