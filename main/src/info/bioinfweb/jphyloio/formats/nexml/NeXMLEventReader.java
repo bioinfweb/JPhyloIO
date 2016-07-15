@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.collections.NonStoringCollection;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -254,14 +255,16 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		   			}
 		   		}
 					
-					try {
-						streamDataProvider.getTokenSets().get(streamDataProvider.getElementTypeToCurrentIDMap().get(EventContentType.TOKEN_SET_DEFINITION))
-								.getSymbolTranslationMap().put(Integer.parseInt(symbol), translation);
+					if (!symbol.equals("" + SequenceUtils.GAP_CHAR) && !symbol.equals("" + SequenceUtils.MISSING_DATA_CHAR)) {
+						try {
+							streamDataProvider.getTokenSets().get(streamDataProvider.getElementTypeToCurrentIDMap().get(EventContentType.TOKEN_SET_DEFINITION))
+									.getSymbolTranslationMap().put(Integer.parseInt(symbol), translation);
+						}
+						catch (NumberFormatException e) {
+							throw new JPhyloIOReaderException("The symbol \"" + symbol + 
+									"\" of a standard data token definition must be of type integer.", event.getLocation());
+						}
 					}
-					catch (NumberFormatException e) {
-						throw new JPhyloIOReaderException("The symbol \"" + symbol + 
-								"\" of a standard data token definition must be of type Integer.", event.getLocation());
-					}	  			
 				}				
 				
 	  		if (symbol != null) {

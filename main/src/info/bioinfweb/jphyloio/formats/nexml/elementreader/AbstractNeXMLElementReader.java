@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.nexml.elementreader;
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.collections.PackedObjectArrayList;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -131,14 +132,17 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 
 			if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) && !translateTokens.equals(TokenTranslationStrategy.NEVER)) { //standard data
 				for (int i = 0; i < tokenList.size(); i++) {	 				
-		 			String currentStates = streamDataProvider.getCharIDToStatesMap().get(streamDataProvider.getCharIDs().get(i));
-		 			try {
-		 				int standardToken = Integer.parseInt(tokenList.get(i));
-		 				tokenList.set(i, streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(standardToken));
-		 			}
-		 			catch (NumberFormatException e) {
-		 				throw new JPhyloIOReaderException("The symbol of a standard data token definition must be of type Integer.", streamDataProvider.getXMLReader().peek().getLocation());
-		 			}	 	 			
+					if (!tokenList.get(i).equals("" + SequenceUtils.GAP_CHAR) && !tokenList.get(i).equals("" + SequenceUtils.MISSING_DATA_CHAR)) {
+			 			try {
+			 				int standardToken = Integer.parseInt(tokenList.get(i));
+			 				tokenList.set(i, streamDataProvider.getTokenSets().get(streamDataProvider.getCharIDToStatesMap().get(
+			 						streamDataProvider.getCharIDs().get(i))).getSymbolTranslationMap().get(standardToken));
+			 			}
+			 			catch (NumberFormatException e) {
+			 				throw new JPhyloIOReaderException("The symbol \"" + tokenList.get(i) + 
+			 						"\" of a standard data token definition must be of type Integer.", streamDataProvider.getXMLReader().peek().getLocation());
+			 			}
+					}
 				}		 		
 			}
 		}
