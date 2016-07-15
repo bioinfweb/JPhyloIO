@@ -256,10 +256,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					
 					try {
 						streamDataProvider.getTokenSets().get(streamDataProvider.getElementTypeToCurrentIDMap().get(EventContentType.TOKEN_SET_DEFINITION))
-							.getSymbolTranslationMap().put(Integer.parseInt(symbol), translation);
+								.getSymbolTranslationMap().put(Integer.parseInt(symbol), translation);
 					}
 					catch (NumberFormatException e) {
-						throw new JPhyloIOReaderException("The symbol of a standard data token definition must be of type Integer.", event.getLocation());
+						throw new JPhyloIOReaderException("The symbol \"" + symbol + 
+								"\" of a standard data token definition must be of type Integer.", event.getLocation());
 					}	  			
 				}				
 				
