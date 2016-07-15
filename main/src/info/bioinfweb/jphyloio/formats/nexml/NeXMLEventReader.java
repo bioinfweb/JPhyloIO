@@ -494,32 +494,26 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				CharacterStateSetType setType = null;
 				
 				if (tokenSetType.equals(TYPE_DNA_SEQS) || tokenSetType.equals(TYPE_DNA_CELLS)) {
-					info.label = ALIGNMENT_TYPE_DNA;
 					setType = CharacterStateSetType.DNA; //standard IUPAC nucleotide symbols
 					streamDataProvider.setAllowLongTokens(false);
 				}
 				else if (tokenSetType.equals(TYPE_RNA_SEQS) || tokenSetType.equals(TYPE_RNA_CELLS)) {
-					info.label = ALIGNMENT_TYPE_RNA;
 					setType = CharacterStateSetType.RNA;  //standard IUPAC nucleotide symbols
 					streamDataProvider.setAllowLongTokens(false);
 				}
 				else if (tokenSetType.equals(TYPE_PROTEIN_SEQS) || tokenSetType.equals(TYPE_PROTEIN_CELLS)) {
-					info.label = ALIGNMENT_TYPE_AA;
 					setType = CharacterStateSetType.AMINO_ACID;  //standard IUPAC amino acid symbols
 					streamDataProvider.setAllowLongTokens(false);
 				}
 				else if (tokenSetType.equals(TYPE_CONTIN_SEQ) || tokenSetType.equals(TYPE_CONTIN_CELLS)) {
-					info.label = ALIGNMENT_TYPE_CONTINUOUS;
 					setType = CharacterStateSetType.CONTINUOUS; 
 					streamDataProvider.setAllowLongTokens(true);
 				}
 				else if (tokenSetType.equals(TYPE_RESTRICTION_SEQS) || tokenSetType.equals(TYPE_RESTRICTION_CELLS)) {
-					info.label = ALIGNMENT_TYPE_RESTRICTION;
 					setType = CharacterStateSetType.DISCRETE; 
 					streamDataProvider.setAllowLongTokens(false);
 				}
 				else { // type of character block is StandardSeqs or StandardCells
-					info.label = ALIGNMENT_TYPE_STANDARD;
 					setType = CharacterStateSetType.DISCRETE;
 					streamDataProvider.setAllowLongTokens(true);
 				}
