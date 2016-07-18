@@ -19,19 +19,17 @@
 package info.bioinfweb.jphyloio.formats.nexus;
 
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Iterator;
-
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.dataadapters.ElementDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.AbstractNexusEventReceiver;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 
 

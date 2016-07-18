@@ -19,25 +19,14 @@
 package info.bioinfweb.jphyloio.formats.mega;
 
 
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.namespace.QName;
-
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
@@ -52,6 +41,17 @@ import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.utils.IDToNameManager;
+
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.namespace.QName;
 
 
 

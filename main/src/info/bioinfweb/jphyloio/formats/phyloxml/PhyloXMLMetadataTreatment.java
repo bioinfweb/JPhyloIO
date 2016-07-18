@@ -18,18 +18,14 @@
  */
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
-import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
-
-public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<PhyloXMLEventWriter> {
-
+public enum PhyloXMLMetadataTreatment {
+	SEQUENTIAL,
 	
-	public PhyloXMLWriterStreamDataProvider(PhyloXMLEventWriter eventWriter) {
-		super(eventWriter);
-	}
+	TOP_LEVEL_WITH_CHILDREN,
 	
+	TOP_LEVEL_WITHOUT_CHILDREN,
 	
-	@Override
-	public PhyloXMLEventWriter getEventWriter() { //TODO is this still necessary (generics)?
-		return (PhyloXMLEventWriter)super.getEventWriter();
-	}
+	ONLY_LEAFS,
+	
+	NONE;
 }

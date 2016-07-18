@@ -500,15 +500,15 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				CharacterStateSetType setType = null;
 				
 				if (tokenSetType.equals(TYPE_DNA_SEQS) || tokenSetType.equals(TYPE_DNA_CELLS)) {
-					setType = CharacterStateSetType.DNA; //standard IUPAC nucleotide symbols
+					setType = CharacterStateSetType.DNA;  // Standard IUPAC nucleotide symbols
 					streamDataProvider.setAllowLongTokens(false);
 				}
 				else if (tokenSetType.equals(TYPE_RNA_SEQS) || tokenSetType.equals(TYPE_RNA_CELLS)) {
-					setType = CharacterStateSetType.RNA;  //standard IUPAC nucleotide symbols
+					setType = CharacterStateSetType.RNA;  // Standard IUPAC nucleotide symbols
 					streamDataProvider.setAllowLongTokens(false);
 				}
 				else if (tokenSetType.equals(TYPE_PROTEIN_SEQS) || tokenSetType.equals(TYPE_PROTEIN_CELLS)) {
-					setType = CharacterStateSetType.AMINO_ACID;  //standard IUPAC amino acid symbols
+					setType = CharacterStateSetType.AMINO_ACID;  // Standard IUPAC amino acid symbols
 					streamDataProvider.setAllowLongTokens(false);
 				}
 				else if (tokenSetType.equals(TYPE_CONTIN_SEQ) || tokenSetType.equals(TYPE_CONTIN_CELLS)) {
@@ -519,7 +519,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					setType = CharacterStateSetType.DISCRETE; 
 					streamDataProvider.setAllowLongTokens(false);
 				}
-				else { // type of character block is StandardSeqs or StandardCells
+				else {  // Type of character block is StandardSeqs or StandardCells
 					setType = CharacterStateSetType.DISCRETE;
 					streamDataProvider.setAllowLongTokens(true);
 				}

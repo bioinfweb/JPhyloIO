@@ -23,17 +23,21 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
 
-public class XMLReadWriteUtils {
+public class XMLReadWriteUtils {	
+	public static final String XSI_DEFAULT_PRE = "xsi";
+	public static final String XSD_DEFAULT_PRE = "xsd";	
+	public static final String RDF_DEFAULT_PRE = "rdf";
+	
 	public static final String NAMESPACE_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
 	
-	public static final String XSI_DEFAULT_PRE = "xsi";
-	public static final String XSD_DEFAULT_PRE = "xsd";
-	public static final String RDF_DEFAULT_PRE = "rdf";
+	public static final QName ATTRIBUTE_RDF_PROPERTY = new QName(NAMESPACE_RDF, "property");
+	public static final QName ATTRIBUTE_RDF_DATATYPE = new QName(NAMESPACE_RDF, "datatype");
 	
   public static final String DEFAULT_NAMESPACE_PREFIX = "p";
 	

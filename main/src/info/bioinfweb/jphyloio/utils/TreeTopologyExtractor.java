@@ -38,8 +38,7 @@ public class TreeTopologyExtractor {
 	
 
 	public TreeTopologyExtractor(TreeNetworkDataAdapter adapter, ReadWriteParameterMap parameters) {
-		super();		
-		//TODO Should an exception be thrown, if adapter.isTree(parameters) return false?
+		super();
 		fillTopologicalMap(adapter, parameters);
 	}
 	
@@ -74,7 +73,7 @@ public class TreeTopologyExtractor {
 				}
 			}
 			else {  // Edge is network edge
-				networkEdges.add(edge.getID()); //TODO what to do with network edges?
+				networkEdges.add(edge.getID());
 			}			
 		}		
 		
@@ -98,7 +97,7 @@ public class TreeTopologyExtractor {
 	}
 
 
-	public Set<String> getNetworkEdges() {
+	public Set<String> getNetworkEdgeIDs() {
 		return networkEdges;
 	}
 }

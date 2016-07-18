@@ -45,8 +45,7 @@ public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<N
 	private int idIndex = 0;
 	
 	private LiteralContentSequenceType currentLiteralMetaSequenceType;
-	private URIOrStringIdentifier currentLiteralMetaDatatype;	
-	private boolean literalContentIsContinued = false;
+	private URIOrStringIdentifier currentLiteralMetaDatatype;
 	
 	private Map<String, EnumMap<EventContentType, Set<String>>> setIDToSetElementsMap = new HashMap<String, EnumMap<EventContentType,Set<String>>>();
 	
@@ -124,16 +123,6 @@ public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<N
 
 	public void setCurrentLiteralMetaDatatype(URIOrStringIdentifier currentLiteralMetaDatatype) {
 		this.currentLiteralMetaDatatype = currentLiteralMetaDatatype;
-	}	
-
-
-	public boolean isLiteralContentContinued() {
-		return literalContentIsContinued;
-	}
-
-
-	public void setLiteralContentIsContinued(boolean literalContentIsContinued) {
-		this.literalContentIsContinued = literalContentIsContinued;
 	}
 	
 
@@ -277,23 +266,5 @@ public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<N
 			prefix = NeXMLConstants.NEXML_DEFAULT_PRE;
 		}
 		return prefix;
-	}
-	
-	
-	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
-		if (!((namespace == null) || namespace.isEmpty())) {
-			if (getWriter().getPrefix(namespace) == null) {  // URI is not yet bound to a prefix
-				int index = 1;
-				String nameSpacePrefix = prefix;
-				if (!getNamespacePrefixes().add(nameSpacePrefix)) {
-					do {
-						nameSpacePrefix = prefix + index;
-						index++;
-					} while (!getNamespacePrefixes().add(nameSpacePrefix));
-				}
-
-				getWriter().setPrefix(nameSpacePrefix, namespace);
-			}
-		}
 	}
 }

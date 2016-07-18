@@ -151,7 +151,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 						}
 						else {
 							try {
-								streamDataProvider.getWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
+								writer.writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
 							}
 							catch (ClassCastException e) {
 								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "

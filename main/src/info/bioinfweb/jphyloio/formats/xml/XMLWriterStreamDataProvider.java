@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
@@ -31,6 +32,7 @@ import javax.xml.stream.XMLStreamWriter;
 public class XMLWriterStreamDataProvider<R extends AbstractXMLEventWriter<? extends XMLWriterStreamDataProvider<R>>> extends WriterStreamDataProvider<R> {
 	private Set<String> namespacePrefixes = new HashSet<String>();	
 	private StringBuffer commentContent = new StringBuffer();
+	private boolean literalContentIsContinued = false;
 	
 	
 	public XMLWriterStreamDataProvider(R eventWriter) {
@@ -50,5 +52,33 @@ public class XMLWriterStreamDataProvider<R extends AbstractXMLEventWriter<? exte
 
 	public StringBuffer getCommentContent() {
 		return commentContent;
+	}	
+
+
+	public boolean isLiteralContentContinued() {
+		return literalContentIsContinued;
+	}
+
+
+	public void setLiteralContentIsContinued(boolean literalContentIsContinued) {
+		this.literalContentIsContinued = literalContentIsContinued;
+	}
+	
+	
+	public void setNamespacePrefix(String prefix, String namespace) throws XMLStreamException {
+		if (!((namespace == null) || namespace.isEmpty())) {
+			if (getWriter().getPrefix(namespace) == null) {  // URI is not yet bound to a prefix
+				int index = 1;
+				String nameSpacePrefix = prefix;
+				if (!getNamespacePrefixes().add(nameSpacePrefix)) {
+					do {
+						nameSpacePrefix = prefix + index;
+						index++;
+					} while (!getNamespacePrefixes().add(nameSpacePrefix));
+				}
+
+				getWriter().setPrefix(nameSpacePrefix, namespace);
+			}
+		}
 	}
 }

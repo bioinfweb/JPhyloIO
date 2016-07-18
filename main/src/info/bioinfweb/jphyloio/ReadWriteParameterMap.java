@@ -33,6 +33,8 @@ import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventReader;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventWriter;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetadataTreatment;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 
 
@@ -331,6 +333,15 @@ public class ReadWriteParameterMap extends ParameterMap {
 	 */
 	public static final String KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE = KEY_PREFIX + "considerPhylogenyAsTree";
 	
+	/**
+	 * This parameter will only be used by {@link PhyloXMLEventWriter} and allows to define which metadata events from 
+	 * an adapter should be written.
+	 * <p>
+	  * The value must have the type {@link PhyloXMLMetadataTreatment}. If no value is specified, all metadata events
+	  * will be written sequentially (a possible hierarchical structure will be lost. 
+	 */
+	public static final String KEY_PHYLOXML_METADATA_TREATMENT = KEY_PREFIX + "phyloXMLMetadataTreatment";
+	
 	
 	/**
 	 * Returns the writer instance registered under {@link #KEY_WRITER_INSTANCE}.
@@ -393,6 +404,12 @@ public class ReadWriteParameterMap extends ParameterMap {
 	public TokenDefinitionLabelHandling getLabelHandling() {
 		return getObject(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, 
 				TokenDefinitionLabelHandling.NEITHER, TokenDefinitionLabelHandling.class);
+	}
+	
+	
+	public PhyloXMLMetadataTreatment getPhyloXMLMetadataTreatment() {
+		return getObject(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, 
+				PhyloXMLMetadataTreatment.SEQUENTIAL, PhyloXMLMetadataTreatment.class);
 	}
 
 

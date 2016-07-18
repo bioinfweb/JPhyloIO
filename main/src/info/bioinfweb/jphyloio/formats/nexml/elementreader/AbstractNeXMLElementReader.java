@@ -260,12 +260,13 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			otuEventInformation.otuOrOtusID = XMLUtils.readStringAttr(element, ATTR_OTUS, null);
 		}
 		
+		// If no label is present in the element either the OTU label or the element ID is used as a label
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuOrOtusID != null)) {
 			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuOrOtusID);
 			if (otuEventInformation.label == null) {
 				otuEventInformation.label = otuEventInformation.id;
 			}
-		}
+		} //TODO maybe make this part optional?
 		
 		return otuEventInformation;
 	}

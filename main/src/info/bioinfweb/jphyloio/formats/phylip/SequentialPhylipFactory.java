@@ -19,15 +19,14 @@
 package info.bioinfweb.jphyloio.formats.phylip;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
 
 

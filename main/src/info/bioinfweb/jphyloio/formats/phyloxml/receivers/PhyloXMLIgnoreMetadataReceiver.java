@@ -33,39 +33,52 @@ import javax.xml.stream.XMLStreamException;
 
 
 
-public class PhyloXMLDocumentMetadataReceiver extends PhyloXMLMetaDataReceiver {
+public class PhyloXMLIgnoreMetadataReceiver extends PhyloXMLMetaDataReceiver {
+	private boolean ignoreCustomXML;
+	private boolean hasMetadata = false;
 	
-	public PhyloXMLDocumentMetadataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
-			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner) {
+	
+	public PhyloXMLIgnoreMetadataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner, boolean ignoreCustomXML) {
 		super(streamDataProvider, parameterMap, propertyOwner);
+		
+		this.ignoreCustomXML = ignoreCustomXML;
+	}
+
+
+	public boolean hasMetadata() {
+		return hasMetadata;
 	}
 
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		super.handleLiteralMetaStart(event);
+		hasMetadata = true;
+		
+		if (!ignoreCustomXML) {
+			super.handleLiteralMetaStart(event);
+		}
 	}
 
 	
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (event.hasValue()) {
-			switch (getMetaContentType()) {				
-				case XML:
-					if (event.hasXMLEventValue()) {
-						writeCustomXMLTag(event.getXMLEvent());
-					}
-				default:
-					break;
-			}
+		hasMetadata = true;
+		
+		if (!ignoreCustomXML && !hasSimpleContent() && event.hasXMLEventValue()) {			
+			writeCustomXMLTag(event.getXMLEvent());			
 		}
 	}
 	
 
 	@Override
-	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {}
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		hasMetadata = true;
+	}
 
 	
 	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {}
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		hasMetadata = true;
+	}
 }
