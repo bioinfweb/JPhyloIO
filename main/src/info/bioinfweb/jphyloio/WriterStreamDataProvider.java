@@ -16,14 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats;
-
-
-import info.bioinfweb.jphyloio.AbstractEventWriter;
+package info.bioinfweb.jphyloio;
 
 
 
-public class WriterStreamDataProvider<R extends AbstractEventWriter> {
+
+
+public class WriterStreamDataProvider<R extends AbstractEventWriter<? extends WriterStreamDataProvider<R>>> {
 	private R eventWriter;
 
 
