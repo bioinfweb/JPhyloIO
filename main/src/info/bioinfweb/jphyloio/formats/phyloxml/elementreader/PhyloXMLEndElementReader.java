@@ -22,7 +22,7 @@ package info.bioinfweb.jphyloio.formats.phyloxml.elementreader;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 
 import java.io.IOException;
 

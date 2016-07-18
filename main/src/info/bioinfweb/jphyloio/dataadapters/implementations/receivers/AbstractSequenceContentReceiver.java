@@ -19,7 +19,9 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
+import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -30,12 +32,12 @@ import javax.xml.stream.XMLStreamException;
 
 
 
-public abstract class AbstractSequenceContentReceiver<W extends Object> extends BasicEventReceiver<W> {
+public abstract class AbstractSequenceContentReceiver<P extends WriterStreamDataProvider<? extends AbstractEventWriter<P>>> extends BasicEventReceiver<P> {
 	private boolean longTokens;
-	
-	
-	public AbstractSequenceContentReceiver(W writer,	ReadWriteParameterMap parameterMap, boolean longTokens) {		
-		super(writer, parameterMap);
+
+
+	public AbstractSequenceContentReceiver(P streamDataProvider, ReadWriteParameterMap parameterMap, boolean longTokens) {
+		super(streamDataProvider, parameterMap);
 		this.longTokens = longTokens;
 	}
 

@@ -29,11 +29,11 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.formats.nexus.NexusEventWriter;
+import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.utils.TopoplogicalNodeInfo;
 import info.bioinfweb.jphyloio.utils.TreeTopologyExtractor;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 
 
@@ -44,7 +44,7 @@ import java.util.Iterator;
  * @author Ben St&ouml;ver
  */
 public class NewickStringWriter implements NewickConstants {
-	private Writer writer;
+	private TextWriterStreamDataProvider<?> streamDataProvider;
 	private TreeNetworkDataAdapter tree;
 	private ObjectListDataAdapter<EdgeEvent> edges;
 	private ObjectListDataAdapter<NodeEvent> nodes;
@@ -66,11 +66,11 @@ public class NewickStringWriter implements NewickConstants {
 	 *        should be used instead (e.g. for writing Newick).
 	 * @param parameters the write parameter map specified to the calling reader
 	 */
-	public NewickStringWriter(Writer writer, TreeNetworkDataAdapter tree,	NewickWriterNodeLabelProcessor nodeLabelProcessor, 
-			ReadWriteParameterMap parameters) {
+	public NewickStringWriter(TextWriterStreamDataProvider<?> streamDataProvider, TreeNetworkDataAdapter tree,
+			NewickWriterNodeLabelProcessor nodeLabelProcessor, ReadWriteParameterMap parameters) {
 		
 		super();
-		this.writer = writer;
+		this.streamDataProvider = streamDataProvider;
 		this.tree = tree;
 		this.nodeLabelProcessor = nodeLabelProcessor;
 		this.parameters = parameters;
@@ -126,32 +126,32 @@ public class NewickStringWriter implements NewickConstants {
 	
 	private void writeSubtree(String nodeID) throws IOException {
 		TopoplogicalNodeInfo nodeInfo = topologyExtractor.getIDToNodeInfoMap().get(nodeID);
-		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = new NewickNodeEdgeEventReceiver<EdgeEvent>(writer, parameters);
+		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = new NewickNodeEdgeEventReceiver<EdgeEvent>(streamDataProvider, parameters);
 		edges.writeContentData(parameters, edgeReceiver, nodeInfo.getAfferentBranchID());  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
 		Iterator<String> childNodeIDIterator = nodeInfo.getChildNodeIDs().iterator();
 		if (childNodeIDIterator.hasNext()) {
-			writer.write(SUBTREE_START);
+			streamDataProvider.getWriter().write(SUBTREE_START);
 			writeSubtree(childNodeIDIterator.next());
 			while (childNodeIDIterator.hasNext()) {
-				writer.write(ELEMENT_SEPERATOR + " ");
+				streamDataProvider.getWriter().write(ELEMENT_SEPERATOR + " ");
 				writeSubtree(childNodeIDIterator.next());
 			}
-			writer.write(SUBTREE_END);
+			streamDataProvider.getWriter().write(SUBTREE_END);
 		}
 		
 		NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent> nodeReceiver = 
-				new NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent>(writer, parameters);
+				new NewickNodeEdgeEventReceiver<LinkedLabeledIDEvent>(streamDataProvider, parameters);
 		nodes.writeContentData(parameters, nodeReceiver, nodeID);
 		
 		// Write node data:
-		writer.write(formatToken(nodeLabelProcessor.createNodeName(tree.getNodes(parameters).getObjectStartEvent(parameters, nodeID)), NAME_DELIMITER));
+		streamDataProvider.getWriter().write(formatToken(nodeLabelProcessor.createNodeName(tree.getNodes(parameters).getObjectStartEvent(parameters, nodeID)), NAME_DELIMITER));
 		nodeReceiver.writeMetadata();
 		nodeReceiver.writeComments();
 		
 		// Write edge data:
 		if (edges.getObjectStartEvent(parameters, nodeInfo.getAfferentBranchID()).hasLength()) {
-			writer.write(LENGTH_SEPERATOR);
-			writer.write(Double.toString(edges.getObjectStartEvent(parameters, nodeInfo.getAfferentBranchID()).getLength()));
+			streamDataProvider.getWriter().write(LENGTH_SEPERATOR);
+			streamDataProvider.getWriter().write(Double.toString(edges.getObjectStartEvent(parameters, nodeInfo.getAfferentBranchID()).getLength()));
 		}
 		edgeReceiver.writeMetadata();
 		edgeReceiver.writeComments();
@@ -159,15 +159,15 @@ public class NewickStringWriter implements NewickConstants {
 	
 	
 	private void writeRootedInformation() throws IOException {
-		writer.write(COMMENT_START);
+		streamDataProvider.getWriter().write(COMMENT_START);
 		if (nodes.getObjectStartEvent(parameters, topologyExtractor.getPaintStartID()).isRootNode()) {
-			writer.write(ROOTED_HOT_COMMENT.toUpperCase());
+			streamDataProvider.getWriter().write(ROOTED_HOT_COMMENT.toUpperCase());
 		}
 		else {
-			writer.write(UNROOTED_HOT_COMMENT.toUpperCase());
+			streamDataProvider.getWriter().write(UNROOTED_HOT_COMMENT.toUpperCase());
 		}
-		writer.write(COMMENT_END);
-		writer.write(" ");
+		streamDataProvider.getWriter().write(COMMENT_END);
+		streamDataProvider.getWriter().write(" ");
 	}
 
 	
@@ -197,8 +197,8 @@ public class NewickStringWriter implements NewickConstants {
 			
 			writeRootedInformation();
 			writeSubtree(topologyExtractor.getPaintStartID());
-			writer.write(TERMINAL_SYMBOL);
-			AbstractEventWriter.writeLineBreak(writer, parameters);
+			streamDataProvider.getWriter().write(TERMINAL_SYMBOL);
+			AbstractEventWriter.writeLineBreak(streamDataProvider.getWriter(), parameters);
 		}
 		else {
 			logger.addWarning("A provided network definition was ignored, because the Newick/NHX format only supports trees.");  //TODO Reference network label or ID of the network, when available.

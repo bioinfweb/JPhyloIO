@@ -22,69 +22,57 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Map;
 
 
 
-public class NexusWriterStreamDataProvider {
-	private NexusEventWriter writer;
-
-	
-	public NexusWriterStreamDataProvider(NexusEventWriter writer) {
-		super();
-		this.writer = writer;
-	}
+public class NexusWriterStreamDataProvider extends TextWriterStreamDataProvider<NexusEventWriter> {
 
 
-	public NexusEventWriter getNexusWriter() {
-		return writer;
-	}
-
-
-	public Writer getDataWriter() {
-		return writer.getWriter();
+	public NexusWriterStreamDataProvider(NexusEventWriter eventWriter) {
+		super(eventWriter);
 	}
 
 
 	public ReadWriteParameterMap getParameters() {
-		return writer.getParameters();
+		return getEventWriter().getParameters();
 	}
 
 
 	public ApplicationLogger getLogger() {
-		return writer.getLogger();
+		return getEventWriter().getLogger();
 	}
 
 
 	public Map<String, NexusMatrixWriteResult> getMatrixIDToBlockTypeMap() {
-		return writer.getMatrixIDToBlockTypeMap();
+		return getEventWriter().getMatrixIDToBlockTypeMap();
 	}
 	
 	
 	public void writeBlockStart(String name) throws IOException {
-		writer.writeBlockStart(name);
+		getEventWriter().writeBlockStart(name);
 	}
 
 	
 	public void writeLinkCommand(String linkedID, String linkedBlockName, EventContentType linkedContentType) throws IOException {
-		writer.writeLinkCommand(linkedID, linkedBlockName, linkedContentType);
+		getEventWriter().writeLinkCommand(linkedID, linkedBlockName, linkedContentType);
 	}
 	
 	
 	public void writeLineStart(String text) throws IOException {
-		writer.writeLineStart(getDataWriter(), text);
+		getEventWriter().writeLineStart(getWriter(), text);
 	}
 	
 	
 	public void writeCommandEnd() throws IOException {
-		writer.writeCommandEnd();
+		getEventWriter().writeCommandEnd();
 	}
 	
 	
 	public void writeBlockEnd() throws IOException {
-		writer.writeBlockEnd();
+		getEventWriter().writeBlockEnd();
 	}
 }

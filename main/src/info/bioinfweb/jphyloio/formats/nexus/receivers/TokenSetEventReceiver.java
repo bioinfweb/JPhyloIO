@@ -56,8 +56,8 @@ public class TokenSetEventReceiver extends AbstractNexusEventReceiver {
 	
 	
 	private void writeSingleTokenDefinition(String key, SingleTokenDefinitionEvent singleTokenEvent) throws IOException {
-		getWriter().write(' ');
-		NexusEventWriter.writeKeyValueExpression(getWriter(), key, 
+		getStreamDataProvider().getWriter().write(' ');
+		NexusEventWriter.writeKeyValueExpression(getStreamDataProvider().getWriter(), key, 
 				NexusEventWriter.formatToken(singleTokenEvent.getTokenName()));  //TODO Token names that need to be delimited would anyway not be valid in Nexus. => An according exception should be thrown or the token should be replaced somehow.
 	}
 

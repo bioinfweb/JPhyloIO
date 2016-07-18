@@ -39,9 +39,9 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
-import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
 
 import java.awt.Color;
 import java.io.BufferedInputStream;

@@ -24,7 +24,6 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.AbstractSe
 import info.bioinfweb.jphyloio.events.CommentEvent;
 
 import java.io.IOException;
-import java.io.Writer;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -40,7 +39,9 @@ import javax.xml.stream.XMLStreamException;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver<Writer> {
+public class TextSequenceContentReceiver<P extends TextWriterStreamDataProvider<? extends AbstractTextEventWriter<P>>> 
+		extends AbstractSequenceContentReceiver<P> {
+	
 	private String commentStart;
 	private String commentEnd;
 	
@@ -54,22 +55,21 @@ public class TextSequenceContentReceiver extends AbstractSequenceContentReceiver
 	 * @param commentEnd a comment end token or {@code null}, if this writer shall ignore comment events
 	 * @param longTokens Specify {@code true} here if sequence tokens shall be separated by spaces (if one token may
 	 *        be longer than one character) or {@code false} otherwise.
-	 */
-	public TextSequenceContentReceiver(Writer writer,	ReadWriteParameterMap parameterMap, String commentStart,
-			String commentEnd, boolean longTokens) {
+	 */	
+	protected void handleToken(String token, String label) throws IOException {
+		getStreamDataProvider().getWriter().write(token);
+		if (isLongTokens()) {
+			getStreamDataProvider().getWriter().write(' ');
+		}
+	}
+
+
+	public TextSequenceContentReceiver(P streamDataProvider, ReadWriteParameterMap parameterMap, boolean longTokens,
+			String commentStart, String commentEnd) {
 		
-		super(writer, parameterMap, longTokens);
-		
+		super(streamDataProvider, parameterMap, longTokens);
 		this.commentStart = commentStart;
 		this.commentEnd = commentEnd;
-	}
-	
-	
-	protected void handleToken(String token, String label) throws IOException {
-		getWriter().write(token);
-		if (isLongTokens()) {
-			getWriter().write(' ');
-		}
 	}
 
 

@@ -32,7 +32,6 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
@@ -42,13 +41,10 @@ import javax.xml.stream.XMLStreamWriter;
  * @author Sarah Wiechers
  */
 public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver {
-	NeXMLWriterAlignmentInformation alignmentInfo;
-	
 
-	public NeXMLSequenceTokensReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, boolean longTokens,
-			NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, longTokens, streamDataProvider);
-		this.alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
+
+	public NeXMLSequenceTokensReceiver(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameterMap, boolean longTokens) {
+		super(streamDataProvider, parameterMap, longTokens);
 	}
 
 
@@ -94,6 +90,7 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 
 	@Override
 	protected void handleToken(String token, String label) throws XMLStreamException {
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		String translatedToken;
 		
 		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
@@ -104,16 +101,16 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 		}
 		
 		if (alignmentInfo.isWriteCellsTags()) {
-			getWriter().writeStartElement(TAG_CELL.getLocalPart());
+			getStreamDataProvider().getWriter().writeStartElement(TAG_CELL.getLocalPart());
 			if (label != null) {
-				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
+				getStreamDataProvider().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
 			}
 			getStreamDataProvider().setSingleToken(translatedToken);
 		}		
 		else {
-			getWriter().writeCharacters(translatedToken);
+			getStreamDataProvider().getWriter().writeCharacters(translatedToken);
 			if (isLongTokens()) {
-				getWriter().writeCharacters(" ");
+				getStreamDataProvider().getWriter().writeCharacters(" ");
 			}
 		}
 		
@@ -123,13 +120,13 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 
 	@Override
 	protected void handleTokenEnd() throws XMLStreamException {
-		if (alignmentInfo.isWriteCellsTags()) {
+		if (getStreamDataProvider().getCurrentAlignmentInfo().isWriteCellsTags()) {
 			String token = getStreamDataProvider().getSingleToken();			
 			if (token != null) {
-				getWriter().writeCharacters(token);
+				getStreamDataProvider().getWriter().writeCharacters(token);
 				getStreamDataProvider().setSingleToken(null);
 			}			
-			getWriter().writeEndElement();
+			getStreamDataProvider().getWriter().writeEndElement();
 		}		
 	}
 }

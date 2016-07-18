@@ -36,11 +36,11 @@ public class CharacterSetEventReceiver extends AbstractNexusSetsEventReceiver {
 	
 	@Override
 	protected boolean handleCharacterSetInterval(CharacterSetIntervalEvent event) throws IOException {
-		getWriter().write(' ');
-		getWriter().write(Long.toString(event.getStart() + 1));
+		getStreamDataProvider().getWriter().write(' ');
+		getStreamDataProvider().getWriter().write(Long.toString(event.getStart() + 1));
 		if (event.getEnd() - event.getStart() > 1) {
-			getWriter().write(SET_TO_SYMBOL);
-			getWriter().write(Long.toString(event.getEnd()));
+			getStreamDataProvider().getWriter().write(SET_TO_SYMBOL);
+			getStreamDataProvider().getWriter().write(Long.toString(event.getEnd()));
 		}
 		return true;
 	}

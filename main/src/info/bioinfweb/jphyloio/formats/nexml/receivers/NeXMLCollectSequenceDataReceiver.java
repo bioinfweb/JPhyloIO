@@ -31,7 +31,6 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 /**
@@ -44,9 +43,10 @@ import javax.xml.stream.XMLStreamWriter;
  * @author Sarah Wiechers
  */
 public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataReceiver {
-	public NeXMLCollectSequenceDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			boolean longTokens, NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, longTokens, streamDataProvider);
+
+
+	public NeXMLCollectSequenceDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameterMap, boolean longTokens) {
+		super(streamDataProvider, parameterMap, longTokens);
 	}
 
 

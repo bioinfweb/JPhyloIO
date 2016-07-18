@@ -19,8 +19,6 @@
 package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
-import java.io.IOException;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -31,9 +29,10 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
+import java.io.IOException;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
@@ -51,11 +50,10 @@ public class NeXMLIgnoreCertainMetadataReceiver extends NeXMLPredicateMetaReceiv
 	 * or {@code false} if metadata under these predicates should be ignored
 	 * @param predicates the predicates to be processed in a special way
 	 */
-	public NeXMLIgnoreCertainMetadataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider, boolean writePredicateMetadata, QName... predicates) {
-		
-		super(writer, parameterMap, streamDataProvider, predicates);
-		this.writePredicateMetadata = writePredicateMetadata;		
+	public NeXMLIgnoreCertainMetadataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, boolean writePredicateMetadata, QName... predicates) {
+		super(streamDataProvider, parameterMap, predicates);
+		this.writePredicateMetadata = writePredicateMetadata;
 	}
 	
 	

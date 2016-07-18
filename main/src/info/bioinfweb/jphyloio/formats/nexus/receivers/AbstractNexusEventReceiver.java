@@ -31,17 +31,11 @@ import info.bioinfweb.jphyloio.formats.text.BasicTextCommentEventReceiver;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class AbstractNexusEventReceiver extends BasicTextCommentEventReceiver implements NexusConstants {
-	private NexusWriterStreamDataProvider streamDataProvider;
+public class AbstractNexusEventReceiver extends BasicTextCommentEventReceiver<NexusWriterStreamDataProvider> implements NexusConstants {
 	
 	
 	public AbstractNexusEventReceiver(NexusWriterStreamDataProvider streamDataProvider) {
-		super(streamDataProvider.getDataWriter(), streamDataProvider.getParameters(), 
+		super(streamDataProvider, streamDataProvider.getParameters(), 
 				Character.toString(COMMENT_START), Character.toString(COMMENT_END));
-	}
-
-
-	protected NexusWriterStreamDataProvider getStreamDataProvider() {
-		return streamDataProvider;
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * Contains implementations of {@link info.bioinfweb.jphyloio.formats.xml.XMLElementReader} used by 
+ * Contains implementations of {@link info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader} used by 
  * {@link info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader}.
  * 
  * @author Sarah Wiechers

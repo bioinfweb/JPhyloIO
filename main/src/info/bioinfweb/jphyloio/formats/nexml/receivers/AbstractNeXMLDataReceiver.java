@@ -24,8 +24,6 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEvent
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
-import javax.xml.stream.XMLStreamWriter;
-
 
 
 /**
@@ -34,17 +32,10 @@ import javax.xml.stream.XMLStreamWriter;
  * @author Sarah Wiechers
  *
  */
-public abstract class AbstractNeXMLDataReceiver extends BasicEventReceiver<XMLStreamWriter> implements NeXMLConstants {
-	private NeXMLWriterStreamDataProvider streamDataProvider;
-	
-
-	public AbstractNeXMLDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap);
-		this.streamDataProvider = streamDataProvider;
-	}
+public abstract class AbstractNeXMLDataReceiver extends BasicEventReceiver<NeXMLWriterStreamDataProvider> implements NeXMLConstants {
 
 	
-	protected NeXMLWriterStreamDataProvider getStreamDataProvider() {
-		return streamDataProvider;
-	}
+	public AbstractNeXMLDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameterMap) {
+		super(streamDataProvider, parameterMap);
+	}	
 }

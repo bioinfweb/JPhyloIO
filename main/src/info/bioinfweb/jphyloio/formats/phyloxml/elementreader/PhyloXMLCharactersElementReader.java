@@ -24,7 +24,7 @@ import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 

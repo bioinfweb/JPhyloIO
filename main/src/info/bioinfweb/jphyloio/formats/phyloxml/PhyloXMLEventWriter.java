@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLMetaDataReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
@@ -38,8 +39,7 @@ import javax.xml.stream.XMLStreamException;
 
 
 
-public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements PhyloXMLConstants {
-	private PhyloXMLWriterStreamDataProvider streamDataProvider; //TODO move this property to superclass
+public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants {
 	
 	
 	public PhyloXMLEventWriter() {
@@ -51,14 +51,18 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	public String getFormatID() {
 		return JPhyloIOFormatIDs.PHYLOXML_FORMAT_ID;
 	}
+	
+	
+	@Override
+	protected PhyloXMLWriterStreamDataProvider createStreamDataProvider() {
+		return new PhyloXMLWriterStreamDataProvider(this);
+	}
 
 	
 	@Override
-	protected void doWriteDocument() throws IOException, XMLStreamException {
-		this.streamDataProvider = new PhyloXMLWriterStreamDataProvider(this);
-		
-		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider, PropertyOwner.OTHER);
-		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());		
+	protected void doWriteDocument() throws IOException, XMLStreamException {	
+		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.OTHER);
+		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
 		
 		getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);
 		getXMLWriter().writeNamespace(XMLReadWriteUtils.XSI_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
@@ -100,7 +104,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	
 	
 	private void writePhylogenyTag(TreeNetworkDataAdapter tree) throws XMLStreamException, IOException {
-		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider, PropertyOwner.PHYLOGENY);		
+		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PHYLOGENY);		
 		LabeledIDEvent startEvent = tree.getStartEvent(getParameters());
 		TreeTopologyExtractor topologyExtractor = new TreeTopologyExtractor(tree, getParameters());
 		
@@ -130,8 +134,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter implements Phylo
 	
 	
 	private void writeCladeTag(TreeNetworkDataAdapter tree, TreeTopologyExtractor topologyExtractor, String rootNodeID) throws XMLStreamException, IOException {
-		PhyloXMLMetaDataReceiver nodeReceiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider, PropertyOwner.CLADE);
-		PhyloXMLMetaDataReceiver edgeReceiver = new PhyloXMLMetaDataReceiver(getXMLWriter(), getParameters(), streamDataProvider, PropertyOwner.PARENT_BRANCH);
+		PhyloXMLMetaDataReceiver nodeReceiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.CLADE);
+		PhyloXMLMetaDataReceiver edgeReceiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH);
 		
 		NodeEvent rootNode = tree.getNodes(getParameters()).getObjectStartEvent(getParameters(), rootNodeID);
 		EdgeEvent afferentEdge = tree.getEdges(getParameters()).getObjectStartEvent(getParameters(), 

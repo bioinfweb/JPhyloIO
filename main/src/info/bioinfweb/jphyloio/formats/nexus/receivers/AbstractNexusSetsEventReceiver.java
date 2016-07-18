@@ -81,14 +81,14 @@ public abstract class AbstractNexusSetsEventReceiver extends AbstractNexusEventR
 	
 	
 	protected void writeElementReference(SetElementEvent event) throws IOException {
-		getWriter().write(' ');
+		getStreamDataProvider().getWriter().write(' ');
 		String referencedSet = getParameterMap().getLabelEditingReporter().getEditedLabel(event.getLinkedObjectType(), event.getLinkedID());
 		if (referencedSet == null) {
 			throw new InconsistentAdapterDataException("A set references the other element with the ID " + event.getLinkedID() 
 					+ " that was not previously written (or is known at all). Referencing (currently) undeclared elements is not possible in Nexus.");  //TODO If a subsequent set is referenced here, it could alternatively be fetched from the provider and be written directly here instead of referencing it.
 		}
 		else {
-			getWriter().write(NexusEventWriter.formatToken(referencedSet));
+			getStreamDataProvider().getWriter().write(NexusEventWriter.formatToken(referencedSet));
 		}
 	}
 	

@@ -54,9 +54,9 @@ import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaEndElementRe
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaStartElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLSetEndElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
-import info.bioinfweb.jphyloio.formats.xml.CommentElementReader;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReaderKey;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
 
 import java.io.File;
 import java.io.IOException;
@@ -119,9 +119,15 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	}
 	
 	
+	@Override
+	protected NeXMLReaderStreamDataProvider createStreamDataProvider() {
+		return new NeXMLReaderStreamDataProvider(this);
+	}
+	
+	
 	public TokenTranslationStrategy getTranslateTokens() {
 		return getParameters().getTranslateTokens();
-	}
+	}	
 
 
 	@SuppressWarnings("unchecked")
@@ -977,12 +983,6 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_TREES, TAG_SET, XMLStreamConstants.END_ELEMENT), new NeXMLSetEndElementReader(EventContentType.TREE_NETWORK_SET));
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
-	}
-	
-
-	@Override
-	protected NeXMLReaderStreamDataProvider createStreamDataProvider() {
-		return new NeXMLReaderStreamDataProvider(this);
 	}
 
 

@@ -16,39 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xml;
+package info.bioinfweb.jphyloio.formats.text;
 
 
 import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.stream.XMLStreamWriter;
+import java.io.Writer;
 
 
 
-public class XMLWriterStreamDataProvider<R extends AbstractXMLEventWriter<? extends XMLWriterStreamDataProvider<R>>> extends WriterStreamDataProvider<R> {
-	private Set<String> namespacePrefixes = new HashSet<String>();	
-	private StringBuffer commentContent = new StringBuffer();
+public class TextWriterStreamDataProvider<W extends AbstractTextEventWriter<? extends TextWriterStreamDataProvider<W>>> 
+		extends WriterStreamDataProvider<W>  {
+
 	
-	
-	public XMLWriterStreamDataProvider(R eventWriter) {
+	public TextWriterStreamDataProvider(W eventWriter) {
 		super(eventWriter);
 	}
 	
-
-	public XMLStreamWriter getWriter() {
-		return getEventWriter().getXMLWriter();
-	}
 	
-	
-	public Set<String> getNamespacePrefixes() {
-		return namespacePrefixes;
-	}
-
-
-	public StringBuffer getCommentContent() {
-		return commentContent;
+	public Writer getWriter() {
+		return getEventWriter().getWriter();
 	}
 }

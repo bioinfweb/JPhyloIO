@@ -19,13 +19,6 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.Iterator;
-
-import javax.xml.stream.XMLStreamException;
-
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -36,6 +29,14 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.xml.stream.XMLStreamException;
 
 
 
@@ -44,18 +45,17 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
  * 
  * @author Ben St&ouml;ver
  */
-class FASTASequenceEventReceiver extends BasicEventReceiver<Writer> implements JPhyloIOEventReceiver, FASTAConstants {
+class FASTASequenceEventReceiver extends BasicEventReceiver<TextWriterStreamDataProvider<FASTAEventWriter>> implements JPhyloIOEventReceiver, FASTAConstants {
 	private int charsPerLineWritten = 0;
 	private MatrixDataAdapter matrixDataAdapter;
 	private long lineLength;
 	private boolean allowCommentsBeforeTokens = false;
 	private boolean continuedCommentExpected = false;
-	
-	
-	public FASTASequenceEventReceiver(Writer writer, ReadWriteParameterMap parameterMap, 
-			MatrixDataAdapter matrixDataAdapter, long lineLength) {
-		
-		super(writer, parameterMap);
+
+
+	public FASTASequenceEventReceiver(TextWriterStreamDataProvider<FASTAEventWriter> streamDataProvider,
+			ReadWriteParameterMap parameterMap, MatrixDataAdapter matrixDataAdapter, long lineLength) {
+		super(streamDataProvider, parameterMap);
 		this.matrixDataAdapter = matrixDataAdapter;
 		this.lineLength = lineLength;
 	}
@@ -91,9 +91,9 @@ class FASTASequenceEventReceiver extends BasicEventReceiver<Writer> implements J
 					+ "than one character, although this reader is set to not allow longer tokens.");
 		}
 		if (charsPerLineWritten + token.length() > lineLength) {
-			writeNewLine(getWriter());
+			writeNewLine(getStreamDataProvider().getWriter());
 		}
-		getWriter().write(token);
+		getStreamDataProvider().getWriter().write(token);
 		charsPerLineWritten += token.length();
 	}
 	
@@ -108,12 +108,12 @@ class FASTASequenceEventReceiver extends BasicEventReceiver<Writer> implements J
 	
 	private void writeComment(CommentEvent commentEvent) throws IOException {
 		if (!continuedCommentExpected) {  // Writing starts in the previous comment line
-			getWriter().write(COMMENT_START_CHAR);
+			getStreamDataProvider().getWriter().write(COMMENT_START_CHAR);
 		}
-		getWriter().write(commentEvent.getContent());
+		getStreamDataProvider().getWriter().write(commentEvent.getContent());
 		continuedCommentExpected = commentEvent.isContinuedInNextEvent();
 		if (!continuedCommentExpected) {
-			writeNewLine(getWriter());
+			writeNewLine(getStreamDataProvider().getWriter());
 		}
 	}
 	

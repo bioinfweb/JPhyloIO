@@ -26,7 +26,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
 
 
 

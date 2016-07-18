@@ -34,7 +34,6 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
@@ -46,7 +45,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 /**
@@ -57,15 +55,13 @@ import javax.xml.stream.XMLStreamWriter;
 public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataReceiver {
 	private NeXMLTokenSetEventReceiver receiver;
 	private Set<Character> tokens = new HashSet<Character>();
-	NeXMLWriterAlignmentInformation alignmentInfo;
 	String tokenSetID;
 
 
-	public NeXMLMolecularDataTokenDefinitionReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterAlignmentInformation alignmentInfo,
-			String tokenSetID, NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, streamDataProvider);
-		this.receiver = new NeXMLTokenSetEventReceiver(writer, parameterMap, alignmentInfo, tokenSetID, streamDataProvider);
-		this.alignmentInfo = alignmentInfo;
+	public NeXMLMolecularDataTokenDefinitionReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, String tokenSetID) {
+		super(streamDataProvider, parameterMap);
+		this.receiver = new NeXMLTokenSetEventReceiver(streamDataProvider, parameterMap, tokenSetID);
 		this.tokenSetID = tokenSetID;
 	}
 
@@ -289,7 +285,7 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 					SingleTokenDefinitionEvent tokenDefinitionEvent = event.asSingleTokenDefinitionEvent();
 
-					if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.AMINO_ACID)) {
+					if (getStreamDataProvider().getCurrentAlignmentInfo().getAlignmentType().equals(CharacterStateSetType.AMINO_ACID)) {
 						if (tokenDefinitionEvent.getTokenName().length() > 1) {  //only one letter codes can be written to NeXML
 							tokens.add(SequenceUtils.oneLetterAminoAcidByThreeLetter(tokenDefinitionEvent.getTokenName()));  //Token must be a valid three letter code which was already checked in NeXMLCollectTokenSetDefinitionDataReceiver
 						}

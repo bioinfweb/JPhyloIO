@@ -19,10 +19,6 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Iterator;
-
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractSingleMatrixEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -30,6 +26,10 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 
 
@@ -58,7 +58,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
  * 
  * @author Ben St&ouml;ver
  */
-public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements FASTAConstants {
+public class FASTAEventWriter extends AbstractSingleMatrixEventWriter<TextWriterStreamDataProvider<FASTAEventWriter>> implements FASTAConstants {
 	public FASTAEventWriter() {
 		super(FASTA_FORMAT_NAME);
 	}
@@ -69,6 +69,12 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 		return JPhyloIOFormatIDs.FASTA_FORMAT_ID;
 	}
 	
+	
+	@Override
+	protected TextWriterStreamDataProvider<FASTAEventWriter> createStreamDataProvider() {
+		return new TextWriterStreamDataProvider<FASTAEventWriter>(this);
+	}
+	
 
 	@Override
 	protected String maskReservedLabelCharacters(String label) {
@@ -76,23 +82,23 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 	}
 
 
-	private void writeSequenceName(String sequenceName, Writer writer, FASTASequenceEventReceiver receiver,
-			ReadWriteParameterMap parameters) throws IOException {
+	private void writeSequenceName(String sequenceName, FASTASequenceEventReceiver receiver, ReadWriteParameterMap parameters) 
+			throws IOException {
 		
 		if (receiver.getCharsPerLineWritten() > 0) {
-			receiver.writeNewLine(writer);
+			receiver.writeNewLine(getStreamDataProvider().getWriter());
 		}
-		writer.write(NAME_START_CHAR);
-		writer.write(sequenceName);
-		writeLineBreak(writer, parameters);
+		getStreamDataProvider().getWriter().write(NAME_START_CHAR);
+		getStreamDataProvider().getWriter().write(sequenceName);
+		writeLineBreak(getStreamDataProvider().getWriter(), parameters);
 	}
 	
 	
 	@Override
 	protected void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws IOException {
+			Iterator<String> sequenceIDIterator, ReadWriteParameterMap parameters) throws IOException {
 		
-		FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(writer, parameters, matrix, 
+		FASTASequenceEventReceiver eventReceiver = new FASTASequenceEventReceiver(getStreamDataProvider(), parameters, matrix, 
 				parameters.getLong(ReadWriteParameterMap.KEY_LINE_LENGTH, DEFAULT_LINE_LENGTH));
 		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
 		long maxSequenceLength = determineMaxSequenceLength(matrix, parameters);
@@ -102,7 +108,7 @@ public class FASTAEventWriter extends AbstractSingleMatrixEventWriter implements
 			String id = sequenceIDIterator.next();
 			
 			// Write name and tokens:
-			writeSequenceName(editSequenceOrNodeLabel(matrix.getSequenceStartEvent(parameters, id), parameters, otuList), writer, 
+			writeSequenceName(editSequenceOrNodeLabel(matrix.getSequenceStartEvent(parameters, id), parameters, otuList), 
 					eventReceiver, parameters);
 			eventReceiver.setAllowCommentsBeforeTokens(true);  // Writing starts with 0 each time.
 			matrix.writeSequencePartContentData(parameters, eventReceiver, id, 0, matrix.getSequenceLength(parameters, id));

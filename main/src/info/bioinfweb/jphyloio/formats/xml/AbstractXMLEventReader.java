@@ -23,6 +23,8 @@ import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
 
 import java.io.BufferedReader;
 import java.io.File;

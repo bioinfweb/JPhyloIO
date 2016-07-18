@@ -30,7 +30,6 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 /**
@@ -40,12 +39,13 @@ import javax.xml.stream.XMLStreamWriter;
  * @author Sarah Wiechers
  */
 public class NeXMLCollectNamespaceReceiver extends AbstractNeXMLDataReceiver {
-	public NeXMLCollectNamespaceReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, streamDataProvider);
+	
+	
+	public NeXMLCollectNamespaceReceiver(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameterMap) {
+		super(streamDataProvider, parameterMap);
 	}
-	
-	
+
+
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		AbstractNeXMLDataReceiverMixin.checkLiteralMeta(getStreamDataProvider(), event);

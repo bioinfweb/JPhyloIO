@@ -19,16 +19,6 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -41,15 +31,24 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.ListTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.StringTranslator;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 
-public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicEventReceiver<Writer> 
-		implements NewickConstants {
-	
+
+@SuppressWarnings("rawtypes")  // Needs to be a raw type in order to work in Newick and Nexus.  //TODO Is there a better solution?
+public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicEventReceiver implements NewickConstants {
 	public static final char STRING_DELEMITER_REPLACEMENT = '\'';
 	
 	
@@ -75,13 +74,20 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	private StringBuilder currentLiteralValue = new StringBuilder();
 	private ListTranslator listTranslator = new ListTranslator();
 	private StringTranslator stringTranslator = new StringTranslator();
-	
-	
-	public NewickNodeEdgeEventReceiver(Writer writer,	ReadWriteParameterMap parameterMap) {
-		super(writer, parameterMap);
-	}
 
 	
+	@SuppressWarnings("unchecked")
+	public NewickNodeEdgeEventReceiver(TextWriterStreamDataProvider<?> streamDataProvider, ReadWriteParameterMap parameterMap) {
+		super(streamDataProvider, parameterMap);
+	}
+
+
+	@Override
+	public TextWriterStreamDataProvider getStreamDataProvider() {
+		return (TextWriterStreamDataProvider)super.getStreamDataProvider();
+	}
+
+
 	public boolean isIgnoredXMLMetadata() {
 		return ignoredXMLMetadata;
 	}
@@ -212,22 +218,22 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 
 	public void writeMetadata() throws IOException {
 		if (!metadataList.isEmpty()) {
-			getWriter().write(COMMENT_START);
-			getWriter().write(HOT_COMMENT_START_SYMBOL);
+			getStreamDataProvider().getWriter().write(COMMENT_START);
+			getStreamDataProvider().getWriter().write(HOT_COMMENT_START_SYMBOL);
 			Iterator<Metadata> iterator = metadataList.iterator();
 			while (iterator.hasNext()) {
 				Metadata metadata = iterator.next();
-				getWriter().write(metadata.key);
-				getWriter().write(ALLOCATION_SYMBOL);
+				getStreamDataProvider().getWriter().write(metadata.key);
+				getStreamDataProvider().getWriter().write(ALLOCATION_SYMBOL);
 				if (metadata.value != null) {
-					getWriter().write(metadata.value);  // Necessary string delimiters or array definitions have already been added.
+					getStreamDataProvider().getWriter().write(metadata.value);  // Necessary string delimiters or array definitions have already been added.
 				}
 				if (iterator.hasNext()) {
-					getWriter().write(ALLOCATION_SEPARATOR_SYMBOL);
-					getWriter().write(' ');
+					getStreamDataProvider().getWriter().write(ALLOCATION_SEPARATOR_SYMBOL);
+					getStreamDataProvider().getWriter().write(' ');
 				}
 			}
-			getWriter().write(COMMENT_END);
+			getStreamDataProvider().getWriter().write(COMMENT_END);
 		}
 	}
 
@@ -235,15 +241,15 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	public void writeComments() throws IOException {
 		Iterator<CommentEvent> iterator = commentEvents.iterator();
 		while (iterator.hasNext()) {
-			getWriter().write(COMMENT_START);
+			getStreamDataProvider().getWriter().write(COMMENT_START);
 			CommentEvent event = iterator.next();
-			getWriter().write(event.getContent());
+			getStreamDataProvider().getWriter().write(event.getContent());
 			
 			while (event.isContinuedInNextEvent() && iterator.hasNext()) {
 				event = iterator.next();
-				getWriter().write(event.getContent());
+				getStreamDataProvider().getWriter().write(event.getContent());
 			}
-			getWriter().write(COMMENT_END);
+			getStreamDataProvider().getWriter().write(COMMENT_END);
 		}
 	}
 }

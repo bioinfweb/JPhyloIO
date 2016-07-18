@@ -20,7 +20,9 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
 import info.bioinfweb.commons.log.ApplicationLogger;
+import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -49,9 +51,9 @@ import javax.xml.stream.XMLStreamWriter;
  *
  * @param <W> the type of writer to write the data to (usually {@link Writer} or {@link XMLStreamWriter})
  */
-public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiver {
-	private W writer;
+public class BasicEventReceiver<P extends WriterStreamDataProvider<? extends AbstractEventWriter<P>>> implements JPhyloIOEventReceiver {
 	private ReadWriteParameterMap parameterMap;
+	private P streamDataProvider;
 	
 	private Stack<JPhyloIOEvent> parentEvents = new Stack<JPhyloIOEvent>();
 	
@@ -67,15 +69,10 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 	 * @param writer the writer to write data to (e.g. an instance of {@link Writer} or {@link XMLStreamWriter})
 	 * @param parameterMap the parameter map of the event writer that will be using this receiver instance
 	 */
-	public BasicEventReceiver(W writer, ReadWriteParameterMap parameterMap) {
+	public BasicEventReceiver(P streamDataProvider, ReadWriteParameterMap parameterMap) {
 		super();
-		this.writer = writer;
+		this.streamDataProvider = streamDataProvider;
 		this.parameterMap = parameterMap;
-	}
-
-
-	public W getWriter() {
-		return writer;
 	}
 
 
@@ -84,6 +81,11 @@ public class BasicEventReceiver<W extends Object> implements JPhyloIOEventReceiv
 	}
 	
 	
+	public P getStreamDataProvider() {
+		return streamDataProvider;
+	}
+
+
 	public ApplicationLogger getLogger() {
 		return getParameterMap().getApplicationLogger(ReadWriteParameterMap.KEY_LOGGER);
 	}

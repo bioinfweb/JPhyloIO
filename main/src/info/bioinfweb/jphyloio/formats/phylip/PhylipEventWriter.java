@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.AbstractSingleMatrixEventWriter;
@@ -32,6 +31,7 @@ import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
+import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
 
 
 
@@ -65,7 +65,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implements PhylipConstants {
+public class PhylipEventWriter extends AbstractSingleMatrixEventWriter<TextWriterStreamDataProvider<PhylipEventWriter>> implements PhylipConstants {
 	//TODO Check if documentation is still valid, when implementation is finished (especially regarding label editing). (Do the same for the FASTA writer.)
 
 	/**
@@ -81,6 +81,13 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 	public String getFormatID() {
 		return JPhyloIOFormatIDs.PHYLIP_FORMAT_ID;
 	}
+	
+	
+	@Override
+	protected TextWriterStreamDataProvider<PhylipEventWriter> createStreamDataProvider() {
+		return new TextWriterStreamDataProvider<PhylipEventWriter>(this);
+	}
+
 
 	
 	/**
@@ -115,7 +122,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 
 	@Override
 	protected void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer, ReadWriteParameterMap parameters) throws IOException {
+			Iterator<String> sequenceIDIterator, ReadWriteParameterMap parameters) throws IOException {
 
 		int nameLength = parameters.getInteger(ReadWriteParameterMap.KEY_MAXIMUM_NAME_LENGTH, DEFAULT_NAME_LENGTH);
 		String extensionToken = parameters.getString(ReadWriteParameterMap.KEY_SEQUENCE_EXTENSION_TOKEN);
@@ -134,8 +141,8 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
 		}
 		
 		// Write heading:
-    writer.write("\t" + matrix.getSequenceCount(parameters) + "\t" + maxSequenceLength);
-    writeLineBreak(writer, parameters);
+    getStreamDataProvider().getWriter().write("\t" + matrix.getSequenceCount(parameters) + "\t" + maxSequenceLength);
+    writeLineBreak(getStreamDataProvider().getWriter(), parameters);
     if ((matrix.getColumnCount(parameters) == -1) && (extensionToken == null)) {
     	parameters.getLogger().addWarning("The provided sequences have inequal lengths and filling up sequences was not "
     			+ "specified. The column count written to the Phylip document is the length of the longest sequence. Some "
@@ -147,18 +154,19 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter implement
     	
     	// Write label:
     	String label = editSequenceOrNodeLabel(matrix.getSequenceStartEvent(parameters, id), parameters, otuList);
-    	writer.write(label);
+    	getStreamDataProvider().getWriter().write(label);
     	for (int i = label.length(); i < nameLength; i++) {
-				writer.write(' ');
+    		getStreamDataProvider().getWriter().write(' ');
 			}
     	
     	// Write sequence:
-    	TextSequenceContentReceiver receiver = new TextSequenceContentReceiver(writer, parameters, null, null, 
-    			matrix.containsLongTokens(parameters));
+    	TextSequenceContentReceiver<TextWriterStreamDataProvider<PhylipEventWriter>> receiver = 
+    			new TextSequenceContentReceiver<TextWriterStreamDataProvider<PhylipEventWriter>>(getStreamDataProvider(), parameters, 
+    					matrix.containsLongTokens(parameters), null, null);
     	matrix.writeSequencePartContentData(parameters, receiver, id, 0, matrix.getSequenceLength(parameters, id));
     	extendSequence(matrix, parameters, id, maxSequenceLength, extensionToken, receiver);
     	
-    	writeLineBreak(writer, parameters);
+    	writeLineBreak(getStreamDataProvider().getWriter(), parameters);
     }
 	}
 }

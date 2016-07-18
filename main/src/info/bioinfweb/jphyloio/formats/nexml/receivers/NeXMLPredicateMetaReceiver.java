@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
@@ -51,10 +50,8 @@ public abstract class NeXMLPredicateMetaReceiver extends NeXMLMetaDataReceiver {
 	 * @param streamDataProvider the stream data provider of the calling {@link NeXMLEventReader}
 	 * @param predicates the predicates to be processed in a special way
 	 */
-	public NeXMLPredicateMetaReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterStreamDataProvider streamDataProvider, 
-			QName... predicates) {
-		
-		super(writer, parameterMap, streamDataProvider);
+	public NeXMLPredicateMetaReceiver(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameterMap, QName... predicates) {
+		super(streamDataProvider, parameterMap);
 		
 		for (int i = 0; i < predicates.length; i++) {
 			this.predicates.add(predicates[i]);
@@ -64,7 +61,7 @@ public abstract class NeXMLPredicateMetaReceiver extends NeXMLMetaDataReceiver {
 
 	protected long getMetaLevel() {
 		return metaLevel;
-	}
+	}	
 
 
 	protected void setMetaLevel(long metaLevel) {

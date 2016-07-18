@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.util.Collection;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 /**
@@ -49,20 +48,19 @@ import javax.xml.stream.XMLStreamWriter;
  * @author Sarah Wiechers
  */
 public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectNamespaceReceiver {
-	NeXMLWriterAlignmentInformation alignmentInfo;
 	String tokenSetDefinitionID;
-	
 
-	public NeXMLCollectTokenSetDefinitionDataReceiver(XMLStreamWriter writer,
-			ReadWriteParameterMap parameterMap, String tokenSetDefinitionID, NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, streamDataProvider);
-		
+
+	public NeXMLCollectTokenSetDefinitionDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, String tokenSetDefinitionID) {
+		super(streamDataProvider, parameterMap);
 		this.tokenSetDefinitionID = tokenSetDefinitionID;
-		this.alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
 	}
 
 
 	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
+		
 		switch (alignmentInfo.getTokenSetType()) {
 			case DNA:
 				if (!isDNAToken(event)) {
@@ -246,6 +244,8 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
+		
 		switch (event.getType().getContentType()) {
 			case SINGLE_TOKEN_DEFINITION:
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {

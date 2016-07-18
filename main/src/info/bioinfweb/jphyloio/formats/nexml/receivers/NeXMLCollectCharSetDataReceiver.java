@@ -27,7 +27,6 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
@@ -39,13 +38,13 @@ import javax.xml.stream.XMLStreamWriter;
 public class NeXMLCollectCharSetDataReceiver extends NeXMLCollectNamespaceReceiver {
 	private String charSetID;
 	
-	
-	public NeXMLCollectCharSetDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider, String charSetID) {
-		super(writer, parameterMap, streamDataProvider);
+
+	public NeXMLCollectCharSetDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, String charSetID) {
+		super(streamDataProvider, parameterMap);
 		this.charSetID = charSetID;
 	}
-	
+
 
 	@Override
 	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {

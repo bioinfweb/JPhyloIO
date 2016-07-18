@@ -47,7 +47,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
@@ -57,35 +56,34 @@ import javax.xml.stream.XMLStreamWriter;
  * @author Sarah Wiechers
  */
 public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
-	NeXMLWriterAlignmentInformation alignmentInfo;
 	String tokenSetID;
 	private Map<String, String> tokenNameToIDMap = new HashMap<String, String>();
 	private int tokenDefinitionIndex = 0;
 	
 	
-	public NeXMLTokenSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap, NeXMLWriterAlignmentInformation alignmentInfo,
-			String tokenSetID, NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, streamDataProvider);
-		this.alignmentInfo = alignmentInfo;
+	public NeXMLTokenSetEventReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, String tokenSetID) {
+		super(streamDataProvider, parameterMap);
 		this.tokenSetID = tokenSetID;
 	}
-	
-	
+
+
 	private void writeState(SingleTokenDefinitionEvent event) throws XMLStreamException, IOException {
-		getWriter().writeStartElement(TAG_STATE.getLocalPart());
+		getStreamDataProvider().getWriter().writeStartElement(TAG_STATE.getLocalPart());
 		writeTokenDefinitionAttributes(event);
 	}
 	
 	
 	private void writeStateSet(SingleTokenDefinitionEvent event, boolean isPolymorphic) throws XMLStreamException, IOException {
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		String memberID = null;
 		String tokenName = event.getTokenName();
 		
 		if (isPolymorphic) {
-			getWriter().writeStartElement(TAG_POLYMORPHIC.getLocalPart());
+			getStreamDataProvider().getWriter().writeStartElement(TAG_POLYMORPHIC.getLocalPart());
 		}
 		else {
-			getWriter().writeStartElement(TAG_UNCERTAIN.getLocalPart());
+			getStreamDataProvider().getWriter().writeStartElement(TAG_UNCERTAIN.getLocalPart());
 		}
 		
 		writeTokenDefinitionAttributes(event);
@@ -119,10 +117,10 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 			}
 			
 			for (String tokenDefinition : constituents) {
-				getWriter().writeEmptyElement(TAG_MEMBER.getLocalPart());
+				getStreamDataProvider().getWriter().writeEmptyElement(TAG_MEMBER.getLocalPart());
 				memberID = tokenNameToIDMap.get(tokenDefinition);
 				if ((memberID != null) && getStreamDataProvider().getDocumentIDs().contains(memberID)) {
-					getWriter().writeAttribute(ATTR_SINGLE_STATE_LINK.getLocalPart(), memberID);
+					getStreamDataProvider().getWriter().writeAttribute(ATTR_SINGLE_STATE_LINK.getLocalPart(), memberID);
 				}
 				else {
 					throw new InconsistentAdapterDataException("The token definition set with the ID \"" + event.getID() 
@@ -134,6 +132,8 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 	
 	private void writeTokenDefinitionAttributes(SingleTokenDefinitionEvent event) throws XMLStreamException, IOException {
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
+		
 		String tokenName = event.getTokenName();
 		String tokenSymbol = tokenName;
 		String label = event.getLabel();
@@ -169,19 +169,19 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		alignmentInfo.getIDToTokenSetInfoMap().get(tokenSetID).getTokenTranslationMap().put(event.getTokenName(), tokenSymbol);
 		tokenNameToIDMap.put(tokenName, event.getID());
 		
-		getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
-		getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
+		getStreamDataProvider().getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
+		getStreamDataProvider().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
 		
 		if (label != null) {
 			if (getParameterMap().getBoolean(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL, false)) {
-				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
+				getStreamDataProvider().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
 			}
 			else {
-				getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
+				getStreamDataProvider().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
 			}
 		}
 		
-		getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);
+		getStreamDataProvider().getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);
 		
 		switch (getParameterMap().getLabelHandling()) {
 			case NEITHER:
@@ -230,7 +230,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 	
 	public void writeRemainingStandardTokenDefinitions() throws IOException, XMLStreamException {
-		Set<String> tokenNames = alignmentInfo.getIDToTokenSetInfoMap().get(tokenSetID).getOccuringTokens();
+		Set<String> tokenNames = getStreamDataProvider().getCurrentAlignmentInfo().getIDToTokenSetInfoMap().get(tokenSetID).getOccuringTokens();
 		
 		for (String token : tokenNames) {
 			String tokenDefinitionID = getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX);
@@ -270,7 +270,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 					}
 				}
 				else {
-					getWriter().writeEndElement();
+					getStreamDataProvider().getWriter().writeEndElement();
 				}
 				break;
 			default:

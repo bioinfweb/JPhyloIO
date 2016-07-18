@@ -67,7 +67,7 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 	protected abstract String getLinkedBlockName(ElementDataAdapter<? extends LabeledIDEvent> dataSource);
 	
 	
-	private void logIgnoredMetadata(BasicEventReceiver<Writer> receiver, String setName) {
+	private void logIgnoredMetadata(BasicEventReceiver<NexusWriterStreamDataProvider> receiver, String setName) {
 		if (receiver.didIgnoreMetadata()) {
 			streamDataProvider.getParameters().getLogger().addMessage("One or more " + setName + " elements contained metadata. " + 
 					receiver.getIgnoredMetadata() +	
@@ -97,11 +97,11 @@ public abstract class AbstractNexusSetWriter implements NexusConstants {
 					String charSetID = charSetIDIterator.next();
 					
 					streamDataProvider.writeLineStart(commandName);
-					streamDataProvider.getDataWriter().write(' ');
-					streamDataProvider.getDataWriter().write(NexusEventWriter.formatToken(AbstractEventWriter.createUniqueLabel(
+					streamDataProvider.getWriter().write(' ');
+					streamDataProvider.getWriter().write(NexusEventWriter.formatToken(AbstractEventWriter.createUniqueLabel(
 							streamDataProvider.getParameters(), sets.getObjectStartEvent(streamDataProvider.getParameters(), charSetID))));
-					streamDataProvider.getDataWriter().write(' ');
-					streamDataProvider.getDataWriter().write(KEY_VALUE_SEPARATOR);  // Next space will be written by receiver.
+					streamDataProvider.getWriter().write(' ');
+					streamDataProvider.getWriter().write(KEY_VALUE_SEPARATOR);  // Next space will be written by receiver.
 					sets.writeContentData(streamDataProvider.getParameters(), receiver, charSetID);  // Nothing will be written for empty character sets.
 					streamDataProvider.writeCommandEnd();
 					//TODO Log ignored metadata?

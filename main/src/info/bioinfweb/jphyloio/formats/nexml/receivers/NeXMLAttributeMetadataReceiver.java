@@ -28,27 +28,25 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
-import java.nio.channels.WritePendingException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
 public class NeXMLAttributeMetadataReceiver extends NeXMLPredicateMetaReceiver {
 	private Map<QName, String> attributeToValueMap = new HashMap<QName, String>();
 	private QName currentAttributeName;
-
 	
-	public NeXMLAttributeMetadataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider, QName... predicates) {
-		super(writer, parameterMap, streamDataProvider, predicates);
+	
+	public NeXMLAttributeMetadataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, QName... predicates) {
+		super(streamDataProvider, parameterMap, predicates);
 	}
-	
-	
+
+
 	public Map<QName, String> getAttributeToValueMap() {
 		return attributeToValueMap;
 	}

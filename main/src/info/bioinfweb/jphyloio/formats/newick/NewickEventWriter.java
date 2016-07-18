@@ -19,18 +19,19 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Iterator;
-
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventWriter;
+import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Iterator;
 
 
 
@@ -40,7 +41,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
  * @author Ben St&ouml;ver
  * @see 0.0.0
  */
-public class NewickEventWriter extends AbstractEventWriter implements NewickConstants {
+public class NewickEventWriter extends AbstractTextEventWriter<TextWriterStreamDataProvider<NewickEventWriter>> implements NewickConstants {
 	@Override
 	public String getFormatID() {
 		return JPhyloIOFormatIDs.NEWICK_FORMAT_ID;
@@ -48,7 +49,15 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 	
 	
 	@Override
+	protected TextWriterStreamDataProvider<NewickEventWriter> createStreamDataProvider() {
+		return new TextWriterStreamDataProvider<NewickEventWriter>(this);
+	}
+	
+	
+	@Override
 	protected void doWriteDocument(DocumentDataAdapter document, Writer writer,	ReadWriteParameterMap parameters) throws IOException {
+		super.doWriteDocument(document, writer, parameters);
+		
 		ApplicationLogger logger = parameters.getLogger();
 		int treeCount = 0;
 		
@@ -67,7 +76,7 @@ public class NewickEventWriter extends AbstractEventWriter implements NewickCons
 			while (treeNetworkIterator.hasNext()) {
 				treeCount++;
 				TreeNetworkDataAdapter treeNetwork = treeNetworkIterator.next();
-				new NewickStringWriter(writer, treeNetwork, new DefaultNewickWriterNodeLabelProcessor(otuList, parameters), parameters).write();
+				new NewickStringWriter(getStreamDataProvider(), treeNetwork, new DefaultNewickWriterNodeLabelProcessor(otuList, parameters), parameters).write();
 			}			
 		}
 		

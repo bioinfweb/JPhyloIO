@@ -24,6 +24,8 @@ import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventWriter;
+import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -42,7 +44,9 @@ import java.util.Iterator;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWriter {
+public abstract class AbstractSingleMatrixEventWriter<P extends TextWriterStreamDataProvider<? extends AbstractTextEventWriter<P>>> 
+		extends AbstractTextEventWriter<P> {
+	
 	private String formatName;
 	
 
@@ -69,7 +73,7 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 	 * @throws Exception if the implementing writer throws an exception
 	 */
 	protected abstract void writeSingleMatrix(DocumentDataAdapter document, MatrixDataAdapter matrix, 
-			Iterator<String> sequenceIDIterator, Writer writer,	ReadWriteParameterMap parameters) throws IOException;
+			Iterator<String> sequenceIDIterator,	ReadWriteParameterMap parameters) throws IOException;
 
 
 	protected String editSequenceOrNodeLabel(final LinkedLabeledIDEvent event, final ReadWriteParameterMap parameters, 
@@ -96,6 +100,8 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 	
 	@Override
 	protected void doWriteDocument(DocumentDataAdapter document, Writer writer,	ReadWriteParameterMap parameters) throws IOException {
+		super.doWriteDocument(document, writer, parameters);
+		
 		ApplicationLogger logger = parameters.getLogger();
 		logIngnoredOTULists(document, logger, parameters, formatName, "sequences");
 		Iterator<MatrixDataAdapter> matrixIterator = document.getMatrixIterator(parameters);
@@ -103,7 +109,7 @@ public abstract class AbstractSingleMatrixEventWriter extends AbstractEventWrite
 			MatrixDataAdapter matrixDataAdapter = matrixIterator.next();
 			Iterator<String> sequenceIDIterator = matrixDataAdapter.getSequenceIDIterator(parameters);
 			if (sequenceIDIterator.hasNext()) {
-				writeSingleMatrix(document, matrixDataAdapter, sequenceIDIterator, writer, parameters);
+				writeSingleMatrix(document, matrixDataAdapter, sequenceIDIterator, parameters);
 			}
 			else {
 				logger.addWarning("An empty " + formatName + 

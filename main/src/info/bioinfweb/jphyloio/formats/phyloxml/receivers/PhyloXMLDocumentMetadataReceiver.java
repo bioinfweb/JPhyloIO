@@ -19,8 +19,6 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
-import java.io.IOException;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -29,40 +27,45 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 
+import java.io.IOException;
+
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
 public class PhyloXMLDocumentMetadataReceiver extends PhyloXMLMetaDataReceiver {
 	
-	
-	public PhyloXMLDocumentMetadataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			PhyloXMLWriterStreamDataProvider streamDataProvider, PropertyOwner propertyOwner) {
-		super(writer, parameterMap, streamDataProvider, propertyOwner);
+	public PhyloXMLDocumentMetadataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner) {
+		super(streamDataProvider, parameterMap, propertyOwner);
 	}
+
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		// TODO Auto-generated method stub
 		super.handleLiteralMetaStart(event);
 	}
 
+	
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		// TODO Auto-generated method stub
-		super.handleLiteralContentMeta(event);
+		if (event.hasValue()) {
+			switch (getMetaContentType()) {				
+				case XML:
+					if (event.hasXMLEventValue()) {
+						writeCustomXMLTag(event.getXMLEvent());
+					}
+				default:
+					break;
+			}
+		}
 	}
+	
 
 	@Override
-	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		// TODO Auto-generated method stub
-		super.handleResourceMetaStart(event);
-	}
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {}
 
+	
 	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		// TODO Auto-generated method stub
-		super.handleMetaEndEvent(event);
-	}
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {}
 }

@@ -28,7 +28,7 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 
 import java.io.IOException;
 import java.util.HashMap;

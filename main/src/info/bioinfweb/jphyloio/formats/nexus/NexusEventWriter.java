@@ -29,9 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ElementDataAdapter;
@@ -53,6 +51,7 @@ import info.bioinfweb.jphyloio.formats.newick.NewickStringWriter;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.CharacterSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.ReferenceOnlySetReceiver;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.TokenSetEventReceiver;
+import info.bioinfweb.jphyloio.formats.text.AbstractTextEventWriter;
 import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
 
 
@@ -107,7 +106,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public class NexusEventWriter extends AbstractEventWriter implements NexusConstants {
+public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamDataProvider> implements NexusConstants {
 	private static final String UNDEFINED_OTUS_ID = "\n";  // Should not occur as a real ID;
 	
 	
@@ -115,7 +114,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 	private ReadWriteParameterMap parameters;
 	private ApplicationLogger logger;
 	private Map<String, NexusMatrixWriteResult> matrixIDToBlockTypeMap = new HashMap<String, NexusMatrixWriteResult>(8);
-	private NexusWriterStreamDataProvider streamDataProvider = new NexusWriterStreamDataProvider(this);
 
 	
 	@Override
@@ -123,6 +121,12 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 		return JPhyloIOFormatIDs.NEXUS_FORMAT_ID;
 	}
 
+	
+	@Override
+	protected NexusWriterStreamDataProvider createStreamDataProvider() {
+		return new NexusWriterStreamDataProvider(this);
+	}
+	
 
 	protected Writer getWriter() {
 		return writer;
@@ -141,11 +145,6 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 
 	protected Map<String, NexusMatrixWriteResult> getMatrixIDToBlockTypeMap() {
 		return matrixIDToBlockTypeMap;
-	}
-
-
-	protected NexusWriterStreamDataProvider getStreamDataProvider() {
-		return streamDataProvider;
 	}
 
 
@@ -270,7 +269,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeLineBreak(writer, parameters);
 			increaseIndention();
 			increaseIndention();
-			BasicEventReceiver<Writer> receiver = new BasicEventReceiver<Writer>(writer, parameters);
+			BasicEventReceiver<NexusWriterStreamDataProvider> receiver = new BasicEventReceiver<NexusWriterStreamDataProvider>(getStreamDataProvider(), parameters);
 			Iterator<String> iterator = otuList.getIDIterator(getParameters());
 			while (iterator.hasNext()) {
 				String id = iterator.next();
@@ -539,8 +538,8 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 			writeLineStart(writer, formatToken(sequenceName));
 			writer.write(' ');
 			
-			TextSequenceContentReceiver receiver = new TextSequenceContentReceiver(
-					writer, parameters, "" + COMMENT_START, "" + COMMENT_END, matrix.containsLongTokens(getParameters()));
+			TextSequenceContentReceiver<NexusWriterStreamDataProvider> receiver = new TextSequenceContentReceiver<NexusWriterStreamDataProvider>(
+					getStreamDataProvider(), parameters, matrix.containsLongTokens(getParameters()), "" + COMMENT_START, "" + COMMENT_END);
 			matrix.writeSequencePartContentData(getParameters(), receiver, id, 0, matrix.getSequenceLength(getParameters(), id));
 			if (receiver.didIgnoreMetadata()) {
 				logger.addWarning(receiver.getIgnoredMetadata() + " metadata events nested inside the sequence \"" + sequenceName + 
@@ -763,7 +762,7 @@ public class NexusEventWriter extends AbstractEventWriter implements NexusConsta
 					writer.write(' ');
 					writer.write(KEY_VALUE_SEPARATOR);
 					writer.write(' ');
-					new NewickStringWriter(writer, treeNetwork, new NexusNewickWriterNodeLabelProcessor(
+					new NewickStringWriter(getStreamDataProvider(), treeNetwork, new NexusNewickWriterNodeLabelProcessor(
 							currentOTUList, indexMap, parameters), parameters).write();  // Also writes line break. indexMap may be null.
 				}
 				else {

@@ -32,7 +32,6 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 
@@ -44,16 +43,15 @@ import javax.xml.stream.XMLStreamWriter;
 public class NeXMLCollectSetMetadataReceiver extends NeXMLCollectNamespaceReceiver {
 	private String setID;
 	private boolean ignoreMetadata;
-
 	
-	public NeXMLCollectSetMetadataReceiver(String setID, boolean ignoreMetadata, XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, streamDataProvider);
-		
+
+	public NeXMLCollectSetMetadataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, String setID, boolean ignoreMetadata) {
+		super(streamDataProvider, parameterMap);
 		this.setID = setID;
 		this.ignoreMetadata = ignoreMetadata;
 	}
-	
+
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {

@@ -26,13 +26,11 @@ import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 /**
@@ -40,20 +38,13 @@ import javax.xml.stream.XMLStreamWriter;
  * 
  * @author Sarah Wiechers
  */
-public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceContentReceiver<XMLStreamWriter> implements NeXMLConstants {
+public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceContentReceiver<NeXMLWriterStreamDataProvider> implements NeXMLConstants {
 	private boolean nestedUnderSingleToken = false;
 	private long tokenIndex = 0;
-	
-	private NeXMLWriterStreamDataProvider streamDataProvider;
-	NeXMLWriterAlignmentInformation alignmentInfo;
 
 
-	public NeXMLHandleSequenceDataReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			boolean longTokens, NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, longTokens);
-		
-		this.streamDataProvider = streamDataProvider;
-		this.alignmentInfo = streamDataProvider.getCurrentAlignmentInfo();
+	public NeXMLHandleSequenceDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameterMap, boolean longTokens) {
+		super(streamDataProvider, parameterMap, longTokens);
 	}
 
 
@@ -85,11 +76,6 @@ public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceCo
 	public void setTokenIndex(long tokenIndex) {
 		this.tokenIndex = tokenIndex;
 	}
-
-
-	public NeXMLWriterStreamDataProvider getStreamDataProvider() {
-		return streamDataProvider;
-	}
 	
 	
 	protected void handleTokenEnd() throws XMLStreamException {}
@@ -106,7 +92,7 @@ public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceCo
 					setNestedUnderSingleToken(true);
 					
 					if (tokenEvent.getLabel() != null) {
-						alignmentInfo.setWriteCellsTags(true);
+						getStreamDataProvider().getCurrentAlignmentInfo().setWriteCellsTags(true);
 					}
 				}
 				else {

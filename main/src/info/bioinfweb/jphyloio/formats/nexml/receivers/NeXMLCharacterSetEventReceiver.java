@@ -28,7 +28,6 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 
 /**
@@ -40,11 +39,9 @@ import javax.xml.stream.XMLStreamWriter;
  * @author Sarah Wiechers 
  */
 public class NeXMLCharacterSetEventReceiver extends NeXMLMetaDataReceiver {
-	
-
-	public NeXMLCharacterSetEventReceiver(XMLStreamWriter writer, ReadWriteParameterMap parameterMap,
-			NeXMLWriterStreamDataProvider streamDataProvider) {
-		super(writer, parameterMap, streamDataProvider);
+	public NeXMLCharacterSetEventReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap) {
+		super(streamDataProvider, parameterMap);
 	}
 	
 

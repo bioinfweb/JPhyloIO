@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben StÃ¶ver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -16,38 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.nexml.receivers;
+package info.bioinfweb.jphyloio.formats.text;
 
 
+import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 
 import java.io.IOException;
+import java.io.Writer;
 
-import javax.xml.stream.XMLStreamException;
 
 
-/**
- * Receiver that writes meta data but ignores other events that were processed previously. 
- * 
- * @author Sarah Wiechers
- */
-public class NeXMLOnlyWriteMetaDataReceiver extends NeXMLMetaDataReceiver {
+public abstract class AbstractTextEventWriter<P extends TextWriterStreamDataProvider<? extends AbstractTextEventWriter<P>>> 
+		extends AbstractEventWriter<P>  {
+	private Writer writer;
 	
 
-	public NeXMLOnlyWriteMetaDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
-			ReadWriteParameterMap parameterMap) {
-		super(streamDataProvider, parameterMap);
+	protected Writer getWriter() {
+		return writer;
 	}
 
-	
+
 	@Override
-	protected boolean doAdd(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		switch (event.getType().getContentType()) {
-			default:
-				break;
-		}
-		return true;
-	}	
+	protected void doWriteDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters)
+			throws IOException {
+		this.writer = writer;		//TODO in jedem writer selbst setzen
+	}
 }

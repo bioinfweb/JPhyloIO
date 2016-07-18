@@ -21,8 +21,8 @@ package info.bioinfweb.jphyloio;
 
 import info.bioinfweb.commons.SystemUtils;
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.dataadapters.ElementDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.ElementDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
@@ -49,7 +49,7 @@ import java.util.Iterator;
  * 
  * @author Ben St&ouml;ver
  */
-public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
+public abstract class AbstractEventWriter<P extends WriterStreamDataProvider<? extends AbstractEventWriter<P>>>	implements JPhyloIOEventWriter {
 	public static final String EDITED_LABEL_SEPARATOR = "_";
 
 	
@@ -69,8 +69,35 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 	
 	
 	private String indention = "";
+	private P streamDataProvider;  // Must not be set to anything here.
 	
 	
+	public AbstractEventWriter() {
+		super();
+		streamDataProvider = createStreamDataProvider();
+	}
+
+	
+	/**
+	 * This method is called in the constructor of {@link AbstractEventWriter} to initialize the stream
+	 * data provider that will be returned by {@link #getStreamDataProvider()}. Inheriting classes that use
+	 * their own stream data provider implementation should overwrite this method.
+	 * <p>
+	 * This default implementation creates a new instance of {@link WriterStreamDataProvider}.
+	 * 
+	 * @return the stream data provider to be used with this instance
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected P createStreamDataProvider() {
+		return (P)new WriterStreamDataProvider(this);  // Cannot be created generic, since this implementation is used by different inherited classes.
+	}
+	
+
+	public P getStreamDataProvider() {
+		return streamDataProvider;
+	}
+
+
 	/**
 	 * Writes the line separator, as it is specified in the parameter map or the line separator
 	 * of the current operating system, if the map contains no according entry. 
@@ -421,7 +448,7 @@ public abstract class AbstractEventWriter	implements JPhyloIOEventWriter {
 		else {
 			applicationInfo.append("an application ");
 		}
-		
+
 		applicationInfo.append("using ");
 		applicationInfo.append(JPhyloIO.getInstance().getLibraryNameAndVersion());
 		applicationInfo.append(" <"); 

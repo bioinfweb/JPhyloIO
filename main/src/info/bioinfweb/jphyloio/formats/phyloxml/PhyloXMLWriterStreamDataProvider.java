@@ -18,6 +18,7 @@
  */
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
 
 public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<PhyloXMLEventWriter> {
@@ -25,5 +26,11 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 	
 	public PhyloXMLWriterStreamDataProvider(PhyloXMLEventWriter eventWriter) {
 		super(eventWriter);
+	}
+	
+	
+	@Override
+	public PhyloXMLEventWriter getEventWriter() { //TODO is this really necessary?
+		return (PhyloXMLEventWriter)super.getEventWriter();
 	}
 }

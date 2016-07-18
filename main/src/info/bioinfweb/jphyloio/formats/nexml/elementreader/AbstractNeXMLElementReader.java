@@ -34,8 +34,8 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.nexml.TokenTranslationStrategy;
-import info.bioinfweb.jphyloio.formats.xml.AbstractXMLElementReader;
-import info.bioinfweb.jphyloio.formats.xml.XMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,7 +263,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuOrOtusID != null)) {
 			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuOrOtusID);
 			if (otuEventInformation.label == null) {
-				otuEventInformation.label = otuEventInformation.id;	
+				otuEventInformation.label = otuEventInformation.id;
 			}
 		}
 		
