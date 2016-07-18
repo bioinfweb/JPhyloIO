@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.dataadapters.implementations.receivers;
 
 
 import static org.junit.Assert.*;
+
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -33,9 +34,8 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 import java.io.IOException;
-import java.io.Writer;
 
-import org.junit.*;
+import org.junit.Test;
 
 
 
@@ -43,7 +43,7 @@ public class BasicEventReceiverTest {
 	@Test
 	public void test_add() throws IOException {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
-		BasicEventReceiver<Writer> receiver = new BasicEventReceiver<Writer>(null, new ReadWriteParameterMap());
+		BasicEventReceiver receiver = new BasicEventReceiver(null, new ReadWriteParameterMap()); //TODO add generics
 		assertFalse(receiver.didIgnoreMetadata());
 		assertTrue(logger.getMessageList().isEmpty());
 		

@@ -36,8 +36,6 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.test.SystemOutEventReceiver;
-import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 

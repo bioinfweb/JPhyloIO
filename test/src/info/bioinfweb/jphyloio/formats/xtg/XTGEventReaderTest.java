@@ -40,14 +40,14 @@ public class XTGEventReaderTest {
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();					
-					System.out.println(event.getType());
-
-					if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-						System.out.println("ID: " + event.asNodeEvent().getID() + " Label: " + event.asNodeEvent().getLabel());
-					}
-					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
-					}					
+//					System.out.println(event.getType());
+//
+//					if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
+//						System.out.println("ID: " + event.asNodeEvent().getID() + " Label: " + event.asNodeEvent().getLabel());
+//					}
+//					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
+//						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
+//					}					
 				}
 			}
 			finally {

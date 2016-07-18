@@ -19,10 +19,9 @@
 package info.bioinfweb.jphyloio.formats.fasta;
 
 
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.createTestDocument;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.createTestDocumentWithLabels;
 import static org.junit.Assert.assertEquals;
-
-
 import static org.junit.Assert.assertNotEquals;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
 import info.bioinfweb.commons.log.MessageListApplicationLogger;
@@ -44,8 +43,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
 
 import org.junit.Test;
 

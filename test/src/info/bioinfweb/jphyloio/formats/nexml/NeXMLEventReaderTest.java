@@ -95,7 +95,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", ALIGNMENT_TYPE_DNA, taxonList, reader);
+				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment", null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -269,7 +269,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), null, reader);
 				assertEndEvent(EventContentType.META_LITERAL, reader);
@@ -501,7 +501,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -667,7 +667,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList1, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList1, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -706,7 +706,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment2", ALIGNMENT_TYPE_DNA, taxonList2, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment2", null, taxonList2, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -734,7 +734,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment3", ALIGNMENT_TYPE_DNA, taxonList1, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "alignment3", null, taxonList1, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -922,7 +922,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", ALIGNMENT_TYPE_RESTRICTION, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, "m1", null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -949,7 +949,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_CONTINUOUS, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, "this is character 1", 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1003,7 +1003,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1058,7 +1058,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_RNA, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1117,7 +1117,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_CONTINUOUS, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1188,7 +1188,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_STANDARD, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1229,7 +1229,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_STANDARD, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1281,7 +1281,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 	
 	
 	@Test
-	public void readStandardDataTranslateSymbolToLabel() {
+	public void readStandardDataTranslateSymbolToLabel() { //TODO test gap and missing data tokens in standard data
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY, TokenTranslationStrategy.SYMBOL_TO_LABEL);
@@ -1302,7 +1302,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_STANDARD, taxonList1, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList1, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1343,7 +1343,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.ALIGNMENT, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_STANDARD, taxonList1, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList1, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1410,7 +1410,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);				
 				
-				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+				String alignment = assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1453,7 +1453,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);	
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1502,7 +1502,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1538,7 +1538,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1603,7 +1603,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 			assertEndEvent(EventContentType.OTU, reader);
 			assertEndEvent(EventContentType.OTU_LIST, reader);
 			
-			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_DNA, taxonList, reader);
+			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 			
 			assertCharacterDefinitionEvent(null, null, 0, true, reader);
 			assertCharacterDefinitionEvent(null, null, 1, true, reader);
@@ -1679,7 +1679,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				assertEndEvent(EventContentType.OTU, reader);
 				assertEndEvent(EventContentType.OTU_LIST, reader);
 				
-				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, ALIGNMENT_TYPE_CONTINUOUS, taxonList, reader);
+				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, taxonList, reader);
 				
 				assertCharacterDefinitionEvent(null, null, 0, true, reader);
 				assertCharacterDefinitionEvent(null, null, 1, true, reader);
