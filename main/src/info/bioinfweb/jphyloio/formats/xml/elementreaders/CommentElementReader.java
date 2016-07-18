@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben St�ver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -16,37 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xml;
+package info.bioinfweb.jphyloio.formats.xml.elementreaders;
 
-
-import info.bioinfweb.jphyloio.ReadWriteConstants;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 
 import java.io.IOException;
 
+import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
+
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.Comment;
 import javax.xml.stream.events.XMLEvent;
 
 
 
 @SuppressWarnings("rawtypes")
-public class XMLToMetaElementStartReader extends AbstractXMLElementReader {
+public class CommentElementReader extends AbstractXMLElementReader {	                                                                
 	@SuppressWarnings("unchecked")
 	@Override
 	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-		StartElement element = event.asStartElement();
-		
-		if (streamDataProvider.getNestedMetaNames().isEmpty()) {
-			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-					null, new URIOrStringIdentifier(null, element.getName()), LiteralContentSequenceType.XML));
-		}
-		
-		streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event, false));
-		
-		streamDataProvider.getNestedMetaNames().add(element.getName().getLocalPart());
+		streamDataProvider.getCurrentEventCollection().add(new CommentEvent(((Comment)event).getText(), false));
 	}
 }
