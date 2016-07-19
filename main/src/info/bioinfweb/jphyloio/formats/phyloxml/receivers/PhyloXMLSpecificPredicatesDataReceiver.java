@@ -19,6 +19,11 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
+import java.io.IOException;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -27,58 +32,44 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLStreamException;
 
 
-
-public class PhyloXMLIgnoreMetadataReceiver extends PhyloXMLMetaDataReceiver {
-	private boolean ignoreCustomXML;
-	private boolean hasMetadata = false;
+public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataReceiver {
+	private QName elementPredicate;
 	
-	
-	public PhyloXMLIgnoreMetadataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
-			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner, boolean ignoreCustomXML) {
+
+	public PhyloXMLSpecificPredicatesDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner, QName elementPredicate) {
 		super(streamDataProvider, parameterMap, propertyOwner);
-		
-		this.ignoreCustomXML = ignoreCustomXML;
-	}
-
-
-	public boolean hasMetadata() {
-		return hasMetadata;
+		this.elementPredicate = elementPredicate;
 	}
 
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
 		
-		if (!ignoreCustomXML) {
-			super.handleLiteralMetaStart(event);
-		}
 	}
 
-	
+
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
 		
-		if (isWriteContent() && !ignoreCustomXML && !hasSimpleContent() && event.hasXMLEventValue()) {			
-			writeCustomXMLTag(event.getXMLEvent());			
-		}
 	}
-	
+
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
+		if (getStreamDataProvider().getPredicateInfoMap().get(elementPredicate).getAllowedChildren().contains(event.getRel().getURI())) {
+			switch (getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTreatment()) {
+				case TAG:
+//					getStreamDataProvider().getWriter().writeStartElement(prefix, localName, namespaceURI);
+			}
+		}
 	}
 
-	
+
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
+		
 	}
 }

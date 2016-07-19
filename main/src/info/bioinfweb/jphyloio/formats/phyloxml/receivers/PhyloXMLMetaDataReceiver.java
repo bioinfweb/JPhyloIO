@@ -31,6 +31,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetaeventInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
@@ -57,12 +58,9 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	private URIOrStringIdentifier literalPredicate;
 	private URIOrStringIdentifier originalType;
 	private String alternativeStringRepresentation;
-	
-	private boolean writeMeta;
-	private ResourceMetadataEvent parentMeta;
+	private boolean writeContent;
 
 
-	//TODO ignore all metadata with PhyloXML-specific predicates
 	public PhyloXMLMetaDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
 			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner) {
 		super(streamDataProvider, parameterMap);
@@ -70,29 +68,21 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	}
 
 
-	protected boolean hasSimpleContent() {
+	public boolean hasSimpleContent() {
 		return hasSimpleContent;
+	}
+
+
+	public boolean isWriteContent() {
+		return writeContent;
 	}
 
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		switch (getParameterMap().getPhyloXMLMetadataTreatment()) {
-			case NONE:
-				writeMeta = false;
-				break;
-			case ONLY_LEAFS:
-				writeMeta = !(getParentEvent() instanceof ResourceMetadataEvent);
-				break;
-			case SEQUENTIAL:
-				writeMeta = true;
-				break;
-			case TOP_LEVEL_WITH_CHILDREN:
-			case TOP_LEVEL_WITHOUT_CHILDREN:
-				break;
-		}
+		writeContent = determineWriteMeta(event.getID());
 		
-		if (writeMeta) {
+		if (writeContent) {
 			hasSimpleContent = event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE);
 			literalPredicate = event.getPredicate();
 			originalType = event.getOriginalType();
@@ -103,7 +93,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (event.hasValue()) {
+		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
 				if ((originalType != null) && (originalType.getURI() != null) 
 						&& originalType.getURI().getNamespaceURI().equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) { //TODO exception or warning if datatype is not an XSD type?
@@ -145,27 +135,53 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 						value = event.getStringValue();
 					}
 					
-					writePropertyTag(originalType, value);
+					writePropertyTag(literalPredicate, originalType, value);
+					getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent()); //TODO buffer content in case this is true?
 				}
 			}
 			else if (event.hasXMLEventValue()) {				
-				writeCustomXMLTag(event.getXMLEvent());							
+				writeCustomXMLTag(event.getXMLEvent());
+				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());
 			}
 		}
 	}
 	
+
+	@Override
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		if (determineWriteMeta(event.getID())) {
+			if (event.getHRef() != null) {
+				writePropertyTag(event.getRel(), new URIOrStringIdentifier("anyURI", null), event.getHRef().toString());
+			}
+		}
+	}
 	
-	private void writePropertyTag(URIOrStringIdentifier datatype, String value) throws XMLStreamException, JPhyloIOWriterException {			
+
+	@Override
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+			originalType = null;
+			if (getStreamDataProvider().isLiteralContentContinued()) {
+				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
+						+ "event was marked to be continued in a subsequent event.");
+			}
+		}		
+	}
+	
+	
+	protected void writePropertyTag(URIOrStringIdentifier predicate, URIOrStringIdentifier datatype, String value) throws XMLStreamException, JPhyloIOWriterException {			
 		getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
-		
-		if (literalPredicate.getURI() != null) { //TODO handle case that only string key is present
+
+		if (predicate.getURI() != null) { //TODO handle case that only string key is present
 			getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
-					XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), literalPredicate.getURI().getPrefix(), 
-					literalPredicate.getURI().getNamespaceURI()) + ":" + literalPredicate.getURI().getLocalPart());
+					XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
+							predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
 		}
 		
-		getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
-				+ ":" + datatype.getURI().getLocalPart());
+		if (datatype.getURI() != null) {
+			getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
+					+ ":" + datatype.getURI().getLocalPart());
+		} //TODO handle case that only string key is present
 		
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), propertyOwner.toString().toLowerCase()); //TODO XTG attribute constants zum Vergleich ansehen
 		
@@ -219,42 +235,34 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		}
 	}
 	
-
-	@Override
-	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		switch (getParameterMap().getPhyloXMLMetadataTreatment()) {
-		case NONE:
-			writeMeta = false;
-			break;
-		case ONLY_LEAFS:
-			
-			break;
-		case SEQUENTIAL:
-			writeMeta = true;
-			break;
-		case TOP_LEVEL_WITH_CHILDREN:
-			writeMeta = !(getParentEvent() instanceof ResourceMetadataEvent);
-			break;
-		case TOP_LEVEL_WITHOUT_CHILDREN:
-			writeMeta = !(getParentEvent() instanceof ResourceMetadataEvent);
-			break;
-	}
-		
-		if (!(getParentEvent() instanceof ResourceMetadataEvent)) {  // Only write resource meta on highest level
-			if (event.getHRef() != null) {
-				writePropertyTag(new URIOrStringIdentifier("anyURI", null), event.getHRef().toString());
-			}
-		}
-	}
 	
-
-	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
-			if (getStreamDataProvider().isLiteralContentContinued()) {
-				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
-						+ "event was marked to be continued in a subsequent event.");
+	private boolean determineWriteMeta(String id) {
+		boolean writeMeta = false;
+		PhyloXMLMetaeventInfo metaInfo = getStreamDataProvider().getMetaEvents().get(id);
+		
+		if (getStreamDataProvider().getMetaIDs().contains(id)) {
+			switch (getParameterMap().getPhyloXMLMetadataTreatment()) {
+				case NONE:
+					writeMeta = false;
+					break;
+				case ONLY_LEAFS:
+					writeMeta = metaInfo.getChildIDs().isEmpty();
+					break;
+				case SEQUENTIAL:
+					writeMeta = true;
+					break;
+				case TOP_LEVEL_WITH_CHILDREN:
+					writeMeta = metaInfo.isTopLevel() && !metaInfo.getChildIDs().isEmpty();
+					break;
+				case TOP_LEVEL_WITHOUT_CHILDREN:
+					writeMeta = metaInfo.isTopLevel() && metaInfo.getChildIDs().isEmpty();
+					break;
 			}
-		}		
+			
+			return writeMeta;
+		}
+		else {
+			return false;
+		}	
 	}
 }

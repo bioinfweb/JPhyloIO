@@ -26,9 +26,10 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
-import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLCheckNamespacesDataReceiver;
+import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLCollectMetadataDataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLIgnoreMetadataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLMetaDataReceiver;
+import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLSpecificPredicatesDataReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.utils.TreeTopologyExtractor;
@@ -89,7 +90,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	
 	
 	private void checkDocumentNamespaces() throws IOException {
-		PhyloXMLCheckNamespacesDataReceiver receiver = new PhyloXMLCheckNamespacesDataReceiver(getStreamDataProvider(), getParameters());
+		PhyloXMLCollectMetadataDataReceiver receiver = new PhyloXMLCollectMetadataDataReceiver(getStreamDataProvider(), getParameters());
 		
 		getDocument().writeMetadata(getParameters(), receiver);
 		
@@ -109,7 +110,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 				}
 				
 				Iterator<String> nodeIDIterator = tree.getNodes(getParameters()).getIDIterator(getParameters());
-				while (edgeIDIterator.hasNext()) {
+				while (nodeIDIterator.hasNext()) {
 					tree.getNodes(getParameters()).writeContentData(getParameters(), receiver, nodeIDIterator.next());
 				}
 			}
@@ -141,6 +142,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	
 	
 	private void writePhylogenyTag(TreeNetworkDataAdapter tree) throws XMLStreamException, IOException {
+		PhyloXMLSpecificPredicatesDataReceiver specificReceiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), 
+				PropertyOwner.PHYLOGENY, PREDICATE_PHYLOGENY);
 		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PHYLOGENY);		
 		LabeledIDEvent startEvent = tree.getStartEvent(getParameters());
 		TreeTopologyExtractor topologyExtractor = new TreeTopologyExtractor(tree, getParameters());
@@ -167,6 +170,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			getXMLWriter().writeAttribute(ATTR_TYPE.getLocalPart(), TYPE_CROSSLINK); //TODO find better name?
 		}
 
+		tree.writeMetadata(getParameters(), specificReceiver);
 		tree.writeMetadata(getParameters(), receiver);
 		
 		getXMLWriter().writeEndElement();
