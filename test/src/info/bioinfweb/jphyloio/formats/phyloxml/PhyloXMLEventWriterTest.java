@@ -21,16 +21,19 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 import static info.bioinfweb.commons.testing.XMLAssert.assertAttribute;
 import static info.bioinfweb.commons.testing.XMLAssert.assertAttributeCount;
+import static info.bioinfweb.commons.testing.XMLAssert.assertCharactersEvent;
+import static info.bioinfweb.commons.testing.XMLAssert.assertDefaultNamespace;
 import static info.bioinfweb.commons.testing.XMLAssert.assertEndDocument;
 import static info.bioinfweb.commons.testing.XMLAssert.assertEndElement;
-import static info.bioinfweb.commons.testing.XMLAssert.assertNameSpaceCount;
 import static info.bioinfweb.commons.testing.XMLAssert.assertNamespace;
+import static info.bioinfweb.commons.testing.XMLAssert.assertNamespaceCount;
 import static info.bioinfweb.commons.testing.XMLAssert.assertShortElement;
 import static info.bioinfweb.commons.testing.XMLAssert.assertStartDocument;
 import static info.bioinfweb.commons.testing.XMLAssert.assertStartElement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
@@ -45,14 +48,13 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTreeAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NetworkDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.PhyloXMLEdgeAndNodeMetadataTreeAdapter;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import javax.xml.XMLConstants;
@@ -82,10 +84,13 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	}
 	
 	
-	private void writeDocument(StoreDocumentDataAdapter document, File file) throws IOException {
+	private void writeDocument(StoreDocumentDataAdapter document, ReadWriteParameterMap parameters, File file) throws IOException {
 		PhyloXMLEventWriter writer = new PhyloXMLEventWriter();
-		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.SEQUENTIAL);
+		
+		if (parameters == null) {
+			parameters = new ReadWriteParameterMap();
+		}
+		
 		writer.writeDocument(document, file, parameters);
 	}
 	
@@ -103,7 +108,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		trees.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
 		document.getTreesNetworks().add(trees);
 		
-		writeDocument(document, file);
+		writeDocument(document, null, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);
@@ -115,12 +120,13 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNameSpaceCount(3, element);
-			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespaceCount(4, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
@@ -143,22 +149,19 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	
 	
 	@Test
-	public void assertSingleTreeDocumentWithMetadata() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+	public void assertDocumentWithMetadataStrategyNone() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		
 		// Write file
 		idIndex = 1;
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
-		// Add metadata
-		URI href = null;
-		URI href2 = null;
-		try {
-			href = new URI("www.test.de");
-			href2 = new URI("www.test2.de");
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
+		// Add document metadata
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
 		
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
@@ -166,68 +169,17 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		document.getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
 		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
-		document.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "relations")), href2, null));
-		
-		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
-		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
-		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		
 		// Add treegroup
 		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, 
 				ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), new ArrayList<JPhyloIOEvent>());
-		EdgeAndNodeMetaDataTreeAdapter tree = new EdgeAndNodeMetaDataTreeAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
-		
-		// Add tree metadata		
-		tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "relations")), href, null));
-		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		
-		tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "relations")), href2, null));		
-		
-		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
-				LiteralContentSequenceType.SIMPLE));
-		tree.getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
-		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-		
-		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
-		tree.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
-		tree.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-		
-		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		
-		
-		// Add metaevents with PhyloXML-specific predicates
-		tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID), null, null));		
-		
-		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
-				LiteralContentSequenceType.SIMPLE));
-		tree.getAnnotations().add(new LiteralMetadataContentEvent("NCBI", "NCBI"));
-		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-		
-		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING),
-				LiteralContentSequenceType.SIMPLE));		
-		tree.getAnnotations().add(new LiteralMetadataContentEvent("phylogeny1", "phylogeny1"));
-		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-		
-		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		
+		PhyloXMLEdgeAndNodeMetadataTreeAdapter tree = new PhyloXMLEdgeAndNodeMetadataTreeAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
 		
 		trees.getTreesAndNetworks().add(tree);
 		document.getTreesNetworks().add(trees);
 		
-		writeDocument(document, file);
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.NONE);
+		writeDocument(document, parameters, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);
@@ -238,13 +190,85 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNameSpaceCount(6, element);
-			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
-			//TODO assert remaining ns
+			assertNamespaceCount(7, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			
+			assertTrue(reader.hasNext());
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			validateSingleTree(reader);
+			
+			assertEndElement(TAG_ROOT, reader);			
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertDocumentWithMetadataStrategyOnlyLeafs() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
+		
+		// Write file
+		idIndex = 1;
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		
+		// Add document metadata
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		document.getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
+		// Add treegroup
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, 
+				ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), new ArrayList<JPhyloIOEvent>());
+		PhyloXMLEdgeAndNodeMetadataTreeAdapter tree = new PhyloXMLEdgeAndNodeMetadataTreeAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
+		
+		trees.getTreesAndNetworks().add(tree);
+		document.getTreesNetworks().add(trees);
+		
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.ONLY_LEAFS);
+		writeDocument(document, parameters, file);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNamespaceCount(7, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
@@ -255,7 +279,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			element = assertStartElement(TAG_PHYLOGENY, reader);
 			assertAttributeCount(2, element);
 			assertAttribute(ATTR_ROOTED, "true", element);
-			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, "xsd:double", element);
+			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_DOUBLE.getLocalPart(), element);
 			
 			assertShortElement(TAG_ID, reader);
 			
@@ -269,10 +293,43 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
 			assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
 			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_INT.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_NODE, element);
+			assertCharactersEvent("100", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_STRING.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_NODE, element);
+			assertCharactersEvent("200", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
 			assertStartElement(TAG_CLADE, reader);
 			assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
 			assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
-			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_STRING.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PARENT_BRANCH, element);
+			assertCharactersEvent("edge meta", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_INT.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PARENT_BRANCH, element);
+			assertCharactersEvent("100", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
 			assertEndElement(TAG_CLADE, reader);
 			
 			assertStartElement(TAG_CLADE, reader);
@@ -290,14 +347,587 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_CLADE, reader);
 			
 			assertEndElement(TAG_CLADE, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix1 + XMLUtils.QNAME_SEPARATOR + "relations", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_ANY_URI.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PHYLOGENY, element);
+			assertCharactersEvent("www.test.de", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_STRING.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PHYLOGENY, element);
+			assertCharactersEvent("myValue", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			assertAttributeCount(1, element);
+			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);			
+			
 			assertEndElement(TAG_PHYLOGENY, reader);
+			
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			assertAttributeCount(1, element);
+			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
 			
 			assertEndDocument(reader);
 		}
 		finally {
-			fileReader.close(); //TODO do this also in other tests
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertDocumentWithMetadataStrategySequential() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
+		
+		// Write file
+		idIndex = 1;
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		
+		// Add document metadata
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		document.getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
+		// Add treegroup
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, 
+				ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), new ArrayList<JPhyloIOEvent>());
+		PhyloXMLEdgeAndNodeMetadataTreeAdapter tree = new PhyloXMLEdgeAndNodeMetadataTreeAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
+		
+		trees.getTreesAndNetworks().add(tree);
+		document.getTreesNetworks().add(trees);
+		
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.SEQUENTIAL);
+		writeDocument(document, parameters, file);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNamespaceCount(7, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			
+			assertTrue(reader.hasNext());
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			element = assertStartElement(TAG_PHYLOGENY, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ROOTED, "true", element);
+			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_DOUBLE.getLocalPart(), element);
+			
+			assertShortElement(TAG_ID, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node '_1", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_INT.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_NODE, element);
+			assertCharactersEvent("100", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_STRING.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_NODE, element);
+			assertCharactersEvent("200", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_STRING.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PARENT_BRANCH, element);
+			assertCharactersEvent("edge meta", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_INT.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PARENT_BRANCH, element);
+			assertCharactersEvent("100", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix1 + XMLUtils.QNAME_SEPARATOR + "relations", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_ANY_URI.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PHYLOGENY, element);
+			assertCharactersEvent("www.test.de", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix1 + XMLUtils.QNAME_SEPARATOR + "relations", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_ANY_URI.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PHYLOGENY, element);
+			assertCharactersEvent("www.test2.de", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_STRING.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PHYLOGENY, element);
+			assertCharactersEvent("myValue", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			assertAttributeCount(1, element);
+			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);			
+			
+			assertEndElement(TAG_PHYLOGENY, reader);
+			
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			assertAttributeCount(1, element);
+			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			
+			assertEndElement(TAG_ROOT, reader);			
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertDocumentWithMetadataStrategyTopWithChildren() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
+		
+		// Write file
+		idIndex = 1;
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		
+		// Add document metadata
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		document.getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
+		// Add treegroup
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, 
+				ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), new ArrayList<JPhyloIOEvent>());
+		PhyloXMLEdgeAndNodeMetadataTreeAdapter tree = new PhyloXMLEdgeAndNodeMetadataTreeAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
+		
+		trees.getTreesAndNetworks().add(tree);
+		document.getTreesNetworks().add(trees);
+		
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.TOP_LEVEL_WITH_CHILDREN);
+		writeDocument(document, parameters, file);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNamespaceCount(7, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			
+			assertTrue(reader.hasNext());
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			element = assertStartElement(TAG_PHYLOGENY, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ROOTED, "true", element);
+			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_DOUBLE.getLocalPart(), element);
+			
+			assertShortElement(TAG_ID, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node '_1", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);			
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);		
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);			
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix1 + XMLUtils.QNAME_SEPARATOR + "relations", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_ANY_URI.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PHYLOGENY, element);
+			assertCharactersEvent("www.test2.de", reader);
+			assertEndElement(TAG_PROPERTY, reader);			
+			
+			assertEndElement(TAG_PHYLOGENY, reader);		
+			
+			assertEndElement(TAG_ROOT, reader);			
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertDocumentWithMetadataStrategyTopWithoutChildren() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
+		
+		// Write file
+		idIndex = 1;
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		
+		// Add document metadata
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		document.getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
+		// Add treegroup
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, 
+				ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), new ArrayList<JPhyloIOEvent>());
+		PhyloXMLEdgeAndNodeMetadataTreeAdapter tree = new PhyloXMLEdgeAndNodeMetadataTreeAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
+		
+		trees.getTreesAndNetworks().add(tree);
+		document.getTreesNetworks().add(trees);
+		
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.TOP_LEVEL_WITHOUT_CHILDREN);
+		writeDocument(document, parameters, file);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNamespaceCount(7, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			
+			assertTrue(reader.hasNext());
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			element = assertStartElement(TAG_PHYLOGENY, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ROOTED, "true", element);
+			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_DOUBLE.getLocalPart(), element);
+			
+			assertShortElement(TAG_ID, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node '_1", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_INT.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_NODE, element);
+			assertCharactersEvent("100", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_STRING.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_NODE, element);
+			assertCharactersEvent("200", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_STRING.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PARENT_BRANCH, element);
+			assertCharactersEvent("edge meta", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix3 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_INT.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PARENT_BRANCH, element);
+			assertCharactersEvent("100", reader);
+			assertEndElement(TAG_PROPERTY, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "0.9", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			element = assertStartElement(TAG_PROPERTY, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_REF, prefix1 + XMLUtils.QNAME_SEPARATOR + "relations", element);
+			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_ANY_URI.getLocalPart(), element);
+			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PHYLOGENY, element);
+			assertCharactersEvent("www.test.de", reader);
+			assertEndElement(TAG_PROPERTY, reader);			
+			
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			assertAttributeCount(1, element);
+			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);			
+			
+			assertEndElement(TAG_PHYLOGENY, reader);
+			
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			assertAttributeCount(1, element);
+			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			
+			assertEndElement(TAG_ROOT, reader);			
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadata() throws IOException, XMLStreamException {
+		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		
+		// Write file:
+		idIndex = 1;
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();		
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
+		
+		NoAnnotationsTree tree = new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, 
+				"nodeEdgeID"); // Does not contain any meta data, but it is possible to add tree meta data manually
+		
+		// Add meta events with PhyloXML-specific predicates to tree
+		tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID), null, null));
+
+		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		tree.getAnnotations().add(new LiteralMetadataContentEvent("NCBI", "NCBI"));
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+
+		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING),
+				LiteralContentSequenceType.SIMPLE));		
+		tree.getAnnotations().add(new LiteralMetadataContentEvent("phylogeny1", "phylogeny1"));
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
+		//Add unspecific meta event to check if it is filtered out and written seperately
+		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		tree.getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		
+		trees.getTreesAndNetworks().add(tree);
+		document.getTreesNetworks().add(trees);
+		
+		writeDocument(document, null, file);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			
+			assertNamespaceCount(6, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/PhyloXML/Predicates/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			
+			assertTrue(reader.hasNext());
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			validateSingleTree(reader);
+			
+			assertEndElement(TAG_ROOT, reader);			
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
 			reader.close();
 //			file.delete();
 		}
@@ -310,7 +940,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
-		writeDocument(document, file);
+		writeDocument(document, null, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);
@@ -320,12 +950,13 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			StartElement element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNameSpaceCount(3, element);
-			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespaceCount(4, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
@@ -356,7 +987,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		
 		document.getTreesNetworks().add(trees);
 		
-		writeDocument(document, file);
+		writeDocument(document, null, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);
@@ -366,12 +997,13 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			StartElement element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNameSpaceCount(3, element);
-			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespaceCount(4, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
@@ -392,7 +1024,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	
 	
 	@Test
-	public void assertMultipleTreesDocument() throws IOException, XMLStreamException {
+	public void assertTreeAndNetworkDocument() throws IOException, XMLStreamException {
 		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		
 		// Write file
@@ -402,10 +1034,10 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
 		
 		trees.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
-		trees.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
+		trees.getTreesAndNetworks().add(new NetworkDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
 		document.getTreesNetworks().add(trees);
 		
-		writeDocument(document, file);
+		writeDocument(document, null, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);
@@ -417,12 +1049,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNameSpaceCount(3, element);
-			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
+			assertNamespaceCount(4, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
@@ -430,8 +1061,57 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertTrue(((Comment)event).getText().matches(
 					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
 			
-			validateSingleTree(reader);			
+			// Validate tree
 			validateSingleTree(reader);
+			
+			// Validate network
+			element = assertStartElement(TAG_PHYLOGENY, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ROOTED, "true", element);
+			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_DOUBLE.getLocalPart(), element);
+			
+			assertShortElement(TAG_ID, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.5", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnRoot", reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node '_1", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.0", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDn1", reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "1.1", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnA", reader);			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnB", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertStartElement(TAG_CLADE, reader);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+			assertShortElement(TAG_BRANCH_LENGTH, "2.0", reader);
+			assertShortElement(TAG_NODE_ID, "nodeEdgeIDnC", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			element = assertStartElement(TAG_CLADE_RELATION, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID_REF_0, "nodeEdgeIDnB", element);
+			assertAttribute(ATTR_ID_REF_1, "nodeEdgeIDnC", element);
+			assertAttribute(ATTR_DISTANCE, "1.4", element);
+			assertAttribute(ATTR_TYPE, "crosslink", element);
+			assertEndElement(TAG_CLADE_RELATION, reader);
+			
+			assertEndElement(TAG_PHYLOGENY, reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
 			
@@ -464,7 +1144,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		document.getTreesNetworks().add(trees1);
 		document.getTreesNetworks().add(trees2);
 		
-		writeDocument(document, file);
+		writeDocument(document, null, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);
@@ -476,12 +1156,13 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNameSpaceCount(3, element);
-			assertNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespaceCount(4, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), element);
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), element);
+					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
@@ -507,7 +1188,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		StartElement element = assertStartElement(TAG_PHYLOGENY, reader);
 		assertAttributeCount(2, element);
 		assertAttribute(ATTR_ROOTED, "true", element);
-		assertAttribute(ATTR_BRANCH_LENGTH_UNIT, "xsd:double", element);
+		assertAttribute(ATTR_BRANCH_LENGTH_UNIT, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_DOUBLE.getLocalPart(), element);
 		
 		assertShortElement(TAG_ID, reader);
 		

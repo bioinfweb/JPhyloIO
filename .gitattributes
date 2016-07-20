@@ -533,6 +533,7 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/TestTreeNetworkGroupDataAdapt
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/EdgeAndNodeMetaDataTreeAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/NetworkDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/NoAnnotationsTree.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/PhyloXMLEdgeAndNodeMetadataTreeAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/DataTypeConverterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/ListTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/NamespaceContextTest.java -text svneol=unset#text/plain

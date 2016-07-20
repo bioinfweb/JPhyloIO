@@ -68,7 +68,7 @@ public class EdgeAndNodeMetaDataTreeAdapter extends StoreTreeNetworkDataAdapter 
 	}
 	
 	
-	private void addEdges(StoreObjectListDataAdapter<EdgeEvent> edges) {
+	protected void addEdges(StoreObjectListDataAdapter<EdgeEvent> edges) {
 		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "eRoot", "Root edge", null, nodeEdgeIDPrefix + "nRoot", 1.5));
 		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "e1", "Internal edge", nodeEdgeIDPrefix + "nRoot", nodeEdgeIDPrefix + "n1", 1.0));
 		
@@ -91,7 +91,7 @@ public class EdgeAndNodeMetaDataTreeAdapter extends StoreTreeNetworkDataAdapter 
 	}
 
 
-	private void addNodes(StoreObjectListDataAdapter<NodeEvent> nodes) {
+	protected void addNodes(StoreObjectListDataAdapter<NodeEvent> nodes) {
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "n1", "Node '_1", null, false));
 		List<JPhyloIOEvent> nestedEvents = nodes.getObjectContent(nodeEdgeIDPrefix + "n1");
 		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "n1meta1", null,   //TODO Prefix was not added here in previous implementation. => Adjust test cases.
@@ -119,6 +119,11 @@ public class EdgeAndNodeMetaDataTreeAdapter extends StoreTreeNetworkDataAdapter 
 	public String getNodeEdgeIDPrefix() {
 		return nodeEdgeIDPrefix;
 	}
+	
+
+	protected String[] getLinkedOTUs() {
+		return linkedOTUs;
+	}
 
 
 	@Override
@@ -131,10 +136,4 @@ public class EdgeAndNodeMetaDataTreeAdapter extends StoreTreeNetworkDataAdapter 
 	public boolean isTree(ReadWriteParameterMap parameters) {
 		return true;
 	}
-
-	
-//	@Override
-//	public boolean considerRooted(ReadWriteParameterMap parameters) {
-//		return true;
-//	}
 }
