@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -28,12 +28,14 @@ import javax.xml.namespace.QName;
 
 public class PhyloXMLPredicateInfo {
 	private PhyloXMLPredicateTreatment treatment;
+	private QName translation;
 	private List<QName> allowedChildren = new ArrayList<QName>();
 	
 	
-	public PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment treatment, QName... allowedChildren) {
+	public PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment treatment, QName translation, QName... allowedChildren) {
 		super();
 		this.treatment = treatment;
+		this.translation = translation;
 		
 		for (int i = 0; i < allowedChildren.length; i++) {
 			this.allowedChildren.add(allowedChildren[i]);
@@ -43,6 +45,11 @@ public class PhyloXMLPredicateInfo {
 
 	public PhyloXMLPredicateTreatment getTreatment() {
 		return treatment;
+	}
+
+
+	public QName getTranslation() {
+		return translation;
 	}
 
 

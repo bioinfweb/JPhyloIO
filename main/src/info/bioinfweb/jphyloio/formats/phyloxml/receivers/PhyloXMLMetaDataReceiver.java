@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -59,6 +60,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	private URIOrStringIdentifier originalType;
 	private String alternativeStringRepresentation;
 	private boolean writeContent;
+	private boolean writePropertyStart;
 
 
 	public PhyloXMLMetaDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
@@ -87,6 +89,8 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 			literalPredicate = event.getPredicate();
 			originalType = event.getOriginalType();
 			alternativeStringRepresentation = event.getAlternativeStringValue();
+			
+			writePropertyStart = true;
 		}
 	}
 	
@@ -95,6 +99,11 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
+				
+				if (((originalType == null) || (originalType.getURI() == null)) && (event.getStringValue() != null)) {
+					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);
+				}
+				
 				if ((originalType != null) && (originalType.getURI() != null) 
 						&& originalType.getURI().getNamespaceURI().equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) { //TODO exception or warning if datatype is not an XSD type?
 					//TODO also check if this original type is allowed in PhyloXML?
@@ -135,7 +144,17 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 						value = event.getStringValue();
 					}
 					
-					writePropertyTag(literalPredicate, originalType, value);
+					if (writePropertyStart) {
+						writePropertyTag(literalPredicate, originalType, null, false);
+						writePropertyStart = false;
+					}
+					
+					getStreamDataProvider().getWriter().writeCharacters(value);
+					
+					if (!event.isContinuedInNextEvent()) {
+						getStreamDataProvider().getWriter().writeEndElement();		
+					}
+					
 					getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent()); //TODO buffer content in case this is true?
 				}
 			}
@@ -151,7 +170,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		if (determineWriteMeta(event.getID())) {
 			if (event.getHRef() != null) {
-				writePropertyTag(event.getRel(), new URIOrStringIdentifier("anyURI", null), event.getHRef().toString());
+				writePropertyTag(event.getRel(), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_ANY_URI), event.getHRef().toString(), true);
 			}
 		}
 	}
@@ -161,6 +180,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
 			originalType = null;
+			writePropertyStart = false;
 			if (getStreamDataProvider().isLiteralContentContinued()) {
 				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
 						+ "event was marked to be continued in a subsequent event.");
@@ -169,7 +189,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	}
 	
 	
-	protected void writePropertyTag(URIOrStringIdentifier predicate, URIOrStringIdentifier datatype, String value) throws XMLStreamException, JPhyloIOWriterException {			
+	protected void writePropertyTag(URIOrStringIdentifier predicate, URIOrStringIdentifier datatype, String value, boolean writeEndElement) throws XMLStreamException, JPhyloIOWriterException {			
 		getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
 
 		if (predicate.getURI() != null) { //TODO handle case that only string key is present
@@ -187,9 +207,13 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		
 		//TODO Also write ID_REF attribute?
 		
-		getStreamDataProvider().getWriter().writeCharacters(value);
-		
-		getStreamDataProvider().getWriter().writeEndElement();		
+		if (value != null) {
+			getStreamDataProvider().getWriter().writeCharacters(value);
+		}
+
+		if (writeEndElement) {
+			getStreamDataProvider().getWriter().writeEndElement();		
+		}
 	}
 	
 	

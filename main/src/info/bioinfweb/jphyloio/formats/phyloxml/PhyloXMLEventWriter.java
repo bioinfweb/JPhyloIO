@@ -67,15 +67,17 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		PhyloXMLIgnoreMetadataReceiver receiver = new PhyloXMLIgnoreMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.OTHER, 
 				false);
 		
+		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.XSD_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_NS_URI);  // Ensures that the prefix for this NS is always 'xsd'
+		
 		checkDocumentNamespaces();		
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getXSDPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_NS_URI); //TODO ensure that prefix is always 'xsd'		
+		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getRDFPrefix(getXMLWriter()), XMLReadWriteUtils.NAMESPACE_RDF); //TODO only write this if customXML is present
 		
 		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
 		
 		// Write namespace declarations
 		getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);		
-		for (String prefix : getStreamDataProvider().getNamespacePrefixes()) {
+		for (String prefix : getStreamDataProvider().getNamespacePrefixes()) { //TODO only write NS if element is actually written to the file?
 			getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
 		}
 		
@@ -159,6 +161,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		writeSimpleTag(TAG_NAME.getLocalPart(), startEvent.getLabel());
 		writeSimpleTag(TAG_ID.getLocalPart(), startEvent.getID());
 		
+		tree.writeMetadata(getParameters(), specificReceiver); //TODO ensure that id and name tags are not written
+		
 		writeCladeTag(tree, topologyExtractor, rootNodeID);  // It is ensured by the TreeTopologyExtractor that the root node ID is not null
 		
 		for (String networkEdgeID : topologyExtractor.getNetworkEdgeIDs()) {
@@ -169,8 +173,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			getXMLWriter().writeAttribute(ATTR_DISTANCE.getLocalPart(), Double.toString(networkEdgeEvent.getLength()));
 			getXMLWriter().writeAttribute(ATTR_TYPE.getLocalPart(), TYPE_CROSSLINK); //TODO find better name?
 		}
-
-		tree.writeMetadata(getParameters(), specificReceiver);
+		
 		tree.writeMetadata(getParameters(), receiver);
 		
 		getXMLWriter().writeEndElement();
@@ -188,7 +191,11 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		getXMLWriter().writeStartElement(TAG_CLADE.getLocalPart());
 		
 		writeSimpleTag(TAG_NAME.getLocalPart(), rootNode.getLabel());
-		writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(afferentEdge.getLength()));
+		
+		if (!Double.isNaN(afferentEdge.getLength())) {
+			writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(afferentEdge.getLength()));
+		}
+		
 		writeSimpleTag(TAG_NODE_ID.getLocalPart(), rootNodeID);
 		
 		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);

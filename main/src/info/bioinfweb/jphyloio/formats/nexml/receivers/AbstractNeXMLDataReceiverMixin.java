@@ -292,7 +292,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	public static void handleMetaEndEvent(NeXMLWriterStreamDataProvider streamDataProvider, JPhyloIOEvent event) throws IOException, XMLStreamException {
 		if (event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
 			if (streamDataProvider.isLiteralContentContinued()) {
-				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
+				throw new InconsistentAdapterDataException("A literal meta end event was encountered, although the last literal meta content "
 						+ "event was marked to be continued in a subsequent event.");
 			}
 			
