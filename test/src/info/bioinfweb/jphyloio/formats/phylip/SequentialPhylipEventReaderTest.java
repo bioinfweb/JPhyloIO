@@ -49,28 +49,28 @@ public class SequentialPhylipEventReaderTest implements ReadWriteConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "20", null, new Long(20), true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
-				assertCharactersEvent("ATG-T--CCG", reader);
-				assertCharactersEvent("CCGT-GT--A", reader);
+				assertCharactersEvent("ATG-T--CCG", false, reader);
+				assertCharactersEvent("CCGT-GT--A", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
-				assertCharactersEvent("ATG-TT-CCG", reader);
-				assertCharactersEvent("CCGT-GTT-A", reader);
+				assertCharactersEvent("ATG-TT-CCG", false, reader);
+				assertCharactersEvent("CCGT-GTT-A", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
-				assertCharactersEvent("ATG-T--CGG", reader);
-				assertCharactersEvent("CCGT-CT--A", reader);
+				assertCharactersEvent("ATG-T--CGG", false, reader);
+				assertCharactersEvent("CCGT-CT--A", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 4ATCGA", null, reader);
-				assertCharactersEvent("ATG-TTTCCG", reader);
-				assertCharactersEvent("CCGT-GTTTA", reader);
+				assertCharactersEvent("ATG-TTTCCG", false, reader);
+				assertCharactersEvent("CCGT-GTTTA", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 5", null, reader);
-				assertCharactersEvent("ATG-TT-CCC", reader);
-				assertCharactersEvent("CGGT-CTT-A", reader);
+				assertCharactersEvent("ATG-TT-CCC", false, reader);
+				assertCharactersEvent("CGGT-CTT-A", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -104,28 +104,28 @@ public class SequentialPhylipEventReaderTest implements ReadWriteConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), null, "20", null, new Long(20), true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_1", null, reader);
-				assertCharactersEvent("ATG-T--CCG", reader);
-				assertCharactersEvent("CCGT-GT--A", reader);
+				assertCharactersEvent("ATG-T--CCG", false, reader);
+				assertCharactersEvent("CCGT-GT--A", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_2", null, reader);
-				assertCharactersEvent("ATG-TT-CCG", reader);
-				assertCharactersEvent("CCGT-GTT-A", reader);
+				assertCharactersEvent("ATG-TT-CCG", false, reader);
+				assertCharactersEvent("CCGT-GTT-A", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_3", null, reader);
-				assertCharactersEvent("ATG-T--CGG", reader);
-				assertCharactersEvent("CCGT-CT--A", reader);
+				assertCharactersEvent("ATG-T--CGG", false, reader);
+				assertCharactersEvent("CCGT-CT--A", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_4", null, reader);
-				assertCharactersEvent("ATG-TTTCCG", reader);
-				assertCharactersEvent("CCGT-GTTTA", reader);
+				assertCharactersEvent("ATG-TTTCCG", false, reader);
+				assertCharactersEvent("CCGT-GTTTA", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Sequence_name_5", null, reader);
-				assertCharactersEvent("ATG-TT-CCC", reader);
-				assertCharactersEvent("CGGT-CTT-A", reader);
+				assertCharactersEvent("ATG-TT-CCC", false, reader);
+				assertCharactersEvent("CGGT-CTT-A", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);

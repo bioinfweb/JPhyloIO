@@ -47,20 +47,20 @@ public class FASTAEventReaderTest {
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
-				assertCharactersEvent("ATCGT", reader);
+				assertCharactersEvent("ATCGT", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
-				assertCharactersEvent("CGT>AA", reader);
-				assertCharactersEvent(">CG", reader);
-				assertCharactersEvent("ACGT", reader);
+				assertCharactersEvent("CGT>AA", false, reader);
+				assertCharactersEvent(">CG", false, reader);
+				assertCharactersEvent("ACGT", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Empty sequence", null, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
-				assertCharactersEvent("GCCAT", reader);
+				assertCharactersEvent("GCCAT", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -117,15 +117,15 @@ public class FASTAEventReaderTest {
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
-				assertCharactersEvent("ATCG-AG", reader);
+				assertCharactersEvent("ATCG-AG", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
-				assertCharactersEvent("ATGG-AG", reader);
+				assertCharactersEvent("ATGG-AG", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
-				assertCharactersEvent("AACGTAG", reader);
+				assertCharactersEvent("AACGTAG", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -156,12 +156,12 @@ public class FASTAEventReaderTest {
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
 				assertCommentEvent("comment 1", false, reader);
-				assertCharactersEvent("ATCGT", reader);
+				assertCharactersEvent("ATCGT", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
-				assertCharactersEvent("CGT>AA>CG", reader);
-				assertCharactersEvent("ACGT", reader);
+				assertCharactersEvent("CGT>AA>CG", false, reader);
+				assertCharactersEvent("ACGT", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Empty sequence", null, reader);
@@ -176,7 +176,7 @@ public class FASTAEventReaderTest {
 				assertCommentEvent("longer comment 0", true, reader);
 				assertCommentEvent("123456789", false, reader);
 				assertCommentEvent(" another comment", false, reader);
-				assertCharactersEvent("GCCAT", reader);
+				assertCharactersEvent("GCCAT", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -204,15 +204,15 @@ public class FASTAEventReaderTest {
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 1", null, reader);
-				assertCharactersEvent("ATCGT", reader);
-				assertCharactersEvent("TCGTA", reader);
-				assertCharactersEvent("TCCTG", reader);
-				assertCharactersEvent("TA", reader);
+				assertCharactersEvent("ATCGT", false, reader);
+				assertCharactersEvent("TCGTA", false, reader);
+				assertCharactersEvent("TCCTG", false, reader);
+				assertCharactersEvent("TA", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 2", null, reader);
-				assertCharactersEvent("CGT>AA>CG", reader);
-				assertCharactersEvent("ACGT", reader);
+				assertCharactersEvent("CGT>AA>CG", false, reader);
+				assertCharactersEvent("ACGT", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Empty sequence", null, reader);
@@ -223,7 +223,7 @@ public class FASTAEventReaderTest {
 //				assertEquals(0, event.getCharacterValues().size());
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Seq 3", null, reader);
-				assertCharactersEvent("GCCAT", reader);
+				assertCharactersEvent("GCCAT", false, reader);
 				assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 				
 				assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);

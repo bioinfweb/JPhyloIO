@@ -329,22 +329,22 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", idA, reader);
 			assertCommentEvent("comment 1", reader);
-			assertCharactersEvent("CGGTCAT", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", idB, reader);
 			assertCommentEvent("comment 2", reader);
-			assertCharactersEvent("CG-TCTT", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", idC, reader);
-			assertCharactersEvent("CG-T", reader);
+			assertCharactersEvent("CG-T", false, reader);
 			assertCommentEvent("comment 3", reader);
-			assertCharactersEvent("C-T", reader);
+			assertCharactersEvent("C-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "D E", idDE, reader);
-			assertCharactersEvent("CGTCATG", reader);
+			assertCharactersEvent("CGTCATG", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -547,13 +547,13 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertCommentEvent(" 0....5. ", reader);
 			String idA = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", null, reader);
-			assertCharactersEvent("CGGTCAT", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			String idB = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", null, reader);
-			assertCharactersEvent("CG-TCTT", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			String idC = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", null, reader);
-			assertCharactersEvent("CG-TC-T", reader);
+			assertCharactersEvent("CG-TC-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			
 			assertNotEquals(idA, idB);
@@ -562,13 +562,13 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertCommentEvent(" ...10.. ", reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idA, "A", null, reader);
-			assertCharactersEvent("A-CGGAT", reader);
+			assertCharactersEvent("A-CGGAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idB, "B", null, reader);
-			assertCharactersEvent("ATCGCAT", reader);
+			assertCharactersEvent("ATCGCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idC, "C", null, reader);
-			assertCharactersEvent("A-CCGAT", reader);
+			assertCharactersEvent("A-CCGAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -604,16 +604,16 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertCommentEvent(" 0....5. ", reader);
 			String idA = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", null, reader);
-			assertCharactersEvent("CGGT", reader);
-			assertCharactersEvent("CAT", reader);
+			assertCharactersEvent("CGGT", false, reader);
+			assertCharactersEvent("CAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			String idB = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", null, reader);
-			assertCharactersEvent("CG-T", reader);
-			assertCharactersEvent("CTT", reader);
+			assertCharactersEvent("CG-T", false, reader);
+			assertCharactersEvent("CTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			String idC = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", null, reader);
-			assertCharactersEvent("CG-T", reader);
-			assertCharactersEvent("C-T", reader);
+			assertCharactersEvent("CG-T", false, reader);
+			assertCharactersEvent("C-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
 			assertNotEquals(idA, idB);
@@ -622,16 +622,16 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertCommentEvent(" ...10.. ", reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idA, "A", null, reader);
-			assertCharactersEvent("A-CG", reader);
-			assertCharactersEvent("GAT", reader);
+			assertCharactersEvent("A-CG", false, reader);
+			assertCharactersEvent("GAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idB, "B", null, reader);
-			assertCharactersEvent("ATCG", reader);
-			assertCharactersEvent("CAT", reader);
+			assertCharactersEvent("ATCG", false, reader);
+			assertCharactersEvent("CAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idC, "C", null, reader);
-			assertCharactersEvent("A-CC", reader);
-			assertCharactersEvent("GAT", reader);
+			assertCharactersEvent("A-CC", false, reader);
+			assertCharactersEvent("GAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -665,13 +665,13 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertCommentEvent(" 0....5. ", reader);
 			String idA = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", null, reader);
-			assertCharactersEvent("CGGTCAT", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			String idB = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", null, reader);
-			assertCharactersEvent("CG-TCTT", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			String idC = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", null, reader);
-			assertCharactersEvent("CG-TC-T", reader);
+			assertCharactersEvent("CG-TC-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
 			assertNotEquals(idA, idB);
@@ -680,13 +680,13 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 			assertCommentEvent(" ...10.. ", reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idA, "A", null, reader);
-			assertCharactersEvent("A-CGGAT", reader);
+			assertCharactersEvent("A-CGGAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idB, "B", null, reader);
-			assertCharactersEvent("ATCGCAT", reader);
+			assertCharactersEvent("ATCGCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, idC, "C", null, reader);
-			assertCharactersEvent("A-CCGAT", reader);
+			assertCharactersEvent("A-CCGAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -856,23 +856,23 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon1", null, reader);
-			assertCharactersEvent("ACTAGGACTAGATCAAGTT", reader);
+			assertCharactersEvent("ACTAGGACTAGATCAAGTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon2", null, reader);
-			assertCharactersEvent("ACCAGGACTAGCGGATCAAG", reader);
+			assertCharactersEvent("ACCAGGACTAGCGGATCAAG", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon3", null, reader);
-			assertCharactersEvent("ACCAGGACTAGATCAAG", reader);
+			assertCharactersEvent("ACCAGGACTAGATCAAG", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon4", null, reader);
-			assertCharactersEvent("AGCCAGGACTAGTTC", reader);
+			assertCharactersEvent("AGCCAGGACTAGTTC", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "taxon5", null, reader);
-			assertCharactersEvent("ATCAGGACTAGATCAAGTTC", reader);
+			assertCharactersEvent("ATCAGGACTAGATCAAGTTC", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -936,23 +936,23 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", idA, reader);
-			assertCharactersEvent("CGGTCAT", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", idB, reader);
-			assertCharactersEvent("CG-TCTT", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C C", idC, reader);
-			assertCharactersEvent("CG-TC-T", reader);
+			assertCharactersEvent("CG-TC-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "D'", idD, reader);
-			assertCharactersEvent("CGTCATG", reader);
+			assertCharactersEvent("CGTCATG", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "E", idE, reader);
-			assertCharactersEvent("CCTGATG", reader);
+			assertCharactersEvent("CCTGATG", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -997,11 +997,11 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", idA, reader);
-			assertCharactersEvent("CGGTCAT", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", idB, reader);
-			assertCharactersEvent("CG-TCTT", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
@@ -1402,15 +1402,15 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
-			assertCharactersEvent("ACTGT", reader);
+			assertCharactersEvent("ACTGT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
-			assertCharactersEvent("AC-GT", reader);
+			assertCharactersEvent("AC-GT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
-			assertCharactersEvent("AC-CT", reader);
+			assertCharactersEvent("AC-CT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEndEvent(EventContentType.ALIGNMENT, reader);
@@ -1483,15 +1483,15 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 	
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
-			assertCharactersEvent("CGGTCAT", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
-			assertCharactersEvent("CG-TCTT", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
-			assertCharactersEvent("CG-TC-T", reader);
+			assertCharactersEvent("CG-TC-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEndEvent(EventContentType.ALIGNMENT, reader);
@@ -1513,15 +1513,15 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertCharacterDefinitionEvent(null, "col2", 2, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
-			assertCharactersEvent("AGGT-AT", reader);
+			assertCharactersEvent("AGGT-AT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
-			assertCharactersEvent("AC-GCTC", reader);
+			assertCharactersEvent("AC-GCTC", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
-			assertCharactersEvent("AG-TC-T", reader);
+			assertCharactersEvent("AG-TC-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertEndEvent(EventContentType.ALIGNMENT, reader);
@@ -1633,15 +1633,15 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 	
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
-			assertCharactersEvent("CGGTCAT", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
-			assertCharactersEvent("CG-TCTT", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
-			assertCharactersEvent("CG-TC-T", reader);
+			assertCharactersEvent("CG-TC-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertCharacterDefinitionEvent(null, "col0", 0, true, reader);
@@ -1691,15 +1691,15 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 	
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", otuIDA, reader);
-			assertCharactersEvent("CGGTCAT", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", otuIDB, reader);
-			assertCharactersEvent("CG-TCTT", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", otuIDC, reader);
-			assertCharactersEvent("CG-TC-T", reader);
+			assertCharactersEvent("CG-TC-T", false, reader);
 			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
 			
 			assertCommentEvent("comment 1", reader);

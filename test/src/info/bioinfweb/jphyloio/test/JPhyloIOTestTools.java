@@ -186,15 +186,21 @@ public class JPhyloIOTestTools {
 	}
 	
 	
-	public static void assertCharactersEvent(String expectedSequence, JPhyloIOEventReader reader) throws Exception {
-		assertTrue(reader.hasNextEvent());
-		JPhyloIOEvent event = reader.next();
-		assertEquals(EventContentType.SEQUENCE_TOKENS, event.getType().getContentType());
-		SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
-		assertEquals(expectedSequence.length(), tokensEvent.getCharacterValues().size());
-		for (int i = 0; i < expectedSequence.length(); i++) {
-			assertEquals(expectedSequence.substring(i, i + 1), tokensEvent.getCharacterValues().get(i));
+	public static void assertCharactersEvent(String expectedSequence, boolean allowLongTokens, JPhyloIOEventReader reader) throws Exception {		
+		if (allowLongTokens) {
+			assertCharactersEvent(expectedSequence.split(" "), reader);
 		}
+		else {
+			assertTrue(reader.hasNextEvent());
+			JPhyloIOEvent event = reader.next();
+			assertEquals(EventContentType.SEQUENCE_TOKENS, event.getType().getContentType());
+			SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
+			
+			assertEquals(expectedSequence.length(), tokensEvent.getCharacterValues().size());
+			for (int i = 0; i < expectedSequence.length(); i++) {
+				assertEquals(expectedSequence.substring(i, i + 1), tokensEvent.getCharacterValues().get(i));
+			}
+		}		
 	}
 	
 	
