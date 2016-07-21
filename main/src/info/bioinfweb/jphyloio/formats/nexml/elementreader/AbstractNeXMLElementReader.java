@@ -130,8 +130,8 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 				}
 			}			
 
-			if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) && !translateTokens.equals(TokenTranslationStrategy.NEVER)) { //standard data
-				for (int i = 0; i < tokenList.size(); i++) {	 				
+			if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) && !translateTokens.equals(TokenTranslationStrategy.NEVER)) {  // Standard data
+				for (int i = 0; i < tokenList.size(); i++) {
 					if (!tokenList.get(i).equals("" + SequenceUtils.GAP_CHAR) && !tokenList.get(i).equals("" + SequenceUtils.MISSING_DATA_CHAR)) {
 			 			try {
 			 				int standardToken = Integer.parseInt(tokenList.get(i));

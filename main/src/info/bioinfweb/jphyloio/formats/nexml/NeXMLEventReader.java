@@ -760,12 +760,25 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 
 				if (streamDataProvider.getCharacterSetType().equals(CharacterStateSetType.DISCRETE) 
 						&& !streamDataProvider.getEventReader().getTranslateTokens().equals(TokenTranslationStrategy.NEVER)) {
-					
+
+					String translatedToken = null;
 					String currentStates = streamDataProvider.getCharIDToStatesMap().get(columnID);
-		 	 		String translatedToken = streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(token);
+					
+					if (!token.equals("" + SequenceUtils.GAP_CHAR) && !token.equals("" + SequenceUtils.MISSING_DATA_CHAR)) {
+			 			try {
+			 				int standardToken = Integer.parseInt(token);
+			 				translatedToken = streamDataProvider.getTokenSets().get(currentStates).getSymbolTranslationMap().get(standardToken);
+			 			}
+			 			catch (NumberFormatException e) {
+			 				throw new JPhyloIOReaderException("The symbol \"" + token + 
+			 						"\" of a standard data token definition must be of type Integer.", streamDataProvider.getXMLReader().peek().getLocation());
+			 			}
+					}
+					
 		 	 		if (translatedToken != null) {
 		 	 			token = translatedToken;
 		 	 		}
+		 	 		
 		 		}
 				
 				SingleSequenceTokenEvent currentTokenEvent = new SingleSequenceTokenEvent(label, token);
