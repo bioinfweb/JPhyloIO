@@ -109,8 +109,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
 public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamDataProvider> implements NexusConstants {
 	private static final String UNDEFINED_OTUS_ID = "\n";  // Should not occur as a real ID;
 	
-	
-	private Writer writer;
+
 	private ReadWriteParameterMap parameters;
 	private ApplicationLogger logger;
 	private Map<String, NexusMatrixWriteResult> matrixIDToBlockTypeMap = new HashMap<String, NexusMatrixWriteResult>(8);
@@ -125,11 +124,6 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	@Override
 	protected NexusWriterStreamDataProvider createStreamDataProvider() {
 		return new NexusWriterStreamDataProvider(this);
-	}
-	
-
-	protected Writer getWriter() {
-		return writer;
 	}
 
 
@@ -155,13 +149,13 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	
 	private void writeInitialLines() throws IOException {
-		writer.write(FIRST_LINE);
-		writeLineBreak(writer, parameters);
+		getWriter().write(FIRST_LINE);
+		writeLineBreak(getWriter(), parameters);
 		
-		writer.write(COMMENT_START);
-		writer.write(getFileStartInfo(parameters));
-		writer.write(COMMENT_END);
-		writeLineBreak(writer, parameters);
+		getWriter().write(COMMENT_START);
+		getWriter().write(getFileStartInfo(parameters));
+		getWriter().write(COMMENT_END);
+		writeLineBreak(getWriter(), parameters);
 	}
 	
 	
@@ -187,16 +181,16 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	
 	protected void writeCommandEnd() throws IOException {
-		writer.write(COMMAND_END);
-		writeLineBreak(writer, parameters);
+		getWriter().write(COMMAND_END);
+		writeLineBreak(getWriter(), parameters);
 	}
 	
 	
 	protected void writeBlockStart(String name) throws IOException {
-		writeLineBreak(writer, parameters);  // Add one empty line before each block.
-		writeLineStart(writer, BEGIN_COMMAND);
-		writer.write(' ');
-		writer.write(name);
+		writeLineBreak(getWriter(), parameters);  // Add one empty line before each block.
+		writeLineStart(getWriter(), BEGIN_COMMAND);
+		getWriter().write(' ');
+		getWriter().write(name);
 		writeCommandEnd();
 		increaseIndention();
 	}
@@ -204,13 +198,13 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	protected void writeBlockEnd() throws IOException {
 		decreaseIndention();
-		writeLineStart(writer, END_COMMAND);
+		writeLineStart(getWriter(), END_COMMAND);
 		writeCommandEnd();
 	}
 	
 	
 	private void writeKeyValueExpression(String key, String value) throws IOException {
-		writeKeyValueExpression(writer, key, value);
+		writeKeyValueExpression(getWriter(), key, value);
 	}
 	
 	
@@ -222,9 +216,9 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	
 	private void writeTitleCommand(String label) throws IOException {
-		writeLineStart(writer, COMMAND_NAME_TITLE);
-		writer.write(' ');
-		writer.write(formatToken(label));
+		writeLineStart(getWriter(), COMMAND_NAME_TITLE);
+		getWriter().write(' ');
+		getWriter().write(formatToken(label));
 		writeCommandEnd();
 	}
 	
@@ -237,11 +231,11 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	
 	protected void writeLinkCommand(String linkedID, String linkedBlockName, EventContentType linkedContentType) throws IOException {
-		writeLineStart(writer, COMMAND_NAME_LINK);
-		writer.write(' ');
-		writer.write(linkedBlockName);
-		writer.write(KEY_VALUE_SEPARATOR);
-		writer.write(formatToken(parameters.getLabelEditingReporter().getEditedLabel(linkedContentType, linkedID)));
+		writeLineStart(getWriter(), COMMAND_NAME_LINK);
+		getWriter().write(' ');
+		getWriter().write(linkedBlockName);
+		getWriter().write(KEY_VALUE_SEPARATOR);
+		getWriter().write(formatToken(parameters.getLabelEditingReporter().getEditedLabel(linkedContentType, linkedID)));
 		writeCommandEnd();
 	}
 	
@@ -260,22 +254,22 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 			
 			writeTitleCommand(otuList.getStartEvent(parameters));
 			
-			writeLineStart(writer, COMMAND_NAME_DIMENSIONS);
-			writer.write(' ');
+			writeLineStart(getWriter(), COMMAND_NAME_DIMENSIONS);
+			getWriter().write(' ');
 			writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NTAX, Long.toString(otuList.getCount(getParameters())));
 			writeCommandEnd();
 			
-			writeLineStart(writer, COMMAND_NAME_TAX_LABELS);
-			writeLineBreak(writer, parameters);
+			writeLineStart(getWriter(), COMMAND_NAME_TAX_LABELS);
+			writeLineBreak(getWriter(), parameters);
 			increaseIndention();
 			increaseIndention();
 			BasicEventReceiver<NexusWriterStreamDataProvider> receiver = new BasicEventReceiver<NexusWriterStreamDataProvider>(getStreamDataProvider(), parameters);
 			Iterator<String> iterator = otuList.getIDIterator(getParameters());
 			while (iterator.hasNext()) {
 				String id = iterator.next();
-				writeLineStart(writer, formatToken(createUniqueLabel(parameters, otuList.getObjectStartEvent(getParameters(), id))));
+				writeLineStart(getWriter(), formatToken(createUniqueLabel(parameters, otuList.getObjectStartEvent(getParameters(), id))));
 				if (iterator.hasNext()) {
-					writeLineBreak(writer, parameters);
+					writeLineBreak(getWriter(), parameters);
 				}
 				else {
 					writeCommandEnd();
@@ -334,15 +328,15 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	
 	private void writeMatrixDimensionsCommand(MatrixDataAdapter matrix, long columnCount) throws IOException {
-		writeLineStart(writer, COMMAND_NAME_DIMENSIONS);
-		writer.write(' ');
+		writeLineStart(getWriter(), COMMAND_NAME_DIMENSIONS);
+		getWriter().write(' ');
 		if (containsInvalidOTULinks(matrix)) {
-			writer.write(DIMENSIONS_SUBCOMMAND_NEW_TAXA);
-			writer.write(' ');
+			getWriter().write(DIMENSIONS_SUBCOMMAND_NEW_TAXA);
+			getWriter().write(' ');
 		}
 		writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NTAX, Long.toString(matrix.getSequenceCount(getParameters())));
 		if (columnCount != -1) {
-			writer.write(' ');
+			getWriter().write(' ');
 			writeKeyValueExpression(DIMENSIONS_SUBCOMMAND_NCHAR, Long.toString(columnCount));
 		}
 		writeCommandEnd();
@@ -353,7 +347,7 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	private void writeFormatCommand(MatrixDataAdapter matrix) throws IOException {
 		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = matrix.getTokenSets(getParameters());
 		if (tokenSets.getCount(getParameters()) > 0) {
-			writeLineStart(writer, COMMAND_NAME_FORMAT);
+			writeLineStart(getWriter(), COMMAND_NAME_FORMAT);
 			Iterator<String> iterator = tokenSets.getIDIterator(getParameters());
 			if (tokenSets.getCount(getParameters()) == 1) {
 				TokenSetEventReceiver receiver = new TokenSetEventReceiver(getStreamDataProvider());
@@ -385,14 +379,14 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 				}
 				
 				if (dataType != null) {
-					writer.write(' ');
-					NexusEventWriter.writeKeyValueExpression(writer, FORMAT_SUBCOMMAND_DATA_TYPE, dataType);
+					getWriter().write(' ');
+					NexusEventWriter.writeKeyValueExpression(getWriter(), FORMAT_SUBCOMMAND_DATA_TYPE, dataType);
 				}			
 				
 				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);
 				
 				if (receiver.getSingleTokens() != null) {
-					writer.write(' ');
+					getWriter().write(' ');
 					writeKeyValueExpression(FORMAT_SUBCOMMAND_SYMBOLS, VALUE_DELIMITER + receiver.getSingleTokens() + VALUE_DELIMITER);
 				}
 				if (receiver.getIgnoredMetadata() > 0) {
@@ -400,12 +394,12 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 							+ "since the Nexus format does not support writing such data.");
 				}
 				
-				writer.write(' ');
+				getWriter().write(' ');
 				if (matrix.containsLongTokens(getParameters())) {
-					writer.write(FORMAT_SUBCOMMAND_TOKENS);
+					getWriter().write(FORMAT_SUBCOMMAND_TOKENS);
 				}
 				else {
-					writer.write(FORMAT_SUBCOMMAND_NO_TOKENS);
+					getWriter().write(FORMAT_SUBCOMMAND_NO_TOKENS);
 				}
 			}
 			else {  // MrBayes extension (or exception if according parameter is set?)
@@ -448,14 +442,14 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 			String label;
 			if (createNewLabel) {
 				if (beforeFirst) {
-					writeLineStart(writer, COMMAND_NAME_TAX_LABELS);
-					writeLineBreak(writer, parameters);
+					writeLineStart(getWriter(), COMMAND_NAME_TAX_LABELS);
+					writeLineBreak(getWriter(), parameters);
 					increaseIndention();
 					increaseIndention();
 					anyWritten = true;
 				}
 				else {
-					writeLineBreak(writer, parameters);
+					writeLineBreak(getWriter(), parameters);
 					beforeFirst = false;
 				}
 				label = createUniqueLabel(
@@ -467,7 +461,7 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 										!reporter.isLabelUsed(EventContentType.SEQUENCE, label);
 							}
 						}, event);
-				writeLineStart(writer, formatToken(label));
+				writeLineStart(getWriter(), formatToken(label));
 			}
 			else {
 				label = reporter.getEditedLabel(EventContentType.OTU, event.getLinkedID());
@@ -480,10 +474,10 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 		}
 		if (anyWritten) {
 			writeCommandEnd();
-			writeLineStart(writer, "" + COMMENT_START);
-			writer.write("These additional taxon definitions were automatically added by JPhyloIO, because sequences without linked taxa had to be written or more than one sequence was linked to the same taxon (which is both invalid in Nexus).");
-			writer.write(COMMENT_END);
-			writeLineBreak(writer, parameters);
+			writeLineStart(getWriter(), "" + COMMENT_START);
+			getWriter().write("These additional taxon definitions were automatically added by JPhyloIO, because sequences without linked taxa had to be written or more than one sequence was linked to the same taxon (which is both invalid in Nexus).");
+			getWriter().write(COMMENT_END);
+			writeLineBreak(getWriter(), parameters);
 			decreaseIndention();
 			decreaseIndention();
 		}
@@ -495,8 +489,8 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 		
 		Iterator<String> iterator = definitions.getIDIterator(getParameters());
 		if (iterator.hasNext()) {
-			writeLineStart(writer, COMMAND_NAME_CHAR_STATE_LABELS);
-			writeLineBreak(writer, parameters);
+			writeLineStart(getWriter(), COMMAND_NAME_CHAR_STATE_LABELS);
+			writeLineBreak(getWriter(), parameters);
 			increaseIndention();
 			increaseIndention();
 			
@@ -504,10 +498,10 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 				CharacterDefinitionEvent event = definitions.getObjectStartEvent(getParameters(), iterator.next());
 				String label = createUniqueLabel(parameters, event);
 				parameters.getLabelEditingReporter().addEdit(event, label);
-				writeLineStart(writer, event.getIndex() + " " + label);
+				writeLineStart(getWriter(), event.getIndex() + " " + label);
 				if (iterator.hasNext()) {
-					writer.write(ELEMENT_SEPARATOR);
-					writeLineBreak(writer, parameters);
+					getWriter().write(ELEMENT_SEPARATOR);
+					writeLineBreak(getWriter(), parameters);
 				}
 			}
 			
@@ -522,8 +516,8 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 			String extensionToken)	throws IOException {
 		
 		LabelEditingReporter reporter = parameters.getLabelEditingReporter();
-		writeLineStart(writer, COMMAND_NAME_MATRIX);
-		writeLineBreak(writer, parameters);
+		writeLineStart(getWriter(), COMMAND_NAME_MATRIX);
+		writeLineBreak(getWriter(), parameters);
 		
 		increaseIndention();
 		increaseIndention();
@@ -535,8 +529,8 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 				throw new InternalError("Writing TAXLABELS and MATRIX command is not consistent.");
 			}
 			
-			writeLineStart(writer, formatToken(sequenceName));
-			writer.write(' ');
+			writeLineStart(getWriter(), formatToken(sequenceName));
+			getWriter().write(' ');
 			
 			TextSequenceContentReceiver<NexusWriterStreamDataProvider> receiver = new TextSequenceContentReceiver<NexusWriterStreamDataProvider>(
 					getStreamDataProvider(), parameters, matrix.containsLongTokens(getParameters()), "" + COMMENT_START, "" + COMMENT_END);
@@ -549,17 +543,17 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 				long additionalTokens = alignmentLength - matrix.getSequenceLength(getParameters(), id);
 				for (long i = 0; i < additionalTokens; i++) {
 					if (matrix.containsLongTokens(getParameters())) {
-						writer.write(' ');
+						getWriter().write(' ');
 					}
-					writer.write(extensionToken);
+					getWriter().write(extensionToken);
 				}
 			}
 			
 			if (iterator.hasNext()) {
 				if (alignmentLength == -1) {
-					writer.write(ELEMENT_SEPARATOR);
+					getWriter().write(ELEMENT_SEPARATOR);
 				}
-				writeLineBreak(writer, parameters);
+				writeLineBreak(getWriter(), parameters);
 			}
 			else {
 				writeCommandEnd();
@@ -685,23 +679,23 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	private void writeTranslateCommand(Map<String, Long> indexMap) throws IOException {
 		if (!indexMap.isEmpty()) {
 			LabelEditingReporter reporter = parameters.getLabelEditingReporter();
-			writeLineStart(writer, COMMAND_NAME_TRANSLATE);
-			writeLineBreak(writer, parameters);
+			writeLineStart(getWriter(), COMMAND_NAME_TRANSLATE);
+			writeLineBreak(getWriter(), parameters);
 			increaseIndention();
 			increaseIndention();
 			Iterator<String> iterator = indexMap.keySet().iterator();
 			while (iterator.hasNext()) {
 				String id = iterator.next();
-				writeLineStart(writer, indexMap.get(id).toString());
-				writer.write(' ');
+				writeLineStart(getWriter(), indexMap.get(id).toString());
+				getWriter().write(' ');
 				String label = reporter.getEditedLabel(EventContentType.OTU, id);
 				if (label == null) {
 					throw new InternalError("No label definition found for OTU ID " + id + ".");  // Should not happen.
 				}
-				writer.write(formatToken(label));
+				getWriter().write(formatToken(label));
 				if (iterator.hasNext()) {
-					writer.write(ELEMENT_SEPARATOR);
-					writeLineBreak(writer, parameters);
+					getWriter().write(ELEMENT_SEPARATOR);
+					writeLineBreak(getWriter(), parameters);
 				}
 				else {
 					writeCommandEnd();					
@@ -756,12 +750,12 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 				
 				TreeNetworkDataAdapter treeNetwork = treeIterator.next();
 				if (treeNetwork.isTree(getParameters())) {
-					writeLineStart(writer, COMMAND_NAME_TREE);
-					writer.write(' ');
-					writer.write(formatToken(createUniqueTreeLabel(treeNetwork.getStartEvent(parameters), usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
-					writer.write(' ');
-					writer.write(KEY_VALUE_SEPARATOR);
-					writer.write(' ');
+					writeLineStart(getWriter(), COMMAND_NAME_TREE);
+					getWriter().write(' ');
+					getWriter().write(formatToken(createUniqueTreeLabel(treeNetwork.getStartEvent(parameters), usedLabels)));  // createUniqueLabel() can't be used here, because equal labels in different TREES blocks shall be allowed.
+					getWriter().write(' ');
+					getWriter().write(KEY_VALUE_SEPARATOR);
+					getWriter().write(' ');
 					new NewickStringWriter(getStreamDataProvider(), treeNetwork, new NexusNewickWriterNodeLabelProcessor(
 							currentOTUList, indexMap, parameters), parameters).write();  // Also writes line break. indexMap may be null.
 				}
@@ -832,7 +826,8 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	@Override
 	protected void doWriteDocument(DocumentDataAdapter document, Writer writer,	ReadWriteParameterMap parameters) throws IOException {
-		this.writer = writer;
+		super.doWriteDocument(document, writer, parameters);
+		
 		this.parameters = parameters;
 		logger = parameters.getLogger();
 		

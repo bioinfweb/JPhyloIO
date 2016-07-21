@@ -141,8 +141,8 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter<TextWrite
 		}
 		
 		// Write heading:
-    getStreamDataProvider().getWriter().write("\t" + matrix.getSequenceCount(parameters) + "\t" + maxSequenceLength);
-    writeLineBreak(getStreamDataProvider().getWriter(), parameters);
+		getWriter().write("\t" + matrix.getSequenceCount(parameters) + "\t" + maxSequenceLength);
+    writeLineBreak(getWriter(), parameters);
     if ((matrix.getColumnCount(parameters) == -1) && (extensionToken == null)) {
     	parameters.getLogger().addWarning("The provided sequences have inequal lengths and filling up sequences was not "
     			+ "specified. The column count written to the Phylip document is the length of the longest sequence. Some "
@@ -154,9 +154,9 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter<TextWrite
     	
     	// Write label:
     	String label = editSequenceOrNodeLabel(matrix.getSequenceStartEvent(parameters, id), parameters, otuList);
-    	getStreamDataProvider().getWriter().write(label);
+    	getWriter().write(label);
     	for (int i = label.length(); i < nameLength; i++) {
-    		getStreamDataProvider().getWriter().write(' ');
+    		getWriter().write(' ');
 			}
     	
     	// Write sequence:
@@ -166,7 +166,7 @@ public class PhylipEventWriter extends AbstractSingleMatrixEventWriter<TextWrite
     	matrix.writeSequencePartContentData(parameters, receiver, id, 0, matrix.getSequenceLength(parameters, id));
     	extendSequence(matrix, parameters, id, maxSequenceLength, extensionToken, receiver);
     	
-    	writeLineBreak(getStreamDataProvider().getWriter(), parameters);
+    	writeLineBreak(getWriter(), parameters);
     }
 	}
 }

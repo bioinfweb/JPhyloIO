@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -41,6 +41,6 @@ public abstract class AbstractTextEventWriter<P extends TextWriterStreamDataProv
 	@Override
 	protected void doWriteDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters)
 			throws IOException {
-		this.writer = writer;		//TODO in jedem writer selbst setzen
+		this.writer = writer;
 	}
 }
