@@ -8,13 +8,11 @@
             </clade>
             <clade>
 				<name>2</name>
-                <clade>
+                <clade id_source="ID1">
 					<name>B</name>
-					<node_id>ID1</node_id>
                 </clade>
-                <clade>
+                <clade id_source="ID2">
 					<name>C</name>
-					<node_id>ID2</node_id>
                 </clade>
             </clade>
         </clade>

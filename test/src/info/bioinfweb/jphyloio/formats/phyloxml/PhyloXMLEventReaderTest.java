@@ -256,13 +256,13 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLabeledIDEvent(EventContentType.TREE, null, "Tree 1", reader);
 				
 				String node1 = assertNodeEvent(null, "A", false, null, reader);
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), null, null, false, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_APPLIES_TO), null, 
 						"clade", null, "clade", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), 
 						"1200", null, 1200, true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), null, null, false, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_UNIT), null, 
 						"METRIC:m", null, "METRIC:m", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), 
@@ -271,7 +271,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.NODE, reader);				
 				
 				String node2 = assertNodeEvent(null, "B", false, null, true, reader);				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), null, null, false, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_UNIT), null, 
 						"METRIC:m", null, "METRIC:m", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DATE), 
@@ -287,7 +287,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEdgeEvent(node3, node2, reader);				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), null, null, false, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_UNIT), null, 
 						"METRIC:m", null, "METRIC:m", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
@@ -300,7 +300,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ANNOTATION), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_QNAME), "ex:name", null, new QName("http://example.org", "name", "ex"), true, reader);				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), null, null, false, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_UNIT), null, 
 						"METRIC:m", null, "METRIC:m", true, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_APPLIES_TO), null, 
@@ -311,7 +311,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.META_RESOURCE, reader);				
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), null, null, false, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_UNIT), null, 
 						"METRIC:m", null, "METRIC:m", true, reader);	
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_APPLIES_TO), null, 
@@ -330,7 +330,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), 
 						" 1 ", null, 1, true, reader);
 				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), null, null, false, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_UNIT), null, 
 						"METRIC:m", null, "METRIC:m", true, reader);	
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_APPLIES_TO), null, 
@@ -371,21 +371,8 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLabeledIDEvent(EventContentType.TREE, null, "Tree 1", reader);
 				
 				String node1 = assertNodeEvent(null, "A", false, null, true, reader);				
-				
-				String node2 = assertNodeEvent(null, "B", false, null, reader);
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
-						"ID1", null, "ID1", true, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
-				assertEndEvent(EventContentType.NODE, reader);				
-				
-				String node3 = assertNodeEvent(null, "C", false, null, reader);
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
-						"ID2", null, "ID2", true, reader);	
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
-				assertEndEvent(EventContentType.NODE, reader);				
-				
+				String node2 = assertNodeEvent(null, "B", false, null, true, reader);				
+				String node3 = assertNodeEvent(null, "C", false, null, true, reader);				
 				String node4 = assertNodeEvent(null, "2", false, null, true, reader);
 				
 				assertEdgeEvent(node4, node2, reader);
@@ -461,23 +448,11 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				
 				assertLabeledIDEvent(EventContentType.NETWORK, null, "Tree 1", reader);
 				
-				String node1 = assertNodeEvent(null, "A", false, null, true, reader);				
+				String node1 = assertNodeEvent(null, "A", false, null, true, reader);
+				String node2 = assertNodeEvent(null, "B", false, null, true, reader);
+				String node3 = assertNodeEvent(null, "C", false, null, true, reader);
+				String node4 = assertNodeEvent(null, "2", false, null, true, reader);
 				
-				String node2 = assertNodeEvent(null, "B", false, null, false, reader);
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
-						"ID1", null, "ID1", true, reader);	
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
-				assertEndEvent(EventContentType.NODE, reader);				
-				
-				String node3 = assertNodeEvent(null, "C", false, null, false, reader);
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ID_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
-						"ID2", null, "ID2", true, reader);	
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
-				assertEndEvent(EventContentType.NODE, reader);				
-				
-				String node4 = assertNodeEvent(null, "2", false, null, true, reader);				
 				assertEdgeEvent(node4, node2, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
