@@ -42,7 +42,7 @@ import javax.xml.stream.XMLStreamException;
 
 
 
-public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants {
+public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants, PhyloXMLPrivateConstants {
 	
 	
 	public PhyloXMLEventWriter() {
@@ -145,7 +145,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	
 	private void writePhylogenyTag(TreeNetworkDataAdapter tree) throws XMLStreamException, IOException {
 		PhyloXMLSpecificPredicatesDataReceiver specificReceiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), 
-				PropertyOwner.PHYLOGENY, PREDICATE_PHYLOGENY);
+				PropertyOwner.PHYLOGENY, IDENTIFIER_PHYLOGENY);
 		PhyloXMLMetaDataReceiver receiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PHYLOGENY);		
 		LabeledIDEvent startEvent = tree.getStartEvent(getParameters());
 		TreeTopologyExtractor topologyExtractor = new TreeTopologyExtractor(tree, getParameters());
@@ -159,7 +159,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 				XMLReadWriteUtils.getXSDPrefix(getXMLWriter()) + XMLUtils.QNAME_SEPARATOR + "double");
 		
 		writeSimpleTag(TAG_NAME.getLocalPart(), startEvent.getLabel());
-		writeSimpleTag(TAG_ID.getLocalPart(), startEvent.getID());
+		writeSimpleTag(TAG_ID.getLocalPart(), startEvent.getID()); //TODO only write if no according metadata is present
 		
 		tree.writeMetadata(getParameters(), specificReceiver); //TODO ensure that id and name tags are not written
 		
@@ -190,13 +190,13 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		getXMLWriter().writeStartElement(TAG_CLADE.getLocalPart());
 		
+		getXMLWriter().writeAttribute(ATTR_ID_SOURCE.getLocalPart(), rootNodeID);
+		
 		writeSimpleTag(TAG_NAME.getLocalPart(), rootNode.getLabel());
 		
 		if (!Double.isNaN(afferentEdge.getLength())) {
 			writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(afferentEdge.getLength()));
-		}
-		
-		writeSimpleTag(TAG_NODE_ID.getLocalPart(), rootNodeID);
+		}		
 		
 		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
 		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());

@@ -169,9 +169,13 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		if (determineWriteMeta(event.getID())) {
+			String uri = null;
+			
 			if (event.getHRef() != null) {
-				writePropertyTag(event.getRel(), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_ANY_URI), event.getHRef().toString(), true);
+				uri = event.getHRef().toString();				
 			}
+			
+			writePropertyTag(event.getRel(), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_ANY_URI), uri, true);
 		}
 	}
 	

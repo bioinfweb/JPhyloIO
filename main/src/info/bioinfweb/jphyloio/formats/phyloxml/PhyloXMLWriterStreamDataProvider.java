@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,7 +30,10 @@ import javax.xml.namespace.QName;
 
 
 
-public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<PhyloXMLEventWriter> implements PhyloXMLConstants {
+public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<PhyloXMLEventWriter> implements PhyloXMLConstants, PhyloXMLPrivateConstants {
+	
+	
+	
 	private Map<QName, PhyloXMLPredicateInfo> predicateInfoMap = new HashMap<QName, PhyloXMLPredicateInfo>();
 	
 	private Map<String, PhyloXMLMetaeventInfo> metaEvents = new HashMap<String, PhyloXMLMetaeventInfo>();
@@ -67,13 +69,13 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 
 
 	private void fillMetaPredicateMap() { //TODO leave out unused predicates?
-		predicateInfoMap.put(PREDICATE_PHYLOGENY, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_PHYLOGENY, PREDICATE_PHYLOGENY_ATTR_REROOTABLE, 
-				PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, PREDICATE_PHYLOGENY_ATTR_TYPE, PREDICATE_PHYLOGENY_NAME, PREDICATE_PHYLOGENY_ID, 
+		predicateInfoMap.put(IDENTIFIER_PHYLOGENY, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_PHYLOGENY, PREDICATE_PHYLOGENY_ATTR_REROOTABLE, 
+				PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, PREDICATE_PHYLOGENY_ATTR_TYPE, IDENTIFIER_PHYLOGENY_NAME, PREDICATE_PHYLOGENY_ID, 
 				PREDICATE_PHYLOGENY_DESCRIPTION, PREDICATE_PHYLOGENY_DATE, PREDICATE_CONFIDENCE, PREDICATE_CLADE_REL, PREDICATE_SEQ_REL, PREDICATE_PROPERTY));
 		predicateInfoMap.put(PREDICATE_PHYLOGENY_ATTR_REROOTABLE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_REROOTABLE));
 		predicateInfoMap.put(PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_BRANCH_LENGTH_UNIT));
 		predicateInfoMap.put(PREDICATE_PHYLOGENY_ATTR_TYPE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_TYPE));
-		predicateInfoMap.put(PREDICATE_PHYLOGENY_NAME, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG_AND_VALUE, null));
+		predicateInfoMap.put(IDENTIFIER_PHYLOGENY_NAME, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG_AND_VALUE, null));
 		predicateInfoMap.put(PREDICATE_PHYLOGENY_ID, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_ID, PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER, 
 				PREDICATE_PHYLOGENY_ID_VALUE));
 		predicateInfoMap.put(PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_ID_PROVIDER));

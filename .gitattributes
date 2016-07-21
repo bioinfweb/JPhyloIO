@@ -252,6 +252,7 @@ main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLMetadataTreatment.java
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLMetaeventInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLPredicateInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLPredicateTreatment.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLPrivateConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLReaderStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLWriterStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PropertyOwner.java -text svneol=unset#text/plain

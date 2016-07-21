@@ -29,6 +29,7 @@ import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 
 import java.io.IOException;
+import java.util.Stack;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -36,10 +37,7 @@ import javax.xml.stream.XMLStreamException;
 
 
 public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataReceiver {
-	private QName parentPredicate;
-//	private int runCount;
-	private QName currentElementPredicate;
-	private QName currentLiteralPredicate;
+	private Stack<QName> predicates = new Stack<QName>();
 	private boolean writeLiteralEnd = false;
 	private boolean writeResourceEnd = false;
 	
@@ -47,27 +45,22 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	public PhyloXMLSpecificPredicatesDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
 			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner, QName parentPredicate) {
 		super(streamDataProvider, parameterMap, propertyOwner);
-		this.parentPredicate = parentPredicate;
-//		runCount = 0;
-		this.currentElementPredicate = parentPredicate;
+		predicates.push(parentPredicate);
 	}
 
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		if (getStreamDataProvider().getPredicateInfoMap().get(currentElementPredicate).getAllowedChildren().contains(event.getPredicate().getURI())) { //TODO check correct order
-			getStreamDataProvider().getMetaIDs().remove(event.getID());		
+		if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren().contains(event.getPredicate().getURI())) { //TODO check correct order
+			getStreamDataProvider().getMetaIDs().remove(event.getID());
+			predicates.push(event.getPredicate().getURI());
 			
 			switch (getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()).getTreatment()) {
 				case TAG_AND_VALUE:
 					QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()).getTranslation();
-					getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());
-					currentElementPredicate = event.getPredicate().getURI();
+					getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());					
 					writeLiteralEnd = true;
-				case ATTRIBUTE:					
-				case VALUE:
-					currentLiteralPredicate = event.getPredicate().getURI();
-					break;
+					break;				
 				default:
 					break;
 			}
@@ -76,34 +69,32 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 
 
 	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (currentLiteralPredicate != null) {
-			switch (getStreamDataProvider().getPredicateInfoMap().get(currentLiteralPredicate).getTreatment()) {
-				case TAG_AND_VALUE:					
-				case VALUE:
-					getStreamDataProvider().getWriter().writeCharacters(event.getStringValue()); //TODO maybe use object value instead?
-					break;
-				case ATTRIBUTE:					
-					QName attribute = getStreamDataProvider().getPredicateInfoMap().get(currentLiteralPredicate).getTranslation();
-					getStreamDataProvider().getWriter().writeAttribute(attribute.getPrefix(), attribute.getNamespaceURI(), attribute.getLocalPart(), event.getStringValue());
-					break;
-				default:
-					break;
-			}
-		}
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {		
+		switch (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment()) {
+			case TAG_AND_VALUE:					
+			case VALUE:
+				getStreamDataProvider().getWriter().writeCharacters(event.getStringValue()); //TODO maybe use object value instead?
+				break;
+			case ATTRIBUTE:					
+				QName attribute = getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTranslation();
+				getStreamDataProvider().getWriter().writeAttribute(attribute.getPrefix(), attribute.getNamespaceURI(), attribute.getLocalPart(), event.getStringValue());
+				break;
+			default:
+				break;
+		}		
 	}
 
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		if (getStreamDataProvider().getPredicateInfoMap().get(currentElementPredicate).getAllowedChildren().contains(event.getRel().getURI())) { //TODO check correct order
+		if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren().contains(event.getRel().getURI())) { //TODO check correct order
 			getStreamDataProvider().getMetaIDs().remove(event.getID());
+			predicates.push(event.getRel().getURI());
 			
 			switch (getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTreatment()) {
 				case TAG:
 					QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTranslation();
-					getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());
-					currentElementPredicate = event.getRel().getURI();
+					getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());					
 					writeResourceEnd = true;
 					break;
 				default:
@@ -114,22 +105,17 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 
 
 	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if (writeLiteralEnd && event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {		
+		if (writeLiteralEnd || writeResourceEnd) {
 			getStreamDataProvider().getWriter().writeEndElement();
-			writeLiteralEnd = false;
-		}
-		else if (writeResourceEnd && event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
-			getStreamDataProvider().getWriter().writeEndElement();
-			writeLiteralEnd = false;
+			predicates.pop();
 		}
 		
-		currentLiteralPredicate = null;
+		if (writeLiteralEnd && event.getType().getContentType().equals(EventContentType.META_LITERAL)) {					
+			writeLiteralEnd = false;
+		}
+		else if (writeResourceEnd && event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {			
+			writeResourceEnd = false;
+		}
 	}
-	
-	
-//	public void increaseRunCount() {
-//		runCount++;
-//		currentElementPredicate = parentPredicate;
-//	}
 }

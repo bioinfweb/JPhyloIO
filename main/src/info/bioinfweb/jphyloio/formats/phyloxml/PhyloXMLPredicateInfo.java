@@ -19,7 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -29,17 +29,15 @@ import javax.xml.namespace.QName;
 public class PhyloXMLPredicateInfo {
 	private PhyloXMLPredicateTreatment treatment;
 	private QName translation;
-	private List<QName> allowedChildren = new ArrayList<QName>();
+	private List<QName> allowedChildren;
 	
 	
 	public PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment treatment, QName translation, QName... allowedChildren) {
 		super();
 		this.treatment = treatment;
 		this.translation = translation;
-		
-		for (int i = 0; i < allowedChildren.length; i++) {
-			this.allowedChildren.add(allowedChildren[i]);
-		}
+		//TODO maybe not necessary to create list
+		this.allowedChildren = Arrays.asList(allowedChildren);
 	}
 
 
