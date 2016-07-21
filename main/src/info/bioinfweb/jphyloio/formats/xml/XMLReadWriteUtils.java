@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 
@@ -69,7 +70,7 @@ public class XMLReadWriteUtils {
 	}
 	
 	
-	public static String getNamespacePrefix(XMLStreamWriter writer, String givenPrefix, String namespaceURI) throws XMLStreamException {		
+	public static String getNamespacePrefix(XMLStreamWriter writer, String givenPrefix, String namespaceURI) throws XMLStreamException {
 		if (givenPrefix == null || givenPrefix.isEmpty()) {
 			givenPrefix = writer.getPrefix(namespaceURI);
 			
@@ -88,6 +89,12 @@ public class XMLReadWriteUtils {
 				}
 				else if (namespaceURI.equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {
 					givenPrefix = PhyloXMLConstants.PHYLOXML_DEFAULT_PRE;
+				}
+				else if (namespaceURI.equals(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE)) {
+					givenPrefix = ReadWriteConstants.JPHYLOIO_PREDICATE_PREFIX;
+				}
+				else if (namespaceURI.equals(ReadWriteConstants.JPHYLOIO_ATTRIBUTES_NAMESPACE)) {
+					givenPrefix = ReadWriteConstants.JPHYLOIO_ATTRIBUTES_PREFIX;
 				}
 				else {
 					givenPrefix = DEFAULT_NAMESPACE_PREFIX;

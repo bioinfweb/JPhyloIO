@@ -49,9 +49,11 @@ public interface ReadWriteConstants {
 	public static final String JPHYLOIO_GENERAL_NAMESPACE = JPHYLOIO_NAMESPACE_PREFIX + "General/";
 	
 	public static final String JPHYLOIO_ATTRIBUTES_NAMESPACE = JPHYLOIO_GENERAL_NAMESPACE + ATTRIBUTES_NAMESPACE_FOLDER + "/";
+	public static final String JPHYLOIO_ATTRIBUTES_PREFIX = "jpa";
 	public static final QName ATTRIBUTE_STRING_KEY = new QName(JPHYLOIO_ATTRIBUTES_NAMESPACE, "stringKey");
 	
 	public static final String JPHYLOIO_PREDICATE_NAMESPACE = JPHYLOIO_GENERAL_NAMESPACE + PREDICATE_NAMESPACE_FOLDER + "/";
+	public static final String JPHYLOIO_PREDICATE_PREFIX = "jpp";
 	public static final String JPHYLOIO_FORMATS_NAMESPACE_PREFIX = JPHYLOIO_NAMESPACE_PREFIX + "Formats/";
 	
 	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata");
