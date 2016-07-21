@@ -21,12 +21,12 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 import static info.bioinfweb.commons.testing.XMLAssert.*;
 import static org.junit.Assert.*;
-
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -443,14 +443,16 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);			
-			assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);		
-			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/General/Predicates/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
-			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/General/Attributes/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/General/Predicates/", XMLConstants.XMLNS_ATTRIBUTE, 
+					ReadWriteConstants.JPHYLOIO_PREDICATE_PREFIX), true, element);
+			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/General/Attributes/", XMLConstants.XMLNS_ATTRIBUTE, 
+					ReadWriteConstants.JPHYLOIO_ATTRIBUTES_PREFIX), true, element);
 			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/NeXML/Predicates/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
-			assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
-			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/Newick/DataTypes/", XMLConstants.XMLNS_ATTRIBUTE), false, element);		
+			String prefix2 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix3 = assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/Newick/DataTypes/", XMLConstants.XMLNS_ATTRIBUTE), false, element);		
 			assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);			
 			assertNamespace(new QName("www.another-test.net", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix6 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);		
 			
 			assertAttributeCount(2, element);
 			assertAttribute(ATTR_VERSION, "0.9", element);
@@ -469,13 +471,13 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(3, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_XSI_TYPE, "nex:ResourceMeta", element);
-			assertAttribute(ATTR_REL, "p:relations", element);
+			assertAttribute(ATTR_REL, prefix6 + XMLUtils.QNAME_SEPARATOR + "relations", element);
 			
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(3, element);
 			assertAttribute(ATTR_ID, element);	
 			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, "p:predicate", element);
+			assertAttribute(ATTR_PROPERTY, prefix6 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			
 			assertCommentEvent("This is a divided comment.", reader);			
 			assertCharactersEvent("This is a long literal text", reader);
@@ -487,7 +489,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_XSI_TYPE, "nex:ResourceMeta", element);
-			assertAttribute(ATTR_REL, "p:relations", element);
+			assertAttribute(ATTR_REL, prefix6 + XMLUtils.QNAME_SEPARATOR + "relations", element);
 			assertAttribute(ATTR_HREF, "somePath/#fragment", element);
 			assertEndElement(TAG_META, reader);
 			
@@ -495,7 +497,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(3, element);
 			assertAttribute(ATTR_ID, element);	
 			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, "p:predicate", element);
+			assertAttribute(ATTR_PROPERTY, prefix6 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			
 			assertStartElement(new QName("http://test.com/", "customTest", "pre"), reader);
 			assertEndElement(new QName("http://test.com/", "customTest", "pre"), reader);
@@ -506,7 +508,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, "p:predicate", element);
+			assertAttribute(ATTR_PROPERTY, prefix6 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertAttribute(ATTR_DATATYPE, "xsd:QName", element);
 			
 			assertCharactersEvent("pre1:test2", reader);
@@ -518,7 +520,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "my string key", element);
 			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, "p1:hasLiteralMetadata", element);
+			assertAttribute(ATTR_PROPERTY, "jpp:hasLiteralMetadata", element);
 			assertAttribute(ATTR_DATATYPE, "xsd:integer", element);
 			
 			assertCharactersEvent("25", reader);
@@ -706,7 +708,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(5, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, "p4:somePredicate", element);
+			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
 			assertAttribute(ATTR_DATATYPE, "xsd:int", element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "a1", element);
 			
@@ -718,7 +720,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, "p4:somePredicate", element);
+			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "a2", element);
 			
 			assertCharactersEvent("ab 'c", reader);
@@ -756,7 +758,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, "p4:somePredicate", element);
+			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "splitString", element);
 			
 			assertCharactersEvent("ABCDEF", reader);
@@ -767,8 +769,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(5, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, "p4:somePredicate", element);
-			assertAttribute(ATTR_DATATYPE, "p5:Array", element);
+			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, prefix3 + XMLUtils.QNAME_SEPARATOR + "Array", element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "array", element);
 			
 			assertCharactersEvent("[100, abc]", reader);
