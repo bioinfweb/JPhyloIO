@@ -972,8 +972,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_DISTRIBUTION, TAG_DESC, XMLStreamConstants.END_ELEMENT), literalEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_DISTRIBUTION, TAG_POINT, XMLStreamConstants.START_ELEMENT), 
-				new PhyloXMLStartElementReader(null, PREDICATE_DISTRIBUTION_POINT, null, false, ATTR_GEO_DATUM, PREDICATE_DISTRIBUTION_POINT_GEODETIC_DATUM, 
-						ATTR_ALT_UNIT, PREDICATE_DISTRIBUTION_POINT_ALT_UNIT)); //TODO is there a java class similar to Point to parse the latitude/longitude/altitude values to?
+				new PhyloXMLStartElementReader(null, PREDICATE_DISTRIBUTION_POINT, null, false, ATTR_GEO_DATUM, PREDICATE_DISTRIBUTION_POINT_ATTR_GEODETIC_DATUM, 
+						ATTR_ALT_UNIT, PREDICATE_DISTRIBUTION_POINT_ATTR_ALT_UNIT)); //TODO is there a java class similar to Point to parse the latitude/longitude/altitude values to?
 		putElementReader(new XMLElementReaderKey(TAG_POINT, null, XMLStreamConstants.CHARACTERS), new PhyloXMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_POINT, TAG_LAT, XMLStreamConstants.START_ELEMENT),
@@ -998,8 +998,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_POLYGON, null, XMLStreamConstants.CHARACTERS), new PhyloXMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_POLYGON, TAG_POINT, XMLStreamConstants.START_ELEMENT), 
-				new PhyloXMLStartElementReader(null, PREDICATE_DISTRIBUTION_POLYGON_POINT, null, false, ATTR_GEO_DATUM, PREDICATE_DISTRIBUTION_POLYGON_POINT_GEODETIC_DATUM, 
-						ATTR_ALT_UNIT, PREDICATE_DISTRIBUTION_POLYGON_POINT_ALT_UNIT));
+				new PhyloXMLStartElementReader(null, PREDICATE_DISTRIBUTION_POLYGON_POINT, null, false, ATTR_GEO_DATUM, PREDICATE_DISTRIBUTION_POLYGON_POINT_ATTR_GEODETIC_DATUM, 
+						ATTR_ALT_UNIT, PREDICATE_DISTRIBUTION_POLYGON_POINT_ATTR_ALT_UNIT));
 		//Element reader for character content of point tag was registered before
 		
 		putElementReader(new XMLElementReaderKey(TAG_POINT, TAG_LAT, XMLStreamConstants.START_ELEMENT),
