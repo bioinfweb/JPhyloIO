@@ -75,17 +75,19 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (currentPredicate.equals(PREDICATE_PROPERTY_ATTR_APPLIES_TO)) {
-			appliesTo = event.getStringValue();
-		}
-		else if (currentPredicate.equals(PREDICATE_PROPERTY_ATTR_UNIT)) {
-			unit = event.getStringValue();
-		}
-		else if (currentPredicate.equals(PREDICATE_PROPERTY_ATTR_ID_REF)) {
-			idRef = event.getStringValue();
-		}
-		else {
-			value = event.getStringValue();
+		if (isProperty) {
+			if (currentPredicate.equals(PREDICATE_PROPERTY_ATTR_APPLIES_TO)) {
+				appliesTo = event.getStringValue();
+			}
+			else if (currentPredicate.equals(PREDICATE_PROPERTY_ATTR_UNIT)) {
+				unit = event.getStringValue();
+			}
+			else if (currentPredicate.equals(PREDICATE_PROPERTY_ATTR_ID_REF)) {
+				idRef = event.getStringValue();
+			}
+			else {
+				value = event.getStringValue();
+			}
 		}
 	}
 
