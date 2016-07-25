@@ -113,7 +113,7 @@ public class PhyloXMLEdgeAndNodeMetadataTreeAdapter extends EdgeAndNodeMetaDataT
 	}
 	
 	
-	private void addAnnotations() {
+	protected void addAnnotations() {
 		URI href = null;
 		URI href2 = null;
 		
