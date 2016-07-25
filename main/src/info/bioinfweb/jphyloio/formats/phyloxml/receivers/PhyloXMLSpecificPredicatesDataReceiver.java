@@ -73,7 +73,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 							QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()).getTranslation();
 							getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());					
 							writeLiteralEnd = true;
-							break;				
+							break;
 						default:
 							break;
 					}
@@ -126,6 +126,9 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 							QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTranslation();
 							getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());					
 							writeResourceEnd = true;
+							break;
+						case VALUE:			
+							getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString());
 							break;
 						default:
 							break;
