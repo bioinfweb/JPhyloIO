@@ -159,9 +159,24 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 				XMLReadWriteUtils.getXSDPrefix(getXMLWriter()) + XMLUtils.QNAME_SEPARATOR + "double");
 		
 		writeSimpleTag(TAG_NAME.getLocalPart(), startEvent.getLabel());
-		writeSimpleTag(TAG_ID.getLocalPart(), startEvent.getID()); //TODO only write if no according metadata is present
 		
-		tree.writeMetadata(getParameters(), specificReceiver); //TODO ensure that id and name tags are not written
+		// Write ID element
+		String phylogenyID = getStreamDataProvider().getPhylogenyID();		
+		if (phylogenyID == null) {
+			phylogenyID = startEvent.getID();
+		}
+		
+		getXMLWriter().writeStartElement(TAG_ID.getLocalPart());
+		
+		if (getStreamDataProvider().getPhylogenyIDProvider() != null) {
+			getXMLWriter().writeAttribute(ATTR_ID_PROVIDER.getLocalPart(), getStreamDataProvider().getPhylogenyIDProvider());
+		}
+		
+		getXMLWriter().writeCharacters(phylogenyID);
+		getXMLWriter().writeEndElement();
+		
+		// Write metadata with PhyloXML-specific predicates
+		tree.writeMetadata(getParameters(), specificReceiver);
 		
 		writeCladeTag(tree, topologyExtractor, rootNodeID);  // It is ensured by the TreeTopologyExtractor that the root node ID is not null
 		
@@ -194,12 +209,14 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		writeSimpleTag(TAG_NAME.getLocalPart(), rootNode.getLabel());
 		
-		if (!Double.isNaN(afferentEdge.getLength())) {
+		if (!Double.isNaN(afferentEdge.getLength())) { //TODO better write as attribute?
 			writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(afferentEdge.getLength()));
-		}		
+		}
+		
+		//TODO write specific metadata
 		
 		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
-		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());
+		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID()); //TODO customXML can only be written after clade tags
 		
 		for (String childID : topologyExtractor.getIDToNodeInfoMap().get(rootNodeID).getChildNodeIDs()) {		
 			writeCladeTag(tree, topologyExtractor, childID);

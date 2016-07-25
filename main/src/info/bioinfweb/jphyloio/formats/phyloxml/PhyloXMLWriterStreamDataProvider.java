@@ -30,14 +30,14 @@ import javax.xml.namespace.QName;
 
 
 
-public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<PhyloXMLEventWriter> implements PhyloXMLConstants, PhyloXMLPrivateConstants {
-	
-	
-	
+public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<PhyloXMLEventWriter> implements PhyloXMLConstants, PhyloXMLPrivateConstants {	
 	private Map<QName, PhyloXMLPredicateInfo> predicateInfoMap = new HashMap<QName, PhyloXMLPredicateInfo>();
 	
 	private Map<String, PhyloXMLMetaeventInfo> metaEvents = new HashMap<String, PhyloXMLMetaeventInfo>();
 	private Set<String> metaIDs = new HashSet<String>();
+	
+	private String phylogenyIDProvider = null;
+	private String phylogenyID = null;
 	
 	
 	public PhyloXMLWriterStreamDataProvider(PhyloXMLEventWriter eventWriter) {
@@ -51,6 +51,11 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 	public PhyloXMLEventWriter getEventWriter() { //TODO is this still necessary (generics)?
 		return (PhyloXMLEventWriter)super.getEventWriter();
 	}
+	
+	
+	public Map<QName, PhyloXMLPredicateInfo> getPredicateInfoMap() {
+		return predicateInfoMap;
+	}
 
 
 	public Map<String, PhyloXMLMetaeventInfo> getMetaEvents() {
@@ -61,29 +66,38 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 	public Set<String> getMetaIDs() {
 		return metaIDs;
 	}
-	
-	
-	public Map<QName, PhyloXMLPredicateInfo> getPredicateInfoMap() {
-		return predicateInfoMap;
+
+
+	public String getPhylogenyIDProvider() {
+		return phylogenyIDProvider;
+	}
+
+
+	public void setPhylogenyIDProvider(String phylogenyIDProvider) {
+		this.phylogenyIDProvider = phylogenyIDProvider;
+	}
+
+
+	public String getPhylogenyID() {
+		return phylogenyID;
+	}
+
+
+	public void setPhylogenyID(String phylogenyID) {
+		this.phylogenyID = phylogenyID;
 	}
 
 
 	private void fillMetaPredicateMap() {
 		// Phylogeny
 		predicateInfoMap.put(IDENTIFIER_PHYLOGENY, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, null, PREDICATE_PHYLOGENY_ATTR_REROOTABLE, 
-				PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, PREDICATE_PHYLOGENY_ATTR_TYPE, PREDICATE_PHYLOGENY_ID, PREDICATE_PHYLOGENY_DESCRIPTION, 
-				PREDICATE_PHYLOGENY_DATE, PREDICATE_CONFIDENCE, PREDICATE_CLADE_REL, PREDICATE_SEQ_REL, PREDICATE_PROPERTY));
+				PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, PREDICATE_PHYLOGENY_ATTR_TYPE, PREDICATE_PHYLOGENY_DESCRIPTION, 
+				PREDICATE_PHYLOGENY_DATE, PREDICATE_CONFIDENCE, PREDICATE_PROPERTY));
 		predicateInfoMap.put(PREDICATE_PHYLOGENY_ATTR_REROOTABLE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_REROOTABLE));
 		predicateInfoMap.put(PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_BRANCH_LENGTH_UNIT));
-		predicateInfoMap.put(PREDICATE_PHYLOGENY_ATTR_TYPE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_TYPE));
-		
-		predicateInfoMap.put(PREDICATE_PHYLOGENY_ID, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_ID, PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER, 
-				PREDICATE_PHYLOGENY_ID_VALUE));
-		predicateInfoMap.put(PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_ID_PROVIDER));
-		predicateInfoMap.put(PREDICATE_PHYLOGENY_ID_VALUE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.VALUE, null));		
+		predicateInfoMap.put(PREDICATE_PHYLOGENY_ATTR_TYPE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_TYPE));			
 		predicateInfoMap.put(PREDICATE_PHYLOGENY_DESCRIPTION, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG_AND_VALUE, TAG_DESCRIPTION));
-		predicateInfoMap.put(PREDICATE_PHYLOGENY_DATE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG_AND_VALUE, TAG_DATE));
-		
+		predicateInfoMap.put(PREDICATE_PHYLOGENY_DATE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG_AND_VALUE, TAG_DATE));		
 		predicateInfoMap.put(PREDICATE_CONFIDENCE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_CONFIDENCE, PREDICATE_CONFIDENCE_ATTR_TYPE, 
 				PREDICATE_CONFIDENCE_VALUE));
 		predicateInfoMap.put(PREDICATE_CONFIDENCE_ATTR_TYPE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_TYPE));

@@ -47,6 +47,8 @@ import javax.xml.stream.events.StartElement;
 
 public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants {
 	private Stack<String> metaIDs = new Stack<String>();
+	private boolean isPhylogenyIDValue = false;
+	private boolean isPhylogenyIDProvider = false;
 	
 	
 	public PhyloXMLCollectMetadataDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
@@ -74,6 +76,13 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 			resourceIdentifier = event.getPredicate().getURI();
 			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 					resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
+			
+			if (resourceIdentifier.equals(PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER)) {
+				isPhylogenyIDProvider = true;
+			}
+			else if (resourceIdentifier.equals(PREDICATE_PHYLOGENY_ID_VALUE)) {
+				isPhylogenyIDValue = true;
+			}
 		}
 		else {
 			resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
@@ -108,6 +117,16 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 					getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 							resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 				}				
+			}
+		}
+		else {
+			if (isPhylogenyIDProvider) {
+				getStreamDataProvider().setPhylogenyIDProvider(event.getStringValue());
+				isPhylogenyIDProvider = false;
+			}
+			else if (isPhylogenyIDValue) {
+				getStreamDataProvider().setPhylogenyID(event.getStringValue());
+				isPhylogenyIDValue = false;
 			}
 		}
 		
@@ -151,6 +170,8 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		metaIDs.pop();
+		isPhylogenyIDProvider = false;
+		isPhylogenyIDValue = false;
 	}
 
 	
