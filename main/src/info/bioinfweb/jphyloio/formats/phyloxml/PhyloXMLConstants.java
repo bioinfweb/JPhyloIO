@@ -143,7 +143,7 @@ public interface PhyloXMLConstants {
 	public static final String APPLIES_TO_PARENT_BRANCH = "parent_branch";
 	public static final String APPLIES_TO_OTHER = "other";
 	
-	public static final String TYPE_CROSSLINK = "crosslink";
+	public static final String TYPE_NETWORK_EDGE = "network_edge";
 	
 	
 	public static final String PHYLOXML_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_FORMATS_NAMESPACE_PREFIX + "PhyloXML/";	

@@ -79,9 +79,11 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 			
 			if (resourceIdentifier.equals(PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER)) {
 				isPhylogenyIDProvider = true;
+				getStreamDataProvider().getMetaIDs().remove(event.getID());
 			}
 			else if (resourceIdentifier.equals(PREDICATE_PHYLOGENY_ID_VALUE)) {
 				isPhylogenyIDValue = true;
+				getStreamDataProvider().getMetaIDs().remove(event.getID());
 			}
 		}
 		else {
@@ -156,6 +158,10 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 			resourceIdentifier = event.getRel().getURI();
 			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 					resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
+			
+			if (resourceIdentifier.equals(PREDICATE_PHYLOGENY_ID)) {
+				getStreamDataProvider().getMetaIDs().remove(event.getID());
+			}
 		}
 		else {
 			resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;

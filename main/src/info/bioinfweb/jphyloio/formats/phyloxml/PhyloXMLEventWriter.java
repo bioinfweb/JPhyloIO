@@ -186,7 +186,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			getXMLWriter().writeAttribute(ATTR_ID_REF_0.getLocalPart(), networkEdgeEvent.getSourceID());
 			getXMLWriter().writeAttribute(ATTR_ID_REF_1.getLocalPart(), networkEdgeEvent.getTargetID());
 			getXMLWriter().writeAttribute(ATTR_DISTANCE.getLocalPart(), Double.toString(networkEdgeEvent.getLength()));
-			getXMLWriter().writeAttribute(ATTR_TYPE.getLocalPart(), TYPE_CROSSLINK); //TODO find better name?
+			getXMLWriter().writeAttribute(ATTR_TYPE.getLocalPart(), TYPE_NETWORK_EDGE);
 		}
 		
 		tree.writeMetadata(getParameters(), receiver);
@@ -196,8 +196,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	
 	
 	private void writeCladeTag(TreeNetworkDataAdapter tree, TreeTopologyExtractor topologyExtractor, String rootNodeID) throws XMLStreamException, IOException {
-		PhyloXMLMetaDataReceiver nodeReceiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE);
-		PhyloXMLMetaDataReceiver edgeReceiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH);
+		PhyloXMLMetaDataReceiver nodeReceiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE, IDENTIFIER_CLADE);
+		PhyloXMLMetaDataReceiver edgeReceiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH, IDENTIFIER_CLADE);
 		
 		NodeEvent rootNode = tree.getNodes(getParameters()).getObjectStartEvent(getParameters(), rootNodeID);
 		EdgeEvent afferentEdge = tree.getEdges(getParameters()).getObjectStartEvent(getParameters(), 
@@ -207,20 +207,32 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		getXMLWriter().writeAttribute(ATTR_ID_SOURCE.getLocalPart(), rootNodeID);
 		
-		writeSimpleTag(TAG_NAME.getLocalPart(), rootNode.getLabel());
-		
-		if (!Double.isNaN(afferentEdge.getLength())) { //TODO better write as attribute?
-			writeSimpleTag(TAG_BRANCH_LENGTH.getLocalPart(), Double.toString(afferentEdge.getLength()));
+		if (!Double.isNaN(afferentEdge.getLength())) {
+			getXMLWriter().writeAttribute(ATTR_BRANCH_LENGTH.getLocalPart(), Double.toString(afferentEdge.getLength()));
 		}
 		
-		//TODO write specific metadata
+		writeSimpleTag(TAG_NAME.getLocalPart(), rootNode.getLabel());		
 		
+		// Write PhyloXML-specific metadata
 		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
-		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID()); //TODO customXML can only be written after clade tags
+		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());
 		
+		// Write general metadata
+		nodeReceiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE);
+		edgeReceiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH);		
+		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
+		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());
+		
+		// Write subtree
 		for (String childID : topologyExtractor.getIDToNodeInfoMap().get(rootNodeID).getChildNodeIDs()) {		
 			writeCladeTag(tree, topologyExtractor, childID);
 		}
+		
+		// Write custom XML
+		nodeReceiver = new PhyloXMLIgnoreMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE, false);
+		edgeReceiver = new PhyloXMLIgnoreMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH, false);
+		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
+		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());
 		
 		getXMLWriter().writeEndElement();
 	}

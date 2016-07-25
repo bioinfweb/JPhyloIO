@@ -158,7 +158,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 					getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent()); //TODO buffer content in case this is true?
 				}
 			}
-			else if (event.hasXMLEventValue()) {				
+			else if (event.hasXMLEventValue() && !(propertyOwner.equals(PropertyOwner.NODE) || propertyOwner.equals(PropertyOwner.PARENT_BRANCH))) {				
 				writeCustomXMLTag(event.getXMLEvent());
 				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());
 			}
