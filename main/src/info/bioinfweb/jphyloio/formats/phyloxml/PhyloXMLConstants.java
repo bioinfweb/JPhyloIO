@@ -300,7 +300,6 @@ public interface PhyloXMLConstants {
 	
 	public static final QName PREDICATE_PROPERTY = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property");
 	public static final QName PREDICATE_PROPERTY_ATTR_UNIT = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Unit");
-	public static final QName PREDICATE_PROPERTY_ATTR_DATATYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Datatype");
 	public static final QName PREDICATE_PROPERTY_ATTR_APPLIES_TO = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AppliesTo");
 	public static final QName PREDICATE_PROPERTY_ATTR_ID_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDRef");
 

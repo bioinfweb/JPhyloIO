@@ -70,6 +70,11 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	}
 
 
+	public PropertyOwner getPropertyOwner() {
+		return propertyOwner;
+	}
+
+
 	public boolean hasSimpleContent() {
 		return hasSimpleContent;
 	}

@@ -206,12 +206,10 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.setPropertyHasResource(true);
 					
 					if (appliesToAsAttribute) {
-						readAttributes(streamDataProvider, element, "", ATTR_APPLIES_TO, PREDICATE_PROPERTY_ATTR_APPLIES_TO, ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, 
-								ATTR_ID_REF, PREDICATE_PROPERTY_ATTR_ID_REF);
+						readAttributes(streamDataProvider, element, "", ATTR_APPLIES_TO, PREDICATE_PROPERTY_ATTR_APPLIES_TO);
 					}
-					else {
-						readAttributes(streamDataProvider, element, "", ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, ATTR_ID_REF, PREDICATE_PROPERTY_ATTR_ID_REF);
-					}
+					
+					readAttributes(streamDataProvider, element, "", ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, ATTR_ID_REF, PREDICATE_PROPERTY_ATTR_ID_REF);					
 				}
 				else {
 					streamDataProvider.setPropertyHasResource(false);
