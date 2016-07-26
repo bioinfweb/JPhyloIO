@@ -953,7 +953,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		finally {
 			fileReader.close();
 			reader.close();
-//			file.delete();
+			file.delete();
 		}
 	}
 	

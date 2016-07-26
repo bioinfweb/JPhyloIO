@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventFactory;
 
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -107,7 +108,13 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 		}
 		catch (URISyntaxException e) {}
 
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));	
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
+		nestedEvents.add(new LiteralMetadataEvent(getNodeEdgeIDPrefix() + ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
+		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
+		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 
 		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));		
 		
@@ -174,7 +181,7 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 		getAnnotations().add(new LiteralMetadataContentEvent(0.6, "0.6"));
 		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));		
+		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
