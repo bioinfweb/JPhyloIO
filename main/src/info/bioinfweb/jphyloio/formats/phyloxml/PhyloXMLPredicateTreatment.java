@@ -22,5 +22,6 @@ public enum PhyloXMLPredicateTreatment {
 	TAG,
 	ATTRIBUTE,
 	VALUE,
-	TAG_AND_VALUE;
+	TAG_AND_VALUE,
+	CUSTOM_XML;
 }

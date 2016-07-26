@@ -227,6 +227,11 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	
 	
 	protected void writeCustomXMLTag(XMLEvent event) throws XMLStreamException {
+		writeCustomXMLTag(literalPredicate, event);
+	}
+	
+	
+	protected void writeCustomXMLTag(URIOrStringIdentifier predicate, XMLEvent event) throws XMLStreamException {
 		switch (event.getEventType()) {
 			case XMLStreamConstants.START_ELEMENT:
 				StartElement element = event.asStartElement();
@@ -242,11 +247,11 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 							attribute.getValue());					
 				}
 				
-				if (literalPredicate.getURI() != null) {
+				if (predicate.getURI() != null) {
 					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
 							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), literalPredicate.getURI().getPrefix(), 
-							literalPredicate.getURI().getNamespaceURI()) + ":" + literalPredicate.getURI().getLocalPart());
+							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
+									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
 				} //TODO handle case that only string key is present (attribute similar to NeXML?)
 				
 				if ((originalType != null) && (originalType.getURI() != null)) {
