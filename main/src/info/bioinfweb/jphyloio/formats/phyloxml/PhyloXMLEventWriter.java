@@ -70,32 +70,45 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.XSD_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_NS_URI);  // Ensures that the prefix for this NS is always 'xsd'
 		
-		checkDocumentNamespaces();		
+		checkDocument();		
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getRDFPrefix(getXMLWriter()), XMLReadWriteUtils.NAMESPACE_RDF); //TODO only write this if customXML is present
 		
-		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
-		
-		// Write namespace declarations
-		getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);		
-		for (String prefix : getStreamDataProvider().getNamespacePrefixes()) { //TODO only write NS if element is actually written to the file? (e.g. predicate namespace is in all specific meta events but never used in the file)
-			getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
+		if (getStreamDataProvider().isDocumentHasCustomXML() || getStreamDataProvider().isDocumentHasPhylogeny()) {
+			getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
+			
+			// Write namespace declarations
+			getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);		
+			for (String prefix : getStreamDataProvider().getNamespacePrefixes()) { //TODO only write NS if element is actually written to the file? (e.g. predicate namespace is in all specific meta events but never used in the file)
+				getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
+			}
+			
+			getXMLWriter().writeComment(" " + getFileStartInfo(getParameters()) + " ");
+			
+			if (getStreamDataProvider().isDocumentHasPhylogeny()) {
+				writePhylogenyTags();
+			}
+			
+			getDocument().writeMetadata(getParameters(), receiver);
+			
+			if (receiver.hasMetadata()) {
+				getParameters().getLogger().addWarning("Encountered document meta data was not written, because this is not supported by the PhyloXML format.");
+			}
+			
+			getXMLWriter().writeEndElement();
 		}
-		
-		getXMLWriter().writeComment(" " + getFileStartInfo(getParameters()) + " ");
-		
-		writePhylogenyTags(); //TODO Ensure that at least an empty phylogeny or some custom XML is written
-		
-		getDocument().writeMetadata(getParameters(), receiver); //TODO only write custom XML here, warning if other metadata is encountered
-		
-		getXMLWriter().writeEndElement();
+		else {
+			getParameters().getLogger().addWarning("The document did not contain any data that could be written to the file.");
+		}
 	}
 	
 	
-	private void checkDocumentNamespaces() throws IOException {
+	private void checkDocument() throws IOException {
 		PhyloXMLCollectMetadataDataReceiver receiver = new PhyloXMLCollectMetadataDataReceiver(getStreamDataProvider(), getParameters());
 		
 		getDocument().writeMetadata(getParameters(), receiver);
+		
+		getStreamDataProvider().setDocumentHasCustomXML(receiver.hasCustomXML());
 		
 		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = getDocument().getTreeNetworkGroupIterator(getParameters());		
 		while (treeNetworkGroupIterator.hasNext()) {
@@ -106,6 +119,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			while (treeNetworkIterator.hasNext()) {
 				TreeNetworkDataAdapter tree = treeNetworkIterator.next();					
 				tree.writeMetadata(getParameters(), receiver);
+				
+				getStreamDataProvider().setDocumentHasPhylogeny(true);
 				
 				Iterator<String> edgeIDIterator = tree.getEdges(getParameters()).getIDIterator(getParameters());
 				while (edgeIDIterator.hasNext()) {

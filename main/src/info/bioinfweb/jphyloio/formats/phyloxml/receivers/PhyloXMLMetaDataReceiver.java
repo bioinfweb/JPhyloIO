@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
@@ -58,7 +59,6 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	private boolean hasSimpleContent;
 	private URIOrStringIdentifier literalPredicate;
 	private URIOrStringIdentifier originalType;
-	private String alternativeStringRepresentation;
 	private boolean writeContent;
 	private boolean writePropertyStart;
 
@@ -93,7 +93,6 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 			hasSimpleContent = event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE);
 			literalPredicate = event.getPredicate();
 			originalType = event.getOriginalType();
-			alternativeStringRepresentation = event.getAlternativeStringValue();
 			
 			writePropertyStart = true;
 		}
@@ -132,18 +131,12 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 								}
 							}
 						}
-						else if (alternativeStringRepresentation != null) { //TODO use alternative string here?
-							value = alternativeStringRepresentation;
-						}
 						else if (event.getStringValue() != null) {		
 							value = event.getStringValue();
 						}
 						else {
 							value = event.getObjectValue().toString();
 						}
-					}
-					else if (alternativeStringRepresentation != null) {
-						value = alternativeStringRepresentation;
 					}
 					else {					
 						value = event.getStringValue();
@@ -160,7 +153,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 						getStreamDataProvider().getWriter().writeEndElement();		
 					}
 					
-					getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent()); //TODO buffer content in case this is true?
+					getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());
 				}
 			}
 			else if (event.hasXMLEventValue() && !(propertyOwner.equals(PropertyOwner.NODE) || propertyOwner.equals(PropertyOwner.PARENT_BRANCH))) {				
@@ -200,17 +193,21 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	
 	protected void writePropertyTag(URIOrStringIdentifier predicate, URIOrStringIdentifier datatype, String value, boolean writeEndElement) throws XMLStreamException, JPhyloIOWriterException {			
 		getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
-
-		if (predicate.getURI() != null) { //TODO handle case that only string key is present
-			getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
-					XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
-							predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
-		}
 		
-		if (datatype.getURI() != null) {
-			getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
-					+ ":" + datatype.getURI().getLocalPart());
-		} //TODO handle case that only string key is present
+		if (predicate.getURI() == null) {
+			predicate = new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA); //TODO write StringKey to file somehow?
+		}		
+		
+		getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
+				XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
+						predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());		
+		
+		if ((datatype == null) || (datatype.getURI() == null)) {
+			datatype = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING); //TODO use string key, if present?
+		}		
+	
+		getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
+				+ ":" + datatype.getURI().getLocalPart());
 		
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), propertyOwner.toString().toLowerCase()); //TODO XTG attribute constants zum Vergleich ansehen
 		
@@ -252,7 +249,11 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
 							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
 									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
-				} //TODO handle case that only string key is present (attribute similar to NeXML?)
+				}
+				else { // String representation can not be null, if URI is null
+					getStreamDataProvider().getWriter().writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getPrefix(), 
+							ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), predicate.getStringRepresentation());
+				}
 				
 				if ((originalType != null) && (originalType.getURI() != null)) {
 					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 

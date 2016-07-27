@@ -20,8 +20,12 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 public enum PhyloXMLPredicateTreatment {
 	TAG,
+	
 	ATTRIBUTE,
+	
 	VALUE,
+	
 	TAG_AND_VALUE,
+	
 	CUSTOM_XML;
 }

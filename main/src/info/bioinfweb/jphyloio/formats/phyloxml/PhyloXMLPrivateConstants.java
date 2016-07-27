@@ -18,9 +18,10 @@
  */
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
-import info.bioinfweb.jphyloio.ReadWriteConstants;
 
 import javax.xml.namespace.QName;
+
+
 
 /**
  * This interface contains constants used by internally in JPhyloIO by {@link PhyloXMLEventWriter} and PhyloXML data receivers. 

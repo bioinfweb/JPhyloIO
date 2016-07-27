@@ -19,9 +19,6 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 
@@ -29,15 +26,14 @@ import javax.xml.namespace.QName;
 public class PhyloXMLPredicateInfo {
 	private PhyloXMLPredicateTreatment treatment;
 	private QName translation;
-	private List<QName> allowedChildren;
+	private QName[] allowedChildren;
 	
 	
 	public PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment treatment, QName translation, QName... allowedChildren) {
 		super();
 		this.treatment = treatment;
 		this.translation = translation;
-		//TODO maybe not necessary to create list
-		this.allowedChildren = Arrays.asList(allowedChildren);
+		this.allowedChildren = allowedChildren;
 	}
 
 
@@ -51,7 +47,7 @@ public class PhyloXMLPredicateInfo {
 	}
 
 
-	public List<QName> getAllowedChildren() {
+	public QName[] getAllowedChildren() {
 		return allowedChildren;
 	}
 }

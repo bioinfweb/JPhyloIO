@@ -35,6 +35,8 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 	
 	private Map<String, PhyloXMLMetaeventInfo> metaEvents = new HashMap<String, PhyloXMLMetaeventInfo>();
 	private Set<String> metaIDs = new HashSet<String>();
+	private boolean documentHasCustomXML = false;
+	private boolean documentHasPhylogeny = false;
 	
 	private String phylogenyIDProvider = null;
 	private String phylogenyID = null;
@@ -44,12 +46,6 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 		super(eventWriter);
 		
 		fillMetaPredicateMap();
-	}
-	
-	
-	@Override
-	public PhyloXMLEventWriter getEventWriter() { //TODO is this still necessary (generics)?
-		return (PhyloXMLEventWriter)super.getEventWriter();
 	}
 	
 	
@@ -65,6 +61,26 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 
 	public Set<String> getMetaIDs() {
 		return metaIDs;
+	}
+
+
+	public boolean isDocumentHasCustomXML() {
+		return documentHasCustomXML;
+	}
+
+
+	public void setDocumentHasCustomXML(boolean documentHasCustomXML) {
+		this.documentHasCustomXML = documentHasCustomXML;
+	}
+
+
+	public boolean isDocumentHasPhylogeny() {
+		return documentHasPhylogeny;
+	}
+
+
+	public void setDocumentHasPhylogeny(boolean documentHasPhylogeny) {
+		this.documentHasPhylogeny = documentHasPhylogeny;
 	}
 
 
@@ -138,7 +154,7 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 		// Taxonomy
 		predicateInfoMap.put(PREDICATE_TAXONOMY, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_TAXONOMY, PREDICATE_TAXONOMY_ATTR_ID_SOURCE, 
 				PREDICATE_TAXONOMY_ID, PREDICATE_TAXONOMY_CODE, PREDICATE_TAXONOMY_SCIENTIFIC_NAME, PREDICATE_TAXONOMY_AUTHORITY, PREDICATE_TAXONOMY_COMMON_NAME,
-				PREDICATE_TAXONOMY_SYNONYM, PREDICATE_TAXONOMY_RANK, PREDICATE_TAXONOMY_URI, IDENTIFIER_CUSTOM_XML));		
+				PREDICATE_TAXONOMY_SYNONYM, PREDICATE_TAXONOMY_RANK, PREDICATE_TAXONOMY_URI, IDENTIFIER_CUSTOM_XML));
 		predicateInfoMap.put(PREDICATE_TAXONOMY_ATTR_ID_SOURCE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_ID_SOURCE));
 		
 		predicateInfoMap.put(PREDICATE_TAXONOMY_ID, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_ID, PREDICATE_TAXONOMY_ID_ATTR_PROVIDER, 
