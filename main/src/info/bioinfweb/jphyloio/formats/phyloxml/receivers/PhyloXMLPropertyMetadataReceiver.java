@@ -109,11 +109,7 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 				getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());	
 				
 				getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), 
-						ref.getPrefix(), ref.getNamespaceURI()) + ":" + ref.getLocalPart());		
-				
-				if (unit != null) {
-					getStreamDataProvider().getWriter().writeAttribute(ATTR_UNIT.getLocalPart(), unit);
-				}
+						ref.getPrefix(), ref.getNamespaceURI()) + ":" + ref.getLocalPart());				
 				
 				getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
 						+ ":" + datatype.getLocalPart());			
@@ -127,6 +123,10 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 				
 				if (idRef != null) {
 					getStreamDataProvider().getWriter().writeAttribute(ATTR_ID_REF.getLocalPart(), idRef);
+				}
+				
+				if (unit != null) {
+					getStreamDataProvider().getWriter().writeAttribute(ATTR_UNIT.getLocalPart(), unit);
 				}
 				
 				if (value != null) {

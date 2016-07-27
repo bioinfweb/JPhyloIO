@@ -221,12 +221,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		// Write PhyloXML-specific metadata
 		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
-		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());		
-		
-		nodeReceiver = new PhyloXMLPropertyMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE);
-		edgeReceiver = new PhyloXMLPropertyMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH);
-		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
-		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());		
+		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());			
 		
 		// Write general metadata
 		nodeReceiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE);
