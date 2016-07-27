@@ -35,6 +35,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
+import info.bioinfweb.commons.log.MessageListApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
@@ -55,6 +57,7 @@ import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoA
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.PhyloXMLEdgeAndNodeMetadataTreeAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.PhyloXMLSpecificMetadataTreeAdapter;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -181,7 +184,10 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		document.getTreesNetworks().add(trees);
 		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.NONE);
+		MessageListApplicationLogger logger = new MessageListApplicationLogger();
+		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.NONE);		
+		
 		writeDocument(document, parameters, file);
 		
 		// Validate file:
@@ -213,6 +219,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_ROOT, reader);			
 			
 			assertEndDocument(reader);
+			
+			assertEquals(1, logger.getMessageList().size());
+			assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
+			assertEquals("Encountered document meta data was not written, because this is not supported by the PhyloXML format.", 
+					logger.getMessageList().get(0).getMessage());
 		}
 		finally {
 			fileReader.close();
@@ -252,6 +263,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		document.getTreesNetworks().add(trees);
 		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		MessageListApplicationLogger logger = new MessageListApplicationLogger();
+		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.ONLY_LEAFS);
 		writeDocument(document, parameters, file);
 		
@@ -389,6 +402,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_ROOT, reader);			
 			
 			assertEndDocument(reader);
+			
+			
+			assertEquals(1, logger.getMessageList().size());
+			assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
+			assertEquals("Encountered document meta data was not written, because this is not supported by the PhyloXML format.", 
+					logger.getMessageList().get(0).getMessage());
 		}
 		finally {
 			fileReader.close();
@@ -428,6 +447,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		document.getTreesNetworks().add(trees);
 		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		MessageListApplicationLogger logger = new MessageListApplicationLogger();
+		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.SEQUENTIAL);
 		writeDocument(document, parameters, file);
 		
@@ -572,7 +593,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			assertEndElement(TAG_ROOT, reader);			
 			
-			assertEndDocument(reader);
+			assertEndDocument(reader);			
+			
+			assertEquals(1, logger.getMessageList().size());
+			assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
+			assertEquals("Encountered document meta data was not written, because this is not supported by the PhyloXML format.", 
+					logger.getMessageList().get(0).getMessage());
 		}
 		finally {
 			fileReader.close();
@@ -612,6 +638,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		document.getTreesNetworks().add(trees);
 		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		MessageListApplicationLogger logger = new MessageListApplicationLogger();
+		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.TOP_LEVEL_WITH_CHILDREN);
 		writeDocument(document, parameters, file);
 		
@@ -696,6 +724,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_ROOT, reader);			
 			
 			assertEndDocument(reader);
+			
+			assertEquals(1, logger.getMessageList().size());
+			assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
+			assertEquals("Encountered document meta data was not written, because this is not supported by the PhyloXML format.", 
+					logger.getMessageList().get(0).getMessage());
 		}
 		finally {
 			fileReader.close();
@@ -735,6 +768,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		document.getTreesNetworks().add(trees);
 		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		MessageListApplicationLogger logger = new MessageListApplicationLogger();
+		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.TOP_LEVEL_WITHOUT_CHILDREN);
 		writeDocument(document, parameters, file);
 		
@@ -864,6 +899,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_ROOT, reader);			
 			
 			assertEndDocument(reader);
+			
+			assertEquals(1, logger.getMessageList().size());
+			assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
+			assertEquals("Encountered document meta data was not written, because this is not supported by the PhyloXML format.", 
+					logger.getMessageList().get(0).getMessage());
 		}
 		finally {
 			fileReader.close();
@@ -875,7 +915,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	
 	@Test
 	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadata() throws IOException, XMLStreamException {
-		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		
 		// Write file:
 		idIndex = 1;
@@ -990,6 +1030,14 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertAttribute(ATTR_ID_SOURCE, element);
 			assertAttribute(ATTR_BRANCH_LENGTH, "0.9", element);
 			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
+			
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			assertAttributeCount(1, element);
+			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "XMLPredicate", element);
+			assertCharactersEvent("test characters", reader);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			
 			assertEndElement(TAG_CLADE, reader);			
 			
 			assertEndElement(TAG_CLADE, reader);
@@ -1020,7 +1068,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		finally {
 			fileReader.close();
 			reader.close();
-//			file.delete();
+			file.delete();
 		}
 	}
 	
@@ -1079,44 +1127,71 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	
 	
 	@Test
+	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataWrongContent() throws IOException, XMLStreamException {
+		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		
+		// Write file:
+		try {
+			idIndex = 1;
+			StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();		
+			StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+					EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
+			
+			NoAnnotationsTree tree = new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, 
+					"nodeEdgeID"); // Does not contain any meta data, but it is possible to add tree meta data manually
+			
+			// Add meta events with PhyloXML-specific predicates to tree			
+			tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null));
+	
+			tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+					LiteralContentSequenceType.SIMPLE));
+			tree.getAnnotations().add(new LiteralMetadataContentEvent("bootstrap", "bootstrap"));
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+	
+			tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_COLOR), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE),
+					LiteralContentSequenceType.SIMPLE));
+			tree.getAnnotations().add(new LiteralMetadataContentEvent(new Color(34, 38, 210), "color"));
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+	
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+			
+			trees.getTreesAndNetworks().add(tree);
+			document.getTreesNetworks().add(trees);
+			
+			writeDocument(document, null, file);
+			fail("Exception not thrown");
+			
+			// Validate file
+		}
+		catch (InconsistentAdapterDataException e) {
+			assertEquals(e.getMessage(), "Metaevents with PhyloXML-specific predicates must be given in the correct order.");
+		}
+		finally {
+			file.delete();
+		}
+	}
+	
+	
+	@Test
 	public void assertEmptyDocument() throws IOException, XMLStreamException {
 		// Write file
 		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		MessageListApplicationLogger logger = new MessageListApplicationLogger();
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		
-		writeDocument(document, null, file);
+		writeDocument(document, parameters, file);
 		
 		// Validate file:
-		FileReader fileReader = new FileReader(file);
-		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
-		try {
-			assertStartDocument(reader);
-			
-			StartElement element = assertStartElement(TAG_ROOT, reader);
-			
-			assertNamespaceCount(4, element);
-			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
-			
-			assertTrue(reader.hasNext());
-			XMLEvent event = reader.nextEvent();			
-			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
-			assertTrue(((Comment)event).getText().matches(
-					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
-			
-			assertEndElement(TAG_ROOT, reader);			
-			
-			assertEndDocument(reader);
-		}
-		finally {
-			fileReader.close();
-			reader.close();
-			file.delete();
-		}
+		assertEquals(1, logger.getMessageList().size());
+		assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
+		assertEquals("The document did not contain any data that could be written to the file.", logger.getMessageList().get(0).getMessage());
+
+		file.delete();
 	}
 	
 	
@@ -1130,40 +1205,18 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);		
 		
 		document.getTreesNetworks().add(trees);
+		MessageListApplicationLogger logger = new MessageListApplicationLogger();
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		
-		writeDocument(document, null, file);
+		writeDocument(document, parameters, file);
 		
-		// Validate file:
-		FileReader fileReader = new FileReader(file);
-		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
-		try {
-			assertStartDocument(reader);
-			
-			StartElement element = assertStartElement(TAG_ROOT, reader);
-			
-			assertNamespaceCount(4, element);
-			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
-			
-			assertTrue(reader.hasNext());
-			XMLEvent event = reader.nextEvent();			
-			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
-			assertTrue(((Comment)event).getText().matches(
-					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
-			
-			assertEndElement(TAG_ROOT, reader);			
-			
-			assertEndDocument(reader);
-		}
-		finally {
-			fileReader.close();
-			reader.close();
-			file.delete();
-		}
+		// Validate file:			
+		assertEquals(1, logger.getMessageList().size());
+		assertEquals(ApplicationLoggerMessageType.WARNING, logger.getMessageList().get(0).getType());
+		assertEquals("The document did not contain any data that could be written to the file.", logger.getMessageList().get(0).getMessage());
+	
+		file.delete();		
 	}
 	
 	
