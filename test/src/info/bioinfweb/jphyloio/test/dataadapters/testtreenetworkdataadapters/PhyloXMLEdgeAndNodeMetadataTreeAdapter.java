@@ -43,18 +43,20 @@ import javax.xml.stream.XMLEventFactory;
 
 
 public class PhyloXMLEdgeAndNodeMetadataTreeAdapter extends EdgeAndNodeMetaDataTreeAdapter {
-	private long idIndex = 1;
+	private long idIndex;
 	
 	
 	public PhyloXMLEdgeAndNodeMetadataTreeAdapter(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
 		super(id, label, nodeEdgeIDPrefix, linkedOTUs);
 		addAnnotations();
+		idIndex = 1;
 	}
 
 	
 	public PhyloXMLEdgeAndNodeMetadataTreeAdapter(String id, String label, String nodeEdgeIDPrefix) {
 		super(id, label, nodeEdgeIDPrefix);
 		addAnnotations();
+		idIndex = 1;
 	}
 
 	

@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -50,10 +50,12 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 	public PhyloXMLSpecificMetadataTreeAdapter(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
 		super(id, label, nodeEdgeIDPrefix, linkedOTUs);
 	}
+	
 
 	public PhyloXMLSpecificMetadataTreeAdapter(String id, String label, String nodeEdgeIDPrefix) {
 		super(id, label, nodeEdgeIDPrefix);
 	}
+	
 
 	@Override
 	protected void addEdges(StoreObjectListDataAdapter<EdgeEvent> edges) {
@@ -84,7 +86,7 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 		List<JPhyloIOEvent> nestedEvents = nodes.getObjectContent(getNodeEdgeIDPrefix() + "n1");
 		
 		nestedEvents.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, PREDICATE_TAXONOMY), null, null));		
+				new URIOrStringIdentifier(null, PREDICATE_TAXONOMY), null, null));
 
 		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_SCIENTIFIC_NAME), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
@@ -111,12 +113,12 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		nestedEvents.add(new LiteralMetadataEvent(getNodeEdgeIDPrefix() + ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "XMLPredicate")), LiteralContentSequenceType.XML));		
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
 		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));		
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		nestedEvents.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null));
