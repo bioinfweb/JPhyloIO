@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -55,8 +55,10 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 	}
 
 	@Override
-	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {		
+	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		if (isProperty) {
+			getStreamDataProvider().getMetaIDs().remove(event.getID());
+			
 			currentPredicate = event.getPredicate().getURI();
 			
 			if (!currentPredicate.equals(PREDICATE_PROPERTY_ATTR_APPLIES_TO) && !currentPredicate.equals(PREDICATE_PROPERTY_ATTR_UNIT) 
@@ -95,6 +97,8 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		if ((event.getRel().getURI() != null) && event.getRel().getURI().equals(PREDICATE_PROPERTY)) {
 			isProperty = true;
+			
+			getStreamDataProvider().getMetaIDs().remove(event.getID());
 		}
 	}
 
@@ -131,6 +135,6 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 				
 				getStreamDataProvider().getWriter().writeEndElement();		
 			}
-		}
+		}		
 	}
 }

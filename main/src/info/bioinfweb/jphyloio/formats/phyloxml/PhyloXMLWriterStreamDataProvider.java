@@ -128,7 +128,7 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 				PREDICATE_DATE, PREDICATE_REFERENCE));
 		
 		predicateInfoMap.put(PREDICATE_WIDTH, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG_AND_VALUE, TAG_BRANCH_WIDTH));
-		predicateInfoMap.put(PREDICATE_COLOR, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_BRANCH_COLOR));
+		predicateInfoMap.put(PREDICATE_COLOR, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG_AND_VALUE, TAG_BRANCH_COLOR));
 		
 		predicateInfoMap.put(PREDICATE_NODE_ID, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_NODE_ID, PREDICATE_NODE_ID_ATTR_PROVIDER, 
 				PREDICATE_NODE_ID_VALUE));

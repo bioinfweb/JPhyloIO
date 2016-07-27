@@ -27,9 +27,12 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLColorTranslator;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateTreatment;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPrivateConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
 import java.util.Stack;
@@ -41,11 +44,10 @@ import javax.xml.stream.XMLStreamException;
 
 public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataReceiver {
 	private Stack<QName> predicates = new Stack<QName>();
-	private URIOrStringIdentifier currentCustomXMLPredicate;
 	private Stack<Integer> childIndices = new Stack<Integer>();
 	
-	private boolean writeLiteralEnd = false;
-	private boolean writeResourceEnd = false;
+	private URIOrStringIdentifier currentCustomXMLPredicate;
+	private QName currentDatatype;
 	
 
 	public PhyloXMLSpecificPredicatesDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
@@ -58,18 +60,19 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		int currentIndex = 0;
-		
+		int currentIndex = 0;		
+
 		for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
-			currentIndex++;
+			currentIndex++;			
 			
-			if (child.equals(event.getPredicate().getURI()) || child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML)) {
-				if (currentIndex > childIndices.peek()) {
-					childIndices.pop(); //TODO easier way to increase count?
+			if (child.equals(event.getPredicate().getURI()) || (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML) 
+					&& (getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()) == null))) {
+				
+				if (currentIndex >= childIndices.peek()) { // Is allowed to be equal, if tags are allowed to occur more than once
+					childIndices.pop();
 					childIndices.push(currentIndex);
-					System.out.println(currentIndex + " " + event.getPredicate().getURI().getLocalPart());
 					
-					getStreamDataProvider().getMetaIDs().remove(event.getID());									
+					getStreamDataProvider().getMetaIDs().remove(event.getID());
 					
 					if (!child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML)) {
 						predicates.push(event.getPredicate().getURI());	
@@ -77,8 +80,11 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 						switch (getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()).getTreatment()) {
 							case TAG_AND_VALUE:
 								QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()).getTranslation();
-								getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());					
-								writeLiteralEnd = true;
+								getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());
+								
+								if (event.getOriginalType() != null) {
+									currentDatatype = event.getOriginalType().getURI();
+								}
 								break;
 							default:
 								break;
@@ -90,7 +96,6 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 					}
 				}
 				else {
-					System.out.println(currentIndex + " " + childIndices.peek() + " " + event.getPredicate().getURI().getLocalPart());
 					throw new InconsistentAdapterDataException("Metaevents with PhyloXML-specific predicates must be given in the correct order.");
 				}
 			}			
@@ -102,9 +107,39 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		switch (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment()) {
 			case VALUE:
-				predicates.pop();				
+				getStreamDataProvider().getWriter().writeCharacters(event.getStringValue());
+				predicates.pop();
+				break;
 			case TAG_AND_VALUE:
-				getStreamDataProvider().getWriter().writeCharacters(event.getStringValue()); //TODO use object value
+				if (event.getObjectValue() != null) {
+					ObjectTranslator<?> translator = null;
+					
+					if (currentDatatype != null) {
+						translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(currentDatatype);
+					}
+					
+					if (predicates.peek().equals(PREDICATE_COLOR)) {
+						PhyloXMLColorTranslator colorTranslator = new PhyloXMLColorTranslator();
+						colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue());
+					}
+					else if (translator != null) {
+						if (translator.hasStringRepresentation()) {
+							getStreamDataProvider().getWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
+						}
+						else {
+							translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue());
+						}
+					}
+					else if (event.getStringValue() != null) {
+						getStreamDataProvider().getWriter().writeCharacters(event.getStringValue());
+					}
+					else {
+						getStreamDataProvider().getWriter().writeCharacters(event.getObjectValue().toString());
+					}
+				}
+				else {
+					getStreamDataProvider().getWriter().writeCharacters(event.getStringValue());
+				}				
 				break;
 			case ATTRIBUTE:
 				QName attribute = getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTranslation();
@@ -112,10 +147,9 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 				predicates.pop();
 				break;
 			case CUSTOM_XML:
-				if (event.hasXMLEventValue()) {
+				if (event.hasXMLEventValue()) {					
 					writeCustomXMLTag(currentCustomXMLPredicate, event.getXMLEvent());
 				}
-				predicates.pop();
 				break;
 			default:
 				break;
@@ -133,8 +167,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 			if (child.equals(event.getRel().getURI())) {
 				if (currentIndex > childIndices.peek()) {
 					childIndices.pop();
-					childIndices.push(currentIndex);
-//					System.out.println(currentIndex + " " + event.getRel().getURI().getLocalPart());
+					childIndices.push(currentIndex);					
 					
 					getStreamDataProvider().getMetaIDs().remove(event.getID());
 					predicates.push(event.getRel().getURI());
@@ -143,11 +176,10 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 					switch (getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTreatment()) {
 						case TAG:
 							QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTranslation();
-							getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());					
-							writeResourceEnd = true;
+							getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());
 							break;
-						case VALUE:			
-							getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString()); //TODO pop predicate?
+						case VALUE:
+							getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString());
 							break;
 						default:
 							break;
@@ -162,17 +194,26 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 
 
 	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {		
-		if (writeLiteralEnd && event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.TAG_AND_VALUE)
+				&& event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
 			getStreamDataProvider().getWriter().writeEndElement();
 			predicates.pop();
-			writeLiteralEnd = false;
 		}
-		else if (writeResourceEnd && event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
+		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.TAG)
+				&& event.getType().getContentType().equals(EventContentType.META_RESOURCE) && (predicates.size() > 1)) {
 			getStreamDataProvider().getWriter().writeEndElement();
 			predicates.pop();
 			childIndices.pop();
-			writeResourceEnd = false;
+		}
+		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.VALUE)
+			&& event.getType().getContentType().equals(EventContentType.META_RESOURCE) && (predicates.size() > 1)) {
+				predicates.pop();
+				childIndices.pop();
+		}
+		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.CUSTOM_XML) 
+				&& event.getType().getContentType().equals(EventContentType.META_LITERAL)) {			
+			predicates.pop();
 		}
 		
 		currentCustomXMLPredicate = null;
