@@ -27,7 +27,8 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 
 import java.io.IOException;
@@ -42,7 +43,8 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class PhyloXMLStartElementReader extends AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider> {
+@SuppressWarnings("rawtypes")
+public class XMLStartElementReader extends AbstractXMLElementReader {
 	private QName literalPredicate;
 	private QName resourcePredicate;
 	private URIOrStringIdentifier datatype;
@@ -51,7 +53,7 @@ public class PhyloXMLStartElementReader extends AbstractXMLElementReader<PhyloXM
 	
 
 	
-	public PhyloXMLStartElementReader(QName literalPredicate, QName resourcePredicate, URIOrStringIdentifier datatype, boolean isEdgeMeta, QName... mappings) {
+	public XMLStartElementReader(QName literalPredicate, QName resourcePredicate, URIOrStringIdentifier datatype, boolean isEdgeMeta, QName... mappings) {
 		super();
 		this.literalPredicate = literalPredicate;
 		this.resourcePredicate = resourcePredicate;
@@ -70,11 +72,12 @@ public class PhyloXMLStartElementReader extends AbstractXMLElementReader<PhyloXM
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
-			XMLStreamException {
+	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+		
 		if (isEdgeMeta) {
-			streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEdgeEvents());
+			streamDataProvider.setCurrentEventCollection(((NodeEdgeInfo)streamDataProvider.getSourceNode().peek()).getNestedEdgeEvents());
 		}
 		
 		if (resourcePredicate != null) {
@@ -83,7 +86,6 @@ public class PhyloXMLStartElementReader extends AbstractXMLElementReader<PhyloXM
 							new URIOrStringIdentifier(null, resourcePredicate), null, null));
 			
 			if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
-				@SuppressWarnings("unchecked")
 				Iterator<Attribute> attributes = event.asStartElement().getAttributes();
 				while (attributes.hasNext()) {
 					Attribute attribute = attributes.next();

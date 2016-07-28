@@ -19,25 +19,26 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.elementreader;
 
 
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
+
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
 
 
-
-public class PhyloXMLNoCharactersAllowedElementReader implements XMLElementReader<PhyloXMLReaderStreamDataProvider>  {
-	public PhyloXMLNoCharactersAllowedElementReader() {
+@SuppressWarnings("rawtypes")
+public class XMLNoCharactersAllowedElementReader extends AbstractXMLElementReader {
+	public XMLNoCharactersAllowedElementReader() {
 		super();
 	}
 	
 
 	@Override
-	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
+	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
 		if (!event.asCharacters().getData().matches("\\s+")) {
 			throw new JPhyloIOReaderException("No character data is allowed under the element \"" + streamDataProvider.getElementName()

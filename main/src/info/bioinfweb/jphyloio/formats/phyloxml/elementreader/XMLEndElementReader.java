@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.formats.phyloxml.elementreader;
 
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 
 import java.io.IOException;
@@ -31,13 +31,14 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class PhyloXMLEndElementReader extends AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider> {
+@SuppressWarnings("rawtypes")
+public class XMLEndElementReader extends AbstractXMLElementReader {
 	private boolean createLiteralEnd;
 	private boolean createResourceEnd;
 	private boolean isEdgeMeta;
 	
 	
-	public PhyloXMLEndElementReader(boolean createLiteralEnd, boolean createResourceEnd, boolean isEdgeMeta) {
+	public XMLEndElementReader(boolean createLiteralEnd, boolean createResourceEnd, boolean isEdgeMeta) {
 		super();
 		this.createLiteralEnd = createLiteralEnd;
 		this.createResourceEnd = createResourceEnd;
@@ -45,8 +46,9 @@ public class PhyloXMLEndElementReader extends AbstractXMLElementReader<PhyloXMLR
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
+	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
 		if (createLiteralEnd) {
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
