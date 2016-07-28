@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLColorTranslator;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateTreatment;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPrivateConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
@@ -38,6 +39,7 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
@@ -65,63 +67,76 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		int currentIndex = 0;
+		PhyloXMLPredicateInfo predicateInfo = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI());
 
-		for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
-			currentIndex++;
-			
-			if (child.equals(event.getPredicate().getURI()) 
-					|| ((child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML) || child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE)) 
-							&& (getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()) == null))) {
+		if (event.getPredicate().getURI() != null) {
+			for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
+				currentIndex++;
 				
-				if (currentIndex >= childIndices.peek()) { // Is allowed to be equal, if tags are allowed to occur more than once
-					childIndices.pop();
-					childIndices.push(currentIndex);					
+				if (child.equals(event.getPredicate().getURI()) 
+						|| ((child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML) || child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE)) 
+								&& (predicateInfo == null))) {
 					
-					if (getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()) != null) {
-						predicates.push(event.getPredicate().getURI());
-						getStreamDataProvider().getMetaIDs().remove(event.getID());
+					// Attributes and values can not be repeated (if the content is split, more than one content event should be nested instead of repeating the literal meta)
+					boolean writeAttribute = (predicateInfo != null) && predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.ATTRIBUTE) 
+							&& currentIndex > childIndices.peek();
+					boolean writeValue = (predicateInfo != null) && predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.VALUE) 
+							&& currentIndex > childIndices.peek();
+					boolean writeTag = ((predicateInfo != null) && !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.ATTRIBUTE) 
+							&& !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.VALUE) && currentIndex >= childIndices.peek());
+					boolean writeOtherContent = ((predicateInfo == null) && currentIndex >= childIndices.peek());
+					
+					if (writeAttribute || writeValue || writeTag || writeOtherContent) {
+						childIndices.pop();
+						childIndices.push(currentIndex);
 						
-						switch (getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()).getTreatment()) {
-							case TAG_AND_VALUE:
-								QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI()).getTranslation();
-								getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());
-								
-								if (event.getOriginalType() != null) {
-									currentDatatype = event.getOriginalType().getURI();
-								}
-								break;
-							default:
-								break;
+						if (predicateInfo != null) {
+							predicates.push(event.getPredicate().getURI());
+							getStreamDataProvider().getMetaIDs().remove(event.getID());
+							
+							switch (predicateInfo.getTreatment()) {
+								case TAG_AND_VALUE:
+									QName tagName = predicateInfo.getTranslation();
+									getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());
+									
+									if (event.getOriginalType() != null) {
+										currentDatatype = event.getOriginalType().getURI();
+									}
+									break;
+								default:
+									break;
+							}
 						}
+						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML)) {
+							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML);
+							getStreamDataProvider().getMetaIDs().remove(event.getID());
+							currentCustomXMLPredicate = event.getPredicate();						
+						}
+						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_CLADE)) {
+							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE);
+							getStreamDataProvider().getMetaIDs().remove(event.getID());
+							
+							if (event.getOriginalType() != null) {
+								currentDatatype = event.getOriginalType().getURI();
+							}
+							
+							if (predicates.peek().equals(PREDICATE_ANNOTATION)) {
+								getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
+							}
+							
+							getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), 
+									event.getPredicate().getURI().getPrefix(), event.getPredicate().getURI().getNamespaceURI()) + ":" + event.getPredicate().getURI().getLocalPart());
+							
+							getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
+									+ ":" + event.getOriginalType().getURI().getLocalPart());						
+						}					
 					}
-					else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML)) {
-						predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML);
-						getStreamDataProvider().getMetaIDs().remove(event.getID());
-						currentCustomXMLPredicate = event.getPredicate();						
+					else {
+						throw new InconsistentAdapterDataException("Metaevents with PhyloXML-specific predicates must be given in the correct order. "
+								+ "Attributes can only be written once.");
 					}
-					else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_CLADE)) {
-						predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE);
-						getStreamDataProvider().getMetaIDs().remove(event.getID());
-						
-						if (event.getOriginalType() != null) {
-							currentDatatype = event.getOriginalType().getURI();
-						}
-						
-						if (predicates.peek().equals(PREDICATE_ANNOTATION)) {
-							getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
-						}
-						
-						getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), 
-								event.getPredicate().getURI().getPrefix(), event.getPredicate().getURI().getNamespaceURI()) + ":" + event.getPredicate().getURI().getLocalPart());
-						
-						getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
-								+ ":" + event.getOriginalType().getURI().getLocalPart());						
-					}					
 				}
-				else {
-					throw new InconsistentAdapterDataException("Metaevents with PhyloXML-specific predicates must be given in the correct order.");
-				}
-			}			
+			}
 		}		
 	}
 
@@ -209,8 +224,8 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 		for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
 			currentIndex++;
 			
-			if (child.equals(event.getRel().getURI())) {
-				if (currentIndex > childIndices.peek()) {
+			if (child.equals(event.getRel().getURI())) {				
+				if (currentIndex >= childIndices.peek()) {
 					childIndices.pop();
 					childIndices.push(currentIndex);					
 					
