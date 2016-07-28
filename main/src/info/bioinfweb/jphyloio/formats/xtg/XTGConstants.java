@@ -165,9 +165,6 @@ public interface XTGConstants {
 	public static final QName PREDICATE_DOCUMENT_MARGIN_ATTR_RIGHT = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Right");
 	public static final QName PREDICATE_DOCUMENT_MARGIN_ATTR_BOTTOM = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Bottom");
 	
-	public static final QName PREDICATE_TREE = new QName(XTG_PREDICATE_NAMESPACE, "Tree");
-	
-	public static final QName PREDICATE_NODE = new QName(XTG_PREDICATE_NAMESPACE, "Node");
 	public static final QName PREDICATE_NODE_ATTR_TEXT = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Text");
 	public static final QName PREDICATE_NODE_ATTR_IS_DECIMAL = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IsDecimal");
 	public static final QName PREDICATE_NODE_ATTR_TEXT_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "TextColor");
@@ -189,7 +186,6 @@ public interface XTGConstants {
 	public static final QName PREDICATE_LEAF_MARGIN_ATTR_RIGHT = new QName(XTG_PREDICATE_NAMESPACE, "LeafMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Right");
 	public static final QName PREDICATE_LEAF_MARGIN_ATTR_BOTTOM = new QName(XTG_PREDICATE_NAMESPACE, "LeafMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Bottom");
 	
-	public static final QName PREDICATE_BRANCH = new QName(XTG_PREDICATE_NAMESPACE, "Branch");
 	public static final QName PREDICATE_BRANCH_ATTR_LINE_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LineColor");
 	public static final QName PREDICATE_BRANCH_ATTR_LINE_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LineWidth");
 	public static final QName PREDICATE_BRANCH_ATTR_CONSTANT_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ConstantWidth");

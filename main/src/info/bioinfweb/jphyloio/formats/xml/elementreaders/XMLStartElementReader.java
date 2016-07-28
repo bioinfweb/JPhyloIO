@@ -27,6 +27,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
@@ -88,14 +89,21 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 				Iterator<Attribute> attributes = event.asStartElement().getAttributes();
 				while (attributes.hasNext()) {
 					Attribute attribute = attributes.next();
-					String attributeValue = event.asStartElement().getAttributeByName(attribute.getName()).getValue();
-					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), null, LiteralContentSequenceType.SIMPLE));
-
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
-							
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					String attributeValue = event.asStartElement().getAttributeByName(attribute.getName()).getValue();					
+					
+					if (attributeToPredicateMap.get(attribute.getName()) != null) {
+						streamDataProvider.getCurrentEventCollection().add(
+								new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+								new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), null, LiteralContentSequenceType.SIMPLE));
+	
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
+								
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					}
+					else {
+						throw new JPhyloIOReaderException("No predicate was found for the attribute \"" + attribute.getName().getLocalPart() + "\".", 
+								event.getLocation());
+					}
 				}
 			}
 		}
