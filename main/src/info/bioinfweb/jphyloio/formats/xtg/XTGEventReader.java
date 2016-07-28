@@ -35,6 +35,8 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLEndElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLNoCharactersAllowedElementReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +118,13 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedNodeEvents());
 				
-				readAttributes(streamDataProvider, element, null); //TODO read node attributes
+				readAttributes(getStreamDataProvider(), event.asStartElement(), "", ATTR_TEXT, PREDICATE_NODE_ATTR_TEXT, 
+						ATTR_TEXT_IS_DECIMAL, PREDICATE_NODE_ATTR_IS_DECIMAL, ATTR_TEXT_COLOR, PREDICATE_NODE_ATTR_TEXT_COLOR, 
+						ATTR_TEXT_HEIGHT, PREDICATE_NODE_ATTR_TEXT_HEIGHT, ATTR_TEXT_STYLE, PREDICATE_NODE_ATTR_TEXT_STYLE, 
+						ATTR_FONT_FAMILY, PREDICATE_NODE_ATTR_FONT_FAMILY, ATTR_DECIMAL_FORMAT, PREDICATE_NODE_ATTR_DECIMAL_FORMAT, 
+						ATTR_LOCALE_LANG, PREDICATE_NODE_ATTR_LOCALE_VARIANT, ATTR_LINE_COLOR, PREDICATE_NODE_ATTR_LINE_COLOR, 
+						ATTR_LINE_WIDTH, PREDICATE_NODE_ATTR_LINE_WIDTH, ATTR_UNIQUE_NAME, PREDICATE_NODE_ATTR_UNIQUE_NAME, 
+						ATTR_EDGE_RADIUS, PREDICATE_NODE_ATTR_EDGE_RADIUS);
 			}
 		};
 		
@@ -131,6 +139,12 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				streamDataProvider.getSourceNode().pop();
 			}
 		};
+		
+		XMLEndElementReader literalEndReader = new XMLEndElementReader(true, false, false);
+		
+		XMLEndElementReader resourceEndReader = new XMLEndElementReader(false, true, false);
+
+		XMLEndElementReader resourceAndLiteralEndReader = new XMLEndElementReader(true, true, false);
 		
 		AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>> emptyReader = new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
@@ -152,6 +166,9 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		});
 		
 		putElementReader(new XMLElementReaderKey(null, TAG_ROOT, XMLStreamConstants.START_ELEMENT), emptyReader);
+		
+		putElementReader(new XMLElementReaderKey(TAG_ROOT, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
+		
 		putElementReader(new XMLElementReaderKey(null, TAG_ROOT, XMLStreamConstants.END_ELEMENT), emptyReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_TREE, XMLStreamConstants.START_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
@@ -161,9 +178,11 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				
 				streamDataProvider.getEdgeInfos().add(new ArrayDeque<NodeEdgeInfo>());
 				streamDataProvider.setCreateNodeStart(false); // Do not create node events at start of root node
-				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, treeID, null, null));	
+				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, treeID, null, null));
 			}
 		});
+		
+		putElementReader(new XMLElementReaderKey(TAG_TREE, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_TREE, XMLStreamConstants.END_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
@@ -178,8 +197,13 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		});
 		
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_NODE, XMLStreamConstants.START_ELEMENT), nodeStartReader);
+		
+		putElementReader(new XMLElementReaderKey(TAG_NODE, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
+		
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_NODE, XMLStreamConstants.END_ELEMENT), nodeEndReader);
+		
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_NODE, XMLStreamConstants.START_ELEMENT), nodeStartReader);
+		
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_NODE, XMLStreamConstants.END_ELEMENT), nodeEndReader);
 
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_BRANCH, XMLStreamConstants.START_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
@@ -190,9 +214,14 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				streamDataProvider.getSourceNode().peek().setLength(XMLUtils.readDoubleAttr(element, ATTR_BRANCH_LENGTH, Double.NaN));
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEdgeEvents());
 				
-				readAttributes(streamDataProvider, element, ""); //TODO read branch attributes
+				readAttributes(getStreamDataProvider(), event.asStartElement(), "", ATTR_LINE_COLOR, PREDICATE_BRANCH_ATTR_LINE_COLOR, 
+						ATTR_LINE_WIDTH, PREDICATE_BRANCH_ATTR_LINE_WIDTH, ATTR_CONSTANT_WIDTH, PREDICATE_BRANCH_ATTR_CONSTANT_WIDTH, 
+						ATTR_MIN_BRANCH_LENGTH, PREDICATE_BRANCH_ATTR_MIN_LENGTH, ATTR_MIN_SPACE_ABOVE, PREDICATE_BRANCH_ATTR_MIN_SPACE_ABOVE, 
+						ATTR_MIN_SPACE_BELOW, PREDICATE_BRANCH_ATTR_MIN_SPACE_BELOW);
 			}
 		});
+		
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_BRANCH, XMLStreamConstants.END_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
@@ -201,27 +230,9 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 					streamDataProvider.resetCurrentEventCollection();
 				}
 			}
-		});
-		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.START_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
-			@Override
-			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();
-				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null); //TODO maybe use as branch label?
-			}
-		});
-		
-//		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.END_ELEMENT), createMetaEnd);		
-		
-		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.START_ELEMENT), emptyReader);
-		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.END_ELEMENT), emptyReader);
-		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.START_ELEMENT), emptyReader);
-		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.END_ELEMENT), emptyReader);
-		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND_MARGIN, XMLStreamConstants.START_ELEMENT), emptyReader);
-		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND_MARGIN, XMLStreamConstants.END_ELEMENT), emptyReader);
-		
-//		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new XMLToMetaElementStartReader());
-//		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), createMetaEnd);
+		});	
+	
+		//Comments
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
 	}
 	
@@ -244,13 +255,13 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 	}
 	
 	
-	private void createEdgeEvents(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider) { //TODO move to superclass?
-		Queue<NodeEdgeInfo> edgeInfos = streamDataProvider.getEdgeInfos().pop(); // All edges leading to children of this node
+	private void createEdgeEvents(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider) {
+		Queue<NodeEdgeInfo> edgeInfos = streamDataProvider.getEdgeInfos().pop();  // All edges leading to children of this node
 		String sourceID = null;
 		NodeEdgeInfo edgeInfo;
 		
 		if (!streamDataProvider.getEdgeInfos().isEmpty()) {
-			streamDataProvider.getEdgeInfos().peek().add(streamDataProvider.getSourceNode().peek()); // Add info for this node to top level queue
+			streamDataProvider.getEdgeInfos().peek().add(streamDataProvider.getSourceNode().peek());  // Add info for this node to top level queue
 		}
 		
 		if (!streamDataProvider.getSourceNode().isEmpty()) {
@@ -260,7 +271,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		while (!edgeInfos.isEmpty()) {
 			edgeInfo = edgeInfos.poll();
 			
-			if (!((sourceID == null) && Double.isNaN(edgeInfo.getLength()) && edgeInfo.getNestedEdgeEvents().isEmpty())) { // Do not add root edge if no information about it is present
+			if (!((sourceID == null) && Double.isNaN(edgeInfo.getLength()) && edgeInfo.getNestedEdgeEvents().isEmpty())) {  // Do not add root edge if no information about it is present
 				getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 						sourceID, edgeInfo.getID(), edgeInfo.getLength()));
 				
