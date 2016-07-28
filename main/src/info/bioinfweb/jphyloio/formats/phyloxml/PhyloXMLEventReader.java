@@ -40,15 +40,15 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.PhyloXMLCharactersElementReader;
-import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.XMLEndElementReader;
-import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.XMLNoCharactersAllowedElementReader;
-import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.XMLStartElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLEndElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLNoCharactersAllowedElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLStartElementReader;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 

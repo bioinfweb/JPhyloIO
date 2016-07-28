@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.phyloxml.elementreader;
+package info.bioinfweb.jphyloio.formats.xml.elementreaders;
 
 
-import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 
 import java.io.IOException;
 
@@ -31,18 +31,34 @@ import javax.xml.stream.events.XMLEvent;
 
 
 @SuppressWarnings("rawtypes")
-public class XMLNoCharactersAllowedElementReader extends AbstractXMLElementReader {
-	public XMLNoCharactersAllowedElementReader() {
-		super();
-	}
+public class XMLEndElementReader extends AbstractXMLElementReader {
+	private boolean createLiteralEnd;
+	private boolean createResourceEnd;
+	private boolean isEdgeMeta;
 	
+	
+	public XMLEndElementReader(boolean createLiteralEnd, boolean createResourceEnd, boolean isEdgeMeta) {
+		super();
+		this.createLiteralEnd = createLiteralEnd;
+		this.createResourceEnd = createResourceEnd;
+		this.isEdgeMeta = isEdgeMeta;
+	}
 
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
-		if (!event.asCharacters().getData().matches("\\s+")) {
-			throw new JPhyloIOReaderException("No character data is allowed under the element \"" + streamDataProvider.getElementName()
-					+ "\", but the string " + event.asCharacters().getData() + " was found.", event.getLocation());
+		if (createLiteralEnd) {
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		}
-	}
+		
+		if (createResourceEnd) {
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		}
+		
+		if (isEdgeMeta && streamDataProvider.hasSpecialEventCollection()) {
+			streamDataProvider.resetCurrentEventCollection();
+		}
+	}	
 }

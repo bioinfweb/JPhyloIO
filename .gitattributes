@@ -257,9 +257,6 @@ main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLReaderStreamDataProvid
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLWriterStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/PropertyOwner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/elementreader/PhyloXMLCharactersElementReader.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/phyloxml/elementreader/XMLEndElementReader.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/phyloxml/elementreader/XMLNoCharactersAllowedElementReader.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/phyloxml/elementreader/XMLStartElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLCollectMetadataDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLIgnoreMetadataReceiver.java -text svneol=unset#text/plain
@@ -286,6 +283,9 @@ main/src/info/bioinfweb/jphyloio/formats/xml/elementreaders/AbstractXMLElementRe
 main/src/info/bioinfweb/jphyloio/formats/xml/elementreaders/CommentElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/elementreaders/XMLElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/elementreaders/XMLElementReaderKey.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/elementreaders/XMLEndElementReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/elementreaders/XMLNoCharactersAllowedElementReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/elementreaders/XMLStartElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/elementreaders/XMLToMetaElementStartReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/receivers/AbstractXMLDataReceiver.java -text svneol=unset#text/plain
