@@ -1128,7 +1128,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	
 	@Test
 	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataWrongContent() throws IOException, XMLStreamException {
-		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		
 		// Write file:
 		try {
@@ -1177,7 +1177,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	
 	@Test
 	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataMultipleChildren() throws IOException, XMLStreamException {
-		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		
 		// Write file:
 		idIndex = 1;
@@ -1325,7 +1325,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	
 	@Test
 	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataMultipleAttributes() throws IOException, XMLStreamException {
-		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		
 		// Write file:
 		try {
@@ -1378,7 +1378,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	
 	@Test
 	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataMultipleValues() throws IOException, XMLStreamException {
-		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
 		
 		// Write file:
 		try {

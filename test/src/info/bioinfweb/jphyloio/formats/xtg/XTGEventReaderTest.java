@@ -36,18 +36,24 @@ public class XTGEventReaderTest {
 	@Test
 	public void testOutput() {
 		try {
-			XTGEventReader reader = new XTGEventReader(new File("data/XTG/NoNamespaceShortened.xml"), new ReadWriteParameterMap());
+			XTGEventReader reader = new XTGEventReader(new File("data/XTG/ExampleXTGDocument.xml"), new ReadWriteParameterMap());
 			try {
 				while (reader.hasNextEvent()) {
 					JPhyloIOEvent event = reader.next();					
 //					System.out.println(event.getType());
-//
-//					if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-//						System.out.println("ID: " + event.asNodeEvent().getID() + " Label: " + event.asNodeEvent().getLabel());
-//					}
-//					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-//						System.out.println("Source: " + event.asEdgeEvent().getSourceID() + " Target: " + event.asEdgeEvent().getTargetID());
-//					}					
+
+					if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
+						System.out.println("Predicate: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
+//						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.START))) {
+						System.out.println("Rel: " + event.asResourceMetadataEvent().getRel().getURI().getLocalPart());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.END))) {
+						System.out.println("Resource end");
+					}
 				}
 			}
 			finally {

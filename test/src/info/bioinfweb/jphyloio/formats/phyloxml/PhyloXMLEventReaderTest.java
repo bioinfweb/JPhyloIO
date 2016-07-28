@@ -47,27 +47,6 @@ import org.junit.Test;
 
 
 public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
-	@Test
-	public void testOutputPhyloXML() {
-		try {
-			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-			parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);
-			PhyloXMLEventReader reader = new PhyloXMLEventReader(new File("data/PhyloXML/SingleTree.xml"), parameters);
-			try {
-//				while (reader.hasNextEvent()) {
-//					JPhyloIOEvent event = reader.next();
-//					System.out.println(event.getType());
-//				}
-			}
-			finally {
-				reader.close();
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
-		}
-	}
 	
 	
 	@Test
