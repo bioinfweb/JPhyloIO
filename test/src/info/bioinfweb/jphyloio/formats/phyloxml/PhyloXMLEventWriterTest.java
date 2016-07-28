@@ -1118,7 +1118,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			fail("Exception not thrown");
 		}
 		catch (InconsistentAdapterDataException e) {
-			assertEquals(e.getMessage(), "Metaevents with PhyloXML-specific predicates must be given in the correct order.");
+			assertEquals(e.getMessage(), "Metaevents with PhyloXML-specific predicates must be given in the correct order. Attributes can only be written once.");
 		}
 		finally {
 			file.delete();
@@ -1170,6 +1170,260 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEquals(e.getMessage(), "Metaevents with PhyloXML-specific predicates must be given in the correct order.");
 		}
 		finally {
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataMultipleChildren() throws IOException, XMLStreamException {
+		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		
+		// Write file:
+		idIndex = 1;
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();		
+		StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
+		
+		NoAnnotationsTree tree = new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, 
+				"nodeEdgeID"); // Does not contain any meta data, but it is possible to add tree meta data manually
+		
+		// Add meta events with PhyloXML-specific predicates to tree			
+		tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null));
+
+		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		tree.getAnnotations().add(new LiteralMetadataContentEvent("bootstrap", "bootstrap"));
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+
+		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE),
+				LiteralContentSequenceType.SIMPLE));
+		tree.getAnnotations().add(new LiteralMetadataContentEvent(0.6, "0.6"));
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
+		tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null));
+
+		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		tree.getAnnotations().add(new LiteralMetadataContentEvent("jack-knife", "jack-knife"));
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+
+		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE),
+				LiteralContentSequenceType.SIMPLE));
+		tree.getAnnotations().add(new LiteralMetadataContentEvent(0.9, "0.9"));
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+
+		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		
+		trees.getTreesAndNetworks().add(tree);
+		document.getTreesNetworks().add(trees);
+		
+		writeDocument(document, null, file);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			
+			assertNamespaceCount(5, element);
+			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(PHYLOXML_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);			
+			
+			assertTrue(reader.hasNext());
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by an application using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			element = assertStartElement(TAG_PHYLOGENY, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ROOTED, "true", element);
+			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_DOUBLE.getLocalPart(), element);
+			
+			assertShortElement(TAG_ID, reader);
+			
+			element = assertStartElement(TAG_CONFIDENCE, reader);
+			assertAttributeCount(1, element);
+			assertAttribute(ATTR_TYPE, "bootstrap", element);
+			assertCharactersEvent("0.6", reader);
+			assertEndElement(TAG_CONFIDENCE, reader);
+			
+			element = assertStartElement(TAG_CONFIDENCE, reader);
+			assertAttributeCount(1, element);
+			assertAttribute(ATTR_TYPE, "jack-knife", element);
+			assertCharactersEvent("0.9", reader);
+			assertEndElement(TAG_CONFIDENCE, reader);
+			
+			element = assertStartElement(TAG_CLADE, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ID_SOURCE, element);
+			assertAttribute(ATTR_BRANCH_LENGTH, "1.5", element);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnRoot", reader);
+			
+			element = assertStartElement(TAG_CLADE, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ID_SOURCE, element);
+			assertAttribute(ATTR_BRANCH_LENGTH, "1.0", element);
+			assertShortElement(TAG_NAME, "Node '_1", reader);			
+			
+			element = assertStartElement(TAG_CLADE, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ID_SOURCE, element);
+			assertAttribute(ATTR_BRANCH_LENGTH, "1.1", element);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnA", reader);			
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			element = assertStartElement(TAG_CLADE, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ID_SOURCE, element);
+			assertAttribute(ATTR_BRANCH_LENGTH, "0.9", element);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);			
+			
+			assertEndElement(TAG_CLADE, reader);			
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			element = assertStartElement(TAG_CLADE, reader);
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_ID_SOURCE, element);
+			assertAttribute(ATTR_BRANCH_LENGTH, "2.0", element);
+			assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_CLADE, reader);
+			
+			assertEndElement(TAG_PHYLOGENY, reader);
+			
+			assertEndElement(TAG_ROOT, reader);			
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataMultipleAttributes() throws IOException, XMLStreamException {
+		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		
+		// Write file:
+		try {
+			idIndex = 1;
+			StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();		
+			StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+					EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
+			
+			NoAnnotationsTree tree = new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, 
+					"nodeEdgeID"); // Does not contain any meta data, but it is possible to add tree meta data manually
+			
+			// Add meta events with PhyloXML-specific predicates to tree			
+			tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null));
+	
+			tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+					LiteralContentSequenceType.SIMPLE));
+			tree.getAnnotations().add(new LiteralMetadataContentEvent("bootstrap", "bootstrap"));
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			
+			tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+					LiteralContentSequenceType.SIMPLE));
+			tree.getAnnotations().add(new LiteralMetadataContentEvent("jack-knife", "jack-knife"));
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+	
+			tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE),
+					LiteralContentSequenceType.SIMPLE));
+			tree.getAnnotations().add(new LiteralMetadataContentEvent(0.6, "0.6"));
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+	
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+			
+			trees.getTreesAndNetworks().add(tree);
+			document.getTreesNetworks().add(trees);
+			
+			writeDocument(document, null, file);			
+			fail("Exception not thrown");
+		}
+		catch (InconsistentAdapterDataException e) {
+			assertEquals(e.getMessage(), "Metaevents with PhyloXML-specific predicates must be given in the correct order. Attributes can only be written once.");
+		}
+		finally {			
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataMultipleValues() throws IOException, XMLStreamException {
+		File file = new File("data/testOutput/PhyloXMLTestMeta.xml");
+		
+		// Write file:
+		try {
+			idIndex = 1;
+			StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();		
+			StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+					EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
+			
+			NoAnnotationsTree tree = new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, 
+					"nodeEdgeID"); // Does not contain any meta data, but it is possible to add tree meta data manually
+			
+			// Add meta events with PhyloXML-specific predicates to tree			
+			tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null));
+	
+			tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+					LiteralContentSequenceType.SIMPLE));
+			tree.getAnnotations().add(new LiteralMetadataContentEvent("bootstrap", "bootstrap"));
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+	
+			tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE),
+					LiteralContentSequenceType.SIMPLE));
+			tree.getAnnotations().add(new LiteralMetadataContentEvent(0.6, "0.6"));
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			
+			tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE),
+					LiteralContentSequenceType.SIMPLE));
+			tree.getAnnotations().add(new LiteralMetadataContentEvent(0.9, "0.9"));
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+	
+			tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+			
+			trees.getTreesAndNetworks().add(tree);
+			document.getTreesNetworks().add(trees);
+			
+			writeDocument(document, null, file);			
+			fail("Exception not thrown");
+		}
+		catch (InconsistentAdapterDataException e) {
+			assertEquals(e.getMessage(), "Metaevents with PhyloXML-specific predicates must be given in the correct order. Attributes can only be written once.");
+		}
+		finally {			
 			file.delete();
 		}
 	}
