@@ -29,12 +29,9 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 
 
@@ -48,29 +45,27 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 			throw new IllegalArgumentException("Attributes and predicates need to be given in pairs, but an uneven number of arguments was found.");
 		}
 		else if (mappings.length >= 2) {
-			Map<QName, QName> attributeToPredicateMap = new HashMap<QName, QName>();
+			LinkedHashMap<QName, QName> attributeToPredicateMap = new LinkedHashMap<QName, QName>();
 			for (int i  = 0; i  < mappings.length; i += 2) {
 				attributeToPredicateMap.put(mappings[i], mappings[i + 1]);
 			}
+			
 			readAttributes(streamDataProvider, element, idPrefix, attributeToPredicateMap);
 		}
 	}
 	
 	
-	protected void readAttributes(P streamDataProvider, StartElement element, String idPrefix, Map<QName, QName> attributeToPredicateMap) {
+	protected void readAttributes(P streamDataProvider, StartElement element, String idPrefix, LinkedHashMap<QName, QName> attributeToPredicateMap) {
 		if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
 			String metaIDPrefix = idPrefix + ReadWriteConstants.DEFAULT_META_ID_PREFIX;
 			
-			@SuppressWarnings("unchecked")
-			Iterator<Attribute> attributes = element.getAttributes();
-			while (attributes.hasNext()) {
-				Attribute attribute = attributes.next();
-				if (attributeToPredicateMap.containsKey(attribute.getName())) {  // Allows to ignore certain attributes
-					String attributeValue = element.getAttributeByName(attribute.getName()).getValue();
+			for (QName attribute : attributeToPredicateMap.keySet()) {
+				if (element.getAttributeByName(attribute) != null) {
+					String attributeValue = element.getAttributeByName(attribute).getValue();
 					
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(metaIDPrefix + streamDataProvider.getIDManager().createNewID(), null, 
-							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), LiteralContentSequenceType.SIMPLE));
+							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute)), LiteralContentSequenceType.SIMPLE));
 	
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
 							

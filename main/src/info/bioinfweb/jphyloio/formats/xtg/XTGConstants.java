@@ -165,7 +165,6 @@ public interface XTGConstants {
 	public static final QName PREDICATE_DOCUMENT_MARGIN_ATTR_RIGHT = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Right");
 	public static final QName PREDICATE_DOCUMENT_MARGIN_ATTR_BOTTOM = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Bottom");
 	
-	public static final QName PREDICATE_NODE_ATTR_TEXT = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Text");
 	public static final QName PREDICATE_NODE_ATTR_IS_DECIMAL = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IsDecimal");
 	public static final QName PREDICATE_NODE_ATTR_TEXT_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "TextColor");
 	public static final QName PREDICATE_NODE_ATTR_TEXT_HEIGHT = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "TextHeight");
@@ -296,4 +295,10 @@ public interface XTGConstants {
 	public static final QName PREDICATE_LEGEND_MARGIN_ATTR_TOP = new QName(XTG_PREDICATE_NAMESPACE, "LegendMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Top");
 	public static final QName PREDICATE_LEGEND_MARGIN_ATTR_RIGHT = new QName(XTG_PREDICATE_NAMESPACE, "LegendMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Right");
 	public static final QName PREDICATE_LEGEND_MARGIN_ATTR_BOTTOM = new QName(XTG_PREDICATE_NAMESPACE, "LegendMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Bottom");
+	
+	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter");
+	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter");
+	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_NAME = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Name");
+	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_ID = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID");
+	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Purpose");
 }

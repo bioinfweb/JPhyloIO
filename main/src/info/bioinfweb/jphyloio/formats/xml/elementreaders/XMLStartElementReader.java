@@ -20,25 +20,19 @@ package info.bioinfweb.jphyloio.formats.xml.elementreaders;
 
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
-import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
-import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 
@@ -49,7 +43,7 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 	private QName resourcePredicate;
 	private URIOrStringIdentifier datatype;
 	private boolean isEdgeMeta;
-	private Map<QName, QName> attributeToPredicateMap;
+	private LinkedHashMap<QName, QName> attributeToPredicateMap;
 	
 
 	
@@ -64,7 +58,7 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 			throw new IllegalArgumentException("Attributes and predicates need to be given in pairs, but an uneven number of arguments was found.");
 		}
 		else if (mappings.length >= 2) {
-			attributeToPredicateMap = new HashMap<QName, QName>();
+			attributeToPredicateMap = new LinkedHashMap<QName, QName>();
 			for (int i  = 0; i  < mappings.length; i += 2) {
 				attributeToPredicateMap.put(mappings[i], mappings[i + 1]);
 			}
@@ -75,6 +69,7 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+		StartElement element = event.asStartElement();
 		
 		if (isEdgeMeta) {
 			streamDataProvider.setCurrentEventCollection(((NodeEdgeInfo)streamDataProvider.getSourceNode().peek()).getNestedEdgeEvents());
@@ -85,27 +80,7 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 					new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 							new URIOrStringIdentifier(null, resourcePredicate), null, null));
 			
-			if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
-				Iterator<Attribute> attributes = event.asStartElement().getAttributes();
-				while (attributes.hasNext()) {
-					Attribute attribute = attributes.next();
-					String attributeValue = event.asStartElement().getAttributeByName(attribute.getName()).getValue();					
-					
-					if (attributeToPredicateMap.get(attribute.getName()) != null) {
-						streamDataProvider.getCurrentEventCollection().add(
-								new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-								new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute.getName())), null, LiteralContentSequenceType.SIMPLE));
-	
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
-								
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-					}
-					else {
-						throw new JPhyloIOReaderException("No predicate was found for the attribute \"" + attribute.getName().getLocalPart() + "\".", 
-								event.getLocation());
-					}
-				}
-			}
+			readAttributes(streamDataProvider, element, "", attributeToPredicateMap);
 		}
 		
 		if (literalPredicate != null) {

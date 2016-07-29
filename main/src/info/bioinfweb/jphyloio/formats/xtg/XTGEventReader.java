@@ -107,11 +107,13 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				String id = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
 				String label = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
 				
-				createNodeEvents(streamDataProvider);  // Create node events for previous node
+				createNodeEvents(streamDataProvider);  // Create node events for previous node to avoid buffering large amounts of meta data
 				
 				// Add node info for this node
-				NodeEdgeInfo nodeInfo = new NodeEdgeInfo(id, Double.NaN, new ArrayList<JPhyloIOEvent>(), new ArrayList<JPhyloIOEvent>());
-				nodeInfo.setLabel(label); //TODO Add rooted information
+				NodeEdgeInfo nodeInfo = new NodeEdgeInfo(id, Double.NaN, new ArrayList<JPhyloIOEvent>(), new ArrayList<JPhyloIOEvent>());				
+				if ((label != null) && !label.isEmpty()) {
+					nodeInfo.setLabel(label); //TODO Add rooted information
+				}
 				streamDataProvider.getSourceNode().add(nodeInfo);
 				streamDataProvider.setCreateNodeStart(true);
 				
@@ -120,13 +122,13 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedNodeEvents());
 				
-				readAttributes(getStreamDataProvider(), event.asStartElement(), "", ATTR_TEXT, PREDICATE_NODE_ATTR_TEXT, 
-						ATTR_TEXT_IS_DECIMAL, PREDICATE_NODE_ATTR_IS_DECIMAL, ATTR_TEXT_COLOR, PREDICATE_NODE_ATTR_TEXT_COLOR, 
-						ATTR_TEXT_HEIGHT, PREDICATE_NODE_ATTR_TEXT_HEIGHT, ATTR_TEXT_STYLE, PREDICATE_NODE_ATTR_TEXT_STYLE, 
-						ATTR_FONT_FAMILY, PREDICATE_NODE_ATTR_FONT_FAMILY, ATTR_DECIMAL_FORMAT, PREDICATE_NODE_ATTR_DECIMAL_FORMAT, 
-						ATTR_LOCALE_LANG, PREDICATE_NODE_ATTR_LOCALE_VARIANT, ATTR_LINE_COLOR, PREDICATE_NODE_ATTR_LINE_COLOR, 
-						ATTR_LINE_WIDTH, PREDICATE_NODE_ATTR_LINE_WIDTH, ATTR_UNIQUE_NAME, PREDICATE_NODE_ATTR_UNIQUE_NAME, 
-						ATTR_EDGE_RADIUS, PREDICATE_NODE_ATTR_EDGE_RADIUS);
+				readAttributes(getStreamDataProvider(), event.asStartElement(), "",	ATTR_TEXT_IS_DECIMAL, PREDICATE_NODE_ATTR_IS_DECIMAL, 
+						ATTR_TEXT_COLOR, PREDICATE_NODE_ATTR_TEXT_COLOR, ATTR_TEXT_HEIGHT, PREDICATE_NODE_ATTR_TEXT_HEIGHT, 
+						ATTR_TEXT_STYLE, PREDICATE_NODE_ATTR_TEXT_STYLE, ATTR_FONT_FAMILY, PREDICATE_NODE_ATTR_FONT_FAMILY, 
+						ATTR_DECIMAL_FORMAT, PREDICATE_NODE_ATTR_DECIMAL_FORMAT, ATTR_LOCALE_LANG, PREDICATE_NODE_ATTR_LOCALE_LANG, 
+						ATTR_LOCALE_COUNTRY, PREDICATE_NODE_ATTR_LOCALE_COUNTRY, ATTR_LOCALE_VARIANT, PREDICATE_NODE_ATTR_LOCALE_VARIANT,
+						ATTR_LINE_COLOR, PREDICATE_NODE_ATTR_LINE_COLOR, ATTR_LINE_WIDTH, PREDICATE_NODE_ATTR_LINE_WIDTH, 
+						ATTR_UNIQUE_NAME, PREDICATE_NODE_ATTR_UNIQUE_NAME, ATTR_EDGE_RADIUS, PREDICATE_NODE_ATTR_EDGE_RADIUS);
 			}
 		};
 		
@@ -143,6 +145,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		};
 		
 		XMLEndElementReader resourceEndReader = new XMLEndElementReader(false, true, false);
+		
+		XMLEndElementReader edgeResourceEndReader = new XMLEndElementReader(false, true, true);
 		
 		XMLStartElementReader labelMarginStartReader = new XMLStartElementReader(null, PREDICATE_LABEL_MARGIN, null, false, 
 				ATTR_LEFT, PREDICATE_LABEL_MARGIN_ATTR_LEFT, ATTR_TOP, PREDICATE_LABEL_MARGIN_ATTR_TOP, 
@@ -178,11 +182,14 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_TREE, XMLStreamConstants.START_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				String treeID = DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
-				
 				streamDataProvider.getEdgeInfos().add(new ArrayDeque<NodeEdgeInfo>());
-				streamDataProvider.setCreateNodeStart(false); // Do not create node events at start of root node
-				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, treeID, null, null));
+				streamDataProvider.setCreateNodeStart(false);  // Prevents creation of node events at start of root node
+				
+				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, 
+						DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, null));  // Since there can only be one tree in an XTG document, the tree group start event can be fired here
+				
+				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE, 
+						DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, null));
 			}
 		});
 		
@@ -197,6 +204,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				streamDataProvider.getEdgeInfos().clear();
 				
 				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));
+				
+				streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE_NETWORK_GROUP));  // Since there can only be one tree in an XTG document, the tree group end event can be fired here
 			}
 		});
 		
@@ -252,6 +261,20 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_GLOBAL_FORMATS, TAG_DOCUMENT_MARGIN, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_GLOBAL_FORMATS, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		
+		// TreegraphDocument.NodeBranchDataAdapters
+		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_NODE_BRANCH_DATA_ADAPTERS, XMLStreamConstants.START_ELEMENT), 
+				new XMLStartElementReader(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS, null,	false));		
+		putElementReader(new XMLElementReaderKey(TAG_NODE_BRANCH_DATA_ADAPTERS, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
+		
+		putElementReader(new XMLElementReaderKey(TAG_NODE_BRANCH_DATA_ADAPTERS, TAG_ADAPTER, XMLStreamConstants.START_ELEMENT), 
+				new XMLStartElementReader(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER, null, false, 
+						ATTR_ADAPTER_NAME, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_NAME, ATTR_ADAPTER_ID, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_ID,
+						ATTR_ADAPTER_PURPOSE, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE));	
+		putElementReader(new XMLElementReaderKey(TAG_ADAPTER, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());		
+		putElementReader(new XMLElementReaderKey(TAG_NODE_BRANCH_DATA_ADAPTERS, TAG_ADAPTER, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		
+		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_NODE_BRANCH_DATA_ADAPTERS, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 	
 		// Tree.ScaleBar
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.START_ELEMENT), 
@@ -279,7 +302,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		
 		// Branch.TextLabel
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_TEXT_LABEL, null,	false, ATTR_TEXT, PREDICATE_TEXT_LABEL_ATTR_TEXT, 
+				new XMLStartElementReader(null, PREDICATE_TEXT_LABEL, null,	true, ATTR_TEXT, PREDICATE_TEXT_LABEL_ATTR_TEXT, 
 						ATTR_TEXT_IS_DECIMAL, PREDICATE_TEXT_LABEL_ATTR_IS_DECIMAL, ATTR_TEXT_COLOR, PREDICATE_TEXT_LABEL_ATTR_TEXT_COLOR, 
 						ATTR_TEXT_HEIGHT, PREDICATE_TEXT_LABEL_ATTR_TEXT_HEIGHT, ATTR_TEXT_STYLE, PREDICATE_TEXT_LABEL_ATTR_TEXT_STYLE, 
 						ATTR_FONT_FAMILY, PREDICATE_TEXT_LABEL_ATTR_FONT_FAMILY, ATTR_DECIMAL_FORMAT, PREDICATE_TEXT_LABEL_ATTR_DECIMAL_FORMAT, 
@@ -291,29 +314,29 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		
 		putElementReader(new XMLElementReaderKey(TAG_TEXT_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.START_ELEMENT), labelMarginStartReader);		
 		// Element reader for character content of label margin tag was registered before
-		putElementReader(new XMLElementReaderKey(TAG_TEXT_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_TEXT_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
 		// Branch.IconLabel
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_ICON_LABEL, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_ICON_LABEL, null,	false, ATTR_LINE_COLOR, PREDICATE_ICON_LABEL_ATTR_LINE_COLOR, 
+				new XMLStartElementReader(null, PREDICATE_ICON_LABEL, null,	true, ATTR_LINE_COLOR, PREDICATE_ICON_LABEL_ATTR_LINE_COLOR, 
 						ATTR_LINE_WIDTH, PREDICATE_ICON_LABEL_ATTR_LINE_WIDTH, ATTR_ICON, PREDICATE_ICON_LABEL_ATTR_ICON, 
-						ATTR_WIDTH, PREDICATE_ICON_LABEL_ATTR_WIDTH, ATTR_HEIGHT, PREDICATE_ICON_LABEL_ATTR_HEIGHT, 
+						ATTR_ICON_WIDTH, PREDICATE_ICON_LABEL_ATTR_WIDTH, ATTR_ICON_HEIGHT, PREDICATE_ICON_LABEL_ATTR_HEIGHT, 
 						ATTR_ICON_FILLED, PREDICATE_ICON_LABEL_ATTR_ICON_FILLED, ATTR_ID, PREDICATE_ICON_LABEL_ATTR_ID, 
 						ATTR_LABEL_ABOVE, PREDICATE_ICON_LABEL_ATTR_ABOVE, ATTR_LINE_NO, PREDICATE_ICON_LABEL_ATTR_LINE_NO, 
-						ATTR_LINE_POS, PREDICATE_ICON_LABEL_ATTR_LINE_POS)); //TODO use icon width and icon height constants instead?		
+						ATTR_LINE_POS, PREDICATE_ICON_LABEL_ATTR_LINE_POS));
 		putElementReader(new XMLElementReaderKey(TAG_ICON_LABEL, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_ICON_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.START_ELEMENT), labelMarginStartReader);
 		// Element reader for character content of label margin tag was registered before
-		putElementReader(new XMLElementReaderKey(TAG_ICON_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_ICON_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_ICON_LABEL, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_ICON_LABEL, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
 		// Branch.PieChartLabel
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_PIE_CHART_LABEL, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_PIE_CHART_LABEL, null,	false, ATTR_LINE_COLOR, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_COLOR, 
+				new XMLStartElementReader(null, PREDICATE_PIE_CHART_LABEL, null,	true, ATTR_LINE_COLOR, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_COLOR, 
 						ATTR_LINE_WIDTH, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_WIDTH, ATTR_LABEL_WIDTH, PREDICATE_PIE_CHART_LABEL_ATTR_WIDTH, 
 						ATTR_LABEL_HEIGHT, PREDICATE_PIE_CHART_LABEL_ATTR_HEIGHT, ATTR_SHOW_INTERNAL_LINES, PREDICATE_PIE_CHART_LABEL_ATTR_INTERNAL_LINES, 
 						ATTR_SHOW_NULL_LINES, PREDICATE_PIE_CHART_LABEL_ATTR_NULL_LINES, ATTR_ID, PREDICATE_PIE_CHART_LABEL_ATTR_ID, 
@@ -323,13 +346,14 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.START_ELEMENT), labelMarginStartReader);
 		// Element reader for character content of label margin tag was registered before
-		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, TAG_LABEL_MARGIN, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, TAG_PIE_CHART_IDS, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_DATA_IDS, null,	false));
+				new XMLStartElementReader(null, PREDICATE_DATA_IDS, null, true));
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
-		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, TAG_PIE_CHART_ID, XMLStreamConstants.START_ELEMENT), labelMarginStartReader);
+		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, TAG_PIE_CHART_ID, XMLStreamConstants.START_ELEMENT), 
+				new XMLStartElementReader(PREDICATE_DATA_ID, null, null, true));
 		
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_ID, null, XMLStreamConstants.CHARACTERS), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
@@ -339,11 +363,11 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			}
 		});
 		
-		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, TAG_PIE_CHART_ID, XMLStreamConstants.END_ELEMENT), resourceEndReader);	
+		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, TAG_PIE_CHART_ID, XMLStreamConstants.END_ELEMENT), new XMLEndElementReader(true, false, true));
 		
-		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, TAG_PIE_CHART_IDS, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, TAG_PIE_CHART_IDS, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_PIE_CHART_LABEL, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_PIE_CHART_LABEL, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
 		// Node.InvisibleData
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_HIDDEN_DATA, XMLStreamConstants.START_ELEMENT), 
@@ -356,12 +380,12 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		
 		// Branch.InvisibleData
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_HIDDEN_DATA, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_INVISIBLE_DATA, null,	false, ATTR_ID, PREDICATE_INVISIBLE_DATA_ATTR_ID, 
+				new XMLStartElementReader(null, PREDICATE_INVISIBLE_DATA, null,	true, ATTR_ID, PREDICATE_INVISIBLE_DATA_ATTR_ID, 
 						ATTR_TEXT, PREDICATE_INVISIBLE_DATA_ATTR_TEXT, ATTR_TEXT_IS_DECIMAL, PREDICATE_INVISIBLE_DATA_ATTR_IS_DECIMAL));
 		
 		// Element reader for character content of hidden data tag was registered before
 		
-		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_HIDDEN_DATA, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_HIDDEN_DATA, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
 		// Tree.Legend	
 		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.START_ELEMENT), 
