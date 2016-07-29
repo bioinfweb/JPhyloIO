@@ -340,7 +340,14 @@ public class JPhyloIOTestTools {
   		JPhyloIOEventReader reader) throws Exception {
   	
   	String result = assertLiteralMetaStartEvent(expectedPredicate, LiteralContentSequenceType.SIMPLE, expectedOriginalType, expectedAlternativeStringValue, reader);
-  	assertLiteralMetaContentEvent(expectedStringValue, expectedObjectValue, testEndEvent, reader);	
+  	
+  	if ((expectedStringValue != null) || (expectedObjectValue != null)) {
+  		assertLiteralMetaContentEvent(expectedStringValue, expectedObjectValue, testEndEvent, reader);
+  	}
+  	else if (testEndEvent) {
+  		assertEndEvent(EventContentType.META_LITERAL, reader);
+  	}
+  	
 		return result;
   }
   
