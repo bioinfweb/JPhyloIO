@@ -479,9 +479,10 @@ test/data/PhyloXML/SingleTree.xml -text svneol=unset#text/plain
 test/data/PhyloXML/VariousMetaEventsFromPhyloXMLTags.xml -text svneol=unset#text/plain
 test/data/XML/Invalid.xml -text svneol=unset#text/plain
 test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
+test/data/XTG/EmptyDocument.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml.gz -text
-test/data/XTG/NoNamespaceShortened.xml -text
+test/data/XTG/Polytomy.xml -text svneol=unset#text/plain
 test/data/other/Namespace.xml -text svneol=unset#text/plain
 test/data/other/Test.png -text
 test/data/other/Text.txt -text svneol=unset#text/plain

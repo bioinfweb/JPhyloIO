@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TreegraphDocument xmlns="http://bioinfweb.info/xmlns/xtg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://bioinfweb.info/xmlns/xtg http://bioinfweb.info/xmlns/xtg/1.4.xsd">
+	<GlobalFormats BgColor="#FFFFFF" BranchLengthScale="0.1" ShowScaleBar="false" ShowRooted="true"
+		AlignToSubtree="true" LabelsLeft="true">
+		<DocMargin Left="2.0" Top="2.0" Right="2.0" Bottom="2.0"></DocMargin>
+	</GlobalFormats>
+	<NodeBranchDataAdapters>
+		<Adapter Name="info.bioinfweb.treegraph.nodeName" Purpose="info.bioinfweb.treegraph.defaultLeavesAdapter"></Adapter>
+		<Adapter Name="info.bioinfweb.treegraph.voidNodeBranchData" Purpose="info.bioinfweb.treegraph.defaultSupportAdapter"></Adapter>
+	</NodeBranchDataAdapters>
+	<Tree>
+		<ScaleBar LineColor="#000000" LineWidth="0.3" TextColor="#000000" TextHeight="4.0" TextStyle="" FontFamily="Arial"
+			DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry="" LocaleVariant="" Align="left" TreeDistance="2.0" Width="20.0mm"
+			Height="3.0" SmallInterval="10.0" LongInterval="10" StartLeft="true" Increasing="true"></ScaleBar>
+	</Tree>
+</TreegraphDocument>
