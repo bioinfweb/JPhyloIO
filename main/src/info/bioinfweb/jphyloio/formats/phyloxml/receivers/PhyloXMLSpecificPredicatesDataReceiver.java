@@ -86,6 +86,8 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 							&& !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.VALUE) && currentIndex >= childIndices.peek());
 					boolean writeOtherContent = ((predicateInfo == null) && currentIndex >= childIndices.peek());
 					
+					//TODO dokumentieren was geprüft wird und was nicht (verschachtelung/reihenfolge, nicht aber anzahl)
+					
 					if (writeAttribute || writeValue || writeTag || writeOtherContent) {
 						childIndices.pop();
 						childIndices.push(currentIndex);

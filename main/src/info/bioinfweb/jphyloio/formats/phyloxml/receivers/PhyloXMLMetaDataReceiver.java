@@ -104,7 +104,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
 				
-				if (((originalType == null) || (originalType.getURI() == null)) && (event.getStringValue() != null)) {
+				if (((originalType == null) || (originalType.getURI() == null))) {
 					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);
 				}
 				

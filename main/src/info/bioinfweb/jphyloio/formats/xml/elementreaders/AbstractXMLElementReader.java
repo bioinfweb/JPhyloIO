@@ -61,15 +61,17 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 			
 			for (QName attribute : attributeToPredicateMap.keySet()) {
 				if (element.getAttributeByName(attribute) != null) {
-					String attributeValue = element.getAttributeByName(attribute).getValue();
+					String attributeValue = element.getAttributeByName(attribute).getValue();					
 					
-					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataEvent(metaIDPrefix + streamDataProvider.getIDManager().createNewID(), null, 
-							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute)), LiteralContentSequenceType.SIMPLE));
-	
-					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
-							
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+						streamDataProvider.getCurrentEventCollection().add(
+								new LiteralMetadataEvent(metaIDPrefix + streamDataProvider.getIDManager().createNewID(), null, 
+								new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute)), LiteralContentSequenceType.SIMPLE));
+						
+						if ((attributeValue != null) && !attributeValue.isEmpty()) {
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
+						}
+								
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));					
 				}
 			}
 		}

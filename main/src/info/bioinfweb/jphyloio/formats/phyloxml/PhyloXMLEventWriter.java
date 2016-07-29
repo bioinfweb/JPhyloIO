@@ -78,7 +78,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
 			
 			// Write namespace declarations
-			getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);		
+			getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);
 			for (String prefix : getStreamDataProvider().getNamespacePrefixes()) { //TODO only write NS if element is actually written to the file? (e.g. predicate namespace is in all specific meta events but never used in the file)
 				getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
 			}
@@ -87,9 +87,9 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			
 			if (getStreamDataProvider().isDocumentHasPhylogeny()) {
 				writePhylogenyTags();
-			}
+			}			
 			
-			getDocument().writeMetadata(getParameters(), receiver);
+			getDocument().writeMetadata(getParameters(), receiver); //TODO also write document metadata, that can be represented as XML here as customXML
 			
 			if (receiver.hasMetadata()) {
 				getParameters().getLogger().addWarning("Encountered document meta data was not written, because this is not supported by the PhyloXML format.");
@@ -98,8 +98,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			getXMLWriter().writeEndElement();
 		}
 		else {
-			getParameters().getLogger().addWarning("The document did not contain any data that could be written to the file.");
-		}
+			getParameters().getLogger().addWarning("The document did not contain any data that could be written to the file.");  //TODO write empty phylogeny, an empty document is not valid!
+		}		
 	}
 	
 	

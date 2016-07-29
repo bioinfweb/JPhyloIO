@@ -39,6 +39,7 @@ public class XMLReadWriteUtils {
 	
 	public static final QName ATTRIBUTE_RDF_PROPERTY = new QName(NAMESPACE_RDF, "property");
 	public static final QName ATTRIBUTE_RDF_DATATYPE = new QName(NAMESPACE_RDF, "datatype");
+	//TODO about attribute needed? does phyloXML still validate? erstmal ausgabe dieser attribute auskommentieren
 	
   public static final String DEFAULT_NAMESPACE_PREFIX = "p";
 	
