@@ -52,16 +52,22 @@ public class XTGEventReaderTest implements XTGConstants {
 //						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.START))) {
-//						System.out.println("Rel: " + event.asResourceMetadataEvent().getRel().getURI().getLocalPart());
+						System.out.println("Rel: " + event.asResourceMetadataEvent().getRel().getURI().getLocalPart());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.END))) {
 //						System.out.println("Resource end");
 					}
 					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-//						System.out.println("Node: " + event.asNodeEvent().getID() + " " + event.asNodeEvent().getLabel());
+						System.out.println("Node: " + event.asNodeEvent().getID() + " " + event.asNodeEvent().getLabel());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.END))) {
+					System.out.println("Node end");
 					}
 					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-//						System.out.println("Edge: " + event.asEdgeEvent().getID() + " " + event.asEdgeEvent().getSourceID() + " " + event.asEdgeEvent().getTargetID());
+						System.out.println("Edge: " + event.asEdgeEvent().getID() + " " + event.asEdgeEvent().getSourceID() + " " + event.asEdgeEvent().getTargetID());
+					}
+					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.END))) {
+					System.out.println("Edge end");
 					}
 				}
 			}
@@ -593,26 +599,26 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_BRANCH_ATTR_MIN_SPACE_BELOW), null, "0.0", null, "0.0", true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);				
 				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_COLOR), null, "#000000", null, "#000000", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_HEIGHT), null, "4.0", null, "4.0", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LINE_COLOR), null, "#000000", null, "#000000", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LINE_WIDTH), null, "0.3", null, "0.3", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_ALIGN), null, "left", null, "left", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TREE_DISTANCE), null, "2.0", null, "2.0", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_WIDTH), null, "20.0mm", null, "20.0mm", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_HEIGHT), null, "3.0", null, "3.0", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_SMALL_INTERVAL), null, "10.0", null, "10.0", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL), null, "10", null, "10", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_START_LEFT), null, "true", null, "true", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_INCREASING), null, "true", null, "true", true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+//				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_COLOR), null, "#000000", null, "#000000", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_HEIGHT), null, "4.0", null, "4.0", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LINE_COLOR), null, "#000000", null, "#000000", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LINE_WIDTH), null, "0.3", null, "0.3", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_ALIGN), null, "left", null, "left", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TREE_DISTANCE), null, "2.0", null, "2.0", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_WIDTH), null, "20.0mm", null, "20.0mm", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_HEIGHT), null, "3.0", null, "3.0", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_SMALL_INTERVAL), null, "10.0", null, "10.0", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL), null, "10", null, "10", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_START_LEFT), null, "true", null, "true", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_INCREASING), null, "true", null, "true", true, reader);				
+//				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
 				assertEdgeEvent(null, node1, 3.0, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_BRANCH_ATTR_LINE_COLOR), null, "#000000", null, "#000000", true, reader);
@@ -621,7 +627,7 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_BRANCH_ATTR_MIN_LENGTH), null, "4.0", null, "4.0", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_BRANCH_ATTR_MIN_SPACE_ABOVE), null, "0.0", null, "0.0", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_BRANCH_ATTR_MIN_SPACE_BELOW), null, "0.0", null, "0.0", true, reader);
-				assertEndEvent(EventContentType.ROOT_EDGE, reader);				
+				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
@@ -688,26 +694,26 @@ public class XTGEventReaderTest implements XTGConstants {
 				
 				assertLinkedLabeledIDEvent(EventContentType.TREE, null, null, null, reader);
 				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_COLOR), null, "#000000", null, "#000000", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_HEIGHT), null, "4.0", null, "4.0", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LINE_COLOR), null, "#000000", null, "#000000", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LINE_WIDTH), null, "0.3", null, "0.3", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_ALIGN), null, "left", null, "left", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TREE_DISTANCE), null, "2.0", null, "2.0", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_WIDTH), null, "20.0mm", null, "20.0mm", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_HEIGHT), null, "3.0", null, "3.0", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_SMALL_INTERVAL), null, "10.0", null, "10.0", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL), null, "10", null, "10", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_START_LEFT), null, "true", null, "true", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_INCREASING), null, "true", null, "true", true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);			
+//				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_COLOR), null, "#000000", null, "#000000", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_HEIGHT), null, "4.0", null, "4.0", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LINE_COLOR), null, "#000000", null, "#000000", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LINE_WIDTH), null, "0.3", null, "0.3", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_ALIGN), null, "left", null, "left", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_TREE_DISTANCE), null, "2.0", null, "2.0", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_WIDTH), null, "20.0mm", null, "20.0mm", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_HEIGHT), null, "3.0", null, "3.0", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_SMALL_INTERVAL), null, "10.0", null, "10.0", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL), null, "10", null, "10", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_START_LEFT), null, "true", null, "true", true, reader);
+//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_INCREASING), null, "true", null, "true", true, reader);				
+//				assertEndEvent(EventContentType.META_RESOURCE, reader);			
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				
