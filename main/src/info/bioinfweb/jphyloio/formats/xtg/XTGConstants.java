@@ -124,11 +124,13 @@ public interface XTGConstants {
   public static final QName ATTR_LEGEND_POS = new QName("LegendPos");
   public static final QName ATTR_MIN_TREE_DISTANCE = new QName("MinTreeDistance");
   public static final QName ATTR_LEGEND_STYLE = new QName("LegendStyle");
-  public static final QName ATTR_TEXT_ORIENTATION = new QName("Orientation");
+  public static final QName ATTR_TEXT_ORIENTATION = new QName("Orientation");  
   public static final String ORIENT_UP = "up";
   public static final String ORIENT_DOWN = "down";
   public static final String ORIENT_HORIZONTAL = "horizontal";
   public static final String PRE_LEGEND_ANCHOR = "Anchor";  // Prefix of the legend anchor String
+  public static final QName ATTR_ANCHOR_0 = new QName(PRE_LEGEND_ANCHOR + "0");
+  public static final QName ATTR_ANCHOR_1 = new QName(PRE_LEGEND_ANCHOR + "1");
   public static final String STYLE_BRACE = "brace";
   public static final String STYLE_BRACKET = "bracket";
   
@@ -283,6 +285,7 @@ public interface XTGConstants {
 	public static final QName PREDICATE_LEGEND_ATTR_LINE_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LineColor");
 	public static final QName PREDICATE_LEGEND_ATTR_LINE_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LineWidth");
 	public static final QName PREDICATE_LEGEND_ATTR_ANCHOR_0 = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Anchor0");
+	public static final QName PREDICATE_LEGEND_ATTR_ANCHOR_1 = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Anchor1");
 	public static final QName PREDICATE_LEGEND_ATTR_LEGEND_POSITION = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendPosition");
 	public static final QName PREDICATE_LEGEND_ATTR_MIN_TREE_DISTANCE = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinTreeDistance");
 	public static final QName PREDICATE_LEGEND_ATTR_LEGEND_SPACING = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendSpacing");

@@ -112,7 +112,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
 				
-				if (((originalType == null) || (originalType.getURI() == null))) {
+				if ((originalType == null) || (originalType.getURI() == null) || !validXSDTypes.contains(originalType.getURI())) {
 					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);					
 				}
 			
@@ -122,12 +122,6 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 				if ((event.getObjectValue() != null)) {
 					if ((translator != null)) {
 						if (translator.hasStringRepresentation()) {
-							
-							if (!validXSDTypes.contains(originalType.getURI())) {								
-								originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING); //TODO add parameter to keep invalid datatype (and write invalid PhyloXML as a consequence)
-								translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(originalType.getURI());
-							}
-							
 							try {
 								value = translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider());
 							}
@@ -326,19 +320,19 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DECIMAL);
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_FLOAT);
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DOUBLE);
-//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DURATION); //TODO add constants
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DURATION);  // Currently no object translator for this type exists
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DATE_TIME);
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_TIME);
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DATE);
-//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GYEARMONTH);
-//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GYEAR);
-//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GMONTHDAY);
-//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GDAY);
-//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GMONTH);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_YEAR_MONTH);  // Currently no object translator for this type exists
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_YEAR);  // Currently no object translator for this type exists
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_MONTH_DAY);  // Currently no object translator for this type exists
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_DAY);  // Currently no object translator for this type exists
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_MONTH);  // Currently no object translator for this type exists
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_HEX_BINARY);
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_BASE_64_BINARY);
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_ANY_URI);
-//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NORMALIZED_STRING);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NORMALIZED_STRING);  // Currently no object translator for this type exists
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_TOKEN);
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_INTEGER);
 		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NON_POSITIVE_INTEGER);
