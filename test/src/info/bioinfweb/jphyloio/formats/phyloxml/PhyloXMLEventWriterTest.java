@@ -126,13 +126,13 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNamespaceCount(4, element);
+			assertNamespaceCount(3, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
-					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), 
+					true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), 
+					true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
@@ -199,11 +199,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(7, element);
+			assertNamespaceCount(6, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -277,11 +277,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(7, element);
+			assertNamespaceCount(6, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -386,17 +386,17 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_PROPERTY, reader);
 			
 			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			assertAttributeCount(1, element);
-			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+//			assertAttributeCount(1, element);
+//			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);			
 			
 			assertEndElement(TAG_PHYLOGENY, reader);
 			
 			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			assertAttributeCount(1, element);
-			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+//			assertAttributeCount(1, element);
+//			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
@@ -461,11 +461,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(7, element);
+			assertNamespaceCount(6, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -578,17 +578,17 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_PROPERTY, reader);
 			
 			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			assertAttributeCount(1, element);
-			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+//			assertAttributeCount(1, element);
+//			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);			
 			
 			assertEndElement(TAG_PHYLOGENY, reader);
 			
 			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			assertAttributeCount(1, element);
-			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+//			assertAttributeCount(1, element);
+//			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
@@ -652,11 +652,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(7, element);
+			assertNamespaceCount(6, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -782,11 +782,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(7, element);
+			assertNamespaceCount(6, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -883,17 +883,17 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_PROPERTY, reader);			
 			
 			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			assertAttributeCount(1, element);
-			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+//			assertAttributeCount(1, element);
+//			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);			
 			
 			assertEndElement(TAG_PHYLOGENY, reader);
 			
 			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			assertAttributeCount(1, element);
-			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+//			assertAttributeCount(1, element);
+//			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
@@ -938,11 +938,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNamespaceCount(7, element);
+			assertNamespaceCount(6, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(PHYLOXML_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);			
@@ -994,9 +994,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertEndElement(TAG_URI, reader);
 			
 			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			assertAttributeCount(1, element);
-			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "XMLPredicate", element);
+//			assertAttributeCount(1, element);
+//			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "XMLPredicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
 			
 			assertEndElement(TAG_TAXONOMY, reader);
@@ -1032,9 +1032,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
 			
 			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			assertAttributeCount(1, element);
-			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "XMLPredicate", element);
+//			assertAttributeCount(1, element);
+//			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "XMLPredicate", element);
 			assertCharactersEvent("test characters", reader);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
 			
@@ -1163,11 +1163,10 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			writeDocument(document, null, file);
 			fail("Exception not thrown");
-			
-			// Validate file
 		}
 		catch (InconsistentAdapterDataException e) {
-			assertEquals(e.getMessage(), "Metaevents with PhyloXML-specific predicates must be given in the correct order.");
+			assertTrue(e.getMessage().matches(
+					"The meta event \"\\S+\" with the PhyloXML-specific predicate \"\\S+\" was not nested correctly."));			
 		}
 		finally {
 			file.delete();
@@ -1238,11 +1237,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNamespaceCount(5, element);
+			assertNamespaceCount(4, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(PHYLOXML_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);			
 			
 			assertTrue(reader.hasNext());
@@ -1500,11 +1499,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNamespaceCount(4, element);
+			assertNamespaceCount(3, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
@@ -1612,13 +1611,13 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNamespaceCount(4, element);
+			assertNamespaceCount(3, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, 
 					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, 
 					XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
-			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			
 			assertTrue(reader.hasNext());
 			XMLEvent event = reader.nextEvent();			
