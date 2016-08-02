@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
@@ -33,52 +32,28 @@ import javax.xml.stream.XMLStreamException;
 
 
 
-public class PhyloXMLIgnoreMetadataReceiver extends PhyloXMLMetaDataReceiver {
-	private boolean ignoreCustomXML;
-	private boolean hasMetadata = false;
+public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver {
 	
 	
-	public PhyloXMLIgnoreMetadataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
-			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner, boolean ignoreCustomXML) {
+	public PhyloXMLOnlyCustomXMLDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
+			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner) {
+		
 		super(streamDataProvider, parameterMap, propertyOwner);
-		
-		this.ignoreCustomXML = ignoreCustomXML;
 	}
-
-
-	public boolean hasMetadata() {
-		return hasMetadata;
-	}
-
-
-	@Override
-	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
-		
-		if (!ignoreCustomXML) {
-			super.handleLiteralMetaStart(event);
-		}
-	}
-
+	//TODO write metadata that could not be written until now as customXML
 	
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
-		
-		if (isWriteContent() && !ignoreCustomXML && !hasSimpleContent() && event.hasXMLEventValue()) {			
+		if (isWriteContent() && !hasSimpleContent() && event.hasXMLEventValue()) {			
 			writeCustomXMLTag(event.getXMLEvent());			
 		}
 	}
 	
 
 	@Override
-	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
-	}
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {}
 
 	
 	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
-	}
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {}
 }

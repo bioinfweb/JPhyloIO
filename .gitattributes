@@ -259,8 +259,9 @@ main/src/info/bioinfweb/jphyloio/formats/phyloxml/PropertyOwner.java -text svneo
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/elementreader/PhyloXMLCharactersElementReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLCollectMetadataDataReceiver.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLIgnoreMetadataReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLDocumentMetaDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLMetaDataReceiver.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLOnlyCustomXMLDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLPropertyMetadataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/phyloxml/receivers/PhyloXMLSpecificPredicatesDataReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/AbstractTextEventReader.java -text svneol=unset#text/plain

@@ -23,7 +23,6 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
@@ -50,7 +49,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 	private Stack<String> metaIDs = new Stack<String>();
 	private boolean isPhylogenyIDValue = false;
 	private boolean isPhylogenyIDProvider = false;
-	private boolean hasCustomXML = false;
+	private boolean hasMetadata = false;
 	
 	
 	public PhyloXMLCollectMetadataDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
@@ -59,15 +58,21 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 	}
 	
 	
-	public boolean hasCustomXML() {
-		return hasCustomXML;
+	public boolean hasMetadata() {
+		return hasMetadata;
+	}
+
+
+	public void resetHasMetadata() {
+		hasMetadata = false;
 	}
 
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		String id = event.getID();		
-		QName resourceIdentifier;
+		QName resourceIdentifier;		
+		hasMetadata = true;
 		
 		if (!metaIDs.isEmpty()) {
 			String parentID = metaIDs.peek();
@@ -105,16 +110,13 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 //						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 //			}
 		}
-		
-		if (event.getSequenceType().equals(LiteralContentSequenceType.XML)) {
-			hasCustomXML = true;
-		}
 	}
 	
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		QName resourceIdentifier;
+		hasMetadata = true;
 		
 		if (event.hasXMLEventValue()) {
 			if (event.getXMLEvent().getEventType() == XMLStreamConstants.START_ELEMENT) {
@@ -158,6 +160,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		String id = event.getID();
 		QName resourceIdentifier;
+		hasMetadata = true;
 		
 		if (!metaIDs.isEmpty()) {
 			String parentID = metaIDs.peek();
@@ -187,6 +190,8 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 	
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		hasMetadata = true;
+		
 		metaIDs.pop();
 		isPhylogenyIDProvider = false;
 		isPhylogenyIDValue = false;

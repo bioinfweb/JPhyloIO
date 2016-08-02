@@ -27,7 +27,8 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLCollectMetadataDataReceiver;
-import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLIgnoreMetadataReceiver;
+import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLDocumentMetaDataReceiver;
+import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLOnlyCustomXMLDataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLMetaDataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLPropertyMetadataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLSpecificPredicatesDataReceiver;
@@ -65,8 +66,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	
 	@Override
 	protected void doWriteDocument() throws IOException, XMLStreamException {
-		PhyloXMLIgnoreMetadataReceiver receiver = new PhyloXMLIgnoreMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.OTHER, 
-				false);
+		PhyloXMLDocumentMetaDataReceiver receiver = new PhyloXMLDocumentMetaDataReceiver(getStreamDataProvider(), getParameters(), 
+				PropertyOwner.OTHER);
 		
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.XSD_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_NS_URI);  // Ensures that the prefix for this NS is always 'xsd'
 		
@@ -84,16 +85,9 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		getXMLWriter().writeComment(" " + getFileStartInfo(getParameters()) + " ");
 		
-		if (getStreamDataProvider().isDocumentHasCustomXML() || getStreamDataProvider().isDocumentHasPhylogeny()) {
-			if (getStreamDataProvider().isDocumentHasPhylogeny()) {
-				writePhylogenyTags();
-			}			
-			
+		if (getStreamDataProvider().isDocumentHasMetadata() || getStreamDataProvider().isDocumentHasPhylogeny()) {			
+			writePhylogenyTags();			
 			getDocument().writeMetadata(getParameters(), receiver);
-			//TODO also write document metadata, that can be represented as XML here as customXML
-			if (receiver.hasMetadata()) {
-				getParameters().getLogger().addWarning("Encountered document meta data was not written, because this is not supported by the PhyloXML format.");
-			}
 		}
 		else {
 			getXMLWriter().writeStartElement(TAG_PHYLOGENY.getLocalPart());
@@ -109,14 +103,16 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	private void checkDocument() throws IOException {
 		PhyloXMLCollectMetadataDataReceiver receiver = new PhyloXMLCollectMetadataDataReceiver(getStreamDataProvider(), getParameters());
 		
-		getDocument().writeMetadata(getParameters(), receiver);
-		
-		getStreamDataProvider().setDocumentHasCustomXML(receiver.hasCustomXML());
+		getDocument().writeMetadata(getParameters(), receiver);		
+		getStreamDataProvider().setDocumentHasMetadata(receiver.hasMetadata());
 		
 		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = getDocument().getTreeNetworkGroupIterator(getParameters());		
 		while (treeNetworkGroupIterator.hasNext()) {
-			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();			
+			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
+			
+			receiver.resetHasMetadata();
 			treeNetworkGroup.writeMetadata(getParameters(), receiver);
+			getStreamDataProvider().setTreeGroupHasMetadata(receiver.hasMetadata());
 			
 			Iterator<TreeNetworkDataAdapter> treeNetworkIterator = treeNetworkGroup.getTreeNetworkIterator(getParameters());
 			while (treeNetworkIterator.hasNext()) {
@@ -139,10 +135,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	}
 	
 	
-	private void writePhylogenyTags() throws XMLStreamException, IOException {
-		PhyloXMLIgnoreMetadataReceiver receiver = new PhyloXMLIgnoreMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.OTHER, 
-				true);
-		
+	private void writePhylogenyTags() throws XMLStreamException, IOException {		
 		Iterator<TreeNetworkGroupDataAdapter> treeNetworkGroupIterator = getDocument().getTreeNetworkGroupIterator(getParameters());		
 		while (treeNetworkGroupIterator.hasNext()) {
 			TreeNetworkGroupDataAdapter treeNetworkGroup = treeNetworkGroupIterator.next();
@@ -154,7 +147,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 				writePhylogenyTag(tree);  // Networks are written using the clade_relation element
 			}
 			
-			if (receiver.hasMetadata()) {
+			if (getStreamDataProvider().hasTreeGroupMetadata()) {
 				getLogger().addWarning("No metadata for the tree or network group with the ID \"" + treeNetworkGroup.getStartEvent(getParameters()).getID() + 
 						"\" was written, because the PhyloXML format does not support this.");
 			}
@@ -253,8 +246,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		}
 	
 		// Write custom XML
-		nodeReceiver = new PhyloXMLIgnoreMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE, false);
-		edgeReceiver = new PhyloXMLIgnoreMetadataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH, false);
+		nodeReceiver = new PhyloXMLOnlyCustomXMLDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE);
+		edgeReceiver = new PhyloXMLOnlyCustomXMLDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH);
 		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
 		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());
 		

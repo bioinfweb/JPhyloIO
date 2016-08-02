@@ -22,8 +22,10 @@ package info.bioinfweb.jphyloio.formats.xml.receivers;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
 

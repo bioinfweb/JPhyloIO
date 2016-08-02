@@ -35,8 +35,9 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 	
 	private Map<String, PhyloXMLMetaeventInfo> metaEvents = new HashMap<String, PhyloXMLMetaeventInfo>();
 	private Set<String> metaIDs = new HashSet<String>();
-	private boolean documentHasCustomXML = false;
+	private boolean documentHasMetadata = false;
 	private boolean documentHasPhylogeny = false;
+	private boolean treeGroupHasMetadata = false;
 	
 	private String phylogenyIDProvider = null;
 	private String phylogenyID = null;
@@ -64,13 +65,13 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 	}
 
 
-	public boolean isDocumentHasCustomXML() {
-		return documentHasCustomXML;
+	public boolean isDocumentHasMetadata() {
+		return documentHasMetadata;
 	}
 
 
-	public void setDocumentHasCustomXML(boolean documentHasCustomXML) {
-		this.documentHasCustomXML = documentHasCustomXML;
+	public void setDocumentHasMetadata(boolean documentHasCustomXML) {
+		this.documentHasMetadata = documentHasCustomXML;
 	}
 
 
@@ -81,6 +82,16 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 
 	public void setDocumentHasPhylogeny(boolean documentHasPhylogeny) {
 		this.documentHasPhylogeny = documentHasPhylogeny;
+	}
+
+
+	public boolean hasTreeGroupMetadata() {
+		return treeGroupHasMetadata;
+	}
+
+
+	public void setTreeGroupHasMetadata(boolean treeGroupHasMetadata) {
+		this.treeGroupHasMetadata = treeGroupHasMetadata;
 	}
 
 

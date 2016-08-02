@@ -88,6 +88,11 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	}
 
 
+	public URIOrStringIdentifier getOriginalType() {
+		return originalType;
+	}
+
+
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		writeContent = determineWriteMeta(event.getID(), event.getPredicate());
@@ -103,7 +108,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	
 
 	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {		
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
 				
@@ -119,7 +124,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 						if (translator.hasStringRepresentation()) {
 							
 							if (!validXSDTypes.contains(originalType.getURI())) {								
-								originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING); //TODO add parameter to keep invalid datatype (and write invalid PHyloXML as a consequence)
+								originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING); //TODO add parameter to keep invalid datatype (and write invalid PhyloXML as a consequence)
 								translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(originalType.getURI());
 							}
 							
@@ -129,7 +134,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 							catch (ClassCastException e) {
 								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
 										+ "Therefore it could not be parsed.");
-							}							
+							}
 						}
 						else {
 							translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
@@ -278,7 +283,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	}
 	
 	
-	private boolean determineWriteMeta(String id, URIOrStringIdentifier predicate) {
+	protected boolean determineWriteMeta(String id, URIOrStringIdentifier predicate) {
 		boolean writeMeta = false;
 		PhyloXMLMetaeventInfo metaInfo = getStreamDataProvider().getMetaEvents().get(id);
 		

@@ -53,6 +53,7 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner) {
 		super(streamDataProvider, parameterMap, propertyOwner);
 	}
+	
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
