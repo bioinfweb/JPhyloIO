@@ -249,6 +249,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	protected Map<XMLElementReaderKey, XMLElementReader<P>> getElementReaderMap() {
 		return elementReaderMap;
 	}
+	
 
 	/**
 	 * Returns the currently valid namespace context object or {@code null}, if the root element was not yet read.

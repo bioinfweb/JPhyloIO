@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 
 import java.util.Calendar;
 
@@ -47,7 +48,7 @@ public class DateTimeTranslator extends IllegalArgumentExceptionSimpleValueTrans
 
 
 	@Override
-	public String javaToRepresentation(Object object)	throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider)	throws UnsupportedOperationException, ClassCastException {
 		return DatatypeConverter.printDateTime((Calendar)object);  //TODO Should other classes be accepted and converted?
 	}
 }

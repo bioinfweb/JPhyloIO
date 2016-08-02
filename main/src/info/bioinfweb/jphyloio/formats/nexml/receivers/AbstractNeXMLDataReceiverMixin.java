@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
-import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -132,7 +131,9 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	}
 	
 
-	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameters, LiteralMetadataContentEvent event) throws XMLStreamException, JPhyloIOWriterException {		
+	public static void handleLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameters, 
+			LiteralMetadataContentEvent event) throws XMLStreamException, ClassCastException, IOException {
+		
 		XMLStreamWriter writer = streamDataProvider.getWriter();
 		
 		switch (streamDataProvider.getCurrentLiteralMetaSequenceType()) {
@@ -145,18 +146,17 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				ObjectTranslator<?> translator = parameters.getObjectTranslatorFactory().getDefaultTranslator(datatype);
 				if ((event.getObjectValue() != null)) {
 					if ((translator != null) && translator.hasStringRepresentation()) {
-						if (event.getObjectValue() instanceof QName) { //TODO Refactor QName-translator instead?
-							QName objectValue = (QName)event.getObjectValue();
-							writer.writeCharacters(writer.getPrefix(objectValue.getNamespaceURI()) + XMLUtils.QNAME_SEPARATOR + objectValue.getLocalPart());
-						}
-						else {
+						if (translator.hasStringRepresentation()) {
 							try {
-								writer.writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
+								writer.writeCharacters(translator.javaToRepresentation(event.getObjectValue(), streamDataProvider));
 							}
 							catch (ClassCastException e) {
 								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
 										+ "Therefore it could not be parsed.");
 							}
+						}
+						else {
+							translator.writeXMLRepresentation(writer, event.getObjectValue(), null);
 						}
 					}
 					else if (event.getStringValue() != null) {		

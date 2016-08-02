@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
-import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -39,7 +38,6 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
@@ -64,6 +62,12 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	}
 
 
+	/* 
+	 * In this method LiteralMetadataEvents are processed. It is validated if the specific predicates are given in the correct order 
+	 * and if they are nested in the corrected way, so valid PhyloXML elements can be written. If either the order or the way the elements
+	 * are nested is not correct, an InconsistentAdapterDataException is thrown.
+	 * It is not validated if the number of child elements is correct (i. e. if they are present too often or not often enough).
+	 */
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		int currentIndex = 0;
@@ -85,8 +89,6 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 					boolean writeTag = ((predicateInfo != null) && !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.ATTRIBUTE) 
 							&& !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.VALUE) && currentIndex >= childIndices.peek());
 					boolean writeOtherContent = ((predicateInfo == null) && currentIndex >= childIndices.peek());
-					
-					//TODO dokumentieren was geprüft wird und was nicht (verschachtelung/reihenfolge, nicht aber anzahl)
 					
 					if (writeAttribute || writeValue || writeTag || writeOtherContent) {
 						childIndices.pop();
@@ -165,27 +167,20 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 					
 					if (predicates.peek().equals(PREDICATE_COLOR)) {
 						PhyloXMLColorTranslator colorTranslator = new PhyloXMLColorTranslator();
-						colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue());
+						colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
 					}
 					else if (translator != null) {
 						if (translator.hasStringRepresentation()) {
-							if (event.getObjectValue() instanceof QName) { //TODO use QName object translator
-								QName objectValue = (QName)event.getObjectValue();
-								getStreamDataProvider().getWriter().writeCharacters(getStreamDataProvider().getWriter().getPrefix(objectValue.getNamespaceURI()) 
-										+ XMLUtils.QNAME_SEPARATOR + objectValue.getLocalPart());
+							try {
+								getStreamDataProvider().getWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider()));
 							}
-							else {
-								try {
-									getStreamDataProvider().getWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue()));
-								}
-								catch (ClassCastException e) {
-									throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
-											+ "Therefore it could not be parsed.");
-								}
-							}
+							catch (ClassCastException e) {
+								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
+										+ "Therefore it could not be parsed.");
+							}							
 						}
 						else {
-							translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue());
+							translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), null);
 						}
 					}
 					else if (event.getStringValue() != null) {

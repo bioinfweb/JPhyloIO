@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
 import info.bioinfweb.jphyloio.formats.newick.NewickUtils;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
@@ -65,7 +66,7 @@ public class ListTranslator extends SimpleValueTranslator<List<Object>> implemen
 
 
 	@Override
-	public String javaToRepresentation(Object object)	throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider)	throws UnsupportedOperationException, ClassCastException {
 		@SuppressWarnings("unchecked")
 		List<Object> list = (List<Object>)object;  // Possible ClassCastException is intended.
 		StringBuilder result = new StringBuilder();

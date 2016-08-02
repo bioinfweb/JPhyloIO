@@ -172,7 +172,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 							translator = stringTranslator;
 						}
 					}
-					value = translator.javaToRepresentation(event.getObjectValue());
+					value = translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider());
 				}
 				else {
 					if (currentLiteralValue.length() > 0) {

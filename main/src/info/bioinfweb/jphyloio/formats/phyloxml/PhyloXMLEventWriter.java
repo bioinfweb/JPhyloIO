@@ -72,34 +72,37 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		checkDocument();		
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getRDFPrefix(getXMLWriter()), XMLReadWriteUtils.NAMESPACE_RDF); //TODO only write this if customXML is present
+//		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getRDFPrefix(getXMLWriter()), XMLReadWriteUtils.NAMESPACE_RDF);
+		
+		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
+		
+		// Write namespace declarations
+		getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);
+		for (String prefix : getStreamDataProvider().getNamespacePrefixes()) {
+			getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
+		}
+		
+		getXMLWriter().writeComment(" " + getFileStartInfo(getParameters()) + " ");
 		
 		if (getStreamDataProvider().isDocumentHasCustomXML() || getStreamDataProvider().isDocumentHasPhylogeny()) {
-			getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
-			
-			// Write namespace declarations
-			getXMLWriter().writeDefaultNamespace(PHYLOXML_NAMESPACE);
-			for (String prefix : getStreamDataProvider().getNamespacePrefixes()) { //TODO only write NS if element is actually written to the file? (e.g. predicate namespace is in all specific meta events but never used in the file)
-				getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
-			}
-			
-			getXMLWriter().writeComment(" " + getFileStartInfo(getParameters()) + " ");
-			
 			if (getStreamDataProvider().isDocumentHasPhylogeny()) {
 				writePhylogenyTags();
 			}			
 			
-			getDocument().writeMetadata(getParameters(), receiver); //TODO also write document metadata, that can be represented as XML here as customXML
-			
+			getDocument().writeMetadata(getParameters(), receiver);
+			//TODO also write document metadata, that can be represented as XML here as customXML
 			if (receiver.hasMetadata()) {
 				getParameters().getLogger().addWarning("Encountered document meta data was not written, because this is not supported by the PhyloXML format.");
 			}
-			
-			getXMLWriter().writeEndElement();
 		}
 		else {
-			getParameters().getLogger().addWarning("The document did not contain any data that could be written to the file.");  //TODO write empty phylogeny, an empty document is not valid!
-		}		
+			getXMLWriter().writeStartElement(TAG_PHYLOGENY.getLocalPart());
+			getXMLWriter().writeEndElement();
+			
+			getParameters().getLogger().addWarning("The document did not contain any data that could be written to the file.");
+		}
+		
+		getXMLWriter().writeEndElement();		
 	}
 	
 	

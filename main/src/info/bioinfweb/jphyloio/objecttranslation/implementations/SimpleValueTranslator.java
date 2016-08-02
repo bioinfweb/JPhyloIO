@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
@@ -57,24 +58,24 @@ public abstract class SimpleValueTranslator<O> extends AbstractObjectTranslator<
 	 * 
 	 * @param object the object to be converted
 	 * @return the string representation of the object 
-	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#javaToRepresentation(java.lang.Object)
+	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#javaToRepresentation(java.lang.Object, WriterStreamDataProvider)
 	 */
 	@Override
-	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider) throws UnsupportedOperationException, ClassCastException {
 		return object.toString();
 	}
 	
 
 	/**
-	 * Writes the string representation of the specified object to an XML stream. (Calls {@link #javaToRepresentation(Object)} 
+	 * Writes the string representation of the specified object to an XML stream. (Calls {@link #javaToRepresentation(Object, WriterStreamDataProvider)} 
 	 * internally.)
 	 * 
 	 * @param writer the XML stream writer
 	 * @param object the object to be converted
 	 */
 	@Override
-	public void writeXMLRepresentation(XMLStreamWriter writer, Object object) throws IOException, XMLStreamException {
-		writer.writeCharacters(javaToRepresentation(object));
+	public void writeXMLRepresentation(XMLStreamWriter writer, Object object, WriterStreamDataProvider<?> streamDataProvider) throws IOException, XMLStreamException {
+		writer.writeCharacters(javaToRepresentation(object, streamDataProvider));
 	}
 
 	

@@ -21,8 +21,11 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.DatatypeConverter;
@@ -65,15 +68,20 @@ public class QNameTranslator extends IllegalArgumentExceptionSimpleValueTranslat
 
 
 	@Override
-	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException {  //TODO Provide WriterStreamDataProvider here
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider) throws UnsupportedOperationException, ClassCastException {  //TODO Provide WriterStreamDataProvider here
 		QName qName = (QName)object;
-		//TODO Also use DatatypeConverter here instead.
-		if ("".equals(qName.getPrefix())) {  // Constructing instances with null is not possible.
-			return qName.getLocalPart();
+		
+		if (streamDataProvider instanceof XMLWriterStreamDataProvider<?>) {			
+			return DatatypeConverter.printQName(qName, ((JPhyloIOXMLEventWriter)streamDataProvider.getEventWriter()).getNamespaceContext());
 		}
 		else {
-			return qName.getPrefix() + XMLUtils.QNAME_SEPARATOR + qName.getLocalPart();
-		}
+			if ("".equals(qName.getPrefix())) {  // Constructing instances with null is not possible.
+				return qName.getLocalPart();
+			}
+			else {
+				return qName.getPrefix() + XMLUtils.QNAME_SEPARATOR + qName.getLocalPart();
+			}
+		}		
 		//TODO Should output of QNames including "{namespaceURI} also or in another translator be supported?
 	}
 }

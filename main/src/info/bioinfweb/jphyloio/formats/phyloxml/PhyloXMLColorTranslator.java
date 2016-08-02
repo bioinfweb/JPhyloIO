@@ -32,6 +32,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
@@ -59,13 +60,13 @@ public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> imp
 
 	
 	@Override
-	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider) throws UnsupportedOperationException, ClassCastException {
 		throw new UnsupportedOperationException("PhyloXML color definitions can only be represented as structured XML.");
 	}
 
 	
 	@Override
-	public void writeXMLRepresentation(XMLStreamWriter writer, Object object) throws IOException, XMLStreamException {
+	public void writeXMLRepresentation(XMLStreamWriter writer, Object object, WriterStreamDataProvider<?> streamDataProvider) throws IOException, XMLStreamException {
 		Color color = (Color)object;
 		
 		writer.writeStartElement(TAG_RED.getLocalPart());

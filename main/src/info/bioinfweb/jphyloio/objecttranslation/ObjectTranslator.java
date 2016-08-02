@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.objecttranslation;
 
 
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 
 import java.io.IOException;
 
@@ -45,7 +46,7 @@ public interface ObjectTranslator<O> {
 	/**
 	 * Returns the Java class of object instances created by this translator.
 	 * <p>
-	 * Note that {@link #javaToRepresentation(Object)} and {@link #writeXMLRepresentation(XMLStreamWriter, Object)} may also 
+	 * Note that {@link #javaToRepresentation(Object, WriterStreamDataProvider)} and {@link #writeXMLRepresentation(XMLStreamWriter, Object, WriterStreamDataProvider)} may also 
 	 * accept instances of other classes. This is independent from the return value here.
 	 * 
 	 * @return the class of the handled objects
@@ -59,7 +60,7 @@ public interface ObjectTranslator<O> {
 	 * XML representation.
 	 * <p>
 	 * Instances that return {@code false here} will throw an {@link UnsupportedOperationException}, if 
-	 * {@link #javaToRepresentation(Object)} is called.
+	 * {@link #javaToRepresentation(Object, WriterStreamDataProvider)} is called.
 	 * 
 	 * @return {@code true} if handled objects have a simple string representation or {@code false} if XML is necessary to
 	 *         represent the handled objects
@@ -70,13 +71,14 @@ public interface ObjectTranslator<O> {
 	 * Converts the specified Java object to its string representation.
 	 * 
 	 * @param object the object to be translated
+	 * @param streamDataProvider TODO
 	 * @return the string representation of the object
 	 * @throws UnsupportedOperationException if objects handled by this instance can only be represented as XML
 	 * @throws ClassCastException if the specified object is not an instance of the supported class or does not implement the supported
 	 *         interface
 	 * @see #hasStringRepresentation()
 	 */
-	public String javaToRepresentation(Object object) throws UnsupportedOperationException, ClassCastException;
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider) throws UnsupportedOperationException, ClassCastException;
 	
 	/**
 	 * Writes the XML representation of the specified object into the specified XML writer.
@@ -86,10 +88,11 @@ public interface ObjectTranslator<O> {
 	 * 
 	 * @param writer the writer to be used to write the XML representation
 	 * @param object the object to be converted
+	 * @param streamDataProvider TODO
 	 * @throws IOException if an I/O error occurs while trying to write to the specified writer
 	 * @throws XMLStreamException if an XML stream exception occurs while trying to write to the specified writer
 	 */
-	public void writeXMLRepresentation(XMLStreamWriter writer, Object object) throws IOException, XMLStreamException, ClassCastException;
+	public void writeXMLRepresentation(XMLStreamWriter writer, Object object, WriterStreamDataProvider<?> streamDataProvider) throws IOException, XMLStreamException, ClassCastException;
 	
 	/**
 	 * Converts the specified string representation to a new instance of the according Java object.

@@ -77,6 +77,8 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 		getStreamDataProvider().getMetaEvents().put(id, new PhyloXMLMetaeventInfo(id, new ArrayList<String>(), metaIDs.isEmpty()));
 		getStreamDataProvider().getMetaIDs().add(id);
 		metaIDs.add(id);
+		
+		// Original type namespace does not need to be added, since only XSD types are allowed
 			
 		if (event.getPredicate().getURI() != null) {
 			resourceIdentifier = event.getPredicate().getURI();
@@ -97,20 +99,16 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 					resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			
-			if (event.getSequenceType().equals(LiteralContentSequenceType.XML)) {
-				resourceIdentifier = ReadWriteConstants.ATTRIBUTE_STRING_KEY;
-				getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
-						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-			}
+//			if (event.getSequenceType().equals(LiteralContentSequenceType.XML)) {
+//				resourceIdentifier = ReadWriteConstants.ATTRIBUTE_STRING_KEY;
+//				getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
+//						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
+//			}
 		}
 		
 		if (event.getSequenceType().equals(LiteralContentSequenceType.XML)) {
 			hasCustomXML = true;
 		}
-		
-		//TODO how should the string key be processed? additional attributes may not be allowed
-		
-		// Original type namespace does not need to be added, since only XSD types are allowed
 	}
 	
 
@@ -184,8 +182,6 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 					resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());				
 		}
-		
-		//TODO how should the string key be processed? additional attributes may not be allowed		
 	}
 
 	

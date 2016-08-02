@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben StÃ¶ver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -16,24 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.phyloxml;
+package info.bioinfweb.jphyloio.formats.xml;
 
 
-import javax.xml.namespace.QName;
+import javax.xml.namespace.NamespaceContext;
+
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 
 
 
-/**
- * This interface contains constants used by internally in JPhyloIO by {@link PhyloXMLEventWriter} and PhyloXML data receivers. 
- * They are not supposed to be used by application developers. Constants that can be used are contained in {@link PhyloXMLConstants}.
- * 
- * @author Sarah Wiechers
- *
- */
-public interface PhyloXMLPrivateConstants {	
-	public static final QName IDENTIFIER_PHYLOGENY = new QName("Phylogeny");	
-	public static final QName IDENTIFIER_CLADE = new QName("Clade");
+public interface JPhyloIOXMLEventWriter extends JPhyloIOEventWriter {
 	
-	public static final QName IDENTIFIER_ANY_PREDICATE = new QName("AnyPredicate");
-	public static final QName IDENTIFIER_CUSTOM_XML = new QName("CustomXML");
+	
+	public NamespaceContext getNamespaceContext();
 }

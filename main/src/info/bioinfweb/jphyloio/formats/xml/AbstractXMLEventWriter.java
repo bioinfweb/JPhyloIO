@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.xml;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -35,7 +36,7 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 public abstract class AbstractXMLEventWriter<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> 
-		extends AbstractEventWriter<P> {	
+		extends AbstractEventWriter<P> implements JPhyloIOXMLEventWriter {	
 	private XMLStreamWriter xmlWriter;
 	
 	private ReadWriteParameterMap parameters;
@@ -60,6 +61,12 @@ public abstract class AbstractXMLEventWriter<P extends XMLWriterStreamDataProvid
 
 	protected DocumentDataAdapter getDocument() {
 		return document;
+	}
+	
+
+	@Override
+	public NamespaceContext getNamespaceContext() {
+		return getXMLWriter().getNamespaceContext();
 	}
 
 

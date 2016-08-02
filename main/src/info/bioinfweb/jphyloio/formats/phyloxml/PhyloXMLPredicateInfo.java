@@ -27,6 +27,7 @@ public class PhyloXMLPredicateInfo {
 	private PhyloXMLPredicateTreatment treatment;
 	private QName translation;
 	private QName[] allowedChildren;
+	//TODO add properties to store how often an element can occur (e.g. minimum 0, maximum 1; minimum 3, maximum arbitrary; ...)
 	
 	
 	public PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment treatment, QName translation, QName... allowedChildren) {

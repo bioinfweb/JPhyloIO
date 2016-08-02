@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
 import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -41,13 +40,13 @@ import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -61,12 +60,16 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	private URIOrStringIdentifier originalType;
 	private boolean writeContent;
 	private boolean writePropertyStart;
+	
+	private Set<QName> validXSDTypes = new HashSet<QName>();
 
 
 	public PhyloXMLMetaDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
 			ReadWriteParameterMap parameterMap, PropertyOwner propertyOwner) {
 		super(streamDataProvider, parameterMap);
 		this.propertyOwner = propertyOwner;
+		
+		fillValidXSDTypes();
 	}
 
 
@@ -87,7 +90,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		writeContent = determineWriteMeta(event.getID());
+		writeContent = determineWriteMeta(event.getID(), event.getPredicate());
 		
 		if (writeContent) {
 			hasSimpleContent = event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE);
@@ -100,48 +103,50 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	
 
 	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {		
 		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
 				
 				if (((originalType == null) || (originalType.getURI() == null))) {
-					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);
+					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);					
 				}
+			
+				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(originalType.getURI());			
+				String value = null;
 				
-				if ((originalType != null) && (originalType.getURI() != null) 
-						&& originalType.getURI().getNamespaceURI().equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) { //TODO exception or warning if datatype is not an XSD type?
-					//TODO also check if this original type is allowed in PhyloXML?
-					XMLStreamWriter writer = getStreamDataProvider().getWriter();
-					ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(originalType.getURI());
-					String value = null;
-					
-					if ((event.getObjectValue() != null)) {
-						if ((translator != null) && translator.hasStringRepresentation()) {
-							if (event.getObjectValue() instanceof QName) { //TODO Refactor QName translator
-								QName objectValue = (QName)event.getObjectValue();
-								value = writer.getPrefix(objectValue.getNamespaceURI()) + XMLUtils.QNAME_SEPARATOR + objectValue.getLocalPart();
+				if ((event.getObjectValue() != null)) {
+					if ((translator != null)) {
+						if (translator.hasStringRepresentation()) {
+							
+							if (!validXSDTypes.contains(originalType.getURI())) {								
+								originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING); //TODO add parameter to keep invalid datatype (and write invalid PHyloXML as a consequence)
+								translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(originalType.getURI());
 							}
-							else {
-								try {
-									value = translator.javaToRepresentation(event.getObjectValue());
-								}
-								catch (ClassCastException e) {
-									throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
-											+ "Therefore it could not be parsed.");
-								}
+							
+							try {
+								value = translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider());
 							}
-						}
-						else if (event.getStringValue() != null) {		
-							value = event.getStringValue();
+							catch (ClassCastException e) {
+								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
+										+ "Therefore it could not be parsed.");
+							}							
 						}
 						else {
-							value = event.getObjectValue().toString();
+							translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
 						}
 					}
-					else {					
+					else if (event.getStringValue() != null) {
 						value = event.getStringValue();
 					}
-					
+					else {
+						value = event.getObjectValue().toString();
+					}
+				}
+				else {
+					value = event.getStringValue();
+				}
+				
+				if (value != null) {
 					if (writePropertyStart) {
 						writePropertyTag(literalPredicate, originalType, null, false);
 						writePropertyStart = false;
@@ -152,9 +157,9 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 					if (!event.isContinuedInNextEvent()) {
 						getStreamDataProvider().getWriter().writeEndElement();		
 					}
-					
-					getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());
 				}
+				
+				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());				
 			}
 			else if (event.hasXMLEventValue() && !(propertyOwner.equals(PropertyOwner.NODE) || propertyOwner.equals(PropertyOwner.PARENT_BRANCH))) {				
 				writeCustomXMLTag(event.getXMLEvent());
@@ -166,7 +171,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		if (determineWriteMeta(event.getID())) {
+		if (determineWriteMeta(event.getID(), event.getRel())) {
 			String uri = null;
 			
 			if (event.getHRef() != null) {
@@ -195,7 +200,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
 		
 		if (predicate.getURI() == null) {
-			predicate = new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA); //TODO write StringKey to file somehow?
+			predicate = new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA);
 		}		
 		
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
@@ -203,15 +208,13 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 						predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());		
 		
 		if ((datatype == null) || (datatype.getURI() == null)) {
-			datatype = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING); //TODO use string key, if present?
-		}		
+			datatype = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);
+		}
 	
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
 				+ ":" + datatype.getURI().getLocalPart());
 		
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), propertyOwner.toString().toLowerCase()); //TODO XTG attribute constants zum Vergleich ansehen
-		
-		//TODO Also write ID_REF attribute?
 		
 		if (value != null) {
 			getStreamDataProvider().getWriter().writeCharacters(value);
@@ -244,23 +247,23 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 							attribute.getValue());					
 				}
 				
-				if (predicate.getURI() != null) {
-					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
-							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
-									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
-				}
-				else { // String representation can not be null, if URI is null
-					getStreamDataProvider().getWriter().writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getPrefix(), 
-							ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), predicate.getStringRepresentation());
-				}
+//				if (predicate.getURI() != null) {
+//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
+//							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
+//									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
+//				}
+//				else { // String representation can not be null, if URI is null
+//					getStreamDataProvider().getWriter().writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getPrefix(), 
+//							ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), predicate.getStringRepresentation());
+//				}
 				
-				if ((originalType != null) && (originalType.getURI() != null)) {
-					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
-							XMLReadWriteUtils.ATTRIBUTE_RDF_DATATYPE.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), originalType.getURI().getPrefix(), 
-							originalType.getURI().getNamespaceURI()) + ":" + originalType.getURI().getLocalPart());
-				}
+//				if ((originalType != null) && (originalType.getURI() != null)) {
+//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
+//							XMLReadWriteUtils.ATTRIBUTE_RDF_DATATYPE.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), originalType.getURI().getPrefix(), 
+//							originalType.getURI().getNamespaceURI()) + ":" + originalType.getURI().getLocalPart());
+//				}
 				
 				break;
 			case XMLStreamConstants.END_ELEMENT:
@@ -275,33 +278,75 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	}
 	
 	
-	private boolean determineWriteMeta(String id) {
+	private boolean determineWriteMeta(String id, URIOrStringIdentifier predicate) {
 		boolean writeMeta = false;
 		PhyloXMLMetaeventInfo metaInfo = getStreamDataProvider().getMetaEvents().get(id);
 		
 		if (getStreamDataProvider().getMetaIDs().contains(id)) {
-			switch (getParameterMap().getPhyloXMLMetadataTreatment()) {
-				case NONE:
-					writeMeta = false;
-					break;
-				case ONLY_LEAFS:
-					writeMeta = metaInfo.getChildIDs().isEmpty();
-					break;
-				case SEQUENTIAL:
-					writeMeta = true;
-					break;
-				case TOP_LEVEL_WITH_CHILDREN:
-					writeMeta = metaInfo.isTopLevel() && !metaInfo.getChildIDs().isEmpty();
-					break;
-				case TOP_LEVEL_WITHOUT_CHILDREN:
-					writeMeta = metaInfo.isTopLevel() && metaInfo.getChildIDs().isEmpty();
-					break;
+			if (!(predicate.getURI() != null && predicate.getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE))) {
+				switch (getParameterMap().getPhyloXMLMetadataTreatment()) {
+					case NONE:
+						writeMeta = false;
+						break;
+					case ONLY_LEAFS:
+						writeMeta = metaInfo.getChildIDs().isEmpty();
+						break;
+					case SEQUENTIAL:
+						writeMeta = true;
+						break;
+					case TOP_LEVEL_WITH_CHILDREN:
+						writeMeta = metaInfo.isTopLevel() && !metaInfo.getChildIDs().isEmpty();
+						break;
+					case TOP_LEVEL_WITHOUT_CHILDREN:
+						writeMeta = metaInfo.isTopLevel() && metaInfo.getChildIDs().isEmpty();
+						break;
+				}
+				
+				return writeMeta;
 			}
-			
-			return writeMeta;
+			else {
+				throw new InconsistentAdapterDataException("The meta event \"" + id + "\" with the PhyloXML-specific predicate \"" 
+						+ predicate.getURI().getLocalPart() + "\" was not nested correctly.");
+			}
 		}
 		else {
 			return false;
 		}	
+	}
+	
+	
+	private void fillValidXSDTypes() {
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_STRING);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_BOOLEAN);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DECIMAL);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_FLOAT);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DOUBLE);
+//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DURATION); //TODO add constants
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DATE_TIME);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_TIME);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DATE);
+//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GYEARMONTH);
+//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GYEAR);
+//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GMONTHDAY);
+//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GDAY);
+//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_GMONTH);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_HEX_BINARY);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_BASE_64_BINARY);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_ANY_URI);
+//		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NORMALIZED_STRING);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_TOKEN);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_INTEGER);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NON_POSITIVE_INTEGER);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NEGATIVE_INTEGER);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_LONG);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_INT);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_SHORT);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_BYTE);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_UNSIGNED_LONG);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_UNSIGNED_INT);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_UNSIGNED_SHORT);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_UNSIGNED_BYTE);
+		validXSDTypes.add(W3CXSConstants.DATA_TYPE_POSITIVE_INTEGER);
 	}
 }

@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -45,7 +46,7 @@ public class HexBinaryTranslator extends IllegalArgumentExceptionSimpleValueTran
 
 
 	@Override
-	public String javaToRepresentation(Object object)	throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider)	throws UnsupportedOperationException, ClassCastException {
 		return DatatypeConverter.printHexBinary((byte[])object);
 	}
 }

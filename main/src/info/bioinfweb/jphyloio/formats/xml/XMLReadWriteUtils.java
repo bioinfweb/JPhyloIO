@@ -24,7 +24,6 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -37,9 +36,9 @@ public class XMLReadWriteUtils {
 	
 	public static final String NAMESPACE_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
 	
-	public static final QName ATTRIBUTE_RDF_PROPERTY = new QName(NAMESPACE_RDF, "property");
-	public static final QName ATTRIBUTE_RDF_DATATYPE = new QName(NAMESPACE_RDF, "datatype");
-	//TODO about attribute needed? does phyloXML still validate? erstmal ausgabe dieser attribute auskommentieren
+//	public static final QName ATTRIBUTE_RDF_PROPERTY = new QName(NAMESPACE_RDF, "property");
+//	public static final QName ATTRIBUTE_RDF_DATATYPE = new QName(NAMESPACE_RDF, "datatype");
+	//TODO Is an "about"-attribute needed if these attributes are used? Do PhyloXML with about attributes still validate?
 	
   public static final String DEFAULT_NAMESPACE_PREFIX = "p";
 	
@@ -62,13 +61,13 @@ public class XMLReadWriteUtils {
 	}
 	
 	
-	public static String getRDFPrefix(XMLStreamWriter writer) throws XMLStreamException {
-		String prefix = writer.getPrefix(NAMESPACE_RDF);
-		if (prefix == null || prefix.isEmpty()) {
-			prefix = RDF_DEFAULT_PRE;
-		}
-		return prefix;
-	}
+//	public static String getRDFPrefix(XMLStreamWriter writer) throws XMLStreamException {
+//		String prefix = writer.getPrefix(NAMESPACE_RDF);
+//		if (prefix == null || prefix.isEmpty()) {
+//			prefix = RDF_DEFAULT_PRE;
+//		}
+//		return prefix;
+//	}
 	
 	
 	public static String getNamespacePrefix(XMLStreamWriter writer, String givenPrefix, String namespaceURI) throws XMLStreamException {
