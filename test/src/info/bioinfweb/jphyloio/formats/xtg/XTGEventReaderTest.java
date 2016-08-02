@@ -49,19 +49,19 @@ public class XTGEventReaderTest implements XTGConstants {
 //						System.out.println("Predicate: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
-						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
+//						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.START))) {
-						System.out.println("Rel: " + event.asResourceMetadataEvent().getRel().getURI().getLocalPart());
+//						System.out.println("Rel: " + event.asResourceMetadataEvent().getRel().getURI().getLocalPart());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.END))) {
 //						System.out.println("Resource end");
 					}
 					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-						System.out.println("Node: " + event.asNodeEvent().getID() + " " + event.asNodeEvent().getLabel());
+//						System.out.println("Node: " + event.asNodeEvent().getID() + " " + event.asNodeEvent().getLabel());
 					}
 					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-						System.out.println("Edge: " + event.asEdgeEvent().getID() + " " + event.asEdgeEvent().getSourceID() + " " + event.asEdgeEvent().getTargetID());
+//						System.out.println("Edge: " + event.asEdgeEvent().getID() + " " + event.asEdgeEvent().getSourceID() + " " + event.asEdgeEvent().getTargetID());
 					}
 				}
 			}
