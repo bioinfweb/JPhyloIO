@@ -50,7 +50,8 @@ public class PhyloXMLDocumentMetaDataReceiver extends PhyloXMLMetaDataReceiver {
 				writeCustomXMLTag(event.getXMLEvent());			
 			}
 			else {
-				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(getOriginalType().getURI());
+				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory()
+						.getDefaultTranslatorWithPossiblyInvalidNamespace(getOriginalType().getURI());
 				String value = null;
 				
 				if ((event.getObjectValue() != null)) {

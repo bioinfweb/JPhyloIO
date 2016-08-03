@@ -112,7 +112,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				// Add node info for this node
 				NodeEdgeInfo nodeInfo = new NodeEdgeInfo(id, Double.NaN, new ArrayList<JPhyloIOEvent>(), new ArrayList<JPhyloIOEvent>());				
 				if ((label != null) && !label.isEmpty()) {
-					nodeInfo.setLabel(label); //TODO Add rooted information
+					nodeInfo.setLabel(label);
 				}
 				streamDataProvider.getSourceNode().add(nodeInfo);
 				streamDataProvider.setCreateNodeStart(true);
@@ -148,7 +148,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		
 		XMLEndElementReader edgeResourceEndReader = new XMLEndElementReader(false, true, true);
 		
-		XMLStartElementReader labelMarginStartReader = new XMLStartElementReader(null, PREDICATE_LABEL_MARGIN, null, false, 
+		XMLStartElementReader labelMarginStartReader = new XMLStartElementReader(null, PREDICATE_LABEL_MARGIN, null, true, 
 				ATTR_LEFT, PREDICATE_LABEL_MARGIN_ATTR_LEFT, ATTR_TOP, PREDICATE_LABEL_MARGIN_ATTR_TOP, 
 				ATTR_RIGHT, PREDICATE_LABEL_MARGIN_ATTR_RIGHT, ATTR_BOTTOM, PREDICATE_LABEL_MARGIN_ATTR_BOTTOM);
 		
@@ -222,9 +222,16 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_BRANCH, XMLStreamConstants.START_ELEMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				StartElement element = event.asStartElement();	
+				StartElement element = event.asStartElement();
+				double branchLength = XMLUtils.readDoubleAttr(element, ATTR_BRANCH_LENGTH, Double.NaN);
 				
-				streamDataProvider.getSourceNode().peek().setLength(XMLUtils.readDoubleAttr(element, ATTR_BRANCH_LENGTH, Double.NaN));
+				if (!Double.isNaN(branchLength) && streamDataProvider.getEventReader().getParentInformation().getDirectParentContentType()
+						.equals(EventContentType.TREE_NETWORK_GROUP)) {
+					
+					streamDataProvider.getSourceNode().peek().setIsRoot(true);
+				}
+
+				streamDataProvider.getSourceNode().peek().setLength(branchLength);
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEdgeEvents());
 				
 				readAttributes(getStreamDataProvider(), event.asStartElement(), "", ATTR_LINE_COLOR, PREDICATE_BRANCH_ATTR_LINE_COLOR, 
@@ -321,8 +328,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		// Branch.IconLabel
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_ICON_LABEL, XMLStreamConstants.START_ELEMENT), 
 				new XMLStartElementReader(null, PREDICATE_ICON_LABEL, null,	true, ATTR_LINE_COLOR, PREDICATE_ICON_LABEL_ATTR_LINE_COLOR, 
-						ATTR_LINE_WIDTH, PREDICATE_ICON_LABEL_ATTR_LINE_WIDTH, ATTR_ICON, PREDICATE_ICON_LABEL_ATTR_ICON, 
-						ATTR_ICON_WIDTH, PREDICATE_ICON_LABEL_ATTR_WIDTH, ATTR_ICON_HEIGHT, PREDICATE_ICON_LABEL_ATTR_HEIGHT, 
+						ATTR_LINE_WIDTH, PREDICATE_ICON_LABEL_ATTR_LINE_WIDTH, ATTR_WIDTH, PREDICATE_ICON_LABEL_ATTR_WIDTH, 
+						ATTR_HEIGHT, PREDICATE_ICON_LABEL_ATTR_HEIGHT, ATTR_ICON, PREDICATE_ICON_LABEL_ATTR_ICON, 
 						ATTR_ICON_FILLED, PREDICATE_ICON_LABEL_ATTR_ICON_FILLED, ATTR_ID, PREDICATE_ICON_LABEL_ATTR_ID, 
 						ATTR_LABEL_ABOVE, PREDICATE_ICON_LABEL_ATTR_ABOVE, ATTR_LINE_NO, PREDICATE_ICON_LABEL_ATTR_LINE_NO, 
 						ATTR_LINE_POS, PREDICATE_ICON_LABEL_ATTR_LINE_POS));
@@ -353,7 +360,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, TAG_PIE_CHART_ID, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_DATA_ID, null, null, true));
+				new XMLStartElementReader(PREDICATE_DATA_ID_VALUE, PREDICATE_DATA_ID, null, true, ATTR_PIE_COLOR, PREDICATE_DATA_ID_ATTR_PIE_COLOR));
 		
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_ID, null, XMLStreamConstants.CHARACTERS), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			
 			@Override
@@ -363,7 +370,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			}
 		});
 		
-		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, TAG_PIE_CHART_ID, XMLStreamConstants.END_ELEMENT), new XMLEndElementReader(true, false, true));
+		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, TAG_PIE_CHART_ID, XMLStreamConstants.END_ELEMENT), new XMLEndElementReader(true, true, true));
 		
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, TAG_PIE_CHART_IDS, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
@@ -425,7 +432,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			NodeEdgeInfo nodeInfo = streamDataProvider.getSourceNode().peek();
 			
 			getStreamDataProvider().getCurrentEventCollection().add(new NodeEvent(nodeInfo.getID(), nodeInfo.getLabel(), null, nodeInfo.isRoot()));
-			for (JPhyloIOEvent nextEvent : nodeInfo.getNestedNodeEvents()) {
+			for (JPhyloIOEvent nextEvent : nodeInfo.getNestedNodeEvents()) {				
 				getStreamDataProvider().getCurrentEventCollection().add(nextEvent);  // Might lead to an exception, if nodeInfo.getNestedEvents() is the currentEventCollection at the time this method is called
 			}
 			
@@ -453,7 +460,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			if (!((sourceID == null) && Double.isNaN(edgeInfo.getLength()) && edgeInfo.getNestedEdgeEvents().isEmpty())) {  // Do not add root edge if no information about it is present
 				getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 						sourceID, edgeInfo.getID(), edgeInfo.getLength()));
-				
+
 				for (JPhyloIOEvent nextEvent : edgeInfo.getNestedEdgeEvents()) {
 					getStreamDataProvider().getCurrentEventCollection().add(nextEvent);
 				}

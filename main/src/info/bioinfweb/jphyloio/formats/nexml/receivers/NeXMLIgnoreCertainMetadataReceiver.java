@@ -50,8 +50,9 @@ public class NeXMLIgnoreCertainMetadataReceiver extends NeXMLPredicateMetaReceiv
 	 * or {@code false} if metadata under these predicates should be ignored
 	 * @param predicates the predicates to be processed in a special way
 	 */
-	public NeXMLIgnoreCertainMetadataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
-			ReadWriteParameterMap parameterMap, boolean writePredicateMetadata, QName... predicates) {
+	public NeXMLIgnoreCertainMetadataReceiver(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameterMap, 
+			boolean writePredicateMetadata, QName... predicates) {
+		
 		super(streamDataProvider, parameterMap, predicates);
 		this.writePredicateMetadata = writePredicateMetadata;
 	}

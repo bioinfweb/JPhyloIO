@@ -116,7 +116,8 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);					
 				}
 			
-				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(originalType.getURI());			
+				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory()
+						.getDefaultTranslatorWithPossiblyInvalidNamespace(originalType.getURI());			
 				String value = null;
 				
 				if ((event.getObjectValue() != null)) {

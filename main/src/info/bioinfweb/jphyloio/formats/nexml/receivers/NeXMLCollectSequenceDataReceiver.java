@@ -93,7 +93,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
 				}
 			}
-			else if (!alignmentInfo.getTokenSetType().equals(CharacterStateSetType.DISCRETE)) { // Molecular data				
+			else if (!alignmentInfo.getTokenSetType().equals(CharacterStateSetType.DISCRETE)) { // Molecular data
 				if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
 					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);				
 				}
@@ -113,8 +113,9 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 			}
 			else {
 				alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getOccuringTokens().add(token);
-				
+
 				if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
+					System.out.println(token);
 					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
 				}
 			}

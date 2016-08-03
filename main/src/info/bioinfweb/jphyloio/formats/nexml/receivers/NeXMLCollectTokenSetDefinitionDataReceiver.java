@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
@@ -262,7 +263,12 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			case CHARACTER_SET_INTERVAL:
 				CharacterSetIntervalEvent intervalEvent = event.asCharacterSetIntervalEvent();
 				for (long i = intervalEvent.getStart(); i < intervalEvent.getEnd(); i++) {
-					alignmentInfo.getColumnIndexToStatesMap().put(i, tokenSetDefinitionID);
+					if (!alignmentInfo.getColumnIndexToStatesMap().containsKey(i)) {
+						alignmentInfo.getColumnIndexToStatesMap().put(i, tokenSetDefinitionID);  // Token sets are not allowed to overlap
+					}
+					else {
+						throw new InconsistentAdapterDataException("More than one token set was assigned to the alignemnt column " + i + ".");
+					}
 				}
 				break;
 			default:

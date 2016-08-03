@@ -216,7 +216,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				}
 				
 				QName datatype = readDatatypeAttributeValue(XMLUtils.readStringAttr(element, ATTR_DATATYPE, null), element);
-				ObjectTranslator<?> translator = getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
+				ObjectTranslator<?> translator = getParameters().getObjectTranslatorFactory()
+						.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
 				String propertyValue;
 				
 				

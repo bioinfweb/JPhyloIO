@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.objecttranslation.implementations.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 
@@ -123,5 +124,16 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 	
 	public ObjectTranslator<?> getDefaultTranslator(QName dataType) {
 		return getTranslator(dataType, null);
+	}
+
+	
+	public ObjectTranslator<?> getDefaultTranslatorWithPossiblyInvalidNamespace(QName dataType) {
+		ObjectTranslator<?> translator = getTranslator(dataType, null);
+		
+		if ((translator == null) && (dataType != null)) {
+			translator = getDefaultTranslator(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, dataType.getLocalPart()));
+		}
+			
+		return translator;
 	}
 }

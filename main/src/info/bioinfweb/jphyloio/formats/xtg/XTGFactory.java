@@ -61,7 +61,7 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 	
 	@Override
 	public JPhyloIOEventWriter getWriter() {
-		return null;  //TODO Add reader when implemented.
+		return null;
 	}
 
 	

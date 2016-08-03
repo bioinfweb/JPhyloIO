@@ -162,7 +162,8 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 					ObjectTranslator<?> translator = null;
 					
 					if (currentDatatype != null) {
-						translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(currentDatatype);
+						translator = getParameterMap().getObjectTranslatorFactory()
+								.getDefaultTranslatorWithPossiblyInvalidNamespace(currentDatatype);
 					}
 					
 					if (predicates.peek().equals(PREDICATE_COLOR)) {

@@ -139,6 +139,9 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 		writeTreesTags(getDocument());
 
 		getXMLWriter().writeEndElement();
+		
+		getStreamDataProvider().setUndefinedOTUID(null);
+		getStreamDataProvider().setUndefinedOTUsID(null); 
 	}
 
 
@@ -276,7 +279,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 
 		if (getStreamDataProvider().isWriteUndefinedOtuList()) {
 			getStreamDataProvider().setUndefinedOTUID(getStreamDataProvider().createNewID(UNDEFINED_OTU_ID_PREFIX));
-			getStreamDataProvider().setUndefinedOTUsID(getStreamDataProvider().createNewID(UNDEFINED_OTUS_ID_PREFIX)); //TODO clear after this document was written
+			getStreamDataProvider().setUndefinedOTUsID(getStreamDataProvider().createNewID(UNDEFINED_OTUS_ID_PREFIX));
 			UndefinedOTUListDataAdapter undefinedOTUs = new UndefinedOTUListDataAdapter(getStreamDataProvider().getUndefinedOTUsID(), getStreamDataProvider().getUndefinedOTUID());
 			writeOTUSTag(undefinedOTUs);
 		}
@@ -571,7 +574,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 				}
 				
 				NeXMLPredicateMetaReceiver predicateDataReceiver = new NeXMLIgnoreCertainMetadataReceiver(getStreamDataProvider(), getParameters(), 
-						false, PREDICATE_CHAR_ATTR_TOKENS, PREDICATE_CHAR_ATTR_CODON_POSITION); //TODO refactor so literal meta with predicates is also ignored
+						false, PREDICATE_CHAR_ATTR_TOKENS, PREDICATE_CHAR_ATTR_CODON_POSITION);
 				alignment.getCharacterDefinitions(getParameters()).writeContentData(getParameters(), predicateDataReceiver, charID);  // Metadata created from attributes is not written again
 				
 				getXMLWriter().writeEndElement();
@@ -693,6 +696,11 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 		long alignmentLength = determineMaxSequenceLength(alignment, getParameters());
 		alignmentInfo.setAlignmentLength(alignmentLength);
 		
+		if (!((Long.compare(alignment.getColumnCount(getParameters()), -1) == 0) 
+				|| (Long.compare(alignment.getColumnCount(getParameters()), alignmentLength) == 0))) {
+			throw new InconsistentAdapterDataException("The number of columns given in the matrix data adapter is not correct.");
+		}
+		
 		String defaultTokenSetID = getStreamDataProvider().createNewID(DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX);
 		alignmentInfo.setDefaultTokenSetID(defaultTokenSetID);
 		
@@ -719,6 +727,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 		elementTypeToLinkAttributeMap.put(EventContentType.SEQUENCE, ATTR_SEQUENCE_SET_LINKED_IDS.getLocalPart());
 		checkSets(elementTypeToLinkAttributeMap, EventContentType.SEQUENCE_SET, alignment.getSequenceSets(getParameters()));
 		
+		setTokenList(alignmentInfo);
+		
 		// Check sequences
 		Iterator<String> sequenceIDs = alignment.getSequenceIDIterator(getParameters());
 		while (sequenceIDs.hasNext()) {
@@ -742,33 +752,37 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 			alignmentInfo.setAlignmentType(CharacterStateSetType.DISCRETE);
 		}
 		
-		setTokenList(alignmentInfo);
-		
 		// Check if alignment is empty
 		alignmentInfo.setWriteAlignment((alignment.getSequenceCount(getParameters()) > 0) && (alignmentLength > 0));
 	}
 	
 	
 	private void setTokenList(NeXMLWriterAlignmentInformation alignmentInfo) {
-		switch (alignmentInfo.getAlignmentType()) {
+		switch (alignmentInfo.getTokenSetType()) {
 			case AMINO_ACID:
 				for (Character aminoAcidToken : SequenceUtils.getAminoAcidOneLetterCodes(true)) {
 					alignmentInfo.getDefinedTokens().add(Character.toString(aminoAcidToken));					
 				}
 				alignmentInfo.getDefinedTokens().remove("J");
-				//TODO add special tokens (-, ?, *)
+				alignmentInfo.getDefinedTokens().add(Character.toString(SequenceUtils.GAP_CHAR));				
+				alignmentInfo.getDefinedTokens().add(Character.toString(SequenceUtils.MISSING_DATA_CHAR));
+				alignmentInfo.getDefinedTokens().add(Character.toString(SequenceUtils.STOP_CODON_CHAR));
 				break;
 			case DNA:
 				for (Character nucleotideToken : SequenceUtils.getNucleotideCharacters()) {
 					alignmentInfo.getDefinedTokens().add(Character.toString(nucleotideToken));
 				}
-				alignmentInfo.getDefinedTokens().remove("U");
+				alignmentInfo.getDefinedTokens().remove("U");				
+				alignmentInfo.getDefinedTokens().add(Character.toString(SequenceUtils.GAP_CHAR));				
+				alignmentInfo.getDefinedTokens().add(Character.toString(SequenceUtils.MISSING_DATA_CHAR));
 				break;
 			case RNA:
 				for (Character nucleotideToken : SequenceUtils.getNucleotideCharacters()) {
 					alignmentInfo.getDefinedTokens().add(Character.toString(nucleotideToken));
 				}
-				alignmentInfo.getDefinedTokens().remove("T");
+				alignmentInfo.getDefinedTokens().remove("T");				
+				alignmentInfo.getDefinedTokens().add(Character.toString(SequenceUtils.GAP_CHAR));				
+				alignmentInfo.getDefinedTokens().add(Character.toString(SequenceUtils.MISSING_DATA_CHAR));
 				break;
 			default:
 				break;

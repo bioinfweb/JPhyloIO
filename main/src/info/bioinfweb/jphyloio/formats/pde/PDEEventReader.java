@@ -579,6 +579,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 		URIOrStringIdentifier datatype = null;
 		URIOrStringIdentifier predicate;
 		String columnLabel = null;
+		Object objectValue = null;
 		
 		for (int key : sequenceInfo.keySet()) {
 			PDEMetaColumnDefintion metaColumn = streamDataProvider.getMetaColumns().get(key);
@@ -612,6 +613,15 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						case FILE:
 							predicate = new URIOrStringIdentifier(metaColumn.getName(), PREDICATE_HAS_RESOURCE_METADATA);
 							break;
+						case NUMBER:
+							datatype = new URIOrStringIdentifier(metaColumn.getType().toString(), null);							
+							
+							try {
+								objectValue = Double.parseDouble(sequenceInfo.get(key));
+							}
+							catch (NumberFormatException e) {}
+							
+							break;
 						default:
 							datatype = new URIOrStringIdentifier(metaColumn.getType().toString(), null);
 							break;
@@ -621,10 +631,16 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 			
 			if (predicate != null) {
 				if (!predicate.getURI().equals(PREDICATE_HAS_RESOURCE_METADATA) && !predicate.getURI().equals(PREDICATE_LINKED_FILE)) {
+					if (objectValue == null) {
+						objectValue = sequenceInfo.get(key);
+					}
+					
 					getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), columnLabel, 
-							predicate, datatype, LiteralContentSequenceType.SIMPLE));
-					getCurrentEventCollection().add(new LiteralMetadataContentEvent(sequenceInfo.get(key), sequenceInfo.get(key)));
+							predicate, datatype, LiteralContentSequenceType.SIMPLE));					
+					getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, sequenceInfo.get(key)));
 					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					
+					objectValue = null;
 				}
 				else {
 					try {

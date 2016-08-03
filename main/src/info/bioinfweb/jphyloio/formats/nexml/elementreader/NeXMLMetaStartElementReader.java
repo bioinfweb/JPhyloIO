@@ -75,8 +75,9 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 			
 			LiteralContentSequenceType contentType = LiteralContentSequenceType.XML;
 			
-			ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
-			if (translator != null) { //TODO might be null if incorrect namespace for xsd types was specified (e.g. with '#' attached)
+			ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory()
+					.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
+			if (translator != null) {
 				contentType = LiteralContentSequenceType.SIMPLE;
 			}
 			

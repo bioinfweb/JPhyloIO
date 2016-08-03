@@ -112,7 +112,7 @@ public interface XTGConstants {
   public static final QName TAG_PIE_CHART_LABEL = new QName(NAMESPACE_URI, "PieChartLabel");
   public static final QName ATTR_SHOW_INTERNAL_LINES = new QName("InternalLines");
   public static final QName ATTR_SHOW_NULL_LINES = new QName("NullLines");
-  public static final QName TAG_PIE_CHART_IDS = new QName(NAMESPACE_URI, "DataIds"); //TODO correct to "ID"?
+  public static final QName TAG_PIE_CHART_IDS = new QName(NAMESPACE_URI, "DataIds");  // Might be corrected to "DataIDs" in newer XTG-versions
   public static final QName TAG_PIE_CHART_ID = new QName(NAMESPACE_URI, "DataID");
   public static final QName ATTR_PIE_COLOR = new QName("PieColor");
   
@@ -156,7 +156,7 @@ public interface XTGConstants {
 	public static final QName PREDICATE_GLOBAL_FORMATS = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats");
 	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_BG_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BgColor");
 	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_BRANCH_LENGTH_SCALE = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BranchLengthScale");
-	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_SCALE_BAR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowScaleBar"); //TODO is not in the xsd schema
+	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_SCALE_BAR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowScaleBar");
 	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_ROOTED = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowRooted");
 	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_ALIGN_TO_SUBTREE = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AlignToSubtree");
 	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_POSITION_LABELS_TO_LEFT = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LabelsLeft");
@@ -236,7 +236,8 @@ public interface XTGConstants {
 	
 	public static final QName PREDICATE_DATA_IDS = new QName(XTG_PREDICATE_NAMESPACE, "DataIDs");
 	public static final QName PREDICATE_DATA_ID = new QName(XTG_PREDICATE_NAMESPACE, "DataID");
-	public static final QName PREDICATE_DATA_ID_ATTR_COLOR_TYPE = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ColorType");
+	public static final QName PREDICATE_DATA_ID_ATTR_PIE_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PieColor");
+	public static final QName PREDICATE_DATA_ID_VALUE = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	
 	public static final QName PREDICATE_LABEL_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "LabelMargin");
 	public static final QName PREDICATE_LABEL_MARGIN_ATTR_LEFT = new QName(XTG_PREDICATE_NAMESPACE, "LabelMargin" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Left");

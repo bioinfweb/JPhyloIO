@@ -143,7 +143,8 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 					datatype = streamDataProvider.getCurrentLiteralMetaDatatype().getURI();
 				}
 				
-				ObjectTranslator<?> translator = parameters.getObjectTranslatorFactory().getDefaultTranslator(datatype);
+				ObjectTranslator<?> translator = parameters.getObjectTranslatorFactory()
+						.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
 				if ((event.getObjectValue() != null)) {
 					if ((translator != null) && translator.hasStringRepresentation()) {
 						if (translator.hasStringRepresentation()) {
@@ -317,10 +318,11 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	}
 	
 	
-	private static String obtainPrefix(NeXMLWriterStreamDataProvider streamDataProvider, String namespaceURI) throws XMLStreamException {
+	private static String obtainPrefix(NeXMLWriterStreamDataProvider streamDataProvider, String namespaceURI) throws XMLStreamException, JPhyloIOWriterException {
 		String prefix = streamDataProvider.getWriter().getPrefix(namespaceURI);
-		if (prefix == null) { //TODO throw exception? All namespaces should be bound to a prefix at this point
-			prefix = streamDataProvider.getNeXMLPrefix(streamDataProvider.getWriter());
+		
+		if (prefix == null) {
+			throw new JPhyloIOWriterException("The namespace \"" + namespaceURI + "\" is not bound to a prefix.");
 		}
 		
 		return prefix;

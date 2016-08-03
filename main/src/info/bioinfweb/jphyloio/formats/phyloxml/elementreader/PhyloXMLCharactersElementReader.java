@@ -48,7 +48,8 @@ public class PhyloXMLCharactersElementReader extends AbstractXMLElementReader<Ph
 
 	@Override
 	public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-		ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory().getDefaultTranslator(datatype);
+		ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory()
+				.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
 		
 		if (!datatype.equals(W3CXSConstants.DATA_TYPE_TOKEN) && !datatype.equals(W3CXSConstants.DATA_TYPE_STRING) && (translator != null) && translator.hasStringRepresentation()) {	
 			Object objectValue = null;

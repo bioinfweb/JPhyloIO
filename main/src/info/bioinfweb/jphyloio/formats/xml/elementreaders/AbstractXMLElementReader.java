@@ -29,6 +29,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
+import java.awt.Color;
 import java.util.LinkedHashMap;
 
 import javax.xml.namespace.QName;
@@ -61,17 +62,41 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 			
 			for (QName attribute : attributeToPredicateMap.keySet()) {
 				if (element.getAttributeByName(attribute) != null) {
-					String attributeValue = element.getAttributeByName(attribute).getValue();					
-					
-						streamDataProvider.getCurrentEventCollection().add(
-								new LiteralMetadataEvent(metaIDPrefix + streamDataProvider.getIDManager().createNewID(), null, 
-								new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute)), LiteralContentSequenceType.SIMPLE));
-						
-						if ((attributeValue != null) && !attributeValue.isEmpty()) {
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(attributeValue, attributeValue));
+					String attributeValue = element.getAttributeByName(attribute).getValue();
+					Object objectValue = null;					
+
+					if (!attributeValue.isEmpty() && (attributeValue.charAt(0) == '#')) {
+						try {
+							objectValue = Color.decode(attributeValue);
 						}
-								
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));					
+						catch (IllegalArgumentException f) {}
+					}
+					else if (attributeValue.equals(Boolean.toString(false))) {
+						objectValue = false;
+					}
+					else if (attributeValue.equals(Boolean.toString(true))) {
+						objectValue = true;
+					}
+					else {
+						try {
+							objectValue = Double.parseDouble(attributeValue);
+						}
+						catch (IllegalArgumentException f) {}
+					}
+					
+					if (objectValue == null) {
+						objectValue = attributeValue;
+					}
+					
+					streamDataProvider.getCurrentEventCollection().add(
+							new LiteralMetadataEvent(metaIDPrefix + streamDataProvider.getIDManager().createNewID(), null, 
+							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute)), LiteralContentSequenceType.SIMPLE));
+					
+					if ((attributeValue != null) && !attributeValue.isEmpty()) {
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, attributeValue));
+					}
+							
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));					
 				}
 			}
 		}

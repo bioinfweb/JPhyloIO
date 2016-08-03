@@ -68,12 +68,6 @@ public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<N
 	}
 
 
-	@Override
-	public NeXMLEventWriter getEventWriter() { //TODO is this really necessary?
-		return (NeXMLEventWriter)super.getEventWriter();
-	}
-
-
 	public Set<String> getDocumentIDs() {
 		return documentIDs;
 	}
