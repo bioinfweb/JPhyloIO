@@ -285,9 +285,9 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			
 			assertStartElement(TAG_MATRIX, reader);
 			String sequence1 = assertRow(null, otuIDs[0], "AGTGC", writeMetadata, reader);
-			assertRow(null, otuIDs[1], "AGTCT", writeMetadata, reader);
+			assertRow(null, otuIDs[1], "A-TCT", writeMetadata, reader);
 			String sequence3 = assertRow(null, otuIDs[2], "AGTGT", writeMetadata, reader);
-			assertRow(null, otuIDs[3], "CGCTC", writeMetadata, reader);
+			assertRow(null, otuIDs[3], "CGC?C", writeMetadata, reader);
 			String sequence5 = assertRow(null, otuIDs[4], "CATCGT", writeMetadata, reader);
 			assertRow("sequence", otuIDs[5], "AGTCTA", writeMetadata, reader);
 			
@@ -665,9 +665,9 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertStartElement(TAG_MATRIX, reader);
 			assertLiteralMeta(reader);
 			String sequence1 = assertRow(null, otuIDs[0], "AGTGC", writeMetadata, reader);
-			assertRow(null, otuIDs[1], "AGTCT", writeMetadata, reader);
+			assertRow(null, otuIDs[1], "A-TCT", writeMetadata, reader);
 			String sequence3 = assertRow(null, otuIDs[2], "AGTGT", writeMetadata, reader);
-			assertRow(null, otuIDs[3], "CGCTC", writeMetadata, reader);
+			assertRow(null, otuIDs[3], "CGC?C", writeMetadata, reader);
 			String sequence5 = assertRow(null, otuIDs[4], "CATCGT", writeMetadata, reader);
 			
 			element = assertStartElement(TAG_SET, reader);
@@ -1166,9 +1166,9 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			
 		List<List<String>> sequences = new ArrayList<>();
 		sequences.add(StringUtils.charSequenceToStringList("AGTGC"));
-		sequences.add(StringUtils.charSequenceToStringList("AGTCT"));
+		sequences.add(StringUtils.charSequenceToStringList("A-TCT"));
 		sequences.add(StringUtils.charSequenceToStringList("AGTGT"));
-		sequences.add(StringUtils.charSequenceToStringList("CGCTC"));
+		sequences.add(StringUtils.charSequenceToStringList("CGC?C"));
 		sequences.add(StringUtils.charSequenceToStringList("CATCGT"));
 		sequences.add(StringUtils.charSequenceToStringList("AGTCTA"));		
 		

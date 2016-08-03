@@ -371,7 +371,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.5", null, 0.5, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_IDREF0), null, "ID1", null, "ID1", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_IDREF1), null, "ID2", null, "ID2", true, reader);	
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_DISTANCE), null, "0.5", null, "0.5", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_DISTANCE), null, "0.5", null, 0.5, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_TYPE), null, "extraEdge", null, "extraEdge", true, reader);
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), null, "bootstrap", null, "bootstrap", true, reader);	
