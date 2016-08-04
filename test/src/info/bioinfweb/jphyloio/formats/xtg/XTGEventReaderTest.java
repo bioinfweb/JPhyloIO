@@ -36,15 +36,17 @@ import org.junit.Test;
 
 
 public class XTGEventReaderTest implements XTGConstants {
-	@Test
-	public void testOutput() {
-		try {
-			XTGEventReader reader = new XTGEventReader(new File("data/XTG/ExampleXTGDocument.xml"), new ReadWriteParameterMap());
-			try {
-				while (reader.hasNextEvent()) {
-					JPhyloIOEvent event = reader.next();
+	
+	
+//	@Test
+//	public void testOutput() {
+//		try {
+//			XTGEventReader reader = new XTGEventReader(new File("data/XTG/ExampleXTGDocument.xml"), new ReadWriteParameterMap());
+//			try {
+//				while (reader.hasNextEvent()) {
+//					JPhyloIOEvent event = reader.next();
 //					System.out.println(event.getType());
-
+//
 //					if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
 //						System.out.println("Predicate: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
 //					}
@@ -69,17 +71,17 @@ public class XTGEventReaderTest implements XTGConstants {
 //					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.END))) {
 //						System.out.println("Edge end");
 //					}
-				}
-			}
-			finally {
-				reader.close();
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
-		}
-	}
+//				}
+//			}
+//			finally {
+//				reader.close();
+//			}
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//			fail(e.getLocalizedMessage());
+//		}
+//	}
 	
 	
 	@Test

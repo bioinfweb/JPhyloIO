@@ -542,6 +542,7 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/P
 test/src/info/bioinfweb/jphyloio/test/tests/DataTypeConverterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/ListTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/NamespaceContextTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/NamespacePrefixTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/URITest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/WhiteSpaceTest.java -text svneol=unset#text/plain
