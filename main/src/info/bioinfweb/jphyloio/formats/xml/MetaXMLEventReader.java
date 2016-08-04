@@ -31,7 +31,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * Adapter class that allows reading a sequence of {@link LiteralMetadataContentEvent}s using a {@link XMLStreamReader}.
+ * Adapter class that allows reading a sequence of {@link LiteralMetadataContentEvent}s using an {@link XMLStreamReader}.
  * 
  * @author Ben St&ouml;ver
  */

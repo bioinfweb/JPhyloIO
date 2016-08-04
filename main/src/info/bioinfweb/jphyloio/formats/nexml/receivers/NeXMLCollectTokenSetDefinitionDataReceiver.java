@@ -267,7 +267,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 						alignmentInfo.getColumnIndexToStatesMap().put(i, tokenSetDefinitionID);  // Token sets are not allowed to overlap
 					}
 					else {
-						throw new InconsistentAdapterDataException("More than one token set was assigned to the alignemnt column " + i + ".");
+						throw new InconsistentAdapterDataException("More than one token set was assigned to the alignment column " + i + ".");
 					}
 				}
 				break;

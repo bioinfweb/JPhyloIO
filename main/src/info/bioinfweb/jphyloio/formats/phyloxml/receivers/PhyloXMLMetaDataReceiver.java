@@ -114,7 +114,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
 				if ((originalType == null) || (originalType.getURI() == null) || !VALID_XSD_TYPES.contains(originalType.getURI())) {
-					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);					
+					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING); //TODO should the datatype always be string if no translator was found? (if the string value or object.toString() is written, the characters might not be according to the xsd schema otherwise)				
 				}
 			
 				String value = processLiteralContent(event, originalType.getURI());
