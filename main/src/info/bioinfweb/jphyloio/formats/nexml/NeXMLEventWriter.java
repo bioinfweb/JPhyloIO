@@ -811,6 +811,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 				receiver = new NeXMLCollectTokenSetDefinitionDataReceiver(getStreamDataProvider(), getParameters(), tokenSetID);
 				
 				CharacterStateSetType alignmentType = tokenSets.getObjectStartEvent(getParameters(), tokenSetID).getSetType();
+				
 				getStreamDataProvider().addToDocumentIDs(tokenSetID);
 				getStreamDataProvider().setCurrentTokenSetInfo(new NeXMLWriterTokenSetInformation());
 
@@ -827,7 +828,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 					}
 				}
 				alignmentInfo.getIDToTokenSetInfoMap().put(tokenSetID, getStreamDataProvider().getCurrentTokenSetInfo());
-				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);				
+				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);
 			}
 		}
 		

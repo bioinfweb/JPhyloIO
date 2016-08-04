@@ -27,9 +27,8 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLCollectMetadataDataReceiver;
-import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLDocumentMetaDataReceiver;
-import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLOnlyCustomXMLDataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLMetaDataReceiver;
+import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLOnlyCustomXMLDataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLPropertyMetadataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLSpecificPredicatesDataReceiver;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventWriter;
@@ -66,12 +65,11 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	
 	@Override
 	protected void doWriteDocument() throws IOException, XMLStreamException {
-		PhyloXMLDocumentMetaDataReceiver receiver = new PhyloXMLDocumentMetaDataReceiver(getStreamDataProvider(), getParameters(), 
-				PropertyOwner.OTHER);
+		PhyloXMLOnlyCustomXMLDataReceiver receiver = new PhyloXMLOnlyCustomXMLDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.OTHER);
 		
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.XSD_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_NS_URI);  // Ensures that the prefix for this NS is always 'xsd'
 		
-		checkDocument();		
+		checkDocument();
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
 //		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getRDFPrefix(getXMLWriter()), XMLReadWriteUtils.NAMESPACE_RDF);
 		

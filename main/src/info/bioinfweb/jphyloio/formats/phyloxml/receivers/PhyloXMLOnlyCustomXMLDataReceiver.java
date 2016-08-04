@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
@@ -28,10 +27,18 @@ import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Receiver, that  writes only custom XML, e.g nested under document.
+ * If an event ahs XML content, thsi is written directly to the file. Simple content is also written in form of custom XML.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver {
 	
 	
@@ -40,20 +47,38 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 		
 		super(streamDataProvider, parameterMap, propertyOwner);
 	}
-	//TODO write metadata that could not be written until now as customXML
+	
 	
 	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (isWriteContent() && !hasSimpleContent() && event.hasXMLEventValue()) {			
-			writeCustomXMLTag(event.getXMLEvent());			
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {		
+		if (isWriteContent()) {
+			if (!hasSimpleContent() && event.hasXMLEventValue()) {
+				writeCustomXMLTag(event.getXMLEvent());			
+			}
+			else {
+				QName datatype = null;
+				if (getOriginalType() != null) {
+					datatype = getOriginalType().getURI();
+				}
+				
+				String value = processLiteralContent(event, datatype); //TODO allow writing customXML in processLiteralContent() in this case? 
+				
+				if (value != null) {
+					getStreamDataProvider().getWriter().writeCharacters(value); //TODO nest under according tag (meta?)
+				}
+				
+				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());				
+			}
 		}
 	}
 	
 
 	@Override
-	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {}
-
-	
-	@Override
-	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {}
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		if (determineWriteMeta(event.getID(), event.getRel())) {
+			if (event.getHRef() != null) {
+				getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString());				
+			}
+		}
+	}
 }

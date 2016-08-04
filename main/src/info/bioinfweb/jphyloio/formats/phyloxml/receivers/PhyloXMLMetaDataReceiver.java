@@ -53,15 +53,17 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
-public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants {	
+public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants {
+	public static final Set<QName> VALID_XSD_TYPES = new HashSet<QName>();
+	
+	
 	private PropertyOwner propertyOwner;
 	private boolean hasSimpleContent;
 	private URIOrStringIdentifier literalPredicate;
 	private URIOrStringIdentifier originalType;
 	private boolean writeContent;
 	private boolean writePropertyStart;
-	
-	private Set<QName> validXSDTypes = new HashSet<QName>();
+	private String currentLiteralMetaID;
 
 
 	public PhyloXMLMetaDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
@@ -101,7 +103,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 			hasSimpleContent = event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE);
 			literalPredicate = event.getPredicate();
 			originalType = event.getOriginalType();
-			
+			currentLiteralMetaID = event.getID();
 			writePropertyStart = true;
 		}
 	}
@@ -111,40 +113,11 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
-				
-				if ((originalType == null) || (originalType.getURI() == null) || !validXSDTypes.contains(originalType.getURI())) {
+				if ((originalType == null) || (originalType.getURI() == null) || !VALID_XSD_TYPES.contains(originalType.getURI())) {
 					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);					
 				}
 			
-				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory()
-						.getDefaultTranslatorWithPossiblyInvalidNamespace(originalType.getURI());			
-				String value = null;
-				
-				if ((event.getObjectValue() != null)) {
-					if ((translator != null)) {
-						if (translator.hasStringRepresentation()) {
-							try {
-								value = translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider());
-							}
-							catch (ClassCastException e) {
-								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
-										+ "Therefore it could not be parsed.");
-							}
-						}
-						else {
-							translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
-						}
-					}
-					else if (event.getStringValue() != null) {
-						value = event.getStringValue();
-					}
-					else {
-						value = event.getObjectValue().toString();
-					}
-				}
-				else {
-					value = event.getStringValue();
-				}
+				String value = processLiteralContent(event, originalType.getURI());
 				
 				if (value != null) {
 					if (writePropertyStart) {
@@ -159,7 +132,8 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 					}
 				}
 				
-				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());				
+				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());
+				getStreamDataProvider().getMetaIDs().remove(currentLiteralMetaID);
 			}
 			else if (event.hasXMLEventValue() && !(propertyOwner.equals(PropertyOwner.NODE) || propertyOwner.equals(PropertyOwner.PARENT_BRANCH))) {				
 				writeCustomXMLTag(event.getXMLEvent());
@@ -179,6 +153,8 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 			}
 			
 			writePropertyTag(event.getRel(), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_ANY_URI), uri, true);
+			
+			getStreamDataProvider().getMetaIDs().remove(event.getID());
 		}
 	}
 	
@@ -192,7 +168,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
 						+ "event was marked to be continued in a subsequent event.");
 			}
-		}		
+		}
 	}
 	
 	
@@ -315,38 +291,72 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	}
 	
 	
-	private void fillValidXSDTypes() {
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_STRING);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_BOOLEAN);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DECIMAL);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_FLOAT);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DOUBLE);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DURATION);  // Currently no object translator for this type exists
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DATE_TIME);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_TIME);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_DATE);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_YEAR_MONTH);  // Currently no object translator for this type exists
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_YEAR);  // Currently no object translator for this type exists
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_MONTH_DAY);  // Currently no object translator for this type exists
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_DAY);  // Currently no object translator for this type exists
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_G_MONTH);  // Currently no object translator for this type exists
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_HEX_BINARY);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_BASE_64_BINARY);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_ANY_URI);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NORMALIZED_STRING);  // Currently no object translator for this type exists
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_TOKEN);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_INTEGER);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NON_POSITIVE_INTEGER);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NEGATIVE_INTEGER);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_LONG);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_INT);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_SHORT);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_BYTE);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_UNSIGNED_LONG);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_UNSIGNED_INT);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_UNSIGNED_SHORT);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_UNSIGNED_BYTE);
-		validXSDTypes.add(W3CXSConstants.DATA_TYPE_POSITIVE_INTEGER);
+	protected String processLiteralContent(LiteralMetadataContentEvent event, QName datatype) throws ClassCastException, IOException, XMLStreamException {
+		ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);			
+		String value = null;
+		
+		if ((event.getObjectValue() != null)) {
+			if ((translator != null)) {
+				if (translator.hasStringRepresentation()) {
+					try {
+						value = translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider());
+					}
+					catch (ClassCastException e) {
+						throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
+								+ "Therefore it could not be parsed.");
+					}
+				}
+				else {
+					translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
+				}
+			}
+			else if (event.getStringValue() != null) {
+				value = event.getStringValue();
+			}
+			else {
+				value = event.getObjectValue().toString();
+			}
+		}
+		else {
+			value = event.getStringValue();
+		}
+		
+		return value;
+	}
+	
+	
+	private static void fillValidXSDTypes() {
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_STRING);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_BOOLEAN);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_DECIMAL);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_FLOAT);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_DOUBLE);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_DURATION);  // Currently no object translator for this type exists
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_DATE_TIME);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_TIME);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_DATE);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_G_YEAR_MONTH);  // Currently no object translator for this type exists
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_G_YEAR);  // Currently no object translator for this type exists
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_G_MONTH_DAY);  // Currently no object translator for this type exists
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_G_DAY);  // Currently no object translator for this type exists
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_G_MONTH);  // Currently no object translator for this type exists
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_HEX_BINARY);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_BASE_64_BINARY);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_ANY_URI);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_NORMALIZED_STRING);  // Currently no object translator for this type exists
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_TOKEN);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_INTEGER);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_NON_POSITIVE_INTEGER);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_NEGATIVE_INTEGER);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_LONG);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_INT);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_SHORT);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_BYTE);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_UNSIGNED_LONG);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_UNSIGNED_INT);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_UNSIGNED_SHORT);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_UNSIGNED_BYTE);
+		VALID_XSD_TYPES.add(W3CXSConstants.DATA_TYPE_POSITIVE_INTEGER);
 	}
 }

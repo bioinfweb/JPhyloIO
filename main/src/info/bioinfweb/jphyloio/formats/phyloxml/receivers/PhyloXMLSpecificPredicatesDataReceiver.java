@@ -27,7 +27,6 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
-import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLColorTranslator;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateTreatment;
@@ -35,7 +34,6 @@ import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPrivateConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
-import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
 import java.util.Stack;
@@ -51,7 +49,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	
 	private URIOrStringIdentifier currentCustomXMLPredicate;
 	private QName currentDatatype;
-	private boolean writeAppliesTo = true;
+	private boolean writeAppliesTo = false;
 	
 
 	public PhyloXMLSpecificPredicatesDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
@@ -119,6 +117,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_CLADE)) {
 							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE);
 							getStreamDataProvider().getMetaIDs().remove(event.getID());
+							writeAppliesTo = true;
 							
 							if (event.getOriginalType() != null) {
 								currentDatatype = event.getOriginalType().getURI();
@@ -155,45 +154,18 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 			case TAG_AND_VALUE:
 				if (writeAppliesTo) {
 					getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), getPropertyOwner().toString().toLowerCase());
-					writeAppliesTo = true;
+					writeAppliesTo = false;
 				}
 				
-				if (event.getObjectValue() != null) {
-					ObjectTranslator<?> translator = null;
-					
-					if (currentDatatype != null) {
-						translator = getParameterMap().getObjectTranslatorFactory()
-								.getDefaultTranslatorWithPossiblyInvalidNamespace(currentDatatype);
-					}
-					
-					if (predicates.peek().equals(PREDICATE_COLOR)) {
-						PhyloXMLColorTranslator colorTranslator = new PhyloXMLColorTranslator();
-						colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
-					}
-					else if (translator != null) {
-						if (translator.hasStringRepresentation()) {
-							try {
-								getStreamDataProvider().getWriter().writeCharacters(translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider()));
-							}
-							catch (ClassCastException e) {
-								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
-										+ "Therefore it could not be parsed.");
-							}							
-						}
-						else {
-							translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), null);
-						}
-					}
-					else if (event.getStringValue() != null) {
-						getStreamDataProvider().getWriter().writeCharacters(event.getStringValue());
-					}
-					else {
-						getStreamDataProvider().getWriter().writeCharacters(event.getObjectValue().toString());
-					}
+				if ((event.getObjectValue() != null) && predicates.peek().equals(PREDICATE_COLOR)) {
+					PhyloXMLColorTranslator colorTranslator = new PhyloXMLColorTranslator();
+					colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
 				}
 				else {
-					getStreamDataProvider().getWriter().writeCharacters(event.getStringValue());
-				}				
+					String value = processLiteralContent(event, currentDatatype);
+					getStreamDataProvider().getWriter().writeCharacters(value);
+				}
+				
 				break;
 			case ATTRIBUTE:
 				QName attribute = getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTranslation();

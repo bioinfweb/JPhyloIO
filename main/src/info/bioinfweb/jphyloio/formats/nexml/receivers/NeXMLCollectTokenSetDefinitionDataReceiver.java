@@ -111,8 +111,8 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	private boolean isDNAToken(SingleTokenDefinitionEvent event) {
 		if (event.getTokenName().length() == 1) {
 			char token = event.getTokenName().charAt(0);
-			if (SequenceUtils.isDNAChar(token)) {
-				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
+			if (((token != 'U') && SequenceUtils.getNucleotideCharacters().contains(token))) {
+				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {					
 					if (SequenceUtils.isNonAmbiguityNucleotide(token)) {
 						return true;
 					}
@@ -127,10 +127,10 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					else if (isGapChar(event)) {
 						return true;
 					}
-				}
+				}				
 			}
 		}
-
+		
 		return false;
 	}
 
@@ -138,7 +138,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	private boolean isRNAToken(SingleTokenDefinitionEvent event) {
 		if (event.getTokenName().length() == 1) {
 			char token = event.getTokenName().charAt(0);
-			if (SequenceUtils.isRNAChar(token)) {
+			if (((token != 'T') && SequenceUtils.getNucleotideCharacters().contains(token))) {
 				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
 					if (SequenceUtils.isNonAmbiguityNucleotide(token)) {
 						return true;
