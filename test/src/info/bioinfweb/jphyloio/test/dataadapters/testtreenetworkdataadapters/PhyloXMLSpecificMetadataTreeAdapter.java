@@ -112,7 +112,7 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 
 		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
-		nestedEvents.add(new LiteralMetadataEvent(getNodeEdgeIDPrefix() + ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "XMLPredicate")), LiteralContentSequenceType.XML));		
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
@@ -142,8 +142,8 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 		
 		nodes.setObjectStartEvent(new NodeEvent(getNodeEdgeIDPrefix() + "nB", "Node " + getNodeEdgeIDPrefix() + "nB", getLinkedOTUs() != null ? getLinkedOTUs()[1] : null, false));
 		nestedEvents = nodes.getObjectContent(getNodeEdgeIDPrefix() + "nB");
-		nestedEvents.add(new LiteralMetadataEvent(getNodeEdgeIDPrefix() + ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "XMLPredicate")), LiteralContentSequenceType.XML));		
+		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "XMLPredicate")), LiteralContentSequenceType.XML));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createCharacters("test "), true));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createCharacters("characters"), false));

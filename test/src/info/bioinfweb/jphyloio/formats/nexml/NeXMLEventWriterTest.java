@@ -848,7 +848,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	
 	private void assertUncertainStateSet(String symbol, String label, XMLEventReader reader, String... memberID) throws XMLStreamException {
-		StartElement element = assertStartElement(TAG_UNCERTAIN, reader);	
+		Set<String> constituents = new HashSet<String>();
+		StartElement element = assertStartElement(TAG_UNCERTAIN, reader);
 		
 		if (label != null) {
 			assertAttributeCount(4, element);
@@ -865,11 +866,16 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		for (int i = 0; i < memberID.length; i++) {
 			element = assertStartElement(TAG_MEMBER, reader);
 			assertAttributeCount(1, element);
-			assertAttribute(ATTR_STATE_SET_LINKED_IDS, memberID[i], element);
+			constituents.add(assertAttribute(ATTR_STATE_SET_LINKED_IDS, element));			
 			assertEndElement(TAG_MEMBER, reader);
 		}
 		
 		assertEndElement(TAG_UNCERTAIN, reader);
+		
+		assertEquals(memberID.length, constituents.size());
+		for (String constituent : memberID) {
+			assertTrue(constituents.contains(constituent));
+		}
 	}
 	
 	
@@ -1325,21 +1331,21 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 					tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 				}
 				
-//				for (Character nucleotide: SequenceUtils.getNucleotideCharacters()) {
-//					if (SequenceUtils.isNucleotideAmbuguityCode(nucleotide)) {						
-//						char[] constituentArray = SequenceUtils.nucleotideConstituents(nucleotide);
-//						if (constituentArray.length > 1) {
-//							Set<String> constituents = new HashSet<String>();
-//							for (int i = 0; i < constituentArray.length; i++) {
-//								constituents.add(Character.toString(constituentArray[i]));
-//							}
-//							
-//							tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
-//									Character.toString(nucleotide), CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, constituents));
-//							tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));							
-//						}
-//					}
-//				}
+				for (Character nucleotide: SequenceUtils.getNucleotideCharacters()) {
+					if (SequenceUtils.isNucleotideAmbuguityCode(nucleotide)) {
+						char[] constituentArray = SequenceUtils.nucleotideConstituents(nucleotide);
+						if (constituentArray.length > 1) {
+							Set<String> constituents = new HashSet<String>();
+							for (int i = 0; i < constituentArray.length; i++) {
+								constituents.add(Character.toString(constituentArray[i]));
+							}
+							
+							tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
+									Character.toString(nucleotide), CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, constituents));
+							tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+						}
+					}
+				}
 				break;
 			case RNA:
 				for (int i = 0; i < SequenceUtils.RNA_CHARS.length(); i++) {

@@ -88,7 +88,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		idIndex++;
 		return index;
 	}
-//TODO Test zB mit datatype Duration (gültiger XSD-Typ, aber es gibt keinen Translator dafür)
+//TODO Test zB mit datatype Duration (gÃ¼ltiger XSD-Typ, aber es gibt keinen Translator dafÃ¼r)
 	
 	private void writeDocument(StoreDocumentDataAdapter document, ReadWriteParameterMap parameters, File file) throws IOException {
 		PhyloXMLEventWriter writer = new PhyloXMLEventWriter();
