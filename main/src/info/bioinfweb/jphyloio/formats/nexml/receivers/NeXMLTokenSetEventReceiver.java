@@ -89,46 +89,31 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		writeTokenDefinitionAttributes(event);
 		
 		if (!event.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
-			Collection<String> constituents = new ArrayList<String>();			
+			Collection<String> constituents = new ArrayList<String>();
 			
-			switch (alignmentInfo.getAlignmentType()) {
-				case DNA:
-					if ((event.getConstituents() == null) || (event.getConstituents().size() < SequenceUtils.nucleotideConstituents(tokenName.charAt(0)).length)) {
+			if (event.getConstituents() == null || event.getConstituents().isEmpty()) {
+				switch (alignmentInfo.getAlignmentType()) {
+					case DNA:
 						constituents = addConstituents(SequenceUtils.nucleotideConstituents(tokenName.charAt(0)), false);
-					}
-					else {
-						constituents = event.getConstituents();
-					}
-					break;
-				case RNA:
-					if ((event.getConstituents() == null) || (event.getConstituents().size() < SequenceUtils.rnaConstituents(tokenName.charAt(0)).length)) {
-						constituents = addConstituents(SequenceUtils.nucleotideConstituents(tokenName.charAt(0)), true);
-					}
-					else {
-						constituents = event.getConstituents();
-					}
-					break;
-				case AMINO_ACID:
-					if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(tokenName)) {
-						if ((event.getConstituents() == null) || (event.getConstituents().size() < SequenceUtils.oneLetterAminoAcidConstituents(tokenName).length)) {
+						break;
+					case RNA:
+						constituents = addConstituents(SequenceUtils.rnaConstituents(tokenName.charAt(0)), true);
+						break;
+					case AMINO_ACID:
+						if (SequenceUtils.getAminoAcidOneLetterCodes(true).contains(tokenName)) {
 							constituents = addConstituents(SequenceUtils.oneLetterAminoAcidConstituents(tokenName), false);
 						}
-						else {
-							constituents = event.getConstituents();
-						}
-					}
-					else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(tokenName)) {
-						tokenName = Character.toString(SequenceUtils.oneLetterAminoAcidByThreeLetter(tokenName));						
-						if ((event.getConstituents() == null) || (event.getConstituents().size() < SequenceUtils.oneLetterAminoAcidConstituents(tokenName).length)) {
+						else if (SequenceUtils.getAminoAcidThreeLetterCodes(true).contains(tokenName)) {
+							tokenName = Character.toString(SequenceUtils.oneLetterAminoAcidByThreeLetter(tokenName));
 							constituents = addConstituents(SequenceUtils.oneLetterAminoAcidConstituents(tokenName), false);
-						}
-						else {
-							constituents = event.getConstituents();
-						}
-					}
-					break;
-				default:
-					break;
+							}		
+						break;
+					default:
+						break;
+				}						
+			}
+			else {
+				constituents = event.getConstituents();
 			}
 			
 			for (String tokenDefinition : constituents) {
