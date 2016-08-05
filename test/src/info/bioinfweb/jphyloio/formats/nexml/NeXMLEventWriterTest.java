@@ -126,7 +126,6 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			
 		// Write file:
 		NeXMLEventWriter writer = new NeXMLEventWriter();
-		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
@@ -143,7 +142,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_ROOT, reader);
 			assertNamespaceCount(5, element);
 			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
-			assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), true, element);
+			String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
 			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/NeXML/Predicates/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -196,7 +195,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_LABEL, "alignment", element);
 			assertAttribute(ATTR_OTUS, otusID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:DnaSeqs", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "DnaSeqs", element);
 			
 			assertStartElement(TAG_FORMAT, reader);		
 			
@@ -299,7 +298,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			String tree1 = assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_LABEL, "tree", element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:FloatTree", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatTree", element);
 			
 			String node1 = assertNode(false, reader);
 			String node2 = assertNode(true, reader);
@@ -328,7 +327,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			String tree2 = assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_LABEL, "network", element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:FloatNetwork", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatNetwork", element);
 			
 			node1 = assertNode(false, reader);
 			node2 = assertNode(true, reader);
@@ -408,10 +407,10 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			
 		// Write file:
 		NeXMLEventWriter writer = new NeXMLEventWriter();
-		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, new URL("http://www.exampleApplication.com"));
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.BOTH);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -423,7 +422,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(12, element); //TODO use prefixes defined here, not constants, in the test
+			assertNamespaceCount(12, element);
 			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
@@ -432,7 +431,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 					ReadWriteConstants.JPHYLOIO_PREDICATE_PREFIX), true, element);
 			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/General/Attributes/", XMLConstants.XMLNS_ATTRIBUTE, 
 					ReadWriteConstants.JPHYLOIO_ATTRIBUTES_PREFIX), true, element);
-			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/NeXML/Predicates/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix1 = assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/NeXML/Predicates/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix3 = assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/Newick/DataTypes/", XMLConstants.XMLNS_ATTRIBUTE), false, element);		
 			String prefix4 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);			
@@ -455,13 +454,13 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(3, element);
 			assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:ResourceMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "ResourceMeta", element);
 			assertAttribute(ATTR_REL, prefix6 + XMLUtils.QNAME_SEPARATOR + "relations", element);
 			
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(3, element);
 			assertAttribute(ATTR_ID, element);	
-			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, prefix6 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			
 			assertCommentEvent("This is a divided comment.", reader);			
@@ -473,7 +472,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:ResourceMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "ResourceMeta", element);
 			assertAttribute(ATTR_REL, prefix6 + XMLUtils.QNAME_SEPARATOR + "relations", element);
 			assertAttribute(ATTR_HREF, "somePath/#fragment", element);
 			assertEndElement(TAG_META, reader);
@@ -481,7 +480,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(3, element);
 			assertAttribute(ATTR_ID, element);	
-			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, prefix6 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			
 			assertStartElement(new QName("http://test.com/", "customTest", prefix4), reader);
@@ -499,7 +498,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, prefix6 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertAttribute(ATTR_DATATYPE, "xsd:QName", element);
 			
@@ -511,7 +510,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(5, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "my string key", element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, "jpp:hasLiteralMetadata", element);
 			assertAttribute(ATTR_DATATYPE, "xsd:integer", element);
 			
@@ -552,7 +551,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_LABEL, "alignment", element);
 			assertAttribute(ATTR_OTUS, otusID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:DnaSeqs", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "DnaSeqs", element);
 			
 			assertLiteralMeta(reader);
 			
@@ -571,7 +570,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(3, element);
 			String tokenC = assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
-			assertAttribute(ATTR_SYMBOL, "C", element);
+			assertAttribute(ATTR_SYMBOL, "C", element);			
+			assertTokenDefinitionMeta("C", PREDICATE_ORIGINAL_TOKEN_NAME, prefix1, reader);			
 			assertLiteralMeta(reader);
 			assertEndElement(TAG_STATE, reader);
 			
@@ -580,6 +580,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			String tokenG = assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_SYMBOL, "G", element);
+			assertTokenDefinitionMeta("G", PREDICATE_ORIGINAL_TOKEN_NAME, prefix1, reader);	
 			assertLiteralMeta(reader);
 			assertEndElement(TAG_STATE, reader);
 			
@@ -588,6 +589,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			String tokenA = assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_SYMBOL, "A", element);
+			assertTokenDefinitionMeta("A", PREDICATE_ORIGINAL_TOKEN_NAME, prefix1, reader);	
 			assertLiteralMeta(reader);
 			assertEndElement(TAG_STATE, reader);
 			
@@ -596,6 +598,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			String tokenT = assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_SYMBOL, "T", element);
+			assertTokenDefinitionMeta("T", PREDICATE_ORIGINAL_TOKEN_NAME, prefix1, reader);	
 			assertLiteralMeta(reader);
 			assertEndElement(TAG_STATE, reader);
 			
@@ -611,8 +614,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
-			assertUncertainStateSet("-", "gap", false, reader);
-			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT);
+			assertUncertainStateSet("-", "gap", writeMetadata, reader);
+			assertUncertainStateSet("?", "missing data", writeMetadata, reader, tokenC, tokenG, tokenA, tokenT);
 			
 			assertEndElement(TAG_STATES, reader);
 			
@@ -667,7 +670,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			String tree1 = assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_LABEL, "tree", element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:FloatTree", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatTree", element);
 			assertLiteralMeta(reader);
 			
 			element = assertStartElement(TAG_NODE, reader);
@@ -679,7 +682,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(5, element);
 			assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
 			assertAttribute(ATTR_DATATYPE, "xsd:int", element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "a1", element);
@@ -691,7 +694,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "a2", element);
 			
@@ -729,7 +732,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "splitString", element);
 			
@@ -740,7 +743,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			element = assertStartElement(TAG_META, reader);
 			assertAttributeCount(5, element);
 			assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
 			assertAttribute(ATTR_DATATYPE, prefix3 + XMLUtils.QNAME_SEPARATOR + "Array", element);
 			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "array", element);
@@ -761,7 +764,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			String tree2 = assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_LABEL, "network", element);
-			assertAttribute(ATTR_XSI_TYPE, "nex:FloatNetwork", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatNetwork", element);
 			assertLiteralMeta(reader);
 			
 			node1 = assertNode(false, reader);
@@ -890,7 +893,6 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		// Write file:
 		try {
 			NeXMLEventWriter writer = new NeXMLEventWriter();
-			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
@@ -926,7 +928,6 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		// Write file:
 		try {
 			NeXMLEventWriter writer = new NeXMLEventWriter();
-			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
@@ -1026,7 +1027,6 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		// Write file:
 		try {
 			NeXMLEventWriter writer = new NeXMLEventWriter();
-			parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
@@ -1038,6 +1038,484 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertEquals(e.getMessage(), "More than one token set was assigned to the alignment column 3.");
 		}
 		finally {			
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void testWriteDocumentTokenSetForContinuousData() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/NeXMLTest.xml");
+		boolean writeMetadata = false;
+		
+		// Add OTU list to document data adapter
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();
+		document.getOTUListsMap().put(otuListID, createOTUList(otuListID, writeMetadata, false));
+		
+		// Add matrix to document data adapter		
+		String matrixID = DEFAULT_MATRIX_ID_PREFIX + obtainCurrentIDIndex();
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otuListID), 
+				true, null);		
+		
+		// Add character definitions
+		String charDefinitionID;
+		for (long i = 0; i < 5; i++) {
+			charDefinitionID = DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + obtainCurrentIDIndex();
+			matrix.getCharacterDefinitions(parameters).getObjectMap().put(charDefinitionID, createCharacterDefinition(charDefinitionID, i, writeMetadata));
+		}
+		
+		// Add token set
+		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + obtainCurrentIDIndex();		
+		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
+				new TokenSetDefinitionEvent(CharacterStateSetType.CONTINUOUS, tokenSetID, "tokenSet"), new ArrayList<JPhyloIOEvent>());	
+		
+		// Add single token definitions		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
+				"blue", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, null));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
+				"green", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, null));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		// Add validity interval for token set
+		tokenSet.getObjectContent().add(new CharacterSetIntervalEvent(0, 6));
+		
+		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, tokenSet);			
+			
+		List<List<String>> sequences = new ArrayList<>();
+		String[] sequence1 = {"0.5", "0.565", "0.4545", "1.4545", "3.427"};
+		sequences.add(Arrays.asList(sequence1));
+		String[] sequence2 = {"0.5", "6", "9.566", "1.4545", "3.427"};
+		sequences.add(Arrays.asList(sequence2));
+		String[] sequence3 = {"0.5", "47.544", "0.4545", "1.4545", "3.427"};
+		sequences.add(Arrays.asList(sequence3));
+		String[] sequence4 = {"8.45", "0.565", "0.4545", "1.4545", "3.427"};
+		sequences.add(Arrays.asList(sequence4));
+		String[] sequence5 = {"0.5", "4.667", "0.4545", "1.4545", "6"};
+		sequences.add(Arrays.asList(sequence5));
+		
+		// Add sequences
+		Iterator<String> iterator = document.getOTUList(parameters, otuListID).getIDIterator(parameters);
+		int otuCount = 0;
+		while (iterator.hasNext()) {
+			String sequenceID = DEFAULT_SEQUENCE_ID_PREFIX + obtainCurrentIDIndex();
+			matrix.getMatrix().getObjectMap().put(sequenceID, createSequence(sequenceID, null,
+					sequences.get(otuCount), document.getOTUList(parameters, otuListID).getObjectStartEvent(parameters, iterator.next()).getID(), writeMetadata));
+			otuCount++;			
+		}
+		
+		document.getMatrices().add(matrix);
+
+		// Write file:
+		try {
+			NeXMLEventWriter writer = new NeXMLEventWriter();
+			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
+			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
+			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+			
+			writer.writeDocument(document, file, parameters);
+			fail("Exception not thrown");
+		}
+		catch (InconsistentAdapterDataException e) {
+			assertEquals(e.getMessage(), "A continuous data token set can not specify single token definitions.");
+		}
+		finally {			
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void testWritingSimpleDocumentStandardData() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/NeXMLTest.xml");
+		boolean writeMetadata = false;
+		boolean writeSets = false;
+		
+		// Add OTU lists to document data adapter
+		String otuListID1 = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();
+		document.getOTUListsMap().put(otuListID1, createOTUList(otuListID1, writeMetadata, writeSets));
+		String otuListID2 = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();
+		document.getOTUListsMap().put(otuListID2, createOTUList(otuListID2, writeMetadata, writeSets));
+		
+		// Add standard sequences matrix to document data adapter
+		String sequenceMatrixID = DEFAULT_MATRIX_ID_PREFIX + obtainCurrentIDIndex();
+		StoreMatrixDataAdapter sequenceMatrix = new StoreMatrixDataAdapter(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, sequenceMatrixID, 
+				"standardSequences", otuListID1), true, null);		
+		
+		// Add character definitions
+		String charDefinitionID;
+		for (long i = 0; i < 3; i++) {
+			charDefinitionID = DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + obtainCurrentIDIndex();
+			sequenceMatrix.getCharacterDefinitions(parameters).getObjectMap().put(charDefinitionID, 
+					createCharacterDefinition(charDefinitionID, i, writeMetadata));
+		}
+			
+		List<List<String>> sequences = new ArrayList<>();
+		String[] sequence1 = {"blue", "green", "red"};
+		sequences.add(Arrays.asList(sequence1));
+		String[] sequence2 = {"red", "green", "blue"};
+		sequences.add(Arrays.asList(sequence2));
+		String[] sequence3 = {"red", "red", "red"};
+		sequences.add(Arrays.asList(sequence3));
+		String[] sequence4 = {"red", "blueOrRed", "blue"};
+		sequences.add(Arrays.asList(sequence4));
+		String[] sequence5 = {"blue", "red", "blue"};
+		sequences.add(Arrays.asList(sequence5));		
+		
+		// Add sequences
+		Iterator<String> iterator = document.getOTUList(parameters, otuListID1).getIDIterator(parameters);
+		int otuCount = 0;
+		String[] sequenceIDs = new String[5];
+		while (iterator.hasNext()) {
+			String sequenceID = DEFAULT_SEQUENCE_ID_PREFIX + obtainCurrentIDIndex();
+			sequenceIDs[otuCount] = sequenceID;
+			sequenceMatrix.getMatrix().getObjectMap().put(sequenceID, createSequence(sequenceID, null,
+					sequences.get(otuCount), document.getOTUList(parameters, otuListID1).getObjectStartEvent(parameters, iterator.next()).getID(), writeMetadata));
+			otuCount++;			
+		}
+
+		document.getMatrices().add(sequenceMatrix);
+		
+		// Add standard cells matrix to document data adapter
+		String cellsMatrixID = DEFAULT_MATRIX_ID_PREFIX + obtainCurrentIDIndex();
+		StoreMatrixDataAdapter cellsMatrix = new StoreMatrixDataAdapter(new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, cellsMatrixID, 
+				"standardSequences", otuListID2), true, null);
+		
+		// Add character definitions
+		for (long i = 0; i < 3; i++) {
+			charDefinitionID = DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + obtainCurrentIDIndex();
+			cellsMatrix.getCharacterDefinitions(parameters).getObjectMap().put(charDefinitionID, 
+					createCharacterDefinition(charDefinitionID, i, writeMetadata));
+		}		
+		
+		// Add token set
+		String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + obtainCurrentIDIndex();		
+		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
+				new TokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, tokenSetID, "tokenSet"), new ArrayList<JPhyloIOEvent>());	
+		
+		// Add single token definitions		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
+				"red", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, null));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
+				"blue", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, null));
+		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		// Add validity interval for token set
+		tokenSet.getObjectContent().add(new CharacterSetIntervalEvent(0, 1));
+		tokenSet.getObjectContent().add(new CharacterSetIntervalEvent(2, 3));
+		
+		// Add second token set
+		String tokenSetID2 = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + obtainCurrentIDIndex();		
+		StoreObjectData<TokenSetDefinitionEvent> tokenSet2 = new StoreObjectData<TokenSetDefinitionEvent>(
+				new TokenSetDefinitionEvent(CharacterStateSetType.DISCRETE, tokenSetID2, "tokenSet"), new ArrayList<JPhyloIOEvent>());	
+		
+		// Add single token definitions		
+		tokenSet2.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), "LabelBlue", 
+				"blue", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
+		tokenSet2.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet2.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), "LabelGreen", 
+				"green", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
+		tokenSet2.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet2.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
+				"red", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
+		tokenSet2.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		tokenSet2.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
+				"blueOrRed", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.POLYMORPHIC, Arrays.asList(new String[]{"red", "blue"})));
+		tokenSet2.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		
+		// Add validity interval for second token set
+		tokenSet2.getObjectContent().add(new CharacterSetIntervalEvent(1, 2));
+		
+		cellsMatrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, tokenSet);	
+		cellsMatrix.getTokenSets(parameters).getObjectMap().put(tokenSetID2, tokenSet2);		
+		
+		// Add single tokens
+		iterator = document.getOTUList(parameters, otuListID2).getIDIterator(parameters);
+		otuCount = 0;
+		while (iterator.hasNext()) {
+			String otuID = document.getOTUList(parameters, otuListID2).getObjectStartEvent(parameters, iterator.next()).getID();
+			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + obtainCurrentIDIndex();
+			
+			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
+					new LinkedLabeledIDEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, sequenceID, "single token", otuID), null);
+			
+			addSingleSequenceToken(singleTokens.getObjectContent(), null, sequences.get(otuCount).get(0), writeMetadata);
+			addSingleSequenceToken(singleTokens.getObjectContent(), null, sequences.get(otuCount).get(1), writeMetadata);
+			addSingleSequenceToken(singleTokens.getObjectContent(), null, sequences.get(otuCount).get(2), writeMetadata);
+			
+			cellsMatrix.getMatrix().getObjectMap().put(sequenceID, singleTokens);
+			
+			otuCount++;
+		}
+
+		document.getMatrices().add(cellsMatrix);
+		
+		// Add tree groups to document data adapter
+		document.getTreesNetworks().add(createTrees(otuListID1, writeMetadata, true, false));
+		document.getTreesNetworks().add(createTrees(null, writeMetadata, false, false));
+			
+		// Write file:
+		NeXMLEventWriter writer = new NeXMLEventWriter();
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL, true);
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+		writer.writeDocument(document, file, parameters);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+//			element = assertStartElement(TAG_ROOT, reader);
+//			assertNamespaceCount(5, element);
+//			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+//			String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+//			assertNamespace(new QName("http://bioinfweb.info/xmlns/JPhyloIO/Formats/NeXML/Predicates/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+//			
+//			assertAttributeCount(2, element);
+//			assertAttribute(ATTR_VERSION, "0.9", element);
+//			
+//			String generator = assertAttribute(ATTR_GENERATOR, element);
+//			assertTrue(generator, generator.matches(
+//					"exampleApplication 1.0 using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+"));
+//			
+//			assertTrue(reader.hasNext());
+//			XMLEvent event = reader.nextEvent();			
+//			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+//			assertTrue(((Comment)event).getText().matches(
+//					" This file was generated by exampleApplication 1.0 <http://www.exampleApplication.com> using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+//			
+//			element = assertStartElement(TAG_OTUS, reader);
+//			assertAttributeCount(3, element);
+//			String otusID = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "taxonlist", element);
+//			
+//			String[] otuIDs = new String[6];
+//			for (int i = 0; i < 5; i++) {
+//				element = assertStartElement(TAG_OTU, reader);
+//				assertAttributeCount(3, element);
+//				otuIDs[i] = assertAttribute(ATTR_ID, element);
+//				assertAttribute(ATTR_ABOUT, element);
+//				assertAttribute(ATTR_LABEL, "taxon" + i, element);
+//				assertEndElement(TAG_OTU, reader);
+//			}
+//			
+//			element = assertStartElement(TAG_OTU, reader);
+//			assertAttributeCount(3, element);
+//			otuIDs[5] = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "UNDEFINED OTU generated by JPhyloIO", element);
+//			assertEndElement(TAG_OTU, reader);
+//
+//			assertOTUSet(reader, writeMetadata, otuIDs[1], otuIDs[2], otuIDs[3]);			
+//			assertOTUSet(reader, writeMetadata, otuIDs[1], otuIDs[2], otuIDs[3], otuIDs[4]);			
+//			assertOTUSet(reader, writeMetadata, otuIDs[0], otuIDs[1], otuIDs[2], otuIDs[3], otuIDs[4]);
+//			
+//			assertEndElement(TAG_OTUS, reader);
+//			
+//			element = assertStartElement(TAG_CHARACTERS, reader);
+//			assertAttributeCount(5, element);
+//			assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "alignment", element);
+//			assertAttribute(ATTR_OTUS, otusID, element);
+//			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "DnaSeqs", element);
+//			
+//			assertStartElement(TAG_FORMAT, reader);		
+//			
+//			element = assertStartElement(TAG_STATES, reader);
+//			assertAttributeCount(3, element);
+//			String tokenSetID = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "tokenSet", element);
+//			
+//			element = assertStartElement(TAG_STATE, reader);
+//			assertAttributeCount(3, element);
+//			String tokenC = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_SYMBOL, "C", element);
+//			assertEndElement(TAG_STATE, reader);
+//			
+//			element = assertStartElement(TAG_STATE, reader);
+//			assertAttributeCount(3, element);
+//			String tokenG = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_SYMBOL, "G", element);
+//			assertEndElement(TAG_STATE, reader);
+//			
+//			element = assertStartElement(TAG_STATE, reader);
+//			assertAttributeCount(3, element);
+//			String tokenA = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_SYMBOL, "A", element);
+//			assertEndElement(TAG_STATE, reader);
+//			
+//			element = assertStartElement(TAG_STATE, reader);
+//			assertAttributeCount(3, element);
+//			String tokenT = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_SYMBOL, "T", element);
+//			assertEndElement(TAG_STATE, reader);
+//			
+//			assertUncertainStateSet("B", null, writeMetadata, reader, tokenC, tokenG, tokenT);
+//			assertUncertainStateSet("D", null, writeMetadata, reader, tokenA, tokenG, tokenT);
+//			assertUncertainStateSet("H", null, writeMetadata, reader, tokenA, tokenC, tokenT);
+//			assertUncertainStateSet("K", null, writeMetadata, reader, tokenG, tokenT);
+//			assertUncertainStateSet("M", null, writeMetadata, reader, tokenA, tokenC);
+//			assertUncertainStateSet("N", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
+//			assertUncertainStateSet("R", null, writeMetadata, reader, tokenA, tokenG);
+//			assertUncertainStateSet("S", null, writeMetadata, reader, tokenC, tokenG);
+//			assertUncertainStateSet("V", null, writeMetadata, reader, tokenA, tokenC, tokenG);
+//			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
+//			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
+//			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
+//			assertUncertainStateSet("-", "gap", false, reader);
+//			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT);
+//			
+//			assertEndElement(TAG_STATES, reader);
+//			
+//			String char0 = assertCharacterDefinition("column definition", tokenSetID, "25", "25", writeMetadata, reader);
+//			assertCharacterDefinition("column definition", tokenSetID, "25", "25", writeMetadata, reader);
+//			assertCharacterDefinition("column definition", tokenSetID, "25", "25", writeMetadata, reader);
+//			String char3 = assertCharacterDefinition("column definition", tokenSetID, "25", "25", writeMetadata, reader);
+//			String char4 = assertCharacterDefinition("column definition", tokenSetID, "25", "25", writeMetadata, reader);
+//			String char5 = assertCharacterDefinition(null, tokenSetID, null, null, false, reader);
+//			
+//			element = assertStartElement(TAG_SET, reader);
+//			assertAttributeCount(4, element);
+//			assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "character set", element);
+//			assertAttribute(ATTR_CHAR_SET_LINKED_IDS, char0 + " " + char3 + " " + char4 + " " + char5 + " ", element);
+//			assertEndElement(TAG_SET, reader);
+//			
+//			assertEndElement(TAG_FORMAT, reader);
+//			
+//			assertStartElement(TAG_MATRIX, reader);
+//			String sequence1 = assertRow(null, otuIDs[0], "AGTGC", writeMetadata, reader);
+//			assertRow(null, otuIDs[1], "A-TCT", writeMetadata, reader);
+//			String sequence3 = assertRow(null, otuIDs[2], "AGTGT", writeMetadata, reader);
+//			assertRow(null, otuIDs[3], "CGC?C", writeMetadata, reader);
+//			String sequence5 = assertRow(null, otuIDs[4], "CATCGT", writeMetadata, reader);
+//			assertRow("sequence", otuIDs[5], "AGTCTA", writeMetadata, reader);
+//			
+//			element = assertStartElement(TAG_SET, reader);
+//			assertAttributeCount(3, element);
+//			assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);			
+//			assertAttribute(ATTR_SEQUENCE_SET_LINKED_IDS, sequence1 + " " + sequence3 + " " + sequence5 + " ", element);
+//			assertEndElement(TAG_SET, reader);
+//			
+//			assertEndElement(TAG_MATRIX, reader);
+//			
+//			assertEndElement(TAG_CHARACTERS, reader);
+//			
+//			element = assertStartElement(TAG_TREES, reader);
+//			assertAttributeCount(4, element);
+//			assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "treesAndNetworks", element);
+//			assertAttribute(ATTR_OTUS, otuListID, element);
+//			
+//			element = assertStartElement(TAG_TREE, reader);
+//			assertAttributeCount(4, element);
+//			String tree1 = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "tree", element);
+//			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatTree", element);
+//			
+//			String node1 = assertNode(false, reader);
+//			String node2 = assertNode(true, reader);
+//			String node3 = assertNode(false, reader);
+//			String node4 = assertNode(false, reader);
+//			String node5 = assertNode(false, reader);
+//			
+//			element = assertStartElement(TAG_ROOTEDGE, reader);
+//			assertAttributeCount(5, element);
+//			assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "Root edge", element);
+//			assertAttribute(ATTR_TARGET, node2, element);
+//			assertAttribute(ATTR_LENGTH, "1.5", element);
+//			assertEndElement(TAG_ROOTEDGE, reader);
+//			
+//			assertEdge("Internal edge", node2, node1, 1.0, reader);
+//			assertEdge("Leaf edge A", node1, node3, 1.1, reader);
+//			assertEdge("Leaf edge B", node1, node4, 0.9, reader);
+//			assertEdge("Leaf edge C", node2, node5, 2.0, reader);
+//			
+//			assertEndElement(TAG_TREE, reader);
+//			
+//			element = assertStartElement(TAG_NETWORK, reader);
+//			assertAttributeCount(4, element);
+//			String tree2 = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "network", element);
+//			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatNetwork", element);
+//			
+//			node1 = assertNode(false, reader);
+//			node2 = assertNode(true, reader);
+//			node3 = assertNode(false, reader);
+//			node4 = assertNode(false, reader);
+//			node5 = assertNode(false, reader);
+//			
+//			element = assertStartElement(TAG_ROOTEDGE, reader);
+//			assertAttributeCount(5, element);
+//			String rootEdgeID = assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);
+//			assertAttribute(ATTR_LABEL, "Root edge", element);
+//			assertAttribute(ATTR_TARGET, node2, element);
+//			assertAttribute(ATTR_LENGTH, "1.5", element);
+//			assertEndElement(TAG_ROOTEDGE, reader);
+//			
+//			String edgeID = assertEdge("Internal edge", node2, node1, 1.0, reader);
+//			assertEdge("Leaf edge A", node1, node3, 1.1, reader);
+//			assertEdge("Leaf edge B", node1, node4, Double.NaN, reader);
+//			assertEdge("Leaf edge C", node2, node5, 2.0, reader);
+//			assertEdge("network edge", node4, node5, 1.4, reader);
+//			
+//			element = assertStartElement(TAG_SET, reader);
+//			assertAttributeCount(5, element);
+//			assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);			
+//			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_NODE_IDS, node3 + " " + node4 + " ", element);
+//			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS, edgeID + " ", element);
+//			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_ROOTEDGE_IDS, rootEdgeID + " ", element);
+//			assertEndElement(TAG_SET, reader);
+//			
+//			assertEndElement(TAG_NETWORK, reader);
+//			
+//			element = assertStartElement(TAG_SET, reader);
+//			assertAttributeCount(4, element);
+//			assertAttribute(ATTR_ID, element);
+//			assertAttribute(ATTR_ABOUT, element);			
+//			assertAttribute(ATTR_TREE_SET_LINKED_TREE_IDS, tree1 + " ", element);
+//			assertAttribute(ATTR_TREE_SET_LINKED_NETWORK_IDS, tree2 + " ", element);
+//			assertEndElement(TAG_SET, reader);
+//			
+//			assertEndElement(TAG_TREES, reader);
+//			
+//			assertEndElement(TAG_ROOT, reader);
+//			
+//			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
 			file.delete();
 		}
 	}
@@ -1078,7 +1556,19 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		
 		assertAttribute(ATTR_ID, element);
 		assertAttribute(ATTR_ABOUT, element);
-		assertAttribute(ATTR_SYMBOL, symbol, element);
+		assertAttribute(ATTR_SYMBOL, symbol, element);		
+		
+		if (symbol.equals("-") && assertMetadata) {			
+			assertTokenDefinitionMeta("gap", PREDICATE_ORIGINAL_LABEL, "p1", reader);
+			assertTokenDefinitionMeta(symbol, PREDICATE_ORIGINAL_TOKEN_NAME, "p1", reader);
+		}
+		else if (symbol.equals("?") && assertMetadata) {			
+			assertTokenDefinitionMeta("missing data", PREDICATE_ORIGINAL_LABEL, "p1", reader);
+			assertTokenDefinitionMeta(symbol, PREDICATE_ORIGINAL_TOKEN_NAME, "p1", reader);
+		}
+		else if (assertMetadata) {
+			assertTokenDefinitionMeta(symbol, PREDICATE_ORIGINAL_TOKEN_NAME, "p1", reader);
+		}
 		
 		for (int i = 0; i < memberID.length; i++) {
 			element = assertStartElement(TAG_MEMBER, reader);
@@ -1087,7 +1577,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertEndElement(TAG_MEMBER, reader);
 		}
 		
-		if (assertMetadata) {
+		if (assertMetadata && !symbol.equals("?") && !symbol.equals("-")) {
 			assertLiteralMeta(reader);
 		}
 		
@@ -1097,6 +1587,19 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		for (String constituent : memberID) {
 			assertTrue(constituents.contains(constituent));
 		}
+	}
+	
+	
+	private void assertTokenDefinitionMeta(String content, QName predicate, String predicatePrefix, XMLEventReader reader) throws XMLStreamException {
+		StartElement element = assertStartElement(TAG_META, reader);
+		assertAttributeCount(3, element);
+		assertAttribute(ATTR_ID, element);
+		assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+		assertAttribute(ATTR_PROPERTY, predicatePrefix + XMLUtils.QNAME_SEPARATOR + predicate.getLocalPart(), element);
+		
+		assertCharactersEvent(content, reader);
+		
+		assertEndElement(TAG_META, reader);
 	}
 	
 	
@@ -1289,7 +1792,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
 		metaData.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
-				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, new QName(W3CXSConstants.DATA_TYPE_QNAME.getNamespaceURI(), W3CXSConstants.DATA_TYPE_QNAME.getLocalPart())), 
+				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate", "pre")), new URIOrStringIdentifier(null, new QName(W3CXSConstants.DATA_TYPE_QNAME.getNamespaceURI(), W3CXSConstants.DATA_TYPE_QNAME.getLocalPart())), 
 				LiteralContentSequenceType.SIMPLE));
 
 		metaData.add(new LiteralMetadataContentEvent(new QName("www.another-test.net", "test2", "pre"), null));
@@ -1499,7 +2002,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		
 		return matrix;
 	}
-	
+
 	
 	private StoreMatrixDataAdapter createContinuousCellsMatrix(String otusID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + obtainCurrentIDIndex();
