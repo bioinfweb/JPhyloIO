@@ -100,8 +100,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				}
 				break;
 			case CONTINUOUS:
-				alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE); // Continuous data does not define specific tokens
-				break;
+				throw new InconsistentAdapterDataException("A continuous data token set can not specify single token definitions.");
 			default:
 				break;
 		}

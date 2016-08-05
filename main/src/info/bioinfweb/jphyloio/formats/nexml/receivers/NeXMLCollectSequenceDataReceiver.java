@@ -115,7 +115,6 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 				alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getOccuringTokens().add(token);
 
 				if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
-					System.out.println(token);
 					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
 				}
 			}

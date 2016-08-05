@@ -101,7 +101,7 @@ public abstract class NeXMLHandleSequenceDataReceiver extends AbstractSequenceCo
 				}
 				break;
 			case SEQUENCE_TOKENS:
-				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
+				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {					
 					handleToken(token, null);
 					handleTokenEnd();
 				}

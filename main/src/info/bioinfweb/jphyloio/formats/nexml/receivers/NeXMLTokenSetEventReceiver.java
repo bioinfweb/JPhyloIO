@@ -169,19 +169,21 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		tokenNameToIDMap.put(tokenName, event.getID());
 		
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_ID.getLocalPart(), event.getID());
-		getStreamDataProvider().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());
+		getStreamDataProvider().getWriter().writeAttribute(ATTR_ABOUT.getLocalPart(), "#" + event.getID());		
 		
-		if (label != null) {
-			if (getParameterMap().getBoolean(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL, false)) {
-				getStreamDataProvider().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
-			}
-			else {
+		if (getParameterMap().getBoolean(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL, false)) {
+			if ((label != null) && !label.isEmpty()) {
 				getStreamDataProvider().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), label);
 			}
 		}
+		else {
+			if ((event.getLabel() != null) && !event.getLabel().isEmpty()) {
+				getStreamDataProvider().getWriter().writeAttribute(ATTR_LABEL.getLocalPart(), event.getLabel());
+			}
+		}		
 		
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_SYMBOL.getLocalPart(), tokenSymbol);
-		
+
 		switch (getParameterMap().getLabelHandling()) {
 			case NEITHER:
 				break;
