@@ -1435,7 +1435,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		
 		Duration duration = null;
 		try {
-			duration = DatatypeFactory.newInstance().newDuration(true, 5, 2, 10, 0, 0, 0);
+			duration = DatatypeFactory.newInstance().newDuration(true, 5, 2, 10, 0, 0, 0);			
 		}
 		catch (DatatypeConfigurationException e) {}
 		
