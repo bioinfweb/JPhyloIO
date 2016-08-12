@@ -190,7 +190,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
 				+ ":" + datatype.getURI().getLocalPart());
 		
-		getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), propertyOwner.toString().toLowerCase()); //TODO XTG attribute constants zum Vergleich ansehen
+		getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), propertyOwner.name().toLowerCase());  //TODO PDEMetaColumnType zum Vergleich ansehen
 		
 		if (value != null) {
 			getStreamDataProvider().getWriter().writeCharacters(value);

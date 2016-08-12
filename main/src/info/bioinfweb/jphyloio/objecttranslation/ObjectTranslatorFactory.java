@@ -130,7 +130,7 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 	public ObjectTranslator<?> getDefaultTranslatorWithPossiblyInvalidNamespace(QName dataType) {
 		ObjectTranslator<?> translator = getTranslator(dataType, null);
 		
-		if ((translator == null) && (dataType != null)) {
+		if ((translator == null) && (dataType != null)) { //TODO if ns ends in a '#', remove the '#' and try again
 			translator = getDefaultTranslator(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, dataType.getLocalPart()));
 		}
 			

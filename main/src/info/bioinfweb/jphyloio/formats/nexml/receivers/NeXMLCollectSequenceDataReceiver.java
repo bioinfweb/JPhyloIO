@@ -105,7 +105,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 			}
 			else if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.CONTINUOUS)) {
 				try {
-					Double.parseDouble(token); //TODO Should BigDecimal or some other test method be used here? (Otherwise values outside the range of double will not be accepted.)
+					Double.parseDouble(token);  // NeXML schema restricts continuous data to xsd:double. Therefore parsing BigDecimal is unnecessary.
 				}
 				catch (NumberFormatException e) {
 					throw new JPhyloIOWriterException("All tokens in a continuous data characters tag must be numbers.");

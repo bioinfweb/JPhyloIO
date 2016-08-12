@@ -226,7 +226,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			else if (element.getName().equals(TAG_CHAR)) {  // In some cases NeXML char elements might only specify a character index instead of an ID
 				labeledIDEventInformation.id = RESERVED_ID_PREFIX + DEFAULT_CHARACTER_DEFINITION_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
 			}
-		}		
+		}
 		
 		if (labeledIDEventInformation.id != null) {
 			return labeledIDEventInformation;
@@ -263,9 +263,6 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		// If no label is present in the element either the OTU label or the element ID is used as a label
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuOrOtusID != null)) {
 			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuOrOtusID);
-			if (otuEventInformation.label == null) {
-				otuEventInformation.label = otuEventInformation.id;
-			}
 		} //TODO maybe make this part optional?
 		
 		return otuEventInformation;
