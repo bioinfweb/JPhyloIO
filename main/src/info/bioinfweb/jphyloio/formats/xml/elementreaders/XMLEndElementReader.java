@@ -53,6 +53,11 @@ public class XMLEndElementReader extends AbstractXMLElementReader {
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		}
 		
+		if (streamDataProvider.isCustomXMLStartWritten()) {
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+			streamDataProvider.setCustomXMLStartWritten(false);
+		}
+		
 		if (createResourceEnd) {
 			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		}

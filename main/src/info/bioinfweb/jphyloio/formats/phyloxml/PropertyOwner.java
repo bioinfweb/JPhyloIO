@@ -20,16 +20,38 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 
+/**
+ * The structure a PhyloXML property-element belongs to. 
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public enum PropertyOwner {
-	PHYLOGENY,
-	
-	CLADE,
-	
-	NODE,
-	
-	ANNOTATION,
-	
-	PARENT_BRANCH,
-	
+	PHYLOGENY,	
+	CLADE,	
+	NODE,	
+	ANNOTATION,	
+	PARENT_BRANCH,	
 	OTHER;
+	
+	
+	@Override
+	public String toString() {
+		switch (this) {
+			case PHYLOGENY:
+				return PhyloXMLConstants.APPLIES_TO_PHYLOGENY;
+			case CLADE:
+				return PhyloXMLConstants.APPLIES_TO_CLADE;
+			case NODE:
+				return PhyloXMLConstants.APPLIES_TO_NODE;
+			case ANNOTATION:
+				return PhyloXMLConstants.APPLIES_TO_ANNOTATION;
+			case PARENT_BRANCH:
+				return PhyloXMLConstants.APPLIES_TO_PARENT_BRANCH;
+			case OTHER:
+				return PhyloXMLConstants.APPLIES_TO_OTHER;
+			default:
+				return super.toString();
+		}
+	}
 }

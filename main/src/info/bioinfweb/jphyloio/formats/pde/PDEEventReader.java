@@ -40,6 +40,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
 
@@ -443,7 +444,9 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						readAttributes(streamDataProvider, event.asStartElement(), "", ATTR_ALIGNMENT_LENGTH, PREDICATE_CHARACTER_COUNT, ATTR_SEQUENCE_COUNT, PREDICATE_SEQUENCE_COUNT);
+						readAttributes(streamDataProvider, event.asStartElement(), "", 
+								new AttributeInfo(ATTR_ALIGNMENT_LENGTH, PREDICATE_CHARACTER_COUNT, W3CXSConstants.DATA_TYPE_INT), 
+								new AttributeInfo(ATTR_SEQUENCE_COUNT, PREDICATE_SEQUENCE_COUNT, W3CXSConstants.DATA_TYPE_INT));
 						
 						int seqIndex = streamDataProvider.getCurrentSequenceIndex();
 						streamDataProvider.setCurrentSequenceID(DEFAULT_SEQUENCE_ID_PREFIX + streamDataProvider.getIDManager().createNewID());

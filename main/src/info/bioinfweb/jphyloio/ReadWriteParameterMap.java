@@ -196,6 +196,15 @@ public class ReadWriteParameterMap extends ParameterMap {
 	 */
 	public static final String KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA = KEY_PREFIX + "neXMLstandardDataLabelMetadata";
 	
+	/**
+	 * This parameter will only be used by {@link NeXMLEventReader} and determines whether the label of an associated OTU
+	 * should be used as a label, if none was present in an element.
+	 * <p>
+	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, the events' label will 
+	 * remain null if no label was present in the element. If {@code true} is specified, the OTU label will be used, if present.
+	 */
+	public static final String KEY_NEXML_USE_OTU_LABEL = KEY_PREFIX + "neXMLuseOTULabel";
+	
 	/** 
 	 * Identifies the name of the application generating the output. This information, as well as the application URL and version, 
 	 * shall be added at the beginning of formats that support this.

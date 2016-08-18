@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
+import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import java.io.IOException;
@@ -43,26 +44,38 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 	private QName resourcePredicate;
 	private URIOrStringIdentifier datatype;
 	private boolean isEdgeMeta;
-	private LinkedHashMap<QName, QName> attributeToPredicateMap;
+	private LinkedHashMap<QName, AttributeInfo> attributeInformationMap;
 	
 
 	
-	public XMLStartElementReader(QName literalPredicate, QName resourcePredicate, URIOrStringIdentifier datatype, boolean isEdgeMeta, QName... mappings) {
+	public XMLStartElementReader(QName literalPredicate, QName resourcePredicate, URIOrStringIdentifier datatype, boolean isEdgeMeta, 
+			AttributeInfo... attributeInformation) {
+		
 		super();
 		this.literalPredicate = literalPredicate;
 		this.resourcePredicate = resourcePredicate;
 		this.datatype = datatype;
 		this.isEdgeMeta = isEdgeMeta;
 		
-		if (mappings.length % 2 != 0) {
-			throw new IllegalArgumentException("Attributes and predicates need to be given in pairs, but an uneven number of arguments was found.");
+		LinkedHashMap<QName, AttributeInfo> attributeInformationMap = new LinkedHashMap<QName, AttributeInfo>();
+		for (int i  = 0; i  < attributeInformation.length; i++) {
+			attributeInformationMap.put(attributeInformation[i].getAttributeName(), attributeInformation[i]);
 		}
-		else if (mappings.length >= 2) {
-			attributeToPredicateMap = new LinkedHashMap<QName, QName>();
-			for (int i  = 0; i  < mappings.length; i += 2) {
-				attributeToPredicateMap.put(mappings[i], mappings[i + 1]);
-			}
-		}
+	}
+
+
+	protected QName getResourcePredicate() {
+		return resourcePredicate;
+	}
+
+
+	protected boolean isEdgeMeta() {
+		return isEdgeMeta;
+	}
+
+
+	public LinkedHashMap<QName, AttributeInfo> getAttributeInformationMap() {
+		return attributeInformationMap;
 	}
 
 
@@ -80,7 +93,7 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 					new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 							new URIOrStringIdentifier(null, resourcePredicate), null, null));
 			
-			readAttributes(streamDataProvider, element, "", attributeToPredicateMap);
+			readAttributes(streamDataProvider, element, "", attributeInformationMap);
 		}
 		
 		if (literalPredicate != null) {

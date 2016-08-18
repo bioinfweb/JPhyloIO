@@ -23,6 +23,7 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
 import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.collections.NonStoringCollection;
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
@@ -54,6 +55,7 @@ import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaEndElementRe
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaStartElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLSetEndElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
@@ -687,7 +689,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				
 				streamDataProvider.getCurrentEventCollection().add(new CharacterDefinitionEvent(info.id, info.label, streamDataProvider.getCharIDs().size() - 1));
 
-				readAttributes(streamDataProvider, element, RESERVED_ID_PREFIX, ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION);
+				readAttributes(streamDataProvider, element, RESERVED_ID_PREFIX, 
+						new AttributeInfo(ATTR_TOKENS, PREDICATE_CHAR_ATTR_TOKENS, W3CXSConstants.DATA_TYPE_POSITIVE_INTEGER), 
+						new AttributeInfo(ATTR_CODON_POSITION, PREDICATE_CHAR_ATTR_CODON_POSITION, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER));
 			}
 		});
 		

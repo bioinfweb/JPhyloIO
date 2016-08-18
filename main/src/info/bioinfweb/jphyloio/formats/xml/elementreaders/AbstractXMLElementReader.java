@@ -26,8 +26,14 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xtg.XTGConstants;
+import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 
 import java.awt.Color;
 import java.util.LinkedHashMap;
@@ -41,47 +47,48 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 		implements XMLElementReader<P> {
 	
 	
-	protected void readAttributes(P streamDataProvider, StartElement element, String idPrefix, QName... mappings) {
-		if (mappings.length % 2 != 0) {
-			throw new IllegalArgumentException("Attributes and predicates need to be given in pairs, but an uneven number of arguments was found.");
+	protected void readAttributes(P streamDataProvider, StartElement element, String idPrefix, AttributeInfo... attributeInformation) 
+			throws JPhyloIOReaderException {
+		
+		LinkedHashMap<QName, AttributeInfo> attributeInformationMap = new LinkedHashMap<QName, AttributeInfo>();
+		for (int i  = 0; i  < attributeInformation.length; i++) {
+			attributeInformationMap.put(attributeInformation[i].getAttributeName(), attributeInformation[i]);
 		}
-		else if (mappings.length >= 2) {
-			LinkedHashMap<QName, QName> attributeToPredicateMap = new LinkedHashMap<QName, QName>();
-			for (int i  = 0; i  < mappings.length; i += 2) {
-				attributeToPredicateMap.put(mappings[i], mappings[i + 1]);
-			}
-			
-			readAttributes(streamDataProvider, element, idPrefix, attributeToPredicateMap);
-		}
+		
+		readAttributes(streamDataProvider, element, idPrefix, attributeInformationMap);
 	}
 	
 	
-	protected void readAttributes(P streamDataProvider, StartElement element, String idPrefix, LinkedHashMap<QName, QName> attributeToPredicateMap) {
-		if ((attributeToPredicateMap != null) && !attributeToPredicateMap.isEmpty()) {
+	protected void readAttributes(P streamDataProvider, StartElement element, String idPrefix, LinkedHashMap<QName, AttributeInfo> attributeInformationMap) 
+			throws JPhyloIOReaderException {
+		
+		if ((attributeInformationMap != null) && !attributeInformationMap.isEmpty()) {
 			String metaIDPrefix = idPrefix + ReadWriteConstants.DEFAULT_META_ID_PREFIX;
 			
-			for (QName attribute : attributeToPredicateMap.keySet()) {
+			for (QName attribute : attributeInformationMap.keySet()) {
 				if (element.getAttributeByName(attribute) != null) {
 					String attributeValue = element.getAttributeByName(attribute).getValue();
+					QName datatype = attributeInformationMap.get(attribute).getDatatype(); 
 					Object objectValue = null;					
 
-					if (!attributeValue.isEmpty() && (attributeValue.charAt(0) == '#')) {
-						try {
-							objectValue = Color.decode(attributeValue);
+					if (datatype != null) {
+						if (datatype.equals(XTGConstants.DATA_TYPE_COLOR)) {
+							try {
+								objectValue = Color.decode(attributeValue);
+							}
+							catch (IllegalArgumentException f) {}
 						}
-						catch (IllegalArgumentException f) {}
-					}
-					else if (attributeValue.equals(Boolean.toString(false))) {
-						objectValue = false;
-					}
-					else if (attributeValue.equals(Boolean.toString(true))) {
-						objectValue = true;
-					}
-					else {
-						try {
-							objectValue = Double.parseDouble(attributeValue);
+						else {
+							ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory()
+									.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
+							
+							try {
+								objectValue = translator.representationToJava(attributeValue, streamDataProvider);
+							}
+							catch (InvalidObjectSourceDataException e) {
+								throw new JPhyloIOReaderException("The content of this tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", element.getLocation());
+							}
 						}
-						catch (IllegalArgumentException f) {}
 					}
 					
 					if (objectValue == null) {
@@ -90,9 +97,10 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 					
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(metaIDPrefix + streamDataProvider.getIDManager().createNewID(), null, 
-							new URIOrStringIdentifier(null, attributeToPredicateMap.get(attribute)), LiteralContentSequenceType.SIMPLE));
+							new URIOrStringIdentifier(null, attributeInformationMap.get(attribute).getPredicate()), 
+							new URIOrStringIdentifier(null, attributeInformationMap.get(attribute).getDatatype()), LiteralContentSequenceType.SIMPLE));
 					
-					if ((attributeValue != null) && !attributeValue.isEmpty()) {
+					if ((attributeValue != null)) {
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, attributeValue));
 					}
 							

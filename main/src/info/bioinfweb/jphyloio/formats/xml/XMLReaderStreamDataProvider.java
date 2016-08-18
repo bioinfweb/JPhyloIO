@@ -35,10 +35,13 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	private String elementName;
 	
 	private Stack<String> nestedMetaNames = new Stack<String>();
+	private boolean customXMLStartWritten = false;
 	
 	private CharacterStateSetType characterSetType;
 	
 	private String incompleteToken = null;
+	
+	private boolean isRootedPhylogeny;
 	
 	private Stack<NodeEdgeInfo> sourceNode = new Stack<NodeEdgeInfo>();
 	private Stack<Queue<NodeEdgeInfo>> edgeInfos = new Stack<Queue<NodeEdgeInfo>>();
@@ -81,6 +84,16 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 	}
 	
 	
+	public boolean isCustomXMLStartWritten() {
+		return customXMLStartWritten;
+	}
+
+
+	public void setCustomXMLStartWritten(boolean isFirstCustomXMLElement) {
+		this.customXMLStartWritten = isFirstCustomXMLElement;
+	}
+
+
 	public boolean hasIncompleteToken() {
 		return incompleteToken != null;
 	}
@@ -93,6 +106,16 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 
 	public void setIncompleteToken(String incompleteToken) {
 		this.incompleteToken = incompleteToken;
+	}
+
+
+	public boolean isRootedPhylogeny() {
+		return isRootedPhylogeny;
+	}
+
+
+	public void setRootedPhylogeny(boolean isRootedPhylogeny) {
+		this.isRootedPhylogeny = isRootedPhylogeny;
 	}
 
 	

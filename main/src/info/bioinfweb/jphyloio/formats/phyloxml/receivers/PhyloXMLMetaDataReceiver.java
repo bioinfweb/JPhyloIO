@@ -40,6 +40,7 @@ import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
+import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -113,12 +114,30 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		if (writeContent && event.hasValue()) {
 			if (hasSimpleContent()) {
-				if ((originalType == null) || (originalType.getURI() == null) || !VALID_XSD_TYPES.contains(originalType.getURI())) {
-					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING); //TODO should the datatype always be string if no translator was found? (if the string value or object.toString() is written, the characters might not be according to the xsd schema otherwise)				
-				}
-			
-				String value = processLiteralContent(event, originalType.getURI());
+				String value = null;
 				
+				if ((originalType == null) || (originalType.getURI() == null)) {
+					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);				
+				}
+				
+				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory()
+						.getDefaultTranslatorWithPossiblyInvalidNamespace(originalType.getURI());
+				
+				if ((translator != null) && !translator.hasStringRepresentation()) {
+					if (!(propertyOwner.equals(PropertyOwner.NODE) || propertyOwner.equals(PropertyOwner.PARENT_BRANCH))) {					
+						translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());  // Write custom XML content
+						getStreamDataProvider().getMetaIDs().remove(currentLiteralMetaID);
+					}
+				}
+				else {
+					if (((translator == null) && !VALID_XSD_TYPES.contains(originalType.getURI()))
+							|| ((translator != null) && translator.hasStringRepresentation() && !VALID_XSD_TYPES.contains(originalType.getURI()))){
+						originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);	
+					}
+					
+					value = processLiteralContent(event, translator, originalType.getURI());
+				}				
+								
 				if (value != null) {
 					if (writePropertyStart) {
 						writePropertyTag(literalPredicate, originalType, null, false);
@@ -130,10 +149,11 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 					if (!event.isContinuedInNextEvent()) {
 						getStreamDataProvider().getWriter().writeEndElement();		
 					}
+					
+					getStreamDataProvider().getMetaIDs().remove(currentLiteralMetaID);
 				}
 				
-				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());
-				getStreamDataProvider().getMetaIDs().remove(currentLiteralMetaID);
+				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());				
 			}
 			else if (event.hasXMLEventValue() && !(propertyOwner.equals(PropertyOwner.NODE) || propertyOwner.equals(PropertyOwner.PARENT_BRANCH))) {				
 				writeCustomXMLTag(event.getXMLEvent());
@@ -190,7 +210,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
 				+ ":" + datatype.getURI().getLocalPart());
 		
-		getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), propertyOwner.name().toLowerCase());  //TODO PDEMetaColumnType zum Vergleich ansehen
+		getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), propertyOwner.toString());
 		
 		if (value != null) {
 			getStreamDataProvider().getWriter().writeCharacters(value);
@@ -212,41 +232,53 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 			case XMLStreamConstants.START_ELEMENT:
 				StartElement element = event.asStartElement();
 				QName tag = element.getName();
-				getStreamDataProvider().getWriter().writeStartElement(tag.getPrefix(), tag.getLocalPart(), tag.getNamespaceURI());
 				
-				@SuppressWarnings("unchecked")
-				Iterator<Attribute> attributes = element.getAttributes();
-				while (attributes.hasNext()) {
-					Attribute attribute = attributes.next();
-					QName attributeName = attribute.getName();
-					getStreamDataProvider().getWriter().writeAttribute(attributeName.getPrefix(), attributeName.getNamespaceURI(), attributeName.getLocalPart(),
-							attribute.getValue());					
+				if (!tag.getNamespaceURI().equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {  // Do not write known PhyloXML-Tags as custom XML
+					getStreamDataProvider().getCustomXMLElements().push(event.asStartElement().getName().getLocalPart());
+					
+					getStreamDataProvider().getWriter().writeStartElement(tag.getPrefix(), tag.getLocalPart(), tag.getNamespaceURI());
+					
+					@SuppressWarnings("unchecked")
+					Iterator<Attribute> attributes = element.getAttributes();
+					while (attributes.hasNext()) {
+						Attribute attribute = attributes.next();
+						QName attributeName = attribute.getName();
+						getStreamDataProvider().getWriter().writeAttribute(attributeName.getPrefix(), attributeName.getNamespaceURI(), attributeName.getLocalPart(),
+								attribute.getValue());					
+					}
+					
+	//				if (predicate.getURI() != null) {
+	//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
+	//							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+	//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
+	//									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
+	//				}
+	//				else { // String representation can not be null, if URI is null
+	//					getStreamDataProvider().getWriter().writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getPrefix(), 
+	//							ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), predicate.getStringRepresentation());
+	//				}
+					
+	//				if ((originalType != null) && (originalType.getURI() != null)) {
+	//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
+	//							XMLReadWriteUtils.ATTRIBUTE_RDF_DATATYPE.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+	//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), originalType.getURI().getPrefix(), 
+	//							originalType.getURI().getNamespaceURI()) + ":" + originalType.getURI().getLocalPart());
+	//				}
 				}
-				
-//				if (predicate.getURI() != null) {
-//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
-//							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
-//									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
-//				}
-//				else { // String representation can not be null, if URI is null
-//					getStreamDataProvider().getWriter().writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getPrefix(), 
-//							ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), predicate.getStringRepresentation());
-//				}
-				
-//				if ((originalType != null) && (originalType.getURI() != null)) {
-//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
-//							XMLReadWriteUtils.ATTRIBUTE_RDF_DATATYPE.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), originalType.getURI().getPrefix(), 
-//							originalType.getURI().getNamespaceURI()) + ":" + originalType.getURI().getLocalPart());
-//				}
-				
 				break;
 			case XMLStreamConstants.END_ELEMENT:
-				getStreamDataProvider().getWriter().writeEndElement();
+				try {
+					getStreamDataProvider().getCustomXMLElements().pop();					
+					getStreamDataProvider().getWriter().writeEndElement();
+				}
+				catch (EmptyStackException e) {
+					throw new InconsistentAdapterDataException("One more end element than start elements was found in the nested custom XML.");
+				}
 				break;
 			case XMLStreamConstants.CHARACTERS:
-				getStreamDataProvider().getWriter().writeCharacters(event.asCharacters().getData());
+				if (!getStreamDataProvider().getCustomXMLElements().isEmpty()) {
+					getStreamDataProvider().getWriter().writeCharacters(event.asCharacters().getData());
+				}
 				break;
 			default:
 				break;
@@ -291,8 +323,9 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	}
 	
 	
-	protected String processLiteralContent(LiteralMetadataContentEvent event, QName datatype) throws ClassCastException, IOException, XMLStreamException {
-		ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);			
+	protected String processLiteralContent(LiteralMetadataContentEvent event, ObjectTranslator<?> translator, QName datatype) 
+			throws IOException, XMLStreamException {
+		
 		String value = null;
 		
 		if ((event.getObjectValue() != null)) {
@@ -306,19 +339,16 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 								+ "Therefore it could not be parsed.");
 					}
 				}
-				else {
-					translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
-				}
 			}
 			else if (event.getStringValue() != null) {
-				value = event.getStringValue();
+				value = event.getStringValue();  // It is not validated if the string value has the correct format as required by the datatype
 			}
 			else {
 				value = event.getObjectValue().toString();
 			}
 		}
 		else {
-			value = event.getStringValue();
+			value = event.getStringValue();  // It is not validated if the string value has the correct format as required by the datatype
 		}
 		
 		return value;

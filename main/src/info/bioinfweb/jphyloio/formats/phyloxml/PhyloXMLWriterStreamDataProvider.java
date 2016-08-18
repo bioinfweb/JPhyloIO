@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import javax.xml.namespace.QName;
 
@@ -38,6 +39,8 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 	private boolean documentHasMetadata = false;
 	private boolean documentHasPhylogeny = false;
 	private boolean treeGroupHasMetadata = false;
+	
+	private Stack<String> customXMLElements = new Stack<String>();
 	
 	private String phylogenyIDProvider = null;
 	private String phylogenyID = null;
@@ -92,6 +95,11 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 
 	public void setTreeGroupHasMetadata(boolean treeGroupHasMetadata) {
 		this.treeGroupHasMetadata = treeGroupHasMetadata;
+	}
+
+
+	public Stack<String> getCustomXMLElements() {
+		return customXMLElements;
 	}
 
 

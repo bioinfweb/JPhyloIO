@@ -25,6 +25,7 @@ import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.collections.PackedObjectArrayList;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
@@ -260,10 +261,11 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			otuEventInformation.otuOrOtusID = XMLUtils.readStringAttr(element, ATTR_OTUS, null);
 		}
 		
-		// If no label is present in the element either the OTU label or the element ID is used as a label
-		if ((otuEventInformation.label == null) && (otuEventInformation.otuOrOtusID != null)) {
+		// If no label is present in the element, the OTU label (if present) can be used as a label
+		if ((otuEventInformation.label == null) && (otuEventInformation.otuOrOtusID != null) 
+				&& streamDataProvider.getParameters().getBoolean(ReadWriteParameterMap.KEY_NEXML_USE_OTU_LABEL, false)) {
 			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuOrOtusID);
-		} //TODO maybe make this part optional?
+		}
 		
 		return otuEventInformation;
 	}

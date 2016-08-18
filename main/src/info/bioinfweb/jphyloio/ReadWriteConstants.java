@@ -58,6 +58,7 @@ public interface ReadWriteConstants {
 	
 	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata");
 	public static final QName PREDICATE_HAS_RESOURCE_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasResourceMetadata");
+	public static final QName PREDICATE_HAS_CUSTOM_XML = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasCustomXML");
 	
 	public static final QName PREDICATE_SEQUENCE_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "sequenceCount");
 	public static final QName PREDICATE_CHARACTER_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "characterCount");

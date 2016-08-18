@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPrivateConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
 import java.util.Stack;
@@ -162,8 +163,12 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 					colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
 				}
 				else {
-					String value = processLiteralContent(event, currentDatatype);
-					getStreamDataProvider().getWriter().writeCharacters(value);
+					ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslatorWithPossiblyInvalidNamespace(currentDatatype);
+					String value = processLiteralContent(event, translator, currentDatatype);
+					
+					if (value != null) {
+						getStreamDataProvider().getWriter().writeCharacters(value);
+					}
 				}
 				
 				break;

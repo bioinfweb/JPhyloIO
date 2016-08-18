@@ -72,7 +72,7 @@ public class XMLWriterStreamDataProvider<R extends AbstractXMLEventWriter<? exte
 				String nameSpacePrefix = prefix;
 				if (!getNamespacePrefixes().add(nameSpacePrefix)) {
 					do {
-						nameSpacePrefix = prefix + index;
+						nameSpacePrefix = prefix + index;  // NeXML documents that contain CURIEs with prefixes containing numbers might not validate
 						index++;
 					} while (!getNamespacePrefixes().add(nameSpacePrefix));
 				}

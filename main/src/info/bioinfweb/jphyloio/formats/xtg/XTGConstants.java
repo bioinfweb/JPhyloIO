@@ -149,8 +149,11 @@ public interface XTGConstants {
   public static final QName ATTR_SCALE_BAR_START = new QName("StartLeft");
   public static final QName ATTR_SCALE_BAR_INCREASE = new QName("Increasing");
   
-  
   public static final String XTG_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_FORMATS_NAMESPACE_PREFIX + "XTG/";	
+  
+  public static final String XTG_DATA_TYPE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.DATA_TYPE_NAMESPACE_FOLDER + "/";	
+	public static final QName DATA_TYPE_COLOR = new QName(XTG_NAMESPACE_PREFIX, "Color");  
+  
 	public static final String XTG_PREDICATE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 	
 	public static final QName PREDICATE_GLOBAL_FORMATS = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats");

@@ -41,6 +41,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.PhyloXMLCharactersElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
@@ -125,7 +126,12 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 	protected void fillMap() {
 		XMLElementReader<PhyloXMLReaderStreamDataProvider> cladeEndReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 			@Override
-			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {				
+			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+				if (streamDataProvider.isCustomXMLStartWritten()) {
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+					streamDataProvider.setCustomXMLStartWritten(false);
+				}
+				
 				createNodeEvents(streamDataProvider);
 				getStreamDataProvider().getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.NODE));
 				
@@ -206,10 +212,13 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.setPropertyHasResource(true);
 					
 					if (appliesToAsAttribute) {
-						readAttributes(streamDataProvider, element, "", ATTR_APPLIES_TO, PREDICATE_PROPERTY_ATTR_APPLIES_TO);
+						readAttributes(streamDataProvider, element, "", 
+								new AttributeInfo(ATTR_APPLIES_TO, PREDICATE_PROPERTY_ATTR_APPLIES_TO, W3CXSConstants.DATA_TYPE_TOKEN));
 					}
 					
-					readAttributes(streamDataProvider, element, "", ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, ATTR_ID_REF, PREDICATE_PROPERTY_ATTR_ID_REF);					
+					readAttributes(streamDataProvider, element, "", 
+							new AttributeInfo(ATTR_UNIT, PREDICATE_PROPERTY_ATTR_UNIT, W3CXSConstants.DATA_TYPE_TOKEN),
+							new AttributeInfo(ATTR_ID_REF, PREDICATE_PROPERTY_ATTR_ID_REF, W3CXSConstants.DATA_TYPE_TOKEN));					
 				}
 				else {
 					streamDataProvider.setPropertyHasResource(false);
@@ -314,7 +323,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		XMLElementReader<PhyloXMLReaderStreamDataProvider> emptyReader = new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {			
 			@Override
-			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {}  //is used if no meta events should be read from a tag
+			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {}  // Is used if no meta events should be read from a tag
 		};
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
@@ -339,9 +348,20 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				}
 		});
 		
-		putElementReader(new XMLElementReaderKey(null, TAG_ROOT, XMLStreamConstants.START_ELEMENT), emptyReader);		
-		putElementReader(new XMLElementReaderKey(TAG_ROOT, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());		
-		putElementReader(new XMLElementReaderKey(null, TAG_ROOT, XMLStreamConstants.END_ELEMENT), emptyReader);
+		putElementReader(new XMLElementReaderKey(null, TAG_ROOT, XMLStreamConstants.START_ELEMENT), emptyReader);
+		
+		putElementReader(new XMLElementReaderKey(TAG_ROOT, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
+		
+		putElementReader(new XMLElementReaderKey(null, TAG_ROOT, XMLStreamConstants.END_ELEMENT), 
+				new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
+					@Override
+					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+						if (streamDataProvider.isCustomXMLStartWritten()) {
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+							streamDataProvider.setCustomXMLStartWritten(false);
+						}
+					}
+			});
 		
 		//PhyloXML.Phylogeny	
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_PHYLOGENY, XMLStreamConstants.START_ELEMENT), 
@@ -363,8 +383,10 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.setCurrentEventCollection(new ArrayList<JPhyloIOEvent>());
 					streamDataProvider.setRootedPhylogeny(XMLUtils.readBooleanAttr(element, ATTR_ROOTED, false));
 					
-					readAttributes(streamDataProvider, element, "", ATTR_REROOTABLE, PREDICATE_PHYLOGENY_ATTR_REROOTABLE, ATTR_BRANCH_LENGTH_UNIT, 
-							PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, ATTR_TYPE, PREDICATE_PHYLOGENY_ATTR_TYPE);
+					readAttributes(streamDataProvider, element, "", 
+							new AttributeInfo(ATTR_REROOTABLE, PREDICATE_PHYLOGENY_ATTR_REROOTABLE, W3CXSConstants.DATA_TYPE_BOOLEAN),
+							new AttributeInfo(ATTR_BRANCH_LENGTH_UNIT, PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT, W3CXSConstants.DATA_TYPE_TOKEN),
+							new AttributeInfo(ATTR_TYPE, PREDICATE_PHYLOGENY_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN));
 				}
 		});
 		
@@ -373,7 +395,12 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_ROOT, TAG_PHYLOGENY, XMLStreamConstants.END_ELEMENT), 
 			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 				@Override
-				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {					
+					if (streamDataProvider.isCustomXMLStartWritten()) {
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+						streamDataProvider.setCustomXMLStartWritten(false);
+					}
+					
 					if (streamDataProvider.isCreatePhylogenyStart()) {
 						createPhylogenyStart(streamDataProvider);
 					}
@@ -381,7 +408,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					createEdgeEvents(streamDataProvider); // Add root edge event
 					
 					streamDataProvider.getSourceNode().clear();
-					streamDataProvider.getEdgeInfos().clear();
+					streamDataProvider.getEdgeInfos().clear();					
 					
 					streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(
 							getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false) ? EventContentType.TREE : EventContentType.NETWORK, 
@@ -482,12 +509,13 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					}
 			});		
 		
-		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_NAME, XMLStreamConstants.END_ELEMENT), emptyReader);
+		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_NAME, XMLStreamConstants.END_ELEMENT), new XMLEndElementReader(false, false, false));
 		
 		//Phylogeny.ID
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_ID, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_PHYLOGENY_ID_VALUE, PREDICATE_PHYLOGENY_ID, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN),
-				false, ATTR_ID_PROVIDER, PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER));
+				new XMLStartElementReader(PREDICATE_PHYLOGENY_ID_VALUE, PREDICATE_PHYLOGENY_ID, 
+				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), false, 
+				new AttributeInfo(ATTR_ID_PROVIDER, PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER, W3CXSConstants.DATA_TYPE_TOKEN)));
 		putElementReader(new XMLElementReaderKey(TAG_ID, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_TOKEN));
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_ID, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
@@ -505,8 +533,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		//Phylogeny.Confidence
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_CONFIDENCE_VALUE, PREDICATE_CONFIDENCE, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
-				false, ATTR_TYPE, PREDICATE_CONFIDENCE_ATTR_TYPE)); //TODO maybe only create one literal meta event with the "type"-attributes value as an additional part of the predicate, depending on the implementation in the writer
+				new XMLStartElementReader(PREDICATE_CONFIDENCE_VALUE, PREDICATE_CONFIDENCE, 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), false,
+						new AttributeInfo(ATTR_TYPE, PREDICATE_CONFIDENCE_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN))); //TODO maybe only create one literal meta event with the "type"-attributes value as an additional part of the predicate, depending on the implementation in the writer
 		putElementReader(new XMLElementReaderKey(TAG_CONFIDENCE, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_DOUBLE));
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);		
 		
@@ -553,8 +582,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 						}
 						
-						readAttributes(streamDataProvider, event.asStartElement(), "", ATTR_ID_REF_0, PREDICATE_CLADE_REL_ATTR_IDREF0, ATTR_ID_REF_1, PREDICATE_CLADE_REL_ATTR_IDREF1,
-								ATTR_DISTANCE, PREDICATE_CLADE_REL_ATTR_DISTANCE, ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE);
+						readAttributes(streamDataProvider, element, "", 
+								new AttributeInfo(ATTR_ID_REF_0, PREDICATE_CLADE_REL_ATTR_IDREF0, W3CXSConstants.DATA_TYPE_TOKEN),
+								new AttributeInfo(ATTR_ID_REF_1, PREDICATE_CLADE_REL_ATTR_IDREF1, W3CXSConstants.DATA_TYPE_TOKEN),
+								new AttributeInfo(ATTR_DISTANCE, PREDICATE_CLADE_REL_ATTR_DISTANCE, W3CXSConstants.DATA_TYPE_DOUBLE),
+								new AttributeInfo(ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN));
 					}
 					else {  // The phylogeny is considered as a network
 						if ((cladeID0 != null) && (cladeID1 != null)) {
@@ -574,7 +606,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 										
 								streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 								
-								readAttributes(streamDataProvider, event.asStartElement(), "", ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE);
+								readAttributes(streamDataProvider, element, "", 
+										new AttributeInfo(ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN));								
 							}
 							else {
 								throw new JPhyloIOReaderException("A node ID was referenced by a clade relation element, that was not defined before.", event.getLocation());
@@ -588,8 +621,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		});		
 		
 		putElementReader(new XMLElementReaderKey(TAG_CLADE_RELATION, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_CONFIDENCE_VALUE, PREDICATE_CONFIDENCE, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
-				false, ATTR_TYPE, PREDICATE_CONFIDENCE_ATTR_TYPE));
+				new XMLStartElementReader(PREDICATE_CONFIDENCE_VALUE, PREDICATE_CONFIDENCE, 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), false, 
+						new AttributeInfo(ATTR_TYPE, PREDICATE_CONFIDENCE_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		//Element reader for character content of confidence tag was registered before
 		putElementReader(new XMLElementReaderKey(TAG_CLADE_RELATION, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
@@ -610,14 +644,18 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		//Phylogeny.SequenceRelation
 		putElementReader(new XMLElementReaderKey(TAG_PHYLOGENY, TAG_SEQUENCE_RELATION, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_SEQ_REL, null, false, ATTR_ID_REF_0, PREDICATE_SEQ_REL_ATTR_IDREF0, 
-				ATTR_ID_REF_1, PREDICATE_SEQ_REL_ATTR_IDREF1, ATTR_DISTANCE, PREDICATE_SEQ_REL_ATTR_DISTANCE, 
-				ATTR_TYPE, PREDICATE_SEQ_REL_ATTR_TYPE));
+				new XMLStartElementReader(null, PREDICATE_SEQ_REL, null, false, 
+						new AttributeInfo(ATTR_ID_REF_0, PREDICATE_SEQ_REL_ATTR_IDREF0, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_ID_REF_1, PREDICATE_SEQ_REL_ATTR_IDREF1, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_DISTANCE, PREDICATE_SEQ_REL_ATTR_DISTANCE, W3CXSConstants.DATA_TYPE_DOUBLE),
+						new AttributeInfo(ATTR_TYPE, PREDICATE_SEQ_REL_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
+
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE_RELATION, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE_RELATION, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_SEQ_REL_CONFIDENCE_VALUE, PREDICATE_SEQ_REL_CONFIDENCE, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
-				false, ATTR_TYPE, PREDICATE_SEQ_REL_CONFIDENCE_ATTR_TYPE));
+				new XMLStartElementReader(PREDICATE_SEQ_REL_CONFIDENCE_VALUE, PREDICATE_SEQ_REL_CONFIDENCE, 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), false, 
+						new AttributeInfo(ATTR_TYPE, PREDICATE_SEQ_REL_CONFIDENCE_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		//Element reader for character content of confidence tag was registered before
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE_RELATION, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
@@ -631,7 +669,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		//Clade.Name
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_NAME, XMLStreamConstants.START_ELEMENT), emptyReader);
 		//Element reader for character content of name tag was registered before
-		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_NAME, XMLStreamConstants.END_ELEMENT), emptyReader);
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_NAME, XMLStreamConstants.END_ELEMENT), new XMLEndElementReader(false, false, false));
 		
 		//Clade.BranchLength
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_LENGTH, XMLStreamConstants.START_ELEMENT), emptyReader);		
@@ -665,12 +703,13 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				}
 		});
 		
-		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_LENGTH, XMLStreamConstants.END_ELEMENT), emptyReader);
+		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BRANCH_LENGTH, XMLStreamConstants.END_ELEMENT), new XMLEndElementReader(false, false, false));
 		
 		//Clade.Confidence
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_CONFIDENCE_VALUE, PREDICATE_CONFIDENCE, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE),
-				true, ATTR_TYPE, PREDICATE_CONFIDENCE_ATTR_TYPE));
+				new XMLStartElementReader(PREDICATE_CONFIDENCE_VALUE, PREDICATE_CONFIDENCE, 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), true, 
+						new AttributeInfo(ATTR_TYPE, PREDICATE_CONFIDENCE_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		//Element reader for character content of confidence tag was registered before
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), new XMLEndElementReader(true, true, true));
 		
@@ -709,18 +748,20 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		//Clade.NodeID
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_NODE_ID, XMLStreamConstants.START_ELEMENT), 
 				new XMLStartElementReader(PREDICATE_NODE_ID_VALUE, PREDICATE_NODE_ID, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN),
-				false, ATTR_ID_PROVIDER, PREDICATE_NODE_ID_ATTR_PROVIDER));
+				false, new AttributeInfo(ATTR_ID_PROVIDER, PREDICATE_NODE_ID_ATTR_PROVIDER, W3CXSConstants.DATA_TYPE_TOKEN)));
 		putElementReader(new XMLElementReaderKey(TAG_NODE_ID, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_TOKEN));
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_NODE_ID, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
 		//Clade.Taxonomy
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_TAXONOMY, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_TAXONOMY, null, false, ATTR_ID_SOURCE, PREDICATE_TAXONOMY_ATTR_ID_SOURCE));
+				new XMLStartElementReader(null, PREDICATE_TAXONOMY, null, false, 
+						new AttributeInfo(ATTR_ID_SOURCE, PREDICATE_TAXONOMY_ATTR_ID_SOURCE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_ID, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_TAXONOMY_ID_VALUE, PREDICATE_TAXONOMY_ID, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
-				false, ATTR_ID_PROVIDER, PREDICATE_TAXONOMY_ID_ATTR_PROVIDER));
+				new XMLStartElementReader(PREDICATE_TAXONOMY_ID_VALUE, PREDICATE_TAXONOMY_ID, 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), false, 						
+						new AttributeInfo(ATTR_ID_PROVIDER, PREDICATE_TAXONOMY_ID_ATTR_PROVIDER, W3CXSConstants.DATA_TYPE_TOKEN)));
 		putElementReader(new XMLElementReaderKey(TAG_ID, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_TOKEN));
 		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_ID, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
@@ -755,7 +796,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_RANK, XMLStreamConstants.END_ELEMENT), literalEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_TAXONOMY, TAG_URI, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_TAXONOMY_URI, null, false, ATTR_DESC, PREDICATE_TAXONOMY_URI_ATTR_DESC, ATTR_TYPE, PREDICATE_TAXONOMY_URI_ATTR_TYPE));
+				new XMLStartElementReader(null, PREDICATE_TAXONOMY_URI, null, false, 
+						new AttributeInfo(ATTR_DESC, PREDICATE_TAXONOMY_URI_ATTR_DESC, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_TYPE, PREDICATE_TAXONOMY_URI_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		
 		putElementReader(new XMLElementReaderKey(TAG_URI, null, XMLStreamConstants.CHARACTERS),
 			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
@@ -792,8 +835,10 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		//Clade.Sequence
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_SEQUENCE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_SEQUENCE, null, false, ATTR_TYPE, PREDICATE_SEQUENCE_ATTR_TYPE, ATTR_ID_SOURCE, PREDICATE_SEQUENCE_ATTR_ID_SOURCE, 
-						ATTR_ID_REF, PREDICATE_SEQUENCE_ATTR_ID_REF));
+				new XMLStartElementReader(null, PREDICATE_SEQUENCE, null, false, 
+						new AttributeInfo(ATTR_TYPE, PREDICATE_SEQUENCE_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_ID_SOURCE, PREDICATE_SEQUENCE_ATTR_ID_SOURCE, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_ID_REF, PREDICATE_SEQUENCE_ATTR_ID_REF, W3CXSConstants.DATA_TYPE_TOKEN)));
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_SYMBOL, XMLStreamConstants.START_ELEMENT),
@@ -802,8 +847,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_SYMBOL, XMLStreamConstants.END_ELEMENT), literalEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_ACCESSION, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_SEQUENCE_ACCESSION_VALUE, PREDICATE_SEQUENCE_ACCESSION, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
-				false, ATTR_SOURCE, PREDICATE_SEQUENCE_ACCESSION_ATTR_SOURCE));		
+				new XMLStartElementReader(PREDICATE_SEQUENCE_ACCESSION_VALUE, PREDICATE_SEQUENCE_ACCESSION, 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), false, 
+						new AttributeInfo(ATTR_SOURCE, PREDICATE_SEQUENCE_ACCESSION_ATTR_SOURCE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		putElementReader(new XMLElementReaderKey(TAG_ACCESSION, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_TOKEN));
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_ACCESSION, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
@@ -818,20 +864,26 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_NAME, XMLStreamConstants.END_ELEMENT), literalEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_MOL_SEQ, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_SEQUENCE_MOL_SEQ_VALUE, PREDICATE_SEQUENCE_MOL_SEQ, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
-				false, ATTR_IS_ALIGNED, PREDICATE_SEQUENCE_MOL_SEQ_ATTR_IS_ALIGNED)); //TODO possibly create parameter in parameter map to prevent reading large sequences		
+				new XMLStartElementReader(PREDICATE_SEQUENCE_MOL_SEQ_VALUE, PREDICATE_SEQUENCE_MOL_SEQ, 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), false, 
+						new AttributeInfo(ATTR_IS_ALIGNED, PREDICATE_SEQUENCE_MOL_SEQ_ATTR_IS_ALIGNED, W3CXSConstants.DATA_TYPE_BOOLEAN))); //TODO possibly create parameter in parameter map to prevent reading large sequences		
 		putElementReader(new XMLElementReaderKey(TAG_MOL_SEQ, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_TOKEN));
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_MOL_SEQ, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_URI, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_SEQUENCE_URI, null, false, ATTR_DESC, PREDICATE_SEQUENCE_URI_ATTR_DESC, 
-						ATTR_TYPE, PREDICATE_SEQUENCE_URI_ATTR_TYPE));
+				new XMLStartElementReader(null, PREDICATE_SEQUENCE_URI, null, false, 
+						new AttributeInfo(ATTR_DESC, PREDICATE_SEQUENCE_URI_ATTR_DESC, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_TYPE, PREDICATE_SEQUENCE_URI_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		//Element reader for character content of URI tag was registered before
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_URI, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_ANNOTATION, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_ANNOTATION, null, false, ATTR_REF, PREDICATE_ANNOTATION_ATTR_REF, ATTR_SOURCE, PREDICATE_ANNOTATION_ATTR_SOURCE, 
-						ATTR_EVIDENCE, PREDICATE_ANNOTATION_ATTR_EVIDENCE, ATTR_TYPE, PREDICATE_ANNOTATION_ATTR_TYPE));
+				new XMLStartElementReader(null, PREDICATE_ANNOTATION, null, false, 
+						new AttributeInfo(ATTR_REF, PREDICATE_ANNOTATION_ATTR_REF, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_SOURCE, PREDICATE_ANNOTATION_ATTR_SOURCE, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_EVIDENCE, PREDICATE_ANNOTATION_ATTR_EVIDENCE, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_TYPE, PREDICATE_ANNOTATION_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
+
 		putElementReader(new XMLElementReaderKey(TAG_ANNOTATION, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_ANNOTATION, TAG_DESC, XMLStreamConstants.START_ELEMENT),
@@ -840,8 +892,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_ANNOTATION, TAG_DESC, XMLStreamConstants.END_ELEMENT), literalEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_ANNOTATION, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_ANNOTATION_CONFIDENCE_VALUE, PREDICATE_ANNOTATION_CONFIDENCE, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
-				false, ATTR_TYPE, PREDICATE_ANNOTATION_CONFIDENCE_ATTR_TYPE));
+				new XMLStartElementReader(PREDICATE_ANNOTATION_CONFIDENCE_VALUE, PREDICATE_ANNOTATION_CONFIDENCE, 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), false, 
+						new AttributeInfo(ATTR_TYPE, PREDICATE_ANNOTATION_CONFIDENCE_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		//Element reader for character content of confidence tag was registered before
 		putElementReader(new XMLElementReaderKey(TAG_ANNOTATION, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
@@ -850,26 +903,30 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_ANNOTATION, TAG_PROPERTY, XMLStreamConstants.END_ELEMENT), propertyEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_ANNOTATION, TAG_URI, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_ANNOTATION_URI, null, false, ATTR_DESC, PREDICATE_ANNOTATION_URI_ATTR_DESC, 
-						ATTR_TYPE, PREDICATE_ANNOTATION_URI_ATTR_TYPE));
+				new XMLStartElementReader(null, PREDICATE_ANNOTATION_URI, null, false, 
+						new AttributeInfo(ATTR_DESC, PREDICATE_ANNOTATION_URI_ATTR_DESC, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_TYPE, PREDICATE_ANNOTATION_URI_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		//Element reader for character content of URI tag was registered before
 		putElementReader(new XMLElementReaderKey(TAG_ANNOTATION, TAG_URI, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_ANNOTATION, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_DOMAIN_ARCHITECTURE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_DOMAIN_ARCHITECTURE, null, false, ATTR_LENGTH, PREDICATE_DOMAIN_ARCHITECTURE_ATTR_LENGTH));
+				new XMLStartElementReader(null, PREDICATE_DOMAIN_ARCHITECTURE, null, false, 
+						new AttributeInfo(ATTR_LENGTH, PREDICATE_DOMAIN_ARCHITECTURE_ATTR_LENGTH, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER)));
 		putElementReader(new XMLElementReaderKey(TAG_DOMAIN_ARCHITECTURE, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_DOMAIN_ARCHITECTURE, TAG_DOMAIN, XMLStreamConstants.START_ELEMENT), 
 				new XMLStartElementReader(PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_VALUE, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN, 
-				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), false, ATTR_FROM, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_FROM,
-				ATTR_TO, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_TO, ATTR_CONFIDENCE, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_CONFIDENCE, 
-				ATTR_ID, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_ID));
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), false, 
+						new AttributeInfo(ATTR_FROM, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_FROM, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER),
+						new AttributeInfo(ATTR_TO, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_TO, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER),
+						new AttributeInfo(ATTR_CONFIDENCE, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_CONFIDENCE, W3CXSConstants.DATA_TYPE_DOUBLE),
+						new AttributeInfo(ATTR_ID, PREDICATE_DOMAIN_ARCHITECTURE_DOMAIN_ATTR_ID, W3CXSConstants.DATA_TYPE_TOKEN)));
 		putElementReader(new XMLElementReaderKey(TAG_DOMAIN, null, XMLStreamConstants.CHARACTERS), new PhyloXMLCharactersElementReader(W3CXSConstants.DATA_TYPE_TOKEN));
 		putElementReader(new XMLElementReaderKey(TAG_DOMAIN_ARCHITECTURE, TAG_DOMAIN, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
-		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_DOMAIN_ARCHITECTURE, XMLStreamConstants.END_ELEMENT), resourceEndReader);		
+		putElementReader(new XMLElementReaderKey(TAG_SEQUENCE, TAG_DOMAIN_ARCHITECTURE, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_SEQUENCE, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 		
@@ -900,7 +957,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		putElementReader(new XMLElementReaderKey(TAG_EVENTS, TAG_CONFIDENCE, XMLStreamConstants.START_ELEMENT), 
 				new XMLStartElementReader(PREDICATE_EVENTS_CONFIDENCE_VALUE, PREDICATE_EVENTS_CONFIDENCE, 
-				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), false, ATTR_TYPE, PREDICATE_EVENTS_CONFIDENCE_ATTR_TYPE));
+				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), false,
+				new AttributeInfo(ATTR_TYPE, PREDICATE_EVENTS_CONFIDENCE_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN)));
 		//Element reader for character content of confidence tag was registered before
 		putElementReader(new XMLElementReaderKey(TAG_EVENTS, TAG_CONFIDENCE, XMLStreamConstants.END_ELEMENT), resourceAndLiteralEndReader);
 		
@@ -908,8 +966,13 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		//Clade.BinaryCharacters
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_BINARY_CHARACTERS, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_BINARY_CHARACTERS, null, false, ATTR_TYPE, PREDICATE_BINARY_CHARACTERS_ATTR_TYPE, ATTR_GAINED_COUNT, PREDICATE_BINARY_CHARACTERS_ATTR_GAINED_COUNT,
-						ATTR_LOST_COUNT, PREDICATE_BINARY_CHARACTERS_ATTR_LOST_COUNT, ATTR_PRESENT_COUNT, PREDICATE_BINARY_CHARACTERS_ATTR_PRESENT_COUNT, ATTR_ABSENT_COUNT, PREDICATE_BINARY_CHARACTERS_ATTR_ABSENT_COUNT));
+				new XMLStartElementReader(null, PREDICATE_BINARY_CHARACTERS, null, false, 
+						new AttributeInfo(ATTR_TYPE, PREDICATE_BINARY_CHARACTERS_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_GAINED_COUNT, PREDICATE_BINARY_CHARACTERS_ATTR_GAINED_COUNT, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER),
+						new AttributeInfo(ATTR_LOST_COUNT, PREDICATE_BINARY_CHARACTERS_ATTR_LOST_COUNT, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER),
+						new AttributeInfo(ATTR_PRESENT_COUNT, PREDICATE_BINARY_CHARACTERS_ATTR_PRESENT_COUNT, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER),
+						new AttributeInfo(ATTR_ABSENT_COUNT, PREDICATE_BINARY_CHARACTERS_ATTR_ABSENT_COUNT, W3CXSConstants.DATA_TYPE_NON_NEGATIVE_INTEGER)));
+
 		putElementReader(new XMLElementReaderKey(TAG_EVENTS, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_BINARY_CHARACTERS, TAG_GAINED, XMLStreamConstants.START_ELEMENT), 
@@ -969,8 +1032,9 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_DISTRIBUTION, TAG_DESC, XMLStreamConstants.END_ELEMENT), literalEndReader);
 		
 		putElementReader(new XMLElementReaderKey(TAG_DISTRIBUTION, TAG_POINT, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_DISTRIBUTION_POINT, null, false, ATTR_GEO_DATUM, PREDICATE_DISTRIBUTION_POINT_ATTR_GEODETIC_DATUM, 
-						ATTR_ALT_UNIT, PREDICATE_DISTRIBUTION_POINT_ATTR_ALT_UNIT)); //TODO is there a java class similar to Point to parse the latitude/longitude/altitude values to?
+				new XMLStartElementReader(null, PREDICATE_DISTRIBUTION_POINT, null, false, 
+						new AttributeInfo(ATTR_GEO_DATUM, PREDICATE_DISTRIBUTION_POINT_ATTR_GEODETIC_DATUM, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_ALT_UNIT, PREDICATE_DISTRIBUTION_POINT_ATTR_ALT_UNIT, W3CXSConstants.DATA_TYPE_TOKEN))); //TODO is there a java class similar to Point to parse the latitude/longitude/altitude values to?
 		putElementReader(new XMLElementReaderKey(TAG_POINT, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_POINT, TAG_LAT, XMLStreamConstants.START_ELEMENT),
@@ -995,8 +1059,10 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		putElementReader(new XMLElementReaderKey(TAG_POLYGON, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_POLYGON, TAG_POINT, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_DISTRIBUTION_POLYGON_POINT, null, false, ATTR_GEO_DATUM, PREDICATE_DISTRIBUTION_POLYGON_POINT_ATTR_GEODETIC_DATUM, 
-						ATTR_ALT_UNIT, PREDICATE_DISTRIBUTION_POLYGON_POINT_ATTR_ALT_UNIT));
+				new XMLStartElementReader(null, PREDICATE_DISTRIBUTION_POLYGON_POINT, null, false, 
+						new AttributeInfo(ATTR_GEO_DATUM, PREDICATE_DISTRIBUTION_POLYGON_POINT_ATTR_GEODETIC_DATUM, W3CXSConstants.DATA_TYPE_TOKEN),
+						new AttributeInfo(ATTR_ALT_UNIT, PREDICATE_DISTRIBUTION_POLYGON_POINT_ATTR_ALT_UNIT, W3CXSConstants.DATA_TYPE_TOKEN)));
+
 		//Element reader for character content of point tag was registered before
 		
 		putElementReader(new XMLElementReaderKey(TAG_POINT, TAG_LAT, XMLStreamConstants.START_ELEMENT),
@@ -1020,7 +1086,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		//Clade.Date
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_DATE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_DATE, null, false, ATTR_UNIT, PREDICATE_DATE_ATTR_UNIT));
+				new XMLStartElementReader(null, PREDICATE_DATE, null, false, 
+						new AttributeInfo(ATTR_UNIT, PREDICATE_DATE_ATTR_UNIT, W3CXSConstants.DATA_TYPE_TOKEN)));
 		//Element reader for character content of Clade.Date tag can not be registered here, because the character reader for Phylogeny.Date would be overwritten
 		
 		putElementReader(new XMLElementReaderKey(TAG_DATE, TAG_DESC, XMLStreamConstants.START_ELEMENT),
@@ -1047,7 +1114,8 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 		//Clade.Reference
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_REFERENCE, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(null, PREDICATE_REFERENCE, null, false, ATTR_DOI, PREDICATE_REFERENCE_ATTR_DOI));
+				new XMLStartElementReader(null, PREDICATE_REFERENCE, null, false, 
+						new AttributeInfo(ATTR_DOI, PREDICATE_REFERENCE_ATTR_DOI, W3CXSConstants.DATA_TYPE_TOKEN)));
 		putElementReader(new XMLElementReaderKey(TAG_REFERENCE, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_REFERENCE, TAG_DESC, XMLStreamConstants.START_ELEMENT),
@@ -1078,8 +1146,16 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						streamDataProvider.setCreateTreeGroupEnd(false);
 					}
 					
+					if (!streamDataProvider.isCustomXMLStartWritten()) {
+						streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(
+								ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+								new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
+						streamDataProvider.setCustomXMLStartWritten(true);
+					}
+					
 					if (streamDataProvider.getNestedMetaNames().isEmpty()) {
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataEvent(
+								ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
 								null, new URIOrStringIdentifier(null, element.getName()), LiteralContentSequenceType.XML));
 					}
 					

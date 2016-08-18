@@ -36,8 +36,6 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	private boolean createPhylogenyStart;
 	private boolean createTreeGroupEnd;
 	
-	private boolean isRootedPhylogeny;
-	
 	private String lastNodeID;
 	private Map<String, String> cladeIDToNodeEventIDMap = new HashMap<String, String>();
 	
@@ -90,16 +88,6 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	protected void setCreateTreeGroupEnd(boolean createTreeGroupEnd) {
 		this.createTreeGroupEnd = createTreeGroupEnd;
-	}
-
-
-	public boolean isRootedPhylogeny() {
-		return isRootedPhylogeny;
-	}
-
-
-	public void setRootedPhylogeny(boolean isRootedPhylogeny) {
-		this.isRootedPhylogeny = isRootedPhylogeny;
 	}
 
 

@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
 
@@ -34,7 +35,7 @@ import javax.xml.stream.XMLStreamException;
 
 /**
  * Receiver, that  writes only custom XML, e.g nested under document.
- * If an event ahs XML content, thsi is written directly to the file. Simple content is also written in form of custom XML.
+ * If an event has XML content, this is written directly to the file. Simple content is also written in form of custom XML.
  * 
  * @author Sarah Wiechers
  *
@@ -53,7 +54,7 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {		
 		if (isWriteContent()) {
 			if (!hasSimpleContent() && event.hasXMLEventValue()) {
-				writeCustomXMLTag(event.getXMLEvent());			
+				writeCustomXMLTag(event.getXMLEvent());
 			}
 			else {
 				QName datatype = null;
@@ -61,10 +62,14 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 					datatype = getOriginalType().getURI();
 				}
 				
-				String value = processLiteralContent(event, datatype); //TODO allow writing customXML in processLiteralContent() in this case? 
-				
-				if (value != null) {
-					getStreamDataProvider().getWriter().writeCharacters(value); //TODO nest under according tag (meta?)
+				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
+//				String value = processLiteralContent(event, translator, datatype); 
+//				
+//				if (value != null) {
+//					getStreamDataProvider().getWriter().writeCharacters(value);  // Could be written nested under special meta tag
+//				}
+				if ((translator != null) && !translator.hasStringRepresentation()) { // Make sure no single character events are written
+					translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
 				}
 				
 				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());				
@@ -75,10 +80,10 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		if (determineWriteMeta(event.getID(), event.getRel())) {
-			if (event.getHRef() != null) {
-				getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString());				
-			}
-		}
+//		if (determineWriteMeta(event.getID(), event.getRel())) {
+//			if (event.getHRef() != null) {
+//				getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString());  // Could be written nested under special meta tag				
+//			}
+//		}
 	}
 }
