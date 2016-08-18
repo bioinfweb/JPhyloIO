@@ -47,7 +47,7 @@
 			</row>
 		</matrix>
 	</characters>
-	<trees id="treegroup" otus="taxonlist">
+	<trees id="treegroup" label="trees" otus="taxonlist">
 		<tree id="tree" xsi:type="nex:FloatTree">
 			<node id="node1" otu="taxon1"/>
 			<node id="node2" otu="taxon2"/>

@@ -19,20 +19,9 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import static info.bioinfweb.commons.testing.XMLAssert.assertAttribute;
-import static info.bioinfweb.commons.testing.XMLAssert.assertAttributeCount;
-import static info.bioinfweb.commons.testing.XMLAssert.assertCharactersEvent;
-import static info.bioinfweb.commons.testing.XMLAssert.assertDefaultNamespace;
-import static info.bioinfweb.commons.testing.XMLAssert.assertEndDocument;
-import static info.bioinfweb.commons.testing.XMLAssert.assertEndElement;
-import static info.bioinfweb.commons.testing.XMLAssert.assertNamespace;
-import static info.bioinfweb.commons.testing.XMLAssert.assertNamespaceCount;
-import static info.bioinfweb.commons.testing.XMLAssert.assertShortElement;
-import static info.bioinfweb.commons.testing.XMLAssert.assertStartDocument;
-import static info.bioinfweb.commons.testing.XMLAssert.assertStartElement;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static info.bioinfweb.commons.testing.XMLAssert.*;
+import static org.junit.Assert.*;
+
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
@@ -397,8 +386,6 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 //					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
 			
-			assertCharactersEvent("myValue", reader);
-			
 			assertEndElement(TAG_ROOT, reader);			
 			
 			assertEndDocument(reader);
@@ -584,8 +571,6 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 //			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
 //					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			
-			assertCharactersEvent("myValue", reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
 			
@@ -881,8 +866,6 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 //			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
 //					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
-			
-			assertCharactersEvent("myValue", reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
 			
@@ -1804,8 +1787,6 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 //			assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
 //					XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
 			assertEndElement(new QName("http://test.com/", "customTest", prefix), reader);
-			
-			assertCharactersEvent("myValue", reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
 			

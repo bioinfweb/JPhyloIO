@@ -63,7 +63,7 @@
 			</row>
 		</matrix>
 	</characters>
-	<trees id="treegroup" otus="taxonlist">
+	<trees id="treegroup" label="trees" otus="taxonlist">
 		<unknownTag/>
 		<tree id="tree" xsi:type="nex:FloatTree">
 			<unknownTag/>

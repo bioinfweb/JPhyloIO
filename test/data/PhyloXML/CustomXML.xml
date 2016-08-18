@@ -9,6 +9,7 @@
 				<ex:exampleTag>
 					<ex:subTag ex:attr="A">example Text 1</ex:subTag>
 				</ex:exampleTag>
+				<ex:secondExampleTag/>
             </clade>
             <clade>
 				<name>2</name>

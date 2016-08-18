@@ -341,12 +341,7 @@ public class JPhyloIOTestTools {
   	
   	String result = assertLiteralMetaStartEvent(expectedPredicate, LiteralContentSequenceType.SIMPLE, expectedOriginalType, expectedAlternativeStringValue, reader);
   	
-  	if ((expectedStringValue != null) || (expectedObjectValue != null)) {
-  		assertLiteralMetaContentEvent(expectedStringValue, expectedObjectValue, testEndEvent, reader);
-  	}
-  	else if (testEndEvent) {
-  		assertEndEvent(EventContentType.META_LITERAL, reader);
-  	}
+  	assertLiteralMetaContentEvent(expectedStringValue, expectedObjectValue, testEndEvent, reader);  	
   	
 		return result;
   }

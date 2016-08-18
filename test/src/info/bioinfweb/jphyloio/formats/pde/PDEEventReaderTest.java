@@ -70,8 +70,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("ACGTCGCTCGAG-CTGATCG", false, reader);
@@ -162,8 +164,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, null, null, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", false, reader);
@@ -215,8 +219,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", false, reader);
@@ -298,8 +304,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, "seq0", "C", "otu0", reader);
 				
@@ -342,8 +350,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("ACGTCGCTCGAG-CTGATCG", false, reader);
@@ -390,8 +400,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 23, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "23", null, 23.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "23", null, 23, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", taxon1, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, 
@@ -460,8 +472,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("ACGTCGCTCGAG-CTGATCG", false, reader);
@@ -518,8 +532,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", false, reader);
@@ -595,8 +611,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(12, 20, reader);
 				assertPartEndEvent(EventContentType.CHARACTER_SET, true, reader);				
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("ACTGACTGACTGTGACCATA", false, reader);
@@ -654,8 +672,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 20, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "20", null, 20.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "20", null, 20, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("ATWSATWSATWSATWSATWS", false, reader);
@@ -713,8 +733,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 23, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "23", null, 23.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "23", null, 23, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", taxon1, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COMMENT), new URIOrStringIdentifier(META_TYPE_STRING, null), "some sequence", null, 
@@ -787,8 +809,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 23, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "23", null, 23.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "23", null, 23, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("ACTGACTGAC-A-TGACTGACTG", false, reader);
@@ -845,8 +869,10 @@ public class PDEEventReaderTest implements PDEConstants {
 				assertCharacterSetIntervalEvent(0, 25, reader);
 				assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
 				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), null, "25", null, 25.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), null, "3", null, 3.0, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_CHARACTER_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "25", null, 25, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_SEQUENCE_COUNT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "3", null, 3, true, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", taxon1, reader);
 				assertCharactersEvent("AAAAGTGATAA-CTTTCAAATTCAG", false, reader);

@@ -21,12 +21,11 @@ package info.bioinfweb.jphyloio.formats.xtg;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.*;
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.events.type.EventType;
 
 import java.awt.Color;
 import java.io.File;
@@ -36,52 +35,6 @@ import org.junit.Test;
 
 
 public class XTGEventReaderTest implements XTGConstants {
-	
-	
-//	@Test
-//	public void testOutput() {
-//		try {
-//			XTGEventReader reader = new XTGEventReader(new File("data/XTG/ExampleXTGDocument.xml"), new ReadWriteParameterMap());
-//			try {
-//				while (reader.hasNextEvent()) {
-//					JPhyloIOEvent event = reader.next();
-//					System.out.println(event.getType());
-//
-//					if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
-//						System.out.println("Predicate: " + event.asLiteralMetadataEvent().getPredicate().getURI().getLocalPart());
-//					}
-//					else if (event.getType().equals(new EventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE))) {
-//						System.out.println("Content: " + event.asLiteralMetadataContentEvent().getStringValue());
-//					}
-//					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.START))) {
-//						System.out.println("Rel: " + event.asResourceMetadataEvent().getRel().getURI().getLocalPart());
-//					}
-//					else if (event.getType().equals(new EventType(EventContentType.META_RESOURCE, EventTopologyType.END))) {
-//						System.out.println("Resource end");
-//					}
-//					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.START))) {
-//						System.out.println("Node: " + event.asNodeEvent().getID() + " " + event.asNodeEvent().getLabel());
-//					}
-//					else if (event.getType().equals(new EventType(EventContentType.NODE, EventTopologyType.END))) {
-//					System.out.println("Node end");
-//					}
-//					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.START))) {
-//						System.out.println("Edge: " + event.asEdgeEvent().getID() + " " + event.asEdgeEvent().getSourceID() + " " + event.asEdgeEvent().getTargetID());
-//					}
-//					else if (event.getType().equals(new EventType(EventContentType.EDGE, EventTopologyType.END))) {
-//						System.out.println("Edge end");
-//					}
-//				}
-//			}
-//			finally {
-//				reader.close();
-//			}
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//			fail(e.getLocalizedMessage());
-//		}
-//	}
 	
 	
 	@Test
@@ -96,7 +49,6 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_BG_COLOR), null, "#FFFFFF", null, Color.decode("#FFFFFF"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_BRANCH_LENGTH_SCALE), null, "0.1", null, 0.1, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_SCALE_BAR), null, "true", null, true, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_ROOTED), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_ALIGN_TO_SUBTREE), null, "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_POSITION_LABELS_TO_LEFT), null, "true", null, true, true, reader);				
 				
@@ -130,16 +82,16 @@ public class XTGEventReaderTest implements XTGConstants {
 				
 				assertLinkedLabeledIDEvent(EventContentType.TREE, null, null, null, reader);
 				
-				String node1 = assertNodeEvent(null, "Internal1", true, null, false, reader);
+				String node1 = assertNodeEvent(null, "Internal1", false, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "qy07eczjbe", null, "qy07eczjbe", true, reader);
@@ -158,12 +110,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "3gozymvt9n", null, "3gozymvt9n", true, reader);
@@ -176,10 +128,9 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), null, "0.3", null, 0.3, true, reader);				
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), null, "9.4", null, 9.4, true, reader);			
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), null, "ID2", null, "ID2", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), null, "9.4", null, 9.4, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_IS_DECIMAL), null, "true", null, true, true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
@@ -188,12 +139,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "09q8i4x4s6", null, "09q8i4x4s6", true, reader);
@@ -212,12 +163,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "rggkem0ajy", null, "rggkem0ajy", true, reader);
@@ -252,15 +203,14 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL), null, null, false, reader);		
 				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_TEXT), null, "test", null, "test", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_TEXT_HEIGHT), null, "4.0", null, 4.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_ID), null, "ID1", null, "ID1", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_ABOVE), null, "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_LINE_NO), null, "0", null, 0.0, true, reader);
@@ -281,12 +231,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "iq80ulayeq", null, "iq80ulayeq", true, reader);
@@ -299,10 +249,9 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), null, "0.3", null, 0.3, true, reader);				
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), null, "ID2", null, "ID2", true, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), null, "test invisible data", null, "test invisible data", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), null, "ID2", null, "ID2", true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
@@ -351,10 +300,9 @@ public class XTGEventReaderTest implements XTGConstants {
 				
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), null, "ID3", null, "ID3", true, reader);
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), null, "18.3", null, 18.3, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_IS_DECIMAL), null, "true", null, true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), null, "ID3", null, "ID3", true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
 				
 				assertEndEvent(EventContentType.EDGE, reader);
@@ -449,12 +397,16 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_BG_COLOR), null, "#FFFFFF", null, Color.decode("#FFFFFF"), true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_BRANCH_LENGTH_SCALE), null, "0.1", null, 0.1, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_SCALE_BAR), null, "false", null, false, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_ROOTED), null, "true", null, true, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_ALIGN_TO_SUBTREE), null, "true", null, true, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_POSITION_LABELS_TO_LEFT), null, "true", null, true, true, reader);				
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_BG_COLOR), new URIOrStringIdentifier(null, DATA_TYPE_COLOR), 
+						"#FFFFFF", null, Color.decode("#FFFFFF"), true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_BRANCH_LENGTH_SCALE), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.1", null, 0.1, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_SCALE_BAR), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_ALIGN_TO_SUBTREE), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_POSITION_LABELS_TO_LEFT), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);				
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DOCUMENT_MARGIN), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DOCUMENT_MARGIN_ATTR_LEFT), null, "2.0", null, 2.0, true, reader);
@@ -490,12 +442,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "p4k85vwcty", null, "p4k85vwcty", true, reader);
@@ -513,12 +465,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				String node2 = assertNodeEvent(null, null, false, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "pckllkjam2", null, "pckllkjam2", true, reader);
@@ -537,12 +489,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "80gir7emve", null, "80gir7emve", true, reader);
@@ -561,12 +513,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "kyfgptfoh5", null, "kyfgptfoh5", true, reader);
@@ -585,12 +537,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "5a39qte2rt", null, "5a39qte2rt", true, reader);
@@ -636,12 +588,12 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_IS_DECIMAL), null, "false", null, false, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_HEIGHT), null, "6.0", null, 6.0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_TEXT_STYLE), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_LANG), null, "en", null, "en", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, null, null, null, true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_COUNTRY), null, "", null, "", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LOCALE_VARIANT), null, "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_COLOR), null, "#000000", null, Color.decode("#000000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_LINE_WIDTH), null, "0.3", null, 0.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_ATTR_UNIQUE_NAME), null, "tcyl060pe6", null, "tcyl060pe6", true, reader);
@@ -735,7 +687,6 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_BG_COLOR), null, "#FFFFFF", null, Color.decode("#FFFFFF"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_BRANCH_LENGTH_SCALE), null, "0.1", null, 0.1, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_SCALE_BAR), null, "false", null, false, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_ROOTED), null, "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_ALIGN_TO_SUBTREE), null, "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ATTR_POSITION_LABELS_TO_LEFT), null, "true", null, true, true, reader);				
 				
