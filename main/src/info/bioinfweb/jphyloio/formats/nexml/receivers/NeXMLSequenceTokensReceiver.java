@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -95,6 +96,9 @@ public class NeXMLSequenceTokensReceiver extends NeXMLHandleSequenceDataReceiver
 		
 		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
 			translatedToken = alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getTokenTranslationMap().get(token);
+		}
+		else if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.AMINO_ACID) && (token.length() == 3)) {		
+			translatedToken = Character.toString(SequenceUtils.oneLetterAminoAcidByThreeLetter(token));			
 		}
 		else {
 			translatedToken = token;

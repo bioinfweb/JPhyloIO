@@ -57,10 +57,10 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 		this.datatype = datatype;
 		this.isEdgeMeta = isEdgeMeta;
 		
-		LinkedHashMap<QName, AttributeInfo> attributeInformationMap = new LinkedHashMap<QName, AttributeInfo>();
+		attributeInformationMap = new LinkedHashMap<QName, AttributeInfo>();
 		for (int i  = 0; i  < attributeInformation.length; i++) {
 			attributeInformationMap.put(attributeInformation[i].getAttributeName(), attributeInformation[i]);
-		}
+		}		
 	}
 
 
@@ -91,7 +91,7 @@ public class XMLStartElementReader extends AbstractXMLElementReader {
 		if (resourcePredicate != null) {
 			streamDataProvider.getCurrentEventCollection().add(
 					new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-							new URIOrStringIdentifier(null, resourcePredicate), null, null));
+					new URIOrStringIdentifier(null, resourcePredicate), null, null));
 			
 			readAttributes(streamDataProvider, element, "", attributeInformationMap);
 		}

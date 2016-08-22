@@ -73,6 +73,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 		
 		Iterator<String> sequences = getSequenceIDIterator(parameters);
 		while (sequences.hasNext()) {
+			previousLength = currentLength;
 			currentLength = getSequenceLength(parameters, sequences.next());
 			if ((previousLength != 0) && (previousLength != currentLength)) {
 				return -1;

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.xtg;
 
 
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -61,9 +62,17 @@ public class XTGFormattedTextElementReader extends XMLStartElementReader impleme
 		StartElement element = event.asStartElement();
 		boolean isDecimal = XMLUtils.readBooleanAttr(element, ATTR_TEXT_IS_DECIMAL, false);
 		String value = XMLUtils.readStringAttr(element, ATTR_TEXT, null);
+		URIOrStringIdentifier datatype;
 		
 		if (isEdgeMeta()) {
 			streamDataProvider.setCurrentEventCollection(((NodeEdgeInfo)streamDataProvider.getSourceNode().peek()).getNestedEdgeEvents());
+		}
+		
+		if (isDecimal) {
+			datatype = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE);
+		}
+		else {
+			datatype = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);
 		}
 
 		streamDataProvider.getCurrentEventCollection().add(
@@ -72,7 +81,7 @@ public class XTGFormattedTextElementReader extends XMLStartElementReader impleme
 		
 		streamDataProvider.getCurrentEventCollection().add(
 				new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-				new URIOrStringIdentifier(null, textPredicate), LiteralContentSequenceType.SIMPLE));					
+				new URIOrStringIdentifier(null, textPredicate), datatype, LiteralContentSequenceType.SIMPLE));
 		
 		if ((value != null) && !value.isEmpty() && isDecimal) {
 			try {

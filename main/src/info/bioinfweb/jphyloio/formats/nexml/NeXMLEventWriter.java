@@ -704,8 +704,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 		String defaultTokenSetID = getStreamDataProvider().createNewID(DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX);
 		alignmentInfo.setDefaultTokenSetID(defaultTokenSetID);
 		
-		// Determine which token set is valid in which alignment column		
-		for (long i = 0; i < alignmentInfo.getAlignmentLength(); i++) {
+		// Determine which token set is valid in which alignment column
+		for (long i = 0; i < alignmentLength; i++) {
 			if (alignmentInfo.getColumnIndexToStatesMap().get(i) == null) {				
 				alignmentInfo.getColumnIndexToStatesMap().put(i, defaultTokenSetID);
 				alignmentInfo.setWriteDefaultTokenSet(true);

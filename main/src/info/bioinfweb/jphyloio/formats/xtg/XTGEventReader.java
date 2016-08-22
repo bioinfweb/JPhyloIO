@@ -358,7 +358,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 					new AttributeInfo(ATTR_ID, PREDICATE_TEXT_LABEL_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING),
 					new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_TEXT_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
 					new AttributeInfo(ATTR_LINE_NO, PREDICATE_TEXT_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
-					new AttributeInfo(ATTR_LINE_POS, PREDICATE_TEXT_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_INT)));
+					new AttributeInfo(ATTR_LINE_POS, PREDICATE_TEXT_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
 		
 		putElementReader(new XMLElementReaderKey(TAG_TEXT_LABEL, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
@@ -380,7 +380,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 						new AttributeInfo(ATTR_ID, PREDICATE_ICON_LABEL_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING),
 						new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_ICON_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
 						new AttributeInfo(ATTR_LINE_NO, PREDICATE_ICON_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
-						new AttributeInfo(ATTR_LINE_POS, PREDICATE_ICON_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_INT)));
+						new AttributeInfo(ATTR_LINE_POS, PREDICATE_ICON_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
 
 		putElementReader(new XMLElementReaderKey(TAG_ICON_LABEL, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
@@ -402,7 +402,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 						new AttributeInfo(ATTR_ID, PREDICATE_PIE_CHART_LABEL_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING),
 						new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_PIE_CHART_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
 						new AttributeInfo(ATTR_LINE_NO, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
-						new AttributeInfo(ATTR_LINE_POS, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_INT)));
+						new AttributeInfo(ATTR_LINE_POS, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
 			
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
@@ -415,7 +415,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_IDS, TAG_PIE_CHART_ID, XMLStreamConstants.START_ELEMENT), 
-				new XMLStartElementReader(PREDICATE_DATA_ID_VALUE, PREDICATE_DATA_ID, null, true, 
+				new XMLStartElementReader(PREDICATE_DATA_ID_VALUE, PREDICATE_DATA_ID, new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), true, 
 						new AttributeInfo(ATTR_PIE_COLOR, PREDICATE_DATA_ID_ATTR_PIE_COLOR, DATA_TYPE_COLOR)));
 		
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_ID, null, XMLStreamConstants.CHARACTERS), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {			

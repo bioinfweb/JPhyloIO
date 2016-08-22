@@ -52,7 +52,7 @@ public abstract class AbstractSequenceContentReceiver<P extends WriterStreamData
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {					
 					SingleSequenceTokenEvent tokenEvent = event.asSingleSequenceTokenEvent();
 					handleToken(tokenEvent.getToken(), tokenEvent.getLabel());					
-				} // End events can be ignored here.
+				}  // End events can be ignored here.
 				break;
 			case SEQUENCE_TOKENS:				
 				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {

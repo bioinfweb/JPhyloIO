@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
@@ -81,7 +82,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		
-		if (!alignmentInfo.hasTokenDefinitionSet()) { // No token set was contained in the data adapter
+		if (!alignmentInfo.hasTokenDefinitionSet()) {  // No token set was contained in the data adapter
 			alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getOccuringTokens().add(token);
 			
 			if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.CONTINUOUS)) {
@@ -93,9 +94,9 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
 				}
 			}
-			else if (!alignmentInfo.getTokenSetType().equals(CharacterStateSetType.DISCRETE)) { // Molecular data
-				if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
-					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);				
+			else if (!alignmentInfo.getTokenSetType().equals(CharacterStateSetType.DISCRETE)) {  // Molecular data				
+				if (!alignmentInfo.getDefinedTokens().contains(token)) {
+					alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
 				}
 			}
 		}
@@ -109,6 +110,16 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 				}
 				catch (NumberFormatException e) {
 					throw new JPhyloIOWriterException("All tokens in a continuous data characters tag must be numbers.");
+				}
+			}
+			else if (alignmentInfo.getTokenSetType().equals(CharacterStateSetType.AMINO_ACID)) {
+				alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getColumnIndexToStatesMap().get(getTokenIndex())).getOccuringTokens().add(token);
+				
+				if (!alignmentInfo.getDefinedTokens().contains(token)) { // Token set definitions were read already, so any new tokens here were not defined previously
+					if (!((token.length() == 3) && alignmentInfo.getDefinedTokens().contains
+							(Character.toString(SequenceUtils.oneLetterAminoAcidByThreeLetter(token))))) {
+						alignmentInfo.setTokenType(CharacterStateSetType.DISCRETE);
+					}
 				}
 			}
 			else {

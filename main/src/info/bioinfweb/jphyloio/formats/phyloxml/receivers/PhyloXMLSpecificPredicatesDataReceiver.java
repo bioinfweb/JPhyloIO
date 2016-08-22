@@ -140,6 +140,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 								+ "Attributes can only be written once.");
 					}
 				}
+				//TODO exception
 			}
 		}		
 	}

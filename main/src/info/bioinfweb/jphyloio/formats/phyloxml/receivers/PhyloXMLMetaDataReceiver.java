@@ -197,7 +197,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		
 		if (predicate.getURI() == null) {
 			predicate = new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA);
-		}		
+		}
 		
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
 				XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
