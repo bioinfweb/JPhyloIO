@@ -27,6 +27,7 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLColorTranslator;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateTreatment;
@@ -37,6 +38,7 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
@@ -73,6 +75,14 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 		PhyloXMLPredicateInfo predicateInfo = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI());
 
 		if (event.getPredicate().getURI() != null) {
+			
+			if (!Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren())
+					.contains(event.getPredicate().getURI())) {
+				
+				throw new JPhyloIOWriterException("The element \"" + event.getPredicate().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
+						+ predicates.peek().getLocalPart() + "\".");
+			}
+			
 			for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
 				currentIndex++;
 				
@@ -113,7 +123,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML)) {
 							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML);
 							getStreamDataProvider().getMetaIDs().remove(event.getID());
-							currentCustomXMLPredicate = event.getPredicate();						
+							currentCustomXMLPredicate = event.getPredicate();
 						}
 						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_CLADE)) {
 							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE);
@@ -140,7 +150,6 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 								+ "Attributes can only be written once.");
 					}
 				}
-				//TODO exception
 			}
 		}		
 	}
@@ -197,10 +206,15 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		int currentIndex = 0;
 		
+		if (!Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getRel().getURI())) {
+			throw new JPhyloIOWriterException("The element \"" + event.getRel().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
+					+ predicates.peek().getLocalPart() + "\".");
+		}
+		
 		for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
 			currentIndex++;
 			
-			if (child.equals(event.getRel().getURI())) {				
+			if (child.equals(event.getRel().getURI())) {
 				if (currentIndex >= childIndices.peek()) {
 					childIndices.pop();
 					childIndices.push(currentIndex);					

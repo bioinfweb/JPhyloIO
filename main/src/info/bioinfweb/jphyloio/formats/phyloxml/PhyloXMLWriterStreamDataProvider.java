@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
 
 import java.util.HashMap;
@@ -173,7 +174,7 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 		// Taxonomy
 		predicateInfoMap.put(PREDICATE_TAXONOMY, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_TAXONOMY, PREDICATE_TAXONOMY_ATTR_ID_SOURCE, 
 				PREDICATE_TAXONOMY_ID, PREDICATE_TAXONOMY_CODE, PREDICATE_TAXONOMY_SCIENTIFIC_NAME, PREDICATE_TAXONOMY_AUTHORITY, PREDICATE_TAXONOMY_COMMON_NAME,
-				PREDICATE_TAXONOMY_SYNONYM, PREDICATE_TAXONOMY_RANK, PREDICATE_TAXONOMY_URI, IDENTIFIER_CUSTOM_XML));
+				PREDICATE_TAXONOMY_SYNONYM, PREDICATE_TAXONOMY_RANK, PREDICATE_TAXONOMY_URI, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML));
 		predicateInfoMap.put(PREDICATE_TAXONOMY_ATTR_ID_SOURCE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_ID_SOURCE));
 		
 		predicateInfoMap.put(PREDICATE_TAXONOMY_ID, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_ID, PREDICATE_TAXONOMY_ID_ATTR_PROVIDER, 
@@ -194,13 +195,14 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 		predicateInfoMap.put(PREDICATE_TAXONOMY_URI_ATTR_TYPE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.ATTRIBUTE, ATTR_TYPE));
 		predicateInfoMap.put(PREDICATE_TAXONOMY_URI_VALUE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.VALUE, null));
 		
-		predicateInfoMap.put(IDENTIFIER_CUSTOM_XML, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.CUSTOM_XML, null));
+		predicateInfoMap.put(ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.CUSTOM_XML, null, 
+				PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML));
 		
 		// Sequence
 		predicateInfoMap.put(PREDICATE_SEQUENCE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_SEQUENCE, PREDICATE_SEQUENCE_ATTR_TYPE, 
 				PREDICATE_SEQUENCE_ATTR_ID_SOURCE, PREDICATE_SEQUENCE_ATTR_ID_REF, PREDICATE_SEQUENCE_SYMBOL, PREDICATE_SEQUENCE_ACCESSION, PREDICATE_SEQUENCE_NAME,
 				PREDICATE_SEQUENCE_LOCATION, PREDICATE_SEQUENCE_MOL_SEQ, PREDICATE_SEQUENCE_URI, PREDICATE_ANNOTATION, PREDICATE_DOMAIN_ARCHITECTURE,
-				IDENTIFIER_CUSTOM_XML));		
+				ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML));		
 		predicateInfoMap.put(PREDICATE_SEQUENCE_SYMBOL, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG_AND_VALUE, TAG_SYMBOL));		
 		predicateInfoMap.put(PREDICATE_SEQUENCE_ACCESSION, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_ACCESSION, 
 				PREDICATE_SEQUENCE_ACCESSION_ATTR_SOURCE, PREDICATE_SEQUENCE_ACCESSION_VALUE));
