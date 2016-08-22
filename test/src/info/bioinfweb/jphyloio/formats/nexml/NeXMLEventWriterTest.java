@@ -28,6 +28,8 @@ import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.AbstractEventWriter;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreDocumentDataAdapter;
@@ -1127,8 +1129,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	
 	@Test
-	public void testWritingSimpleDocumentStandardData() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTestMeta.xml");
+	public void testWritingStandardData() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/NeXMLTest.xml");
 		boolean writeMetadata = false;
 		boolean writeSets = false;
 		
@@ -1196,11 +1198,11 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		
 		// Add single token definitions		
 		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
-				"red", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, null));
+				"red", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
 		tokenSet.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
-				"blue", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, null));
+				"blue", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
 		tokenSet.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
 		// Add validity interval for token set
@@ -1222,11 +1224,11 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		tokenSet2.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
 		tokenSet2.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
-				"red", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
+				"green/blue", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.UNCERTAIN, Arrays.asList(new String[]{"green", "blue"})));
 		tokenSet2.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
 		tokenSet2.getObjectContent().add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + obtainCurrentIDIndex(), null, 
-				"blueOrRed", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.POLYMORPHIC, Arrays.asList(new String[]{"red", "blue"})));
+				"blueOrGreen", CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.POLYMORPHIC, Arrays.asList(new String[]{"green", "blue"})));
 		tokenSet2.getObjectContent().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		
 		// Add validity interval for second token set
@@ -1245,8 +1247,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
 					new LinkedLabeledIDEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, sequenceID, "single token", otuID), null);
 			
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, sequences.get(otuCount).get(0), writeMetadata);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, sequences.get(otuCount).get(1), writeMetadata);
+			addSingleSequenceToken(singleTokens.getObjectContent(), "token0", sequences.get(otuCount).get(0), writeMetadata);
+			addSingleSequenceToken(singleTokens.getObjectContent(), "token1", sequences.get(otuCount).get(1), writeMetadata);
 			addSingleSequenceToken(singleTokens.getObjectContent(), null, sequences.get(otuCount).get(2), writeMetadata);
 			
 			cellsMatrix.getMatrix().getObjectMap().put(sequenceID, singleTokens);
@@ -1342,7 +1344,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			
 			element = assertStartElement(TAG_OTU, reader);
 			assertAttributeCount(3, element);
-			String undefinedOTUID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_LABEL, UNDEFINED_OTU_LABEL, element);
 			assertEndElement(TAG_OTU, reader);
@@ -1426,8 +1428,9 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertStartElement(TAG_FORMAT, reader);		
 			
 			element = assertStartElement(TAG_STATES, reader);
-			assertAttributeCount(2, element);
-			tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttributeCount(3, element);
+			tokenSetID2 = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
 			assertAttribute(ATTR_ABOUT, element);
 			
 			element = assertStartElement(TAG_STATE, reader);
@@ -1442,16 +1445,96 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
-			assertAttribute(ATTR_LABEL, "green", element);
+			assertAttribute(ATTR_LABEL, "blue", element);
 			token2 = assertAttribute(ATTR_SYMBOL, "1", element);
 			assertEndElement(TAG_STATE, reader);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			String tokenSetID3 = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			assertAttribute(ATTR_ABOUT, element);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			String blueID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "blue", element);
+			token1 = assertAttribute(ATTR_SYMBOL, "0", element);
+			
+			element = assertStartElement(TAG_META, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_ID, element);	
+			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_PROPERTY, "p:originalLabel", element);			
+			assertCharactersEvent("LabelBlue", reader);			
+			assertEndElement(TAG_META, reader);
+			
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			String greenID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "green", element);
+			token2 = assertAttribute(ATTR_SYMBOL, "1", element);
+			
+			element = assertStartElement(TAG_META, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_ID, element);	
+			assertAttribute(ATTR_XSI_TYPE, "nex:LiteralMeta", element);
+			assertAttribute(ATTR_PROPERTY, "p:originalLabel", element);			
+			assertCharactersEvent("LabelGreen", reader);			
+			assertEndElement(TAG_META, reader);
+			
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_UNCERTAIN, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "green/blue", element);
+			token4 = assertAttribute(ATTR_SYMBOL, "2", element);
+			
+			element = assertStartElement(TAG_MEMBER, reader);
+			assertAttributeCount(1, element);
+			assertAttribute(ATTR_SINGLE_STATE_LINK, greenID, element);
+			assertEndElement(TAG_MEMBER, reader);
+			
+			element = assertStartElement(TAG_MEMBER, reader);
+			assertAttributeCount(1, element);
+			assertAttribute(ATTR_SINGLE_STATE_LINK, blueID, element);
+			assertEndElement(TAG_MEMBER, reader);
+			
+			assertEndElement(TAG_UNCERTAIN, reader);
+			
+			element = assertStartElement(TAG_POLYMORPHIC, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "blueOrGreen", element);
+			token4 = assertAttribute(ATTR_SYMBOL, "3", element);
+			
+			element = assertStartElement(TAG_MEMBER, reader);
+			assertAttributeCount(1, element);
+			assertAttribute(ATTR_SINGLE_STATE_LINK, greenID, element);
+			assertEndElement(TAG_MEMBER, reader);
+			
+			element = assertStartElement(TAG_MEMBER, reader);
+			assertAttributeCount(1, element);
+			assertAttribute(ATTR_SINGLE_STATE_LINK, blueID, element);
+			assertEndElement(TAG_MEMBER, reader);
+			
+			assertEndElement(TAG_POLYMORPHIC, reader);
 			
 			element = assertStartElement(TAG_STATE, reader);
 			assertAttributeCount(4, element);
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
-			assertAttribute(ATTR_LABEL, "blue", element);
-			token3 = assertAttribute(ATTR_SYMBOL, "2", element);
+			assertAttribute(ATTR_LABEL, "red", element);
+			assertAttribute(ATTR_SYMBOL, "4", element);
 			assertEndElement(TAG_STATE, reader);
 			
 			element = assertStartElement(TAG_STATE, reader);
@@ -1459,121 +1542,835 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttribute(ATTR_ID, element);
 			assertAttribute(ATTR_ABOUT, element);
 			assertAttribute(ATTR_LABEL, "blueOrRed", element);
-			token4 = assertAttribute(ATTR_SYMBOL, "3", element);
+			assertAttribute(ATTR_SYMBOL, "5", element);
 			assertEndElement(TAG_STATE, reader);
 			
 			assertEndElement(TAG_STATES, reader);
 			
-			assertCharacterDefinition("column definition", tokenSetID, "25", "25", writeMetadata, reader);
-			assertCharacterDefinition("column definition", tokenSetID, "25", "25", writeMetadata, reader);
-			assertCharacterDefinition("column definition", tokenSetID, "25", "25", writeMetadata, reader);
+			assertCharacterDefinition("column definition", tokenSetID2, "25", "25", writeMetadata, reader);
+			assertCharacterDefinition("column definition", tokenSetID3, "25", "25", writeMetadata, reader);
+			assertCharacterDefinition("column definition", tokenSetID2, "25", "25", writeMetadata, reader);
 			
 			assertEndElement(TAG_FORMAT, reader);
 			
 			assertStartElement(TAG_MATRIX, reader);
-			assertRow(null, otuIDs1[0], "2 1 0 ", writeMetadata, reader);
-			assertRow(null, otuIDs1[1], "0 1 2 ", writeMetadata, reader);
-			assertRow(null, otuIDs1[2], "0 0 0 ", writeMetadata, reader);
-			assertRow(null, otuIDs1[3], "0 3 2 ", writeMetadata, reader);
-			assertRow(null, otuIDs1[4], "2 0 2 ", writeMetadata, reader);
+			
+			assertCellsRow("single token", otuIDs2[0], reader, "1", "token0", "1", "token1", "0", null);
+			assertCellsRow("single token", otuIDs2[1], reader, "0", "token0", "1", "token1", "1", null);
+			assertCellsRow("single token", otuIDs2[2], reader, "0", "token0", "4", "token1", "0", null);
+			assertCellsRow("single token", otuIDs2[3], reader, "0", "token0", "5", "token1", "1", null);
+			assertCellsRow("single token", otuIDs2[4], reader, "1", "token0", "4", "token1", "1", null);
 			
 			assertEndElement(TAG_MATRIX, reader);
 			
 			assertEndElement(TAG_CHARACTERS, reader);
 			
-//			element = assertStartElement(TAG_TREES, reader);
-//			assertAttributeCount(4, element);
-//			assertAttribute(ATTR_ID, element);
-//			assertAttribute(ATTR_ABOUT, element);
-//			assertAttribute(ATTR_LABEL, "treesAndNetworks", element);
-//			assertAttribute(ATTR_OTUS, otuListID, element);
-//			
-//			element = assertStartElement(TAG_TREE, reader);
-//			assertAttributeCount(4, element);
-//			String tree1 = assertAttribute(ATTR_ID, element);
-//			assertAttribute(ATTR_ABOUT, element);
-//			assertAttribute(ATTR_LABEL, "tree", element);
-//			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatTree", element);
-//			
-//			String node1 = assertNode(false, reader);
-//			String node2 = assertNode(true, reader);
-//			String node3 = assertNode(false, reader);
-//			String node4 = assertNode(false, reader);
-//			String node5 = assertNode(false, reader);
-//			
-//			element = assertStartElement(TAG_ROOTEDGE, reader);
-//			assertAttributeCount(5, element);
-//			assertAttribute(ATTR_ID, element);
-//			assertAttribute(ATTR_ABOUT, element);
-//			assertAttribute(ATTR_LABEL, "Root edge", element);
-//			assertAttribute(ATTR_TARGET, node2, element);
-//			assertAttribute(ATTR_LENGTH, "1.5", element);
-//			assertEndElement(TAG_ROOTEDGE, reader);
-//			
-//			assertEdge("Internal edge", node2, node1, 1.0, reader);
-//			assertEdge("Leaf edge A", node1, node3, 1.1, reader);
-//			assertEdge("Leaf edge B", node1, node4, 0.9, reader);
-//			assertEdge("Leaf edge C", node2, node5, 2.0, reader);
-//			
-//			assertEndElement(TAG_TREE, reader);
-//			
-//			element = assertStartElement(TAG_NETWORK, reader);
-//			assertAttributeCount(4, element);
-//			String tree2 = assertAttribute(ATTR_ID, element);
-//			assertAttribute(ATTR_ABOUT, element);
-//			assertAttribute(ATTR_LABEL, "network", element);
-//			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatNetwork", element);
-//			
-//			node1 = assertNode(false, reader);
-//			node2 = assertNode(true, reader);
-//			node3 = assertNode(false, reader);
-//			node4 = assertNode(false, reader);
-//			node5 = assertNode(false, reader);
-//			
-//			element = assertStartElement(TAG_ROOTEDGE, reader);
-//			assertAttributeCount(5, element);
-//			String rootEdgeID = assertAttribute(ATTR_ID, element);
-//			assertAttribute(ATTR_ABOUT, element);
-//			assertAttribute(ATTR_LABEL, "Root edge", element);
-//			assertAttribute(ATTR_TARGET, node2, element);
-//			assertAttribute(ATTR_LENGTH, "1.5", element);
-//			assertEndElement(TAG_ROOTEDGE, reader);
-//			
-//			String edgeID = assertEdge("Internal edge", node2, node1, 1.0, reader);
-//			assertEdge("Leaf edge A", node1, node3, 1.1, reader);
-//			assertEdge("Leaf edge B", node1, node4, Double.NaN, reader);
-//			assertEdge("Leaf edge C", node2, node5, 2.0, reader);
-//			assertEdge("network edge", node4, node5, 1.4, reader);
-//			
-//			element = assertStartElement(TAG_SET, reader);
-//			assertAttributeCount(5, element);
-//			assertAttribute(ATTR_ID, element);
-//			assertAttribute(ATTR_ABOUT, element);			
-//			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_NODE_IDS, node3 + " " + node4 + " ", element);
-//			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS, edgeID + " ", element);
-//			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_ROOTEDGE_IDS, rootEdgeID + " ", element);
-//			assertEndElement(TAG_SET, reader);
-//			
-//			assertEndElement(TAG_NETWORK, reader);
-//			
-//			element = assertStartElement(TAG_SET, reader);
-//			assertAttributeCount(4, element);
-//			assertAttribute(ATTR_ID, element);
-//			assertAttribute(ATTR_ABOUT, element);			
-//			assertAttribute(ATTR_TREE_SET_LINKED_TREE_IDS, tree1 + " ", element);
-//			assertAttribute(ATTR_TREE_SET_LINKED_NETWORK_IDS, tree2 + " ", element);
-//			assertEndElement(TAG_SET, reader);
-//			
-//			assertEndElement(TAG_TREES, reader);
-//			
-//			assertEndElement(TAG_ROOT, reader);
-//			
-//			assertEndDocument(reader);
+			element = assertStartElement(TAG_TREES, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "treesAndNetworks", element);
+			assertAttribute(ATTR_OTUS, otuListID1, element);
+			
+			element = assertStartElement(TAG_TREE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tree", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatTree", element);
+			
+			String node1 = assertNode(false, reader);
+			String node2 = assertNode(true, reader);
+			String node3 = assertNode(false, reader);
+			String node4 = assertNode(false, reader);
+			String node5 = assertNode(false, reader);
+			
+			element = assertStartElement(TAG_ROOTEDGE, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "Root edge", element);
+			assertAttribute(ATTR_TARGET, node2, element);
+			assertAttribute(ATTR_LENGTH, "1.5", element);
+			assertEndElement(TAG_ROOTEDGE, reader);
+			
+			assertEdge("Internal edge", node2, node1, 1.0, reader);
+			assertEdge("Leaf edge A", node1, node3, 1.1, reader);
+			assertEdge("Leaf edge B", node1, node4, 0.9, reader);
+			assertEdge("Leaf edge C", node2, node5, 2.0, reader);
+			
+			assertEndElement(TAG_TREE, reader);
+			
+			assertEndElement(TAG_TREES, reader);
+			
+			element = assertStartElement(TAG_TREES, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "treesAndNetworks", element);
+			assertAttribute(ATTR_OTUS, undefinedOTUListID, element);
+			
+			element = assertStartElement(TAG_NETWORK, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "network", element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatNetwork", element);
+			
+			node1 = assertNode(false, reader);
+			node2 = assertNode(true, reader);
+			node3 = assertNode(false, reader);
+			node4 = assertNode(false, reader);
+			node5 = assertNode(false, reader);
+			
+			element = assertStartElement(TAG_ROOTEDGE, reader);
+			assertAttributeCount(5, element);
+			String rootEdgeID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "Root edge", element);
+			assertAttribute(ATTR_TARGET, node2, element);
+			assertAttribute(ATTR_LENGTH, "1.5", element);
+			assertEndElement(TAG_ROOTEDGE, reader);
+			
+			String edgeID = assertEdge("Internal edge", node2, node1, 1.0, reader);
+			assertEdge("Leaf edge A", node1, node3, 1.1, reader);
+			assertEdge("Leaf edge B", node1, node4, Double.NaN, reader);
+			assertEdge("Leaf edge C", node2, node5, 2.0, reader);
+			assertEdge("network edge", node4, node5, 1.4, reader);
+			
+			element = assertStartElement(TAG_SET, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);			
+			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_NODE_IDS, node3 + " " + node4 + " ", element);
+			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_EDGE_IDS, edgeID + " ", element);
+			assertAttribute(ATTR_NODE_EDGE_SET_LINKED_ROOTEDGE_IDS, rootEdgeID + " ", element);
+			assertEndElement(TAG_SET, reader);
+			
+			assertEndElement(TAG_NETWORK, reader);
+			
+			assertEndElement(TAG_TREES, reader);
+			
+			assertEndElement(TAG_ROOT, reader);
+			
+			assertEndDocument(reader);
 		}
 		finally {
 			fileReader.close();
 			reader.close();
-//			file.delete();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void testWritingMultipleCharactersElements() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/NeXMLTest.xml");
+		boolean writeMetadata = false;
+		
+		// Add OTU list to document data adapter
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();		
+		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, otuListID, "taxonlist"), null);
+		
+		for (int i = 0; i < 2; i++) {
+			String otuID = DEFAULT_OTU_ID_PREFIX + obtainCurrentIDIndex();
+			otuList.getOtus().getObjectMap().put(otuID, new StoreObjectData<LabeledIDEvent>(new LabeledIDEvent(EventContentType.OTU, 
+					otuID, "taxon" + i), null));		
+		}
+		
+		document.getOTUListsMap().put(otuListID, otuList);		
+		
+		// Add DNA cells characters element
+		String[] dnaTokens1 = {"G", "C", "-"};
+		String[] dnaTokens2 = {"A", "?", "T"};
+		StoreMatrixDataAdapter dnaCellsMatrix = createCellsMatrix(parameters, otuListID, CharacterStateSetType.DNA, dnaTokens1, dnaTokens2);		
+		document.getMatrices().add(dnaCellsMatrix);
+		
+		// Add RNA sequences characters element
+		StoreMatrixDataAdapter rnaSequenceMatrix = createSequenceMatrix(parameters, otuListID, CharacterStateSetType.RNA, "AACU-", "UU?CG");
+		document.getMatrices().add(rnaSequenceMatrix);
+		
+		// Add RNA cells characters element
+		String[] rnaTokens1 = {"G", "C", "-"};
+		String[] rnaTokens2 = {"A", "?", "U"};
+		StoreMatrixDataAdapter rnaCellsMatrix = createCellsMatrix(parameters, otuListID, CharacterStateSetType.RNA, rnaTokens1, rnaTokens2);
+		document.getMatrices().add(rnaCellsMatrix);
+		
+		// Add continuous data sequences characters element
+		StoreMatrixDataAdapter continuousSequenceMatrix = createSequenceMatrix(parameters, otuListID, CharacterStateSetType.CONTINUOUS, 
+				"0.66673 0.34454 5.98678", "-5.43334 0.8232 3.5678");
+		document.getMatrices().add(continuousSequenceMatrix);
+		
+		// Add continuous data cells characters element
+		String[] continuousTokens1 = {"0.66673", "0.34454", "5.98678"};
+		String[] continuousTokens2 = {"-5.43334", "0.8932", "3.5"};
+		StoreMatrixDataAdapter continuousCellsMatrix = createCellsMatrix(parameters, otuListID, CharacterStateSetType.CONTINUOUS, 
+				continuousTokens1, continuousTokens2);
+		document.getMatrices().add(continuousCellsMatrix);
+		
+		// Add amino acid data sequences characters element
+		StoreMatrixDataAdapter aaSequenceMatrix = createSequenceMatrix(parameters, otuListID, CharacterStateSetType.AMINO_ACID, "Tyr Val Glu - Phe *", "KL?MN");
+		document.getMatrices().add(aaSequenceMatrix);
+		
+		// Add amino acid cells characters element
+		String[] aaTokens1 = {"-", "Q", "*"};
+		String[] aaTokens2 = {"W", "?", "A"};
+		StoreMatrixDataAdapter aaCellsMatrix = createCellsMatrix(parameters, otuListID, CharacterStateSetType.AMINO_ACID, aaTokens1, aaTokens2);
+		document.getMatrices().add(aaCellsMatrix);
+		
+		// Add nucleotide data sequences characters element
+		StoreMatrixDataAdapter nucleotideSequenceMatrix = createSequenceMatrix(parameters, otuListID, CharacterStateSetType.NUCLEOTIDE, "A - G T U", "A ? T G U");
+		document.getMatrices().add(nucleotideSequenceMatrix);
+		
+		// Add nucleotide data cells characters element
+		String[] nucleotideTokens1 = {"T", "C", "-"};
+		String[] nucleotideTokens2 = {"A", "?", "U"};
+		StoreMatrixDataAdapter nucleotideCellsMatrix = createCellsMatrix(parameters, otuListID, CharacterStateSetType.NUCLEOTIDE, nucleotideTokens1, nucleotideTokens2);
+		document.getMatrices().add(nucleotideCellsMatrix);
+			
+		// Write file:
+		NeXMLEventWriter writer = new NeXMLEventWriter();
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL, true);
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.DISCARDED);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+		writer.writeDocument(document, file, parameters);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNamespaceCount(4, element);
+			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_VERSION, "0.9", element);
+			
+			String generator = assertAttribute(ATTR_GENERATOR, element);
+			assertTrue(generator, generator.matches(
+					"exampleApplication 1.0 using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+"));
+			
+			assertTrue(reader.hasNext());
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by exampleApplication 1.0 <http://www.exampleApplication.com> using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			element = assertStartElement(TAG_OTUS, reader);
+			assertAttributeCount(3, element);
+			String otusID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "taxonlist", element);
+			
+			String[] otuIDs = new String[2];
+			for (int i = 0; i < 2; i++) {
+				element = assertStartElement(TAG_OTU, reader);
+				assertAttributeCount(3, element);
+				otuIDs[i] = assertAttribute(ATTR_ID, element);
+				assertAttribute(ATTR_ABOUT, element);
+				assertAttribute(ATTR_LABEL, "taxon" + i, element);
+				assertEndElement(TAG_OTU, reader);
+			}
+			
+			assertEndElement(TAG_OTUS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "DnaCells", element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			String tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenC = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "C", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenG = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "G", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenA = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "A", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenT = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "T", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			assertUncertainStateSet("B", null, writeMetadata, reader, tokenC, tokenG, tokenT);
+			assertUncertainStateSet("D", null, writeMetadata, reader, tokenA, tokenG, tokenT);
+			assertUncertainStateSet("H", null, writeMetadata, reader, tokenA, tokenC, tokenT);
+			assertUncertainStateSet("K", null, writeMetadata, reader, tokenG, tokenT);
+			assertUncertainStateSet("M", null, writeMetadata, reader, tokenA, tokenC);
+			assertUncertainStateSet("N", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
+			assertUncertainStateSet("R", null, writeMetadata, reader, tokenA, tokenG);
+			assertUncertainStateSet("S", null, writeMetadata, reader, tokenC, tokenG);
+			assertUncertainStateSet("V", null, writeMetadata, reader, tokenA, tokenC, tokenG);
+			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
+			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
+			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
+			assertUncertainStateSet("-", "gap", false, reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+					
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			assertCellsRow(null, otuIDs[0], reader, "G", "single token", "C", "single token", "-", "single token");
+			assertCellsRow(null, otuIDs[1], reader, "A", "single token", "?", "single token", "T", "single token");
+			
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "RnaSeqs", element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			tokenC = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "C", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			tokenG = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "G", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			tokenA = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "A", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			String tokenU = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "U", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			assertUncertainStateSet("B", null, writeMetadata, reader, tokenC, tokenG, tokenU);
+			assertUncertainStateSet("D", null, writeMetadata, reader, tokenA, tokenG, tokenU);
+			assertUncertainStateSet("H", null, writeMetadata, reader, tokenA, tokenC, tokenU);
+			assertUncertainStateSet("K", null, writeMetadata, reader, tokenG, tokenU);
+			assertUncertainStateSet("M", null, writeMetadata, reader, tokenA, tokenC);
+			assertUncertainStateSet("N", null, writeMetadata, reader, tokenA, tokenU, tokenC, tokenG);
+			assertUncertainStateSet("R", null, writeMetadata, reader, tokenA, tokenG);
+			assertUncertainStateSet("S", null, writeMetadata, reader, tokenC, tokenG);
+			assertUncertainStateSet("V", null, writeMetadata, reader, tokenA, tokenC, tokenG);
+			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenU);
+			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenU, tokenC, tokenG);
+			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenU);
+			assertUncertainStateSet("-", "gap", false, reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenU);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			assertRow(null, otuIDs[0], "AACU-", writeMetadata, reader);
+			assertRow(null, otuIDs[1], "UU?CG", writeMetadata, reader);
+			
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "RnaCells", element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			tokenC = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "C", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			tokenG = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "G", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			tokenA = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "A", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(3, element);
+			tokenU = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_SYMBOL, "U", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			assertUncertainStateSet("B", null, writeMetadata, reader, tokenC, tokenG, tokenU);
+			assertUncertainStateSet("D", null, writeMetadata, reader, tokenA, tokenG, tokenU);
+			assertUncertainStateSet("H", null, writeMetadata, reader, tokenA, tokenC, tokenU);
+			assertUncertainStateSet("K", null, writeMetadata, reader, tokenG, tokenU);
+			assertUncertainStateSet("M", null, writeMetadata, reader, tokenA, tokenC);
+			assertUncertainStateSet("N", null, writeMetadata, reader, tokenA, tokenU, tokenC, tokenG);
+			assertUncertainStateSet("R", null, writeMetadata, reader, tokenA, tokenG);
+			assertUncertainStateSet("S", null, writeMetadata, reader, tokenC, tokenG);
+			assertUncertainStateSet("V", null, writeMetadata, reader, tokenA, tokenC, tokenG);
+			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenU);
+			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenU, tokenC, tokenG);
+			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenU);
+			assertUncertainStateSet("-", "gap", false, reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenU);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+					
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			assertCellsRow(null, otuIDs[0], reader, "G", "single token", "C", "single token", "-", "single token");
+			assertCellsRow(null, otuIDs[1], reader, "A", "single token", "?", "single token", "U", "single token");
+			
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "ContinuousSeqs", element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			assertCharacterDefinition(null, null, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, null, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, null, null, null, writeMetadata, reader);
+			
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			assertRow(null, otuIDs[0], "0.66673 0.34454 5.98678 ", writeMetadata, reader);
+			assertRow(null, otuIDs[1], "-5.43334 0.8232 3.5678 ", writeMetadata, reader);
+			
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "ContinuousCells", element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			assertCharacterDefinition(null, null, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, null, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, null, null, null, writeMetadata, reader);
+			
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			assertCellsRow(null, otuIDs[0], reader, "0.66673", "single token", "0.34454", "single token", "5.98678", "single token");
+			assertCellsRow(null, otuIDs[1], reader, "-5.43334", "single token", "0.8932", "single token", "3.5", "single token");
+			
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "ProteinSeqs", element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			
+			String[] tokenIDs = new String[22];
+			tokenIDs[0] = assertState("A", reader);
+			tokenIDs[1] = assertState("C", reader);
+			tokenIDs[2] = assertState("D", reader);
+			tokenIDs[3] = assertState("E", reader);
+			tokenIDs[4] = assertState("F", reader);
+			tokenIDs[5] = assertState("G", reader);
+			tokenIDs[6] = assertState("H", reader);
+			tokenIDs[7] = assertState("I", reader);
+			tokenIDs[8] = assertState("K", reader);
+			tokenIDs[9] = assertState("L", reader);
+			tokenIDs[10] = assertState("M", reader);
+			tokenIDs[11] = assertState("N", reader);
+			tokenIDs[12] = assertState("O", reader);
+			tokenIDs[13] = assertState("P", reader);
+			tokenIDs[14] = assertState("Q", reader);
+			tokenIDs[15] =	assertState("R", reader);
+			tokenIDs[16] = assertState("S", reader);
+			tokenIDs[17] = assertState("T", reader);
+			tokenIDs[18] = assertState("U", reader);
+			tokenIDs[19] = assertState("V", reader);
+			tokenIDs[20] = assertState("W", reader);
+			tokenIDs[21] = assertState("Y", reader);
+			
+			assertUncertainStateSet("B", null, writeMetadata, reader, tokenIDs[2], tokenIDs[11]);
+			assertUncertainStateSet("X", null, false, reader, tokenIDs);
+			assertUncertainStateSet("Z", null, writeMetadata, reader, tokenIDs[14], tokenIDs[3]);			
+			assertUncertainStateSet("-", "gap", false, reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenIDs);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			tokenU = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "stop codon", element);
+			assertAttribute(ATTR_SYMBOL, "*", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			assertRow(null, otuIDs[0], "YVE-F*", writeMetadata, reader);
+			assertRow(null, otuIDs[1], "KL?MN", writeMetadata, reader);
+			
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "ProteinCells", element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			
+			tokenIDs = new String[22];
+			tokenIDs[0] = assertState("A", reader);
+			tokenIDs[1] = assertState("C", reader);
+			tokenIDs[2] = assertState("D", reader);
+			tokenIDs[3] = assertState("E", reader);
+			tokenIDs[4] = assertState("F", reader);
+			tokenIDs[5] = assertState("G", reader);
+			tokenIDs[6] = assertState("H", reader);
+			tokenIDs[7] = assertState("I", reader);
+			tokenIDs[8] = assertState("K", reader);
+			tokenIDs[9] = assertState("L", reader);
+			tokenIDs[10] = assertState("M", reader);
+			tokenIDs[11] = assertState("N", reader);
+			tokenIDs[12] = assertState("O", reader);
+			tokenIDs[13] = assertState("P", reader);
+			tokenIDs[14] = assertState("Q", reader);
+			tokenIDs[15] =	assertState("R", reader);
+			tokenIDs[16] = assertState("S", reader);
+			tokenIDs[17] = assertState("T", reader);
+			tokenIDs[18] = assertState("U", reader);
+			tokenIDs[19] = assertState("V", reader);
+			tokenIDs[20] = assertState("W", reader);
+			tokenIDs[21] = assertState("Y", reader);
+			
+			assertUncertainStateSet("B", null, writeMetadata, reader, tokenIDs[2], tokenIDs[11]);
+			assertUncertainStateSet("X", null, false, reader, tokenIDs);
+			assertUncertainStateSet("Z", null, writeMetadata, reader, tokenIDs[14], tokenIDs[3]);			
+			assertUncertainStateSet("-", "gap", false, reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenIDs);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			tokenU = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "stop codon", element);
+			assertAttribute(ATTR_SYMBOL, "*", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);			
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			assertCellsRow(null, otuIDs[0], reader, "-", "single token", "Q", "single token", "*", "single token");
+			assertCellsRow(null, otuIDs[1], reader, "W", "single token", "?", "single token", "A", "single token");
+			
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + TYPE_STANDARD_SEQ, element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "A", element);
+			String token1 = assertAttribute(ATTR_SYMBOL, "0", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "T", element);
+			String token2 = assertAttribute(ATTR_SYMBOL, "1", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "U", element);
+			String token3 = assertAttribute(ATTR_SYMBOL, "2", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "G", element);
+			String token4 = assertAttribute(ATTR_SYMBOL, "3", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "-", element);
+			String token5 = assertAttribute(ATTR_SYMBOL, "4", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "?", element);
+			String token6 = assertAttribute(ATTR_SYMBOL, "5", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			assertRow(null, otuIDs[0], token1 + " " + token5 + " " + token4 + " " + token2 + " " + token3 + " ", writeMetadata, reader);
+			assertRow(null, otuIDs[1], token1 + " " + token6 + " " + token2 + " " + token4 + " " + token3 + " ", writeMetadata, reader);
+					
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+			
+			element = assertStartElement(TAG_CHARACTERS, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "alignment", element);
+			assertAttribute(ATTR_OTUS, otusID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + TYPE_STANDARD_CELLS, element);
+			
+			assertStartElement(TAG_FORMAT, reader);		
+			
+			element = assertStartElement(TAG_STATES, reader);
+			assertAttributeCount(3, element);
+			tokenSetID = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "tokenSet", element);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "A", element);
+			token1 = assertAttribute(ATTR_SYMBOL, "0", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "C", element);
+			token2 = assertAttribute(ATTR_SYMBOL, "1", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "T", element);
+			token2 = assertAttribute(ATTR_SYMBOL, "2", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "U", element);
+			token3 = assertAttribute(ATTR_SYMBOL, "3", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "-", element);
+			token5 = assertAttribute(ATTR_SYMBOL, "4", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			element = assertStartElement(TAG_STATE, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "?", element);
+			token6 = assertAttribute(ATTR_SYMBOL, "5", element);
+			assertEndElement(TAG_STATE, reader);
+			
+			assertEndElement(TAG_STATES, reader);
+			
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			assertCharacterDefinition(null, tokenSetID, null, null, writeMetadata, reader);
+			
+			assertEndElement(TAG_FORMAT, reader);
+			
+			assertStartElement(TAG_MATRIX, reader);
+			
+			assertCellsRow(null, otuIDs[0], reader, "2", "single token", "1", "single token", "4", "single token");
+			assertCellsRow(null, otuIDs[1], reader, "0", "single token", "5", "single token", "3", "single token");
+			
+			assertEndElement(TAG_MATRIX, reader);
+			
+			assertEndElement(TAG_CHARACTERS, reader);
+						
+			assertEndElement(TAG_ROOT, reader);
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
 		}
 	}
 	
@@ -1596,6 +2393,18 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		for (String otuID : expectedOTUIDs) {
 			assertTrue(otuIDList.contains(otuID));
 		}
+	}
+	
+	
+	private String assertState(String token, XMLEventReader reader) throws XMLStreamException {
+		StartElement element = assertStartElement(TAG_STATE, reader);
+		assertAttributeCount(3, element);
+		String tokenID = assertAttribute(ATTR_ID, element);
+		assertAttribute(ATTR_ABOUT, "#" + tokenID, element);
+		assertAttribute(ATTR_SYMBOL, token, element);
+		assertEndElement(TAG_STATE, reader);
+		
+		return tokenID;
 	}
 	
 	
@@ -1662,12 +2471,15 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	private String assertCharacterDefinition(String label, String states, String codonPosition, String tokens, boolean writeMetadata, XMLEventReader reader) throws XMLStreamException {
 		StartElement element = assertStartElement(TAG_CHAR, reader);
-		int count = 3;
+		int count = 2;
 		
 		String id = assertAttribute(ATTR_ID, element);
 		assertAttribute(ATTR_ABOUT, element);
-		assertAttribute(ATTR_STATES, states, element);
 		
+		if (states != null) {
+			assertAttribute(ATTR_STATES, states, element);
+			count++;
+		}
 		if (label != null) {
 			assertAttribute(ATTR_LABEL, label, element);
 			count++;
@@ -1714,6 +2526,42 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		assertStartElement(TAG_SEQ, reader);
 		assertCharactersEvent(expectedSequence, reader);
 		assertEndElement(TAG_SEQ, reader);
+		
+		assertEndElement(TAG_ROW, reader);
+		
+		return id;
+	}
+	
+	
+	private String assertCellsRow(String expectedSequenceLabel, String otuID, XMLEventReader reader, String...expectedSequence) throws XMLStreamException {
+		StartElement element = assertStartElement(TAG_ROW, reader);		
+		String id = assertAttribute(ATTR_ID, element);
+		assertAttribute(ATTR_ABOUT, element);
+		assertAttribute(ATTR_SINGLE_OTU_LINK, otuID, element);
+		
+		if (expectedSequenceLabel != null) {
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_LABEL, expectedSequenceLabel, element);
+		}	
+		else {
+			assertAttributeCount(3, element);
+		}
+		
+		for (int i = 0; i < expectedSequence.length; i += 2) {
+			element = assertStartElement(TAG_CELL, reader);
+			
+			if (expectedSequence[i+1] != null) {
+				assertAttributeCount(1, element);
+				assertAttribute(ATTR_LABEL, expectedSequence[i+1], element);
+			}
+			else {
+				assertAttributeCount(0, element);
+			}
+
+			assertCharactersEvent(expectedSequence[i], reader);
+			
+			assertEndElement(TAG_CELL, reader);
+		}
 		
 		assertEndElement(TAG_ROW, reader);
 		
@@ -1932,6 +2780,43 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
+	private StoreMatrixDataAdapter createSequenceMatrix(ReadWriteParameterMap parameters, String otusID, CharacterStateSetType tokenSetType, String... tokens) {
+		String matrixID = DEFAULT_MATRIX_ID_PREFIX + obtainCurrentIDIndex();
+		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
+		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
+		
+		List<List<String>> sequences = new ArrayList<>();	
+		for (int i = 0; i < tokens.length; i++) {
+			if (!tokens[i].contains(" ")) {
+				sequences.add(StringUtils.charSequenceToStringList(tokens[i]));
+			}
+			else {
+				sequences.add(new ArrayList<String>());
+				for (int j = 0; j < tokens[i].split(" ").length; j++) {
+					sequences.get(i).add(tokens[i].split(" ")[j]);
+				}				
+			}
+		}
+		
+		// Add sequences
+		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator(parameters);
+		int otuCount = 0;
+		while (iterator.hasNext()) {
+			String sequenceID = DEFAULT_SEQUENCE_ID_PREFIX + obtainCurrentIDIndex();
+			matrix.getMatrix().getObjectMap().put(sequenceID, createSequence(sequenceID, null,
+					sequences.get(otuCount), document.getOTUList(parameters, otusID).getObjectStartEvent(parameters, iterator.next()).getID(), false));
+			otuCount++;
+		}
+		
+		// Add token set
+		String tokenSetID = DEFAULT_TOKEN_SET_ID_PREFIX + obtainCurrentIDIndex();
+		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, tokenSetType, 
+				AbstractEventWriter.determineMaxSequenceLength(matrix, parameters), false));
+
+		return matrix;
+	}
+	
+	
 	private StoreMatrixDataAdapter createDNASequenceMatrix(boolean addLinklessSeq, boolean writeMetadata, boolean writeSets, String otuListID) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + obtainCurrentIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otuListID);
@@ -1953,7 +2838,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		if (writeSets) {
 			// Add token set of type DNA to matrix data adapter
 			String tokenSetID = ReadWriteConstants.DEFAULT_TOKEN_SET_ID_PREFIX + obtainCurrentIDIndex();
-			matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, writeMetadata));
+			matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, CharacterStateSetType.DNA, 6, writeMetadata));
 			
 			// Add char sets to matrix data adapter
 			String charSetID = DEFAULT_CHAR_SET_ID_PREFIX + obtainCurrentIDIndex();
@@ -2034,55 +2919,32 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
-	private StoreMatrixDataAdapter createCellsMatrix(ReadWriteParameterMap parameters, String otusID) {
+	private StoreMatrixDataAdapter createCellsMatrix(ReadWriteParameterMap parameters, String otusID, CharacterStateSetType tokenSetType, String[]... tokens) {
 		String matrixID = DEFAULT_MATRIX_ID_PREFIX + obtainCurrentIDIndex();
 		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "alignment", otusID);
 		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
 		
 		// Add single tokens
 		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator(parameters);
+		int i = 0;
 		while (iterator.hasNext()) {
 			String otuID = document.getOTUList(parameters, otusID).getObjectStartEvent(parameters, iterator.next()).getID();
 			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + obtainCurrentIDIndex();
 			
 			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
-					new LinkedLabeledIDEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, sequenceID, "single token", otuID), null);
+					new LinkedLabeledIDEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, sequenceID, null, otuID), null);
 			
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "A", true);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "T", true);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "G", true);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "G", true);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "C", true);
+			for (int j = 0; j < tokens[i].length; j++) {
+				addSingleSequenceToken(singleTokens.getObjectContent(), "single token", tokens[i][j], false);
+			}
 			
 			matrix.getMatrix().getObjectMap().put(sequenceID, singleTokens);
+			i++;
 		}
 		
-		return matrix;
-	}
-
-	
-	private StoreMatrixDataAdapter createContinuousCellsMatrix(String otusID) {
-		String matrixID = DEFAULT_MATRIX_ID_PREFIX + obtainCurrentIDIndex();
-		LinkedLabeledIDEvent startEvent = new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, matrixID, "continuous data", otusID);
-		StoreMatrixDataAdapter matrix = new StoreMatrixDataAdapter(startEvent, false, null);
-		
-		// Add single tokens
-		Iterator<String> iterator = document.getOTUList(parameters, otusID).getIDIterator(parameters);
-		while (iterator.hasNext()) {
-			String otuID = document.getOTUList(parameters, otusID).getObjectStartEvent(parameters, iterator.next()).getID();
-			String sequenceID = ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + obtainCurrentIDIndex();
-			
-			StoreObjectData<LinkedLabeledIDEvent> singleTokens = new StoreObjectData<LinkedLabeledIDEvent>(
-					new LinkedLabeledIDEvent(EventContentType.SINGLE_SEQUENCE_TOKEN, sequenceID, "single token", otuID), null);
-			
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "0.64566", true);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "0.66673", true);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "0.34454", true);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "5.98678", true);
-			addSingleSequenceToken(singleTokens.getObjectContent(), null, "-5.43334", true);
-			
-			matrix.getMatrix().getObjectMap().put(sequenceID, singleTokens);
-		}
+		String tokenSetID = DEFAULT_TOKEN_SET_ID_PREFIX + obtainCurrentIDIndex();
+		matrix.getTokenSets(parameters).getObjectMap().put(tokenSetID, createTokenSet(tokenSetID, tokenSetType, 
+				AbstractEventWriter.determineMaxSequenceLength(matrix, parameters), false));
 		
 		return matrix;
 	}
@@ -2099,7 +2961,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
-	private StoreObjectData<TokenSetDefinitionEvent> createTokenSet(String id, CharacterStateSetType type, boolean writeMetadata) {
+	private StoreObjectData<TokenSetDefinitionEvent> createTokenSet(String id, CharacterStateSetType type, long alignmentLength, boolean writeMetadata) {
 		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
 				new TokenSetDefinitionEvent(type, id, "tokenSet"), new ArrayList<JPhyloIOEvent>());
 
@@ -2176,7 +3038,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		}
 		
 		// Add validity interval for token set
-		tokenSet.getObjectContent().add(new CharacterSetIntervalEvent(0, 10));
+		tokenSet.getObjectContent().add(new CharacterSetIntervalEvent(0, alignmentLength));
 		
 		return tokenSet;
 	}

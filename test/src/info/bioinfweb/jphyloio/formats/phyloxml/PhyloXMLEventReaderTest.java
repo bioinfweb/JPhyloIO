@@ -543,8 +543,10 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_RANK), new URIOrStringIdentifier(null, DATA_TYPE_RANK), "phylum", null, null, true, reader);
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI), null, null, false, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_ATTR_DESC), null, "example", null, "example", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_ATTR_TYPE), null, "exampleURL", null, "exampleURL", true, reader); //TODO why are these missing?
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_ATTR_DESC), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "example", null, "example", true, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_ATTR_TYPE), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "exampleURL", null, "exampleURL", true, reader); //TODO why are these missing?
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_VALUE), new URI("http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h-676012345"), 
 						null, true, reader);
 				assertEndEvent(EventContentType.META_RESOURCE, reader);
