@@ -112,11 +112,14 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 
 		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
+		nestedEvents.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
 		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "XMLPredicate")), LiteralContentSequenceType.XML));		
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
 		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 
 		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
@@ -142,6 +145,8 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 		
 		nodes.setObjectStartEvent(new NodeEvent(getNodeEdgeIDPrefix() + "nB", "Node " + getNodeEdgeIDPrefix() + "nB", getLinkedOTUs() != null ? getLinkedOTUs()[1] : null, false));
 		nestedEvents = nodes.getObjectContent(getNodeEdgeIDPrefix() + "nB");
+		nestedEvents.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
 		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "XMLPredicate")), LiteralContentSequenceType.XML));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
@@ -149,6 +154,7 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createCharacters("characters"), false));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
 		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		nodes.setObjectStartEvent(new NodeEvent(getNodeEdgeIDPrefix() + "nC", "Node " + getNodeEdgeIDPrefix() + "nC", getLinkedOTUs() != null ? getLinkedOTUs()[2] : null, false));
 	}

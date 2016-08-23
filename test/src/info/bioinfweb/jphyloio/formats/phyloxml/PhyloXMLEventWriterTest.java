@@ -1106,7 +1106,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			NoAnnotationsTree tree = new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, 
 					"nodeEdgeID"); // Does not contain any meta data, but it is possible to add tree meta data manually
 			
-			// Add meta events with PhyloXML-specific predicates to tree			
+			// Add meta events with PhyloXML-specific predicates to tree
 			tree.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 					new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null));
 	
