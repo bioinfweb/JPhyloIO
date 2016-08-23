@@ -63,7 +63,6 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	private URIOrStringIdentifier literalPredicate;
 	private URIOrStringIdentifier originalType;
 	private boolean writeContent;
-	private boolean writeCustomXML;
 	private boolean writePropertyStart;
 	private String currentLiteralMetaID;
 
@@ -122,22 +121,14 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 				}
 				
 				ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory()
-						.getDefaultTranslatorWithPossiblyInvalidNamespace(originalType.getURI());
-				
-				if ((translator != null) && !translator.hasStringRepresentation()) {
-					if (!(propertyOwner.equals(PropertyOwner.NODE) || propertyOwner.equals(PropertyOwner.PARENT_BRANCH))) {					
-						translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());  // Write custom XML content
-						getStreamDataProvider().getMetaIDs().remove(currentLiteralMetaID);
-					}
+						.getDefaultTranslatorWithPossiblyInvalidNamespace(originalType.getURI());				
+
+				if (((translator == null) && !VALID_XSD_TYPES.contains(originalType.getURI()))
+						|| ((translator != null) && translator.hasStringRepresentation() && !VALID_XSD_TYPES.contains(originalType.getURI()))){
+					originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);	
 				}
-				else {
-					if (((translator == null) && !VALID_XSD_TYPES.contains(originalType.getURI()))
-							|| ((translator != null) && translator.hasStringRepresentation() && !VALID_XSD_TYPES.contains(originalType.getURI()))){
-						originalType = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);	
-					}
-					
-					value = processLiteralContent(event, translator, originalType.getURI());
-				}				
+				
+				value = processLiteralContent(event, translator, originalType.getURI());				
 								
 				if (value != null) {
 					if (writePropertyStart) {
@@ -155,32 +146,23 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 				}
 				
 				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());				
-			}
-			else if (event.hasXMLEventValue() && !(propertyOwner.equals(PropertyOwner.NODE) || propertyOwner.equals(PropertyOwner.PARENT_BRANCH))) {				
-				writeCustomXMLTag(event.getXMLEvent());
-				getStreamDataProvider().setLiteralContentIsContinued(event.isContinuedInNextEvent());
-			}
+			}			
 		}
 	}
 	
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		if (determineWriteMeta(event.getID(), event.getRel())) {
-			if ((event.getRel().getURI() != null) && event.getRel().getURI().equals(ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML)) {
-				writeCustomXML = true;
+		if (determineWriteMeta(event.getID(), event.getRel())) {			
+			String uri = null;
+			
+			if (event.getHRef() != null) {
+				uri = event.getHRef().toString();				
 			}
-			else {
-				String uri = null;
-				
-				if (event.getHRef() != null) {
-					uri = event.getHRef().toString();				
-				}
-				
-				writePropertyTag(event.getRel(), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_ANY_URI), uri, true);
-				
-				getStreamDataProvider().getMetaIDs().remove(event.getID());
-			}
+			
+			writePropertyTag(event.getRel(), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_ANY_URI), uri, true);
+			
+			getStreamDataProvider().getMetaIDs().remove(event.getID());			
 		}
 	}
 	
@@ -194,9 +176,6 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 				throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
 						+ "event was marked to be continued in a subsequent event.");
 			}
-		}
-		else if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
-			writeCustomXML = false;
 		}
 	}
 	
@@ -232,71 +211,64 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	
 	
 	protected void writeCustomXMLTag(XMLEvent event) throws XMLStreamException {
-		writeCustomXMLTag(literalPredicate, event);
-	}
-	
-	
-	protected void writeCustomXMLTag(URIOrStringIdentifier predicate, XMLEvent event) throws XMLStreamException {
-		if (writeCustomXML) {
-			switch (event.getEventType()) {
-				case XMLStreamConstants.START_ELEMENT:
-					StartElement element = event.asStartElement();
-					QName tag = element.getName();
+		switch (event.getEventType()) {
+			case XMLStreamConstants.START_ELEMENT:
+				StartElement element = event.asStartElement();
+				QName tag = element.getName();
+				
+				if (!tag.getNamespaceURI().equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {  // Do not write known PhyloXML-Tags as custom XML
+					getStreamDataProvider().getCustomXMLElements().push(event.asStartElement().getName().getLocalPart());
 					
-					if (!tag.getNamespaceURI().equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {  // Do not write known PhyloXML-Tags as custom XML
-						getStreamDataProvider().getCustomXMLElements().push(event.asStartElement().getName().getLocalPart());
-						
-						getStreamDataProvider().getWriter().writeStartElement(tag.getPrefix(), tag.getLocalPart(), tag.getNamespaceURI());
-						
-						@SuppressWarnings("unchecked")
-						Iterator<Attribute> attributes = element.getAttributes();
-						while (attributes.hasNext()) {
-							Attribute attribute = attributes.next();
-							QName attributeName = attribute.getName();
-							getStreamDataProvider().getWriter().writeAttribute(attributeName.getPrefix(), attributeName.getNamespaceURI(), attributeName.getLocalPart(),
-									attribute.getValue());					
-						}
-						
-		//				if (predicate.getURI() != null) {
-		//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
-		//							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-		//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
-		//									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
-		//				}
-		//				else { // String representation can not be null, if URI is null
-		//					getStreamDataProvider().getWriter().writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getPrefix(), 
-		//							ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), predicate.getStringRepresentation());
-		//				}
-						
-		//				if ((originalType != null) && (originalType.getURI() != null)) {
-		//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
-		//							XMLReadWriteUtils.ATTRIBUTE_RDF_DATATYPE.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-		//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), originalType.getURI().getPrefix(), 
-		//							originalType.getURI().getNamespaceURI()) + ":" + originalType.getURI().getLocalPart());
-		//				}
+					getStreamDataProvider().getWriter().writeStartElement(tag.getPrefix(), tag.getLocalPart(), tag.getNamespaceURI());
+					
+					@SuppressWarnings("unchecked")
+					Iterator<Attribute> attributes = element.getAttributes();
+					while (attributes.hasNext()) {
+						Attribute attribute = attributes.next();
+						QName attributeName = attribute.getName();
+						getStreamDataProvider().getWriter().writeAttribute(attributeName.getPrefix(), attributeName.getNamespaceURI(), attributeName.getLocalPart(),
+								attribute.getValue());					
 					}
-					else {
-						throw new InconsistentAdapterDataException("The element \"" + tag.getLocalPart() + "\" was not nested correctly.");
-					}
-					break;
-				case XMLStreamConstants.END_ELEMENT:
-					try {
-						getStreamDataProvider().getCustomXMLElements().pop();					
-						getStreamDataProvider().getWriter().writeEndElement();
-					}
-					catch (EmptyStackException e) {
-						throw new InconsistentAdapterDataException("One more end element than start elements was found in the nested custom XML.");
-					}
-					break;
-				case XMLStreamConstants.CHARACTERS:
-					if (!getStreamDataProvider().getCustomXMLElements().isEmpty()) {
-						getStreamDataProvider().getWriter().writeCharacters(event.asCharacters().getData());
-					}
-					break;
-				default:
-					break;
-			}
-		}
+					
+	//				if (predicate.getURI() != null) {
+	//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
+	//							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+	//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
+	//									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
+	//				}
+	//				else { // String representation can not be null, if URI is null
+	//					getStreamDataProvider().getWriter().writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getPrefix(), 
+	//							ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), predicate.getStringRepresentation());
+	//				}
+					
+	//				if ((originalType != null) && (originalType.getURI() != null)) {
+	//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
+	//							XMLReadWriteUtils.ATTRIBUTE_RDF_DATATYPE.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+	//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), originalType.getURI().getPrefix(), 
+	//							originalType.getURI().getNamespaceURI()) + ":" + originalType.getURI().getLocalPart());
+	//				}
+				}
+				else {
+					throw new InconsistentAdapterDataException("The element \"" + tag.getLocalPart() + "\" was not nested correctly.");
+				}
+				break;
+			case XMLStreamConstants.END_ELEMENT:
+				try {
+					getStreamDataProvider().getCustomXMLElements().pop();					
+					getStreamDataProvider().getWriter().writeEndElement();
+				}
+				catch (EmptyStackException e) {
+					throw new InconsistentAdapterDataException("One more end element than start elements was found in the nested custom XML.");
+				}
+				break;
+			case XMLStreamConstants.CHARACTERS:
+				if (!getStreamDataProvider().getCustomXMLElements().isEmpty()) {
+					getStreamDataProvider().getWriter().writeCharacters(event.asCharacters().getData());
+				}
+				break;
+			default:
+				break;
+		}		
 	}
 	
 	

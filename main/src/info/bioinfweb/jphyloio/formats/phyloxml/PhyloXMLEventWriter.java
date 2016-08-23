@@ -206,6 +206,10 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		receiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PHYLOGENY);	
 		tree.writeMetadata(getParameters(), receiver);
 		
+		// Write custom XML
+		receiver = new PhyloXMLOnlyCustomXMLDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PHYLOGENY);	
+		tree.writeMetadata(getParameters(), receiver);
+		
 		getXMLWriter().writeEndElement();
 	}
 	

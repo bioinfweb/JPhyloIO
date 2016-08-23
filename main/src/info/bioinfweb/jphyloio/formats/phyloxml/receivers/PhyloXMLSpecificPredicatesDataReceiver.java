@@ -24,7 +24,6 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
@@ -48,9 +47,7 @@ import javax.xml.stream.XMLStreamException;
 
 public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataReceiver {
 	private Stack<QName> predicates = new Stack<QName>();
-	private Stack<Integer> childIndices = new Stack<Integer>();
-	
-	private URIOrStringIdentifier currentCustomXMLPredicate;
+	private Stack<Integer> childIndices = new Stack<Integer>();	
 	private QName currentDatatype;
 	private boolean writeAppliesTo = false;
 	
@@ -76,7 +73,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 
 		if (event.getPredicate().getURI() != null) {
 			
-			if (!Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren())
+			if ((predicates.size() > 1) && !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren())
 					.contains(event.getPredicate().getURI())) {
 				
 				throw new JPhyloIOWriterException("The element \"" + event.getPredicate().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
@@ -123,7 +120,6 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML)) {
 							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML);
 							getStreamDataProvider().getMetaIDs().remove(event.getID());
-							currentCustomXMLPredicate = event.getPredicate();
 						}
 						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_CLADE)) {
 							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE);
@@ -193,7 +189,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 				break;
 			case CUSTOM_XML:
 				if (event.hasXMLEventValue()) {					
-					writeCustomXMLTag(currentCustomXMLPredicate, event.getXMLEvent());
+					writeCustomXMLTag(event.getXMLEvent());
 				}
 				break;
 			default:
@@ -206,7 +202,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		int currentIndex = 0;
 		
-		if (!Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getRel().getURI())) {
+		if ((predicates.size() > 1) && !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getRel().getURI())) {
 			throw new JPhyloIOWriterException("The element \"" + event.getRel().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
 					+ predicates.peek().getLocalPart() + "\".");
 		}
@@ -269,7 +265,5 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 				&& event.getType().getContentType().equals(EventContentType.META_LITERAL)) {			
 			predicates.pop();
 		}
-		
-		currentCustomXMLPredicate = null;
 	}
 }

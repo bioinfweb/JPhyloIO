@@ -19,9 +19,12 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
@@ -41,6 +44,7 @@ import javax.xml.stream.XMLStreamException;
  *
  */
 public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver {
+	private boolean writeCustomXML;
 	
 	
 	public PhyloXMLOnlyCustomXMLDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
@@ -52,11 +56,11 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 	
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {		
-		if (isWriteContent()) {
-			if (!hasSimpleContent() && event.hasXMLEventValue()) {
+		if (writeCustomXML) {
+			if (!hasSimpleContent() && event.hasXMLEventValue()) {  // Write custom XML
 				writeCustomXMLTag(event.getXMLEvent());
 			}
-			else {
+			else {  // Write XML object representation
 				QName datatype = null;
 				if (getOriginalType() != null) {
 					datatype = getOriginalType().getURI();
@@ -76,14 +80,22 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 			}
 		}
 	}
-	
+
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-//		if (determineWriteMeta(event.getID(), event.getRel())) {
-//			if (event.getHRef() != null) {
-//				getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString());  // Could be written nested under special meta tag				
-//			}
-//		}
+		if (isWriteContent() && (event.getRel().getURI() != null) && event.getRel().getURI().equals(ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML)) {			
+			writeCustomXML = true;
+		}
+	}
+	
+	
+	@Override
+	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
+		super.handleMetaEndEvent(event);
+		
+		if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
+			writeCustomXML = false;
+		}
 	}
 }
