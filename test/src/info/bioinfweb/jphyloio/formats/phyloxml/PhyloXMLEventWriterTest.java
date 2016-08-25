@@ -155,11 +155,14 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
 		// Add document metadata
+		document.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
@@ -191,11 +194,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(6, element);
+			assertNamespaceCount(7, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -229,11 +233,14 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
 		// Add document metadata
+		document.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
@@ -264,11 +271,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(6, element);
+			assertNamespaceCount(7, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -407,11 +415,14 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
 		// Add document metadata
+		document.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
@@ -442,11 +453,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(6, element);
+			assertNamespaceCount(7, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -593,11 +605,14 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
 		// Add document metadata
+		document.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
@@ -628,13 +643,14 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(6, element);
+			assertNamespaceCount(7, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
-			assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			
 			assertTrue(reader.hasNext());
@@ -693,9 +709,21 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertAttribute(ATTR_DATATYPE, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_ANY_URI.getLocalPart(), element);
 			assertAttribute(ATTR_APPLIES_TO, APPLIES_TO_PHYLOGENY, element);
 			assertCharactersEvent("www.test2.de", reader);
-			assertEndElement(TAG_PROPERTY, reader);			
+			assertEndElement(TAG_PROPERTY, reader);
 			
-			assertEndElement(TAG_PHYLOGENY, reader);		
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+//		assertAttributeCount(1, element);
+//		assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//				XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
+			
+			assertEndElement(TAG_PHYLOGENY, reader);
+			
+			element = assertStartElement(new QName("http://test.com/", "customTest", prefix2), reader);
+//		assertAttributeCount(1, element);
+//		assertAttribute(new QName(XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
+//				XMLReadWriteUtils.RDF_DEFAULT_PRE), prefix1 + XMLUtils.QNAME_SEPARATOR + "predicate", element);
+			assertEndElement(new QName("http://test.com/", "customTest", prefix2), reader);
 			
 			assertEndElement(TAG_ROOT, reader);			
 			
@@ -718,11 +746,14 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
 		// Add document metadata
+		document.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
@@ -753,11 +784,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(6, element);
+			assertNamespaceCount(7, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix3 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
@@ -904,11 +936,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNamespaceCount(6, element);
+			assertNamespaceCount(7, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName(PHYLOXML_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix1 = assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);			
@@ -1131,8 +1164,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			fail("Exception not thrown");
 		}
 		catch (InconsistentAdapterDataException e) {
-			assertTrue(e.getMessage().matches(
-					"The meta event \"\\S+\" with the PhyloXML-specific predicate \"\\S+\" was not nested correctly."));			
+			assertTrue(e.getMessage().matches("The meta event \"\\S+\" with the PhyloXML-specific predicate \"\\S+\" was not nested correctly."));			
 		}
 		finally {
 			file.delete();
@@ -1745,11 +1777,14 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 		
 		// Add document metadata
+		document.getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));		
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 		
 		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
@@ -1768,11 +1803,12 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(5, element);
+			assertNamespaceCount(6, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			assertNamespace(new QName("http://meta.net/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix = assertNamespace(new QName("http://test.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			
