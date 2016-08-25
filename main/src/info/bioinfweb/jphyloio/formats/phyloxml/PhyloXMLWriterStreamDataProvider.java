@@ -197,6 +197,7 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 		
 		predicateInfoMap.put(ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.CUSTOM_XML, null, 
 				PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML));
+		predicateInfoMap.put(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.CUSTOM_XML, null));
 		
 		// Sequence
 		predicateInfoMap.put(PREDICATE_SEQUENCE, new PhyloXMLPredicateInfo(PhyloXMLPredicateTreatment.TAG, TAG_SEQUENCE, PREDICATE_SEQUENCE_ATTR_TYPE, 

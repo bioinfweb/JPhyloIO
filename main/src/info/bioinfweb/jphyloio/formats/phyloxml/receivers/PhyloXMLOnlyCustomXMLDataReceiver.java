@@ -55,7 +55,7 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 	
 	
 	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {		
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		if (writeCustomXML) {
 			if (!hasSimpleContent() && event.hasXMLEventValue()) {  // Write custom XML
 				writeCustomXMLTag(event.getXMLEvent());
@@ -72,7 +72,7 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 //				if (value != null) {
 //					getStreamDataProvider().getWriter().writeCharacters(value);  // Could be written nested under special meta tag
 //				}
-				if ((translator != null) && !translator.hasStringRepresentation()) { // Make sure no single character events are written
+				if ((translator != null) && !translator.hasStringRepresentation()) {  // Make sure no single character events are written
 					translator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
 				}
 				
@@ -84,8 +84,25 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 
 	@Override
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		if (isWriteContent() && (event.getRel().getURI() != null) && event.getRel().getURI().equals(ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML)) {			
-			writeCustomXML = true;
+		writeCustomXML = false;
+		
+		if (getStreamDataProvider().getMetaIDs().contains(event.getID())) {
+			if ((event.getRel().getURI() != null) && event.getRel().getURI().equals(ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML)) {			
+				switch (getParameterMap().getPhyloXMLMetadataTreatment()) {
+					case NONE:
+						break;
+					case ONLY_LEAFS:
+					case SEQUENTIAL:
+					case TOP_LEVEL_WITH_CHILDREN:
+					case TOP_LEVEL_WITHOUT_CHILDREN:
+						writeCustomXML = true;
+						break;
+				}				
+			}
+		}
+		
+		if (writeCustomXML) {
+			getStreamDataProvider().getMetaIDs().remove(event.getID());	
 		}
 	}
 	

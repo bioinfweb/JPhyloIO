@@ -26,7 +26,6 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
-import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLColorTranslator;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateTreatment;
@@ -71,15 +70,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 		int currentIndex = 0;
 		PhyloXMLPredicateInfo predicateInfo = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI());
 
-		if (event.getPredicate().getURI() != null) {
-			
-			if ((predicates.size() > 1) && !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren())
-					.contains(event.getPredicate().getURI())) {
-				
-				throw new JPhyloIOWriterException("The element \"" + event.getPredicate().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
-						+ predicates.peek().getLocalPart() + "\".");
-			}
-			
+		if (event.getPredicate().getURI() != null) {			
 			for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
 				currentIndex++;
 				
@@ -203,7 +194,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 		int currentIndex = 0;
 		
 		if ((predicates.size() > 1) && !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getRel().getURI())) {
-			throw new JPhyloIOWriterException("The element \"" + event.getRel().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
+			throw new InconsistentAdapterDataException("The element \"" + event.getRel().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
 					+ predicates.peek().getLocalPart() + "\".");
 		}
 		
@@ -261,8 +252,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 				predicates.pop();
 				childIndices.pop();
 		}
-		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.CUSTOM_XML) 
-				&& event.getType().getContentType().equals(EventContentType.META_LITERAL)) {			
+		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.CUSTOM_XML)) {			
 			predicates.pop();
 		}
 	}

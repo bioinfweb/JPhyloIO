@@ -33,7 +33,6 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xtg.XTGConstants;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
-import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 
 import java.awt.Color;
 import java.util.LinkedHashMap;
