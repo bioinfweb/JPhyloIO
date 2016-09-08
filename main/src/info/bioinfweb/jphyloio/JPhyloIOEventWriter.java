@@ -30,7 +30,7 @@ import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 
 
 /**
- * The main JPhyloIO interface to be implemented by all format specific event readers.
+ * The main JPhyloIO interface to be implemented by all format specific event writers.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
