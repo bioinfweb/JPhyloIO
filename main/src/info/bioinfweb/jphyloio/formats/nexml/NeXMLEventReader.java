@@ -183,7 +183,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
-				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
+				OTUorOTUsEventInformation info = getOTUorOTUsEventInformation(streamDataProvider, element);
 				boolean isRoot = XMLUtils.readBooleanAttr(element, ATTR_ROOT, false);
 				
 				streamDataProvider.getCurrentEventCollection().add(new NodeEvent(info.id,	info.label, info.otuOrOtusID, isRoot));
@@ -462,7 +462,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				StartElement element = event.asStartElement();
 				LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
 				
-				streamDataProvider.getOtuIDToLabelMap().put(info.id, info.label);
+				streamDataProvider.getOTUIDToLabelMap().put(info.id, info.label);
 				streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.OTU, info.id, info.label));
 			}
 		});
@@ -489,7 +489,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
-				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);
+				OTUorOTUsEventInformation info = getOTUorOTUsEventInformation(streamDataProvider, element);
 				
 				String tokenSetType = XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null);
 				if (tokenSetType != null) {
@@ -722,7 +722,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				}
 				
 				StartElement element = event.asStartElement();
-				OTUorOTUSEventInformation otuInfo = getOTUorOTUSEventInformation(streamDataProvider, element);
+				OTUorOTUsEventInformation otuInfo = getOTUorOTUsEventInformation(streamDataProvider, element);
 				
 	  		streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.SEQUENCE, otuInfo.id, otuInfo.label, otuInfo.otuOrOtusID));
 			}
@@ -864,7 +864,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				StartElement element = event.asStartElement();
-				OTUorOTUSEventInformation info = getOTUorOTUSEventInformation(streamDataProvider, element);				
+				OTUorOTUsEventInformation info = getOTUorOTUsEventInformation(streamDataProvider, element);				
 				
 				streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, info.id, info.label, info.otuOrOtusID));
 				streamDataProvider.getElementTypeToCurrentIDMap().put(EventContentType.TREE_NETWORK_GROUP, info.id);

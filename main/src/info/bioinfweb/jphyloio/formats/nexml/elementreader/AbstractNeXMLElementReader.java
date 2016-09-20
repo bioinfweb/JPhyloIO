@@ -71,7 +71,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	/**
 	 * Contains information about a {@link LinkedLabeledIDEvent}.
 	 */
-	protected static class OTUorOTUSEventInformation extends LabeledIDEventInformation {
+	protected static class OTUorOTUsEventInformation extends LabeledIDEventInformation {
 		public String otuOrOtusID;
 	}
 	
@@ -246,12 +246,12 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	 * 
 	 * @param streamDataProvider the stream data provider of the calling {@link NeXMLEventReader}
 	 * @param element the {@link StartElement} to obtain the information from
-	 * @return the {@link OTUorOTUSEventInformation} containing information about the given {@link StartElement}
+	 * @return the {@link OTUorOTUsEventInformation} containing information about the given {@link StartElement}
 	 * @throws JPhyloIOReaderException
 	 */
-	protected OTUorOTUSEventInformation getOTUorOTUSEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) throws JPhyloIOReaderException {
+	protected OTUorOTUsEventInformation getOTUorOTUsEventInformation(NeXMLReaderStreamDataProvider streamDataProvider, StartElement element) throws JPhyloIOReaderException {
 		LabeledIDEventInformation labeledIDEventInformation = getLabeledIDEventInformation(streamDataProvider, element);
-		OTUorOTUSEventInformation otuEventInformation = new OTUorOTUSEventInformation();
+		OTUorOTUsEventInformation otuEventInformation = new OTUorOTUsEventInformation();
 		
 		otuEventInformation.id = labeledIDEventInformation.id;
 		otuEventInformation.label = labeledIDEventInformation.label;
@@ -264,7 +264,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		// If no label is present in the element, the OTU label (if present) can be used as a label
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuOrOtusID != null) 
 				&& streamDataProvider.getParameters().getBoolean(ReadWriteParameterMap.KEY_NEXML_USE_OTU_LABEL, false)) {
-			otuEventInformation.label = streamDataProvider.getOtuIDToLabelMap().get(otuEventInformation.otuOrOtusID);
+			otuEventInformation.label = streamDataProvider.getOTUIDToLabelMap().get(otuEventInformation.otuOrOtusID);
 		}
 		
 		return otuEventInformation;

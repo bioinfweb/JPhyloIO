@@ -182,12 +182,12 @@ public class NeXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<N
 
 
 	/**
-	 * Returns a map that links a label to a certain OTU ID. This map is used to determine a sequence label 
-	 * from the OTU linked to it, in case no sequence label could be found.
+	 * Returns a map that links a label to a certain OTU ID. This map is used to determine a sequence or node label 
+	 * from the OTU linked to it, in case no sequence or node label could be found.
 	 * 
 	 * @return the map linking a label to an OTU ID
 	 */
-	public Map<String, String> getOtuIDToLabelMap() {
+	public Map<String, String> getOTUIDToLabelMap() {
 		return otuIDToLabelMap;
 	}
 
