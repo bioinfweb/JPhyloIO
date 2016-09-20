@@ -85,26 +85,26 @@
 	<trees id="treegroup" otus="taxonlist">
 		<meta datatype="xsd:int" id="meta22" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 		<tree id="tree" xsi:type="nex:FloatTree">
-			<meta datatype="xsd:int" id="meta23" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+			<meta datatype="xsd:int" id="meta23" property="ex:predicate" xsi:type="nex:LiteralMeta">48</meta>
 			<node id="node1" otu="taxon1">
-				<meta datatype="xsd:int" id="meta24" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+				<meta datatype="xsd:int" id="meta24" property="ex:predicate" xsi:type="nex:LiteralMeta">49</meta>
 			</node>
 			<node id="node2" otu="taxon2"/>
 			<node id="node3" otu="taxon3"/>
 			<node id="node4"/>
 			<node id="node5"/>
 			<rootedge id="rootedge" target="node4" length="0.778">
-				<meta datatype="xsd:int" id="meta25" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+				<meta datatype="xsd:int" id="meta25" property="ex:predicate" xsi:type="nex:LiteralMeta">50</meta>
 			</rootedge>
 			<edge id="edge1" source="node4" target="node5" length="1"/>
 			<edge id="edge2" source="node4" target="node3">
-				<meta datatype="xsd:int" id="meta26" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+				<meta datatype="xsd:int" id="meta26" property="ex:predicate" xsi:type="nex:LiteralMeta">51</meta>
 			</edge>
 			<edge id="edge3" source="node5" target="node1" length="0.98"/>
 			<edge id="edge4" source="node5" target="node2"/>
 		</tree>
 		<network id="network" xsi:type="nex:FloatNetwork">
-			<meta datatype="xsd:int" id="meta27" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
+			<meta datatype="xsd:int" id="meta27" property="ex:predicate" xsi:type="nex:LiteralMeta">52</meta>
 			<node id="node6" otu="taxon1"/>
 			<node id="node7" otu="taxon2"/>
 			<node id="node8" otu="taxon3"/>

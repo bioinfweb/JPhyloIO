@@ -462,11 +462,11 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLabeledIDEvent(EventContentType.TREE, null, null, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
-						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "48", null, 48, true, reader);
 				
 				String node1 = assertNodeEvent(null, null, false, taxon1, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
-						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "49", null, 49, true, reader);
 				assertEndEvent(EventContentType.NODE, reader);
 				
 				String node2 = assertNodeEvent(null, null, false, taxon2, true, reader);
@@ -476,7 +476,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEdgeEvent(null, node4, 0.778, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
-						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "50", null, 50, true, reader);
 				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
 				assertEdgeEvent(node4, node5, 1, reader);
@@ -484,7 +484,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertEdgeEvent(node4, node3, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
-						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "51", null, 51, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEdgeEvent(node5, node1, 0.98, reader);
@@ -497,7 +497,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLabeledIDEvent(EventContentType.NETWORK, null, null, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), 
-						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "47", null, 47, true, reader);
+						new URIOrStringIdentifier(null, new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd")), "52", null, 52, true, reader);
 				
 				String node6 = assertNodeEvent(null, null, false, taxon1, true, reader);				
 				String node7 = assertNodeEvent(null, null, false, taxon2, true, reader);
