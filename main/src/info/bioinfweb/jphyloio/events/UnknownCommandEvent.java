@@ -19,14 +19,26 @@
 package info.bioinfweb.jphyloio.events;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventReader;
 
 
 
+/**
+ * Event to be fired, if an unknown command was found (e.g. a <i>Nexus</i> command without an according
+ * {@link NexusCommandEventReader} implementation). Events of this type are only fired, if the parameter 
+ * {@link ReadWriteParameterMap#KEY_CREATE_UNKNOWN_COMMAND_EVENTS} is set to {@code true}. (Refer to the
+ * individual reader documentations for details.) 
+ * 
+ * @author Ben St&ouml;ver
+ * @see ReadWriteParameterMap#KEY_CREATE_UNKNOWN_COMMAND_EVENTS
+ */
 public class UnknownCommandEvent extends ConcreteJPhyloIOEvent {
 	private String key;
 	private String value;
+	//TODO Refactor properties.
 	
 	
 	/**

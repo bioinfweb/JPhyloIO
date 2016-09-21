@@ -56,22 +56,33 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 /**
- * Factory to create instances of <i>JPhyloIO</i> event reader and writers as well as {@link JPhyloIOFormatInfo} 
+ * Factory to create instances of <i>JPhyloIO</i> event readers and writers as well as {@link JPhyloIOFormatInfo} 
  * instances.
  * <p>
  * This factory provides methods to create instances for a specific format, which is identified by its format ID,
  * such as {@link #getFormatInfo(String)}, {@link #getWriter(String)} and different versions of {@code getReader()}.
  * Format IDs are defined in {@link JPhyloIOFormatIDs}.
  * <p>
- * Additionally this class allows to guess a format from the data using the available {@code guessFormat()} methods.
- * This is useful if an application user shall be able to load a file in any supported format without explicitly 
- * specifying the format.
+ * Additionally this class allows to guess a format from the data using the available {@code guessFormat()} or 
+ * {@code guessFormat()} methods. This is useful if an application user shall be able to load a file in any supported 
+ * format without explicitly specifying the format.
  * <p>
  * To be able to guess the format, a certain amount of the data to be read needs to be buffered. The buffer size may 
  * be specified using {@link #setReadAheahLimit(int)}. The default value 
  * ({@link #DEFAULT_READ_AHAED_LIMIT}{@code = }{@value #DEFAULT_READ_AHAED_LIMIT} bytes) should be sufficient in most 
  * cases. An increase maybe necessary if unusual files (e.g. XML files with very long comments in front of the root 
  * tag) are expected.
+ * <p>
+ * The following examples shows how to obtain a reader for a file with an unknown format:
+ * <pre>
+ * JPhyloIOEventReader reader = factory.guessReader(new File("path/to/file"), new ReadWriteParameterMap());
+ * if (reader != null) {
+ *   // read file
+ * }
+ * else {
+ *   System.out.println("The format of the specified file is not supported.");
+ * }
+ * </pre>
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
