@@ -196,9 +196,9 @@ public class JPhyloIOTestTools {
 			assertEquals(EventContentType.SEQUENCE_TOKENS, event.getType().getContentType());
 			SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
 			
-			assertEquals(expectedSequence.length(), tokensEvent.getCharacterValues().size());
+			assertEquals(expectedSequence.length(), tokensEvent.getTokens().size());
 			for (int i = 0; i < expectedSequence.length(); i++) {
-				assertEquals(expectedSequence.substring(i, i + 1), tokensEvent.getCharacterValues().get(i));
+				assertEquals(expectedSequence.substring(i, i + 1), tokensEvent.getTokens().get(i));
 			}
 		}		
 	}
@@ -209,9 +209,9 @@ public class JPhyloIOTestTools {
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventContentType.SEQUENCE_TOKENS, event.getType().getContentType());
 		SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
-		assertEquals(expectedSequence.length, tokensEvent.getCharacterValues().size());
+		assertEquals(expectedSequence.length, tokensEvent.getTokens().size());
 		for (int i = 0; i < expectedSequence.length; i++) {
-			assertEquals(expectedSequence[i], tokensEvent.getCharacterValues().get(i));
+			assertEquals(expectedSequence[i], tokensEvent.getTokens().get(i));
 		}
 	}
 	
@@ -224,18 +224,18 @@ public class JPhyloIOTestTools {
   			String token = "";
   			int tokenCount = 0;
 
-  			for (int i = 0; i < event.getCharacterValues().size(); i++) {
+  			for (int i = 0; i < event.getTokens().size(); i++) {
   				int c = valueReader.read();
   				while ((c != ' ') && (c != -1)) {
   					token += (char)c;
   					c = valueReader.read();  					
   				}
-					assertEquals(token, event.getCharacterValues().get(i));
+					assertEquals(token, event.getTokens().get(i));
 					tokenCount ++;
 					token = "";
 				}
 
-  			assertEquals(tokenCount, event.getCharacterValues().size());
+  			assertEquals(tokenCount, event.getTokens().size());
   		}  		
   	}
   	finally {
