@@ -374,7 +374,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 		if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
 			SequenceTokensEvent charactersEvent = event.asSequenceTokensEvent();
 			if (currentSequenceName.equals(firstSequenceName)) {
-				charactersRead += charactersEvent.getCharacterValues().size();
+				charactersRead += charactersEvent.getTokens().size();
 			}
 		}
 	}

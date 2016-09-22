@@ -174,7 +174,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextR
 					else {
 						getCurrentEventCollection().add(event);
 						if (EventContentType.SEQUENCE_TOKENS.equals(event.getType().getContentType())) {
-							charactersRead += ((SequenceTokensEvent)event).getCharacterValues().size();
+							charactersRead += ((SequenceTokensEvent)event).getTokens().size();
 						}
 					}
 					break;

@@ -133,7 +133,7 @@ public class StoreMatrixDataAdapter extends StoreAnnotatedDataAdapter<LinkedLabe
 					sequenceLength++;
 				}
 				else if (event.getType().getContentType().equals(EventContentType.SEQUENCE_TOKENS)) {
-					sequenceLength += event.asSequenceTokensEvent().getCharacterValues().size();
+					sequenceLength += event.asSequenceTokensEvent().getTokens().size();
 				}
 			}
 			return sequenceLength;

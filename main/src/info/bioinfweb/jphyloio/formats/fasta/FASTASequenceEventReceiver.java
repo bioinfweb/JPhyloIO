@@ -140,8 +140,8 @@ class FASTASequenceEventReceiver extends BasicEventReceiver<TextWriterStreamData
 		switch (event.getType().getContentType()) {
 			case SEQUENCE_TOKENS:
 				SequenceTokensEvent tokensEvent = event.asSequenceTokensEvent();
-				if (!tokensEvent.getCharacterValues().isEmpty()) {
-					writeTokens(event.asSequenceTokensEvent().getCharacterValues());
+				if (!tokensEvent.getTokens().isEmpty()) {
+					writeTokens(event.asSequenceTokensEvent().getTokens());
 					tokenWritten = true;
 				}
 				break;

@@ -55,7 +55,7 @@ public abstract class AbstractSequenceContentReceiver<P extends WriterStreamData
 				}  // End events can be ignored here.
 				break;
 			case SEQUENCE_TOKENS:				
-				for (String token : event.asSequenceTokensEvent().getCharacterValues()) {
+				for (String token : event.asSequenceTokensEvent().getTokens()) {
 					handleToken(token, null);
 				}				
 				break;

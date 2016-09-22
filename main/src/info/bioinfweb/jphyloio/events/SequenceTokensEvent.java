@@ -38,17 +38,17 @@ import java.util.List;
  * @author Ben St&ouml;ver
  */
 public class SequenceTokensEvent extends ConcreteJPhyloIOEvent {
-	private List<String> characterValues;
+	private List<String> tokens;
 	
 	
 	public SequenceTokensEvent(List<String> tokens) {
 		super(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE);
 		
-		this.characterValues = Collections.unmodifiableList(tokens);
+		this.tokens = Collections.unmodifiableList(tokens);
 	}
 
 	
-	public List<String> getCharacterValues() {
-		return characterValues;
+	public List<String> getTokens() {
+		return tokens;
 	}
 }
