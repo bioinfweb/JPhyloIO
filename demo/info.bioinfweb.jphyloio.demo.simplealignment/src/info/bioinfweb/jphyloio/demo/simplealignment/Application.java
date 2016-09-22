@@ -20,10 +20,13 @@ package info.bioinfweb.jphyloio.demo.simplealignment;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +43,8 @@ import java.util.TreeMap;
  * @author Ben St&ouml;ver
  */
 public class Application {
-	/**
-	 * Simple example business model of this application that models a multiple sequence alignment as a map containing lists of
-	 * strings. The maps of the list are the <i>JPhyloIO</i> sequence IDs and the elements in the lists are the sequence tokens
-	 * (e.g. nucleotides or amino acids).
-	 */
-	private Map<String, List<String>> model = new TreeMap<String, List<String>>();
+	/** Simple example business model of this application that models a multiple sequence alignment. */
+	private ApplicationModel model = new ApplicationModel();
 
 	/** Factory instance to be used, to create format specific <i>JPhyloIO</i> readers and writers. */
 	private JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory(); 
@@ -85,10 +84,9 @@ public class Application {
 			System.out.println("No data loaded.");
 		}
 		else {
-			for (String sequenceID : model.keySet()) {
-				System.out.print(sequenceID + ":\t");
-				List<String> sequence = model.get(sequenceID);
-				for (String token : sequence) {
+			for (int i = 0; i < model.size(); i++) {
+				System.out.print(model.getSequenceLabel(i) + ":\t");
+				for (String token : model.getSequenceTokens(i)) {
 					System.out.print(token + " ");
 				}
 				System.out.println();
@@ -104,7 +102,18 @@ public class Application {
 	 * @param formatID the <i>JPhyloIO</i> format ID that determines the format of the output file
 	 */
 	public void write(File file, String formatID) {
+		// Prepare data adapters:
+		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
+		//document.getMatrices().add(e)
 		
+		// Write data:
+		JPhyloIOEventWriter writer = factory.getWriter(formatID);
+		try {
+			writer.writeDocument(document, file, new ReadWriteParameterMap());
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

@@ -21,12 +21,14 @@ package info.bioinfweb.jphyloio.demo.simplealignment;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.utils.JPhyloIOReadingUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,8 +49,14 @@ import java.util.Map;
  * @author Ben St&ouml;ver
  */
 public class AlignmentReader {
+	/** Stores the <i>JPhyloIO</i> event reader that is currently used by this instance. */
 	private JPhyloIOEventReader reader;
-	private Map<String, List<String>> model;
+	
+	/** Stores the application model that is the current target for data read by this instance. */
+	private ApplicationModel model;
+	
+	/** Map that is used internally to map <i>JPhyloIO</i> sequence IDs to indices in the application business model. */
+	private Map<String, Integer> sequenceIDMap = new HashMap<String, Integer>();
 	
 	
 	/**
@@ -59,15 +67,16 @@ public class AlignmentReader {
 	 * (The grammar can be found in the documentation of {@link JPhyloIOEventReader}.)
 	 * 
 	 * @param reader the <i>JPhyloIO</i> reader providing the event stream to be processed
-	 * @param model the model to take up the loaded alignment data
+	 * @param model the application business model to take up the loaded alignment data
 	 * @throws IOException exceptions thrown during the I/O operation
 	 */
-	public void read(JPhyloIOEventReader reader, Map<String, List<String>> model) 
+	public void read(JPhyloIOEventReader reader, ApplicationModel model) 
 			throws IOException {  // Possible exceptions from JPhyloIO readers are forwarded.
 		
 		// Store parameters in instance variables to have them available in all methods:
 		this.reader = reader;
 		this.model = model;
+		sequenceIDMap.clear();  // Remove entries from the list from possible previous calls of this method. 
 		
 		// Process JPhyloIO events:
 		while (reader.hasNextEvent()) {  // This loop will run until all events of the JPhyloIO reader are consumed (and the end of the 
@@ -121,7 +130,7 @@ public class AlignmentReader {
       if (event.getType().getContentType().equals(EventContentType.SEQUENCE)) {  // This application is only interested in sequence events 
       	                                                                         // and will skip others on this level (e.g. character set 
       	                                                                         // or sequence set definitions).
-      	readSequencePart(event.asLinkedLabeledIDEvent().getID());  // Delegate reading the sequence contents to another method.
+      	readSequencePart(event.asLinkedLabeledIDEvent());  // Delegate reading the sequence contents to another method.
       }
       else {
       	JPhyloIOReadingUtils.reachElementEnd(reader);  // Skip events not processed by this application.
@@ -137,7 +146,7 @@ public class AlignmentReader {
 	 * Note that JPhyloIO allows to split sequences into multiple parts (i.e. multiple sequence start events with the same ID).
 	 * If an ID is encountered the second time, contained tokens must be appended to the current sequence. The JPhyloIO grammar
 	 * allows this to be able to efficiently process interleaved formats versions (of e.g. Nexus or Phylip). Selecting or creating 
-	 * the correct sequence object is handled by {@link #getSequence(String)}.
+	 * the correct sequence object is handled by {@link #getTokenList(String)}.
 	 * <p>
 	 * The loop in this method processes the event sequence defined by the <i>JPhyloIO</i> grammar node <code>SequencePart</code>. 
 	 * (The grammar can be found in the documentation of {@link JPhyloIOEventReader}.)
@@ -145,8 +154,8 @@ public class AlignmentReader {
 	 * @param sequenceID the ID of the sequence to be read
 	 * @throws IOException 
 	 */
-	private void readSequencePart(String sequenceID) throws IOException {
-		List<String> sequence = getSequence(sequenceID);  // Fetch an existing or create a new sequence object from the model.
+	private void readSequencePart(LinkedLabeledIDEvent sequencePartStartEvent) throws IOException {
+		List<String> sequence = getTokenList(sequencePartStartEvent);  // Fetch an existing or create a new token list from the model.
 		
 		JPhyloIOEvent event = reader.next();  
 		while ((!event.getType().getTopologyType().equals(EventTopologyType.END))) { 
@@ -174,18 +183,20 @@ public class AlignmentReader {
 	
 	
 	/**
-	 * Returns a sequence from the model. If none with the specified ID is currently present, a new one will be created, added to the
-	 * model and returned.
+	 * Returns the token list for the sequence associated with the specified <i>JPhyloIO</i> sequence ID from the application model. 
+	 * If none associated with the specified ID is currently present, a new one will be created, added to the model and returned.
 	 * 
-	 * @param sequenceID the ID of the requested sequence
-	 * @return the sequence object from the model
+	 * @param sequencePartStartEvent the event describing the sequence
+	 * @return the token list object for the requested sequence from the model
 	 */
-	private List<String> getSequence(String sequenceID) {
-		List<String> result = model.get(sequenceID);
-		if (result == null) {
-			result = new ArrayList<String>();
-			model.put(sequenceID, result);
+	private List<String> getTokenList(LinkedLabeledIDEvent sequencePartStartEvent) {
+		Integer index = sequenceIDMap.get(sequencePartStartEvent.getID());  // Determine the index of the sequence associated with the 
+		                                                                // current ID in the application model.  
+		if (index == null) {  // If this sequence ID was not encountered until now:
+		  // Add a new sequence to the model and 
+			index = model.addSequence(sequencePartStartEvent.getLabel());  // Add a new sequence to the model
+			sequenceIDMap.put(sequencePartStartEvent.getID(), index);  // Map its index to its ID. 
 		}
-		return result;
+		return model.getSequenceTokens(index);  //
 	}
 }
