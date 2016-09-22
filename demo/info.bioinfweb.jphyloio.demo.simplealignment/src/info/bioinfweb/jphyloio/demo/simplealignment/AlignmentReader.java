@@ -94,7 +94,8 @@ public class AlignmentReader {
       	case ALIGNMENT:
       		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
       			if (model.isEmpty()) {
-      				readAlignment();  // Delegate reading the alignment contents to another method (that corresponds to a nested grammar node).
+      				readAlignment(event.asLinkedLabeledIDEvent());  // Delegate reading the alignment contents to another method 
+      				                                                // (that corresponds to a nested grammar node).
       			}
       			else {
       				System.out.println("Since this application does not support multiple alignments, the alignment with the ID "
@@ -120,9 +121,13 @@ public class AlignmentReader {
 	 * The loop in this method processes the event sequence defined by the <i>JPhyloIO</i> grammar node <code>Matrix</code>. (The 
 	 * grammar can be found in the documentation of {@link JPhyloIOEventReader}.)
 	 * 
+	 * @param alignmentStartEvent the start event of the alignment to be read 
 	 * @throws IOException exceptions thrown during the I/O operation
 	 */
-	private void readAlignment() throws IOException {
+	private void readAlignment(LinkedLabeledIDEvent alignmentStartEvent) throws IOException {
+		// Load label:
+		model.setLabel(alignmentStartEvent.getLabel());  // If no label was read, it will be set to null.
+		
 		// Process JPhyloIO events:
 		JPhyloIOEvent event = reader.next();  
 		while ((!event.getType().getTopologyType().equals(EventTopologyType.END))) {  // This loop will run until all events for the 

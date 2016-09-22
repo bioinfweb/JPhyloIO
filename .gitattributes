@@ -16,10 +16,11 @@ demo/info.bioinfweb.jphyloio.demo.simplealignment/.classpath -text svneol=unset#
 demo/info.bioinfweb.jphyloio.demo.simplealignment/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.simplealignment/data/Alignment.fasta -text
+demo/info.bioinfweb.jphyloio.demo.simplealignment/data/input/Alignment.fasta -text
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/demo/simplealignment/AlignmentReader.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/demo/simplealignment/Application.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/demo/simplealignment/ApplicationModel.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/demo/simplealignment/MatrixDataAdapterImpl.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/demo/simplealignment/package-info.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.project -text svneol=unset#text/plain

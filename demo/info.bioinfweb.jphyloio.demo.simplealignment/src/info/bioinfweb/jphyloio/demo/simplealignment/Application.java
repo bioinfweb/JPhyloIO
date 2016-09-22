@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,6 +85,15 @@ public class Application {
 			System.out.println("No data loaded.");
 		}
 		else {
+			// Print title:
+			if (model.getLabel() != null) {
+				System.out.println(model.getLabel() + ":");
+			}
+			else {
+				System.out.println("Unnamed alignment:");
+			}
+			
+			// Print sequences:
 			for (int i = 0; i < model.size(); i++) {
 				System.out.print(model.getSequenceLabel(i) + ":\t");
 				for (String token : model.getSequenceTokens(i)) {
@@ -104,7 +114,7 @@ public class Application {
 	public void write(File file, String formatID) {
 		// Prepare data adapters:
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
-		//document.getMatrices().add(e)
+		document.getMatrices().add(new MatrixDataAdapterImpl(model));
 		
 		// Write data:
 		JPhyloIOEventWriter writer = factory.getWriter(formatID);
@@ -118,10 +128,11 @@ public class Application {
 	
 	
 	public static void main(String[] args) {
-		final File file = new File("data/Alignment.fasta");  // Specify another file name here, to test another file.
+		final File file = new File("data/input/Alignment.fasta");  // Specify another file name here to test another file.
 		
 		Application application = new Application();
 		application.read(file);
 		application.display();
+		application.write(new File("data/output/Test.xml"), JPhyloIOFormatIDs.NEXML_FORMAT_ID);  // Specify another file name or format ID here to test other outputs.
 	}
 }
