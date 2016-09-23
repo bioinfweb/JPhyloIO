@@ -26,6 +26,7 @@ demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/de
 demo/info.bioinfweb.jphyloio.demo.tree/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
