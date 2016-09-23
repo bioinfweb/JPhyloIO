@@ -257,7 +257,7 @@ public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<N
 	public String getNeXMLPrefix(XMLStreamWriter writer) throws XMLStreamException {
 		String prefix = writer.getPrefix(NeXMLConstants.NEXML_NAMESPACE);
 		if (prefix == null || prefix.isEmpty()) {
-			prefix = NeXMLConstants.NEXML_DEFAULT_PRE;
+			prefix = NeXMLConstants.NEXML_DEFAULT_NAMESPACE_PREFIX;
 		}
 		return prefix;
 	}

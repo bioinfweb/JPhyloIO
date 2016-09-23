@@ -34,7 +34,7 @@ import javax.xml.namespace.QName;
 public interface NeXMLConstants {
 	public static final String NEXML_FORMAT_NAME = "NeXML";
 	public static final String NEXML_VERSION = "0.9";
-	public static final String NEXML_DEFAULT_PRE = "nex";
+	public static final String NEXML_DEFAULT_NAMESPACE_PREFIX = "nex";
 	public static final String NEXML_NAMESPACE = "http://www.nexml.org/2009";
 
 	public static final QName TAG_ROOT = new QName(NEXML_NAMESPACE, "nexml");

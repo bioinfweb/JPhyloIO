@@ -85,7 +85,7 @@ public class XMLReadWriteUtils {
 					givenPrefix = RDF_DEFAULT_PRE;
 				}
 				else if (namespaceURI.equals(NeXMLConstants.NEXML_NAMESPACE)) {
-					givenPrefix = NeXMLConstants.NEXML_DEFAULT_PRE;
+					givenPrefix = NeXMLConstants.NEXML_DEFAULT_NAMESPACE_PREFIX;
 				}
 				else if (namespaceURI.equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {
 					givenPrefix = PhyloXMLConstants.PHYLOXML_DEFAULT_PRE;

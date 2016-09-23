@@ -41,6 +41,7 @@ import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -78,7 +79,21 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * An event reader for the <a href="http://nexml.org/">NeXML format</a>.
+ * An event reader for the <a href="http://nexml.org/">NeXML format</a>. The majority of <i>NeXML</i> elements are supported by 
+ * this reader, since the data model of <i>JPhyloIO</i> is heavily influenced by the data model of <i>NeXML</i>.
+ * <p>
+ * Element IDs found in <i>NeXML</i> documents are directly used as IDs of <i>JPhyloIO</i> events. All {@code meta} tags
+ * of <i>NeXML</i> are represented by according {@link ResourceMetadataEvent}s or {@link LiteralMetadataEvent}s. Since there are no
+ * equivalent <i>JPhyloIO</i> events for the {@code format} or {@code matrix} tags of <i>NeXML</i>, metadata nested under these tags
+ * is translated into meta-events between the start and end events of the type {@link EventContentType#ALIGNMENT}. To distinguish them 
+ * from meta-events generated from {@code meta} tags nested directly under the {@code characters} tag (which are are also fired at this
+ * position), these meta-events are grouped by resource meta start and end events with the predicates 
+ * {@link NeXMLConstants#PREDICATE_FORMAT} or {@link NeXMLConstants#PREDICATE_MATRIX} around them. (Note that these events generated 
+ * by the reader only to group according metadata and do not have any equivalent {@code meta} tag in the document. 
+ * {@link NeXMLEventWriter} can handle such metadata structures accordingly.)
+ * <p>
+ * Most of the sets modeled in <i>NeXML</i> are supported by <i>JPhyloIO</i> as well, however sets of cells and sets of character states
+ * are currently not. These sets will be ignored while reading a <i>NeXML</i> document. 
  * 
  * <h3><a name="parameters"></a>Recognized parameters</h3> 
  * <ul>
@@ -92,6 +107,8 @@ import javax.xml.stream.events.XMLEvent;
  * @since 0.0.0
  */
 public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDataProvider> implements NeXMLConstants {
+	//TODO Describe handling of different sequence types in JavaDoc.
+	
 	private int currentMetaLiteralStartLevel = -1;
 	
 	
