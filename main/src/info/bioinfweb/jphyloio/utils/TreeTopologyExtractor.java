@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.utils;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -31,6 +32,12 @@ import java.util.Set;
 
 
 
+/**
+ * Tool class that allows to determine a tree topology from a {@link TreeNetworkDataAdapter}. It is useful for implementations
+ * of {@link JPhyloIOEventWriter} for formats with a hierarchical tree representation (e.g. <i>Newick</i> or <i>PhyloXML</i>). 
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class TreeTopologyExtractor {
 	private Map<String, TopoplogicalNodeInfo> idToNodeInfoMap = new HashMap<String, TopoplogicalNodeInfo>();
 	private Set<String> networkEdges = new HashSet<String>();
