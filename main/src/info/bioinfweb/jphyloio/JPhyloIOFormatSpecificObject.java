@@ -34,6 +34,10 @@ public interface JPhyloIOFormatSpecificObject {
 	/**
 	 * Returns a string ID uniquely identifying the target format of this instance. Additional information on the
 	 * format can be retrieved by passing the returned ID to {@link JPhyloIOReaderWriterFactory#getFormatInfo(String)}.
+	 * <p>
+	 * Third party developers that create readers or writers for additional formats must make sure to use a globally unique
+	 * format ID. It is strongly recommended to use owned reverse domain names for this (e.g. 
+	 * <code>org.example.additionalformat</code>).
 	 * 
 	 * @return the ID of the target format of this instance
 	 * @see JPhyloIOReaderWriterFactory#getFormatInfo(String)

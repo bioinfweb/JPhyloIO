@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats;
 
 
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
+import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
 
 
 
@@ -29,19 +30,7 @@ import info.bioinfweb.commons.io.ContentExtensionFileFilter;
  * @author Ben St&ouml;ver
  * @since 0.0.0
  */
-public interface JPhyloIOFormatInfo {
-	/**
-	 * Returns the unique ID that identifies this format. IDs of formats supported by <i>JPhyloIO</i> are enumerated by 
-	 * {@link JPhyloIOFormatIDs}.
-	 * <p>
-	 * Third party developers that create readers or writers for additional formats must make sure to use a globally unique
-	 * format ID. It is strongly recommended to use owned reverse domain names for this (e.g. 
-	 * <code>org.example.additionalformat</code>).
-	 * 
-	 * @return the ID of the modeled format
-	 */
-	public String getFormatID();
-	
+public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	/**
 	 * Returns the human readable name of the modeled format. 
 	 * 
