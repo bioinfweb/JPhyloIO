@@ -18,11 +18,20 @@
  */
 package info.bioinfweb.jphyloio.readwriteinfo;
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
+/**
+ * Classes implementing this interface provide information on the content and parameter set an implementation of
+ * {@link JPhyloIOEventReader} or {@link JPhyloIOEventWriter} support.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.1.0
+ */
 public interface ReadWriteInfo {
 	/**
 	 * Determines whether the represented format allows to model the specified data element (content type). Readers will not 
