@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.demo.tree;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 
 import java.awt.BorderLayout;
@@ -99,6 +100,9 @@ public class Application {
 		mntmOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+					parameters.put(ReadWriteParameterNames.KEY_NEXML_USE_OTU_LABEL, true);  // Use OTU labels as node labels if no node label is present.
+					
 					JPhyloIOEventReader eventReader = new JPhyloIOReaderWriterFactory().guessReader(new File("data/Test.tre"), new ReadWriteParameterMap());
 					if (eventReader != null) {
 						try {
