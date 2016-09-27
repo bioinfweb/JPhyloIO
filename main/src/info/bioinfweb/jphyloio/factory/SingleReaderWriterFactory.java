@@ -35,7 +35,8 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
  * provided to {@link JPhyloIOReaderWriterFactory}.
  * <p>
  * Application or third party library developers who wish to add readers or writers for additional formats to
- * {@link JPhyloIOReaderWriterFactory}, should provide an according implementation of this interface.
+ * {@link JPhyloIOReaderWriterFactory}, should provide an according implementation of this interface which may
+ * than be regisgered using {@link JPhyloIOReaderWriterFactory#addFactory(SingleReaderWriterFactory)}.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0

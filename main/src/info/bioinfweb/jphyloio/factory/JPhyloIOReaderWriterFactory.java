@@ -61,8 +61,8 @@ import org.apache.commons.collections4.map.ListOrderedMap;
  * Factory to create instances of <i>JPhyloIO</i> event readers and writers as well as {@link JPhyloIOFormatInfo} 
  * instances.
  * <p>
- * This factory provides methods to create instances for a specific format, which is identified by its format ID,
- * such as {@link #getFormatInfo(String)}, {@link #getWriter(String)} and different versions of {@code getReader()}.
+ * It provides methods to create instances for a specific format, which is identified by its format ID, such as 
+ * {@link #getFormatInfo(String)}, {@link #getWriter(String)} and different versions of {@code getReader()}.
  * Format IDs are defined in {@link JPhyloIOFormatIDs}.
  * <p>
  * Additionally this class allows to guess a format from the data using the available {@code guessFormat()} or 
@@ -85,6 +85,10 @@ import org.apache.commons.collections4.map.ListOrderedMap;
  *   System.out.println("The format of the specified file is not supported.");
  * }
  * </pre>
+ * Internally this instance uses a map from the format IDs to instances of {@link SingleReaderWriterFactory} to
+ * create reader and writer instances or guess formats. Third party readers and writers can be handled by this 
+ * factory, if according single format factory instances are specified using 
+ * {@link #addFactory(SingleReaderWriterFactory)}.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
@@ -111,6 +115,10 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	private int readAheadLimit = DEFAULT_READ_AHAED_LIMIT;
 	
 	
+	/**
+	 * Returns a new instance of this class, which supports all build-in readers and writers of <i>JPhyloIO</i> with a 
+	 * buffer size as defined by {@link #DEFAULT_READ_AHAED_LIMIT}.
+	 */
 	public JPhyloIOReaderWriterFactory() {
 		super();
 		fillMap();
@@ -118,8 +126,29 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	private void addFactory(SingleReaderWriterFactory factory) {
-		formatMap.put(factory.getFormatInfo().getFormatID(), factory);
+	/**
+	 * Allows to add additional or replace existing single format factories to be used by this instance. Using this method
+	 * will only be necessary, if third party readers or writers shall be created by this instance.  
+	 * 
+	 * @param factory the single format factory object to be added to the internal map of this factory instance
+	 * @return the previous value associated with the format ID of the specified factory, or {@code null} if there was no 
+	 *         mapping for that format ID
+	 * @since 0.1.0
+	 */
+	public SingleReaderWriterFactory addFactory(SingleReaderWriterFactory factory) {
+		return formatMap.put(factory.getFormatInfo().getFormatID(), factory);
+	}
+	
+	
+	/**
+	 * Removes all single format factories from the internal map of this instance. After calling this method, no format
+	 * will be supported anymore by this instance until {@link #addFactory(SingleReaderWriterFactory)} is called. If
+	 * all build-in readers and writers of <i>JPhyloIO</i> shall be supported, using this method will be unnecessary.
+	 * 
+	 * @since 0.1.0
+	 */
+	public void removeAllFactories() {
+		formatMap.clear();
 	}
 	
 	
