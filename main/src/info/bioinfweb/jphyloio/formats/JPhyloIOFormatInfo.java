@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats;
 
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 

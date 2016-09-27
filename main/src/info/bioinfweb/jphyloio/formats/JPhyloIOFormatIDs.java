@@ -34,14 +34,14 @@ public interface JPhyloIOFormatIDs {
 	/** The prefix of all format IDs defined in <i>JPhyloIO</i>. Do not define custom IDs starting with this prefix. */
 	public static final String FORMAT_ID_PREFIX = "info.bioinfweb.jphyloio.";
 	
+	public static final String NEXML_FORMAT_ID = FORMAT_ID_PREFIX + "nexml";
+	public static final String NEXUS_FORMAT_ID = FORMAT_ID_PREFIX + "nexus";
+	public static final String NEWICK_FORMAT_ID = FORMAT_ID_PREFIX + "newick";
+	public static final String PHYLOXML_FORMAT_ID = FORMAT_ID_PREFIX + "phyloxml";
 	public static final String FASTA_FORMAT_ID = FORMAT_ID_PREFIX + "fasta";
 	public static final String PHYLIP_FORMAT_ID = FORMAT_ID_PREFIX + "phylip";
 	public static final String SEQUENTIAL_PHYLIP_FORMAT_ID = FORMAT_ID_PREFIX + "sequentialphylip";
-	public static final String NEWICK_FORMAT_ID = FORMAT_ID_PREFIX + "newick";
-	public static final String NEXUS_FORMAT_ID = FORMAT_ID_PREFIX + "nexus";
 	public static final String MEGA_FORMAT_ID = FORMAT_ID_PREFIX + "mega";
-	public static final String NEXML_FORMAT_ID = FORMAT_ID_PREFIX + "nexml";
-	public static final String PHYLOXML_FORMAT_ID = FORMAT_ID_PREFIX + "phyloxml";
 	public static final String XTG_FORMAT_ID = FORMAT_ID_PREFIX + "xtg";
 	public static final String PDE_FORMAT_ID = FORMAT_ID_PREFIX + "pde";
 }

@@ -46,6 +46,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.zip.GZIPInputStream;
@@ -94,18 +96,25 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	//TODO Do any other methods need to be synchronized?
 	
+	/** 
+	 * The number of bytes that are buffered by methods of this factory to determine the format from an input stream.
+	 * 
+	 *  @see #setReadAheahLimit(int)
+	 */
 	public static final int DEFAULT_READ_AHAED_LIMIT = 8 * 1024;  // XML files may contain long comments before the root tag.
 	
 	
 	private final ReadWriteLock readAheadLimitLock = new ReentrantReadWriteLock();	
 	
 	private ListOrderedMap<String, SingleReaderWriterFactory> formatMap = new ListOrderedMap<String, SingleReaderWriterFactory>();
+	private Set<String> formatIDsSet;
 	private int readAheadLimit = DEFAULT_READ_AHAED_LIMIT;
 	
 	
 	public JPhyloIOReaderWriterFactory() {
 		super();
 		fillMap();
+		formatIDsSet = Collections.unmodifiableSet(formatMap.keySet());
 	}
 	
 	
@@ -165,6 +174,11 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 		}
 	}
 	//TODO Isn't setting an integer an atomic operation and synchronizing is unnecessary?
+	
+	
+	public Set<String> availableFormatIDs() {
+		return formatIDsSet;
+	}
 
 
 	/**

@@ -36,6 +36,10 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	private SingleReaderWriterFactory factory;
 	private String formatID;
 	private String formatName;
+	private boolean otuFormat;
+	private boolean alignmentFormat;
+	private boolean treeFormat;
+	private boolean networkFormat;
 	private ReadWriteParameterMap filterParamaters;
 	private String filterDescription;
 	private String filterDefaultExtension;
