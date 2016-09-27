@@ -55,6 +55,9 @@ import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
  * @see EventType
  */
 public enum EventContentType {
+	//TODO Add some types reserved for later use (e.g. for currently unsupported sets)?
+	
+	
 	// General events:
 	
 	/** 

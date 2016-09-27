@@ -21,12 +21,18 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractSingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
+import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 
 
@@ -93,5 +99,21 @@ public abstract class AbstractPhylipFactory extends AbstractSingleReaderWriterFa
 	@Override
 	public boolean hasWriter() {
 		return true;
+	}
+	
+	
+	protected JPhyloIOFormatInfo getFormatInfo(String formatID, String formatName, String adapterDescription) {
+		Set<EventContentType> supportedReaderContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
+				EventContentType.META_LITERAL_CONTENT, EventContentType.ALIGNMENT, EventContentType.SEQUENCE, 
+				EventContentType.SEQUENCE_TOKENS);
+
+		Set<EventContentType> supportedWriterContentTypes = EnumSet.copyOf(supportedReaderContentTypes);
+		supportedWriterContentTypes.add(EventContentType.SINGLE_SEQUENCE_TOKEN);
+		
+		return new DefaultFormatInfo(this, formatID, formatName,
+				supportedReaderContentTypes, supportedWriterContentTypes, EnumSet.noneOf(EventContentType.class),
+				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				new ReadWriteParameterMap(), adapterDescription, "phy", "phylip");
+		
 	}
 }

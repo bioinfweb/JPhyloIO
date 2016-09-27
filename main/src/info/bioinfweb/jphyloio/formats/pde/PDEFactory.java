@@ -22,12 +22,16 @@ package info.bioinfweb.jphyloio.formats.pde;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
@@ -79,6 +83,14 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(this, PDE_FORMAT_ID, PDE_FORMAT_NAME, new ReadWriteParameterMap(),	"PDE format of PhyDE", "pde");
+		return new DefaultFormatInfo(this, PDE_FORMAT_ID, PDE_FORMAT_NAME, 
+				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, EventContentType.META_LITERAL, 
+						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.OTU_LIST, 
+						EventContentType.OTU, EventContentType.ALIGNMENT, EventContentType.SEQUENCE,
+						EventContentType.SEQUENCE_TOKENS, EventContentType.TOKEN_SET_DEFINITION, EventContentType.CHARACTER_SET, 
+						EventContentType.CHARACTER_SET_INTERVAL),
+				null, EnumSet.noneOf(EventContentType.class),
+				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				new ReadWriteParameterMap(),	"PDE format of PhyDE", "pde");
 	}
 }

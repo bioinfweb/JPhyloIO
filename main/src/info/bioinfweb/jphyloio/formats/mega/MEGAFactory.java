@@ -22,10 +22,14 @@ package info.bioinfweb.jphyloio.formats.mega;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
@@ -80,6 +84,13 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(this, MEGA_FORMAT_ID, MEGA_FORMAT_NAME, new ReadWriteParameterMap(),	"MEGA format", "meg", "mega");
+		return new DefaultFormatInfo(this, MEGA_FORMAT_ID, MEGA_FORMAT_NAME, 
+				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
+						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.ALIGNMENT, 
+						EventContentType.SEQUENCE, EventContentType.SEQUENCE_TOKENS, EventContentType.CHARACTER_SET, 
+						EventContentType.CHARACTER_SET_INTERVAL), 
+				null,	EnumSet.noneOf(EventContentType.class),
+				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				new ReadWriteParameterMap(),	"MEGA format", "meg", "mega");
 	}
 }

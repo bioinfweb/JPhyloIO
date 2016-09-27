@@ -22,12 +22,16 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
@@ -79,7 +83,14 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(this, PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, new ReadWriteParameterMap(),
-				"PhylXML", "phyloxml", "phylo.xml", "pxml", "xml");
+		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, 
+				EventContentType.META_LITERAL, EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, 
+				EventContentType.TREE_NETWORK_GROUP, EventContentType.TREE, EventContentType.NETWORK, EventContentType.NODE, 
+				EventContentType.EDGE, EventContentType.ROOT_EDGE);
+		
+		return new DefaultFormatInfo(this, PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, 
+				supportedContentTypes, supportedContentTypes,	EnumSet.noneOf(EventContentType.class),
+				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				new ReadWriteParameterMap(), "PhylXML", "phyloxml", "phylo.xml", "pxml", "xml");
 	}
 }

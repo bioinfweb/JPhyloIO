@@ -22,10 +22,14 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
@@ -77,7 +81,21 @@ public class NexusFactory extends AbstractStartStringSingleFactory implements Ne
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(this, NEXUS_FORMAT_ID, NEXUS_FORMAT_NAME, new ReadWriteParameterMap(),
-				"Nexus format", "nex", "nexus", "tre", "tree", "con");  //TODO Should the tree extension better be removed?
+		Set<EventContentType> supportedReaderContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
+				EventContentType.META_LITERAL_CONTENT, EventContentType.UNKNOWN_COMMAND, EventContentType.COMMENT, 
+				EventContentType.OTU_LIST, EventContentType.OTU, EventContentType.OTU_SET, EventContentType.ALIGNMENT, 
+				EventContentType.CHARACTER_DEFINITION, EventContentType.SEQUENCE, EventContentType.SEQUENCE_TOKENS, 
+				EventContentType.TREE_NETWORK_GROUP, EventContentType.TREE, EventContentType.NODE, EventContentType.EDGE, 
+				EventContentType.ROOT_EDGE, EventContentType.TOKEN_SET_DEFINITION, EventContentType.SINGLE_TOKEN_DEFINITION, 
+				EventContentType.CHARACTER_SET, EventContentType.CHARACTER_SET_INTERVAL, EventContentType.SET_ELEMENT, 
+				EventContentType.OTU_SET, EventContentType.TREE_NETWORK_SET);
+		
+		Set<EventContentType> supportedWriterContentTypes = EnumSet.copyOf(supportedReaderContentTypes);
+		supportedWriterContentTypes.add(EventContentType.SINGLE_SEQUENCE_TOKEN);
+		
+		return new DefaultFormatInfo(this, NEXUS_FORMAT_ID, NEXUS_FORMAT_NAME, 
+				supportedReaderContentTypes, supportedWriterContentTypes, EnumSet.noneOf(EventContentType.class),
+				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				new ReadWriteParameterMap(), "Nexus format", "nex", "nexus", "tre", "tree", "con");  //TODO Should the tree extension better be removed?
 	}
 }

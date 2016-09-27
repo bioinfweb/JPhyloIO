@@ -22,10 +22,14 @@ package info.bioinfweb.jphyloio.formats.fasta;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
@@ -89,7 +93,15 @@ public class FASTAFactory extends AbstractStartStringSingleFactory implements Si
 	 */
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(this, FASTA_FORMAT_ID, FASTA_FORMAT_NAME, new ReadWriteParameterMap(),
-				"FASTA format", "fasta", "fas", "fa", "fas", "fna", "ffn", "faa", "frn");
+		Set<EventContentType> supportedReaderContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.COMMENT, 
+				EventContentType.ALIGNMENT,	EventContentType.SEQUENCE, EventContentType.SEQUENCE_TOKENS); 
+
+		Set<EventContentType> supportedWriterContentTypes = EnumSet.copyOf(supportedReaderContentTypes);
+		supportedWriterContentTypes.add(EventContentType.SINGLE_SEQUENCE_TOKEN);
+		
+		return new DefaultFormatInfo(this, FASTA_FORMAT_ID, FASTA_FORMAT_NAME,
+				supportedReaderContentTypes, supportedWriterContentTypes, EnumSet.noneOf(EventContentType.class),
+				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				new ReadWriteParameterMap(), "FASTA format", "fasta", "fas", "fa", "fas", "fna", "ffn", "faa", "frn");
 	}
 }

@@ -19,8 +19,13 @@
 package info.bioinfweb.jphyloio.formats;
 
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 
@@ -36,25 +41,46 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	private SingleReaderWriterFactory factory;
 	private String formatID;
 	private String formatName;
-	private boolean otuFormat;
-	private boolean alignmentFormat;
-	private boolean treeFormat;
-	private boolean networkFormat;
+
+	private Set<EventContentType> supportedReaderContentTypes;
+	private Set<EventContentType> supportedWriterContentTypes;
+	private Set<EventContentType> supportedMetadata;
+	private Set<String> supportedReaderParameters;
+	private Set<String> supportedWriterParameters;
+
 	private ReadWriteParameterMap filterParamaters;
 	private String filterDescription;
 	private String filterDefaultExtension;
 	private String[] filterExtensions;
-	
+
 
 	/**
 	 * Creates a new instance of this class.
 	 * 
+	 * @param factory the single format factory to be used with this format
 	 * @param formatID the ID of the format this information object is about
 	 * @param formatName the name of the format this information object is about
-	 * @param fileFilter the filter for the format this information object is about
-	 * @throws NullPointerException if any of the arguments is {@code null}
+	 * @param supportedReaderContentTypes the set of content types supported by the associated reader (If {@code null} is specified, 
+	 *        an empty set is assumed.)
+	 * @param supportedWriterContentTypes the set of content types supported by the associated writer (If {@code null} is specified, 
+	 *        an empty set is assumed.)
+	 * @param supportedMetadata the set of content types under which any kind of metadata is supported (If {@code null} is 
+	 *        specified, an empty set is assumed.)
+	 * @param supportedReaderParameters the set of parameters that are supported by the associated reader (If {@code null}  
+	 *        is specified, an empty set is assumed.)
+	 * @param supportedWriterParameters the set of parameters that are supported by the associated writer (If {@code null}  
+	 *        is specified, an empty set is assumed.)
+	 * @param filterParamaters the reader parameters to be used by the file filter to test the contents of a file as they
+	 *        will be passed to {@link SingleReaderWriterFactory#checkFormat(java.io.InputStream, ReadWriteParameterMap)}
+	 * @param filterDescription the description of this format to be displayed e.g. in open dialogs
+	 * @param filterDefaultExtension the default file extension of the associated format
+	 * @param filterExtensions alternative file extension of the associated format (Maybe omitted.)
+	 * @throws NullPointerException if {@code factory}, {@code formatID}, {@code formatName}, {@code filterDescription}, 
+	 *         {@code filterDefaultExtension} or any element of {@code filterExtensions} is {@code null}
 	 */
 	public DefaultFormatInfo(SingleReaderWriterFactory factory, String formatID, String formatName, 
+			Set<EventContentType> supportedReaderContentTypes, Set<EventContentType> supportedWriterContentTypes, 
+			Set<EventContentType> supportedMetadata, Set<String> supportedReaderParameters, Set<String> supportedWriterParameters,
 			ReadWriteParameterMap filterParamaters,	String filterDescription,	String filterDefaultExtension, String... filterExtensions) {
 		
 		super();
@@ -80,8 +106,45 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 				}
 			}
 			
+			this.factory = factory;
 			this.formatID = formatID;
 			this.formatName = formatName;
+
+			if (supportedMetadata == null) {
+				this.supportedReaderContentTypes = EnumSet.noneOf(EventContentType.class);
+			}
+			else {
+				this.supportedReaderContentTypes = supportedReaderContentTypes;
+			}
+			
+			if (supportedMetadata == null) {
+				this.supportedWriterContentTypes = EnumSet.noneOf(EventContentType.class);
+			}
+			else {
+				this.supportedWriterContentTypes = supportedWriterContentTypes;
+			}
+			
+			if (supportedMetadata == null) {
+				this.supportedMetadata = EnumSet.noneOf(EventContentType.class);
+			}
+			else {
+				this.supportedMetadata = supportedMetadata;
+			}
+			
+			if (supportedReaderParameters == null) {
+				this.supportedReaderParameters = Collections.emptySet();
+			}
+			else {
+				this.supportedReaderParameters = supportedReaderParameters;
+			}
+			
+			if (supportedWriterParameters == null) {
+				this.supportedWriterParameters = Collections.emptySet();
+			}
+			else {
+				this.supportedWriterParameters = supportedWriterParameters;
+			}
+			
 			if (filterParamaters == null) {
 				this.filterParamaters = new ReadWriteParameterMap();
 			}
@@ -111,5 +174,33 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	public ContentExtensionFileFilter createFileFilter() {
 		return new JPhyloIOContentExtensionFileFilter(factory, filterParamaters, filterDescription, filterDefaultExtension, true, 
 				ContentExtensionFileFilter.TestStrategy.CONTENT, false, filterExtensions);
+	}
+	
+	
+	@Override
+	public boolean isElementModeled(EventContentType contentType, boolean forReading) {
+		if (forReading) {
+			return supportedReaderContentTypes.contains(contentType);
+		}
+		else {
+			return supportedWriterContentTypes.contains(contentType);
+		}
+	}
+
+	
+	@Override
+	public boolean isMetadataModeled(EventContentType parentContentType, boolean forReading) {
+		return supportedMetadata.contains(parentContentType);
+	}
+
+	
+	@Override
+	public boolean isParameterSupported(String parameterName, boolean forReading) {
+		if (forReading) {
+			return supportedReaderParameters.contains(parameterName);
+		}
+		else {
+			return supportedWriterParameters.contains(parameterName);
+		}
 	}
 }

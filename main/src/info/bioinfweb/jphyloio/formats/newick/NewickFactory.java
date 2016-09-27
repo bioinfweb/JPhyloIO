@@ -22,10 +22,14 @@ package info.bioinfweb.jphyloio.formats.newick;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractSingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
@@ -105,7 +109,12 @@ public class NewickFactory extends AbstractSingleReaderWriterFactory implements 
 
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(this, NEWICK_FORMAT_ID, NEWICK_FORMAT_NAME, new ReadWriteParameterMap(),
-				"Newick tree format", "nwk", "newick", "tre", "tree", "con");
+		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
+				EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.TREE_NETWORK_GROUP, 
+				EventContentType.TREE, EventContentType.NODE, EventContentType.EDGE, EventContentType.ROOT_EDGE);
+		return new DefaultFormatInfo(this, NEWICK_FORMAT_ID, NEWICK_FORMAT_NAME, 
+				supportedContentTypes, supportedContentTypes,	EnumSet.noneOf(EventContentType.class),
+				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				new ReadWriteParameterMap(), "Newick tree format", "nwk", "newick", "tre", "tree", "con");
 	}
 }

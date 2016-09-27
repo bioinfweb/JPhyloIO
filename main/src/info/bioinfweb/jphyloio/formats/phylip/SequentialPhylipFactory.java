@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
 
 import java.io.IOException;
@@ -53,7 +52,6 @@ public class SequentialPhylipFactory extends AbstractPhylipFactory {
 	
 	@Override
 	public JPhyloIOFormatInfo getFormatInfo() {
-		return new DefaultFormatInfo(this, SEQUENTIAL_PHYLIP_FORMAT_ID, SEQUENTIAL_PHYLIP_FORMAT_NAME, new ReadWriteParameterMap(),
-				"Sequential Phylip format", "phy", "phylip");
+		return getFormatInfo(SEQUENTIAL_PHYLIP_FORMAT_ID, SEQUENTIAL_PHYLIP_FORMAT_NAME, "Sequential Phylip format");
 	}
 }
