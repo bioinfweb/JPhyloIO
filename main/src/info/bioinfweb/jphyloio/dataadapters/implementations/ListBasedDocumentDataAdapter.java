@@ -45,6 +45,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
  * which probably is a copy of an according list in the application business model.)
  * 
  * @author Ben St&ouml;ver
+ * @since 0.0.0
  */
 public class ListBasedDocumentDataAdapter extends EmptyAnnotatedDataAdapter<ConcreteJPhyloIOEvent> implements DocumentDataAdapter {
 	private ListOrderedMap<String, OTUListDataAdapter> otuListsMap;

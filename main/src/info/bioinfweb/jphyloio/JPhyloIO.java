@@ -33,7 +33,7 @@ import java.net.URL;
  */
 public class JPhyloIO {
 	private static final String NAME = "JPhyloIO";
-	private static final ApplicationVersion VERSION = new ApplicationVersion(0, 0, 0, 395, ApplicationType.ALPHA);
+	private static final ApplicationVersion VERSION = new ApplicationVersion(0, 1, 0, 1231, ApplicationType.ALPHA);
 
 	private static JPhyloIO firstInstance = null;
 	
