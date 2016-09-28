@@ -91,6 +91,6 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 		return new DefaultFormatInfo(this, PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, 
 				supportedContentTypes, supportedContentTypes,	EnumSet.noneOf(EventContentType.class),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
-				new ReadWriteParameterMap(), "PhylXML", "phyloxml", "phylo.xml", "pxml", "xml");
+				new ReadWriteParameterMap(), "PhyloXML", "phyloxml", "phylo.xml", "pxml", "xml");
 	}
 }

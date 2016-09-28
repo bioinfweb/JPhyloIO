@@ -205,7 +205,13 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	//TODO Isn't setting an integer an atomic operation and synchronizing is unnecessary?
 	
 	
-	public Set<String> availableFormatIDs() {
+	/**
+	 * Returns the set of IDs of formats that are currently supported by this factory.
+	 * 
+	 * @return an unmodifiable set of format IDs
+	 * @since 0.1.0
+	 */
+	public Set<String> getFormatIDsSet() {
 		return formatIDsSet;
 	}
 
