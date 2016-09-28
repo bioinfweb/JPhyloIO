@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.NoCharDefsNoSetsMatr
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.utils.NumberedIDsIterator;
 
 
 
@@ -97,13 +98,7 @@ public class MatrixDataAdapterImpl extends NoCharDefsNoSetsMatrixDataAdapter imp
 		// The sequence IDs used in this adapter will all start with a common prefix followed by the index the respective sequence has
 		// in the application business model.
 		
-		// Create list containing all sequence IDs necessary for the current contents of the application business model:
-		List<String> ids = new ArrayList<String>(model.size());
-		for (int i = 0; i < model.size(); i++) {
-			ids.add(ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX + i);
-		}
-		
-		return ids.iterator();
+		return new NumberedIDsIterator(ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX, model.size());
 	}
 	
 	
