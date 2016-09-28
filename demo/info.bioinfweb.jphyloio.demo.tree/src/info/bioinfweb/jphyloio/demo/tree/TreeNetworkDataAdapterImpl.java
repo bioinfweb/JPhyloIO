@@ -28,17 +28,15 @@ import javax.swing.tree.TreeNode;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsTreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 
-public class TreeNetworkDataAdapterImpl extends EmptyAnnotatedDataAdapter<LabeledIDEvent> implements TreeNetworkDataAdapter {
+public class TreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAdapter implements TreeNetworkDataAdapter {
 	public static final String TREE_ID = "tree";
 	public static final String NODE_ID_PREFIX = "node";
 	public static final String EDGE_ID_PREFIX = "edge";
@@ -104,12 +102,5 @@ public class TreeNetworkDataAdapterImpl extends EmptyAnnotatedDataAdapter<Labele
 	@Override
 	public ObjectListDataAdapter<EdgeEvent> getEdges(ReadWriteParameterMap parameters) {
 		return edgeList;
-	}
-
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {
-		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
 	}
 }
