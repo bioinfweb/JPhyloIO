@@ -22,6 +22,8 @@ package info.bioinfweb.jphyloio.dataadapters;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.NoCharDefsNoSetsMatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
@@ -39,6 +41,9 @@ import java.util.Iterator;
  * <p>
  * This interface also allows to provide unaligned data (e.g. for the UNALIGNED block in Nexus).
  * In such cases implementations need to return an according value in {@link #getColumnCount(ReadWriteParameterMap)}.
+ * <p>
+ * Applications implementing this adapter may consider to inherit their implementation from 
+ * {@link EmptyAnnotatedDataAdapter} or {@link NoCharDefsNoSetsMatrixDataAdapter}.
  * 
  * @author Ben St&ouml;ver
  */

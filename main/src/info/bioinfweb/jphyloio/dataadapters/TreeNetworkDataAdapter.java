@@ -20,6 +20,8 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.NoSetsTreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
@@ -31,12 +33,16 @@ import info.bioinfweb.jphyloio.utils.TreeTopologyExtractor;
 /**
  * Data adapter interface that provides data for a tree or a network.
  * <p>
- * Note that {@link TreeTopologyExtractor} can be used to easily generate a tree topology from the data provided by
- * this adapter, if {@link #isTree(ReadWriteParameterMap)} returns {@code true}.
+ * Applications implementing this adapter may consider to inherit their implementation from 
+ * {@link EmptyAnnotatedDataAdapter} or {@link NoSetsTreeNetworkDataAdapter}.
+ * <p>
+ * Note that {@link TreeTopologyExtractor} can be used by event writer implementations to easily generate a tree 
+ * topology from the data provided by this adapter, if {@link #isTree(ReadWriteParameterMap)} returns {@code true}.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
  * @see TreeTopologyExtractor
+ * @see NoSetsTreeNetworkDataAdapter
  */
 public interface TreeNetworkDataAdapter extends ElementDataAdapter<LabeledIDEvent> {
 	/**

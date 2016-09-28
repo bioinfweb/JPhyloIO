@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 
 import java.util.Iterator;
 
@@ -33,10 +34,15 @@ import java.util.Iterator;
  * Application developers need to implement this and one or more of the references interfaces with an adapter
  * class, that allows {@link JPhyloIOEventWriter}s to access the business model of their application. 
  * (Alternatively the business model classes of the application may also implement these interfaces directly,
- * if suitable.) <i>JPhyloIO</i> offers a set of default implementations that could be used as superclasses of
+ * if suitable.)
+ * <p>
+ * <i>JPhyloIO</i> offers a set of default implementations in 
+ * {@link info.bioinfweb.jphyloio.dataadapters.implementations} that could be used as superclasses of
  * application adapter implementations, which may reduce the workload in application development.
  * 
+ * 
  * @author Ben St&ouml;ver
+ * @see ListBasedDocumentDataAdapter
  * @see JPhyloIOEventWriter
  * @see OTUListDataAdapter
  * @see MatrixDataAdapter

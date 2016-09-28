@@ -20,6 +20,8 @@ package info.bioinfweb.jphyloio.dataadapters;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyAnnotatedDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 import java.io.IOException;
@@ -29,14 +31,19 @@ import java.util.Iterator;
 
 /**
  * Allows to provide data for a list of phylogenetic objects. All objects need to be identified by
- * unique IDs, provided by {@link #getIDIterator(ReadWriteParameterMap)}. The start event of each object will be requested by 
- * separate calls of {@link #getObjectStartEvent(ReadWriteParameterMap, String)} and the event sequence by
- * separate calls of {@link #writeContentData(ReadWriteParameterMap, JPhyloIOEventReceiver, String)}.
+ * unique IDs, provided by {@link #getIDIterator(ReadWriteParameterMap)}. The start event of each object will 
+ * be requested by separate calls of {@link #getObjectStartEvent(ReadWriteParameterMap, String)} and the event 
+ * sequence by separate calls of {@link #writeContentData(ReadWriteParameterMap, JPhyloIOEventReceiver, String)}.
  * <p>
  * Such objects may e.g. be OTUs, token sets or character sets, depending on where instances of this 
  * interface are used.
+ * <p>
+ * Applications implementing this adapter may consider to inherit their implementation from 
+ * {@link EmptyAnnotatedDataAdapter}. {@link EmptyObjectListDataAdapter} allows to directly define an empty list.
  * 
  * @author Ben St&ouml;ver
+ * 
+ * @param <E> the event type of start events representing elements of this list
  */
 public interface ObjectListDataAdapter<E extends JPhyloIOEvent> {
 	/**

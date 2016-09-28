@@ -38,10 +38,11 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
  * Application adapters that do not provide any token, sequence or character sets can be inherited from this class.
  *
  * @author Ben St&ouml;ver
+ * @since 0.0.0
  */
 public abstract class NoCharDefsNoSetsMatrixDataAdapter extends EmptyAnnotatedDataAdapter<LinkedLabeledIDEvent> implements MatrixDataAdapter {
     /**
-     * Default implementation that always returns an empty object list adapter
+     * Default implementation that always returns an empty object list adapter.
      *
      * @return a shared instance of {@link EmptyObjectListDataAdapter}
      * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getCharacterDefinitions(ReadWriteParameterMap)
@@ -54,7 +55,7 @@ public abstract class NoCharDefsNoSetsMatrixDataAdapter extends EmptyAnnotatedDa
 
 
 	/**
-	 * Default implementation that always returns an empty object list adapter
+	 * Default implementation that always returns an empty object list adapter.
 	 *
 	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
 	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getTokenSets(ReadWriteParameterMap)
@@ -67,7 +68,7 @@ public abstract class NoCharDefsNoSetsMatrixDataAdapter extends EmptyAnnotatedDa
 
 
     /**
-	 * Default implementation that always returns an empty object list adapter
+	 * Default implementation that always returns an empty object list adapter.
 	 *
 	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
 	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getTokenSets(ReadWriteParameterMap)
