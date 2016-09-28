@@ -56,6 +56,16 @@ public abstract class NodeEdgeDataAdapter<E extends LabeledIDEvent> implements O
 	}
 	
 	
+	protected List<TreeNode> getNodes() {
+		return nodes;
+	}
+
+
+	protected String getIdPrefix() {
+		return idPrefix;
+	}
+
+
 	protected abstract E createEvent(String id, int index, TreeNode node);
 	
 	

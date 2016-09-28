@@ -64,7 +64,7 @@ public class TreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAdapter imp
 			protected EdgeEvent createEvent(String id, int index, TreeNode node) {
 				String sourceID = null;
 				if (node.getParent() != null) {
-					sourceID = NODE_ID_PREFIX + (index - node.getParent().getIndex(node) - 1);  // The number of the parent node is one less than the first sibling of this node.
+					sourceID = NODE_ID_PREFIX + getNodes().indexOf(node.getParent());  // For large trees, an node to index map could be used here instead for performance reasons.
 				}
 				return new EdgeEvent(id, null, sourceID, id.replace(EDGE_ID_PREFIX, NODE_ID_PREFIX), Double.NaN);
 			}

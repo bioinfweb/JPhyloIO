@@ -19,12 +19,18 @@
 package info.bioinfweb.jphyloio.demo.tree;
 
 
+import info.bioinfweb.commons.appversion.ApplicationType;
+import info.bioinfweb.commons.appversion.ApplicationVersion;
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
@@ -36,6 +42,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 
 import javax.swing.JFileChooser;
@@ -53,9 +60,14 @@ import org.apache.commons.collections4.set.ListOrderedSet;
 
 
 public class Application {
+	public static final ApplicationVersion VERSION = new ApplicationVersion(1, 0, 0, 1231, ApplicationType.BETA);
+	public static final String APPLICATION_URL = "http://bioinfweb.info/JPhyloIO/Documentation/Demos/Tree";  //TODO Replace by r.bioinfweb.info
+	
+	
 	private JFrame frame;
 	private JTree tree;
 	private JFileChooser fileChooser;
+	private ExtensionFileFilter allFormatsFilter;
 	
 	private JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
 
@@ -123,7 +135,7 @@ public class Application {
 			}
 			
 			// Add "All supported formats" filter:
-			ExtensionFileFilter allFormatsFilter = new ExtensionFileFilter("All supported formats", false, validExtensions.asList());
+			allFormatsFilter = new ExtensionFileFilter("All supported formats", false, validExtensions.asList());
 					// Create a file filter accepting extensions of all supported formats at the same time. 
 			fileChooser.addChoosableFileFilter(allFormatsFilter);  // Add the "All supported formats" filter to the list.
 			fileChooser.setFileFilter(allFormatsFilter);  // Select this filter as the default.
@@ -132,6 +144,12 @@ public class Application {
 	}
 	
 	
+	protected ExtensionFileFilter getAllFormatsFilter() {
+		getFileChooser();  // Make sure the field is initialized.
+		return allFormatsFilter;
+	}
+
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -190,6 +208,42 @@ public class Application {
 		mnFile.add(mntmOpen);
 		
 		JMenuItem mntmSaveAs = new JMenuItem("Save as...");
+		mntmSaveAs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getFileChooser().removeChoosableFileFilter(allFormatsFilter);  // Temporarily remove the "All supported formats" filter from the dialog for saving to a specific format.
+				try {
+					if (getFileChooser().showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
+						// Create data adapters:
+						ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
+						StoreTreeNetworkGroupDataAdapter treeGroup = new StoreTreeNetworkGroupDataAdapter(
+								new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treeGroup", null, null), null);
+						document.getTreeNetworkGroups().add(treeGroup);
+						treeGroup.getTreesAndNetworks().add(new TreeNetworkDataAdapterImpl(getTreeModel()));
+						
+						// Define writer parameters:
+						ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+						parameters.put(ReadWriteParameterNames.KEY_APPLICATION_NAME, "JPhyloIO tree demo application");
+						parameters.put(ReadWriteParameterNames.KEY_APPLICATION_VERSION, VERSION);
+						parameters.put(ReadWriteParameterNames.KEY_APPLICATION_URL, APPLICATION_URL);
+						
+						// Write document:
+						JPhyloIOEventWriter writer = factory.getWriter(((JPhyloIOFormatSpecificObject)getFileChooser().getFileFilter()).getFormatID());
+						try {
+							writer.writeDocument(document, getFileChooser().getSelectedFile(), parameters);
+						}
+						catch (IOException ex) {
+							ex.printStackTrace();
+							JOptionPane.showMessageDialog(frame, "The error \"" + ex.getLocalizedMessage() + "\" occurred.", 
+									"Error", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
+				finally {  // Reinsert "All supported formats" filter for upcoming calls of "Open...".
+					getFileChooser().addChoosableFileFilter(allFormatsFilter);
+					getFileChooser().setFileFilter(allFormatsFilter);
+				}
+			}
+		});
 		mnFile.add(mntmSaveAs);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
@@ -208,7 +262,7 @@ public class Application {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Desktop.getDesktop().browse(new URI("http://bioinfweb.info/JPhyloIO/Documentation/Demos/Tree"));  //TODO Replace by r.bioinfweb.info
+					Desktop.getDesktop().browse(new URI(APPLICATION_URL));
 				}
 				catch (Exception ex) {
 					ex.printStackTrace();
