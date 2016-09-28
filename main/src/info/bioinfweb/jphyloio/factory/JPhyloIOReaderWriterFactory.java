@@ -156,13 +156,14 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 		addFactory(new NeXMLFactory());
 		addFactory(new NexusFactory());
 		addFactory(new PhyloXMLFactory());
+		addFactory(new FASTAFactory());
+		addFactory(new PhylipFactory());
+		addFactory(new MEGAFactory());
 		addFactory(new XTGFactory());
 		addFactory(new PDEFactory());
-		addFactory(new FASTAFactory());
-		addFactory(new MEGAFactory());
-		addFactory(new PhylipFactory());
 		addFactory(new NewickFactory());  // Should be tested in guess*() methods in the end, since the test is insecure.
 		addFactory(new SequentialPhylipFactory());  // Does not have to be tested by guess*() methods at all, since PhylipFactory would have returned true before.
+		//TODO Can Newick and sequencential Phylip factories be tested at the end otherwise? (The order here is also used in the format IDs map, e.g. to create file filters.)
 	}
 	
 	

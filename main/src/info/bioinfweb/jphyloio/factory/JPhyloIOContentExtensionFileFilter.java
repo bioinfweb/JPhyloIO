@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -22,20 +22,21 @@ package info.bioinfweb.jphyloio.factory;
 import java.io.FileInputStream;
 
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
+import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 
 
 
-public class JPhyloIOContentExtensionFileFilter extends ContentExtensionFileFilter {
+public class JPhyloIOContentExtensionFileFilter extends ContentExtensionFileFilter implements JPhyloIOFormatSpecificObject {
 	private SingleReaderWriterFactory factory;
 	private ReadWriteParameterMap defaultParameters;
 	
 	
 	public JPhyloIOContentExtensionFileFilter(SingleReaderWriterFactory factory, ReadWriteParameterMap defaultParamaters, 
-			String description,	String defaultExtension, boolean addExtensionListToDescription, TestStrategy testStrategy, 
+			String description,	boolean addExtensionListToDescription, TestStrategy testStrategy, 
 			boolean acceptFilesWithExceptions,	String... extensions) {
 		
-		super(description, defaultExtension, addExtensionListToDescription,	testStrategy, acceptFilesWithExceptions, extensions);
+		super(description, addExtensionListToDescription,	testStrategy, acceptFilesWithExceptions, extensions);
 		
 		if (factory == null) {
 			throw new IllegalArgumentException("factory must not be null.");
@@ -53,5 +54,11 @@ public class JPhyloIOContentExtensionFileFilter extends ContentExtensionFileFilt
 	@Override
 	protected boolean acceptContent(FileInputStream stream) throws Exception {
 		return factory.checkFormat(stream, defaultParameters);
+	}
+
+
+	@Override
+	public String getFormatID() {
+		return factory.getFormatInfo().getFormatID();
 	}
 }
