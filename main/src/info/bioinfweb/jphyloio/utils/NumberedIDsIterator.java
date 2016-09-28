@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.utils;
 
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 
 import java.util.Iterator;
@@ -92,5 +93,24 @@ public class NumberedIDsIterator implements Iterator<String> {
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException("Removing IDs from this iterator is not legal.");
+	}
+	
+	
+	/**
+	 * Extracts an index from a numbered sequence ID. (Sequence IDs are assumed to start with a common prefix 
+	 * followed by an integer index.
+	 * 
+	 * @param sequenceID the event ID
+	 * @return the extracted index
+	 * @throws IllegalArgumentException if no index could be extracted from the specified ID
+	 */
+	public static long extractIndexFromID(String id, String prefix) {
+		if (id.startsWith(prefix)) {
+			try {
+				return Long.parseLong(id.substring(prefix.length()));
+			}
+			catch (NumberFormatException e) {}
+		}
+		throw new IllegalArgumentException("The ID \"" + id + "\" is not valid at this position.");
 	}
 }
