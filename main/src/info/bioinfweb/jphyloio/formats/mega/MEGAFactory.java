@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Set;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
@@ -83,7 +82,7 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 
 
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
+	protected JPhyloIOFormatInfo createFormatInfo() {
 		return new DefaultFormatInfo(this, MEGA_FORMAT_ID, MEGA_FORMAT_NAME, 
 				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
 						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.ALIGNMENT, 

@@ -82,7 +82,7 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 
 	
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
+	protected JPhyloIOFormatInfo createFormatInfo() {
 		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, 
 				EventContentType.META_LITERAL, EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, 
 				EventContentType.OTU_LIST, EventContentType.OTU, EventContentType.OTU_SET, EventContentType.ALIGNMENT, 

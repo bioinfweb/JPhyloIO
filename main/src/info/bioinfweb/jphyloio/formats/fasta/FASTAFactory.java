@@ -92,7 +92,7 @@ public class FASTAFactory extends AbstractStartStringSingleFactory implements Si
 	 * @see info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory#getFormatInfo()
 	 */
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
+	protected JPhyloIOFormatInfo createFormatInfo() {
 		Set<EventContentType> supportedReaderContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.COMMENT, 
 				EventContentType.ALIGNMENT,	EventContentType.SEQUENCE, EventContentType.SEQUENCE_TOKENS); 
 

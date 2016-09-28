@@ -82,7 +82,7 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 
 	
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
+	protected JPhyloIOFormatInfo createFormatInfo() {
 		return new DefaultFormatInfo(this, PDE_FORMAT_ID, PDE_FORMAT_NAME, 
 				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, EventContentType.META_LITERAL, 
 						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.OTU_LIST, 

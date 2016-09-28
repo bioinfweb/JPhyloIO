@@ -51,7 +51,7 @@ public class PhylipFactory extends AbstractPhylipFactory {
 
 	
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
-		return getFormatInfo(PHYLIP_FORMAT_ID, PHYLIP_FORMAT_NAME, "Phylip format (non-sequential)");
+	protected JPhyloIOFormatInfo createFormatInfo() {
+		return createFormatInfo(PHYLIP_FORMAT_ID, PHYLIP_FORMAT_NAME, "Phylip format (non-sequential)");
 	}
 }

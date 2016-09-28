@@ -108,7 +108,7 @@ public class NewickFactory extends AbstractSingleReaderWriterFactory implements 
 
 
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
+	protected JPhyloIOFormatInfo createFormatInfo() {
 		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
 				EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.TREE_NETWORK_GROUP, 
 				EventContentType.TREE, EventContentType.NODE, EventContentType.EDGE, EventContentType.ROOT_EDGE);

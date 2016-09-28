@@ -51,7 +51,7 @@ public class SequentialPhylipFactory extends AbstractPhylipFactory {
 
 	
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
-		return getFormatInfo(SEQUENTIAL_PHYLIP_FORMAT_ID, SEQUENTIAL_PHYLIP_FORMAT_NAME, "Sequential Phylip format");
+	protected JPhyloIOFormatInfo createFormatInfo() {
+		return createFormatInfo(SEQUENTIAL_PHYLIP_FORMAT_ID, SEQUENTIAL_PHYLIP_FORMAT_NAME, "Sequential Phylip format");
 	}
 }

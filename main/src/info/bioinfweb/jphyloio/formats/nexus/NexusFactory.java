@@ -80,7 +80,7 @@ public class NexusFactory extends AbstractStartStringSingleFactory implements Ne
 
 	
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
+	protected JPhyloIOFormatInfo createFormatInfo() {
 		Set<EventContentType> supportedReaderContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
 				EventContentType.META_LITERAL_CONTENT, EventContentType.UNKNOWN_COMMAND, EventContentType.COMMENT, 
 				EventContentType.OTU_LIST, EventContentType.OTU, EventContentType.OTU_SET, EventContentType.ALIGNMENT, 

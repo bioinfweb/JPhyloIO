@@ -82,7 +82,7 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 
 	
 	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
+	protected JPhyloIOFormatInfo createFormatInfo() {
 		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, 
 				EventContentType.META_LITERAL, EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, 
 				EventContentType.TREE_NETWORK_GROUP, EventContentType.TREE, EventContentType.NETWORK, EventContentType.NODE, 

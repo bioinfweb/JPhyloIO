@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.factory;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,8 +28,23 @@ import java.io.InputStreamReader;
 
 
 public abstract class AbstractSingleReaderWriterFactory implements SingleReaderWriterFactory {
+	private JPhyloIOFormatInfo formatInfo;
+	
+	
 	@Override
 	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		return checkFormat(new InputStreamReader(stream), parameters);
+	}
+
+	
+	protected abstract JPhyloIOFormatInfo createFormatInfo();
+	
+
+	@Override
+	public JPhyloIOFormatInfo getFormatInfo() {
+		if (formatInfo == null) {
+			formatInfo = createFormatInfo();
+		}
+		return formatInfo;
 	}
 }
