@@ -27,6 +27,14 @@ import java.io.IOException;
 
 
 
+/**
+ * Provides tool methods to be used by application developers when implementing a reader class that processes
+ * events from an implementations of {@link JPhyloIOEventReader} and stores relevent content in the application
+ * business model. 
+ * 
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class JPhyloIOReadingUtils {
 	/**
    * Reads all events from the reader until one more end element than start elements is found.
