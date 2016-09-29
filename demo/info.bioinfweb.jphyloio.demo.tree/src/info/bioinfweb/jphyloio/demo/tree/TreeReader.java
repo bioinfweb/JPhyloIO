@@ -94,27 +94,29 @@ public class TreeReader {
 		// Process JPhyloIO events:
 		while (reader.hasNextEvent()) {  // This loop will run until all events of the JPhyloIO reader are consumed (and the end of the 
 			                               // document is reached). 
-			JPhyloIOEvent event = reader.next();  // Read the next event from the JPhyloIO reader.	      
-      switch (event.getType().getContentType()) {  // This switch statement handles all types of elements on the top level that are 
-      	                                           // relevant for this application. The others are skipped in the default block. 
-      	case DOCUMENT:
-      		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
-      			model.setRoot(null);  // Remove possible previous data from the model instance.
-      		}
-      		// Document end events do not need any treatment in this application.
-      		break;
-      		
-      	case TREE_NETWORK_GROUP:
-      		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
-      			readTreeNetworkGroup();
-      			
-      		}
-        	break;
-        	
-        default:  // Here possible additional events on the top level are handled.
-        	JPhyloIOReadingUtils.reachElementEnd(reader);
-        	break;
-      }
+			JPhyloIOEvent event = reader.next();  // Read the next event from the JPhyloIO reader.
+  		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+	      switch (event.getType().getContentType()) {  // This switch statement handles all types of elements on the top level that are 
+	      	                                           // relevant for this application. The others are skipped in the default block. 
+	      	case DOCUMENT:
+	      		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
+	      			model.setRoot(null);  // Remove possible previous data from the model instance.
+	      		}
+	      		// Document end events do not need any treatment in this application.
+	      		break;
+	      		
+	      	case TREE_NETWORK_GROUP:
+	      		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
+	      			readTreeNetworkGroup();
+	      			
+	      		}
+	        	break;
+	        	
+	        default:  // Here possible additional events on the top level are handled.
+      			JPhyloIOReadingUtils.reachElementEnd(reader);
+	        	break;
+	      }
+			}
 		}
 	}
 	
@@ -123,20 +125,22 @@ public class TreeReader {
 		// Process JPhyloIO events:
 		JPhyloIOEvent event = reader.next();  
 		while ((!event.getType().getTopologyType().equals(EventTopologyType.END))) { 
-      if (event.getType().getContentType().equals(EventContentType.TREE)) {  // This application is only interested in tree events 
-      	                                                                     // and will skip others on this level (e.g. networks).
-      	if (model.getRoot() == null) {
-      		readTree();
-      	}
-    		else {
-    			LabeledIDEvent treeEvent = event.asLabeledIDEvent();
-    			System.out.println("Since this application does not support multiple trees, the tree with the ID "
-    					+ treeEvent.getID() + " and the name \"" + treeEvent.getLabel() + "\" was skipped.");
-    		}
-      }
-      else {
-      	JPhyloIOReadingUtils.reachElementEnd(reader);  // Skip events not processed by this application.
-      }
+  		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+	      if (event.getType().getContentType().equals(EventContentType.TREE)) {  // This application is only interested in tree events 
+	      	                                                                     // and will skip others on this level (e.g. networks).
+	      	if (model.getRoot() == null) {
+	      		readTree();
+	      	}
+	    		else {
+	    			LabeledIDEvent treeEvent = event.asLabeledIDEvent();
+	    			System.out.println("Since this application does not support multiple trees, the tree with the ID "
+	    					+ treeEvent.getID() + " and the name \"" + treeEvent.getLabel() + "\" was skipped.");
+	    		}
+	      }
+	      else {
+	  			JPhyloIOReadingUtils.reachElementEnd(reader);
+	  		}  // Otherwise SOLE elements are skipped.
+  		}
 			event = reader.next();  // Read the next event from the JPhyloIO reader.	      
 		}
 	}
@@ -147,16 +151,18 @@ public class TreeReader {
 		idToNodeMap.clear();
 		
     JPhyloIOEvent event = reader.next();
-    while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {    	
-    	if (event.getType().getContentType().equals(EventContentType.NODE)) {
-    		readNode(event.asNodeEvent());
-    	}
-    	else if (event.getType().getContentType().equals(EventContentType.EDGE) || event.getType().getContentType().equals(EventContentType.ROOT_EDGE)) {
-    		readEdge(event.asEdgeEvent());
-    	}
-      else {  // Possible additional element, which is not read
-      	JPhyloIOReadingUtils.reachElementEnd(reader);
-      }
+    while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {
+  		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+	    	if (event.getType().getContentType().equals(EventContentType.NODE)) {
+	    		readNode(event.asNodeEvent());
+	    	}
+	    	else if (event.getType().getContentType().equals(EventContentType.EDGE) || event.getType().getContentType().equals(EventContentType.ROOT_EDGE)) {
+	    		readEdge(event.asEdgeEvent());
+	    	}
+	      else {  // Possible additional element, which is not read
+	      	JPhyloIOReadingUtils.reachElementEnd(reader);
+	      }
+  		}
       event = reader.next();
     }
     
