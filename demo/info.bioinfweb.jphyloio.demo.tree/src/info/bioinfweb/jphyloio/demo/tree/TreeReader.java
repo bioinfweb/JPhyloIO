@@ -121,6 +121,13 @@ public class TreeReader {
 	}
 	
 	
+	/**
+	 * Processes the events related to a tree/network group (see grammar node {@code TreeNetworkGroup} in 
+	 * {@link JPhyloIOEventReader}). It will delegate reading the first tree to {@link #readTree()} and
+	 * ignore all possible subsequent trees as well as all networks and tree/network sets.
+	 * 
+	 * @throws IOException if an exception is thrown by underlying <i>JPhyloIO</i> classes
+	 */
 	private void readTreeNetworkGroup() throws IOException {
 		// Process JPhyloIO events:
 		JPhyloIOEvent event = reader.next();  
@@ -146,6 +153,28 @@ public class TreeReader {
 	}
 	
 	
+	/**
+	 * Processes the events related to a tree (see grammar node {@code Tree} in 
+	 * {@link JPhyloIOEventReader}).
+	 * <p>
+	 * Since <i>JPhyloIO</i> events describing tree nodes and edges are not
+	 * hierarchically nested but all node and edge events are on the same level, the hierarchical tree
+	 * needs to be reconstructed from this. To achieve this {@link #idToNodeMap} is subsequently filled
+	 * with node objects identified by their <i>JPhyloIO</i> IDs as respective node events are encountered.
+	 * Each time an edge event is encountered, the two referenced nodes are connected (by setting their 
+	 * {@code parent) and {@code children} properties. (Accessing the referenced nodes is done by searching
+	 * {@link #idToNodeMap}.) The list {@link #possiblePaintStartIDs} is at the same time used to store all
+	 * nodes that do not yet have a parent assigned. If the represented structure is really a tree and not
+	 * a network, only one event will be left in this list after all events have been processed.
+	 * <p>
+	 * Note that the algorithm as it is implemented here is only necessary, if a hierarchical business model 
+	 * is used. <i>JPhyloIO</i> (as well as <i>NeXML</i>) rely on a non-hierarchical representation that 
+	 * also allows to model phylogenetic networks. For applications that use a non-hierarchical model as 
+	 * well, reading data would be straight-forward. If you are developing an application relying on a 
+	 * hierarchical model, you use the implementation provided here as a basis for your application reader.
+	 * 
+	 * @throws IOException if an exception is thrown by underlying <i>JPhyloIO</i> classes
+	 */
 	private void readTree() throws IOException {
 		possiblePaintStartIDs.clear();
 		idToNodeMap.clear();
@@ -167,7 +196,7 @@ public class TreeReader {
     }
     
     if (possiblePaintStartIDs.size() > 1) {
-    	throw new IOException("More than one root node was found.");
+    	throw new IOException("More than one root node was found.");  // Would only happen, if the tree is actually a network (not starting with the according NETWORK event).
     }
     
     model.setRoot(idToNodeMap.get(possiblePaintStartIDs.get(0)));
