@@ -64,7 +64,7 @@ public class Application {
 	public static final String APPLICATION_URL = "http://bioinfweb.info/JPhyloIO/Documentation/Demos/Tree";  //TODO Replace by r.bioinfweb.info
 	
 	
-	private JFrame frame;
+	private JFrame mainFrame;
 	private JTree tree;
 	private JFileChooser fileChooser;
 	private ExtensionFileFilter allFormatsFilter;
@@ -87,7 +87,7 @@ public class Application {
 			public void run() {
 				try {
 					Application window = new Application();
-					window.frame.setVisible(true);
+					window.mainFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -154,15 +154,16 @@ public class Application {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		mainFrame = new JFrame();
+		mainFrame.setTitle("JPhyloIO tree demo");
+		mainFrame.setBounds(100, 100, 450, 300);
+		mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		tree = new JTree(new DefaultTreeModel(null));
-		frame.getContentPane().add(tree, BorderLayout.CENTER);
+		mainFrame.getContentPane().add(tree, BorderLayout.CENTER);
 		
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		mainFrame.setJMenuBar(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
@@ -171,7 +172,7 @@ public class Application {
 		mntmOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if (getFileChooser().showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+					if (getFileChooser().showOpenDialog(mainFrame) == JFileChooser.APPROVE_OPTION) {
 						String formatID;
 						if (getFileChooser().getFileFilter() instanceof JPhyloIOFormatSpecificObject) {
 							formatID = ((JPhyloIOFormatSpecificObject)getFileChooser().getFileFilter()).getFormatID();  // Use the user defined format.
@@ -193,14 +194,14 @@ public class Application {
 							}
 						}
 						else {  // If the format had to be guessed and none was found.
-							JOptionPane.showMessageDialog(frame, "The format of the file \"" + getFileChooser().getSelectedFile() + "\" is not supported.", 
+							JOptionPane.showMessageDialog(mainFrame, "The format of the file \"" + getFileChooser().getSelectedFile() + "\" is not supported.", 
 									"Unsupported format", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				}
 				catch (Exception ex) {  // If an error occurred while trying to load a tree.
 					ex.printStackTrace();
-					JOptionPane.showMessageDialog(frame, "The error \"" + ex.getLocalizedMessage() + "\" occurred.", 
+					JOptionPane.showMessageDialog(mainFrame, "The error \"" + ex.getLocalizedMessage() + "\" occurred.", 
 							"Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -212,7 +213,7 @@ public class Application {
 			public void actionPerformed(ActionEvent e) {
 				getFileChooser().removeChoosableFileFilter(allFormatsFilter);  // Temporarily remove the "All supported formats" filter from the dialog for saving to a specific format.
 				try {
-					if (getFileChooser().showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
+					if (getFileChooser().showSaveDialog(mainFrame) == JFileChooser.APPROVE_OPTION) {
 						// Create data adapters:
 						ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
 						StoreTreeNetworkGroupDataAdapter treeGroup = new StoreTreeNetworkGroupDataAdapter(
@@ -233,7 +234,7 @@ public class Application {
 						}
 						catch (IOException ex) {
 							ex.printStackTrace();
-							JOptionPane.showMessageDialog(frame, "The error \"" + ex.getLocalizedMessage() + "\" occurred.", 
+							JOptionPane.showMessageDialog(mainFrame, "The error \"" + ex.getLocalizedMessage() + "\" occurred.", 
 									"Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
@@ -249,7 +250,7 @@ public class Application {
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.setVisible(false);
+				mainFrame.setVisible(false);
 				System.exit(0);
 			}
 		});
