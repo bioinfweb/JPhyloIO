@@ -157,12 +157,12 @@ public class TreeReader {
 	 * Processes the events related to a tree (see grammar node {@code Tree} in 
 	 * {@link JPhyloIOEventReader}).
 	 * <p>
-	 * Since <i>JPhyloIO</i> events describing tree nodes and edges are not
-	 * hierarchically nested but all node and edge events are on the same level, the hierarchical tree
-	 * needs to be reconstructed from this. To achieve this {@link #idToNodeMap} is subsequently filled
-	 * with node objects identified by their <i>JPhyloIO</i> IDs as respective node events are encountered.
-	 * Each time an edge event is encountered, the two referenced nodes are connected (by setting their 
-	 * {@code parent) and {@code children} properties. (Accessing the referenced nodes is done by searching
+	 * Since <i>JPhyloIO</i> events describing tree nodes and edges are not hierarchically nested but all 
+	 * node and edge events are on the same level, the hierarchical tree needs to be reconstructed. To 
+	 * achieve this {@link #idToNodeMap} is subsequently filled with node objects identified by their 
+	 * <i>JPhyloIO</i> IDs as respective node events are encountered. Each time an edge event is 
+	 * encountered, the two referenced nodes are connected (by setting their {@code parent) and 
+	 * {@code children} properties. (Accessing the referenced nodes is done by searching 
 	 * {@link #idToNodeMap}.) The list {@link #possiblePaintStartIDs} is at the same time used to store all
 	 * nodes that do not yet have a parent assigned. If the represented structure is really a tree and not
 	 * a network, only one event will be left in this list after all events have been processed.
