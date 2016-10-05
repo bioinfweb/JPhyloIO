@@ -76,8 +76,6 @@ import javax.xml.stream.XMLStreamException;
 
 
 public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDataProvider> implements NeXMLConstants {
-	
-
 	public NeXMLEventWriter() {
 		super();
 	}

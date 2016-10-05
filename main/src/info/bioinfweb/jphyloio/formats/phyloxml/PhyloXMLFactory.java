@@ -47,9 +47,10 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
 
 /**
- * Reader and writer factory for the <a href="http://bioinfweb.info/xmlns/xtg">PhyloXML</a> format.
+ * Reader and writer factory for the <a href="http://phyloxml.org/">PhyloXML</a> format.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
  * @since 0.0.0
  */
 public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConstants, JPhyloIOFormatIDs {

@@ -47,9 +47,10 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
 
 /**
- * Reader and writer factory for the <a href="http://bioinfweb.info/xmlns/xtg">XTG</a> format.
+ * Reader and writer factory for the <a href="http://nexml.org/">NeXML</a> format.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
  * @since 0.0.0
  */
 public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, JPhyloIOFormatIDs {
