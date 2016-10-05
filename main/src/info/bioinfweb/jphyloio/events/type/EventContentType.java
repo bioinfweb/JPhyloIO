@@ -28,7 +28,6 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
@@ -68,17 +67,6 @@ public enum EventContentType {
 	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
 	 */
 	DOCUMENT,
-	
-	/**
-	 * Indicates meta information attached to the object modeled by the preceding start event.
-	 * <p>
-	 * Start events of this type are instances of {@link MetaInformationEvent}, end events are
-	 * instances of {@link ConcreteJPhyloIOEvent}.
-	 * <p>
-	 * This content type will never be combined with {@link EventTopologyType#SOLE}. 
-	 */
-	@Deprecated
-	META_INFORMATION,
 	
 	META_RESOURCE,
 	META_LITERAL,

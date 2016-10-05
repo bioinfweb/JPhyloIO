@@ -26,7 +26,6 @@ import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
-import info.bioinfweb.jphyloio.events.MetaInformationEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -380,10 +379,10 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 					getReader().read();  // Skip COMMAND_END. (Necessary if ';' is not located directly behind the "END".)
 				}
 			}
-			else if (lastChar == COMMAND_END) {
-				//TODO Fire according event. (else case should be used here, but reader would have to be moved backwards to make ';' available again.)
-				getCurrentEventCollection().add(new MetaInformationEvent(commandName, null, ""));
-				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
+			else if (lastChar == COMMAND_END) {  //	If a command of the form "COMMAND;" is encountered.
+				//TODO Fire according event? (Unknown command event would be possible. Is this code also called on "COMMAND ;"?)
+//				getCurrentEventCollection().add(new MetaInformationEvent(commandName, null, ""));
+//				getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.META_INFORMATION, EventTopologyType.END));
 			}
 			else {
 				currentCommandReader = factory.createReader(currentBlockName, commandName, getStreamDataProvider());
