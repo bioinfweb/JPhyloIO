@@ -33,6 +33,7 @@ import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -88,7 +89,7 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.ALIGNMENT, 
 						EventContentType.SEQUENCE, EventContentType.SEQUENCE_TOKENS, EventContentType.CHARACTER_SET, 
 						EventContentType.CHARACTER_SET_INTERVAL), 
-				null,	EnumSet.noneOf(EventContentType.class),
+				null,	Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(),	"MEGA format", "meg", "mega");
 	}

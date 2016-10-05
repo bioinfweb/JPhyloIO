@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
@@ -89,7 +90,7 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 						EventContentType.OTU, EventContentType.ALIGNMENT, EventContentType.SEQUENCE,
 						EventContentType.SEQUENCE_TOKENS, EventContentType.TOKEN_SET_DEFINITION, EventContentType.CHARACTER_SET, 
 						EventContentType.CHARACTER_SET_INTERVAL),
-				null, EnumSet.noneOf(EventContentType.class),
+				null, Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(),	"PDE format of PhyDE", "pde");
 	}

@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
@@ -93,20 +94,14 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 				EventContentType.CHARACTER_SET_INTERVAL, EventContentType.SET_ELEMENT, EventContentType.OTU_SET, 
 				EventContentType.SEQUENCE_SET, EventContentType.TREE_NETWORK_SET, EventContentType.NODE_EDGE_SET);
 		
-		Set<EventContentType> supportedMetadataTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE,				
-				EventContentType.OTU_LIST, EventContentType.OTU, EventContentType.ALIGNMENT, 
-				EventContentType.CHARACTER_DEFINITION, EventContentType.SEQUENCE,	EventContentType.SEQUENCE_TOKENS, 
-				EventContentType.SINGLE_SEQUENCE_TOKEN, EventContentType.TREE_NETWORK_GROUP, EventContentType.TREE, 
-				EventContentType.NETWORK, EventContentType.NODE, EventContentType.EDGE, EventContentType.ROOT_EDGE, 
-				EventContentType.TOKEN_SET_DEFINITION, EventContentType.SINGLE_TOKEN_DEFINITION, EventContentType.CHARACTER_SET, 
-				EventContentType.CHARACTER_SET_INTERVAL, EventContentType.SET_ELEMENT, EventContentType.OTU_SET, 
-				EventContentType.SEQUENCE_SET, EventContentType.TREE_NETWORK_SET, EventContentType.NODE_EDGE_SET);
+		
 		
 		//TODO add metadata types, parameters (reader, writer)
 		// add meta types if they can be read/written with any combination of parameters
 		
 		return new DefaultFormatInfo(this, NEXML_FORMAT_ID, NEXML_FORMAT_NAME, 
-				supportedContentTypes, supportedContentTypes,	EnumSet.noneOf(EventContentType.class),
+				supportedContentTypes, supportedContentTypes,	
+				Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(),	"NeXML", "nexml",  "xml");
 	}

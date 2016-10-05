@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
@@ -89,7 +90,8 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 				EventContentType.EDGE, EventContentType.ROOT_EDGE);
 		
 		return new DefaultFormatInfo(this, PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, 
-				supportedContentTypes, supportedContentTypes,	EnumSet.noneOf(EventContentType.class),
+				supportedContentTypes, supportedContentTypes,	Collections.<EventContentType, MetadataModeling>emptyMap(), 
+				Collections.<EventContentType, MetadataModeling>emptyMap(),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(), "PhyloXML", "phyloxml", "phylo.xml", "pxml", "xml");
 	}

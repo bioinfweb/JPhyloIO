@@ -19,15 +19,16 @@
 package info.bioinfweb.jphyloio.formatinfo;
 
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
 
 
 
@@ -44,7 +45,8 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 
 	private Set<EventContentType> supportedReaderContentTypes;
 	private Set<EventContentType> supportedWriterContentTypes;
-	private Set<EventContentType> supportedMetadata;
+	private Map<EventContentType, MetadataModeling> supportedReaderMetadataModeling;
+	private Map<EventContentType, MetadataModeling> supportedWriterMetadataModeling;
 	private Set<String> supportedReaderParameters;
 	private Set<String> supportedWriterParameters;
 
@@ -79,7 +81,8 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	 */
 	public DefaultFormatInfo(SingleReaderWriterFactory factory, String formatID, String formatName, 
 			Set<EventContentType> supportedReaderContentTypes, Set<EventContentType> supportedWriterContentTypes, 
-			Set<EventContentType> supportedMetadata, Set<String> supportedReaderParameters, Set<String> supportedWriterParameters,
+			Map<EventContentType, MetadataModeling> supportedReaderMetadataModeling, Map<EventContentType, MetadataModeling> supportedWriterMetadataModeling, 
+			Set<String> supportedReaderParameters, Set<String> supportedWriterParameters,
 			ReadWriteParameterMap filterParameters,	String filterDescription,	String... filterExtensions) {
 		
 		super();
@@ -106,25 +109,32 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 			this.formatID = formatID;
 			this.formatName = formatName;
 
-			if (supportedMetadata == null) {
+			if (supportedReaderContentTypes == null) {
 				this.supportedReaderContentTypes = EnumSet.noneOf(EventContentType.class);
 			}
 			else {
 				this.supportedReaderContentTypes = supportedReaderContentTypes;
 			}
 			
-			if (supportedMetadata == null) {
+			if (supportedWriterContentTypes == null) {
 				this.supportedWriterContentTypes = EnumSet.noneOf(EventContentType.class);
 			}
 			else {
 				this.supportedWriterContentTypes = supportedWriterContentTypes;
 			}
 			
-			if (supportedMetadata == null) {
-				this.supportedMetadata = EnumSet.noneOf(EventContentType.class);
+			if (supportedReaderMetadataModeling == null) {
+				this.supportedReaderMetadataModeling = Collections.emptyMap();
 			}
 			else {
-				this.supportedMetadata = supportedMetadata;
+				this.supportedReaderMetadataModeling = supportedReaderMetadataModeling;
+			}
+			
+			if (supportedWriterMetadataModeling == null) {
+				this.supportedWriterMetadataModeling = Collections.emptyMap();
+			}
+			else {
+				this.supportedWriterMetadataModeling = supportedWriterMetadataModeling;
 			}
 			
 			if (supportedReaderParameters == null) {
@@ -184,8 +194,13 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 
 	
 	@Override
-	public boolean isMetadataModeled(EventContentType parentContentType, boolean forReading) {
-		return supportedMetadata.contains(parentContentType);
+	public MetadataModeling getMetadataModeling(EventContentType parentContentType, boolean forReading) {
+		if (forReading) {
+			return supportedReaderMetadataModeling.get(parentContentType);
+		}
+		else {
+			return supportedWriterMetadataModeling.get(parentContentType);
+		}
 	}
 
 	

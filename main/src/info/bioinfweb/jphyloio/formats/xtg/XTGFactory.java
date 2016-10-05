@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
@@ -88,7 +89,7 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.TREE_NETWORK_GROUP, 
 						EventContentType.TREE, EventContentType.NODE, EventContentType.EDGE, EventContentType.ROOT_EDGE),
 						
-				null, EnumSet.noneOf(EventContentType.class),
+				null, Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(), "XTG format of TreeGraph 2", "xtg", "xml");
 	}

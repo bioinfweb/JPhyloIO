@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -100,8 +101,8 @@ public class FASTAFactory extends AbstractStartStringSingleFactory implements Si
 		supportedWriterContentTypes.add(EventContentType.SINGLE_SEQUENCE_TOKEN);
 		
 		return new DefaultFormatInfo(this, FASTA_FORMAT_ID, FASTA_FORMAT_NAME,
-				supportedReaderContentTypes, supportedWriterContentTypes, EnumSet.noneOf(EventContentType.class),
-				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				supportedReaderContentTypes, supportedWriterContentTypes, Collections.<EventContentType, MetadataModeling>emptyMap(), 
+				Collections.<EventContentType, MetadataModeling>emptyMap(),	Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(), "FASTA format", "fasta", "fas", "fa", "fas", "fna", "ffn", "faa", "frn");
 	}
 }

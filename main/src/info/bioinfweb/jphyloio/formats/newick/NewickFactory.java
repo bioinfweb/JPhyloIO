@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.factory.AbstractSingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -113,7 +114,8 @@ public class NewickFactory extends AbstractSingleReaderWriterFactory implements 
 				EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.TREE_NETWORK_GROUP, 
 				EventContentType.TREE, EventContentType.NODE, EventContentType.EDGE, EventContentType.ROOT_EDGE);
 		return new DefaultFormatInfo(this, NEWICK_FORMAT_ID, NEWICK_FORMAT_NAME, 
-				supportedContentTypes, supportedContentTypes,	EnumSet.noneOf(EventContentType.class),
+				supportedContentTypes, supportedContentTypes,	Collections.<EventContentType, MetadataModeling>emptyMap(), 
+				Collections.<EventContentType, MetadataModeling>emptyMap(),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(), "Newick tree format", "nwk", "newick", "tre", "tree", "con");
 	}

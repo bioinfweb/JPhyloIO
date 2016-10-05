@@ -33,6 +33,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -94,7 +95,8 @@ public class NexusFactory extends AbstractStartStringSingleFactory implements Ne
 		supportedWriterContentTypes.add(EventContentType.SINGLE_SEQUENCE_TOKEN);
 		
 		return new DefaultFormatInfo(this, NEXUS_FORMAT_ID, NEXUS_FORMAT_NAME, 
-				supportedReaderContentTypes, supportedWriterContentTypes, EnumSet.noneOf(EventContentType.class),
+				supportedReaderContentTypes, supportedWriterContentTypes, Collections.<EventContentType, MetadataModeling>emptyMap(), 
+				Collections.<EventContentType, MetadataModeling>emptyMap(),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(), "Nexus format", "nex", "nexus", "tre", "tree", "con");  //TODO Should the tree extension better be removed?
 	}

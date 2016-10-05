@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formatinfo;
 
 
 /**
- * Enumerates possible combinations of metaevents to be nested under other types of events.
+ * Enumerates possible combinations of meta events to be nested under other types of events.
  * 
  * @author Sarah Wiechers
  * @author Ben St&ouml;ver
@@ -29,10 +29,11 @@ public enum MetadataTopologyType {
 	/** No nested metadata is supported. */
 	NONE,
 	
-	/** Only literal metadata on the first level is supported. No */
+	/** Only literal metadata on the first level is supported. */
 	LITERAL_ONLY,
 	
-	/**  */
+	/** Nested meta data including literal meta data on the first level is supported, 
+	 * but not full meta data trees according to the <i>RDFa</a> model. */
 	LIMITED_TREE,
 	
 	/** Nested metadata according to the <i>RDFa</a> model are supported. */

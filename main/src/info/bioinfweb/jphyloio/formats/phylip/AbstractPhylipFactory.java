@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.factory.AbstractSingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 import java.io.IOException;
@@ -111,7 +112,8 @@ public abstract class AbstractPhylipFactory extends AbstractSingleReaderWriterFa
 		supportedWriterContentTypes.add(EventContentType.SINGLE_SEQUENCE_TOKEN);
 		
 		return new DefaultFormatInfo(this, formatID, formatName,
-				supportedReaderContentTypes, supportedWriterContentTypes, EnumSet.noneOf(EventContentType.class),
+				supportedReaderContentTypes, supportedWriterContentTypes, Collections.<EventContentType, MetadataModeling>emptyMap(), 
+				Collections.<EventContentType, MetadataModeling>emptyMap(),
 				Collections.<String>emptySet(), Collections.<String>emptySet(),
 				new ReadWriteParameterMap(), adapterDescription, "phy", "phylip");
 		

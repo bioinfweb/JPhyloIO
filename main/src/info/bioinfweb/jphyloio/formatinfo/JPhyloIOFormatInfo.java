@@ -95,7 +95,7 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	 * @see #isElementModeled(EventContentType)
 	 * @since 0.1.0
 	 */
-	public boolean isMetadataModeled(EventContentType parentContentType, boolean forReading);
+	public MetadataModeling getMetadataModeling(EventContentType parentContentType, boolean forReading);
 	
 	/**
 	 * Determines whether the associated reader or writer supports the specified parameter. Parameter names used by readers
