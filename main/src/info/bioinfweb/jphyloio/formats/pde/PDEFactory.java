@@ -93,30 +93,8 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
 		supportedMetadataModeling.put(EventContentType.DOCUMENT, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
-		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.META_LITERAL, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.META_LITERAL_CONTENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.COMMENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.OTU_LIST, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.OTU, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.ALIGNMENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
 		supportedMetadataModeling.put(EventContentType.SEQUENCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
-		supportedMetadataModeling.put(EventContentType.SEQUENCE_TOKENS, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.TOKEN_SET_DEFINITION, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.CHARACTER_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
-				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
-		supportedMetadataModeling.put(EventContentType.CHARACTER_SET_INTERVAL, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
 		
 		Set<String> supportedParameters = new HashSet<String>();
 		supportedParameters.add(ReadWriteParameterNames.KEY_ALLOW_DEFAULT_NAMESPACE);

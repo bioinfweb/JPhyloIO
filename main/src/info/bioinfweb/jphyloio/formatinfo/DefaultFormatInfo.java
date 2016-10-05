@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formatinfo;
 
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
@@ -195,12 +196,18 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	
 	@Override
 	public MetadataModeling getMetadataModeling(EventContentType parentContentType, boolean forReading) {
+		MetadataModeling result;
 		if (forReading) {
-			return supportedReaderMetadataModeling.get(parentContentType);
+			result = supportedReaderMetadataModeling.get(parentContentType);
 		}
 		else {
-			return supportedWriterMetadataModeling.get(parentContentType);
+			result = supportedWriterMetadataModeling.get(parentContentType);
 		}
+		
+		if (result == null) {
+			result = MetadataModeling.NO_METADATA;
+		}
+		return result;
 	}
 
 	

@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.formats.nexml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -106,13 +105,6 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
-		supportedMetadataModeling.put(EventContentType.META_LITERAL, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.META_LITERAL_CONTENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		//TODO entry for content types taht are not supported at all? e.g. UnknownCommand
-		supportedMetadataModeling.put(EventContentType.COMMENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
 		supportedMetadataModeling.put(EventContentType.OTU_LIST, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.OTU, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
@@ -123,8 +115,6 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.SEQUENCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
-		supportedMetadataModeling.put(EventContentType.SEQUENCE_TOKENS, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
 		supportedMetadataModeling.put(EventContentType.SINGLE_SEQUENCE_TOKEN, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.TREE_NETWORK_GROUP, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
@@ -145,10 +135,6 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.CHARACTER_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
-		supportedMetadataModeling.put(EventContentType.CHARACTER_SET_INTERVAL, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.SET_ELEMENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
 		supportedMetadataModeling.put(EventContentType.OTU_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.SEQUENCE_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 

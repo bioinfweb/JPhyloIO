@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -101,14 +100,6 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 				EnumSet.of(LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
-		supportedMetadataModeling.put(EventContentType.META_LITERAL, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet())); //TODO does NONE always have to be combined with an empty set of contentSequenceTypes?
-		supportedMetadataModeling.put(EventContentType.META_LITERAL_CONTENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.COMMENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.TREE_NETWORK_GROUP, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
 		supportedMetadataModeling.put(EventContentType.NETWORK, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.TREE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 

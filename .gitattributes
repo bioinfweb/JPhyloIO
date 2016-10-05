@@ -83,6 +83,7 @@ main/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreObjectD
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreObjectListDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreTreeNetworkDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreTreeNetworkGroupDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/dataadapters/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/CharacterDefinitionEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/events/CharacterSetIntervalEvent.java -text svneol=unset#text/plain
@@ -129,6 +130,7 @@ main/src/info/bioinfweb/jphyloio/formatinfo/DefaultFormatInfo.java -text svneol=
 main/src/info/bioinfweb/jphyloio/formatinfo/JPhyloIOFormatInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formatinfo/MetadataModeling.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formatinfo/MetadataTopologyType.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formatinfo/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/BufferedEventInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/JPhyloIOFormatIDs.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/NodeEdgeInfo.java -text svneol=unset#text/plain

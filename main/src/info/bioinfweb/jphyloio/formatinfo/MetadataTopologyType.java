@@ -20,10 +20,13 @@ package info.bioinfweb.jphyloio.formatinfo;
 
 
 /**
- * Enumerates possible combinations of meta events to be nested under other types of events.
+ * Enumerates possible combinations of meta events to be nested between start and end events of other content types.
  * 
  * @author Sarah Wiechers
  * @author Ben St&ouml;ver
+ * @since 0.1.0
+ * @see MetadataModeling
+ * @see JPhyloIOFormatInfo#getMetadataModeling(info.bioinfweb.jphyloio.events.type.EventContentType, boolean)
  */
 public enum MetadataTopologyType {
 	/** No nested metadata is supported. */

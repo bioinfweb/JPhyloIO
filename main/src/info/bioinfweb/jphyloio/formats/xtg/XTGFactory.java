@@ -95,14 +95,6 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
 		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
-		supportedMetadataModeling.put(EventContentType.META_LITERAL, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.META_LITERAL_CONTENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.COMMENT, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
-		supportedMetadataModeling.put(EventContentType.TREE_NETWORK_GROUP, new MetadataModeling(MetadataTopologyType.NONE, 
-				Collections.<LiteralContentSequenceType>emptySet()));
 		supportedMetadataModeling.put(EventContentType.TREE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
 		supportedMetadataModeling.put(EventContentType.NODE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 

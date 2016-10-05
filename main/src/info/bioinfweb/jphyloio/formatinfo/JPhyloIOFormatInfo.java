@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * implementations of {@link JPhyloIOEventReader} and {@link JPhyloIOEventWriter}.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
  * @since 0.0.0
  */
 public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
@@ -75,23 +76,17 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	public boolean isElementModeled(EventContentType contentType, boolean forReading);
 	
 	/**
-	 * Determines whether the represented format allows to model any kind of metadata nested under the specified data element 
+	 * Determines which kind of metadata the represented format allows to model nested under the specified data element 
 	 * Readers will not produce metaevents under an unsupported type, while writers will accept but ignore metaevents under 
 	 * this type.
 	 * <p>
 	 * Note that the values returned here indicate the capabilities of the provided readers and writers and not the 
 	 * capabilities of the respective format.
-	 * <p>
-	 * Note that this method will return {@code true} if any literal or resource metadata is supported. This does not necessarily
-	 * mean that any type of metadata is supported. In some cases only a single level of literal metadata or even only certain
-	 * predicates may be supported, while in other cases a whole <i>RDFa</i> metadata tree may be legal. The way metadata are
-	 * represented may even depend on specified reader or writer parameters. Refer to the documentations of the reader or
-	 * writer in question for further details on supported metadata.
 	 * 
 	 * @param contentType the content type of the parent element of possibly supported metadata
 	 * @param forReading Specify {@code true} here, if support for metadata nested under {@code contentType} in reading this 
 	 *        format or {@code false} for writing it should be returned.  
-	 * @return {@code true} if metadata may be nested under the specified content type, {@code false} otherwise
+	 * @return an object describing which metadata is supported, never {@code null}
 	 * @see #isElementModeled(EventContentType)
 	 * @since 0.1.0
 	 */
