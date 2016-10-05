@@ -29,12 +29,12 @@ import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreTreeNetworkGroupDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreTreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
-import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
