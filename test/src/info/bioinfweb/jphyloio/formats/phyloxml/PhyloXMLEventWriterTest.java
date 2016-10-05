@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 import static info.bioinfweb.commons.testing.XMLAssert.*;
 import static org.junit.Assert.*;
-
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.log.ApplicationLoggerMessageType;
