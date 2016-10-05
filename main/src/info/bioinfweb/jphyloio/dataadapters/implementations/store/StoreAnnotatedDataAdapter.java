@@ -16,50 +16,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter;
+package info.bioinfweb.jphyloio.dataadapters.implementations.store;
 
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
-public class StoreObjectData<E extends JPhyloIOEvent> {
-	private E objectStartEvent;
-	private List<JPhyloIOEvent> objectContent = new ArrayList<JPhyloIOEvent>();
+
+public abstract class StoreAnnotatedDataAdapter<E extends JPhyloIOEvent> implements AnnotatedDataAdapter {
+	private List<JPhyloIOEvent> annotations;
 	
 	
-	public StoreObjectData(E objectStartEvent) {
-		this(objectStartEvent, null);
-	}
-	
-	
-	public StoreObjectData(E objectStartEvent, List<JPhyloIOEvent> objectContent) {
+	public StoreAnnotatedDataAdapter(List<JPhyloIOEvent> annotations) {
 		super();
-		this.objectStartEvent = objectStartEvent;
 		
-		if (objectContent == null) {
-			this.objectContent = new ArrayList<JPhyloIOEvent>();
+		if (annotations == null) {
+			this.annotations = new ArrayList<JPhyloIOEvent>();
 		}
 		else {
-			this.objectContent = objectContent;
+			this.annotations = annotations;
 		}
 	}
 
 
-	public E getObjectStartEvent() {
-		return objectStartEvent;
+	@Override
+	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
+		for (JPhyloIOEvent annotation : annotations) {
+			receiver.add(annotation);
+		}		
 	}
 
 
-	public void setObjectStartEvent(E objectStartEvent) {
-		this.objectStartEvent = objectStartEvent;
+	public List<JPhyloIOEvent> getAnnotations() {
+		return annotations;
 	}
-
-
-	public List<JPhyloIOEvent> getObjectContent() {
-		return objectContent;
-	}	
 }
