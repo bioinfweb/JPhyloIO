@@ -23,7 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
@@ -31,10 +34,13 @@ import javax.xml.stream.XMLStreamException;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
+import info.bioinfweb.jphyloio.formatinfo.MetadataTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
@@ -94,15 +100,83 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 				EventContentType.CHARACTER_SET_INTERVAL, EventContentType.SET_ELEMENT, EventContentType.OTU_SET, 
 				EventContentType.SEQUENCE_SET, EventContentType.TREE_NETWORK_SET, EventContentType.NODE_EDGE_SET);
 		
+		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
+		supportedMetadataModeling.put(EventContentType.DOCUMENT, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.META_LITERAL, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.META_LITERAL_CONTENT, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		//TODO entry for content types taht are not supported at all? e.g. UnknownCommand
+		supportedMetadataModeling.put(EventContentType.COMMENT, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.OTU_LIST, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.OTU, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.ALIGNMENT, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.CHARACTER_DEFINITION, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.SEQUENCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.SEQUENCE_TOKENS, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.SINGLE_SEQUENCE_TOKEN, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.TREE_NETWORK_GROUP, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.NETWORK, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.TREE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.NODE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.EDGE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.ROOT_EDGE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.TOKEN_SET_DEFINITION, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.SINGLE_TOKEN_DEFINITION, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.CHARACTER_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.CHARACTER_SET_INTERVAL, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.SET_ELEMENT, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.OTU_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.SEQUENCE_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.TREE_NETWORK_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
+		supportedMetadataModeling.put(EventContentType.NODE_EDGE_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		
+		Set<String> supportedReaderParameters = new HashSet<String>();
+		//TODO what about parameters referring to match tokens? are used in XMLEventReader constructor
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_LOGGER);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_OBJECT_TRANSLATOR_FACTORY);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_ALLOW_DEFAULT_NAMESPACE);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_NEXML_TOKEN_TRANSLATION_STRATEGY);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_NEXML_USE_OTU_LABEL);
 		
-		//TODO add metadata types, parameters (reader, writer)
-		// add meta types if they can be read/written with any combination of parameters
+		Set<String> supportedWriterParameters = new HashSet<String>();
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_WRITER_INSTANCE);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_LOGGER);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_OBJECT_TRANSLATOR_FACTORY);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_APPLICATION_NAME);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_APPLICATION_VERSION);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_APPLICATION_URL);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_NEXML_TOKEN_DEFINITION_LABEL);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA);
 		
 		return new DefaultFormatInfo(this, NEXML_FORMAT_ID, NEXML_FORMAT_NAME, 
-				supportedContentTypes, supportedContentTypes,	
-				Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
-				Collections.<String>emptySet(), Collections.<String>emptySet(),
-				new ReadWriteParameterMap(),	"NeXML", "nexml",  "xml");
+				supportedContentTypes, supportedContentTypes,	supportedMetadataModeling, supportedMetadataModeling,
+				supportedReaderParameters, supportedWriterParameters, new ReadWriteParameterMap(),	"NeXML", "nexml",  "xml");
 	}
 }

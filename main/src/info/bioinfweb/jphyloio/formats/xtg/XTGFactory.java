@@ -19,24 +19,30 @@
 package info.bioinfweb.jphyloio.formats.xtg;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
-import javax.xml.stream.XMLStreamException;
-
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
+import info.bioinfweb.jphyloio.formatinfo.MetadataTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
 
 
 
@@ -84,13 +90,38 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 	
 	@Override
 	protected JPhyloIOFormatInfo createFormatInfo() {
+		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
+		supportedMetadataModeling.put(EventContentType.DOCUMENT, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.META_LITERAL, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.META_LITERAL_CONTENT, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.COMMENT, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.TREE_NETWORK_GROUP, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.TREE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.NODE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.EDGE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.ROOT_EDGE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		
+		Set<String> supportedReaderParameters = new HashSet<String>();
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_ALLOW_DEFAULT_NAMESPACE);
+		
 		return new DefaultFormatInfo(this, XTG_FORMAT_ID, XTG_FORMAT_NAME, 
 				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, EventContentType.META_LITERAL, 
 						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.TREE_NETWORK_GROUP, 
 						EventContentType.TREE, EventContentType.NODE, EventContentType.EDGE, EventContentType.ROOT_EDGE),
 						
-				null, Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
-				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				null, supportedMetadataModeling, null,
+				supportedReaderParameters, null,
 				new ReadWriteParameterMap(), "XTG format of TreeGraph 2", "xtg", "xml");
 	}
 }

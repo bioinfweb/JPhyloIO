@@ -19,24 +19,30 @@
 package info.bioinfweb.jphyloio.formats.pde;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
-import javax.xml.stream.XMLStreamException;
-
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
+import info.bioinfweb.jphyloio.formatinfo.MetadataTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
 
 
 
@@ -84,14 +90,46 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 	
 	@Override
 	protected JPhyloIOFormatInfo createFormatInfo() {
+		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
+		supportedMetadataModeling.put(EventContentType.DOCUMENT, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.META_LITERAL, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.META_LITERAL_CONTENT, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.COMMENT, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.OTU_LIST, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.OTU, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.ALIGNMENT, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.SEQUENCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.SEQUENCE_TOKENS, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.TOKEN_SET_DEFINITION, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		supportedMetadataModeling.put(EventContentType.CHARACTER_SET, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.CHARACTER_SET_INTERVAL, new MetadataModeling(MetadataTopologyType.NONE, 
+				Collections.<LiteralContentSequenceType>emptySet()));
+		
+		Set<String> supportedParameters = new HashSet<String>();
+		supportedParameters.add(ReadWriteParameterNames.KEY_ALLOW_DEFAULT_NAMESPACE);
+		//TODO match tokens?
+		
 		return new DefaultFormatInfo(this, PDE_FORMAT_ID, PDE_FORMAT_NAME, 
 				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, EventContentType.META_LITERAL, 
 						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.OTU_LIST, 
 						EventContentType.OTU, EventContentType.ALIGNMENT, EventContentType.SEQUENCE,
 						EventContentType.SEQUENCE_TOKENS, EventContentType.TOKEN_SET_DEFINITION, EventContentType.CHARACTER_SET, 
 						EventContentType.CHARACTER_SET_INTERVAL),
-				null, Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
-				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				null, supportedMetadataModeling, null,
+				supportedParameters, null,
 				new ReadWriteParameterMap(),	"PDE format of PhyDE", "pde");
 	}
 }

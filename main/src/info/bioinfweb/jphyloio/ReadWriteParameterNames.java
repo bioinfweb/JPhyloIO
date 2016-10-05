@@ -270,7 +270,7 @@ public interface ReadWriteParameterNames {
 	 * writers supporting this parameter. If {@code false} is specified or this parameter is omitted, comments will be 
 	 * written to the output at all supported positions.
 	 */
-	public static final String KEY_IGNORE_COMMENTS = KEY_PREFIX + "ignoreComments";
+	public static final String KEY_IGNORE_COMMENTS = KEY_PREFIX + "ignoreComments"; //TODO is never used
 	
 	/**
 	 * This parameter can be used to specify whether readers of XML formats shall also accept tags of their target format
@@ -330,7 +330,7 @@ public interface ReadWriteParameterNames {
 	/**
 	 * This parameter can be used to specify a custom instance of {@link ObjectTranslatorFactory} that is used by some
 	 * readers to create literal meta object values. Specifying a custom factory allows to provide translators for custom
-	 * data types or to overwrite default translators for common types.
+	 * data types or to overwrite default translators for common types. //TODO is also used by writers, or isn't it?
 	 * 
 	 * @see #getObjectTranslatorFactory()
 	 */
