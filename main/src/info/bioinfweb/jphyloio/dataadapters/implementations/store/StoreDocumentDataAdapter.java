@@ -31,17 +31,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.OrderedMap;
 import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
 public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter<ConcreteJPhyloIOEvent> implements DocumentDataAdapter {
-	private ListOrderedMap<String, OTUListDataAdapter> otuListsMap;
+	private OrderedMap<String, OTUListDataAdapter> otuListsMap;
 	private List<MatrixDataAdapter> matrices;
 	private List<TreeNetworkGroupDataAdapter> treeNetworkGroups;
 	
 	
-	public StoreDocumentDataAdapter(List<JPhyloIOEvent> annotations, ListOrderedMap<String, OTUListDataAdapter> otusMap, 
+	public StoreDocumentDataAdapter(List<JPhyloIOEvent> annotations, OrderedMap<String, OTUListDataAdapter> otusMap, 
 			List<MatrixDataAdapter> matrices, List<TreeNetworkGroupDataAdapter> treeNetworkGroups) {
 		
 		super(annotations);
@@ -80,7 +81,7 @@ public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter<Concrete
 	}
 	
 	
-	public ListOrderedMap<String, OTUListDataAdapter> getOTUListsMap() {
+	public OrderedMap<String, OTUListDataAdapter> getOTUListsMap() {
 		return otuListsMap;
 	}
 
@@ -97,7 +98,7 @@ public class StoreDocumentDataAdapter extends StoreAnnotatedDataAdapter<Concrete
 
 	@Override
 	public Iterator<OTUListDataAdapter> getOTUListIterator(ReadWriteParameterMap parameters) {
-		return otuListsMap.valueList().iterator();
+		return otuListsMap.values().iterator();
 	}
 
 	
