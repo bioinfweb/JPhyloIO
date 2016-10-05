@@ -30,8 +30,8 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 /**
  * Classes implementing this interface provide information about a phylogenetic file format that is supported by <i>JPhyloIO</i>.
- * Creating according file filters and information on the content and parameter set associated implementations of 
- * {@link JPhyloIOEventReader} and {@link JPhyloIOEventWriter} support.
+ * and allow to create according file filters and provide information on the content and parameter set of associated 
+ * implementations of {@link JPhyloIOEventReader} and {@link JPhyloIOEventWriter}.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
