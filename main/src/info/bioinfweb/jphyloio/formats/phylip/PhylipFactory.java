@@ -25,7 +25,7 @@ import java.io.Reader;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 
 
 

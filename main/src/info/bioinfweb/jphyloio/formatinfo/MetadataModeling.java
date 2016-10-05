@@ -16,35 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.factory;
+package info.bioinfweb.jphyloio.formatinfo;
 
 
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import java.util.Collections;
+import java.util.Set;
 
 
-public abstract class AbstractSingleReaderWriterFactory implements SingleReaderWriterFactory {
-	private JPhyloIOFormatInfo formatInfo;
+
+public class MetadataModeling {
+	private MetadataTopologyType topologyType;
+	private Set<LiteralContentSequenceType> contentTypes;
 	
 	
-	@Override
-	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
-		return checkFormat(new InputStreamReader(stream), parameters);
+	public MetadataModeling(MetadataTopologyType topologyType, Set<LiteralContentSequenceType> contentTypes) {
+		super();
+		this.topologyType = topologyType;
+		this.contentTypes = Collections.unmodifiableSet(contentTypes);
 	}
 
-	
-	protected abstract JPhyloIOFormatInfo createFormatInfo();
-	
 
-	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
-		if (formatInfo == null) {
-			formatInfo = createFormatInfo();
-		}
-		return formatInfo;
+	public MetadataTopologyType getTopologyType() {
+		return topologyType;
+	}
+
+
+	public Set<LiteralContentSequenceType> getContentTypes() {
+		return contentTypes;
 	}
 }

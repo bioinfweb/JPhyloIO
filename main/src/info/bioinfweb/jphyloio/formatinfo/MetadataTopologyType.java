@@ -16,35 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.factory;
+package info.bioinfweb.jphyloio.formatinfo;
 
 
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-
-
-public abstract class AbstractSingleReaderWriterFactory implements SingleReaderWriterFactory {
-	private JPhyloIOFormatInfo formatInfo;
+/**
+ * Enumerates possible combinations of metaevents to be nested under other types of events.
+ * 
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ */
+public enum MetadataTopologyType {
+	/** No nested metadata is supported. */
+	NONE,
 	
+	/** Only literal metadata on the first level is supported. No */
+	LITERAL_ONLY,
 	
-	@Override
-	public boolean checkFormat(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
-		return checkFormat(new InputStreamReader(stream), parameters);
-	}
-
+	/**  */
+	LIMITED_TREE,
 	
-	protected abstract JPhyloIOFormatInfo createFormatInfo();
-	
-
-	@Override
-	public JPhyloIOFormatInfo getFormatInfo() {
-		if (formatInfo == null) {
-			formatInfo = createFormatInfo();
-		}
-		return formatInfo;
-	}
+	/** Nested metadata according to the <i>RDFa</a> model are supported. */
+	FULL_TREE;
 }

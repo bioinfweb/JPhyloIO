@@ -21,19 +21,8 @@ package info.bioinfweb.jphyloio;
 
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
-import info.bioinfweb.jphyloio.events.CommentEvent;
-import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
-import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.TokenDefinitionLabelHandling;
 import info.bioinfweb.jphyloio.formats.nexml.TokenTranslationStrategy;
-import info.bioinfweb.jphyloio.formats.nexus.NexusEventReader;
-import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
-import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFactory;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventReader;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetadataTreatment;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 

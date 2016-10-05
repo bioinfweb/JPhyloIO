@@ -415,8 +415,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events					
-					streamDataProvider.getCurrentEventCollection().add(
-							new LiteralMetadataContentEvent(event.asStartElement(), false));
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asStartElement(), false));
 				}
 			}
 		});

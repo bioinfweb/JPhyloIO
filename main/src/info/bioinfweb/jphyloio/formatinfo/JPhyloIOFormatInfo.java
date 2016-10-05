@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats;
+package info.bioinfweb.jphyloio.formatinfo;
 
 
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
@@ -57,10 +57,10 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	 * produce events of an unsupported type, while writers will accept but ignore events of this type.
 	 * <p>
 	 * Note that the values returned here indicate the capabilities of the provided readers and writers and not the 
-	 * capabilities of the respective format. In may happen that elements of a format are not supported by its reader and 
+	 * capabilities of the respective format. It may happen that elements of a format are not supported by its reader and 
 	 * writer. In such cases {@code false} would be returned here for the according content type.
 	 * <p>
-	 * Note this method will return {@code true} for content types that may occur at multiple positions in the event stream 
+	 * Note that this method will return {@code true} for content types that may occur at multiple positions in the event stream 
 	 * (e.g. {@link EventContentType#META_LITERAL} or {@link EventContentType#SET_ELEMENT}), if they are supported at least
 	 * at one position. Use {@link #isMetadataModeled(EventContentType)} to check at which position metadata elements are
 	 * supported.
@@ -82,11 +82,11 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	 * Note that the values returned here indicate the capabilities of the provided readers and writers and not the 
 	 * capabilities of the respective format.
 	 * <p>
-	 * Note this method will return {@code true} if any literal of resource metadata is supported. This does not necessary
+	 * Note that this method will return {@code true} if any literal or resource metadata is supported. This does not necessarily
 	 * mean that any type of metadata is supported. In some cases only a single level of literal metadata or even only certain
-	 * predicates may be supported, while in other cases a whole <i>RDFa</i> metadata tree maybe legal. The way metadata are
-	 * represented may even depend of specified reader or writer parameters. Refer to the documentations of the reader or
-	 * writer in question for further details on supported metadata. 
+	 * predicates may be supported, while in other cases a whole <i>RDFa</i> metadata tree may be legal. The way metadata are
+	 * represented may even depend on specified reader or writer parameters. Refer to the documentations of the reader or
+	 * writer in question for further details on supported metadata.
 	 * 
 	 * @param contentType the content type of the parent element of possibly supported metadata
 	 * @param forReading Specify {@code true} here, if support for metadata nested under {@code contentType} in reading this 
@@ -105,7 +105,7 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	 * @param parameterName the name of the parameter to be tested
 	 * @param forReading Specify {@code true} here, if support for {@code parameterName} in reading this format or 
 	 *        {@code false} for writing it should be returned.  
-	 * @return {@code true} of the associated reader or writer makes use of the parameter with the specified name, or
+	 * @return {@code true} if the associated reader or writer makes use of the parameter with the specified name, or
 	 *         {@code false} otherwise
 	 * @since 0.1.0
 	 */

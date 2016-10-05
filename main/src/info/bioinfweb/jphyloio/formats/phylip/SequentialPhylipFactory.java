@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats;
+package info.bioinfweb.jphyloio.formatinfo;
 
 
 import java.util.Collections;
@@ -48,7 +48,7 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	private Set<String> supportedReaderParameters;
 	private Set<String> supportedWriterParameters;
 
-	private ReadWriteParameterMap filterParamaters;
+	private ReadWriteParameterMap filterParameters;
 	private String filterDescription;
 	private String[] filterExtensions;
 
@@ -69,18 +69,18 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	 *        is specified, an empty set is assumed.)
 	 * @param supportedWriterParameters the set of parameters that are supported by the associated writer (If {@code null}  
 	 *        is specified, an empty set is assumed.)
-	 * @param filterParamaters the reader parameters to be used by the file filter to test the contents of a file as they
+	 * @param filterParameters the reader parameters to be used by the file filter to test the contents of a file as they
 	 *        will be passed to {@link SingleReaderWriterFactory#checkFormat(java.io.InputStream, ReadWriteParameterMap)}
 	 * @param filterDescription the description of this format to be displayed e.g. in open dialogs
 	 * @param filterExtensions the file extension of the associated format (At least one needs to be specified.)
-	 * @throws NullPointerException if {@code factory}, {@code formatID}, {@code formatName}, {@code filterDescription}, 
-	 *         {@code filterDefaultExtension} or any element of {@code filterExtensions} is {@code null}
+	 * @throws NullPointerException if {@code factory}, {@code formatID}, {@code formatName}, {@code filterDescription} 
+	 *         or any element of {@code filterExtensions} is {@code null}
 	 * @throws IllegalArgumentException if not at least one extension has been specified
 	 */
 	public DefaultFormatInfo(SingleReaderWriterFactory factory, String formatID, String formatName, 
 			Set<EventContentType> supportedReaderContentTypes, Set<EventContentType> supportedWriterContentTypes, 
 			Set<EventContentType> supportedMetadata, Set<String> supportedReaderParameters, Set<String> supportedWriterParameters,
-			ReadWriteParameterMap filterParamaters,	String filterDescription,	String... filterExtensions) {
+			ReadWriteParameterMap filterParameters,	String filterDescription,	String... filterExtensions) {
 		
 		super();
 		if (factory == null) {
@@ -141,11 +141,11 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 				this.supportedWriterParameters = supportedWriterParameters;
 			}
 			
-			if (filterParamaters == null) {
-				this.filterParamaters = new ReadWriteParameterMap();
+			if (filterParameters == null) {
+				this.filterParameters = new ReadWriteParameterMap();
 			}
 			else {
-				this.filterParamaters = filterParamaters;
+				this.filterParameters = filterParameters;
 			}
 			this.filterDescription = filterDescription;
 			this.filterExtensions = filterExtensions;
@@ -167,7 +167,7 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 	
 	@Override
 	public ContentExtensionFileFilter createFileFilter() {
-		return new JPhyloIOContentExtensionFileFilter(factory, filterParamaters, filterDescription, true, 
+		return new JPhyloIOContentExtensionFileFilter(factory, filterParameters, filterDescription, true, 
 				ContentExtensionFileFilter.TestStrategy.CONTENT, false, filterExtensions);
 	}
 	

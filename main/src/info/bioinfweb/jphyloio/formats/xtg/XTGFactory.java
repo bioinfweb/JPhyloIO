@@ -32,9 +32,9 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.DefaultFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
+import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
-import info.bioinfweb.jphyloio.formats.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 
 

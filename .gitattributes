@@ -125,10 +125,12 @@ main/src/info/bioinfweb/jphyloio/factory/JPhyloIOContentExtensionFileFilter.java
 main/src/info/bioinfweb/jphyloio/factory/JPhyloIOReaderWriterFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/SingleReaderWriterFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/factory/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formatinfo/DefaultFormatInfo.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formatinfo/JPhyloIOFormatInfo.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formatinfo/MetadataModeling.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formatinfo/MetadataTopologyType.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/BufferedEventInfo.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/DefaultFormatInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/JPhyloIOFormatIDs.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/formats/JPhyloIOFormatInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/NodeEdgeInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReader.java -text svneol=unset#text/plain
