@@ -21,7 +21,7 @@ package info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters;
 
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
-import info.bioinfweb.jphyloio.dataadapters.implementations.readtowriteadapter.StoreObjectListDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
