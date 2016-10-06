@@ -24,11 +24,13 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
@@ -100,9 +102,16 @@ public class FASTAFactory extends AbstractStartStringSingleFactory implements Si
 		Set<EventContentType> supportedWriterContentTypes = EnumSet.copyOf(supportedReaderContentTypes);
 		supportedWriterContentTypes.add(EventContentType.SINGLE_SEQUENCE_TOKEN);
 		
+		Set<String> supportedReaderParameters = new HashSet<String>();
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MATCH_TOKEN);
+
+		Set<String> supportedWriterParameters = new HashSet<String>();
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_SEQUENCE_EXTENSION_TOKEN);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_LOGGER);
+
 		return new DefaultFormatInfo(this, FASTA_FORMAT_ID, FASTA_FORMAT_NAME,
 				supportedReaderContentTypes, supportedWriterContentTypes, Collections.<EventContentType, MetadataModeling>emptyMap(), 
-				Collections.<EventContentType, MetadataModeling>emptyMap(),	Collections.<String>emptySet(), Collections.<String>emptySet(),
+				Collections.<EventContentType, MetadataModeling>emptyMap(),	supportedReaderParameters, supportedWriterParameters,
 				new ReadWriteParameterMap(), "FASTA format", "fasta", "fas", "fa", "fas", "fna", "ffn", "faa", "frn");
 	}
 }

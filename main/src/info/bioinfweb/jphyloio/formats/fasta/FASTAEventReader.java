@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.fasta;
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -47,7 +48,7 @@ import java.util.List;
 
 
 /**
- * Event based reader for FASTA alignment files.
+ * Event based reader for <i>FASTA</i> alignment files.
  * <p>
  * This reader supports comments in lines following the name definition line. Additionally indices preceding 
  * lines containing sequence data are allowed but are ignored by this reader.
@@ -66,6 +67,10 @@ import java.util.List;
  * <p>
  * This reader does not process the sequence names according to any conventions. The full string following '>' 
  * will be returned in a each {@link SequenceTokensEvent} and can be parsed later on by the application.
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterNames#KEY_MATCH_TOKEN}</li>
+ * </ul>
  * 
  * @author Ben St&ouml;ver
  */
@@ -76,7 +81,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param reader the reader providing the FASTA data to be read 
+	 * @param reader the reader providing the <i>FASTA</i> data to be read 
 	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
@@ -88,7 +93,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param file the FASTA file to be read 
+	 * @param file the <i>FASTA</i> file to be read 
 	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
@@ -100,7 +105,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param stream the stream providing the FASTA data to be read 
+	 * @param stream the stream providing the <i>FASTA</i> data to be read 
 	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
@@ -112,7 +117,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param reader the reader providing the FASTA data to be read 
+	 * @param reader the reader providing the <i>FASTA</i> data to be read 
 	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
@@ -238,7 +243,7 @@ public class FASTAEventReader extends AbstractTextEventReader<TextReaderStreamDa
 					}
 					PeekReader.ReadResult lineResult = getReader().readLine(getParameters().getMaxTokensToRead());
 					List<String> tokenList = new ArrayList<String>(lineResult.getSequence().length());
-					for (int i = 0; i < lineResult.getSequence().length(); i++) {  //TODO Support tokens longer then one character.
+					for (int i = 0; i < lineResult.getSequence().length(); i++) {  //TODO Support tokens longer then one character. => According implementations should already be available in other readers.
 						tokenList.add(Character.toString(lineResult.getSequence().charAt(i)));
 					}
 					lineConsumed = lineResult.isCompletelyRead();

@@ -91,16 +91,16 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * passed to one of the {@code #writeDocument()} methods must be kept by the application code, in order to access the
  * label editing reporter after the document has been written.)
  *  
- * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
- *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_NAME}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_VERSION}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_GENERATE_NEXUS_TRANSLATION_TABLE}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_GENERATED_LABELS_MAP}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_GENERATED_LABELS_MAP_ID_TYPE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_NAME}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_VERSION}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_GENERATE_NEXUS_TRANSLATION_TABLE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_GENERATED_LABELS_MAP}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_GENERATED_LABELS_MAP_ID_TYPE}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver
