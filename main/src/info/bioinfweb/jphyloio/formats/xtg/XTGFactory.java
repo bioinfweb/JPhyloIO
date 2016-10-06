@@ -35,7 +35,6 @@ import info.bioinfweb.jphyloio.formats.xml.AbstractXMLFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;

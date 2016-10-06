@@ -27,7 +27,7 @@ import java.util.Set;
 
 
 /**
- * Instances of this class describes which metadata can be nested under a certain content type in a certain format and are returned by 
+ * Instances of this class describe which metadata can be nested under a certain content type in a certain format and are returned by 
  * {@link JPhyloIOFormatInfo#getMetadataModeling(info.bioinfweb.jphyloio.events.type.EventContentType, boolean)}.
  * 
  * @author Ben St&ouml;ver
@@ -78,7 +78,7 @@ public class MetadataModeling {
 
 	/**
 	 * Returns the set of metadata content types (simple or XML) that may be nested between literal metaevents under start and end 
-	 * events the according content type.
+	 * events of the according content type.
 	 * 
 	 * @return the set of content types (Maybe an empty set but never {@code null}.)
 	 */
