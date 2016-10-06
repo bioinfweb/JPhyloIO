@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  * Provides tool methods to be used by application developers when implementing a reader class that processes
- * events from an implementations of {@link JPhyloIOEventReader} and stores relevent content in the application
+ * events from an implementations of {@link JPhyloIOEventReader} and stores relevant content in the application
  * business model. 
  * 
  * @author Ben St&ouml;ver
@@ -43,17 +43,23 @@ public class JPhyloIOReadingUtils {
    * @return {@code true} if any event is found before the next end element
 	 * @throws IOException 
    */
-  public static boolean reachElementEnd(JPhyloIOEventReader reader) throws IOException {
-  	//TODO Are SOLE events correctly handled?
-  	
-  	boolean result = false;
-    JPhyloIOEvent event = reader.next();
-		while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {			
-		  if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-	 	    reachElementEnd(reader);
-		  }
-	    event = reader.next();
-		}
-		return result;
+  public static void reachElementEnd(JPhyloIOEventReader reader) throws IOException {  	
+  	JPhyloIOEvent event = reader.getPreviousEvent();  	
+    
+  	if (event.getType().getTopologyType().equals(EventTopologyType.SOLE)) {  		
+  		while (reader.peek().getType().getTopologyType().equals(EventTopologyType.SOLE)) {			  
+		    event = reader.next();
+			}
+  	}
+  	else { 
+  		event = reader.next();
+  		 
+			while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {			
+			  if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+		 	    reachElementEnd(reader);
+			  }
+		    event = reader.next();
+			}
+  	}
   }
 }
