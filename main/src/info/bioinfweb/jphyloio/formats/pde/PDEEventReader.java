@@ -75,7 +75,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 /**
  * Event reader for the PDE format used by the alignment editor <a href="http://phyde.de/">PhyDE</a>.
  * 
- * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>

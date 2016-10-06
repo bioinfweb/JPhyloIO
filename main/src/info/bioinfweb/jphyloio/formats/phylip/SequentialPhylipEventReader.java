@@ -48,7 +48,7 @@ import java.io.Reader;
  * The extended Phylip format is supported according to this definition:
  * <a href="http://www.phylo.org/index.php/help/relaxed_phylip">http://www.phylo.org/index.php/help/relaxed_phylip</a>.
  * 
- * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link ReadWriteParameterMap#KEY_REPLACE_MATCH_TOKENS}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_RELAXED_PHYLIP}</li>

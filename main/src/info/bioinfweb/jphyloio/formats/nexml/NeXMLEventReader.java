@@ -95,7 +95,7 @@ import javax.xml.stream.events.XMLEvent;
  * Most of the sets modeled in <i>NeXML</i> are supported by <i>JPhyloIO</i> as well, however sets of cells and sets of character states
  * are currently not. These sets will be ignored while reading a <i>NeXML</i> document. 
  * 
- * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_NEXML_TOKEN_TRANSLATION_STRATEGY}</li>

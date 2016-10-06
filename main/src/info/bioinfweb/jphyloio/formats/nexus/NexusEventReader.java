@@ -61,7 +61,7 @@ import java.io.Reader;
  * Furthermore it can read metadata provided in hot comments in trees as described in the documentation of {@link NewickStringReader}. 
  * It will also handle Nexus comments as comment events and optionally unknown commands as {@link UnknownCommandEvent}s.
  * 
- * <h3><a name="linking"></a>Links between blocks</h3> 
+ * <h3><a id="linking"></a>Links between blocks</h3> 
  * <p>
  * In addition to the core Nexus standards, this reader also supports the {@code TITLE} and {@code LINK} commands
  * introduced by <a href="http://mesquiteproject.org/">Mesquite</a> e.g. to assign {@code TAXA} blocks to character 
@@ -79,7 +79,7 @@ import java.io.Reader;
  * type found in the file will be assumed as linked. If no according block was encountered before the {@code LINK}, nothing will be linked
  * ({@link LinkedLabeledIDEvent#getLinkedID()} of the according event will return {@code null}).
  * 
- * <h3><a name="unsupportedFeatures"></a>Unsupported features</h3> 
+ * <h3><a id="unsupportedFeatures"></a>Unsupported features</h3> 
  * <p>
  * Currently this implementation (if used with the default command readers) does not support the following Nexus features and will throw
  * an {@link UnsupportedFormatFeatureException} if one of them is encountered:
@@ -92,7 +92,7 @@ import java.io.Reader;
  * Note that this list only contains Nexus features that trigger an exception, if encountered. There may be additional featured (e.g.
  * the {@code NOTES} block that are currently not supported, but are just ignored by the reader without throwing an exception.
  * 
- * <h3><a name="extending"></a>Extending this implementation</h3> 
+ * <h3><a id="extending"></a>Extending this implementation</h3> 
  * <p>
  * It is possible to extend the functionality of this reader by adding custom implementations of {@link NexusBlockHandler}
  * or {@link NexusCommandEventReader}.

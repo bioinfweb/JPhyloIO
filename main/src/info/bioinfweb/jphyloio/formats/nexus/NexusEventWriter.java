@@ -63,13 +63,13 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * phylogenetic networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator(ReadWriteParameterMap)}, because the Nexus 
  * format only supports trees.
  * 
- * <h3><a name="commentsMeta"></a>Comments and metadata</h3> 
+ * <h3><a id="commentsMeta"></a>Comments and metadata</h3> 
  * <p>
  * Comments nested in any of the supported elements will usually be written. Metadata is only supported nested in
  * tree node or edge definitions and is written into hot comments as they are supported by {@link NewickStringWriter}.
  * Metadata nested into other elements will be ignored.
  * 
- * <h3><a name="labelsIDs"></a>Labels and IDs</h3> 
+ * <h3><a id="labelsIDs"></a>Labels and IDs</h3> 
  * <p>
  * Note that the Nexus format does not differentiate between labels and IDs and because of this, labels of OTUs and 
  * labels of sequences or nodes linked to them must have identical names in Nexus. Therefore this writer will always use

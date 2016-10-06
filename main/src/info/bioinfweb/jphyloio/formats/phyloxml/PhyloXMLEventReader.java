@@ -78,7 +78,7 @@ import javax.xml.stream.events.XMLEvent;
 /**
  * Event reader for the <a href="http://phyloxml.org/"PhyloXML</a> format.
  * 
- * <h3><a name="parameters"></a>Recognized parameters</h3> 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
