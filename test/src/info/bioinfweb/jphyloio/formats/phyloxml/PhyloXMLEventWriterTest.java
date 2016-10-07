@@ -1455,7 +1455,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		
 		tree.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DURATION), 
-				LiteralContentSequenceType.SIMPLE));	
+				LiteralContentSequenceType.SIMPLE));
 		tree.getAnnotations().add(new LiteralMetadataContentEvent(duration, "P5Y2M10D"));
 		tree.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
