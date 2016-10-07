@@ -25,6 +25,7 @@ import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -75,6 +76,48 @@ import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Event based writer for the <a href="http://nexml.org/">NeXML format</a>.
+ * <p>
+ * All data elements modeled by <i>JPhyloIO</i> are supported by this writer, since the data model of <i>JPhyloIO</i> 
+ * is heavily influenced by the data model of <i>NeXML</i>. 
+ * <p>
+ * Comments and meta information can be written under all modeled elements. Meta elements only present to group meta information, 
+ * e.g. nested under elements not modeled in <i>JPhyloIO</i>, are ignored by this writer and the nested content is written to the 
+ * according position. The ID of a {@link JPhyloIOEvent} will be written to the file unchanged.
+ * <p>
+ * If no OTUs or OTU list are found in the data, but elements that need to reference either of those, the writer will write a 
+ * new OTU list or OTU with the ID prefix {@link NeXMLConstants#UNDEFINED_OTU_ID_PREFIX} or 
+ * {@link NeXMLConstants#UNDEFINED_OTUS_ID_PREFIX}. If no token set is present in the data, a new token set with the type
+ * {@link CharacterStateSetType#DISCRETE} and the ID prefix {@link NeXMLConstants#DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX} will 
+ * be written to the file. If not all alignment characters are defined in the document data, missing definitions will be added.
+ * <p>
+ * Before writing, the token definitions and sequence data are checked if they fit the specified {@link CharacterStateSetType}.
+ * If this is not the case, the {@link CharacterStateSetType#DISCRETE} is assumed. In case of {@code DNA}, {@code RNA} 
+ * or {@code NUCLEOTIDE} data it is first checked if the data could also be of another nucleotide data type. All molecular
+ * data token definition sets contain all token definitions defined in the IUPAC standards. If single token definitions are missing, 
+ * they are added. Token definitions of standard tokens found in the sequence data but not defined previously are also added
+ * in case of standard data.
+ * <p>
+ * Restriction data can not be written, since it is not modeled by <i>JPhyloIO</i>. If the {@link CharacterStateSetType} of the 
+ * sequence data is {@code DSICRETE} tokens are translated to integers as required by <i>NeXML</i>.
+ * 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterNames#KEY_WRITER_INSTANCE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_NAME}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_VERSION}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_URL}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_NEXML_TOKEN_DEFINITION_LABEL}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA}</li>
+ * </ul>
+ * 
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDataProvider> implements NeXMLConstants {
 	public NeXMLEventWriter() {
 		super();

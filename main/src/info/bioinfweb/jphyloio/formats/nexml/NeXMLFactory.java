@@ -145,7 +145,6 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		
 		Set<String> supportedReaderParameters = new HashSet<String>();
-		//TODO what about parameters referring to match tokens? are used in XMLEventReader constructor
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_LOGGER);
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_OBJECT_TRANSLATOR_FACTORY);
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_ALLOW_DEFAULT_NAMESPACE);

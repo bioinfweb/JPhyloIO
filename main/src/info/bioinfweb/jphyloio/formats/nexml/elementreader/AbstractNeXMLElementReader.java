@@ -84,7 +84,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	 * @param streamDataProvider the stream data provider of the calling {@link NeXMLEventReader}
 	 * @param sequence the sequence as a string of tokens
 	 * @param translateTokens the {@link TokenTranslationStrategy} to be applied 
-	 * @return the list of tokens obtained from teh sequence
+	 * @return the list of tokens obtained from the sequence
 	 * @throws JPhyloIOReaderException
 	 * @throws XMLStreamException
 	 */

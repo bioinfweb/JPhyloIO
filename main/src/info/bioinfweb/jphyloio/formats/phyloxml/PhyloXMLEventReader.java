@@ -76,12 +76,41 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * Event reader for the <a href="http://phyloxml.org/"PhyloXML</a> format.
+ * Event reader for the <a href="http://phyloxml.org/">PhyloXML</a> format.
+ * <p>
+ * Since trees are represented by a hierarchical structure of {@code clade} tags in <i>PhyloXML</i>, they need
+ * to be serialized to an event sequence according to the <i>JPhyloIO</i> grammar while reading. To achieve this, 
+ * node and edge information is buffered until a {@code clade} end tag is reached. {@link NodeEvent}s and 
+ * {@link EdgeEvent}s representing all edges leading to children of this node are then fired, including all nested
+ * metaevents. If custom XML is encountered before a {@code clade} end, events are fired then to avoid buffering large 
+ * amounts of custom XML data. Since the predefined elements do not contain large amounts of data, buffering
+ * this information does not make reading significantly more inefficient. Performance problems may occur if large 
+ * molecular sequences are attached to the phylogeny.
+ * <p>
+ * Custom XML is read in all positions, where no other element reader is registered. This includes 
+ * custom XML elements nested under elements where this is illegal. Only registering custom XML 
+ * element readers under tags, where this is valid, would require to buffer the whole custom XML contents.
+ * <p>
+ * Predefined data elements are represented as {@link LiteralMetadataEvent} or {@link ResourceMetadataEvent} with 
+ * specific internally used predicates. {@link ResourceMetadataEvent}s may be used to group events representing attribute
+ * values and element contents. {@code Property} tags are represented by {@link LiteralMetadataEvent} with the 
+ * value of the {@code ref} attribute as a predicate. If other attributes are present or the value of the 
+ * {@code applies_to} attribute indicates a different position than the element is actually found in, these 
+ * attribute values and the content is grouped by a {@link ResourceMetadataEvent}. The content of a {@code property}
+ * tag is translated to a Java object using classes of the type {@link ObjectTranslator}.
+ * <p>
+ * Phylogenies in PhyloXML files can either be interpreted as phylogenetic trees or rooted networks, depending on 
+ * the value of the parameter {@link ReadWriteParameterMap#KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE}. 
+ * If it is interpreted as a network, edges defined by {@code clade_rel} tags are represented by edge events with a
+ * nested meta event with the predicate {@link ReadWriteConstants#PREDICATE_IS_CROSSLINK}, otherwise they are
+ * represented by meta events.
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
- *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE}</li>
  * </ul>
  * 
  * @author Sarah Wiechers
@@ -90,11 +119,7 @@ import javax.xml.stream.events.XMLEvent;
  */
 public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderStreamDataProvider> 
 		implements PhyloXMLConstants {
-	
-	/*
-	 * Custom XML is read in all positions, where no other element reader is registered. This includes custom XML elements nested under elements where this is illegal.
-	 * Only registering custom XML element readers under tags, where this is valid, would require to buffer the whole custom XML contents.
-	 */
+
 	
 	public PhyloXMLEventReader(File file, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
 		super(file, parameters);
@@ -468,7 +493,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				}
 		});
 		
-		//Element reader for character content of clade tag was registered before
+		// Element reader for character content of clade tag was registered before
 		
 		putElementReader(new XMLElementReaderKey(TAG_CLADE, TAG_CLADE, XMLStreamConstants.END_ELEMENT), cladeEndReader);
 		

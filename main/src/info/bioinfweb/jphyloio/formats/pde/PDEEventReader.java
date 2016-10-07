@@ -23,12 +23,14 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
+import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -74,6 +76,17 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 /**
  * Event reader for the PDE format used by the alignment editor <a href="http://phyde.de/">PhyDE</a>.
+ * <p>
+ * This reader supports reading sequence data and metadata as well as character sets from PDE files. 
+ * Reading of taxon sets is not supported. Identifiers used to specify the number of missing characters 
+ * at the start or end of a sequence are translated to the according number of missing symbols in 
+ * {@link SequenceTokensEvent}s. Token set events are fired with the {@link CharacterStateSetType} DNA or 
+ * amino acid, according to the information in the file.
+ * <p>
+ * Sequence metadata of the types {@code STRING} and {@code NUMBER} is represented as {@link LiteralMetadataEvent}s,
+ * data of the type {@code FILE} as {@link ResourceMetadataEvent}s. The predicate is either 
+ * {@link ReadWriteConstants#PREDICATE_HAS_LITERAL_METADATA} or {@link ReadWriteConstants#PREDICATE_HAS_RESOURCE_METADATA}.
+ * Char set attributes are represented by metaevents with predefined predicates according to the attribute.
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
@@ -95,7 +108,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 			stream.mark(1024);
 			stream = new GZIPInputStream(stream);  // If an exception occurs here, stream is not set and still references the BufferedInputStream.
 		}
-		catch (ZipException e) { //read uncompressed files
+		catch (ZipException e) {  // Read uncompressed files
 			stream.reset();
 		}
 		

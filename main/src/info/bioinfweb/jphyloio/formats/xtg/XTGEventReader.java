@@ -64,6 +64,15 @@ import javax.xml.stream.events.XMLEvent;
 /**
  * Event reader for the <a href="http://bioinfweb.info/xmlns/xtg">extensible TreeGraph 2 format (XTG)</a> used by the 
  * phylogenetic tree editor <a href="http://treegraph.bioinfweb.info/">TreeGraph 2</a>.
+ * <p>
+ * This reader supports reading pyhlogenetic trees and nested annotations. Reading scale bar and legend information 
+ * is not supported. In order to serialize the hierarchical structure of {@code node} and {@code branch} tags, 
+ * according events are fired at the end of a node or the start of a new node, depending on what happens first. 
+ * This avoids buffering large amounts of data longer than necessary. 
+ * <p>
+ * Predefined elements as well as attributes are represented by metaevents. If necessary these events are grouped by 
+ * {@link ResourceMetadataEvent}s. Textual or decimal annotation values (according to the {@code is_decimal} attribute} 
+ * are parsed to the according Java objects.
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>

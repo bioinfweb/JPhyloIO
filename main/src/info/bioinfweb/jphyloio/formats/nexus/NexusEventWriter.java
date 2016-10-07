@@ -59,7 +59,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
 /**
  * Event based writer for the Nexus format.
  * <p>
- * This write is able to write OTU, sequence and tree data to Nexus formatted streams. It will ignore any data for 
+ * This writer is able to write OTU, sequence and tree data to Nexus formatted streams. It will ignore any data for 
  * phylogenetic networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator(ReadWriteParameterMap)}, because the Nexus 
  * format only supports trees.
  * 
@@ -76,7 +76,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  * the OTU label of the linked OTU, also for writing sequences and nodes. Labels of sequences and nodes will be ignored
  * (which does not make a difference, of they are identical with the labels of their linked OTUs).
  * <p>
- * Sequence labels will though be used, if no OTU is linked. In such cases the {@code NEWTAXA} subcommand will be specified
+ * Sequence labels will be used though, if no OTU is linked. In such cases the {@code NEWTAXA} subcommand will be specified
  * in the {@code DIMENSIONS} command.
  * <p>
  * If an OTU event without a defined label is provided by the data adapter, this writer will use the OTU ID as the taxon

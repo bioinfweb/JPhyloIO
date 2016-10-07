@@ -105,6 +105,7 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 		
 		Set<String> supportedReaderParameters = new HashSet<String>();
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_ALLOW_DEFAULT_NAMESPACE);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_LOGGER);
 		
 		return new DefaultFormatInfo(this, XTG_FORMAT_ID, XTG_FORMAT_NAME, 
 				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, EventContentType.META_LITERAL, 

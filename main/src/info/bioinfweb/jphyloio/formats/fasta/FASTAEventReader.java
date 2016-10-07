@@ -50,7 +50,7 @@ import java.util.List;
 /**
  * Event based reader for <i>FASTA</i> alignment files.
  * <p>
- * This reader supports comments in lines following the name definition line. Additionally indices preceding 
+ * This reader supports comments in lines following the name definition line. Additionally, indices preceding 
  * lines containing sequence data are allowed but are ignored by this reader.
  * <p>
  * <b>Example:</b>
@@ -66,7 +66,7 @@ import java.util.List;
  * </pre>
  * <p>
  * This reader does not process the sequence names according to any conventions. The full string following '>' 
- * will be returned in a each {@link SequenceTokensEvent} and can be parsed later on by the application.
+ * will be returned in each {@link SequenceTokensEvent} and can be parsed later on by the application.
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link ReadWriteParameterNames#KEY_MATCH_TOKEN}</li>

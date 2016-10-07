@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -43,6 +44,37 @@ import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Event writer for the <a href="http://phyloxml.org/"PhyloXML</a> format.
+ * <p>
+ * This writer supports writing phylogenetic trees and rooted networks. Networks can be written using 
+ * the {@code clade_rel} tag to represent crosslinks between nodes. To be able to write a hierarchical 
+ * tree structure, the topology is reconstructed from the node and edge lists provided by {@link TreeNetworkDataAdapter}
+ * by {@link TreeTopologyExtractor}.
+ * <p>
+ * Meta events with specific, internally used predicates are translated to the according <i>PhyloXML</i> tags. 
+ * Custom XML can be written nested under {@code clade} and {@code phylogeny} tags if it does not consist of character 
+ * data that is not nested under any tags or tags that are already defined in <i>PhyloXML</i>. Meta data with literal 
+ * values are that belongs to a tree, network, node or edge can be written to {@code property} tags nested under
+ * {@code phylogeny} or {@code clade}. Since these can not be nested in each other, the user can define a strategy
+ * to deal with nested metaevents with a parameter of the type {@link PhyloXMLMetadataTreatment}. This allows
+ * to e.g. write all metaevent values sequentially or ignore any nested metadata.
+ * 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterMap#KEY_WRITER_INSTANCE}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_NAME}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_VERSION}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_URL}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_PHYLOXML_METADATA_TREATMENT}</li>
+ * </ul>
+ * 
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ * @since 0.0.0
+ */
 public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants, PhyloXMLPrivateConstants {
 	
 	

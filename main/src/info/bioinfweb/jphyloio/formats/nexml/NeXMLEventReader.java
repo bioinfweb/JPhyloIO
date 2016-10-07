@@ -88,19 +88,27 @@ import javax.xml.stream.events.XMLEvent;
  * is translated into meta-events between the start and end events of the type {@link EventContentType#ALIGNMENT}. To distinguish them 
  * from meta-events generated from {@code meta} tags nested directly under the {@code characters} tag (which are are also fired at this
  * position), these meta-events are grouped by resource meta start and end events with the predicates 
- * {@link NeXMLConstants#PREDICATE_FORMAT} or {@link NeXMLConstants#PREDICATE_MATRIX} around them. (Note that these events generated 
+ * {@link NeXMLConstants#PREDICATE_FORMAT} or {@link NeXMLConstants#PREDICATE_MATRIX} around them. (Note that these events are generated 
  * by the reader only to group according metadata and do not have any equivalent {@code meta} tag in the document. 
- * {@link NeXMLEventWriter} can handle such metadata structures accordingly.)
+ * {@link NeXMLEventWriter} can handle such metadata structures accordingly.) NeXML specific tags found nested under a 
+ * literal {@code meta} tag are processed in the same manner as custom XML elements in this position.
+ * <p>
+ * NeXML can store different types of sequence data. While DNA, RNA, amino acid and continuous data is processed straightforwardly,
+ * restriction and standard data is both processed as {@link CharacterStateSetType#DISCRETE}. Standard data represented by integers
+ * is translated according to the {@ code TokenTranslationStrategy} specified, either to the ID or label specified in the token 
+ * definition or not at all. {@link SingleSequenceTokenEvent}s generated from tokens in {@code cell} tags are fired in the order of
+ * the alignment columns the tokens belong to. If they are not in the correct order in the file, some buffering is necessary to sort them.
  * <p>
  * Most of the sets modeled in <i>NeXML</i> are supported by <i>JPhyloIO</i> as well, however sets of cells and sets of character states
  * are currently not. These sets will be ignored while reading a <i>NeXML</i> document. 
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
+ *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterMap#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_NEXML_TOKEN_TRANSLATION_STRATEGY}</li>
  *   <li>{@link ReadWriteParameterMap#KEY_NEXML_USE_OTU_LABEL}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
  * </ul>
  * 
  * @author Sarah Wiechers
@@ -108,7 +116,7 @@ import javax.xml.stream.events.XMLEvent;
  * @since 0.0.0
  */
 public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDataProvider> implements NeXMLConstants {
-	//TODO Describe handling of different sequence types in JavaDoc.
+
 	
 	private int currentMetaLiteralStartLevel = -1;
 	
@@ -182,7 +190,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					}
 				}
 				
-				super.readEvent(streamDataProvider, event);				
+				super.readEvent(streamDataProvider, event);
 			}
 		};
 		
@@ -359,8 +367,8 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_UNCERTAIN, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
 		putElementReader(new XMLElementReaderKey(TAG_POLYMORPHIC, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
-		putElementReader(new XMLElementReaderKey(TAG_CHAR, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaWithPredicateStart); //TODO register normal metadata element reader?
-		putElementReader(new XMLElementReaderKey(TAG_CHAR, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaWithPredicateEnd);
+		putElementReader(new XMLElementReaderKey(TAG_CHAR, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
+		putElementReader(new XMLElementReaderKey(TAG_CHAR, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaEnd);
 		putElementReader(new XMLElementReaderKey(TAG_MATRIX, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaWithPredicateStart);
 		putElementReader(new XMLElementReaderKey(TAG_MATRIX, TAG_META, XMLStreamConstants.END_ELEMENT), readMetaWithPredicateEnd);
 		putElementReader(new XMLElementReaderKey(TAG_ROW, TAG_META, XMLStreamConstants.START_ELEMENT), readMetaStart);
@@ -564,7 +572,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_CHARACTERS, TAG_FORMAT, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {		
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				// fire resource end event if format meta events are present
+				// Fire resource end event if format meta events are present
 				if (streamDataProvider.getAdditionalResourceMetaRel() != null) {
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 					streamDataProvider.setAdditionalResourceMetaRel(null);
@@ -604,7 +612,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_FORMAT, TAG_STATES, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				// fire resource end event if format meta events are present
+				// Fire resource end event if format meta events are present
 				if (streamDataProvider.getAdditionalResourceMetaRel() != null) {
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 					streamDataProvider.setAdditionalResourceMetaRel(null);
@@ -732,7 +740,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_MATRIX, TAG_ROW, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				// fire resource end event if matrix meta events are present
+				// Fire resource end event if matrix meta events are present
 				if (streamDataProvider.getAdditionalResourceMetaRel() != null) {
 					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 					streamDataProvider.setAdditionalResourceMetaRel(null);
@@ -869,7 +877,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 				XMLStreamException {
-					// fire resource end event if matrix meta events are present and were not fired yet
+					// Fire resource end event if matrix meta events are present and were not fired yet
 					if (streamDataProvider.getAdditionalResourceMetaRel() != null) {
 						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
 						streamDataProvider.setAdditionalResourceMetaRel(null);
@@ -1028,7 +1036,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		}
 		
 		if ((currentMetaLiteralStartLevel != -1) && (currentMetaLiteralStartLevel <= getEncounteredTags().size())) {  // Read custom XML.
-			return super.getElementReader(null, null, eventType);  // always returns a custom XML element reader if unknown tags are found nested under a literal meta event
+			return super.getElementReader(null, null, eventType);  // Always returns a custom XML element reader if unknown tags are found nested under a literal meta event
 		}
 		else {
 			currentMetaLiteralStartLevel = -1;

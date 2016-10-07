@@ -99,7 +99,7 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 		
 		Set<String> supportedParameters = new HashSet<String>();
 		supportedParameters.add(ReadWriteParameterNames.KEY_ALLOW_DEFAULT_NAMESPACE);
-		//TODO match tokens?
+		supportedParameters.add(ReadWriteParameterNames.KEY_LOGGER);
 		
 		return new DefaultFormatInfo(this, PDE_FORMAT_ID, PDE_FORMAT_NAME, 
 				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, EventContentType.META_LITERAL, 
