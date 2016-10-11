@@ -30,7 +30,7 @@ import java.util.Set;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.LabelEditingReporter;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.AnnotatedDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.ElementDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
@@ -53,6 +53,7 @@ import info.bioinfweb.jphyloio.formats.nexus.receivers.ReferenceOnlySetReceiver;
 import info.bioinfweb.jphyloio.formats.nexus.receivers.TokenSetEventReceiver;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventWriter;
 import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
+import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
 
 
@@ -99,8 +100,7 @@ import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
  *   <li>{@link ReadWriteParameterNames#KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_GENERATE_NEXUS_TRANSLATION_TABLE}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
- *   <li>{@link ReadWriteParameterNames#KEY_GENERATED_LABELS_MAP}</li>
- *   <li>{@link ReadWriteParameterNames#KEY_GENERATED_LABELS_MAP_ID_TYPE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LABEL_EDITING_REPORTER}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver

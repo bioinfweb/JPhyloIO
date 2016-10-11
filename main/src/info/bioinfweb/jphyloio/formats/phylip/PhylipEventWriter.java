@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 import info.bioinfweb.jphyloio.AbstractSingleMatrixEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.LabelEditingReporter;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
@@ -32,6 +32,7 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.TextSequenceContentReceiver;
 import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
+import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
 
 
@@ -44,7 +45,7 @@ import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
  * <p>
  * Note that sequence names may have to be edited according to the (length) constrains the Phylip format imposes.
  * According edits can be obtained using the {@link LabelEditingReporter} which is returned via the parameters map
- * (using {@link ReadWriteParameterMap#KEY_LABEL_EDITING_REPORTER}).
+ * (using {@link ReadWriteParameterNames#KEY_LABEL_EDITING_REPORTER}).
  * <p>
  * Since Phylip does not support OTU or taxon lists as well, such a list (if provided by 
  * {@link DocumentDataAdapter#getOTUListIterator(ReadWriteParameterMap)}) will also not be written. OTU definitions (if present) will though 
@@ -56,10 +57,10 @@ import info.bioinfweb.jphyloio.formats.text.TextWriterStreamDataProvider;
  * <p>
  * <b>Recognized parameters:</b>
  * <ul>
- *   <li>{@link ReadWriteParameterMap#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_MAXIMUM_NAME_LENGTH}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_LABEL_EDITING_REPORTER}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_NAME_LENGTH}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LABEL_EDITING_REPORTER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver

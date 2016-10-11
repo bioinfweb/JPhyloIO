@@ -35,6 +35,7 @@ import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventReader;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetadataTreatment;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
+import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
 
 

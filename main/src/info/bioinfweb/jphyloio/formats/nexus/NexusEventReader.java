@@ -57,10 +57,17 @@ import java.io.Reader;
  * Event based reader for Nexus files.
  * <p>
  * This reader as able to read data from the Nexus {@code TAXA}, {@code CHARACTERS}, {@code UNALIGNED}, {@code DATA}, 
- * {@code TREES} and {@code SETS} blocks, although not all commands of the {@code SETS} block are currently supported.
+ * {@code TREES} and {@code SETS} blocks, although not all commands of the {@code SETS} block are currently supported (see below).
  * Furthermore it can read metadata provided in hot comments in trees as described in the documentation of {@link NewickStringReader}. 
  * It will also handle Nexus comments as comment events and optionally unknown commands as {@link UnknownCommandEvent}s.
  * 
+ * <h3><a id="sets"></a>Supported sets</h3>
+ * <p>
+ * The commands for {@code CHARSET}, {@code TAXSET} and {@code TREESET} are currently supported both in standard and vector format. 
+ * {@code STATESET} and {@code CHANGESET} are currently ignored, since <i>Nexus</i> state sets are currently not modeled by known other 
+ * software and change sets are not part of the data model of <i>JPhyloIO</i>. For the same reason, the respective partition commands 
+ * (e.g. {@code CHARPARTITION} that would allow to divide a character set into separate subsets) are currently not read as  well.
+ *  
  * <h3><a id="linking"></a>Links between blocks</h3> 
  * <p>
  * In addition to the core Nexus standards, this reader also supports the {@code TITLE} and {@code LINK} commands
@@ -87,10 +94,10 @@ import java.io.Reader;
  *   <li>Character matrices using the {@code FORMAT} subcommand {@code TRANSPOSE}, indicating that columns and rows are shifted can 
  *       currently not be read by {@link MatrixReader}.</li>
  *   <li>Set definitions in a {@code SETS} block using the {@code REMAINING} keyword to indicate that they contain all elements that
- *       were not contained in a previous set are currently not supported by {@link AbstractNexusSetReader} and its descendants..</li>
+ *       were not contained in a previous set are currently not supported by {@link AbstractNexusSetReader} and its descendants.</li>
  * </ul>
  * Note that this list only contains Nexus features that trigger an exception, if encountered. There may be additional featured (e.g.
- * the {@code NOTES} block that are currently not supported, but are just ignored by the reader without throwing an exception.
+ * the {@code NOTES} block) that are currently not supported, but are just ignored by the reader without throwing an exception.
  * 
  * <h3><a id="extending"></a>Extending this implementation</h3> 
  * <p>
