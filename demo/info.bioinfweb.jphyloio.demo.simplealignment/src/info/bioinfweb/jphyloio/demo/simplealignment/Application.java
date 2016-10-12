@@ -32,7 +32,7 @@ import java.io.IOException;
 
 
 /**
- * This is the main class of this demo application. It offers three method for reading, displaying and writing alignment data.
+ * This is the main class of this demo application. It offers three methods for reading, displaying and writing alignment data.
  * <p>
  * It identifies sequences using their unique <i>JPhyloIO</i> sequence IDs. Real world applications would usually also want to
  * store the human-readable sequence names stored in the input files. This is left out here for simplification.
