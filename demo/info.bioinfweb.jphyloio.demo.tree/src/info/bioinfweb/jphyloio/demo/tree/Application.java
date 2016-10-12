@@ -183,7 +183,7 @@ public class Application {
 						
 						if (formatID != null) {
 							ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-							parameters.put(ReadWriteParameterNames.KEY_NEXML_USE_OTU_LABEL, true);  // Use OTU labels as node labels if no node label is present.
+							parameters.put(ReadWriteParameterNames.KEY_USE_OTU_LABEL, true);  // Use OTU labels as node labels if no node label is present.
 							
 							JPhyloIOEventReader eventReader = factory.getReader(formatID, getFileChooser().getSelectedFile(), parameters);  // Create JPhyloIO reader instance for the determined format.
 							try {

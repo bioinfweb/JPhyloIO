@@ -19,26 +19,23 @@
 package info.bioinfweb.jphyloio.demo.tree;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.utils.NumberedIDsIterator;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.tree.TreeNode;
 
 
 
 /**
  * Abstract implementation of the object list data adapter to be used to provide node and branch events from the
- * busness model of this example application to <i>JPhyloIO</i> writers.
+ * business model of this example application to <i>JPhyloIO</i> writers.
  * 
  * @author Ben St&ouml;ver
  *

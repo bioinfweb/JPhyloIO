@@ -64,7 +64,7 @@ public class TreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAdapter imp
 			protected EdgeEvent createEvent(String id, int index, TreeNode node) {
 				String sourceID = null;
 				if (node.getParent() != null) {
-					sourceID = NODE_ID_PREFIX + getNodes().indexOf(node.getParent());  // For large trees, an node to index map could be used here instead for performance reasons.
+					sourceID = NODE_ID_PREFIX + getNodes().indexOf(node.getParent());  // For large trees, a node to index map could be used here instead for performance reasons.
 				}
 				return new EdgeEvent(id, null, sourceID, id.replace(EDGE_ID_PREFIX, NODE_ID_PREFIX), Double.NaN);
 			}
@@ -83,7 +83,7 @@ public class TreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAdapter imp
 	@Override
 	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new LabeledIDEvent(EventContentType.TREE, TREE_ID, null);  
-		// Since this application support only one alignment at a time, a static ID may be used.
+		// Since this application supports only one alignment at a time, a static ID may be used. //TODO alignment?
 	}
 	
 

@@ -171,7 +171,7 @@ public class TreeReader {
 	 * is used. <i>JPhyloIO</i> (as well as <i>NeXML</i>) rely on a non-hierarchical representation that 
 	 * also allows to model phylogenetic networks. For applications that use a non-hierarchical model as 
 	 * well, reading data would be straight-forward. If you are developing an application relying on a 
-	 * hierarchical model, you use the implementation provided here as a basis for your application reader.
+	 * hierarchical model, you can use the implementation provided here as a basis for your application reader.
 	 * 
 	 * @throws IOException if an exception is thrown by underlying <i>JPhyloIO</i> classes
 	 */
@@ -196,7 +196,7 @@ public class TreeReader {
     }
     
     if (possiblePaintStartIDs.size() > 1) {
-    	throw new IOException("More than one root node was found.");  // Would only happen, if the tree is actually a network (not starting with the according NETWORK event).
+    	throw new IOException("More than one root node was found.");  // Would only happen if the tree is actually a network (not starting with the according NETWORK event).
     }
     
     model.setRoot(idToNodeMap.get(possiblePaintStartIDs.get(0)));
