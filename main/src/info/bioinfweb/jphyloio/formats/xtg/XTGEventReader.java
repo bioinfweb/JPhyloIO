@@ -76,8 +76,8 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
- *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
  * </ul>
  * 
  * @author Sarah Wiechers

@@ -20,7 +20,7 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 import info.bioinfweb.commons.io.XMLUtils;
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -62,13 +62,13 @@ import javax.xml.stream.XMLStreamException;
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
- *   <li>{@link ReadWriteParameterMap#KEY_WRITER_INSTANCE}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_NAME}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_VERSION}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_APPLICATION_URL}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_PHYLOXML_METADATA_TREATMENT}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_WRITER_INSTANCE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_NAME}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_VERSION}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_URL}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_PHYLOXML_METADATA_TREATMENT}</li>
  * </ul>
  * 
  * @author Sarah Wiechers

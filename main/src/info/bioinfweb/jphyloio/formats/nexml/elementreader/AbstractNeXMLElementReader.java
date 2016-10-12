@@ -263,7 +263,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 		
 		// If no label is present in the element, the OTU label (if present) can be used as a label
 		if ((otuEventInformation.label == null) && (otuEventInformation.otuOrOtusID != null) 
-				&& streamDataProvider.getParameters().getBoolean(ReadWriteParameterMap.KEY_NEXML_USE_OTU_LABEL, false)) {
+				&& streamDataProvider.getParameters().getBoolean(ReadWriteParameterMap.KEY_USE_OTU_LABEL, false)) {
 			otuEventInformation.label = streamDataProvider.getOTUIDToLabelMap().get(otuEventInformation.otuOrOtusID);
 		}
 		

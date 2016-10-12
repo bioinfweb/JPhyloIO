@@ -36,7 +36,6 @@ import javax.xml.namespace.QName;
  * @since 0.0.0
  */
 public interface ReadWriteConstants {
-	public static final String DEFAULT_MATCH_TOKEN = ".";
 	public static final int DEFAULT_MAX_TOKENS_TO_READ = 2048;
 	public static final int DEFAULT_MAX_COMMENT_LENGTH = 1024 * 1024;
 	

@@ -26,6 +26,7 @@ import info.bioinfweb.commons.collections.NonStoringCollection;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -104,11 +105,11 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
- *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_NEXML_TOKEN_TRANSLATION_STRATEGY}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_NEXML_USE_OTU_LABEL}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_NEXML_TOKEN_TRANSLATION_STRATEGY}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_USE_OTU_LABEL}</li>
  * </ul>
  * 
  * @author Sarah Wiechers

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -80,14 +81,14 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 
 	
 	public AbstractXMLEventReader(XMLEventReader xmlReader, ReadWriteParameterMap parameters) {
-		super(parameters, parameters.getMatchToken());
+		super(parameters, Character.toString(SequenceUtils.MATCH_CHAR));
 		this.xmlReader = xmlReader;
 		fillMap();
 	}
 
 	
 	public AbstractXMLEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException, XMLStreamException {
-		super(parameters, parameters.getMatchToken());
+		super(parameters, Character.toString(SequenceUtils.MATCH_CHAR));
 		if (!(reader instanceof BufferedReader)) {
 			reader = new BufferedReader(reader);
 		}

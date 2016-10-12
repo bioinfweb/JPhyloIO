@@ -107,10 +107,10 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
- *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_ALLOW_DEFAULT_NAMESPACE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE}</li>
  * </ul>
  * 
  * @author Sarah Wiechers

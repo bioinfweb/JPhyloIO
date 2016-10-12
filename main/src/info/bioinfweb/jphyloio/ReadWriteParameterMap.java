@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio;
 
 
+import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.formats.nexml.TokenDefinitionLabelHandling;
@@ -62,7 +63,7 @@ public class ReadWriteParameterMap extends ParameterMap implements ReadWritePara
 	
 	public String getMatchToken() {
 		if (getBoolean(KEY_REPLACE_MATCH_TOKENS, true)) {
-			return getString(KEY_MATCH_TOKEN, ReadWriteConstants.DEFAULT_MATCH_TOKEN);
+			return getString(KEY_MATCH_TOKEN, Character.toString(SequenceUtils.MATCH_CHAR));
 		}
 		else {
 			return null;

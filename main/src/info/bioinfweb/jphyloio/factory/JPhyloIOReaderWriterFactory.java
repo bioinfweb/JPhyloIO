@@ -70,10 +70,10 @@ import org.apache.commons.collections4.map.ListOrderedMap;
  * format without explicitly specifying the format.
  * <p>
  * To be able to guess the format, a certain amount of the data to be read needs to be buffered. The buffer size may 
- * be specified using {@link #setReadAheahLimit(int)}. The default value 
- * ({@link #DEFAULT_READ_AHAED_LIMIT}{@code = }{@value #DEFAULT_READ_AHAED_LIMIT} bytes) should be sufficient in most 
- * cases. An increase maybe necessary if unusual files (e.g. XML files with very long comments in front of the root 
- * tag) are expected.
+ * be specified using {@link #setReadAheadLimit(int)}. The default value 
+ * ({@link #DEFAULT_READ_AHEAD_LIMIT}{@code = }{@value #DEFAULT_READ_AHEAD_LIMIT} bytes) should be sufficient in most 
+ * cases. An increase maybe necessary if unusual files (e.g. XML files with very long header information - such as 
+ * {@code ENTITY} declarations - in front of the root tag) are expected.
  * <p>
  * The following examples shows how to obtain a reader for a file with an unknown format:
  * <pre>
@@ -103,21 +103,21 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	/** 
 	 * The number of bytes that are buffered by methods of this factory to determine the format from an input stream.
 	 * 
-	 *  @see #setReadAheahLimit(int)
+	 *  @see #setReadAheadLimit(int)
 	 */
-	public static final int DEFAULT_READ_AHAED_LIMIT = 8 * 1024;  // XML files may contain long comments before the root tag.
+	public static final int DEFAULT_READ_AHEAD_LIMIT = 8 * 1024;  // XML files may contain long comments before the root tag.
 	
 	
 	private final ReadWriteLock readAheadLimitLock = new ReentrantReadWriteLock();	
 	
 	private ListOrderedMap<String, SingleReaderWriterFactory> formatMap = new ListOrderedMap<String, SingleReaderWriterFactory>();
 	private Set<String> formatIDsSet;
-	private int readAheadLimit = DEFAULT_READ_AHAED_LIMIT;
+	private int readAheadLimit = DEFAULT_READ_AHEAD_LIMIT;
 	
 	
 	/**
 	 * Returns a new instance of this class, which supports all build-in readers and writers of <i>JPhyloIO</i> with a 
-	 * buffer size as defined by {@link #DEFAULT_READ_AHAED_LIMIT}.
+	 * buffer size as defined by {@link #DEFAULT_READ_AHEAD_LIMIT}.
 	 */
 	public JPhyloIOReaderWriterFactory() {
 		super();
@@ -171,7 +171,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * Returns the maximal number of bytes this factory will read to determine the format of an input in the 
 	 * {@code #guess*()} methods.
 	 * <p>
-	 * This method is thread save a secured with an {@link ReadWriteLock} together with {@link #setReadAheahLimit(int)}.
+	 * This method is thread save a secured with an {@link ReadWriteLock} together with {@link #setReadAheadLimit(int)}.
 	 * 
 	 * @return the current read ahead limit
 	 */
@@ -192,12 +192,12 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * <p>
 	 * This method is thread save a secured with an {@link ReadWriteLock} together with {@link #getReadAheadLimit()}.
 	 * 
-	 * @param readAheahLimit the new read ahead limit
+	 * @param readAheadLimit the new read ahead limit
 	 */
-	public void setReadAheahLimit(int readAheahLimit) {
+	public void setReadAheadLimit(int readAheadLimit) {
 		readAheadLimitLock.writeLock().lock();
 		try {
-			this.readAheadLimit = readAheahLimit;
+			this.readAheadLimit = readAheadLimit;
 		}
 		finally {
 			readAheadLimitLock.writeLock().unlock();
