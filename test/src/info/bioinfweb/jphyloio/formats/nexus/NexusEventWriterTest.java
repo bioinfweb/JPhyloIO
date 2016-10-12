@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.formats.nexus;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.*;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreObjectListDataAdapter;
@@ -39,6 +38,7 @@ import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestSingleTokenSetAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTreeAdapter;
+import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
 import java.io.BufferedReader;
 import java.io.File;

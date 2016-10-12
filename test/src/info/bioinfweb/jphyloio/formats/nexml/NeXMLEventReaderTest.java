@@ -190,7 +190,7 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 	public void readSimpleDocumentUseOTULabel() {
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-			parameters.put(ReadWriteParameterMap.KEY_NEXML_USE_OTU_LABEL, true);
+			parameters.put(ReadWriteParameterMap.KEY_USE_OTU_LABEL, true);
 			NeXMLEventReader reader = new NeXMLEventReader(new File("data/NeXML/SimpleDocument.xml"), parameters);
 			
 			try {

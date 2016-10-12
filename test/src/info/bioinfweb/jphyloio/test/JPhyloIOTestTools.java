@@ -33,7 +33,6 @@ import javax.xml.stream.events.XMLEvent;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
-import info.bioinfweb.jphyloio.LabelEditingReporter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
@@ -60,6 +59,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
+import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
 
 
