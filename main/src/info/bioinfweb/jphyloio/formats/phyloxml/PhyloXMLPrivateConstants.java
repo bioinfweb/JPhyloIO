@@ -24,11 +24,10 @@ import javax.xml.namespace.QName;
 
 
 /**
- * This interface contains constants used by internally in JPhyloIO by {@link PhyloXMLEventWriter} and PhyloXML data receivers. 
+ * This interface contains constants used internally in <i>JPhyloIO</i> by {@link PhyloXMLEventWriter} and <i>PhyloXML</i> data receivers. 
  * They are not supposed to be used by application developers. Constants that can be used are contained in {@link PhyloXMLConstants}.
  * 
  * @author Sarah Wiechers
- *
  */
 public interface PhyloXMLPrivateConstants {	
 	public static final QName IDENTIFIER_PHYLOGENY = new QName("Phylogeny");	

@@ -59,11 +59,11 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	}
 
 
-	/* 
+	/** 
 	 * In this method LiteralMetadataEvents are processed. It is validated if the specific predicates are given in the correct order 
-	 * and if they are nested in the corrected way, so valid PhyloXML elements can be written. If either the order or the way the elements
-	 * are nested is not correct, an InconsistentAdapterDataException is thrown.
-	 * It is not validated if the number of child elements is correct (i. e. if they are present too often or not often enough).
+	 * and if they are nested in the corrected way, so valid <i>PhyloXML</i> elements can be written. If either the order or the way 
+	 * the elements are nested is not correct, an InconsistentAdapterDataException is thrown. It is not validated if the number of 
+	 * child elements is correct (i. e. if they are present too often or not often enough).
 	 */
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
@@ -146,7 +146,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		switch (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment()) {
 			case VALUE:
-				getStreamDataProvider().getWriter().writeCharacters(event.getStringValue());
+				getStreamDataProvider().getWriter().writeCharacters(event.getStringValue());  //TODO Why not use object value as below? (stringValue may be null!)
 				predicates.pop();
 				break;
 			case TAG_AND_VALUE:
