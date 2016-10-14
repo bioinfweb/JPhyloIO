@@ -60,10 +60,18 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 	@Override
 	protected void addEdges(StoreObjectListDataAdapter<EdgeEvent> edges) {
 		edges.setObjectStartEvent(new EdgeEvent(getNodeEdgeIDPrefix() + "eRoot", "Root edge", null, getNodeEdgeIDPrefix() + "nRoot", 1.5));
+		
 		edges.setObjectStartEvent(new EdgeEvent(getNodeEdgeIDPrefix() + "e1", "Internal edge", getNodeEdgeIDPrefix() + "nRoot", getNodeEdgeIDPrefix() + "n1", 1.0));
+		List<JPhyloIOEvent> nestedEvents = edges.getObjectContent(getNodeEdgeIDPrefix() + "e1");
+		
+		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
+				new URIOrStringIdentifier(null, PREDICATE_COLOR), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+				LiteralContentSequenceType.SIMPLE));
+		nestedEvents.add(new LiteralMetadataContentEvent(new Color(70, 90, 240), null));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
 		edges.setObjectStartEvent(new EdgeEvent(getNodeEdgeIDPrefix() + "eA", "Leaf edge A", getNodeEdgeIDPrefix() + "n1", getNodeEdgeIDPrefix() + "nA", 1.1));
-		List<JPhyloIOEvent> nestedEvents = edges.getObjectContent(getNodeEdgeIDPrefix() + "eA");
+		nestedEvents = edges.getObjectContent(getNodeEdgeIDPrefix() + "eA");
 		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_WIDTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
 				LiteralContentSequenceType.SIMPLE));
