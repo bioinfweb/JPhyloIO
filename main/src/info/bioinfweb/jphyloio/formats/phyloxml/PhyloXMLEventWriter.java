@@ -29,6 +29,7 @@ import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLCollectMetadataDataReceiver;
 import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLMetaDataReceiver;
@@ -58,7 +59,8 @@ import javax.xml.stream.XMLStreamException;
  * <p>
  * Meta-events with specific, internally used predicates are translated to the according <i>PhyloXML</i> tags.
  * Since the <i>PhyloXML</i> schema defines a fixed order of tags, only meta-events with certain predicates
- * are allowed in the content of different data elements and they also need to be in a specific order.
+ * are allowed in the content of different data elements and they also need to be in a specific order. Otherwise
+ * an {@link InconsistentAdapterDataException} will be thrown.
  * In the following the allowed predicates nested under a {@link JPhyloIOEvent} with a certain content type are listed. Which 
  * predicates are allowed to be present in the content of these meta-events results from the information in the
  * <a href="http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html">PhyloXML schema</a> and the 
