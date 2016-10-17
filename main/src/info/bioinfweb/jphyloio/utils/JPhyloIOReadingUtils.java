@@ -44,22 +44,13 @@ public class JPhyloIOReadingUtils {
 	 * @throws IOException 
    */
   public static void reachElementEnd(JPhyloIOEventReader reader) throws IOException {  	
-  	JPhyloIOEvent event = reader.getPreviousEvent();  	
-    
-  	if (event.getType().getTopologyType().equals(EventTopologyType.SOLE)) {  		
-  		while (reader.peek().getType().getTopologyType().equals(EventTopologyType.SOLE)) {			  
-		    event = reader.next();
-			}
-  	}
-  	else { 
-  		event = reader.next();
-  		 
-			while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {			
-			  if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-		 	    reachElementEnd(reader);
-			  }
-		    event = reader.next();
-			}
-  	}
+  	JPhyloIOEvent event = reader.next();
+		 
+		while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {			
+		  if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+	 	    reachElementEnd(reader);
+		  }
+	    event = reader.next();
+		}  	
   }
 }

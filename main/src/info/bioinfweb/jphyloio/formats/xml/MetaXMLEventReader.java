@@ -39,6 +39,12 @@ public class MetaXMLEventReader implements XMLEventReader {
 	private AbstractXMLEventReader jPhyloIOEventReader;
 	private boolean endReached = false;
 	
+	//TODO create start and end document events
+	//TODO ist es notwendig/machbar zwischen JPhyloIO und XML Reader zu wechseln? (Wenn z.B. nur ein Teilbaum des customXML hier gelesen werden soll) => Sollte kein Problem sein.
+	//TODO direkt aus ObjectValues vom content event lesen
+	//TODO reader muss mitbekommen, wann zulässiger Bereich verlassen wurde (v.a. wenn zwischendurch wieder der JPhyloIOEventReader genutzt wurde)
+	// -> Call-back: listener bei JPhyloIOreadern registrieren, der alle events mitteilt, die gefeuert wurden (evtl. sogar public z.B. für LibrAlign)
+	// start udn end document liegen "zwischen" literal meta und customXML
 	
 	public MetaXMLEventReader(AbstractXMLEventReader jPhyloIOEventReader) {
 		super();
@@ -77,32 +83,32 @@ public class MetaXMLEventReader implements XMLEventReader {
 	public void close() throws XMLStreamException {}
 
 	
+	
 	@Override
-	public String getElementText() throws XMLStreamException {
+	public String getElementText() throws XMLStreamException {		
 		// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
-		return null;
+		//TODO basierend auf nextEvent() von sich selbst, kann evtl. schon eien abstrakte Impl. vom Stream Reader heir genutztw erden
+		return jPhyloIOEventReader.getXMLReader().getElementText();
 	}
 
 	
 	@Override
 	public Object getProperty(String name) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO evtl. einfach keine vorhanden ("unsere Impl. hat eben keine spezifischen Properties")
+		return jPhyloIOEventReader.getXMLReader().getProperty(name);
 	}
 	
 
 	@Override
 	public boolean hasNext() {
-		// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
-		return false;
+		return jPhyloIOEventReader.getXMLReader().hasNext();  //TODO Make sure reading behind the end of the metadata is not possible.
 	}
 	
 
 	@Override
 	public XMLEvent nextEvent() throws XMLStreamException {
-		if (!endReached) {
-			// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
-			return null;
+		if (!endReached) {		
+			return jPhyloIOEventReader.getXMLReader().nextEvent();  //TODO Make sure reading behind the end of the metadata is not possible.
 		}
 		else {
 			throw new NoSuchElementException("The end of this XML metadata stream was already reached.");
@@ -112,16 +118,14 @@ public class MetaXMLEventReader implements XMLEventReader {
 
 	@Override
 	public XMLEvent nextTag() throws XMLStreamException {
-		// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
-		return null;
+		return jPhyloIOEventReader.getXMLReader().nextTag(); //TODO Make sure reading behind the end of the metadata is not possible.
 	}
 	
 
 	@Override
 	public XMLEvent peek() throws XMLStreamException {
 		if (!endReached) {
-			// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
-			return null;
+			return jPhyloIOEventReader.getXMLReader().peek();  //TODO Make sure reading behind the end of the metadata is not possible.
 		}
 		else {
 			return null;
