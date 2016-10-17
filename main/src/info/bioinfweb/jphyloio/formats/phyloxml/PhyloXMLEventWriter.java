@@ -228,7 +228,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	
 	private void writePhylogenyTag(TreeNetworkDataAdapter tree) throws XMLStreamException, IOException {
 		PhyloXMLMetaDataReceiver receiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), 
-				PropertyOwner.PHYLOGENY, IDENTIFIER_PHYLOGENY);			
+				PropertyOwner.PHYLOGENY, IDENTIFIER_PHYLOGENY);
 		LabeledIDEvent startEvent = tree.getStartEvent(getParameters());
 		TreeTopologyExtractor topologyExtractor = new TreeTopologyExtractor(tree, getParameters());
 		
@@ -288,8 +288,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 	
 	
 	private void writeCladeTag(TreeNetworkDataAdapter tree, TreeTopologyExtractor topologyExtractor, String rootNodeID) throws XMLStreamException, IOException {	
-		PhyloXMLMetaDataReceiver nodeReceiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE, IDENTIFIER_CLADE);
-		PhyloXMLMetaDataReceiver edgeReceiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH, IDENTIFIER_CLADE);
+		PhyloXMLMetaDataReceiver nodeReceiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE, IDENTIFIER_NODE);
+		PhyloXMLMetaDataReceiver edgeReceiver = new PhyloXMLSpecificPredicatesDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.PARENT_BRANCH, IDENTIFIER_EDGE);
 		
 		NodeEvent rootNode = tree.getNodes(getParameters()).getObjectStartEvent(getParameters(), rootNodeID);
 		EdgeEvent afferentEdge = tree.getEdges(getParameters()).getObjectStartEvent(getParameters(), 

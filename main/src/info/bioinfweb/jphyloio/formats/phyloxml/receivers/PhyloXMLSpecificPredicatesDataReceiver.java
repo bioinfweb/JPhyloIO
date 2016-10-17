@@ -61,8 +61,9 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 
 	/** 
 	 * In this method LiteralMetadataEvents are processed. It is validated if the specific predicates are given in the correct order 
-	 * and if they are nested in the corrected way, so valid <i>PhyloXML</i> elements can be written. If either the order or the way 
-	 * the elements are nested is not correct, an InconsistentAdapterDataException is thrown. It is not validated if the number of 
+	 * and if they are nested in the corrected way, so valid <i>PhyloXML</i> elements can be written. It is also checked if only the 
+	 * correct predicates are nested under nodes and edges. If either the order or the way 
+	 * the elements are nested is not correct, an {@link InconsistentAdapterDataException} is thrown. It is not validated if the number of 
 	 * child elements is correct (i. e. if they are present too often or not often enough).
 	 */
 	@Override
@@ -70,7 +71,14 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 		int currentIndex = 0;
 		PhyloXMLPredicateInfo predicateInfo = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI());
 
-		if (event.getPredicate().getURI() != null) {			
+		if (event.getPredicate().getURI() != null) {
+			
+			if (event.getPredicate().getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE) 
+					&& !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getPredicate().getURI())) {
+				throw new InconsistentAdapterDataException("The element \"" + event.getPredicate().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
+						+ predicates.peek().getLocalPart() + "\".");
+			}
+			
 			for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
 				currentIndex++;
 				
@@ -112,7 +120,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML);
 							getStreamDataProvider().getMetaIDs().remove(event.getID());
 						}
-						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_CLADE)) {
+						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_NODE)) {
 							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE);
 							getStreamDataProvider().getMetaIDs().remove(event.getID());
 							writeAppliesTo = true;
@@ -193,7 +201,8 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
 		int currentIndex = 0;
 		
-		if ((predicates.size() > 1) && !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getRel().getURI())) {
+		if (event.getRel().getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE) 
+				&& !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getRel().getURI())) {
 			throw new InconsistentAdapterDataException("The element \"" + event.getRel().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
 					+ predicates.peek().getLocalPart() + "\".");
 		}
@@ -204,7 +213,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 			if (child.equals(event.getRel().getURI())) {
 				if (currentIndex >= childIndices.peek()) {
 					childIndices.pop();
-					childIndices.push(currentIndex);					
+					childIndices.push(currentIndex);
 					
 					getStreamDataProvider().getMetaIDs().remove(event.getID());
 					predicates.push(event.getRel().getURI());
@@ -223,7 +232,8 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 					}
 				}
 				else {
-					throw new InconsistentAdapterDataException("Metaevents with PhyloXML-specific predicates must be given in the correct order.");
+					throw new InconsistentAdapterDataException("The metaevent with the predicate \"" + event.getRel().getURI().getLocalPart() 
+							+ "\" was not nested under the element \"" + predicates.peek() + "\" in the correct order.");
 				}
 			}
 		}
@@ -243,17 +253,20 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 			if (!predicates.peek().equals(PREDICATE_PROPERTY)) {				
 				getStreamDataProvider().getWriter().writeEndElement();
 			}
-			
 			predicates.pop();
-			childIndices.pop();
+			childIndices.pop();			
 		}
 		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.VALUE)
 			&& event.getType().getContentType().equals(EventContentType.META_RESOURCE) && (predicates.size() > 1)) {
 				predicates.pop();
 				childIndices.pop();
 		}
-		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.CUSTOM_XML)) {			
+		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.CUSTOM_XML)) {
 			predicates.pop();
+			
+			if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
+				childIndices.pop();
+			}
 		}
 	}
 }

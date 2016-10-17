@@ -30,8 +30,9 @@ import javax.xml.namespace.QName;
  * @author Sarah Wiechers
  */
 public interface PhyloXMLPrivateConstants {	
-	public static final QName IDENTIFIER_PHYLOGENY = new QName("Phylogeny");	
-	public static final QName IDENTIFIER_CLADE = new QName("Clade");
+	public static final QName IDENTIFIER_PHYLOGENY = new QName("Phylogeny");
+	public static final QName IDENTIFIER_EDGE = new QName("Edge");
+	public static final QName IDENTIFIER_NODE = new QName("Node");
 	
 	public static final QName IDENTIFIER_ANY_PREDICATE = new QName("AnyPredicate");
 	public static final QName IDENTIFIER_CUSTOM_XML = new QName("CustomXML");
