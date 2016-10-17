@@ -168,24 +168,7 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 	}
 
 	@Override
-	protected void addAnnotations() {
-		getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID), null, null));
-
-		getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
-				LiteralContentSequenceType.SIMPLE));
-		getAnnotations().add(new LiteralMetadataContentEvent("NCBI", "NCBI"));
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-
-		getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
-				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_ID_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING),
-				LiteralContentSequenceType.SIMPLE));		
-		getAnnotations().add(new LiteralMetadataContentEvent("phylogeny1", "phylogeny1"));
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
-		
+	protected void addAnnotations() {		
 		getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_DESCRIPTION), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));

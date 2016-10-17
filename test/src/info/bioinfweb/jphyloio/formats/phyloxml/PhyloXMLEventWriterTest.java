@@ -970,12 +970,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			assertAttribute(ATTR_ROOTED, "true", element);
 			assertAttribute(ATTR_BRANCH_LENGTH_UNIT, XMLReadWriteUtils.XSD_DEFAULT_PRE + XMLUtils.QNAME_SEPARATOR + W3CXSConstants.DATA_TYPE_DOUBLE.getLocalPart(), element);
 			
-			element = assertStartElement(TAG_ID, reader);
-			assertAttributeCount(1, element);
-			assertAttribute(ATTR_ID_PROVIDER, "NCBI", element);
-			assertCharactersEvent("phylogeny1", reader);
-			assertEndElement(TAG_ID, reader);
-			
+			assertShortElement(TAG_ID, "tree2", reader);			
 			assertShortElement(TAG_DESCRIPTION, "example tree", reader);
 			
 			element = assertStartElement(TAG_CONFIDENCE, reader);
@@ -1183,7 +1178,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			fail("Exception not thrown");
 		}
 		catch (InconsistentAdapterDataException e) {
-			assertTrue(e.getMessage().matches("The meta event \"\\S+\" with the PhyloXML-specific predicate \"\\S+\" was not nested correctly."));
+			assertTrue(e.getMessage().matches("The element \"\\S+\" is not allowed to occur under the element \"\\S+\"."));
 		}
 		finally {
 			file.delete();
@@ -1242,7 +1237,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			fail("Exception not thrown");
 		}
 		catch (InconsistentAdapterDataException e) {
-			assertTrue(e.getMessage().matches("The meta event \"\\S+\" with the PhyloXML-specific predicate \"\\S+\" was not nested correctly."));
+			assertTrue(e.getMessage().matches("The element \"\\S+\" is not allowed to occur under the element \"\\S+\"."));
 		}
 		finally {
 			file.delete();
@@ -1301,7 +1296,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			fail("Exception not thrown");
 		}
 		catch (InconsistentAdapterDataException e) {
-			assertTrue(e.getMessage().matches("The meta event \"\\S+\" with the PhyloXML-specific predicate \"\\S+\" was not nested correctly."));
+			assertTrue(e.getMessage().matches("The element \"\\S+\" is not allowed to occur under the element \"\\S+\"."));
 		}
 		finally {
 			file.delete();
