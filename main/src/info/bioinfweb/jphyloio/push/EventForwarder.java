@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -57,7 +58,7 @@ public class EventForwarder {
 	 * @param reader the reader to read the events from
 	 * @throws Exception if {@code reader} throws an exception while parsing
 	 */
-	public void readAll(JPhyloIOEventReader reader) throws Exception {
+	public void readAll(JPhyloIOEventReader reader) throws IOException {
 		doReadUntil(reader, null);
 	}
 	
@@ -70,7 +71,7 @@ public class EventForwarder {
 	 * @param type the type of the event that shall trigger the end of reading
 	 * @throws Exception if {@code reader} throws an exception while parsing
 	 */
-	public void readUntil(JPhyloIOEventReader reader, EventContentType type) throws Exception {
+	public void readUntil(JPhyloIOEventReader reader, EventContentType type) throws IOException {
 		doReadUntil(reader, EnumSet.of(type));
 	}
 	
@@ -83,12 +84,12 @@ public class EventForwarder {
 	 * @param types a set of types of the events that shall trigger the end of reading
 	 * @throws Exception if {@code reader} throws an exception while parsing
 	 */
-	public void readUntil(JPhyloIOEventReader reader, Set<EventContentType> types) throws Exception {
+	public void readUntil(JPhyloIOEventReader reader, Set<EventContentType> types) throws IOException {
 		doReadUntil(reader, types);
 	}
 	
 	
-	public void readCurrentNode(JPhyloIOEventReader reader) throws Exception {
+	public void readCurrentNode(JPhyloIOEventReader reader) throws IOException {
 		if (reader.hasNextEvent() && reader.peek().getType().getTopologyType().equals(EventTopologyType.START)) {
 			fireNextEvent(reader);  // Consume start event to increase parent count.
 			int parentCount = reader.getParentInformation().size();
@@ -102,14 +103,14 @@ public class EventForwarder {
 	}	
 	
 	
-	private void doReadUntil(JPhyloIOEventReader reader, Set<EventContentType> types) throws Exception {
+	private void doReadUntil(JPhyloIOEventReader reader, Set<EventContentType> types) throws IOException {
 		while (reader.hasNextEvent() && ((types == null) || !types.contains(reader.peek().getType()))) {
 			fireNextEvent(reader);
 		}
 	}
 	
 	
-	private void fireNextEvent(JPhyloIOEventReader reader) throws Exception {
+	private void fireNextEvent(JPhyloIOEventReader reader) throws IOException {
 		JPhyloIOEvent event = reader.next();
 		for (JPhyloIOEventListener listener : listeners) {
 			listener.processEvent(reader, event);

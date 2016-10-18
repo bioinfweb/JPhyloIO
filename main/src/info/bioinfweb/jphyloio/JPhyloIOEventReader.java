@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventType;
+import info.bioinfweb.jphyloio.push.JPhyloIOEventListener;
 
 
 
@@ -180,4 +181,21 @@ public interface JPhyloIOEventReader extends JPhyloIOFormatSpecificObject {
 	 *         be closed properly
 	 */
 	public void close() throws IOException;
+	
+	/**
+	 * Adds a {@link JPhyloIOEventListener} to the reader. 
+	 * 
+	 * This is not intended to replace processing events gained by calling a readers next() method, 
+	 * but is just used by certain tool classes.
+	 * 
+	 * @param listener the listener that shall be added
+	 */
+	public void addEventListener(JPhyloIOEventListener listener);
+	
+	/**
+	 * Removes a {@link JPhyloIOEventListener} from the reader.
+	 * 
+	 * @param listener the listener that shall be removed
+	 */
+	public void removeEventListener(JPhyloIOEventListener listener);
 }

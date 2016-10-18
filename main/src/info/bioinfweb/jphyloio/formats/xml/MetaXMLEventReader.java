@@ -19,11 +19,22 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.events.type.EventType;
+import info.bioinfweb.jphyloio.push.JPhyloIOEventListener;
 
+import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 
+import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
@@ -33,18 +44,28 @@ import javax.xml.stream.events.XMLEvent;
 /**
  * Adapter class that allows reading a sequence of {@link LiteralMetadataContentEvent}s using an {@link XMLStreamReader}.
  * 
+ * Since it is registered which events are read from the event stream, it is possible to read only a part of the 
+ * custom XML tree with this reader, while the rest is read using the original {@link JPhyloIOEventReader}.
+ * 
  * @author Ben St&ouml;ver
  */
 public class MetaXMLEventReader implements XMLEventReader {
 	private AbstractXMLEventReader jPhyloIOEventReader;
 	private boolean endReached = false;
+	private boolean startDocumentFired;  //TODO create start and end document events (are located "between" literal meta and customXML)
+	private boolean endDocumentFired;
+	private Queue<XMLEvent> events = new ArrayDeque<XMLEvent>();
 	
-	//TODO create start and end document events
-	//TODO ist es notwendig/machbar zwischen JPhyloIO und XML Reader zu wechseln? (Wenn z.B. nur ein Teilbaum des customXML hier gelesen werden soll) => Sollte kein Problem sein.
-	//TODO direkt aus ObjectValues vom content event lesen
-	//TODO reader muss mitbekommen, wann zulässiger Bereich verlassen wurde (v.a. wenn zwischendurch wieder der JPhyloIOEventReader genutzt wurde)
-	// -> Call-back: listener bei JPhyloIOreadern registrieren, der alle events mitteilt, die gefeuert wurden (evtl. sogar public z.B. für LibrAlign)
-	// start udn end document liegen "zwischen" literal meta und customXML
+	
+	private class MetaEventListener implements JPhyloIOEventListener { //TODO make public which events were fired (e.g. to use this info in librAlign)?
+		@Override
+		public void processEvent(JPhyloIOEventReader source, JPhyloIOEvent event) throws IOException {
+			if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.END))) {
+				setEndReached();
+			}
+		}
+	}
+	
 	
 	public MetaXMLEventReader(AbstractXMLEventReader jPhyloIOEventReader) {
 		super();
@@ -85,50 +106,99 @@ public class MetaXMLEventReader implements XMLEventReader {
 	
 	
 	@Override
-	public String getElementText() throws XMLStreamException {		
-		// TODO Delegate to underlying XMLStreamReader and make sure reading behind the end of the metadata is not possible.
-		//TODO basierend auf nextEvent() von sich selbst, kann evtl. schon eien abstrakte Impl. vom Stream Reader heir genutztw erden
-		return jPhyloIOEventReader.getXMLReader().getElementText();
+	public String getElementText() throws XMLStreamException { //TODO basierend auf nextEvent() von sich selbst, kann evtl. schon eine abstrakte Impl. vom Stream Reader hier genutzt werden
+		StringBuffer content = new StringBuffer();
+		
+		while (hasNext() && (peek().getEventType() == XMLStreamConstants.CHARACTERS)) {
+			content.append(nextEvent().asCharacters().getData());
+		}
+				
+		return content.toString();
 	}
 
 	
 	@Override
 	public Object getProperty(String name) throws IllegalArgumentException {
-		//TODO evtl. einfach keine vorhanden ("unsere Impl. hat eben keine spezifischen Properties")
-		return jPhyloIOEventReader.getXMLReader().getProperty(name);
+		return jPhyloIOEventReader.getXMLReader().getProperty(name); //TODO return null, because this implementation does not have any specific properties?
 	}
 	
 
 	@Override
 	public boolean hasNext() {
-		return jPhyloIOEventReader.getXMLReader().hasNext();  //TODO Make sure reading behind the end of the metadata is not possible.
+		boolean result = false;
+		
+		try {
+			result = (peek() != null);
+		} 
+		catch (XMLStreamException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 
 	@Override
 	public XMLEvent nextEvent() throws XMLStreamException {
-		if (!endReached) {		
-			return jPhyloIOEventReader.getXMLReader().nextEvent();  //TODO Make sure reading behind the end of the metadata is not possible.
+		XMLEvent result = null;
+		if (!endReached) {
+			if (jPhyloIOEventReader.getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
+				result = events.poll();
+				startDocumentFired = true;
+			}
+			else {
+				LiteralMetadataContentEvent contentEvent;
+				
+				try {
+					contentEvent = jPhyloIOEventReader.next().asLiteralMetadataContentEvent();  // Any other event type is not allowed between a literal meta start and end
+					
+					if (contentEvent.hasXMLEventValue()) {
+						result = contentEvent.getXMLEvent();
+					}
+					else {
+						//TODO throw according exception
+					}
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		else {
 			throw new NoSuchElementException("The end of this XML metadata stream was already reached.");
-		}
+		}		
+		
+		return result;
 	}
 	
 
 	@Override
 	public XMLEvent nextTag() throws XMLStreamException {
-		return jPhyloIOEventReader.getXMLReader().nextTag(); //TODO Make sure reading behind the end of the metadata is not possible.
+		return null;  //TODO Make sure reading behind the end of the metadata is not possible.
 	}
 	
 
 	@Override
 	public XMLEvent peek() throws XMLStreamException {
+		XMLEvent result = null;
+		
 		if (!endReached) {
-			return jPhyloIOEventReader.getXMLReader().peek();  //TODO Make sure reading behind the end of the metadata is not possible.
+			JPhyloIOEvent nextEvent;
+			
+			try {
+				nextEvent = jPhyloIOEventReader.peek();
+				
+				if (nextEvent.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+					if (nextEvent.asLiteralMetadataContentEvent().hasXMLEventValue()) {
+						result = nextEvent.asLiteralMetadataContentEvent().getXMLEvent();
+					}
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}			
 		}
-		else {
-			return null;
-		}
+		
+		return result;
 	}
 }

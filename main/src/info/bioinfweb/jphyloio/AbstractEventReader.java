@@ -20,8 +20,10 @@ package info.bioinfweb.jphyloio;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
@@ -33,6 +35,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
+import info.bioinfweb.jphyloio.push.JPhyloIOEventListener;
 import info.bioinfweb.jphyloio.utils.SequenceTokensEventManager;
 
 
@@ -57,6 +60,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	private ReadWriteParameterMap parameters;
 	private LongIDManager idManager = new LongIDManager();
 	private SequenceTokensEventManager sequenceTokensEventManager;
+	private List<JPhyloIOEventListener> eventListeners = new ArrayList<JPhyloIOEventListener>();
 
 	
 	public AbstractEventReader(ReadWriteParameterMap parameters, String matchToken) {
@@ -182,6 +186,13 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	protected SequenceTokensEventManager getSequenceTokensEventManager() {
 		return sequenceTokensEventManager;
 	}
+	
+	
+	protected void fireEvent(JPhyloIOEvent event) throws IOException {
+		for (JPhyloIOEventListener eventListener : eventListeners) {
+			eventListener.processEvent(this, event);
+		}
+	}
 
 
 	/**
@@ -252,6 +263,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 				lastNonComment = previous;
 			}
 			next = getNextEventFromQueue();
+			fireEvent(previous);
 			return previous;
 		}
 	}
@@ -292,6 +304,18 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	}
 	
 	
+	@Override
+	public void addEventListener(JPhyloIOEventListener listener) {
+		eventListeners.add(listener);		
+	}
+
+
+	@Override
+	public void removeEventListener(JPhyloIOEventListener listener) {
+		eventListeners.remove(listener);		
+	}
+
+
 	/**
 	 * Method to be implemented be inherited classes that adds at least one additional event (determined from 
 	 * the underlying data source) to the event queue.
