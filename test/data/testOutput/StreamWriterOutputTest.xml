@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+some characters<?startTag some data?>
+<startTag>&anEntity;doc
+	type x<![CDATA[This is the first part of a CDATA element.]]><![CDATA[This is the second part of a CDATA element.]]></startTag>

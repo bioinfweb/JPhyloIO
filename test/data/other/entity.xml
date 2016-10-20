@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE server-xml [
+  <!ENTITY virtual-hosts SYSTEM "file://data/other/referencedByEntity.xml">
+]>
+<Server port="8005" shutdown="SHUTDOWN">
+	&virtual-hosts;
+</Server>
