@@ -199,7 +199,7 @@ public class FASTAEventWriterTest implements ReadWriteConstants {
 		leadingEvents.add(new CommentEvent("ment 1", false));
 		leadingEvents.add(new LiteralMetadataEvent("meta1", null, new URIOrStringIdentifier("someKey", new QName("http://example.org/", "somePredicate")), 
 				LiteralContentSequenceType.SIMPLE));
-		leadingEvents.add(new LiteralMetadataContentEvent(null, "someValue", false));
+		leadingEvents.add(new LiteralMetadataContentEvent("someValue", false));
 		leadingEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		leadingEvents.add(new CommentEvent("comment 2", false));
 		matrix.getMatrix().get("seq1").leadingEvents.add(new CommentEvent("comment 3", false));

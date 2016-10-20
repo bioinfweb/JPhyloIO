@@ -103,8 +103,9 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter<Concret
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 			
 			receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + idManager.createNewID(), "someLabel", 
-					new URIOrStringIdentifier("someKey", new QName("somePredicate")), LiteralContentSequenceType.SIMPLE));
-			receiver.add(new LiteralMetadataContentEvent(new URIOrStringIdentifier(null, new QName("string")), "someValue", false));
+					new URIOrStringIdentifier("someKey", new QName("somePredicate")), new URIOrStringIdentifier(null, new QName("string")), 
+					LiteralContentSequenceType.SIMPLE));
+			receiver.add(new LiteralMetadataContentEvent("someValue", false));
 			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		}
 		else {

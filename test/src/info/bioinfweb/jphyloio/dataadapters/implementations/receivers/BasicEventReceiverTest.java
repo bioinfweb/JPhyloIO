@@ -48,7 +48,7 @@ public class BasicEventReceiverTest {
 		assertTrue(logger.getMessageList().isEmpty());
 		
 		receiver.add(new LiteralMetadataEvent("someID", "someLabel", new URIOrStringIdentifier("someKey", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE));
-		receiver.add(new LiteralMetadataContentEvent(new URIOrStringIdentifier("someKey", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), "someValue", "someValue"));
+		receiver.add(new LiteralMetadataContentEvent("someValue", "someValue"));
 		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		receiver.add(new CommentEvent("some comment"));
 		
