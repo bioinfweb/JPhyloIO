@@ -19,42 +19,55 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
-import java.io.IOException;
-
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
+
+import java.io.IOException;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.XMLEvent;
 
 
 
 /**
- * 
- * 
+ * This writer can be used by applications already implementing XML writing as an adapter to a {ink {@link JPhyloIOEventWriter}.
+ * <p>
+ * Attributes of a start document event are not processed, since it is not possible to write them at this position of the document.
+ * <p>
+ * This writer does not have the necessary information (e.g. predicate) to be able to write literal meta start and end events, 
+ * therefore this has to be done by the application itself.
+ * <p>
+ * This writer does not manage namespaces of custom XML elements. The application needs to ensure that all used prefixes 
+ * (either in any elements, attributes or character data) are properly declared within the custom XML 
+ * (e.g. by adding {@link Namespace} events). Any methods of this writer changing the namespace mapping or obtaining information 
+ * it refer to the underlying writer.
  * 
  * @author Sarah Wiechers
- *
  */
-public class MetaXMLEventWriter implements XMLEventWriter {
-	AbstractXMLDataReceiver receiver; //TODO add generics?
+public class MetaXMLEventWriter<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> implements XMLEventWriter {
+	AbstractXMLDataReceiver<P> receiver;
 	
 	
-	public MetaXMLEventWriter(AbstractXMLDataReceiver receiver) {
+	public MetaXMLEventWriter(AbstractXMLDataReceiver<P> receiver) {
 		super();
 		this.receiver = receiver;
 	}
 	
 
 	@Override
-	public void add(XMLEvent event) throws XMLStreamException { //TODO ignore document start and end, attributes of start doc are not processed (not possible at this time)
+	public void add(XMLEvent event) throws XMLStreamException {
 		try {
-			receiver.add(new LiteralMetadataContentEvent(event, false)); // It is not necessary to buffer these events to find out if the content is continued, since content events containing characters are allowed to occur separately
-		} 
-		catch (IOException e) {			
+			if ((event.getEventType() != XMLStreamConstants.START_DOCUMENT) && (event.getEventType() != XMLStreamConstants.END_DOCUMENT)) {
+				receiver.add(new LiteralMetadataContentEvent(event, false));  // It is not necessary to buffer these events to find out if the content is continued, since content events containing characters are allowed to occur separately
+			}
+		}
+		catch (IOException e) {	
 			throw new XMLStreamException("The current event could not be added to the data receiver.");
 		}
 	}
@@ -67,43 +80,49 @@ public class MetaXMLEventWriter implements XMLEventWriter {
 		}
 	}
 	
-
+	
+	/**
+	 * This method has no effect in this writer. Freeing resources of this writer is not
+	 * necessary, since it just delegates to another writer.
+	 */
 	@Override
-	public void close() throws XMLStreamException {}  // siehe reader, application need tow rite literal start and end events on its own beacuse necessary info sucha s predicate are nota vailable here
+	public void close() throws XMLStreamException {}
 
 	
+	/**
+	 * This method has no effect in this writer, since the underlying {@link JPhyloIOEventWriter} 
+	 * does not implement a flush() method.
+	 */
 	@Override
-	public void flush() throws XMLStreamException {} //kann keien ahben, solange writer keine hat (geht im moemnt nicht)
+	public void flush() throws XMLStreamException {}
 
 	
 	@Override
 	public NamespaceContext getNamespaceContext() {
-		// TODO Auto-generated method stub		
-		return null;
+		return receiver.getStreamDataProvider().getWriter().getNamespaceContext();
 	}
 	
 
 	@Override
-	public String getPrefix(String arg0) throws XMLStreamException {
-		// TODO Auto-generated method stub
-		return null;
+	public String getPrefix(String uri) throws XMLStreamException {
+		return receiver.getStreamDataProvider().getWriter().getPrefix(uri);
 	}
 	
 
 	@Override
-	public void setDefaultNamespace(String arg0) throws XMLStreamException {
-		// TODO Auto-generated method stub
+	public void setDefaultNamespace(String uri) throws XMLStreamException {
+		receiver.getStreamDataProvider().getWriter().setDefaultNamespace(uri);
 	}
 	
 
 	@Override
-	public void setNamespaceContext(NamespaceContext arg0) throws XMLStreamException {
-		// TODO Auto-generated method stub
+	public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
+		receiver.getStreamDataProvider().getWriter().setNamespaceContext(context);
 	}
 	
 
 	@Override
-	public void setPrefix(String arg0, String arg1) throws XMLStreamException {
-		// TODO Auto-generated method stub		
+	public void setPrefix(String prefix, String uri) throws XMLStreamException {
+		receiver.getStreamDataProvider().getWriter().setPrefix(prefix, uri);
 	}
 }

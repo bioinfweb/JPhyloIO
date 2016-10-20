@@ -36,22 +36,10 @@ import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.Comment;
-import javax.xml.stream.events.DTD;
-import javax.xml.stream.events.EntityDeclaration;
-import javax.xml.stream.events.EntityReference;
-import javax.xml.stream.events.Namespace;
-import javax.xml.stream.events.NotationDeclaration;
-import javax.xml.stream.events.ProcessingInstruction;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 
 
 
@@ -179,78 +167,8 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				}
 				break;
 			case XML:
-				if (event.hasXMLEventValue()) {
-					XMLEvent xmlContentEvent = event.getXMLEvent();
-					
-					switch (xmlContentEvent.getEventType()) {
-						case XMLStreamConstants.START_ELEMENT:
-							StartElement element = xmlContentEvent.asStartElement();
-							writer.writeStartElement(element.getName().getNamespaceURI(), element.getName().getLocalPart());  // Writer obtains the correct prefix from its namespace context
-							
-							// Write attributes
-							@SuppressWarnings("unchecked")
-							Iterator<Attribute> attributes = element.getAttributes();
-							while (attributes.hasNext()) {
-								Attribute attribute = attributes.next();
-								writer.writeAttribute(attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
-							}
-							
-							break;
-						case XMLStreamConstants.END_ELEMENT:
-							writer.writeEndElement();
-							break;
-						case XMLStreamConstants.CHARACTERS:
-						case XMLStreamConstants.SPACE:
-							writer.writeCharacters(xmlContentEvent.asCharacters().getData());
-							break;
-						case XMLStreamConstants.CDATA:
-							writer.writeCData(xmlContentEvent.asCharacters().getData()); //TODO multiple events with continued content should be buffered and written to a single CDATA element
-							break;
-						case XMLStreamConstants.ATTRIBUTE:
-							Attribute contentAttribute = ((Attribute)xmlContentEvent);
-							writer.writeAttribute(contentAttribute.getName().getPrefix(), contentAttribute.getName().getNamespaceURI(), 
-									contentAttribute.getName().getLocalPart(), contentAttribute.getValue());
-							break;
-						case XMLStreamConstants.NAMESPACE:
-							Namespace contentNamespace = ((Namespace)xmlContentEvent);
-							writer.writeNamespace(contentNamespace.getPrefix(), contentNamespace.getNamespaceURI());
-							break;
-						case XMLStreamConstants.PROCESSING_INSTRUCTION:
-							ProcessingInstruction contentProcessingInstruction = ((ProcessingInstruction)xmlContentEvent);
-							writer.writeProcessingInstruction(contentProcessingInstruction.getTarget(), contentProcessingInstruction.getData());
-							break;
-						case XMLStreamConstants.COMMENT:
-							writer.writeComment(((Comment)xmlContentEvent).getText());
-							break;
-						case XMLStreamConstants.DTD:
-							StringBuffer message = new StringBuffer();
-							message.append("A document type declaration (DTD) with the content \"");
-							
-							if (((DTD)xmlContentEvent).getDocumentTypeDeclaration().length() > 128) {
-								message.append(((DTD)xmlContentEvent).getDocumentTypeDeclaration().substring(0, 128));
-								message.append(" [...]");
-							}
-							else {
-								message.append(((DTD)xmlContentEvent).getDocumentTypeDeclaration());
-							}
-							
-							message.append("\" was found but can not be written at this position of the document.");
-							parameters.getLogger().addWarning(message.toString());
-							break;
-						case XMLStreamConstants.NOTATION_DECLARATION:
-							parameters.getLogger().addWarning("A notation declaration with the name \"" + ((NotationDeclaration)xmlContentEvent).getName() + "\" was found but"
-									+ "can not be written at this position of the document.");
-							break;
-						case XMLStreamConstants.ENTITY_DECLARATION:
-							parameters.getLogger().addWarning("An entity declaration with the name \"" + ((EntityDeclaration)xmlContentEvent).getName() + "\" was found but"
-									+ "can not be written at this position of the document.");
-							break;
-						case XMLStreamConstants.ENTITY_REFERENCE:
-							writer.writeEntityRef(((EntityReference)xmlContentEvent).getName());
-							break;
-						default: // START_DOCUMENT and END_DOCUMENT can be ignored
-							break;
-					}
+				if (event.hasXMLEventValue()) {					
+					XMLReadWriteUtils.writeCustomXML(writer, parameters, event.getXMLEvent());
 				}
 				break;			
 		}
@@ -259,38 +177,16 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 	}
 	
 	
-	public static void checkLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException {
-		QName resourceIdentifier;
-		
-		if (event.hasXMLEventValue()) {
-			if (event.getXMLEvent().getEventType() == XMLStreamConstants.START_ELEMENT) {
-				StartElement element = event.getXMLEvent().asStartElement();
-				resourceIdentifier = element.getName();
-				
-				streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
-						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-				
-				@SuppressWarnings("unchecked")
-				Iterator<Attribute> attributesIterator = element.getAttributes();
-				while (attributesIterator.hasNext()) {
-					Attribute attribute = attributesIterator.next();
-					resourceIdentifier = attribute.getName();
-					
-					streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
-							resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-				}
-				
-				@SuppressWarnings("unchecked")
-				Iterator<Namespace> namespaceIterator = element.getNamespaces();
-				while (namespaceIterator.hasNext()) {
-					Namespace namespace = namespaceIterator.next();
-					
-					streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), namespace.getPrefix(), 
-							namespace.getNamespaceURI()), namespace.getNamespaceURI());
-				}
-			}
-		}
-		
+	/**
+	 * This method does not add any namespaces used or declared in any custom XML events. Application developers need to make sure that all 
+	 * prefixes used in the custom XMl are properly declared within the custom XML.
+	 * 
+	 * @param streamDataProvider the StreamDataProvider used by the current writer
+	 * @param event the LiteralMetadataContentEvent containing some content
+	 * 
+	 * @throws XMLStreamException if the underlying writer encounters an exception while writing
+	 */
+	public static void checkLiteralContentMeta(NeXMLWriterStreamDataProvider streamDataProvider, LiteralMetadataContentEvent event) throws XMLStreamException {		
 		if ((event.getObjectValue() != null) && (event.getObjectValue() instanceof QName)) {
 			QName objectValue = (QName)event.getObjectValue();
 			streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), objectValue.getPrefix(), 

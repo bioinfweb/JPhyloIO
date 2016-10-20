@@ -73,6 +73,7 @@ import java.util.TreeSet;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Namespace;
 
 
 
@@ -85,6 +86,10 @@ import javax.xml.stream.XMLStreamException;
  * Comments and meta information can be written under all modeled elements. Meta elements only present to group meta information, 
  * e.g. nested under elements not modeled in <i>JPhyloIO</i>, are ignored by this writer and the nested content is written to the 
  * according position. The ID of a {@link JPhyloIOEvent} will be written to the file unchanged.
+ * <p>
+ * This writer does not manage namespaces of custom XML elements. The application needs to ensure that all used prefixes 
+ * (either in any elements, attributes or character data) are properly declared within the custom XML 
+ * (e.g. by adding {@link Namespace} events).
  * <p>
  * If no OTUs or OTU list are found in the data, but elements that need to reference either of those, the writer will write a 
  * new OTU list or OTU with the ID prefix {@link NeXMLConstants#UNDEFINED_OTU_ID_PREFIX} or 

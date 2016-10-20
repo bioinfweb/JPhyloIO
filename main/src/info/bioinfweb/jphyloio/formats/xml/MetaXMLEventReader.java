@@ -99,11 +99,10 @@ public class MetaXMLEventReader implements XMLEventReader {
 	 */
 	@Override
 	public void close() throws XMLStreamException {}
-
 	
 	
 	@Override
-	public String getElementText() throws XMLStreamException { //TODO based on nextEvent() of this class, maybe an abstract implementation XML Event Reader can be used here
+	public String getElementText() throws XMLStreamException { //TODO based on nextEvent() of this class an abstract implementation XML Event Reader can maybe be used here
 		StringBuffer content = new StringBuffer();
 		
 		//TODO check if start event was the last event

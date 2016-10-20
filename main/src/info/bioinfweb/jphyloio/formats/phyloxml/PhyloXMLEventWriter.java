@@ -45,6 +45,7 @@ import java.util.Iterator;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Namespace;
 
 
 
@@ -68,6 +69,10 @@ import javax.xml.stream.XMLStreamException;
  * than just free text (e.g. attributes or nested tags) may only appear in {@link ResourceMetadataEvent}s used to group 
  * literal meta-events representing these contents. Tags with text only content are represented by 
  * {@link LiteralMetadataEvent}s. This information can also be obtained from the <i>PhyloXML</i> schema.
+ * <p>
+ * This writer does not manage namespaces of custom XML elements. The application needs to ensure that all used prefixes 
+ * (either in any elements, attributes or character data) are properly declared within the custom XML 
+ * (e.g. by adding {@link Namespace} events).
  * <p>
  * Predicates allowed nested under events with {@link EventContentType#TREE} or {@link EventContentType#NETWORK}:
  * {@link PhyloXMLConstants#PREDICATE_PHYLOGENY_ATTR_REROOTABLE}, 

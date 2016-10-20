@@ -19,13 +19,27 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
+import java.util.Iterator;
+
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 
 import javax.xml.XMLConstants;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Comment;
+import javax.xml.stream.events.DTD;
+import javax.xml.stream.events.EntityDeclaration;
+import javax.xml.stream.events.EntityReference;
+import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.NotationDeclaration;
+import javax.xml.stream.events.ProcessingInstruction;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 
 
@@ -102,5 +116,79 @@ public class XMLReadWriteUtils {
 			}			
 		}
 		return givenPrefix;
+	}
+	
+	
+	public static void writeCustomXML(XMLStreamWriter writer, ReadWriteParameterMap parameters, XMLEvent event) throws XMLStreamException {
+		switch (event.getEventType()) {
+			case XMLStreamConstants.START_ELEMENT:
+				StartElement element = event.asStartElement();
+				writer.writeStartElement(element.getName().getNamespaceURI(), element.getName().getLocalPart());  // Writer obtains the correct prefix from its namespace context
+				
+				// Write attributes
+				@SuppressWarnings("unchecked")
+				Iterator<Attribute> attributes = element.getAttributes();
+				while (attributes.hasNext()) {
+					Attribute attribute = attributes.next();
+					writer.writeAttribute(attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
+				}
+				
+				//TODO write ns
+				break;
+			case XMLStreamConstants.END_ELEMENT:
+				writer.writeEndElement();
+				break;
+			case XMLStreamConstants.CHARACTERS:
+			case XMLStreamConstants.SPACE:
+				writer.writeCharacters(event.asCharacters().getData());
+				break;
+			case XMLStreamConstants.CDATA:
+				writer.writeCData(event.asCharacters().getData()); //TODO multiple events with continued content should be buffered and written to a single CDATA element
+				break;
+			case XMLStreamConstants.ATTRIBUTE:
+				Attribute contentAttribute = ((Attribute)event);
+				writer.writeAttribute(contentAttribute.getName().getPrefix(), contentAttribute.getName().getNamespaceURI(), 
+						contentAttribute.getName().getLocalPart(), contentAttribute.getValue());
+				break;
+			case XMLStreamConstants.NAMESPACE:
+				Namespace contentNamespace = ((Namespace)event);
+				writer.writeNamespace(contentNamespace.getPrefix(), contentNamespace.getNamespaceURI());
+				break;
+			case XMLStreamConstants.PROCESSING_INSTRUCTION:
+				ProcessingInstruction contentProcessingInstruction = ((ProcessingInstruction)event);
+				writer.writeProcessingInstruction(contentProcessingInstruction.getTarget(), contentProcessingInstruction.getData());
+				break;
+			case XMLStreamConstants.COMMENT:
+				writer.writeComment(((Comment)event).getText());
+				break;
+			case XMLStreamConstants.DTD:
+				StringBuffer message = new StringBuffer();
+				message.append("A document type declaration (DTD) with the content \"");
+				
+				if (((DTD)event).getDocumentTypeDeclaration().length() > 128) {
+					message.append(((DTD)event).getDocumentTypeDeclaration().substring(0, 128));
+					message.append(" [...]");
+				}
+				else {
+					message.append(((DTD)event).getDocumentTypeDeclaration());
+				}
+				
+				message.append("\" was found but can not be written at this position of the document.");
+				parameters.getLogger().addWarning(message.toString());
+				break;
+			case XMLStreamConstants.NOTATION_DECLARATION:
+				parameters.getLogger().addWarning("A notation declaration with the name \"" + ((NotationDeclaration)event).getName() + "\" was found but"
+						+ "can not be written at this position of the document.");
+				break;
+			case XMLStreamConstants.ENTITY_DECLARATION:
+				parameters.getLogger().addWarning("An entity declaration with the name \"" + ((EntityDeclaration)event).getName() + "\" was found but"
+						+ "can not be written at this position of the document.");
+				break;
+			case XMLStreamConstants.ENTITY_REFERENCE:
+				writer.writeEntityRef(((EntityReference)event).getName());
+				break;
+			default: // START_DOCUMENT and END_DOCUMENT can be ignored
+				break;
+		}
 	}
 }

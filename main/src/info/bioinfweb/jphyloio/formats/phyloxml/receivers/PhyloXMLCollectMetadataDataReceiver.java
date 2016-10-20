@@ -34,14 +34,10 @@ import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.StartElement;
 
 
 
@@ -115,29 +111,9 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		QName resourceIdentifier;
 		hasMetadata = true;
 		
-		if (event.hasXMLEventValue()) {
-			if (event.getXMLEvent().getEventType() == XMLStreamConstants.START_ELEMENT) {
-				StartElement element = event.getXMLEvent().asStartElement();
-				resourceIdentifier = element.getName();
-				
-				getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
-						resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-				
-				@SuppressWarnings("unchecked")
-				Iterator<Attribute> attributesIterator = element.getAttributes();
-				while (attributesIterator.hasNext()) {
-					Attribute attribute = attributesIterator.next();
-					resourceIdentifier = attribute.getName();
-					
-					getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
-							resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-				}				
-			}
-		}
-		else {
+		if (!event.hasXMLEventValue()) {
 			if (isPhylogenyIDProvider) {
 				getStreamDataProvider().setPhylogenyIDProvider(event.getStringValue());
 				isPhylogenyIDProvider = false;

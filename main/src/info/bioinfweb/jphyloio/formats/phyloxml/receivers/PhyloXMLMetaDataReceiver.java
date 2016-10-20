@@ -42,13 +42,11 @@ import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 import java.io.IOException;
 import java.util.EmptyStackException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -212,67 +210,42 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	
 	
 	protected void writeCustomXMLTag(XMLEvent event) throws XMLStreamException {
+		boolean writeCustomXML = true;
+		
 		switch (event.getEventType()) {
 			case XMLStreamConstants.START_ELEMENT:
-				StartElement element = event.asStartElement();
-				QName tag = element.getName();
+				StartElement element = event.asStartElement();				
 				
-				if (!tag.getNamespaceURI().equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {  // Do not write known PhyloXML-Tags as custom XML
+				if (!element.getName().getNamespaceURI().equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {
 					getStreamDataProvider().getCustomXMLElements().push(event.asStartElement().getName().getLocalPart());
-					
-					getStreamDataProvider().getWriter().writeStartElement(tag.getPrefix(), tag.getLocalPart(), tag.getNamespaceURI());
-					
-					@SuppressWarnings("unchecked")
-					Iterator<Attribute> attributes = element.getAttributes();
-					while (attributes.hasNext()) {
-						Attribute attribute = attributes.next();
-						QName attributeName = attribute.getName();
-						getStreamDataProvider().getWriter().writeAttribute(attributeName.getPrefix(), attributeName.getNamespaceURI(), attributeName.getLocalPart(),
-								attribute.getValue());					
-					}
-					
-	//				if (predicate.getURI() != null) {
-	//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
-	//							XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-	//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
-	//									predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());
-	//				}
-	//				else { // String representation can not be null, if URI is null
-	//					getStreamDataProvider().getWriter().writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getPrefix(), 
-	//							ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), predicate.getStringRepresentation());
-	//				}
-					
-	//				if ((originalType != null) && (originalType.getURI() != null)) {
-	//					getStreamDataProvider().getWriter().writeAttribute(XMLReadWriteUtils.getRDFPrefix(getStreamDataProvider().getWriter()), 
-	//							XMLReadWriteUtils.ATTRIBUTE_RDF_DATATYPE.getNamespaceURI(), XMLReadWriteUtils.ATTRIBUTE_RDF_PROPERTY.getLocalPart(), 
-	//							XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), originalType.getURI().getPrefix(), 
-	//							originalType.getURI().getNamespaceURI()) + ":" + originalType.getURI().getLocalPart());
-	//				}
 				}
-				else {
-					throw new InconsistentAdapterDataException("The element \"" + tag.getLocalPart() + "\" was not nested correctly.");
+				else {  // Do not write known PhyloXML-Tags as custom XML
+					throw new InconsistentAdapterDataException("The element \"" + element.getName().getLocalPart() + "\" was not nested correctly.");
 				}
 				break;
 			case XMLStreamConstants.END_ELEMENT:
 				try {
-					getStreamDataProvider().getCustomXMLElements().pop();					
-					getStreamDataProvider().getWriter().writeEndElement();
+					getStreamDataProvider().getCustomXMLElements().pop();
 				}
-				catch (EmptyStackException e) {
+				catch (EmptyStackException e) {					
 					throw new InconsistentAdapterDataException("One more end element than start elements was found in the nested custom XML.");
 				}
 				break;
-			case XMLStreamConstants.CHARACTERS: //TODO also CDATA
-				if (!getStreamDataProvider().getCustomXMLElements().isEmpty()) {
-					getStreamDataProvider().getWriter().writeCharacters(event.asCharacters().getData());
-				}
-				else {
-					//TODO log warning
+			case XMLStreamConstants.CHARACTERS:
+			case XMLStreamConstants.CDATA:
+				if (getStreamDataProvider().getCustomXMLElements().isEmpty()) {
+					writeCustomXML = false;
+					getParameterMap().getLogger().addWarning("A character or CDATA element that was not nested in any custom XML tag was found, "
+							+ "but could not be written since PhyloXML does not support this.");
 				}
 				break;
 			default:
 				break;
-		}		
+		}
+		
+		if (writeCustomXML) {
+			XMLReadWriteUtils.writeCustomXML(getStreamDataProvider().getWriter(), getParameterMap(), event);
+		}
 	}
 	
 	
