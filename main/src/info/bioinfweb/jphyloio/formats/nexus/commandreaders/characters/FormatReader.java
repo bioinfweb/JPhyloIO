@@ -214,7 +214,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 					info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), 
 					new QName(NEXUS_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + key)),  //TODO Should the predicate really be in upper case? 
 					LiteralContentSequenceType.SIMPLE));
-			events.add(new LiteralMetadataContentEvent(null, info.getValue(), false));
+			events.add(new LiteralMetadataContentEvent(info.getValue(), false));
 			events.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			eventAddedToQueue = true;
 		}

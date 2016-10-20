@@ -79,7 +79,7 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 			
 			events.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
 					info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), predicate), LiteralContentSequenceType.SIMPLE));
-			events.add(new LiteralMetadataContentEvent(null, info.getValue(), longValue));
+			events.add(new LiteralMetadataContentEvent(longValue, info.getValue()));
 		}
 		else if (DIMENSIONS_SUBCOMMAND_NTAX.equals(key) || DIMENSIONS_SUBCOMMAND_NCHAR.equals(key)) {
 			throw new JPhyloIOReaderException("\"" + info.getValue() + "\" is not a valid positive integer. Only positive integer "
@@ -88,7 +88,7 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 		else {  // Possible unknown subcommand with a non-long value
 			events.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), 
 					info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), genericPredicate), LiteralContentSequenceType.SIMPLE));
-			events.add(new LiteralMetadataContentEvent(null, info.getValue(), false));
+			events.add(new LiteralMetadataContentEvent(info.getValue(), false));
 		}
 		events.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		

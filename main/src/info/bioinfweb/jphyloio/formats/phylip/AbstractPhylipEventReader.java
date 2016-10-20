@@ -105,7 +105,7 @@ public abstract class AbstractPhylipEventReader<P extends TextReaderStreamDataPr
 				getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
 						getStreamDataProvider().getIDManager().createNewID(), null, 
 						new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), LiteralContentSequenceType.SIMPLE));
-				getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, parts[0], sequenceCount));
+				getCurrentEventCollection().add(new LiteralMetadataContentEvent(sequenceCount, parts[0]));
 				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 
 				try {
@@ -118,7 +118,7 @@ public abstract class AbstractPhylipEventReader<P extends TextReaderStreamDataPr
 				getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
 						getStreamDataProvider().getIDManager().createNewID(), null, 
 						new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), LiteralContentSequenceType.SIMPLE));
-				getCurrentEventCollection().add(new LiteralMetadataContentEvent(null, parts[1], characterCount));
+				getCurrentEventCollection().add(new LiteralMetadataContentEvent(characterCount, parts[1]));
 				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			}
 			else {

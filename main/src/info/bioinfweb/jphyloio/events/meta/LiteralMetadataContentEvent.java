@@ -58,50 +58,6 @@ import javax.xml.stream.events.XMLEvent;
 public class LiteralMetadataContentEvent extends ContinuedEvent {
 	private String stringValue;
 	private Object objectValue;
-	@Deprecated
-	private String alternativeStringValue = null;
-	@Deprecated
-	private URIOrStringIdentifier originalType;
-
-	
-	@Deprecated
-	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, boolean continuedInNextEvent) {
-		this(originalType, stringValue, null, null, continuedInNextEvent);
-	}
-	
-
-	@Deprecated
-	public LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, Object objectValue) {
-		this(originalType, stringValue, objectValue, null, false);
-	}
-
-	
-	@Deprecated
-	private LiteralMetadataContentEvent(URIOrStringIdentifier originalType, String stringValue, Object objectValue, String alternativeStringValue, 
-			boolean continuedInNextEvent) {
-		
-		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
-		
-		if ((stringValue == null) && (objectValue == null)) {
-			throw new NullPointerException("Either stringValue or objectValue must be specified. If a literal meta event has no content, the content event should be omitted.");
-		}
-		else {
-			this.stringValue = stringValue;
-			if ((objectValue != null) && isContinuedInNextEvent()) {
-				throw new IllegalArgumentException("If a value is separated among several events no object value may be specified.");
-			}
-			else {
-				this.objectValue = objectValue;
-				this.originalType = originalType;
-				if ((stringValue == null) && (alternativeStringValue != null)) {
-					throw new NullPointerException("stringValue must not be null, if alternativeStringValue is provided.");
-				}
-				else {
-					this.alternativeStringValue = alternativeStringValue;
-				}
-			}
-		}
-	}
 	
 	
 	/**
