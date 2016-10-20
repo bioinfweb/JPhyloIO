@@ -43,6 +43,17 @@ public class XMLStreamWriterTest {
 				writer.writeDTD("doc type x");  // Writer does not check if DTD is given in the right position
 				writer.writeCData("This is the first part of a CDATA element.");  // Writer splits these and writes two CDATA elements
 				writer.writeCData("This is the second part of a CDATA element.");
+				
+				writer.writeStartElement("nested");
+				writer.writeDefaultNamespace("http://example.org/2");
+				writer.writeNamespace("p", "http://example.org/");
+				writer.writeCharacters("some characters");
+				//writer.setPrefix("p", "http://example.org/");
+				writer.writeCharacters("more characters");
+				writer.writeStartElement("http://example.org/", "nested2");
+				writer.writeEndElement();
+				writer.writeEndElement();
+				
 				writer.writeEndElement();
 				writer.writeEndDocument();
 			}
