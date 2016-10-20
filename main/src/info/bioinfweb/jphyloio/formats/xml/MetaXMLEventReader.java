@@ -54,7 +54,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 	private boolean endDocumentFired;
 	
 	
-	private class MetaEventListener implements JPhyloIOEventListener { //TODO make public which events were fired (e.g. to use this info in librAlign)?
+	private class MetaEventListener implements JPhyloIOEventListener { //TODO make public which events were fired (e.g. to use this info in LibrAlign)?
 		@Override
 		public void processEvent(JPhyloIOEventReader source, JPhyloIOEvent event) throws IOException {
 			if (source.peek().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.END))) {
@@ -103,8 +103,10 @@ public class MetaXMLEventReader implements XMLEventReader {
 	
 	
 	@Override
-	public String getElementText() throws XMLStreamException { //TODO basierend auf nextEvent() von sich selbst, kann evtl. schon eine abstrakte Impl. vom Stream Reader hier genutzt werden
+	public String getElementText() throws XMLStreamException { //TODO based on nextEvent() of this class, maybe an abstract implementation XML Event Reader can be used here
 		StringBuffer content = new StringBuffer();
+		
+		//TODO check if start event was the last event
 		
 		while (hasNext() && (peek().getEventType() == XMLStreamConstants.CHARACTERS)) {
 			content.append(nextEvent().asCharacters().getData());

@@ -32,6 +32,13 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * 
+ * 
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class MetaXMLEventWriter implements XMLEventWriter {
 	AbstractXMLDataReceiver receiver; //TODO add generics?
 	
@@ -45,7 +52,7 @@ public class MetaXMLEventWriter implements XMLEventWriter {
 	@Override
 	public void add(XMLEvent event) throws XMLStreamException { //TODO ignore document start and end, attributes of start doc are not processed (not possible at this time)
 		try {
-			receiver.add(new LiteralMetadataContentEvent(event, false)); // does not need to buffer, allowed to have separate charactere vents
+			receiver.add(new LiteralMetadataContentEvent(event, false)); // It is not necessary to buffer these events to find out if the content is continued, since content events containing characters are allowed to occur separately
 		} 
 		catch (IOException e) {			
 			throw new XMLStreamException("The current event could not be added to the data receiver.");
@@ -54,21 +61,9 @@ public class MetaXMLEventWriter implements XMLEventWriter {
 	
 
 	@Override
-	public void add(XMLEventReader xmlReader) throws XMLStreamException { //TODO use add() from above
-		while (xmlReader.hasNext()) {
-			XMLEvent event = xmlReader.nextEvent();
-			
-			try {
-				if (xmlReader.hasNext()) {
-					receiver.add(new LiteralMetadataContentEvent(event, true));
-				}
-				else {
-					receiver.add(new LiteralMetadataContentEvent(event, false));
-				}
-			}
-			catch (IOException e) {			
-				throw new XMLStreamException("The current event could not be added to the data receiver.");
-			}
+	public void add(XMLEventReader xmlReader) throws XMLStreamException {
+		while (xmlReader.hasNext()) {			
+			add(xmlReader.nextEvent());			
 		}
 	}
 	

@@ -262,9 +262,12 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 					throw new InconsistentAdapterDataException("One more end element than start elements was found in the nested custom XML.");
 				}
 				break;
-			case XMLStreamConstants.CHARACTERS:
+			case XMLStreamConstants.CHARACTERS: //TODO also CDATA
 				if (!getStreamDataProvider().getCustomXMLElements().isEmpty()) {
 					getStreamDataProvider().getWriter().writeCharacters(event.asCharacters().getData());
+				}
+				else {
+					//TODO log warning
 				}
 				break;
 			default:

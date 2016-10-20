@@ -38,7 +38,6 @@ import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -46,7 +45,10 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Comment;
 import javax.xml.stream.events.DTD;
+import javax.xml.stream.events.EntityDeclaration;
+import javax.xml.stream.events.EntityReference;
 import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.NotationDeclaration;
 import javax.xml.stream.events.ProcessingInstruction;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -180,7 +182,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				if (event.hasXMLEventValue()) {
 					XMLEvent xmlContentEvent = event.getXMLEvent();
 					
-					switch (xmlContentEvent.getEventType()) {							
+					switch (xmlContentEvent.getEventType()) {
 						case XMLStreamConstants.START_ELEMENT:
 							StartElement element = xmlContentEvent.asStartElement();
 							writer.writeStartElement(element.getName().getNamespaceURI(), element.getName().getLocalPart());  // Writer obtains the correct prefix from its namespace context
@@ -221,12 +223,32 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 							writer.writeComment(((Comment)xmlContentEvent).getText());
 							break;
 						case XMLStreamConstants.DTD:
-							//TODO give substring of dtd in warning (128)
-						case XMLStreamConstants.NOTATION_DECLARATION:
-						case XMLStreamConstants.ENTITY_DECLARATION:
-							parameters.getLogger().addWarning("");
+							StringBuffer message = new StringBuffer();
+							message.append("A document type declaration (DTD) with the content \"");
+							
+							if (((DTD)xmlContentEvent).getDocumentTypeDeclaration().length() > 128) {
+								message.append(((DTD)xmlContentEvent).getDocumentTypeDeclaration().substring(0, 128));
+								message.append(" [...]");
+							}
+							else {
+								message.append(((DTD)xmlContentEvent).getDocumentTypeDeclaration());
+							}
+							
+							message.append("\" was found but can not be written at this position of the document.");
+							parameters.getLogger().addWarning(message.toString());
 							break;
-						default:
+						case XMLStreamConstants.NOTATION_DECLARATION:
+							parameters.getLogger().addWarning("A notation declaration with the name \"" + ((NotationDeclaration)xmlContentEvent).getName() + "\" was found but"
+									+ "can not be written at this position of the document.");
+							break;
+						case XMLStreamConstants.ENTITY_DECLARATION:
+							parameters.getLogger().addWarning("An entity declaration with the name \"" + ((EntityDeclaration)xmlContentEvent).getName() + "\" was found but"
+									+ "can not be written at this position of the document.");
+							break;
+						case XMLStreamConstants.ENTITY_REFERENCE:
+							writer.writeEntityRef(((EntityReference)xmlContentEvent).getName());
+							break;
+						default: // START_DOCUMENT and END_DOCUMENT can be ignored
 							break;
 					}
 				}
