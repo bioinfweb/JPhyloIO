@@ -52,13 +52,12 @@ public class MetaXMLEventReader implements XMLEventReader {
 	private boolean endReached = false;
 	private boolean startDocumentFired;
 	private boolean endDocumentFired;
-//	private Queue<XMLEvent> events = new ArrayDeque<XMLEvent>();
 	
 	
 	private class MetaEventListener implements JPhyloIOEventListener { //TODO make public which events were fired (e.g. to use this info in librAlign)?
 		@Override
 		public void processEvent(JPhyloIOEventReader source, JPhyloIOEvent event) throws IOException {
-			if (event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.END))) {
+			if (source.peek().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.END))) {
 				setEndReached();
 			}
 		}
@@ -140,7 +139,7 @@ public class MetaXMLEventReader implements XMLEventReader {
 	public XMLEvent nextEvent() throws XMLStreamException {
 		XMLEvent result = null;
 		if (!endReached) {
-			if (jPhyloIOEventReader.getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))) {
+			if (jPhyloIOEventReader.getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) && !startDocumentFired) {
 				result = XMLEventFactory.newInstance().createStartDocument();
 				startDocumentFired = true;
 			}

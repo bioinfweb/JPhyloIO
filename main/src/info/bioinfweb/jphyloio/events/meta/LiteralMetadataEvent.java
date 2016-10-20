@@ -19,8 +19,11 @@
 package info.bioinfweb.jphyloio.events.meta;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.MetaXMLEventReader;
 
 
 
@@ -36,6 +39,7 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 	private String alternativeStringValue = null;
 	private URIOrStringIdentifier originalType;
 	private LiteralContentSequenceType sequenceType;
+	private MetaXMLEventReader metaXMLEventReader;
 	
 	
 	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, LiteralContentSequenceType sequenceType) {
@@ -109,5 +113,14 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 	 */
 	public LiteralContentSequenceType getSequenceType() {
 		return sequenceType;
+	}
+
+
+	public MetaXMLEventReader getMetaXMLEventReader(AbstractXMLEventReader reader) { //TODO add generics
+		if (metaXMLEventReader == null) {
+			metaXMLEventReader = new MetaXMLEventReader(reader);
+		}
+		
+		return metaXMLEventReader;
 	}
 }

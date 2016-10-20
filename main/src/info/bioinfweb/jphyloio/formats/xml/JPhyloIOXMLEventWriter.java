@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -25,8 +25,22 @@ import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 
 
 
+/**
+ * Interface providing basic functionality for all JPhyloIO writers of XML formats.
+ * 
+ * Note, that these writers are able to change the prefix a namespace is bound to. Therefore
+ * it is important that applications writing prefixes in attributes or character data always use the provided 
+ * namespace context object to obtain the prefix a namespace is currently bound to.
+ //TODO point to this information at a central place (e.g. JPhyloIOEventWriter)
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public interface JPhyloIOXMLEventWriter extends JPhyloIOEventWriter {
-	
-	
+	/**
+	 * Returns the currently valid namespace context of the writer.
+	 * 
+	 * @return the currently valid {@link NamespaceContext} object
+	 */
 	public NamespaceContext getNamespaceContext();
 }

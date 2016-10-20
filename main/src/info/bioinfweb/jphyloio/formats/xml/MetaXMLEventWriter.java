@@ -43,9 +43,9 @@ public class MetaXMLEventWriter implements XMLEventWriter {
 	
 
 	@Override
-	public void add(XMLEvent event) throws XMLStreamException {
+	public void add(XMLEvent event) throws XMLStreamException { //TODO ignore document start and end, attributes of start doc are not processed (not possible at this time)
 		try {
-			receiver.add(new LiteralMetadataContentEvent(event, false));
+			receiver.add(new LiteralMetadataContentEvent(event, false)); // does not need to buffer, allowed to have separate charactere vents
 		} 
 		catch (IOException e) {			
 			throw new XMLStreamException("The current event could not be added to the data receiver.");
@@ -54,7 +54,7 @@ public class MetaXMLEventWriter implements XMLEventWriter {
 	
 
 	@Override
-	public void add(XMLEventReader xmlReader) throws XMLStreamException {
+	public void add(XMLEventReader xmlReader) throws XMLStreamException { //TODO use add() from above
 		while (xmlReader.hasNext()) {
 			XMLEvent event = xmlReader.nextEvent();
 			
@@ -74,16 +74,16 @@ public class MetaXMLEventWriter implements XMLEventWriter {
 	
 
 	@Override
-	public void close() throws XMLStreamException {}
+	public void close() throws XMLStreamException {}  // siehe reader, application need tow rite literal start and end events on its own beacuse necessary info sucha s predicate are nota vailable here
 
 	
 	@Override
-	public void flush() throws XMLStreamException {} //TODO does this writer cache events?
+	public void flush() throws XMLStreamException {} //kann keien ahben, solange writer keine hat (geht im moemnt nicht)
 
 	
 	@Override
 	public NamespaceContext getNamespaceContext() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
 		return null;
 	}
 	
@@ -97,13 +97,13 @@ public class MetaXMLEventWriter implements XMLEventWriter {
 
 	@Override
 	public void setDefaultNamespace(String arg0) throws XMLStreamException {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 	
 
 	@Override
 	public void setNamespaceContext(NamespaceContext arg0) throws XMLStreamException {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 	
 

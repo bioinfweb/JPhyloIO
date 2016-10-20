@@ -38,11 +38,16 @@ import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 import java.io.IOException;
 import java.util.Iterator;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Comment;
+import javax.xml.stream.events.DTD;
+import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.ProcessingInstruction;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -175,24 +180,53 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				if (event.hasXMLEventValue()) {
 					XMLEvent xmlContentEvent = event.getXMLEvent();
 					
-					switch (xmlContentEvent.getEventType()) {
+					switch (xmlContentEvent.getEventType()) {							
 						case XMLStreamConstants.START_ELEMENT:
 							StartElement element = xmlContentEvent.asStartElement();
 							writer.writeStartElement(element.getName().getNamespaceURI(), element.getName().getLocalPart());  // Writer obtains the correct prefix from its namespace context
+							
+							// Write attributes
 							@SuppressWarnings("unchecked")
 							Iterator<Attribute> attributes = element.getAttributes();
 							while (attributes.hasNext()) {
 								Attribute attribute = attributes.next();
 								writer.writeAttribute(attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
 							}
+							
 							break;
 						case XMLStreamConstants.END_ELEMENT:
 							writer.writeEndElement();
 							break;
 						case XMLStreamConstants.CHARACTERS:
+						case XMLStreamConstants.SPACE:
 							writer.writeCharacters(xmlContentEvent.asCharacters().getData());
-							break;							
-						default:							
+							break;
+						case XMLStreamConstants.CDATA:
+							writer.writeCData(xmlContentEvent.asCharacters().getData()); //TODO multiple events with continued content should be buffered and written to a single CDATA element
+							break;
+						case XMLStreamConstants.ATTRIBUTE:
+							Attribute contentAttribute = ((Attribute)xmlContentEvent);
+							writer.writeAttribute(contentAttribute.getName().getPrefix(), contentAttribute.getName().getNamespaceURI(), 
+									contentAttribute.getName().getLocalPart(), contentAttribute.getValue());
+							break;
+						case XMLStreamConstants.NAMESPACE:
+							Namespace contentNamespace = ((Namespace)xmlContentEvent);
+							writer.writeNamespace(contentNamespace.getPrefix(), contentNamespace.getNamespaceURI());
+							break;
+						case XMLStreamConstants.PROCESSING_INSTRUCTION:
+							ProcessingInstruction contentProcessingInstruction = ((ProcessingInstruction)xmlContentEvent);
+							writer.writeProcessingInstruction(contentProcessingInstruction.getTarget(), contentProcessingInstruction.getData());
+							break;
+						case XMLStreamConstants.COMMENT:
+							writer.writeComment(((Comment)xmlContentEvent).getText());
+							break;
+						case XMLStreamConstants.DTD:
+							//TODO give substring of dtd in warning (128)
+						case XMLStreamConstants.NOTATION_DECLARATION:
+						case XMLStreamConstants.ENTITY_DECLARATION:
+							parameters.getLogger().addWarning("");
+							break;
+						default:
 							break;
 					}
 				}
@@ -222,7 +256,16 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 					
 					streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
 							resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-				}				
+				}
+				
+				@SuppressWarnings("unchecked")
+				Iterator<Namespace> namespaceIterator = element.getNamespaces();
+				while (namespaceIterator.hasNext()) {
+					Namespace namespace = namespaceIterator.next();
+					
+					streamDataProvider.setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(streamDataProvider.getWriter(), namespace.getPrefix(), 
+							namespace.getNamespaceURI()), namespace.getNamespaceURI());
+				}
 			}
 		}
 		
