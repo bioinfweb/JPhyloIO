@@ -67,6 +67,7 @@ import java.util.List;
  * <p>
  * This reader does not process the sequence names according to any conventions. The full string following '>' 
  * will be returned in each {@link SequenceTokensEvent} and can be parsed later on by the application.
+ * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link ReadWriteParameterNames#KEY_MATCH_TOKEN}</li>

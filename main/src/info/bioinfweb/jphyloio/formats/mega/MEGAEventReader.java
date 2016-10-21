@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.mega;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -58,6 +59,11 @@ import javax.xml.namespace.QName;
 /**
  * Event based reader for MEGA alignment files.
  * 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterNames#KEY_MATCH_TOKEN}</li>
+ * </ul>
+
  * @author Ben St&ouml;ver
  */
 public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDataProvider<MEGAEventReader>> 

@@ -23,17 +23,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractStartStringSingleFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
+import info.bioinfweb.jphyloio.formatinfo.MetadataTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -84,13 +91,20 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 
 	@Override
 	protected JPhyloIOFormatInfo createFormatInfo() {
+		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
+		supportedMetadataModeling.put(EventContentType.ALIGNMENT, new MetadataModeling(MetadataTopologyType.LITERAL_ONLY, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		
+		Set<String> supportedReaderParameters = new HashSet<String>();
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MATCH_TOKEN);
+
 		return new DefaultFormatInfo(this, MEGA_FORMAT_ID, MEGA_FORMAT_NAME, 
 				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
 						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.ALIGNMENT, 
 						EventContentType.SEQUENCE, EventContentType.SEQUENCE_TOKENS, EventContentType.CHARACTER_SET, 
-						EventContentType.CHARACTER_SET_INTERVAL), 
-				null,	Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
-				Collections.<String>emptySet(), Collections.<String>emptySet(),
+						EventContentType.CHARACTER_SET_INTERVAL), null,	
+				supportedMetadataModeling, Collections.<EventContentType, MetadataModeling>emptyMap(),
+				supportedReaderParameters, Collections.<String>emptySet(),
 				new ReadWriteParameterMap(),	"MEGA format", "meg", "mega");
 	}
 }
