@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
+import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.TokenDefinitionLabelHandling;
@@ -40,7 +41,10 @@ import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
 
 /**
- * Provides the names of parameters supported by one or more readers or writers included in <i>JPhyloIO</i>.
+ * Provides the names of parameters supported by one or more readers or writers included in <i>JPhyloIO</i>. Such 
+ * names are used as keys in instances of {@link ReadWriteParameterMap}. Different readers and writers support
+ * different sets of parameters. Which are supported is defined in the documentation of each reader and writer
+ * and can also be programmatically determined using {@link JPhyloIOFormatInfo#getSupportedParameters(boolean)}.
  * <p>
  * All parameter names defined here start with the prefix {@value #KEY_PREFIX} as defined by {@link #KEY_PREFIX}.
  * Developers of third party readers or writers may define additional parameters, but must make sure that these

@@ -142,14 +142,14 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 				this.supportedReaderParameters = Collections.emptySet();
 			}
 			else {
-				this.supportedReaderParameters = supportedReaderParameters;
+				this.supportedReaderParameters = Collections.unmodifiableSet(supportedReaderParameters);
 			}
 			
 			if (supportedWriterParameters == null) {
 				this.supportedWriterParameters = Collections.emptySet();
 			}
 			else {
-				this.supportedWriterParameters = supportedWriterParameters;
+				this.supportedWriterParameters = Collections.unmodifiableSet(supportedWriterParameters);
 			}
 			
 			if (filterParameters == null) {
@@ -212,12 +212,12 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 
 	
 	@Override
-	public boolean isParameterSupported(String parameterName, boolean forReading) {
+	public Set<String> getSupportedParameters(boolean forReading) {
 		if (forReading) {
-			return supportedReaderParameters.contains(parameterName);
+			return supportedReaderParameters;
 		}
 		else {
-			return supportedWriterParameters.contains(parameterName);
+			return supportedWriterParameters;
 		}
 	}
 }

@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formatinfo;
 
 
+import java.util.Set;
+
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
@@ -93,16 +95,14 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	public MetadataModeling getMetadataModeling(EventContentType parentContentType, boolean forReading);
 	
 	/**
-	 * Determines whether the associated reader or writer supports the specified parameter. Parameter names used by readers
+	 * Returns a set of the parameters supported by the associated reader or writer. Parameter names used by readers
 	 * and writers included in <i>JPhyloIO</i> are defined as string constants in {@link ReadWriteParameterNames}. Readers
 	 * and writers from third party developers may introduce additional parameter names defined elsewhere.
 	 * 
-	 * @param parameterName the name of the parameter to be tested
 	 * @param forReading Specify {@code true} here, if support for {@code parameterName} in reading this format or 
 	 *        {@code false} for writing it should be returned.  
-	 * @return {@code true} if the associated reader or writer makes use of the parameter with the specified name, or
-	 *         {@code false} otherwise
+	 * @return an unmodifiable set of supported parameters
 	 * @since 0.1.0
 	 */
-	public boolean isParameterSupported(String parameterName, boolean forReading);
+	public Set<String> getSupportedParameters(boolean forReading);
 }

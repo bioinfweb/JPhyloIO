@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio;
 import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.collections.ParameterMap;
 import info.bioinfweb.commons.log.ApplicationLogger;
+import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formats.nexml.TokenDefinitionLabelHandling;
 import info.bioinfweb.jphyloio.formats.nexml.TokenTranslationStrategy;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetadataTreatment;
@@ -31,9 +32,12 @@ import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
 
 /**
- * Parameter map that allows to specify (optional) parameters to implementations of {@link JPhyloIOEventWriter}.
+ * Parameter map that allows to specify (optional) parameters to implementations of {@link JPhyloIOEventReader} or
+ * {@link JPhyloIOEventWriter}.
  * 
  * @author Ben St&ouml;ver
+ * @see ReadWriteParameterNames
+ * @see JPhyloIOFormatInfo#getSupportedParameters(boolean)
  */
 public class ReadWriteParameterMap extends ParameterMap implements ReadWriteParameterNames {
 	/**
