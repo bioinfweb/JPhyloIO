@@ -30,13 +30,13 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 /**
  * Event that indicates the definition of a single new valid token that could be contained in a sequence 
- * of the current alignment. One or more events defining a token may occur any time between 
- * the {@link EventContentType#ALIGNMENT} and the first {@link SequenceTokensEvent}. 
+ * of the current alignment. 
  * <p>
  * Not all formats support or require a token definition, therefore sequences might contain tokens that 
  * were not previously defined by {@link SingleTokenDefinitionEvent}.   
  * 
  * @author Ben St&ouml;ver
+ * @since 0.0.0
  */
 public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 	private String tokenName;
@@ -60,6 +60,7 @@ public class SingleTokenDefinitionEvent extends LabeledIDEvent {
 	 */
 	public SingleTokenDefinitionEvent(String id, String label, String tokenName, CharacterSymbolMeaning meaning, 
 			CharacterSymbolType tokenType, Collection<String> constituents) {
+		
 		super(EventContentType.SINGLE_TOKEN_DEFINITION, id, label);
 		
 		if (tokenName == null) {

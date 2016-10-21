@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio.formats.mega;
 
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -30,6 +32,8 @@ import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.PartEndEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
+import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
+import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
@@ -37,6 +41,7 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
@@ -49,6 +54,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,6 +100,8 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	private String currentGeneOrDomainName = null;
 	private long currentGeneOrDomainStart = -1;
 	private IDToNameManager sequenceIDToNameManager = new IDToNameManager(DEFAULT_SEQUENCE_ID_PREFIX);
+	private TokenSetDefinitionEvent tokenSetRootEvent = null;
+	private List<SingleTokenDefinitionEvent> singleTokenDefinitions = new ArrayList<SingleTokenDefinitionEvent>(2);
 	
 	
 	/**
@@ -163,6 +172,25 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	}
 	
 	
+	private CharacterStateSetType getTokenSetType(String parsedName) {
+		if (parsedName.equals(FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE)) {
+			return CharacterStateSetType.NUCLEOTIDE;
+		}
+		else if (parsedName.equals(FORMAT_VALUE_DNA_DATA_TYPE)) {
+			return CharacterStateSetType.DNA;
+		}
+		else if (parsedName.equals(FORMAT_VALUE_RNA_DATA_TYPE)) {
+			return CharacterStateSetType.RNA;
+		}
+		else if (parsedName.equals(FORMAT_VALUE_PROTEIN_DATA_TYPE)) {
+			return CharacterStateSetType.AMINO_ACID;
+		}
+		else {
+			return CharacterStateSetType.UNKNOWN;
+		}
+	}
+	
+	
 	private void readFormatCommand() throws IOException {
 		try {
 			getReader().skip(COMMAND_NAME_FORMAT.length());  // Consume command name.
@@ -191,6 +219,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 								getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), 
 								new URIOrStringIdentifier(info.getOriginalKey(), PREDICATE_CHARACTER_COUNT), LiteralContentSequenceType.SIMPLE));
 						getCurrentEventCollection().add(new LiteralMetadataContentEvent(longValue, info.getValue()));
+						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 					}
 				}
 				else if (FORMAT_SUBCOMMAND_NTAXA.equals(key)) {
@@ -203,7 +232,26 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 								getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), 
 								new URIOrStringIdentifier(info.getOriginalKey(), PREDICATE_SEQUENCE_COUNT), LiteralContentSequenceType.SIMPLE));
 						getCurrentEventCollection().add(new LiteralMetadataContentEvent(longValue, info.getValue()));
+						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 					}
+				}
+				else if (FORMAT_SUBCOMMAND_DATA_TYPE.equals(key)) {
+					if (tokenSetRootEvent == null) {
+						tokenSetRootEvent = new TokenSetDefinitionEvent(getTokenSetType(info.getValue().toUpperCase()), 
+								DEFAULT_TOKEN_SET_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID(), null);
+					}
+					else {
+						throw new JPhyloIOReaderException("Duplicate token set definition in MEGA FORMAT command.", 
+								getStreamDataProvider().getDataReader());
+					}
+				}
+				else if (FORMAT_SUBCOMMAND_MISING.equals(key)) {
+					singleTokenDefinitions.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + 
+							getStreamDataProvider().getIDManager().createNewID(),	null, info.getValue(), CharacterSymbolMeaning.MISSING, null));
+				}
+				else if (FORMAT_SUBCOMMAND_INDEL.equals(key)) {
+					singleTokenDefinitions.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + 
+							getStreamDataProvider().getIDManager().createNewID(),	null, info.getValue(), CharacterSymbolMeaning.GAP, null));
 				}
 				else {
 					getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
@@ -211,9 +259,17 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 									new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + info.getOriginalKey().toUpperCase())),  //TODO Should the predicate really be in upper case? 
 							LiteralContentSequenceType.SIMPLE));
 					getCurrentEventCollection().add(new LiteralMetadataContentEvent(info.getValue(), false));
+					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 				}
-				
-				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			}
+			
+			if (tokenSetRootEvent != null) {
+				getCurrentEventCollection().add(tokenSetRootEvent);
+				for (SingleTokenDefinitionEvent singleTokenDefinitionEvent : singleTokenDefinitions) {
+					getCurrentEventCollection().add(singleTokenDefinitionEvent);
+					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+				}
+				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TOKEN_SET_DEFINITION));
 			}
 			
 			getReader().skip(1); // Consume ';'.
@@ -249,8 +305,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	}
 	
 	
-	private boolean createCharacterSetEventsFromLabel() throws IOException {
-		boolean result = false;
+	private void createCharacterSetEventsFromLabel() throws IOException {
 		getReader().skip(COMMAND_NAME_LABEL.length());
 		
 		long pos = currentLabelPos;
@@ -269,7 +324,6 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 					if (((currentName == DEFAULT_LABEL_CHAR) && (c != DEFAULT_LABEL_CHAR)) || (c != currentName)) {
 						if ((c != currentName) && (currentName != DEFAULT_LABEL_CHAR)) {  // end current set
 							getCurrentEventCollection().add(new CharacterSetIntervalEvent(start, pos));
-							result = true;
 						}
 						start = pos;
 						currentName = c;  // Either DEFAULT_LABEL_CHAR if a set ended or a new name if a new set started will be set here.
@@ -281,11 +335,9 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 		}
 		if (currentName != DEFAULT_LABEL_CHAR) {
 			getCurrentEventCollection().add(new CharacterSetIntervalEvent(start, pos));
-			result = true;
 		}
 		currentLabelPos = pos;
 		getCurrentEventCollection().add(new PartEndEvent(EventContentType.CHARACTER_SET, false));
-		return result;
 	}
 	
 	
@@ -318,8 +370,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	 * @return {@code true} if at least one event was added to the event queue as a result of calling this method
 	 * @throws Exception
 	 */
-	private boolean readCommand() throws IOException {
-		boolean result = false;
+	private void readCommand() throws IOException {
 		int c = getReader().peek();
 		if ((c != -1) && ((char)c == COMMAND_START)) {
 			getReader().read();  // Consume command start
@@ -327,11 +378,10 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 			// Read command:
 			consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 			if (getReader().peekString(COMMAND_NAME_LABEL.length()).toUpperCase().equals(COMMAND_NAME_LABEL)) {  // Process label events directly from the reader because they might contain many characters.
-				result = createCharacterSetEventsFromLabel();
+				createCharacterSetEventsFromLabel();
 			}
 			else if (getReader().peekString(COMMAND_NAME_FORMAT.length()).toUpperCase().equals(COMMAND_NAME_FORMAT)) {
-				readFormatCommand();  // Always adds an event.
-				result = true;
+				readFormatCommand();  // Always adds an event.  //TODO Does not always add an event anymore!
 			}
 			else {
 				StringBuilder contentBuffer = new StringBuilder();
@@ -353,18 +403,15 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 					
 					if (currentGeneOrDomainName != null) {
 						createGeneOrDomainCharSetEvents();
-						result = true;
 					}
 					currentGeneOrDomainName = content;
 					currentGeneOrDomainStart = charactersRead;
 				}
 				else {
 					addMetaEventsFromCommand(content);
-					result = true;
 				}
 			}
 		}
-		return result;
 	}
 	
 	
@@ -415,6 +462,8 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 						getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 						break;
 					}  // fall through in else case
+				case TOKEN_SET_DEFINITION:
+				case SINGLE_TOKEN_DEFINITION:
 				case SEQUENCE:
 				case SEQUENCE_TOKENS:
 				case CHARACTER_SET:
