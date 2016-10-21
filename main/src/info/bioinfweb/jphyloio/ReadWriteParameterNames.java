@@ -206,11 +206,12 @@ public interface ReadWriteParameterNames {
 	public static final String KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA = KEY_PREFIX + "neXMLstandardDataLabelMetadata";
 	
 	/**
-	 * This parameter will be used by {@link JPhyloIOEventReader}s and determines whether the label of an associated OTU
+	 * This parameter will be used by some {@link JPhyloIOEventReader}s to determine whether the label of an associated OTU
 	 * should be used as a label, if none was present in an element.
 	 * <p>
 	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, the events' label will 
-	 * remain null if no label was present in the element. If {@code true} is specified, the OTU label will be used, if present.
+	 * remain {@code null} if no label was present in the element. If {@code true} is specified, the OTU label will be used, 
+	 * if present.
 	 */
 	public static final String KEY_USE_OTU_LABEL = KEY_PREFIX + "useOTULabel";
 	

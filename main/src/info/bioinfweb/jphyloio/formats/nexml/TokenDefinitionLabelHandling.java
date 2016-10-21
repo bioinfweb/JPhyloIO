@@ -18,8 +18,24 @@
  */
 package info.bioinfweb.jphyloio.formats.nexml;
 
+
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 
+
+
+/**
+ * Instances of this enum can be used as parameter values for 
+ * {@link ReadWriteParameterNames#KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA}. It enumerates ways how the 
+ * properties {@link SingleTokenDefinitionEvent#getTokenName()} and 
+ * {@link SingleTokenDefinitionEvent#getLabel()} are written to <i>NeXML</i>.
+ * 
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ * @see ReadWriteParameterNames#KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA
+ * @see NeXMLEventWriter
+ * @since 0.0.0
+ */
 public enum TokenDefinitionLabelHandling {
 	/** 
 	 * Neither the label nor the token name stored in a {@link SingleTokenDefinitionEvent} are written as metadata.
