@@ -19,8 +19,20 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
-import static info.bioinfweb.commons.testing.XMLAssert.*;
-import static org.junit.Assert.*;
+import static info.bioinfweb.commons.testing.XMLAssert.assertAttribute;
+import static info.bioinfweb.commons.testing.XMLAssert.assertAttributeCount;
+import static info.bioinfweb.commons.testing.XMLAssert.assertCharactersEvent;
+import static info.bioinfweb.commons.testing.XMLAssert.assertCommentEvent;
+import static info.bioinfweb.commons.testing.XMLAssert.assertDefaultNamespace;
+import static info.bioinfweb.commons.testing.XMLAssert.assertEndDocument;
+import static info.bioinfweb.commons.testing.XMLAssert.assertEndElement;
+import static info.bioinfweb.commons.testing.XMLAssert.assertNamespace;
+import static info.bioinfweb.commons.testing.XMLAssert.assertNamespaceCount;
+import static info.bioinfweb.commons.testing.XMLAssert.assertStartDocument;
+import static info.bioinfweb.commons.testing.XMLAssert.assertStartElement;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
@@ -29,7 +41,6 @@ import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
-import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreDocumentDataAdapter;
@@ -131,6 +142,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -413,6 +425,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, new URL("http://www.exampleApplication.com"));
 		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.BOTH);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -825,6 +838,251 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	
 	@Test
+	public void testWritingCustomXMLDoNotManageNamespaces() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/NeXMLTest.xml");
+		XMLEventFactory factory = XMLEventFactory.newInstance();
+		boolean writeMetadata = false;
+		boolean writeSets = false;
+		
+		// Add OTU list to document data adapter
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();
+		document.getOTUListsMap().put(otuListID, createOTUList(otuListID, writeMetadata, writeSets));
+		
+		// Add custom XML to document adapter
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://example.org/", "hasCustomXML", "ex")), "customXML",
+				new URIOrStringIdentifier(null, new QName(XMLReadWriteUtils.NAMESPACE_RDF, "Literal")), LiteralContentSequenceType.XML));
+		
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("characters"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("ex", "http://example.com/", "customTag"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createNamespace("ex", "http://example.com/"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("some more"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("ex", "http://example.com/", "nestedTag"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("ex", "http://example.com/", "secondNested"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createAttribute(new QName("http://example.com/", "attribute", "ex"), "true"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("nested content"), true));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "secondNested"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "nestedTag"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("characters"), true));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters(" and even more"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "customTag"), false));
+		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			
+		// Write file:
+		NeXMLEventWriter writer = new NeXMLEventWriter();
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, new URL("http://www.exampleApplication.com"));
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.BOTH);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, false);  // This is also the default case
+		writer.writeDocument(document, file, parameters);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNamespaceCount(6, element);
+			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_NAMESPACE_PREFIX), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);			
+			String prefixRDF = assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			String prefix1 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_VERSION, "0.9", element);
+			
+			String generator = assertAttribute(ATTR_GENERATOR, element);
+			assertTrue(generator, generator.matches(
+					"exampleApplication 1.0 using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+"));
+			
+			assertTrue(reader.hasNext());		
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by exampleApplication 1.0 <http://www.exampleApplication.com> using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			element = assertStartElement(TAG_META, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);	
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
+			assertAttribute(ATTR_PROPERTY, prefix1 + XMLUtils.QNAME_SEPARATOR + "hasCustomXML", element);
+			assertAttribute(ATTR_DATATYPE, prefixRDF + XMLUtils.QNAME_SEPARATOR + "Literal", element);
+			assertAttribute(ATTR_CONTENT, "customXML", element);
+			
+			assertCharactersEvent("characters", reader);
+			StartElement customTag = assertStartElement(new QName("http://example.com/", "customTag"), reader);
+			String prefixEx = assertNamespace(new QName("http://example.com/", XMLConstants.XMLNS_ATTRIBUTE), false, customTag);
+			assertCharactersEvent("some more", reader);
+			assertStartElement(new QName("http://example.com/", "nestedTag", prefixEx), reader);
+			customTag = assertStartElement(new QName("http://example.com/", "secondNested", prefixEx), reader);
+			assertAttribute(new QName("http://example.com/", "attribute", prefixEx), "true", customTag);
+			assertCharactersEvent("nested content", reader);
+			assertEndElement(new QName("http://example.com/", "secondNested", prefixEx), reader);
+			assertEndElement(new QName("http://example.com/", "nestedTag", prefixEx), reader);
+			assertCharactersEvent("characters and even more", reader);
+			assertEndElement(new QName("http://example.com/", "customTag", prefixEx), reader);		
+			
+			assertEndElement(TAG_META, reader);
+			
+			element = assertStartElement(TAG_OTUS, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "taxonlist", element);			
+			
+			for (int i = 0; i < 5; i++) {
+				element = assertStartElement(TAG_OTU, reader);
+				assertAttributeCount(3, element);
+				assertAttribute(ATTR_ID, element);
+				assertAttribute(ATTR_ABOUT, element);
+				assertAttribute(ATTR_LABEL, "taxon" + i, element);				
+				assertEndElement(TAG_OTU, reader);
+			}
+			
+			assertEndElement(TAG_OTUS, reader);
+			
+			assertEndElement(TAG_ROOT, reader);
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	@Test
+	public void testWritingCustomXMLManageNamespaces() throws IOException, XMLStreamException, FactoryConfigurationError {
+		File file = new File("data/testOutput/NeXMLTest.xml");
+		XMLEventFactory factory = XMLEventFactory.newInstance();
+		boolean writeMetadata = false;
+		boolean writeSets = false;
+		
+		// Add OTU list to document data adapter
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();
+		document.getOTUListsMap().put(otuListID, createOTUList(otuListID, writeMetadata, writeSets));
+		
+		// Add custom XML to document adapter
+		document.getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
+				new URIOrStringIdentifier(null, new QName("http://example.org/", "hasCustomXML", "ex")), "customXML",
+				new URIOrStringIdentifier(null, new QName(XMLReadWriteUtils.NAMESPACE_RDF, "Literal")), LiteralContentSequenceType.XML));
+		
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("characters"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("ex", "http://example.com/", "customTag"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createNamespace("ex", "http://example.com/"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("some more"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("ex", "http://example.com/", "nestedTag"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("ex", "http://example.com/", "secondNested"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createAttribute(new QName("http://example.com/", "attribute", "ex"), "true"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("nested content"), true));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "secondNested"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "nestedTag"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("characters"), true));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters(" and even more"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "customTag"), false));
+		
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			
+		// Write file:
+		NeXMLEventWriter writer = new NeXMLEventWriter();
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, new URL("http://www.exampleApplication.com"));
+		parameters.put(ReadWriteParameterMap.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA, TokenDefinitionLabelHandling.BOTH);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
+		writer.writeDocument(document, file, parameters);
+		
+		// Validate file:
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		try {
+			StartElement element;
+			
+			assertStartDocument(reader);
+			
+			element = assertStartElement(TAG_ROOT, reader);
+			assertNamespaceCount(7, element);
+			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+			String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_NAMESPACE_PREFIX), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);			
+			String prefixRDF = assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
+			String prefix1 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix2 = assertNamespace(new QName("http://example.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			
+			assertAttributeCount(2, element);
+			assertAttribute(ATTR_VERSION, "0.9", element);
+			
+			String generator = assertAttribute(ATTR_GENERATOR, element);
+			assertTrue(generator, generator.matches(
+					"exampleApplication 1.0 using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+"));
+			
+			assertTrue(reader.hasNext());		
+			XMLEvent event = reader.nextEvent();			
+			assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+			assertTrue(((Comment)event).getText().matches(
+					" This file was generated by exampleApplication 1.0 <http://www.exampleApplication.com> using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+			
+			element = assertStartElement(TAG_META, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);	
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
+			assertAttribute(ATTR_PROPERTY, prefix1 + XMLUtils.QNAME_SEPARATOR + "hasCustomXML", element);
+			assertAttribute(ATTR_DATATYPE, prefixRDF + XMLUtils.QNAME_SEPARATOR + "Literal", element);
+			assertAttribute(ATTR_CONTENT, "customXML", element);
+			
+			assertCharactersEvent("characters", reader);
+			assertStartElement(new QName("http://example.com/", "customTag", prefix2), reader);			
+			assertCharactersEvent("some more", reader);
+			assertStartElement(new QName("http://example.com/", "nestedTag", prefix2), reader);
+			StartElement customTag = assertStartElement(new QName("http://example.com/", "secondNested", prefix2), reader);
+			assertAttribute(new QName("http://example.com/", "attribute", prefix2), "true", customTag);
+			assertCharactersEvent("nested content", reader);
+			assertEndElement(new QName("http://example.com/", "secondNested", prefix2), reader);
+			assertEndElement(new QName("http://example.com/", "nestedTag", prefix2), reader);
+			assertCharactersEvent("characters and even more", reader);
+			assertEndElement(new QName("http://example.com/", "customTag", prefix2), reader);		
+			
+			assertEndElement(TAG_META, reader);
+			
+			element = assertStartElement(TAG_OTUS, reader);
+			assertAttributeCount(3, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "taxonlist", element);			
+			
+			for (int i = 0; i < 5; i++) {
+				element = assertStartElement(TAG_OTU, reader);
+				assertAttributeCount(3, element);
+				assertAttribute(ATTR_ID, element);
+				assertAttribute(ATTR_ABOUT, element);
+				assertAttribute(ATTR_LABEL, "taxon" + i, element);				
+				assertEndElement(TAG_OTU, reader);
+			}
+			
+			assertEndElement(TAG_OTUS, reader);
+			
+			assertEndElement(TAG_ROOT, reader);
+			
+			assertEndDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
 	public void testWriteDocumentLinkedElementMissing() throws IOException, XMLStreamException, FactoryConfigurationError {
 		File file = new File("data/testOutput/NeXMLTest.xml");
 		boolean writeMetadata = false;
@@ -898,6 +1156,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+			parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 			
 			writer.writeDocument(document, file, parameters);
 			fail("Exception not thrown");
@@ -933,6 +1192,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+			parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 			
 			writer.writeDocument(document, file, parameters);
 			fail("Exception not thrown");		
@@ -1032,6 +1292,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+			parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 			
 			writer.writeDocument(document, file, parameters);
 			fail("Exception not thrown");
@@ -1115,6 +1376,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+			parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 			
 			writer.writeDocument(document, file, parameters);
 			fail("Exception not thrown");
@@ -1269,6 +1531,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
@@ -1735,6 +1998,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writer.writeDocument(document, file, parameters);
 		
 		// Validate file:
