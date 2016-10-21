@@ -154,8 +154,13 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	}
 	
 	
-	public boolean hasValue() { //TODO doesn't this method always return true?
-		return (getStringValue() != null) || (getObjectValue() != null);
+	public boolean hasStringValue() {
+		return (getStringValue() != null);
+	}
+	
+	
+	public boolean hasObjectValue() {
+		return (getObjectValue() != null);
 	}
 	
 	

@@ -110,7 +110,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (writeContent && event.hasValue()) {
+		if (writeContent) {
 			if (hasSimpleContent()) {
 				String value = null;
 				
