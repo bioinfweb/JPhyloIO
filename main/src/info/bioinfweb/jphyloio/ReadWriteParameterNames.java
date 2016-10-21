@@ -214,6 +214,7 @@ public interface ReadWriteParameterNames {
 	 * if present.
 	 */
 	public static final String KEY_USE_OTU_LABEL = KEY_PREFIX + "useOTULabel";
+	// This parameter is not used in Nexus, since Nexus forces OTUs and their according sequences or nodes to have identical labels.
 	
 	/** 
 	 * Identifies the name of the application generating the output. This information, as well as the application URL and version, 
