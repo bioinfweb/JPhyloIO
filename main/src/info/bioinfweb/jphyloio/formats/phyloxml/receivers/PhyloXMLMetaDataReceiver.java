@@ -187,8 +187,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		}
 		
 		getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
-				XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), predicate.getURI().getPrefix(), 
-						predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());		
+				getStreamDataProvider().getWriter().getPrefix(predicate.getURI().getNamespaceURI()) + ":" + predicate.getURI().getLocalPart());		
 		
 		if ((datatype == null) || (datatype.getURI() == null)) {
 			datatype = new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING);
@@ -291,7 +290,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		
 		String value = null;
 		
-		if ((event.getObjectValue() != null)) {
+		if (event.hasObjectValue()) {
 			if ((translator != null)) {
 				if (translator.hasStringRepresentation()) {
 					try {
@@ -303,7 +302,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 					}
 				}
 			}
-			else if (event.getStringValue() != null) {
+			else if (event.hasStringValue()) {
 				value = event.getStringValue();  // It is not validated if the string value has the correct format as required by the datatype
 			}
 			else {

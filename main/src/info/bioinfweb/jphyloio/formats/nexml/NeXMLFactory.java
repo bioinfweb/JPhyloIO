@@ -160,6 +160,7 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_APPLICATION_URL);
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_NEXML_TOKEN_DEFINITION_LABEL);
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING);
 		
 		return new DefaultFormatInfo(this, NEXML_FORMAT_ID, NEXML_FORMAT_NAME, 
 				supportedContentTypes, supportedContentTypes,	supportedMetadataModeling, supportedMetadataModeling,

@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
+import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -109,11 +110,11 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 			if ((ref != null) && (datatype != null)) {
 				getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());	
 				
-				getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), 
-						ref.getPrefix(), ref.getNamespaceURI()) + ":" + ref.getLocalPart());				
+				getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), getStreamDataProvider().getWriter().getPrefix(ref.getNamespaceURI()) 
+						+ XMLUtils.QNAME_SEPARATOR + ref.getLocalPart());				
 				
 				getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
-						+ ":" + datatype.getLocalPart());			
+						+ XMLUtils.QNAME_SEPARATOR + datatype.getLocalPart());			
 				
 				if (appliesTo != null) {
 					getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), appliesTo);

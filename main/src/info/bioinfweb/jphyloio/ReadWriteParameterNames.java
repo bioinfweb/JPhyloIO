@@ -345,8 +345,8 @@ public interface ReadWriteParameterNames {
 	 * PhyloXML file should always be considered as trees or networks. In the first case, "clade relation" tags 
 	 * contained in a phylogeny will only be represented as meta information, not as additional edge events.
 	 * <p>
-	  * The value should have the type {@link Boolean}. If {@code false} or no value is specified, a phylogeny will 
-	  * always be considered as a network. If {@code true} is specified, it will always be considered as a tree. 
+	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, a phylogeny will 
+	 * always be considered as a network. If {@code true} is specified, it will always be considered as a tree. 
 	 */
 	public static final String KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE = KEY_PREFIX + "considerPhylogenyAsTree";
 	
@@ -354,8 +354,18 @@ public interface ReadWriteParameterNames {
 	 * This parameter will only be used by {@link PhyloXMLEventWriter} and allows to define which metadata events from 
 	 * an adapter should be written.
 	 * <p>
-	  * The value must have the type {@link PhyloXMLMetadataTreatment}. If no value is specified, all metadata events
-	  * will be written sequentially (a possible hierarchical structure will be lost. 
+	 * The value must have the type {@link PhyloXMLMetadataTreatment}. If no value is specified, all metadata events
+	 * will be written sequentially (a possible hierarchical structure will be lost. 
 	 */
-	public static final String KEY_PHYLOXML_METADATA_TREATMENT = KEY_PREFIX + "phyloXMLMetadataTreatment";	
+	public static final String KEY_PHYLOXML_METADATA_TREATMENT = KEY_PREFIX + "phyloXMLMetadataTreatment";
+	
+	/**
+	 * This parameter will be used by XML writers to determine whether namespaces used or declared in customXML shall
+	 * be managed together with other namespaces of the document by the used JPhyloIO writer. Managing may include 
+	 * changing the prefix a namespace is bound to.
+	 * <p>
+	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, the JPhyloIO writer
+	 * will not manage namespaces within custom XML elements. If {@code true} is specified, it will manage them. 
+	 */
+	public static final String KEY_CUSTOM_XML_NAMESPACE_HANDLING = KEY_PREFIX + "customXMLNamespaceHandling";
 }

@@ -83,7 +83,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 			
 		if (event.getPredicate().getURI() != null) {
 			resourceIdentifier = event.getPredicate().getURI();
-			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
+			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getDefaultNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 					resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			
 			if (resourceIdentifier.equals(PREDICATE_PHYLOGENY_ID_ATTR_PROVIDER)) {
@@ -97,7 +97,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 		}
 		else {
 			resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
-			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
+			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getDefaultNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 					resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			
 //			if (event.getSequenceType().equals(LiteralContentSequenceType.XML)) {
@@ -111,9 +111,9 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		hasMetadata = true;
+		XMLReadWriteUtils.manageLiteralContentMetaNamespaces(getStreamDataProvider(), getParameterMap(), event);
 		
-		if (!event.hasXMLEventValue()) {
+		if (event.hasStringValue()) {
 			if (isPhylogenyIDProvider) {
 				getStreamDataProvider().setPhylogenyIDProvider(event.getStringValue());
 				isPhylogenyIDProvider = false;
@@ -122,12 +122,6 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 				getStreamDataProvider().setPhylogenyID(event.getStringValue());
 				isPhylogenyIDValue = false;
 			}
-		}
-		
-		if ((event.getObjectValue() != null) && (event.getObjectValue() instanceof QName)) {
-			QName objectValue = (QName)event.getObjectValue();
-			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), objectValue.getPrefix(), 
-					objectValue.getNamespaceURI()), objectValue.getNamespaceURI());
 		}
 	}
 
@@ -149,7 +143,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 		
 		if (event.getRel().getURI() != null) {
 			resourceIdentifier = event.getRel().getURI();
-			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
+			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getDefaultNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 					resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 			
 			if (resourceIdentifier.equals(PREDICATE_PHYLOGENY_ID)) {
@@ -158,7 +152,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 		}
 		else {
 			resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
-			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
+			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getDefaultNamespacePrefix(getStreamDataProvider().getWriter(), resourceIdentifier.getPrefix(), 
 					resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());				
 		}
 	}

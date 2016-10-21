@@ -146,7 +146,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 			//TODO What happens to XML content events? -> Write test case!
 			
 			if (event.isContinuedInNextEvent() || (currentLiteralValue.length() > 0)) {
-				if ((event.getStringValue() == null) || (event.getObjectValue() != null)) {
+				if (!event.hasStringValue() || event.hasObjectValue()) {
 					throw new IllegalEventException("A literal metadata content event with null as its string representation and/or a non null "
 							+ "object value was encountered, although it specifies to be continued or followes upon a continued string event.", this, 
 							getParentEvent(), event);
@@ -159,7 +159,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 			if (!event.isContinuedInNextEvent()) {
 				String value;
 				Metadata metadata = metadataList.get(metadataList.size() - 1);
-				if (event.getStringValue() == null) {
+				if (!event.hasStringValue()) {
 					ObjectTranslator<?> translator = null;
 					if (metadata.originalType != null) {
 						translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslator(metadata.originalType);

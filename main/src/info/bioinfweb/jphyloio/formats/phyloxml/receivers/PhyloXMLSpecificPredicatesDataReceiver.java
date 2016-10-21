@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.phyloxml.receivers;
 
 
+import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -133,11 +134,12 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 								getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
 							}
 							
-							getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), XMLReadWriteUtils.getNamespacePrefix(getStreamDataProvider().getWriter(), 
-									event.getPredicate().getURI().getPrefix(), event.getPredicate().getURI().getNamespaceURI()) + ":" + event.getPredicate().getURI().getLocalPart());
+							getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
+									getStreamDataProvider().getWriter().getPrefix(event.getPredicate().getURI().getNamespaceURI()) 
+									+ XMLUtils.QNAME_SEPARATOR + event.getPredicate().getURI().getLocalPart());
 							
 							getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
-									+ ":" + event.getOriginalType().getURI().getLocalPart());						
+									+ XMLUtils.QNAME_SEPARATOR + event.getOriginalType().getURI().getLocalPart());						
 						}					
 					}
 					else {
@@ -163,7 +165,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 					writeAppliesTo = false;
 				}
 				
-				if ((event.getObjectValue() != null) && predicates.peek().equals(PREDICATE_COLOR)) {
+				if (event.hasObjectValue() && predicates.peek().equals(PREDICATE_COLOR)) {
 					PhyloXMLColorTranslator colorTranslator = new PhyloXMLColorTranslator();
 					colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
 				}

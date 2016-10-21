@@ -24,6 +24,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
@@ -45,7 +46,6 @@ import java.util.Iterator;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Namespace;
 
 
 
@@ -70,9 +70,8 @@ import javax.xml.stream.events.Namespace;
  * literal meta-events representing these contents. Tags with text only content are represented by 
  * {@link LiteralMetadataEvent}s. This information can also be obtained from the <i>PhyloXML</i> schema.
  * <p>
- * This writer does not manage namespaces of custom XML elements. The application needs to ensure that all used prefixes 
- * (either in any elements, attributes or character data) are properly declared within the custom XML 
- * (e.g. by adding {@link Namespace} events).
+ * Namespaces used or declared in custom XML elements are managed according to {@link ReadWriteParameterNames#KEY_CUSTOM_XML_NAMESPACE_HANDLING}. 
+ * More information about this can be found in the documentation of {@link XMLReadWriteUtils#manageLiteralContentMetaNamespaces()}.
  * <p>
  * Predicates allowed nested under events with {@link EventContentType#TREE} or {@link EventContentType#NETWORK}:
  * {@link PhyloXMLConstants#PREDICATE_PHYLOGENY_ATTR_REROOTABLE}, 
@@ -115,6 +114,7 @@ import javax.xml.stream.events.Namespace;
  *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_VERSION}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_URL}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_PHYLOXML_METADATA_TREATMENT}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_CUSTOM_XML_NAMESPACE_HANDLING}</li>
  * </ul>
  * 
  * @author Sarah Wiechers

@@ -19,14 +19,17 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
-import java.util.Iterator;
-
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 
+import java.util.Iterator;
+
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -84,38 +87,45 @@ public class XMLReadWriteUtils {
 //	}
 	
 	
-	public static String getNamespacePrefix(XMLStreamWriter writer, String givenPrefix, String namespaceURI) throws XMLStreamException {
-		if (givenPrefix == null || givenPrefix.isEmpty()) {
-			givenPrefix = writer.getPrefix(namespaceURI);
-			
-			if (givenPrefix == null || givenPrefix.isEmpty()) {
-				if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)) {
-					givenPrefix = XSI_DEFAULT_PRE;
-				}
-				else if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-					givenPrefix = XSD_DEFAULT_PRE;
-				}
-				else if (namespaceURI.equals(NAMESPACE_RDF)) {
-					givenPrefix = RDF_DEFAULT_PRE;
-				}
-				else if (namespaceURI.equals(NeXMLConstants.NEXML_NAMESPACE)) {
-					givenPrefix = NeXMLConstants.NEXML_DEFAULT_NAMESPACE_PREFIX;
-				}
-				else if (namespaceURI.equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {
-					givenPrefix = PhyloXMLConstants.PHYLOXML_DEFAULT_PRE;
-				}
-				else if (namespaceURI.equals(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE)) {
-					givenPrefix = ReadWriteConstants.JPHYLOIO_PREDICATE_PREFIX;
-				}
-				else if (namespaceURI.equals(ReadWriteConstants.JPHYLOIO_ATTRIBUTES_NAMESPACE)) {
-					givenPrefix = ReadWriteConstants.JPHYLOIO_ATTRIBUTES_PREFIX;
-				}
-				else {
-					givenPrefix = DEFAULT_NAMESPACE_PREFIX;
-				}
-			}			
+	/**
+	 * This method returns a predefined default prefix for a number of namespaces or, if the given namespace does not have a predefined prefix 
+	 * and the given prefix was {@code null}, {@link DEFAULT_NAMESPACE_PREFIX}.
+	 * 
+	 * @param writer the currently used {@link XMLStreamWriter} 
+	 * @param givenPrefix the prefix that shall be bound to a namespace
+	 * @param namespaceURI the namespace a prefix shall be bound to
+	 * @return either the given prefix or a default prefix
+	 * @throws XMLStreamException
+	 */
+	public static String getDefaultNamespacePrefix(XMLStreamWriter writer, String givenPrefix, String namespaceURI) throws XMLStreamException {
+		String result = givenPrefix;
+		
+		if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)) {
+			result = XSI_DEFAULT_PRE;
 		}
-		return givenPrefix;
+		else if (namespaceURI.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+			result = XSD_DEFAULT_PRE;
+		}
+		else if (namespaceURI.equals(NAMESPACE_RDF)) {
+			result = RDF_DEFAULT_PRE;
+		}
+		else if (namespaceURI.equals(NeXMLConstants.NEXML_NAMESPACE)) {
+			result = NeXMLConstants.NEXML_DEFAULT_NAMESPACE_PREFIX;
+		}
+		else if (namespaceURI.equals(PhyloXMLConstants.PHYLOXML_NAMESPACE)) {
+			result = PhyloXMLConstants.PHYLOXML_DEFAULT_PRE;
+		}
+		else if (namespaceURI.equals(ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE)) {
+			result = ReadWriteConstants.JPHYLOIO_PREDICATE_PREFIX;
+		}
+		else if (namespaceURI.equals(ReadWriteConstants.JPHYLOIO_ATTRIBUTES_NAMESPACE)) {
+			result = ReadWriteConstants.JPHYLOIO_ATTRIBUTES_PREFIX;
+		}
+		else if ((result == null) || result.isEmpty()) {
+			result = DEFAULT_NAMESPACE_PREFIX;
+		}
+
+		return result;
 	}
 	
 	
@@ -123,17 +133,33 @@ public class XMLReadWriteUtils {
 		switch (event.getEventType()) {
 			case XMLStreamConstants.START_ELEMENT:
 				StartElement element = event.asStartElement();
-				writer.writeStartElement(element.getName().getNamespaceURI(), element.getName().getLocalPart());  // Writer obtains the correct prefix from its namespace context
+				boolean manageCustomXMLNamespaces = parameters.getBoolean(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING, false);
+				
+				writer.writeStartElement(obtainCustomXMLPrefix(writer, element.getName(), manageCustomXMLNamespaces), element.getName().getLocalPart(), element.getName().getNamespaceURI());
 				
 				// Write attributes
 				@SuppressWarnings("unchecked")
 				Iterator<Attribute> attributes = element.getAttributes();
 				while (attributes.hasNext()) {
-					Attribute attribute = attributes.next();
-					writer.writeAttribute(attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
+					Attribute attribute = attributes.next();					
+					writer.writeAttribute(obtainCustomXMLPrefix(writer, attribute.getName(), manageCustomXMLNamespaces), 
+							attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
 				}
 				
-				//TODO write ns
+				// Write namespace declarations if they define a new default namespace or the according parameter is set to false
+				@SuppressWarnings("unchecked")
+				Iterator<Namespace> namespaces = element.getNamespaces();
+				while (namespaces.hasNext()) {
+					Namespace namespace = namespaces.next();
+					
+					if (namespace.getPrefix().equals("")) {						
+						writer.writeDefaultNamespace(namespace.getNamespaceURI());
+					}
+					else if (!manageCustomXMLNamespaces) {
+						writer.writeNamespace(obtainCustomXMLPrefix(writer, namespace.getName(), manageCustomXMLNamespaces),
+								namespace.getNamespaceURI());
+					}
+				}
 				break;
 			case XMLStreamConstants.END_ELEMENT:
 				writer.writeEndElement();
@@ -147,12 +173,15 @@ public class XMLReadWriteUtils {
 				break;
 			case XMLStreamConstants.ATTRIBUTE:
 				Attribute contentAttribute = ((Attribute)event);
-				writer.writeAttribute(contentAttribute.getName().getPrefix(), contentAttribute.getName().getNamespaceURI(), 
+				writer.writeAttribute(writer.getPrefix(contentAttribute.getName().getNamespaceURI()), contentAttribute.getName().getNamespaceURI(), 
 						contentAttribute.getName().getLocalPart(), contentAttribute.getValue());
 				break;
 			case XMLStreamConstants.NAMESPACE:
 				Namespace contentNamespace = ((Namespace)event);
-				writer.writeNamespace(contentNamespace.getPrefix(), contentNamespace.getNamespaceURI());
+				
+				if (contentNamespace.getPrefix().equals("") || !parameters.getBoolean(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING, false)) {
+					writer.writeNamespace(contentNamespace.getPrefix(), contentNamespace.getNamespaceURI());
+				}
 				break;
 			case XMLStreamConstants.PROCESSING_INSTRUCTION:
 				ProcessingInstruction contentProcessingInstruction = ((ProcessingInstruction)event);
@@ -189,6 +218,79 @@ public class XMLReadWriteUtils {
 				break;
 			default: // START_DOCUMENT and END_DOCUMENT can be ignored
 				break;
+		}
+	}
+	
+	
+	private static String obtainCustomXMLPrefix(XMLStreamWriter writer, QName elementName, boolean manageCustomXMLNamespaces) throws XMLStreamException {
+		if (manageCustomXMLNamespaces) {
+			return writer.getPrefix(elementName.getNamespaceURI());  // Writer obtains the correct prefix from its namespace context if custom XML namespaces are managed
+		}
+		else {
+			return elementName.getPrefix();
+		}
+	}
+	
+	
+	/**
+	 * This method manages namespaces used or declared in any custom XML events depending on the parameter 
+	 * {@link ReadWriteParameterNames#KEY_CUSTOM_XML_NAMESPACE_HANDLING}. In case this parameter is set to {@code false} 
+	 * or not set at all application developers need to make sure that all prefixes used in the custom XML are properly 
+	 * declared within the custom XML. In case it is set to {@code true} it is possible that the prefix a namespace is 
+	 * bound to is altered. In both cases default namespace declarations are written to the according custom XML elements, 
+	 * therefore these are never managed here.
+	 * <p>
+	 * Namespaces used in object values of type {@link QName} are always managed.
+	 * 
+	 * @param streamDataProvider the StreamDataProvider used by the current writer
+	 * @param event the LiteralMetadataContentEvent containing some content
+	 * 
+	 * @throws XMLStreamException if the underlying writer encounters an exception while writing
+	 */
+	public static void manageLiteralContentMetaNamespaces(XMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameters,
+			LiteralMetadataContentEvent event) throws XMLStreamException {
+		
+		QName resourceIdentifier;
+		
+		if (event.hasXMLEventValue()) {
+			
+			if (parameters.getBoolean(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING, false)) {
+				
+				if (event.getXMLEvent().getEventType() == XMLStreamConstants.START_ELEMENT) {
+					StartElement element = event.getXMLEvent().asStartElement();
+					resourceIdentifier = element.getName();					
+
+					streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(),	
+							resourceIdentifier.getPrefix(), resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
+					
+					@SuppressWarnings("unchecked")
+					Iterator<Attribute> attributesIterator = element.getAttributes();
+					while (attributesIterator.hasNext()) {
+						Attribute attribute = attributesIterator.next();
+						resourceIdentifier = attribute.getName();
+						
+						streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
+								resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
+					}
+					
+					@SuppressWarnings("unchecked")
+					Iterator<Namespace> namespaceIterator = element.getNamespaces();
+					while (namespaceIterator.hasNext()) {
+						Namespace namespace = namespaceIterator.next();
+						
+						// Default namespace declarations are always written, so they do not need to be managed here
+						if (!namespace.getPrefix().equals("")) {
+							streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(), namespace.getPrefix(), 
+									namespace.getNamespaceURI()), namespace.getNamespaceURI());
+						}							
+					}					
+				}
+			}
+		}
+		else if (event.hasObjectValue() && (event.getObjectValue() instanceof QName)) {
+			QName objectValue = (QName)event.getObjectValue();
+			streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(), objectValue.getPrefix(), 
+					objectValue.getNamespaceURI()), objectValue.getNamespaceURI());			
 		}
 	}
 }

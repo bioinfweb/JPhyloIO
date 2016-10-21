@@ -124,7 +124,8 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_APPLICATION_NAME);
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_APPLICATION_VERSION);
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_APPLICATION_URL);
-		supportedWriterParameters.add(ReadWriteParameterNames.KEY_PHYLOXML_METADATA_TREATMENT);		
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_PHYLOXML_METADATA_TREATMENT);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING);
 		
 		return new DefaultFormatInfo(this, PHYLOXML_FORMAT_ID, PHYLOXML_FORMAT_NAME, 
 				supportedContentTypes, supportedContentTypes,	supportedMetadataModeling, supportedMetadataModeling,

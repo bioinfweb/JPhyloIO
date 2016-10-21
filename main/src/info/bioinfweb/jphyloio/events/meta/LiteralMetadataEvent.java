@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.events.meta;
 
 
-import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;

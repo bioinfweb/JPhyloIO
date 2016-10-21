@@ -37,6 +37,7 @@ import info.bioinfweb.jphyloio.dataadapters.TreeNetworkGroupDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.UndefinedOTUListDataAdapter;
 import info.bioinfweb.jphyloio.events.CharacterDefinitionEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
@@ -73,7 +74,6 @@ import java.util.TreeSet;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Namespace;
 
 
 
@@ -87,9 +87,8 @@ import javax.xml.stream.events.Namespace;
  * e.g. nested under elements not modeled in <i>JPhyloIO</i>, are ignored by this writer and the nested content is written to the 
  * according position. The ID of a {@link JPhyloIOEvent} will be written to the file unchanged.
  * <p>
- * This writer does not manage namespaces of custom XML elements. The application needs to ensure that all used prefixes 
- * (either in any elements, attributes or character data) are properly declared within the custom XML 
- * (e.g. by adding {@link Namespace} events).
+ * Namespaces used or declared in custom XML elements are managed according to {@link ReadWriteParameterNames#KEY_CUSTOM_XML_NAMESPACE_HANDLING}. 
+ * More information about this can be found in the documentation of {@link XMLReadWriteUtils#manageLiteralContentMetaNamespaces()}.
  * <p>
  * If no OTUs or OTU list are found in the data, but elements that need to reference either of those, the writer will write a 
  * new OTU list or OTU with the ID prefix {@link NeXMLConstants#UNDEFINED_OTU_ID_PREFIX} or 
@@ -117,6 +116,7 @@ import javax.xml.stream.events.Namespace;
  *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_URL}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_NEXML_TOKEN_DEFINITION_LABEL}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_NEXML_TOKEN_DEFINITION_LABEL_METADATA}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_CUSTOM_XML_NAMESPACE_HANDLING}</li>
  * </ul>
  * 
  * @author Sarah Wiechers
