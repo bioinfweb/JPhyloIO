@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
@@ -39,20 +40,22 @@ import java.io.Reader;
 
 
 /**
- * Event based reader for sequential Phylip alignment files.
+ * Event based reader for sequential <i>Phylip</i> alignment files.
  * <p>
- * For parsing non-sequential Phylip files use {@link PhylipEventReader} instaead.
+ * For parsing non-sequential <i>Phylip</i> files use {@link PhylipEventReader} instead.
  * <p>
  * The format is expected to be valid under the definition available here: 
  * <a href="http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles">http://evolution.genetics.washington.edu/phylip/doc/main.html#inputfiles</a>.
- * The extended Phylip format is supported according to this definition:
+ * The extended <i>Phylip</i> format is supported according to this definition:
  * <a href="http://www.phylo.org/index.php/help/relaxed_phylip">http://www.phylo.org/index.php/help/relaxed_phylip</a>.
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
- *   <li>{@link ReadWriteParameterMap#KEY_REPLACE_MATCH_TOKENS}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_RELAXED_PHYLIP}</li>
- *   <li>{@link ReadWriteParameterMap#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MATCH_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_REPLACE_MATCH_TOKENS}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_RELAXED_PHYLIP}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_TOKENS_TO_READ}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver

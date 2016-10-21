@@ -21,19 +21,25 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractSingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
+import info.bioinfweb.jphyloio.formatinfo.MetadataTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 
 
@@ -103,7 +109,9 @@ public abstract class AbstractPhylipFactory extends AbstractSingleReaderWriterFa
 	}
 	
 	
-	protected JPhyloIOFormatInfo createFormatInfo(String formatID, String formatName, String adapterDescription) {
+	protected JPhyloIOFormatInfo createFormatInfo(String formatID, String formatName, Set<String> supportedReaderParameters, 
+			Set<String> supportedWriterParameters, String adapterDescription) {
+		
 		Set<EventContentType> supportedReaderContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
 				EventContentType.META_LITERAL_CONTENT, EventContentType.ALIGNMENT, EventContentType.SEQUENCE, 
 				EventContentType.SEQUENCE_TOKENS);
@@ -111,11 +119,14 @@ public abstract class AbstractPhylipFactory extends AbstractSingleReaderWriterFa
 		Set<EventContentType> supportedWriterContentTypes = EnumSet.copyOf(supportedReaderContentTypes);
 		supportedWriterContentTypes.add(EventContentType.SINGLE_SEQUENCE_TOKEN);
 		
-		return new DefaultFormatInfo(this, formatID, formatName,
-				supportedReaderContentTypes, supportedWriterContentTypes, Collections.<EventContentType, MetadataModeling>emptyMap(), 
-				Collections.<EventContentType, MetadataModeling>emptyMap(),
-				Collections.<String>emptySet(), Collections.<String>emptySet(),
-				new ReadWriteParameterMap(), adapterDescription, "phy", "phylip");
+		Map<EventContentType, MetadataModeling> readerMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
+		readerMetadataModeling.put(EventContentType.ALIGNMENT, new MetadataModeling(MetadataTopologyType.LITERAL_ONLY, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
 		
+		return new DefaultFormatInfo(this, formatID, formatName,
+				supportedReaderContentTypes, supportedWriterContentTypes, 
+				readerMetadataModeling, Collections.<EventContentType, MetadataModeling>emptyMap(),
+				supportedReaderParameters, supportedWriterParameters,
+				new ReadWriteParameterMap(), adapterDescription, "phy", "phylip");
 	}
 }

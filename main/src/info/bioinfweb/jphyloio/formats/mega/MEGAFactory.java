@@ -25,9 +25,9 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
@@ -95,8 +95,11 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 		supportedMetadataModeling.put(EventContentType.ALIGNMENT, new MetadataModeling(MetadataTopologyType.LITERAL_ONLY, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
 		
-		Set<String> supportedReaderParameters = new HashSet<String>();
+		Set<String> supportedReaderParameters = new TreeSet<String>();
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MATCH_TOKEN);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_REPLACE_MATCH_TOKENS);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_TOKENS_TO_READ);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_COMMENT_LENGTH);
 
 		return new DefaultFormatInfo(this, MEGA_FORMAT_ID, MEGA_FORMAT_NAME, 
 				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 

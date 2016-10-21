@@ -94,13 +94,18 @@ import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
  *  
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
+ *   <li>{@link ReadWriteParameterNames#KEY_WRITER_INSTANCE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_NAME}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_VERSION}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_APPLICATION_URL}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LINE_SEPARATOR}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_SEQUENCE_EXTENSION_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_NAME_LENGTH} (If this parameter is omitted, any name length is possible.)</li>
  *   <li>{@link ReadWriteParameterNames#KEY_ALWAYS_WRITE_NEXUS_NODE_LABELS}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_GENERATE_NEXUS_TRANSLATION_TABLE}</li>
- *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_LABEL_EDITING_REPORTER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver

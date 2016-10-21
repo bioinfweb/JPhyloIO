@@ -104,14 +104,21 @@ public class FASTAFactory extends AbstractStartStringSingleFactory implements Si
 		
 		Set<String> supportedReaderParameters = new HashSet<String>();
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MATCH_TOKEN);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_REPLACE_MATCH_TOKENS);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_TOKENS_TO_READ);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_COMMENT_LENGTH);
 
 		Set<String> supportedWriterParameters = new HashSet<String>();
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_WRITER_INSTANCE);
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_SEQUENCE_EXTENSION_TOKEN);
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_LOGGER);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_NAME_LENGTH);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_LABEL_EDITING_REPORTER);
 
 		return new DefaultFormatInfo(this, FASTA_FORMAT_ID, FASTA_FORMAT_NAME,
-				supportedReaderContentTypes, supportedWriterContentTypes, Collections.<EventContentType, MetadataModeling>emptyMap(), 
-				Collections.<EventContentType, MetadataModeling>emptyMap(),	supportedReaderParameters, supportedWriterParameters,
+				supportedReaderContentTypes, supportedWriterContentTypes, 
+				Collections.<EventContentType, MetadataModeling>emptyMap(), Collections.<EventContentType, MetadataModeling>emptyMap(),
+				supportedReaderParameters, supportedWriterParameters,
 				new ReadWriteParameterMap(), "FASTA format", "fasta", "fas", "fa", "fas", "fna", "ffn", "faa", "frn");
 	}
 }

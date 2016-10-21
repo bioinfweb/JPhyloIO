@@ -44,6 +44,9 @@ import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
  * Additionally this reader is able to parse hot comments associated with nodes or edges as described in the 
  * documentation of {@link NewickStringReader}.
  * 
+ * <h3><a id="parameters"></a>Recognized parameters</h3>
+ * None. 
+ * 
  * @author Ben St&ouml;ver
  */
 public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamDataProvider<NewickEventReader>> 
@@ -73,7 +76,7 @@ public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamD
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
 	public NewickEventReader(BufferedReader reader, ReadWriteParameterMap parameters) throws IOException {
-		super(reader, parameters, parameters.getMatchToken());
+		super(reader, parameters, null);
 		init();
 	}
 
@@ -86,7 +89,7 @@ public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamD
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
 	public NewickEventReader(File file, ReadWriteParameterMap parameters) throws IOException {
-		super(file, parameters, parameters.getMatchToken());
+		super(file, parameters, null);
 		init();
 	}
 
@@ -99,7 +102,7 @@ public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamD
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
 	public NewickEventReader(InputStream stream, ReadWriteParameterMap parameters) throws IOException {
-		super(stream, parameters, parameters.getMatchToken());
+		super(stream, parameters, null);
 		init();
 	}
 
@@ -112,7 +115,7 @@ public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamD
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
 	public NewickEventReader(Reader reader, ReadWriteParameterMap parameters) throws IOException {
-		super(reader, parameters, parameters.getMatchToken());
+		super(reader, parameters, null);
 		init();
 	}
 	

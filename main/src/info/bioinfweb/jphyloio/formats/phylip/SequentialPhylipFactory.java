@@ -21,11 +21,15 @@ package info.bioinfweb.jphyloio.formats.phylip;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 
@@ -52,6 +56,14 @@ public class SequentialPhylipFactory extends AbstractPhylipFactory {
 	
 	@Override
 	protected JPhyloIOFormatInfo createFormatInfo() {
-		return createFormatInfo(SEQUENTIAL_PHYLIP_FORMAT_ID, SEQUENTIAL_PHYLIP_FORMAT_NAME, "Sequential Phylip format");
+		Set<String> readerParameters = new TreeSet<String>();
+		readerParameters.add(ReadWriteParameterNames.KEY_MATCH_TOKEN);
+		readerParameters.add(ReadWriteParameterNames.KEY_REPLACE_MATCH_TOKENS);
+		readerParameters.add(ReadWriteParameterNames.KEY_RELAXED_PHYLIP);
+		readerParameters.add(ReadWriteParameterNames.KEY_LOGGER);
+		readerParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_TOKENS_TO_READ);
+
+		return createFormatInfo(SEQUENTIAL_PHYLIP_FORMAT_ID, SEQUENTIAL_PHYLIP_FORMAT_NAME, readerParameters, Collections.<String> emptySet(), 
+				"Sequential Phylip format");
 	}
 }

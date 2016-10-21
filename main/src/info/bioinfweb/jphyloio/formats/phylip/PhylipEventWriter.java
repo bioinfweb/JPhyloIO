@@ -37,21 +37,21 @@ import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
 
 /**
- * Event based writer for the Phylip format.
+ * Event based writer for the <i>Phylip</i> format.
  * <p>
- * This write is able to write sequence data to Phylip formatted streams. It will ignore any data for phylogenetic
- * trees and networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator(ReadWriteParameterMap)}, because the Phylip 
+ * This write is able to write sequence data to <i>Phylip</i> formatted streams. It will ignore any data for phylogenetic
+ * trees and networks that are provided by {@link DocumentDataAdapter#getTreeNetworkIterator(ReadWriteParameterMap)}, because the <i>Phylip</i> 
  * format does not support such data.
  * <p>
- * Note that sequence names may have to be edited according to the (length) constrains the Phylip format imposes.
+ * Note that sequence names may have to be edited according to the (length) constrains the <i>Phylip</i> format imposes.
  * According edits can be obtained using the {@link LabelEditingReporter} which is returned via the parameters map
  * (using {@link ReadWriteParameterNames#KEY_LABEL_EDITING_REPORTER}).
  * <p>
- * Since Phylip does not support OTU or taxon lists as well, such a list (if provided by 
+ * Since <i>Phylip</i> does not support OTU or taxon lists as well, such a list (if provided by 
  * {@link DocumentDataAdapter#getOTUListIterator(ReadWriteParameterMap)}) will also not be written. OTU definitions (if present) will though 
  * be used, if a sequence with a linked OTU ID but without a label is specified. In such cases 
  * {@link OTUListDataAdapter#getOTUStartEvent(String)} will be used to determine the according OTU label. If that OTU
- * label is also {@code null}, the sequence ID will be used as the sequence name in Phylip.
+ * label is also {@code null}, the sequence ID will be used as the sequence name in <i>Phylip</i>.
  * <p>
  * Comments and metadata nested in any of the supported elements will be ignored. 
  * <p>
@@ -61,6 +61,9 @@ import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
  *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_NAME_LENGTH}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_LABEL_EDITING_REPORTER}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LINE_SEPARATOR}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_NAME_LENGTH} (If this parameter is omitted, {@link PhylipConstants#DEFAULT_NAME_LENGTH} will be used.)</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LABEL_EDITING_REPORTER}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver

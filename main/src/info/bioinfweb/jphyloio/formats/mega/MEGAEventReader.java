@@ -57,11 +57,17 @@ import javax.xml.namespace.QName;
 
 
 /**
- * Event based reader for MEGA alignment files.
+ * Event based reader for <i>MEGA</i> alignment files.
+ * <p>
+ * In addition to alignment data (including match token replacement) this reader also supports the {@value MEGAConstants#COMMAND_NAME_LABEL}, 
+ * {@value MEGAConstants#COMMAND_NAME_GENE} and {@value MEGAConstants#COMMAND_NAME_DOMAIN} commands and models their data as character sets.
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link ReadWriteParameterNames#KEY_MATCH_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_REPLACE_MATCH_TOKENS}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_TOKENS_TO_READ}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_COMMENT_LENGTH}</li>
  * </ul>
 
  * @author Ben St&ouml;ver

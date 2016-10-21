@@ -71,6 +71,9 @@ import java.util.List;
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
  *   <li>{@link ReadWriteParameterNames#KEY_MATCH_TOKEN}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_REPLACE_MATCH_TOKENS}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_TOKENS_TO_READ}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_COMMENT_LENGTH}</li>
  * </ul>
  * 
  * @author Ben St&ouml;ver

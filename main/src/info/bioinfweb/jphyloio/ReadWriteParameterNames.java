@@ -133,10 +133,10 @@ public interface ReadWriteParameterNames {
 	public static final String KEY_RELAXED_PHYLIP = KEY_PREFIX + "relaxedPhylip";
 
 	/** 
-	 * Parameter which determines whether interleaved input files (e.g. in Phylip) shall be supported by this parser 
-	 * instance. (In order to support this feature some readers need to keep a list of all sequence names. To parse 
-	 * files with a very large number of sequences which are not interleaved, this feature can be switched off to save 
-	 * memory. If this switch is set to {@code true} non-interleaved files can also still be parsed.)
+	 * Parameter which determines whether interleaved input files (currently only in Phylip) shall be supported by this 
+	 * parser instance. (In order to support this feature some readers need to keep a list of all sequence names. To 
+	 * parse files with a very large number of sequences which are not interleaved, this feature can be switched off to 
+	 * save memory. If this switch is set to {@code true} non-interleaved files can also still be parsed.)
 	 * <p>
 	 * Note that not all readers for possibly interleaved formats will make use of this parameter. (Refer to the single
 	 * reader documentations for details.)
@@ -286,16 +286,13 @@ public interface ReadWriteParameterNames {
 	
 	/**
 	 * This parameter can be used to specify a custom maximum lengths for element names. An example would be the length
-	 * of sequence names in Phylip, which may be customized using this parameter.
+	 * of sequence names in <i>Phylip</i>, which may be customized using this parameter.
 	 * <p>
-	 * The value should have an integer type (e.g. {@link Integer}). Writers that support this parameter will us a default
-	 * length if this parameter is omitted. Only writers for formats that impose length restrictions will make use of this
-	 * parameter. Note that some formats may define a fixed maximum length and specifying this parameter may lead to a
-	 * deviation from the standards of this format. Refer to the documentation of the according writer for details in that. 
+	 * The value should have an integer type (e.g. {@link Integer}). Note that some formats may define a fixed maximum 
+	 * length and specifying this parameter may lead to a deviation from the standards of this format. Refer to the 
+	 * documentation of the according writer for details in that. 
 	 */
 	public static final String KEY_MAXIMUM_NAME_LENGTH = KEY_PREFIX + "maximumNameLength";
-	//TODO Should formats that can use any lengths and formats that usually impose a defined length be using separate parameters to avoid accidental deviation from format standards?
-	//     (Since currently Phylip should be the only relevant format here, only one parameter would currently be needed and that is more a question of which definition to use in the documentation.)
 	
 	/**
 	 * This parameter can be used to specify whether a {@code TRANSLATE} command should be included in the {@code TREES}

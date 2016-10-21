@@ -22,9 +22,12 @@ package info.bioinfweb.jphyloio.formats.phylip;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Set;
+import java.util.TreeSet;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 
 
@@ -52,6 +55,23 @@ public class PhylipFactory extends AbstractPhylipFactory {
 	
 	@Override
 	protected JPhyloIOFormatInfo createFormatInfo() {
-		return createFormatInfo(PHYLIP_FORMAT_ID, PHYLIP_FORMAT_NAME, "Phylip format (non-sequential)");
+		Set<String> readerParameters = new TreeSet<String>();
+		readerParameters.add(ReadWriteParameterNames.KEY_MATCH_TOKEN);
+		readerParameters.add(ReadWriteParameterNames.KEY_REPLACE_MATCH_TOKENS);
+		readerParameters.add(ReadWriteParameterNames.KEY_RELAXED_PHYLIP);
+		readerParameters.add(ReadWriteParameterNames.KEY_ALLOW_INTERLEAVED_PARSING);
+		readerParameters.add(ReadWriteParameterNames.KEY_LOGGER);
+		readerParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_TOKENS_TO_READ);
+
+		Set<String> writerParameters = new TreeSet<String>();
+		writerParameters.add(ReadWriteParameterNames.KEY_SEQUENCE_EXTENSION_TOKEN);
+		writerParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_NAME_LENGTH);
+		writerParameters.add(ReadWriteParameterNames.KEY_LABEL_EDITING_REPORTER);
+		writerParameters.add(ReadWriteParameterNames.KEY_LOGGER);
+		writerParameters.add(ReadWriteParameterNames.KEY_LINE_SEPARATOR);
+		writerParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_NAME_LENGTH);
+		writerParameters.add(ReadWriteParameterNames.KEY_LABEL_EDITING_REPORTER);
+
+		return createFormatInfo(PHYLIP_FORMAT_ID, PHYLIP_FORMAT_NAME, readerParameters, writerParameters, "Phylip format (non-sequential)");
 	}
 }

@@ -24,6 +24,7 @@ import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.commons.io.PeekReader.ReadResult;
 import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
@@ -103,6 +104,16 @@ import java.io.Reader;
  * <p>
  * It is possible to extend the functionality of this reader by adding custom implementations of {@link NexusBlockHandler}
  * or {@link NexusCommandEventReader}.
+ * 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterNames#KEY_NEXUS_BLOCK_HANDLER_MAP}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_NEXUS_COMMAND_READER_FACTORY}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_CREATE_UNKNOWN_COMMAND_EVENTS}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_TOKENS_TO_READ}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_COMMENT_LENGTH}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_REPLACE_MATCH_TOKENS}</li>
+ * </ul>
  * 
  * @author Ben St&ouml;ver
  */

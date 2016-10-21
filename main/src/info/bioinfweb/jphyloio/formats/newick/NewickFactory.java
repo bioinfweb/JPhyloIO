@@ -23,18 +23,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.AbstractSingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.factory.SingleReaderWriterFactory;
 import info.bioinfweb.jphyloio.formatinfo.DefaultFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
+import info.bioinfweb.jphyloio.formatinfo.MetadataTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 
@@ -113,10 +119,26 @@ public class NewickFactory extends AbstractSingleReaderWriterFactory implements 
 		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
 				EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.TREE_NETWORK_GROUP, 
 				EventContentType.TREE, EventContentType.NODE, EventContentType.EDGE, EventContentType.ROOT_EDGE);
+		
+		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
+		supportedMetadataModeling.put(EventContentType.NODE, new MetadataModeling(MetadataTopologyType.LITERAL_ONLY, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.ROOT_EDGE, new MetadataModeling(MetadataTopologyType.LITERAL_ONLY, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		supportedMetadataModeling.put(EventContentType.EDGE, new MetadataModeling(MetadataTopologyType.LITERAL_ONLY, 
+				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
+		
+		Set<String> supportedWriterParameters = new TreeSet<String>();
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_WRITER_INSTANCE);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_LOGGER);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_NAME_LENGTH);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_LABEL_EDITING_REPORTER);
+		supportedWriterParameters.add(ReadWriteParameterNames.KEY_OBJECT_TRANSLATOR_FACTORY);
+		
 		return new DefaultFormatInfo(this, NEWICK_FORMAT_ID, NEWICK_FORMAT_NAME, 
-				supportedContentTypes, supportedContentTypes,	Collections.<EventContentType, MetadataModeling>emptyMap(), 
-				Collections.<EventContentType, MetadataModeling>emptyMap(),
-				Collections.<String>emptySet(), Collections.<String>emptySet(),
+				supportedContentTypes, supportedContentTypes,	
+				supportedMetadataModeling, supportedMetadataModeling, 
+				Collections.<String>emptySet(), supportedWriterParameters,
 				new ReadWriteParameterMap(), "Newick tree format", "nwk", "newick", "tre", "tree", "con");
 	}
 }

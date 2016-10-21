@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.OTUListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
@@ -37,6 +38,16 @@ import java.util.Iterator;
 
 /**
  * Event writer for the Newick format.
+ * 
+ * <h3><a id="parameters"></a>Recognized parameters</h3> 
+ * <ul>
+ *   <li>{@link ReadWriteParameterNames#KEY_WRITER_INSTANCE}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LOGGER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LINE_SEPARATOR}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_NAME_LENGTH} (If this parameter is omitted, any name length is possible.)</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_LABEL_EDITING_REPORTER}</li>
+ *   <li>{@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}</li>
+ * </ul>
  * 
  * @author Ben St&ouml;ver
  * @see 0.0.0
