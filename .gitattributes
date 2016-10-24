@@ -363,7 +363,6 @@ main/src/info/bioinfweb/jphyloio/utils/JPhyloIOEventFactory.java -text svneol=un
 main/src/info/bioinfweb/jphyloio/utils/JPhyloIOReadingUtils.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/JPhyloIOWritingUtils.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/LabelEditingReporter.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/utils/NumberedIDsIterator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/SequenceTokensEventManager.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/TopoplogicalNodeInfo.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/TreeTopologyExtractor.java -text svneol=unset#text/plain
