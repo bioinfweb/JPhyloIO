@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.demo.simplealignment;
 
 
+import info.bioinfweb.commons.collections.NumberedStringsIterator;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -27,7 +28,6 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.NoCharDefsNoSetsMatr
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.utils.NumberedIDsIterator;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -96,7 +96,7 @@ public class MatrixDataAdapterImpl extends NoCharDefsNoSetsMatrixDataAdapter imp
 		// The sequence IDs used in this adapter will all start with a common prefix followed by the index the respective sequence has
 		// in the application business model.
 		
-		return new NumberedIDsIterator(ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX, model.size());
+		return new NumberedStringsIterator(ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX, model.size());
 	}
 	
 	
@@ -108,7 +108,7 @@ public class MatrixDataAdapterImpl extends NoCharDefsNoSetsMatrixDataAdapter imp
 	 * @return the respective index in the application business model
 	 */
 	private int sequenceIndexByID(String sequenceID) {
-		return (int)NumberedIDsIterator.extractIndexFromID(sequenceID, ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX);
+		return (int)NumberedStringsIterator.extractIndexFromID(sequenceID, ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX);
 	}
 	
 
