@@ -68,7 +68,7 @@ public abstract class NodeEdgeDataAdapter<E extends LabeledIDEvent> implements O
 	
 	@Override
 	public E getObjectStartEvent(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException {
-		int index = (int)NumberedStringsIterator.extractIndexFromID(id, idPrefix);
+		int index = NumberedStringsIterator.extractIntIndexFromString(id, idPrefix);
 		return createEvent(id, index, nodes.get(index));
 	}
 
