@@ -108,7 +108,7 @@ public class MatrixDataAdapterImpl extends NoCharDefsNoSetsMatrixDataAdapter imp
 	 * @return the respective index in the application business model
 	 */
 	private int sequenceIndexByID(String sequenceID) {
-		return (int)NumberedStringsIterator.extractIndexFromID(sequenceID, ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX);
+		return NumberedStringsIterator.extractIntIndexFromString(sequenceID, ReadWriteConstants.DEFAULT_SEQUENCE_ID_PREFIX);
 	}
 	
 
