@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.utils;
 
 
-import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 
 import java.util.Iterator;
