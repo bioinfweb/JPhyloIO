@@ -36,6 +36,12 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * Element reader that is used to process the character content of <i>PhyloXML</i> tags.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class PhyloXMLCharactersElementReader extends AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider> {
 	private QName datatype;
 	

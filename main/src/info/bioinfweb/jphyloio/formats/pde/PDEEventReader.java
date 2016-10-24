@@ -45,6 +45,7 @@ import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
 
 import java.awt.Color;
@@ -588,6 +589,8 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						}
 					}
 			});
+		
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
 	}
 	
 	

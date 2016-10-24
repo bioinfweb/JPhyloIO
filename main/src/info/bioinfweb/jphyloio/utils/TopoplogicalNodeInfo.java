@@ -24,6 +24,13 @@ import java.util.List;
 
 
 
+/**
+ * This class is used by {@link TreeTopologyExtractor} to model a node in a phylogenetic tree or network.
+ * 
+ * @see TreeTopologyExtractor
+ * @author Sarah Wiechers
+ *
+ */
 public class TopoplogicalNodeInfo {
 	private String parentNodeID;
 	private List<String> childNodeIDs = new ArrayList<String>();

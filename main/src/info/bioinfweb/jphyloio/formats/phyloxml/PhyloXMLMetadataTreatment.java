@@ -19,15 +19,46 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 
+
+
+/**
+ * Instances of this enum can be used as parameter values for {@link ReadWriteParameterNames#KEY_PHYLOXML_METADATA_TREATMENT}.
+ * It enumerates ways how metadata from hierarchical metadata structures shall be written to a <i>PhyloXML</i> document. 
+ * This is necessary, since it is not possible to write nested annotations in a <i>PhyloXML</i> document.
+ * 
+ * @author Sarah Wiechers
+ * @see ReadWriteParameterNames#KEY_PHYLOXML_METADATA_TREATMENT
+ * @see PhyloXMLEventWriter
+ * @since 0.0.0
+ */
 public enum PhyloXMLMetadataTreatment {
+	/**
+	 * The contents of all hierarchically structured meta events are written to the file in a sequential order. 
+	 * Information about the structure gets lost, while all contents are written to the file.
+	 */
 	SEQUENTIAL,
 	
+	/**
+	 * Only the contents of meta events on the top level of a hierarchical structure are written to the file, if they 
+	 * had further events nested under them. The contents of the nested events are not written to the file.
+	 */
 	TOP_LEVEL_WITH_CHILDREN,
 	
+	/**
+	 * Only the contents of meta events on the top level of a hierarchical structure are written to the file, if they 
+	 * do not have further events nested under them.
+	 */
 	TOP_LEVEL_WITHOUT_CHILDREN,
 	
+	/**
+	 * Only the contents of meta events without any nested events are written to teh file.
+	 */
 	ONLY_LEAFS,
 	
+	/**
+	 * The content of meta events is not written to the file.
+	 */
 	NONE;
 }

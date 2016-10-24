@@ -19,10 +19,11 @@
 package info.bioinfweb.jphyloio.formats.xml.elementreaders;
 
 
-import java.io.IOException;
-
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
+
+import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Comment;
@@ -30,6 +31,12 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * Element reader that is commonly used by {@link JPhyloIOXMLEventReader}s to process comments.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 @SuppressWarnings("rawtypes")
 public class CommentElementReader extends AbstractXMLElementReader {	                                                                
 	@SuppressWarnings("unchecked")

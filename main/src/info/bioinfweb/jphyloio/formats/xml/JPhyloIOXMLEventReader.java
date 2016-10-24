@@ -25,6 +25,12 @@ import javax.xml.namespace.NamespaceContext;
 
 
 
+/**
+ * Interface providing basic functionality for all JPhyloIO readers of XML formats.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public interface JPhyloIOXMLEventReader extends JPhyloIOEventReader {
 	/**
 	 * Returns the namespace context that is valid at the current position of the document. The returned value therefore may change with 

@@ -31,6 +31,14 @@ import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Abstract implementation of a data receiver that can be used to write XML formats.
+ * <p>
+ * Functionality implemented here is commonly used by inheriting receivers.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public abstract class AbstractXMLDataReceiver<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> extends BasicEventReceiver<P> {
 	public AbstractXMLDataReceiver(P streamDataProvider, ReadWriteParameterMap parameterMap) {
 		super(streamDataProvider, parameterMap);

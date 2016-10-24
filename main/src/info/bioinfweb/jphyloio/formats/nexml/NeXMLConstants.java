@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 
 
 /**
- * Defines constants necessary to read and write NeXML files.
+ * Defines constants necessary to read and write <i>NeXML</i> files.
  * 
  * @author Sarah Wiechers
  */

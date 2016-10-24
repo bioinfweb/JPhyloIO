@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.xml;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
 
 import java.util.Queue;
 import java.util.Stack;
@@ -30,6 +31,12 @@ import javax.xml.stream.XMLEventReader;
 
 
 
+/**
+ * Stores data that shall be shared among different implementations of {@link XMLElementReader}
+ * reading from the same document.
+ * 
+ * @author Sarah Wiechers
+ */
 public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLReaderStreamDataProvider<R>>> extends ReaderStreamDataProvider<R> {	
 	private String parentName;
 	private String elementName;

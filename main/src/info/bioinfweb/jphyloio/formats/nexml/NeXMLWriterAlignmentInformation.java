@@ -19,17 +19,23 @@
 package info.bioinfweb.jphyloio.formats.nexml;
 
 
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import info.bioinfweb.commons.bio.CharacterStateSetType;
-import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
-
+/**
+ * Class that is used by {@link NeXMLEventWriter} to store information about an alignment.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class NeXMLWriterAlignmentInformation implements NeXMLConstants {
 	private boolean writeAlignment = true;	
 	private boolean writeCellsTags;

@@ -21,17 +21,42 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 /**
- * The structure a PhyloXML property-element belongs to. 
+ * This enum is used by {@link PhyloXMLEventWriter} to give data receivers information about the data element 
+ * the contents of a meta event belong to.
  * 
  * @author Sarah Wiechers
  *
  */
 public enum PropertyOwner {
-	PHYLOGENY,	
-	CLADE,	
-	NODE,	
-	ANNOTATION,	
-	PARENT_BRANCH,	
+	
+	/**
+	 * The metadata belongs to a phylogenetic tree or network.
+	 */
+	PHYLOGENY,
+	
+	/**
+	 * The metadata belongs to a node or edge.
+	 */
+	CLADE,
+	
+	/**
+	 * The metadata belongs to a node.
+	 */
+	NODE,
+	
+	/**
+	 * The metadata belongs to a sequence annotation.
+	 */
+	ANNOTATION,
+	
+	/**
+	 * The metadata belongs to an edge.
+	 */
+	PARENT_BRANCH,
+	
+	/**
+	 * The metadata belongs to an element different from those mentioned above.
+	 */
 	OTHER;
 	
 	

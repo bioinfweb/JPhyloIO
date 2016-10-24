@@ -49,6 +49,7 @@ import javax.xml.stream.XMLStreamException;
  * Reader and writer factory for the <a href="http://bioinfweb.info/xmlns/xtg">XTG</a> format.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
  * @since 0.0.0
  */
 public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhyloIOFormatIDs {

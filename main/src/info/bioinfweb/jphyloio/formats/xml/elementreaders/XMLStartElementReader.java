@@ -38,6 +38,12 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * Element reader that is used to process XML start elements.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 @SuppressWarnings("rawtypes")
 public class XMLStartElementReader extends AbstractXMLElementReader {
 	private QName literalPredicate;

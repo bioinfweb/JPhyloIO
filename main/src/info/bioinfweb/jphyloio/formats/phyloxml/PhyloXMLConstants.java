@@ -25,6 +25,11 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Defines constants necessary to read and write <i>PhyloXML</i> files.
+ * 
+ * @author Sarah Wiechers
+ */
 public interface PhyloXMLConstants {
 	public static final String PHYLOXML_FORMAT_NAME = "PhyloXML";
 	public static final String PHYLOXML_DEFAULT_PRE = "phy";

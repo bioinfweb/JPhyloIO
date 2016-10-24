@@ -23,6 +23,13 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Class that is used as a value in {@link PhyloXMLWriterStreamDataProvider#getPredicateInfoMap()}. It stores information 
+ * about the way a predicate shall be translated to a <i>PhyloXML</i> specific tag.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class PhyloXMLPredicateInfo {
 	private PhyloXMLPredicateTreatment treatment;
 	private QName translation;

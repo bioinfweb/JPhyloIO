@@ -35,6 +35,13 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 
 
 
+/**
+ * Implements shared functionality for writing XML formats.
+ * 
+ * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
+ * @since 0.0.0
+ */
 public abstract class AbstractXMLEventWriter<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> 
 		extends AbstractEventWriter<P> implements JPhyloIOXMLEventWriter {	
 	private XMLStreamWriter xmlWriter;

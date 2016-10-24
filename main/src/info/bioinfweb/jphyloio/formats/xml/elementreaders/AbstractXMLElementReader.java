@@ -42,6 +42,14 @@ import javax.xml.stream.events.StartElement;
 
 
 
+/**
+ * Abstract implementation of an element reader that is used to process parts of an XML document.
+ * <p>
+ * Methods implemented here are used commonly by element readers used to process XML formats.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>>
 		implements XMLElementReader<P> {
 	

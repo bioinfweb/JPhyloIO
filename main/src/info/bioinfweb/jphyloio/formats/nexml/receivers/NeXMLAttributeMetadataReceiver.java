@@ -36,6 +36,14 @@ import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Receiver that is used to store the contents of metadata events with certain predicates in a map to be written 
+ * as attribute/value pairs later on. The predicates that shall be considered should be given as a constructor parameter. 
+ * The filled map can be obtained after using this receiver at least once.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class NeXMLAttributeMetadataReceiver extends NeXMLPredicateMetaReceiver {
 	private Map<QName, String> attributeToValueMap = new HashMap<QName, String>();
 	private QName currentAttributeName;

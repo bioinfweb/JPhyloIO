@@ -19,10 +19,20 @@
 package info.bioinfweb.jphyloio.formats.xml.elementreaders;
 
 
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
+
 import javax.xml.namespace.QName;
 
 
 
+/**
+ * This class is used by {@link AbstractXMLEventReader}s as a key to store element readers in a map. 
+ * This map can then be used to obtain the correct element reader to process an encountered XML event.
+ * 
+ * @see AbstractXMLEventReader
+ * @author Sarah Wiechers
+ * 
+ */
 public class XMLElementReaderKey {
 	private QName parentTag;
 	private QName tagName;

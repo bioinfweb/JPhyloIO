@@ -46,6 +46,12 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * Provides commonly used tool methods and constants used for XML reader and writer classes.
+ * 
+ * @author Sarah Wiechers
+ * @since 0.0.0
+ */
 public class XMLReadWriteUtils {	
 	public static final String XSI_DEFAULT_PRE = "xsi";
 	public static final String XSD_DEFAULT_PRE = "xsd";	

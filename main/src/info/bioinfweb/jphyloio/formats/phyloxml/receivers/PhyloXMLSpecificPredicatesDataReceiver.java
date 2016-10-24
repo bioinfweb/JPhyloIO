@@ -28,6 +28,7 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLColorTranslator;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPredicateTreatment;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLPrivateConstants;
@@ -45,6 +46,20 @@ import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Receiver that is used to translate between meta events with certain predicates indicating 
+ * they contain information about a <i>PhyloXML</i> tag and the actual tag.
+ * <p>
+ * This receiver does not fully  validate the contents of the meta events. An {@link InconsistentAdapterDataException}
+ * will be thrown if incorrect predicates are nested under a phylogeny, a node or an edge or if any predicate is nested 
+ * in an incorrect order. Which predicates are allowed in which order can be obtained from the documentation of {@link PhyloXMLEventWriter}
+ * or the <a href="http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html">PhyloXML schema</a>.
+ * 
+ * @see {@link PhyloXMLEventWriter}
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataReceiver {
 	private Stack<QName> predicates = new Stack<QName>();
 	private Stack<Integer> childIndices = new Stack<Integer>();	

@@ -29,6 +29,12 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
+/**
+ * Class that is used by {@link NeXMLEventReader} to store information about a token set.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class NeXMLReaderTokenSetInformation {
 	private String id = null;
 	private String label = null;

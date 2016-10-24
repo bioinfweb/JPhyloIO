@@ -23,6 +23,12 @@ import java.util.Collection;
 
 
 
+/**
+ * Class that is used by {@link NeXMLEventReader} to store information about a single token definition.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class NeXMLSingleTokenDefinitionInformation {
 	private String id;
 	private String label;

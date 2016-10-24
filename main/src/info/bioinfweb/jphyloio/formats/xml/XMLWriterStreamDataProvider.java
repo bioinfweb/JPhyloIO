@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.xml;
 
 
 import info.bioinfweb.jphyloio.WriterStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +30,12 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
+/**
+ * Stores data that shall be shared among different implementations of {@link AbstractXMLDataReceiver} 
+ * and the according writer that uses them.
+ * 
+ * @author Sarah Wiechers
+ */
 public class XMLWriterStreamDataProvider<R extends AbstractXMLEventWriter<? extends XMLWriterStreamDataProvider<R>>> extends WriterStreamDataProvider<R> {
 	private Set<String> namespacePrefixes = new HashSet<String>();	
 	private StringBuffer commentContent = new StringBuffer();

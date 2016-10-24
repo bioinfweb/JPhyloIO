@@ -29,6 +29,14 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * XML element reader that can be used to process the content of elements that do not allow nested characters.
+ * <p>
+ * If character content is encountered by this element reader, a {@link JPhyloIOReaderException} is thrown.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 @SuppressWarnings("rawtypes")
 public class XMLNoCharactersAllowedElementReader extends AbstractXMLElementReader {
 	public XMLNoCharactersAllowedElementReader() {

@@ -26,6 +26,13 @@ import java.util.Set;
 
 
 
+/**
+ * Class that is used by {@link NeXMLEventWriter} to store information about a token set. Since different 
+ * information is needed while writing a document, NeXML writers use this class instead of {@link NeXMLReaderTokenSetInformation}.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class NeXMLWriterTokenSetInformation {
 	private boolean isNucleotideType = false;
 	private Set<String> singleTokenDefinitions = new HashSet<String>();

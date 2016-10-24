@@ -20,14 +20,36 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 
+/**
+ * This class enumerated ways to translate specific predicates to XML structures in a <i>PhyloXML</i> document.
+ * 
+ * @see PhyloXMLPredicateInfo
+ * @author Sarah Wiechers
+ */
 public enum PhyloXMLPredicateTreatment {
+	/**
+	 * The meta event with this predicate contains information about a <i>PhyloXML</i> tag.
+	 */
 	TAG,
 	
+	/**
+	 * The meta event with this predicate contains information about an attribute of a <i>PhyloXML</i> tag.
+	 */
 	ATTRIBUTE,
 	
+	/**
+	 * The meta event with this predicate contains information about the content of a <i>PhyloXML</i> tag.
+	 */
 	VALUE,
 	
+	/**
+	 * The meta event with this predicate contains information about a <i>PhyloXML</i> tag and its content.
+	 */
 	TAG_AND_VALUE,
 	
+	/**
+	 * The meta event with this predicate contains information about some custom XML that shall be written 
+	 * to a <i>PhyloXML</i> document.
+	 */
 	CUSTOM_XML;
 }

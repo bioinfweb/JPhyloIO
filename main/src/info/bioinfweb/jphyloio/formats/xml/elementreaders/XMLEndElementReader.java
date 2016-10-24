@@ -30,6 +30,12 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * Element reader that is used to process XML end elements.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 @SuppressWarnings("rawtypes")
 public class XMLEndElementReader extends AbstractXMLElementReader {
 	private boolean createLiteralEnd;

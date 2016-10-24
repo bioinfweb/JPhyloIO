@@ -34,8 +34,9 @@ import java.util.Set;
 
 /**
  * Tool class that allows to determine a tree topology from a {@link TreeNetworkDataAdapter}. It is useful for implementations
- * of {@link JPhyloIOEventWriter} for formats with a hierarchical tree representation (e.g. <i>Newick</i> or <i>PhyloXML</i>). 
- * 
+ * of {@link JPhyloIOEventWriter} for formats with a hierarchical tree representation (e.g. <i>Newick</i> or <i>PhyloXML</i>).
+ *  
+ * @author Sarah Wiechers
  * @author Ben St&ouml;ver
  */
 public class TreeTopologyExtractor {

@@ -18,12 +18,20 @@
  */
 package info.bioinfweb.jphyloio.formats;
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 import java.util.Collection;
 
 
 
+/**
+ * This class is used by {@link JPhyloIOEventReader}s processing phylogenetic trees or networks to model nodes and edges.
+ * 
+ * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ *
+ */
 public class NodeEdgeInfo {
 	private String id;
 	private String label;

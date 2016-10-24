@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+import info.bioinfweb.jphyloio.formats.nexml.receivers.AbstractNeXMLDataReceiver;
 import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
 
 import java.util.EnumMap;
@@ -40,6 +41,12 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
+/**
+ * Stores data that shall be shared among different implementations of {@link AbstractNeXMLDataReceiver}
+ * and the writer instance that uses them.
+ * 
+ * @author Sarah Wiechers
+ */
 public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<NeXMLEventWriter> implements NeXMLConstants {	
 	private Set<String> documentIDs = new HashSet<String>();
 	private int idIndex = 0;

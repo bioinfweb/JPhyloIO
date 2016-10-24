@@ -37,8 +37,9 @@ import javax.xml.stream.XMLStreamException;
 
 
 /**
- * Receiver, that  writes only custom XML, e.g nested under document.
- * If an event has XML content, this is written directly to the file. Simple content is also written in form of custom XML.
+ * Receiver, that  writes only custom XML, e.g nested under {@code document}.
+ * If an event has XML content, this is written to the file, if it does not contain characters that are not nested 
+ * under any tags or elements using the <i>PhyloXML</i> namespace, because this is not valid in <i>PhyloXML</i>.
  * 
  * @author Sarah Wiechers
  *

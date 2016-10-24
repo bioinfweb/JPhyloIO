@@ -25,6 +25,11 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Defines constants necessary to read <i>PDE</i> files.
+ * 
+ * @author Sarah Wiechers
+ */
 public interface PDEConstants {
 	public static final String PDE_FORMAT_NAME = "PDE (PhyDE)";
 

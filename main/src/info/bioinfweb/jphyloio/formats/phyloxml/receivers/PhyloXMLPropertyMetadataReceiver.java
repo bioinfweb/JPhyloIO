@@ -38,6 +38,13 @@ import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * This receiver is used to write the contents of meta events to a document, if their predicates indicate 
+ * that they contain information about a <i>PhyloXML</i> {@code property} tag.
+ * 
+ * @author s_wiec03
+ *
+ */
 public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 	private boolean isProperty = false;
 	private QName currentPredicate;

@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.formats.phyloxml.receivers.PhyloXMLSpecificPredicatesDataReceiver;
 import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
 
 import java.util.HashMap;
@@ -32,10 +33,15 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * The {@link XMLWriterStreamDataProvider} used by {@link PhyloXMLEventWriter}.
+ * 
+ * @author Sarah Wiechers
+ */
 public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<PhyloXMLEventWriter> implements PhyloXMLConstants, PhyloXMLPrivateConstants {	
 	private Map<QName, PhyloXMLPredicateInfo> predicateInfoMap = new HashMap<QName, PhyloXMLPredicateInfo>();
 	
-	private Map<String, PhyloXMLMetaeventInfo> metaEvents = new HashMap<String, PhyloXMLMetaeventInfo>();
+	private Map<String, PhyloXMLMetaEventInfo> metaEvents = new HashMap<String, PhyloXMLMetaEventInfo>();
 	private Set<String> metaIDs = new HashSet<String>();
 	private boolean documentHasMetadata = false;
 	private boolean documentHasPhylogeny = false;
@@ -54,12 +60,17 @@ public class PhyloXMLWriterStreamDataProvider extends XMLWriterStreamDataProvide
 	}
 	
 	
+	/**
+	 * This map is used by {@link PhyloXMLSpecificPredicatesDataReceiver} to translate meta events with certain predicates to <i>PhyloXML</i> tags.
+	 * 
+	 * @return a map containing information about the way a predicate shall be translated to a tag
+	 */
 	public Map<QName, PhyloXMLPredicateInfo> getPredicateInfoMap() {
 		return predicateInfoMap;
 	}
 
 
-	public Map<String, PhyloXMLMetaeventInfo> getMetaEvents() {
+	public Map<String, PhyloXMLMetaEventInfo> getMetaEvents() {
 		return metaEvents;
 	}
 

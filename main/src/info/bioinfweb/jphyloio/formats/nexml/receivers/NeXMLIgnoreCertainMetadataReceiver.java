@@ -36,6 +36,14 @@ import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Receiver that is able to ignore metadata events with certain predicates, e.g. if they were already 
+ * processed by {@link NeXMLAttributeMetadataReceiver} to be written as attributes. The content of the 
+ * ignored events will not be written to the file by this receiver.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class NeXMLIgnoreCertainMetadataReceiver extends NeXMLPredicateMetaReceiver {
 	private boolean writePredicateMetadata;
 	

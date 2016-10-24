@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -18,15 +18,24 @@
  */
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
+
 import java.util.List;
 
-public class PhyloXMLMetaeventInfo {
+
+
+/**
+ * Class that is used by {@link PhyloXMLEventWriter} to model a meta event in a hierarchical structure of metadata.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
+public class PhyloXMLMetaEventInfo {
 	private String id;
 	private List<String> childIDs;
 	private boolean isTopLevel;
 	
 	
-	public PhyloXMLMetaeventInfo(String id, List<String> childIDs, boolean isTopLevel) {
+	public PhyloXMLMetaEventInfo(String id, List<String> childIDs, boolean isTopLevel) {
 		super();
 		this.id = id;
 		this.childIDs = childIDs;

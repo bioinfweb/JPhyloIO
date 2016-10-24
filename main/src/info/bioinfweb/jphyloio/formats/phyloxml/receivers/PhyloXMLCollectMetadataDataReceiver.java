@@ -27,7 +27,7 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetaeventInfo;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetaEventInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
@@ -41,6 +41,12 @@ import javax.xml.stream.XMLStreamException;
 
 
 
+/**
+ * Reaceiver that is used to collect information from meta events (e.g. used namespaces).
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants {
 	private Stack<String> metaIDs = new Stack<String>();
 	private boolean isPhylogenyIDValue = false;
@@ -75,7 +81,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 			getStreamDataProvider().getMetaEvents().get(parentID).getChildIDs().add(id);
 		}
 		
-		getStreamDataProvider().getMetaEvents().put(id, new PhyloXMLMetaeventInfo(id, new ArrayList<String>(), metaIDs.isEmpty()));
+		getStreamDataProvider().getMetaEvents().put(id, new PhyloXMLMetaEventInfo(id, new ArrayList<String>(), metaIDs.isEmpty()));
 		getStreamDataProvider().getMetaIDs().add(id);
 		metaIDs.add(id);
 		
@@ -137,7 +143,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 			getStreamDataProvider().getMetaEvents().get(parentID).getChildIDs().add(id);
 		}		
 		
-		getStreamDataProvider().getMetaEvents().put(id, new PhyloXMLMetaeventInfo(id, new ArrayList<String>(), metaIDs.isEmpty()));
+		getStreamDataProvider().getMetaEvents().put(id, new PhyloXMLMetaEventInfo(id, new ArrayList<String>(), metaIDs.isEmpty()));
 		getStreamDataProvider().getMetaIDs().add(id);
 		metaIDs.add(id);
 		

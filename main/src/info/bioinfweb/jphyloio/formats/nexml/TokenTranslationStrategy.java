@@ -20,8 +20,14 @@ package info.bioinfweb.jphyloio.formats.nexml;
 
 
 
-/** 
- * Gives information about the way a sequence stored in a NeXML characters block of type {@code standard} should be parsed.
+/**
+ * Instances of this enum can be used as parameter values for {@link ReadWriteParameterNames#KEY_NEXML_TOKEN_TRANSLATION_STRATEGY}.
+ * It enumerates ways how tokens stored in a NeXML characters block of type {@code standard} should be parsed.
+ * 
+ * @author Sarah Wiechers
+ * @see ReadWriteParameterNames#KEY_NEXML_TOKEN_TRANSLATION_STRATEGY
+ * @see NeXMLEventReader
+ * @since 0.0.0
  */
 public enum TokenTranslationStrategy {
 	/** 

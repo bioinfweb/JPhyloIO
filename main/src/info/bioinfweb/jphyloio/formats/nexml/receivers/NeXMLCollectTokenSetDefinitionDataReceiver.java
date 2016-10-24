@@ -40,7 +40,7 @@ import javax.xml.stream.XMLStreamException;
 
 
 /**
- * Class that checks the contents of a token set.
+ * Receiver that is used to check the contents of a token set.
  * <p>
  * The {@link CharacterStateSetType} of the token set will be different from the one given in the start event of the according set,
  * if a {@link SingleTokenDefinitionEvent} defines a token that is not allowed under the current type of token set 

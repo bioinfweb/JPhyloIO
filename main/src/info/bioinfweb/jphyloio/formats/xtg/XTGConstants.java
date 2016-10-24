@@ -25,6 +25,11 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Defines constants necessary to read <a href="http://bioinfweb.info/xmlns/xtg">XTG</a> files.
+ * 
+ * @author Sarah Wiechers
+ */
 public interface XTGConstants {
 	public static final String XTG_FORMAT_NAME = "Extensible TreeGraph 2 format";
 	public static final String XTG = "xtg";

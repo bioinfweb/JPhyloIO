@@ -32,7 +32,7 @@ import javax.xml.namespace.QName;
 
 
 /**
- * General implementation of a receiver that allows to treat certain metadata in a special way.
+ * General implementation of a receiver that allows to process metadata events with certain predicates in a special way.
  * 
  * @author Sarah Wiechers
  */

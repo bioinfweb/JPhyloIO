@@ -242,8 +242,9 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 	 * Obtains information about the ID, label and linked OTU or OTU list associated with a {@link StartElement} by reading its attributes. 
 	 * <p>
 	 * If no label is associated with this start element, the label of the linked element will be returned as a label. 
-	 * If the linked element does not have a label either, the elemnent's ID will be used as a label.
-	 * 
+	 * If the linked element does not have a label either, the elemnent's ID will can used as a label, depending on 
+	 * {@link ReadWriteParameterMap#KEY_USE_OTU_LABEL}.
+	 *  
 	 * @param streamDataProvider the stream data provider of the calling {@link NeXMLEventReader}
 	 * @param element the {@link StartElement} to obtain the information from
 	 * @return the {@link OTUorOTUsEventInformation} containing information about the given {@link StartElement}

@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stï¿½ver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -44,6 +44,13 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * This element reader is used to process the contents of XTG tags that also contained information about 
+ * the intended formatting (e.g. textual or as a decimal value).
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class XTGFormattedTextElementReader extends XMLStartElementReader implements XTGConstants {
 	private QName textPredicate;
 

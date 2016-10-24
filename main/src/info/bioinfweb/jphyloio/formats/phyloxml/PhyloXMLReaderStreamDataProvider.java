@@ -29,6 +29,11 @@ import java.util.Map;
 
 
 
+/**
+ * The {@link XMLReaderStreamDataProvider} used by {@link PhyloXMLEventReader}.
+ * 
+ * @author Sarah Wiechers
+ */
 public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvider<PhyloXMLEventReader>  {
 	private String treeLabel;
 	

@@ -29,6 +29,12 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * This interface should be implemented by all element readers used to process XML formats.
+ * 
+ * @author Sarah Wiechers
+ * 
+ */
 public interface XMLElementReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>> {
 	public void readEvent(P streamDataProvider, XMLEvent event) throws IOException, XMLStreamException;
 }

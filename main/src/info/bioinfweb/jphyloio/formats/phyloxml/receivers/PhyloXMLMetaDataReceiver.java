@@ -32,7 +32,7 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetaeventInfo;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetaEventInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PropertyOwner;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
@@ -52,6 +52,13 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * Receiver that implements a general strategy of writing metadata to a <i>PhyloXML</i> document. 
+ * It also implements some functionality that is used by inheriting receivers, e.g. to write custom XML.
+ * 
+ * @author Sarah Wiechers
+ *
+ */
 public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants {
 	public static final Set<QName> VALID_XSD_TYPES = new HashSet<QName>();
 	
@@ -250,7 +257,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 	
 	protected boolean determineWriteMeta(String id, URIOrStringIdentifier predicate) {
 		boolean writeMeta = false;
-		PhyloXMLMetaeventInfo metaInfo = getStreamDataProvider().getMetaEvents().get(id);
+		PhyloXMLMetaEventInfo metaInfo = getStreamDataProvider().getMetaEvents().get(id);
 		
 		if (getStreamDataProvider().getMetaIDs().contains(id)) {
 			if (!(predicate.getURI() != null && predicate.getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE))) {
