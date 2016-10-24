@@ -194,7 +194,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
-		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.NONE);		
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.NONE);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		
 		writeDocument(document, parameters, file);
 		
@@ -273,6 +274,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.ONLY_LEAFS);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writeDocument(document, parameters, file);
 		
 		// Validate file:
@@ -455,6 +457,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.SEQUENTIAL);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writeDocument(document, parameters, file);
 		
 		// Validate file:
@@ -645,6 +648,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.TOP_LEVEL_WITH_CHILDREN);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writeDocument(document, parameters, file);
 		
 		// Validate file:
@@ -786,6 +790,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.TOP_LEVEL_WITHOUT_CHILDREN);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writeDocument(document, parameters, file);
 		
 		// Validate file:
@@ -937,7 +942,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		trees.getTreesAndNetworks().add(new PhyloXMLSpecificMetadataTreeAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
 		document.getTreesNetworks().add(trees);
 		
-		writeDocument(document, null, file);
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();		
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
+		writeDocument(document, parameters, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);
@@ -1189,7 +1196,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	@Test
 	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataWrongEdgeContent() throws IOException, XMLStreamException {
 		File file = new File("data/testOutput/PhyloXMLTest.xml");
-		ReadWriteParameterMap parameters = new ReadWriteParameterMap();	
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);	
 		
 		// Write file:
 		try {
@@ -1248,7 +1256,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 	@Test
 	public void assertSingleTreeDocumentWithPhyloXMLSpecificMetadataWrongNodeContent() throws IOException, XMLStreamException {
 		File file = new File("data/testOutput/PhyloXMLTest.xml");
-		ReadWriteParameterMap parameters = new ReadWriteParameterMap();	
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);	
 		
 		// Write file:
 		try {
@@ -1705,6 +1714,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
 		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.ONLY_LEAFS);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writeDocument(document, parameters, file);
 		
 		// Validate file:
@@ -1804,6 +1814,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		
 		writeDocument(document, parameters, file);
 		
@@ -1858,6 +1869,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		
 		writeDocument(document, parameters, file);
 		
@@ -1924,7 +1936,9 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		document.getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
 		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 		
-		writeDocument(document, null, file);
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();		
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
+		writeDocument(document, parameters, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);

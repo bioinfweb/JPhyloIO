@@ -19,17 +19,11 @@
 package info.bioinfweb.jphyloio.test;
 
 
-import static org.junit.Assert.*;
-import static info.bioinfweb.commons.testing.Assert2.*;
-
-import java.io.FileReader;
-import java.net.URI;
-import java.util.Collection;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.events.XMLEvent;
-
+import static info.bioinfweb.commons.testing.Assert2.assertCollectionElementTypes;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
@@ -60,6 +54,14 @@ import info.bioinfweb.jphyloio.test.dataadapters.SingleTokenTestMatrixDataAdapte
 import info.bioinfweb.jphyloio.test.dataadapters.TestMatrixDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.TestOTUListDataAdapter;
 import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
+
+import java.io.FileReader;
+import java.net.URI;
+import java.util.Collection;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.events.XMLEvent;
 
 
 
@@ -256,7 +258,7 @@ public class JPhyloIOTestTools {
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventContentType.COMMENT, event.getType().getContentType());
 		CommentEvent commentEvent = event.asCommentEvent();
-		assertEquals(expectedContent, commentEvent.getContent());
+		assertTrue(commentEvent.getContent().matches(expectedContent));
 		assertEquals(expectedContinuedInNextEvent, commentEvent.isContinuedInNextEvent());
   }  
 	
