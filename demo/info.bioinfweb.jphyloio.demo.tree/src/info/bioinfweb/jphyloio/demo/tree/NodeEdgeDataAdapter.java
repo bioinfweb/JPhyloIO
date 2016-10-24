@@ -19,11 +19,11 @@
 package info.bioinfweb.jphyloio.demo.tree;
 
 
+import info.bioinfweb.commons.collections.NumberedStringsIterator;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.utils.NumberedIDsIterator;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -68,7 +68,7 @@ public abstract class NodeEdgeDataAdapter<E extends LabeledIDEvent> implements O
 	
 	@Override
 	public E getObjectStartEvent(ReadWriteParameterMap parameters, String id) throws IllegalArgumentException {
-		int index = (int)NumberedIDsIterator.extractIndexFromID(id, idPrefix);
+		int index = (int)NumberedStringsIterator.extractIndexFromID(id, idPrefix);
 		return createEvent(id, index, nodes.get(index));
 	}
 
@@ -81,7 +81,7 @@ public abstract class NodeEdgeDataAdapter<E extends LabeledIDEvent> implements O
 	
 	@Override
 	public Iterator<String> getIDIterator(ReadWriteParameterMap parameters) {
-		return new NumberedIDsIterator(idPrefix, nodes.size());
+		return new NumberedStringsIterator(idPrefix, nodes.size());
 	}
 
 	
