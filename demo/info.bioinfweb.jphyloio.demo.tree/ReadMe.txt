@@ -1,4 +1,4 @@
-Simple alignment demo application for JPhyloIO
+Tree demo application for JPhyloIO
 ==============================================
 
 This example application reading and writing tree data to a hierarchical 
