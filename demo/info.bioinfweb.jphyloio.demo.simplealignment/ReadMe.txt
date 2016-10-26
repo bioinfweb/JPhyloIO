@@ -1,9 +1,9 @@
 Simple alignment demo application for JPhyloIO
 ==============================================
 
-This example application reading and writing alignment data to a simple 
-business model is part of the JPhyloIO documentation. An overview on this
-example is provided under 
+This example application demonstrates reading and writing alignment data 
+from and to a simple business model and is part of the JPhyloIO 
+documentation. An overview on this example is provided under 
 <http://bioinfweb.info/JPhyloIO/Documentation/Demos/SimpleAlignment>.
 
 In order to run this demo application in your own Eclipse Workspace you
