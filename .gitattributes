@@ -1,4 +1,8 @@
 * text=auto !eol
+demo/info.bioinfweb.jphyloio.demo.metadata/.classpath -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.metadata/.project -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.metadata/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.metadata/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.old/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.old/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.old/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
