@@ -1,5 +1,5 @@
 Tree demo application for JPhyloIO
-==============================================
+==================================
 
 This example application reading and writing tree data to a hierarchical 
 business model is part of the JPhyloIO documentation. An overview on this
