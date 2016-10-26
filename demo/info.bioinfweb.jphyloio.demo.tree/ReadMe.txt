@@ -1,9 +1,9 @@
 Tree demo application for JPhyloIO
 ==================================
 
-This example application reading and writing tree data to a hierarchical 
-business model is part of the JPhyloIO documentation. An overview on this
-example is provided under 
+This example application demonstrates reading and writing tree data to a 
+hierarchical business model and is part of the JPhyloIO documentation. An 
+overview on this example is provided under 
 <http://bioinfweb.info/JPhyloIO/Documentation/Demos/Tree>.
 
 In order to run this demo application in your own Eclipse Workspace you
