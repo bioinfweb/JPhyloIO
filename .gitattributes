@@ -31,6 +31,7 @@ demo/info.bioinfweb.jphyloio.demo.tree/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.tree/ReadMe.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/data/Test.nwk -text
 demo/info.bioinfweb.jphyloio.demo.tree/src/info/bioinfweb/jphyloio/demo/tree/Application.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/src/info/bioinfweb/jphyloio/demo/tree/NodeEdgeDataAdapter.java -text svneol=unset#text/plain
