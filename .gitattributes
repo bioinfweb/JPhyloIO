@@ -524,6 +524,7 @@ test/data/PhyloXML/SingleTree.xml -text svneol=unset#text/plain
 test/data/PhyloXML/VariousMetaEventsFromPhyloXMLTags.xml -text svneol=unset#text/plain
 test/data/XML/Invalid.xml -text svneol=unset#text/plain
 test/data/XML/LongAttribute.xml -text svneol=unset#text/plain
+test/data/XML/attributeTypeTest.xml -text svneol=unset#text/plain
 test/data/XTG/EmptyDocument.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml.gz -text
@@ -597,6 +598,7 @@ test/src/info/bioinfweb/jphyloio/test/tests/XMLEventTypeTest.java -text svneol=u
 test/src/info/bioinfweb/jphyloio/test/tests/XMLEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/XMLLongAttribiteTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/XMLStreamExceptionTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/XMLStreamReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/XMLStreamWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStream.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/boundedstream/BoundedInputStreamTest.java -text svneol=unset#text/plain

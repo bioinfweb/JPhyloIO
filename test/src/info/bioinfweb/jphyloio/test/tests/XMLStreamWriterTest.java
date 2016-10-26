@@ -55,11 +55,12 @@ public class XMLStreamWriterTest {
 				writer.writeEndElement();
 				
 				writer.writeEndElement();
+//				writer.writeEndElement();  // Trying to write an additional end element causes an XMLStreamException
 				writer.writeEndDocument();
 			}
 			finally {
 				writer.close();
-//				file.delete();
+				file.delete();
 			}
 		}
 		catch (Exception e) {

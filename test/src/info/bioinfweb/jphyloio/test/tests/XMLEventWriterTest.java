@@ -22,9 +22,12 @@ package info.bioinfweb.jphyloio.test.tests;
 import java.io.File;
 import java.io.FileWriter;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.StartDocument;
 
 
 
@@ -42,10 +45,19 @@ public class XMLEventWriterTest {
 				writer.add(factory.createNamespace("p", "http://example.org/p"));
 				writer.add(factory.createCharacters("abc"));
 				writer.add(factory.createEndDocument());
+				
+				
+				Attribute attribute = factory.createAttribute(new QName("attr"), "testValue");
+				System.out.println(attribute.getDTDType());
+				
+				StartDocument startDocument = factory.createStartDocument();
+				System.out.println(startDocument.getVersion());
+				System.out.println(startDocument.getCharacterEncodingScheme());
+				System.out.println(startDocument.getSystemId());
 			}
 			finally {
 				writer.close();
-//				file.delete();
+				file.delete();
 			}
 		}
 		catch (Exception e) {
