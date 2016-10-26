@@ -23,6 +23,8 @@ import info.bioinfweb.commons.bio.SequenceUtils;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
@@ -54,6 +56,7 @@ import javax.xml.stream.events.XMLEvent;
  * Implements shared functionality for reading XML formats.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
  * @since 0.0.0
  */
 public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>>
@@ -260,6 +263,32 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	@Override
 	public NamespaceContext getNamespaceContext() {
 		return namespaceContext;
+	}	
+
+
+	@Override
+	public MetaXMLEventReader createMetaXMLEventReader() throws IllegalStateException {
+		if (getParentInformation().getDirectParentContentType().equals(EventContentType.META_LITERAL) 
+				&& getParentInformation().getDirectParent().asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML)) {
+			return new MetaXMLEventReader(this);
+		}
+		else {
+			throw new IllegalStateException("An instance of MetaXMLEventReader can only be created while this instance is located "
+					+ "inside a literal metadata subsequence with the sequence type XML.");
+		}
+	}
+
+
+	@Override
+	public MetaXMLStreamReader createMetaXMLStreamReader() throws IllegalStateException {
+		if (getParentInformation().getDirectParentContentType().equals(EventContentType.META_LITERAL) 
+				&& getParentInformation().getDirectParent().asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML)) {
+			return new MetaXMLStreamReader(this);
+		}
+		else {
+			throw new IllegalStateException("An instance of MetaXMLEventReader can only be created while this instance is located "
+					+ "inside a literal metadata subsequence with the sequence type XML.");
+		}
 	}
 
 

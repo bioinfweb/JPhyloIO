@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.xml.elementreaders;
 
 
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
@@ -37,11 +38,9 @@ import javax.xml.stream.events.XMLEvent;
  * @author Sarah Wiechers
  *
  */
-@SuppressWarnings("rawtypes")
-public class CommentElementReader extends AbstractXMLElementReader {	                                                                
-	@SuppressWarnings("unchecked")
+public class CommentElementReader<P extends XMLReaderStreamDataProvider<? extends AbstractXMLEventReader<P>>> extends AbstractXMLElementReader<P> {	                                                                
 	@Override
-	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
+	public void readEvent(P streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 		streamDataProvider.getCurrentEventCollection().add(new CommentEvent(((Comment)event).getText(), false));
 	}
 }

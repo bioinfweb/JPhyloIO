@@ -304,6 +304,7 @@ main/src/info/bioinfweb/jphyloio/formats/text/TextReaderStreamDataProvider.java 
 main/src/info/bioinfweb/jphyloio/formats/text/TextSequenceContentReceiver.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/TextWriterStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/text/package-info.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/AbstractMetaXMLReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLFactory.java -text svneol=unset#text/plain
@@ -312,6 +313,8 @@ main/src/info/bioinfweb/jphyloio/formats/xml/JPhyloIOXMLEventReader.java -text s
 main/src/info/bioinfweb/jphyloio/formats/xml/JPhyloIOXMLEventWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLEventReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLEventWriter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLStreamReader.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLStreamWriter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLReadWriteUtils.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLReaderStreamDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/formats/xml/XMLWriterStreamDataProvider.java -text svneol=unset#text/plain

@@ -484,7 +484,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 //		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.END_ELEMENT), resourceEndReader);		
 		
 		// Comments
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader<XMLReaderStreamDataProvider<XTGEventReader>>());
 	}
 	
 	

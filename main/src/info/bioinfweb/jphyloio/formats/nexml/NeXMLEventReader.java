@@ -156,10 +156,9 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 	
 	public TokenTranslationStrategy getTranslateTokens() {
 		return getParameters().getTranslateTokens();
-	}	
+	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void fillMap() {
 		AbstractNeXMLElementReader readMetaStart = new NeXMLMetaStartElementReader();
@@ -1025,7 +1024,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		
 		putElementReader(new XMLElementReaderKey(TAG_TREES, TAG_SET, XMLStreamConstants.END_ELEMENT), new NeXMLSetEndElementReader(EventContentType.TREE_NETWORK_SET));
 		
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader<NeXMLReaderStreamDataProvider>());
 	}
 
 

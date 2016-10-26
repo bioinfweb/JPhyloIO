@@ -590,7 +590,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					}
 			});
 		
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader());
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader<PDEReaderStreamDataProvider>());
 	}
 	
 	

@@ -19,16 +19,6 @@
 package info.bioinfweb.jphyloio.formats.nexus;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -41,6 +31,15 @@ import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.jphyloio.formatinfo.MetadataModeling;
 import info.bioinfweb.jphyloio.formatinfo.MetadataTopologyType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 

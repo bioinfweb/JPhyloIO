@@ -191,7 +191,12 @@ public class XMLReadWriteUtils {
 				break;
 			case XMLStreamConstants.PROCESSING_INSTRUCTION:
 				ProcessingInstruction contentProcessingInstruction = ((ProcessingInstruction)event);
-				writer.writeProcessingInstruction(contentProcessingInstruction.getTarget(), contentProcessingInstruction.getData());
+				if (contentProcessingInstruction.getData() == null) {
+					writer.writeProcessingInstruction(contentProcessingInstruction.getTarget());
+				}
+				else {
+					writer.writeProcessingInstruction(contentProcessingInstruction.getTarget(), contentProcessingInstruction.getData());
+				}
 				break;
 			case XMLStreamConstants.COMMENT:
 				writer.writeComment(((Comment)event).getText());

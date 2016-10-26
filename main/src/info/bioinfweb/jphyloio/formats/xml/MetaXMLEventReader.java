@@ -25,53 +25,33 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
-import info.bioinfweb.jphyloio.push.JPhyloIOEventListener;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.events.EntityReference;
 import javax.xml.stream.events.XMLEvent;
 
 
 
 /**
- * Adapter class that allows reading a sequence of {@link LiteralMetadataContentEvent}s using an {@link XMLStreamReader}.
+ * Adapter class that allows reading a sequence of {@link LiteralMetadataContentEvent}s using an {@link XMLEventReader}.
  * 
  * Since it is registered which events are read from the event stream, it is possible to read only a part of the 
  * custom XML tree with this reader, while the rest is read using the original {@link JPhyloIOEventReader}.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
+ * 
  */
-public class MetaXMLEventReader implements XMLEventReader {
-	private AbstractXMLEventReader jPhyloIOEventReader;
-	private boolean endReached = false;
-	private boolean startDocumentFired;
-	private boolean endDocumentFired;
+public class MetaXMLEventReader<P extends AbstractXMLEventReader<XMLReaderStreamDataProvider<P>>> extends AbstractMetaXMLReader<P> implements XMLEventReader {
 	
 	
-	private class MetaEventListener implements JPhyloIOEventListener { //TODO make public which events were fired (e.g. to use this info in LibrAlign)?
-		@Override
-		public void processEvent(JPhyloIOEventReader source, JPhyloIOEvent event) throws IOException {
-			if (source.peek().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.END))) {
-				setEndReached();
-			}
-		}
-	}
-	
-	
-	public MetaXMLEventReader(AbstractXMLEventReader jPhyloIOEventReader) {
-		super();
-		this.jPhyloIOEventReader = jPhyloIOEventReader;
-	}
-	
-	
-	protected void setEndReached() {
-		endReached = true;
+	public MetaXMLEventReader(P jPhyloIOEventReader) {
+		super(jPhyloIOEventReader);
 	}
 
 
@@ -102,69 +82,85 @@ public class MetaXMLEventReader implements XMLEventReader {
 	
 	
 	@Override
-	public String getElementText() throws XMLStreamException { //TODO based on nextEvent() of this class an abstract implementation XML Event Reader can maybe be used here
+	public String getElementText() throws XMLStreamException {
 		StringBuffer content = new StringBuffer();
 		
-		//TODO check if start event was the last event
+		// Check if the reader is currently located at a start element
+		if (getJPhyloIOEventReader().getPreviousEvent().getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+			XMLEvent lastEvent = getJPhyloIOEventReader().getPreviousEvent().asLiteralMetadataContentEvent().getXMLEvent();
+			
+			if (lastEvent.getEventType() != XMLStreamConstants.START_ELEMENT) {
+				throw new XMLStreamException("To read the next element text this reader must be positioned on a start element.");
+			}
+		}	
 		
-		while (hasNext() && (peek().getEventType() == XMLStreamConstants.CHARACTERS)) {
-			content.append(nextEvent().asCharacters().getData());
-		}
-				
+		XMLEvent event = nextEvent();
+		int eventType = event.getEventType();
+		
+		while (eventType != XMLStreamConstants.END_ELEMENT) {
+			switch (eventType) {
+				case XMLStreamConstants.CHARACTERS:
+				case XMLStreamConstants.CDATA:
+				case XMLStreamConstants.SPACE:
+					content.append(event.asCharacters().getData());
+					break;
+				case XMLStreamConstants.ENTITY_REFERENCE:
+					content.append(((EntityReference)event).getDeclaration().getReplacementText());
+					break;
+				case XMLStreamConstants.PROCESSING_INSTRUCTION:
+				case XMLStreamConstants.COMMENT:
+					// Ignore events of these types
+					break;
+				case XMLStreamConstants.END_DOCUMENT:
+					throw new XMLStreamException("The end of the document was reached while reading element text content.");
+				case XMLStreamConstants.START_ELEMENT:
+					throw new XMLStreamException("Only text elements are allowed to be nested while reading element text content.");
+				default:
+					throw new XMLStreamException("An unexpected event type was encountered while reading element text content.");
+			}
+			
+			event = nextEvent();
+			eventType = event.getEventType();
+		}			
+		
 		return content.toString();
-	}
-
-	
-	@Override
-	public Object getProperty(String name) throws IllegalArgumentException {
-		return jPhyloIOEventReader.getXMLReader().getProperty(name); //TODO return null, because this implementation does not have any specific properties?
 	}
 	
 
 	@Override
 	public boolean hasNext() {
-		boolean result = false;
-		
-		try {
-			result = (peek() != null);
-		} 
-		catch (XMLStreamException e) {
-			e.printStackTrace();
-		}
-		
-		return result;
+		return !isEndReached();
 	}
 	
 
 	@Override
 	public XMLEvent nextEvent() throws XMLStreamException {
-		XMLEvent result = null;
-		if (!endReached) {
-			if (jPhyloIOEventReader.getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) && !startDocumentFired) {
-				result = XMLEventFactory.newInstance().createStartDocument();
-				startDocumentFired = true;
+		XMLEvent result;
+		
+		if (hasNext()) {
+			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) 
+					&& !isStartDocumentFired()) {
+				
+				result = getEventFactory().createStartDocument();
+				setStartDocumentFired(true);
 			}
 			else {
-				LiteralMetadataContentEvent contentEvent;
-				
 				try {
-					contentEvent = jPhyloIOEventReader.next().asLiteralMetadataContentEvent();  // Any other event type is not allowed between a literal meta start and end
-					
-					if (contentEvent.hasXMLEventValue()) {
-						result = contentEvent.getXMLEvent();
-					}
-					else {
-						//TODO throw according exception
-					}
+					result = obtainXMLContentEvent(getJPhyloIOEventReader().next());
 				}
 				catch (IOException e) {
-					e.printStackTrace();
+					if (e.getCause() != null) {
+						throw new XMLStreamException(e.getCause());
+					}
+					else {
+						throw new XMLStreamException("No event could be obtained from the underlying reader.");
+					}
 				}
 			}
 		}
-		else if (!endDocumentFired) {
-			result = XMLEventFactory.newInstance().createEndDocument();
-			endDocumentFired = true;
+		else if (!isEndDocumentFired()) {
+			result = getEventFactory().createEndDocument();
+			setEndDocumentFired(true);
 		}
 		else {
 			throw new NoSuchElementException("The end of this XML metadata stream was already reached.");
@@ -175,13 +171,22 @@ public class MetaXMLEventReader implements XMLEventReader {
 	
 
 	@Override
-	public XMLEvent nextTag() throws XMLStreamException { //TODO consider content events with only whitespace content?
-		if (peek().getEventType() == XMLStreamConstants.START_ELEMENT) {  // No content events containing only whitespace are generated by any JPhyloIOEventReader
-			return nextEvent();
+	public XMLEvent nextTag() throws XMLStreamException {
+		XMLEvent event = nextEvent();
+		int eventType = event.getEventType();
+		
+		while((event.isCharacters() && event.asCharacters().isWhiteSpace()) || (eventType == XMLStreamConstants.PROCESSING_INSTRUCTION)
+				|| (eventType == XMLStreamConstants.COMMENT)) {
+			 
+			event = nextEvent();
+			eventType = event.getEventType();
 		}
-		else {
-			throw new XMLStreamException("An element that could not be skipped was encountered before the next start element.");
+    
+		if ((eventType != XMLStreamConstants.START_ELEMENT) && (eventType != XMLStreamConstants.END_ELEMENT)) {
+			throw new XMLStreamException("An element that could not be skipped was encountered before the next start or end element.");
 		}
+		
+		return event;
 	}
 	
 
@@ -189,21 +194,43 @@ public class MetaXMLEventReader implements XMLEventReader {
 	public XMLEvent peek() throws XMLStreamException {
 		XMLEvent result = null;
 		
-		if (!endReached) {
-			JPhyloIOEvent nextEvent;
-			
-			try {
-				nextEvent = jPhyloIOEventReader.peek();
-				
-				if (nextEvent.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
-					if (nextEvent.asLiteralMetadataContentEvent().hasXMLEventValue()) {
-						result = nextEvent.asLiteralMetadataContentEvent().getXMLEvent();
-					}
-				}
+		if (hasNext()) {			
+			try {				
+				result = obtainXMLContentEvent(getJPhyloIOEventReader().peek());				
 			}
 			catch (IOException e) {
-				e.printStackTrace();
-			}			
+				if (e.getCause() != null) {
+					throw new XMLStreamException(e.getCause());
+				}
+				else {
+					throw new XMLStreamException("No XML event could be obtained from the underlying reader.");
+				}
+			}
+		}
+		
+		return result;  // If the end of the custom XML was already reached this method returns null
+	}
+	
+	
+	private XMLEvent obtainXMLContentEvent(JPhyloIOEvent jPhyloIOEvent) throws XMLStreamException {
+		XMLEvent result;
+		
+		switch (jPhyloIOEvent.getType().getContentType()) {
+			case COMMENT:
+				result = getEventFactory().createComment(jPhyloIOEvent.asCommentEvent().getContent());
+				break;
+			case META_LITERAL_CONTENT:
+				LiteralMetadataContentEvent contentEvent = jPhyloIOEvent.asLiteralMetadataContentEvent();
+				
+				if (contentEvent.hasXMLEventValue()) {
+					result = contentEvent.getXMLEvent();
+				}
+				else {
+					throw new XMLStreamException("No XML event could be obtained from the current metadata content event.");
+				}
+				break;
+			default:
+				throw new XMLStreamException("An event with an unexpected content type was encountered in the literal meta subsequence.");
 		}
 		
 		return result;

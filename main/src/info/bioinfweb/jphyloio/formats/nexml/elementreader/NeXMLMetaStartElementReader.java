@@ -132,7 +132,6 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 					}
 				}
 			}
-			//TODO Create XMLStreamReader instance here, if nested XML is present.
 		}
 		else if (type.getLocalPart().equals(TYPE_RESOURCE_META)) {
 			streamDataProvider.getMetaType().push(EventContentType.META_RESOURCE);

@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.formats.xml;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 
 import javax.xml.namespace.NamespaceContext;
 
@@ -44,4 +45,32 @@ public interface JPhyloIOXMLEventReader extends JPhyloIOEventReader {
 	 */
 	public NamespaceContext getNamespaceContext();
 	//TODO Add hint for possible problems with events created from buffered data? (See also #123.)
+	
+	/**
+	 * Creates a new instance of {@link MetaXMLEventReader} that allows to read events of XML content of literal metadata from this 
+	 * <i>JPhyloIO</i> event reader instance through that interface. Instances can be created any time, while this instance is located
+	 * inside a literal metadata subsequence with the {@link LiteralContentSequenceType#XML}, but not outside of such a sequence.
+	 * <p>
+	 * In principle this method may be called multiple times within the same literal metadata event subsequence, which would result in having
+	 * multiple XML event reader instances delegating to the same <i>JPhyloIO</i> reader, although that is not recommended for performance
+	 * reasons.
+	 * 
+	 * @return the new reader instance
+	 * @throws IllegalStateException if no reader can be created at the current position (outside of a literal metadata event subsequence with type XML)
+	 */
+	public MetaXMLEventReader createMetaXMLEventReader() throws IllegalStateException;	
+	
+	/**
+	 * Creates a new instance of {@link MetaXMLStreamReader} that allows to read events of XML content of literal metadata from this 
+	 * <i>JPhyloIO</i> event reader instance through that interface. Instances can be created any time, while this instance is located
+	 * inside a literal metadata subsequence with the {@link LiteralContentSequenceType#XML}, but not outside of such a sequence.
+	 * <p>
+	 * In principle this method may be called multiple times within the same literal metadata event subsequence, which would result in having
+	 * multiple XML event reader instances delegating to the same <i>JPhyloIO</i> reader, although that is not recommended for performance
+	 * reasons.
+	 * 
+	 * @return the new reader instance
+	 * @throws IllegalStateException if no reader can be created at the current position (outside of a literal metadata event subsequence with type XML)
+	 */
+	public MetaXMLStreamReader createMetaXMLStreamReader() throws IllegalStateException;
 }
