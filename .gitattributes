@@ -399,6 +399,7 @@ test/data/MEGA/MatchToken.meg -text
 test/data/NeXML/CURIE_QName_Test.xml -text svneol=unset#text/plain
 test/data/NeXML/CustomNeXML.xml -text svneol=unset#text/plain
 test/data/NeXML/CustomXMLNamespaceDeclarationWithin.xml -text svneol=unset#text/plain
+test/data/NeXML/CustomXMLTest.xml -text svneol=unset#text/plain
 test/data/NeXML/DNACells.xml -text svneol=unset#text/plain
 test/data/NeXML/DNACellsDifferentOrder.xml -text svneol=unset#text/plain
 test/data/NeXML/EmptyCURIEPrefix.xml -text svneol=unset#text/plain
@@ -573,6 +574,7 @@ test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLFactoryTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/xml/AbstractXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/objecttranslation/ObjectTranslatorFactoryTest.java -text svneol=unset#text/plain
@@ -593,6 +595,7 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/P
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/PhyloXMLSpecificMetadataTreeAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/DataTypeConverterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/ListTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/tests/ListenerSelfRemovalTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/NamespaceContextTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/NamespacePrefixTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/SplitTest.java -text svneol=unset#text/plain

@@ -976,7 +976,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 				new URIOrStringIdentifier(null, new QName(XMLReadWriteUtils.NAMESPACE_RDF, "Literal")), LiteralContentSequenceType.XML));
 		
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("characters"), false));
-		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("ex", "http://example.com/", "customTag"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("nex", "http://new-example.com/", "customTag"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createNamespace("ex", "http://example.com/"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("some more"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createStartElement("ex", "http://example.com/", "nestedTag"), false));
@@ -987,7 +987,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "nestedTag"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters("characters"), true));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters(" and even more"), false));
-		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "customTag"), false));
+		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("nex", "http://new-example.com/", "customTag"), false));
 		
 		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 			
@@ -1009,7 +1009,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertStartDocument(reader);
 			
 			element = assertStartElement(TAG_ROOT, reader);
-			assertNamespaceCount(7, element);
+			assertNamespaceCount(8, element);
 			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_NAMESPACE_PREFIX), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
@@ -1017,6 +1017,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			String prefixRDF = assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			String prefix1 = assertNamespace(new QName("http://example.org/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			String prefix2 = assertNamespace(new QName("http://example.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix3 = assertNamespace(new QName("http://new-example.com/", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			
 			assertAttributeCount(2, element);
 			assertAttribute(ATTR_VERSION, "0.9", element);
@@ -1040,7 +1041,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttribute(ATTR_CONTENT, "customXML", element);
 			
 			assertCharactersEvent("characters", reader);
-			assertStartElement(new QName("http://example.com/", "customTag", prefix2), reader);			
+			assertStartElement(new QName("http://new-example.com/", "customTag", prefix3), reader);			
 			assertCharactersEvent("some more", reader);
 			assertStartElement(new QName("http://example.com/", "nestedTag", prefix2), reader);
 			StartElement customTag = assertStartElement(new QName("http://example.com/", "secondNested", prefix2), reader);
@@ -1049,7 +1050,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertEndElement(new QName("http://example.com/", "secondNested", prefix2), reader);
 			assertEndElement(new QName("http://example.com/", "nestedTag", prefix2), reader);
 			assertCharactersEvent("characters and even more", reader);
-			assertEndElement(new QName("http://example.com/", "customTag", prefix2), reader);		
+			assertEndElement(new QName("http://new-example.com/", "customTag", prefix3), reader);		
 			
 			assertEndElement(TAG_META, reader);
 			

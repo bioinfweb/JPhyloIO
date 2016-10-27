@@ -35,17 +35,32 @@ public class XMLStreamReaderTest {
 			XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileReader(file));
 			
 			try {
+				int eventType = reader.getEventType();
+				
 				while (reader.hasNext()) {
-					int eventType = reader.next();
 					switch (eventType) {
+						case XMLStreamConstants.START_DOCUMENT:
+							System.out.println("Document encoding: " + reader.getEncoding());
+							System.out.println("Document version: " + reader.getVersion());
+							System.out.println("Document character encoding scheme: " + reader.getCharacterEncodingScheme());
+							break;
 						case XMLStreamConstants.START_ELEMENT:
-							System.out.println("Element name: :" + reader.getLocalName());
+							System.out.println("Element name: " + reader.getLocalName());
 							System.out.println("Attribute name: " + reader.getAttributeLocalName(0));
 							System.out.println("Attribute type: " + reader.getAttributeType(0));  // If an attribute is present the default type is CDATA
+							break;
+						case XMLStreamConstants.CHARACTERS:
+							System.out.println("Characters: " + reader.getText());
+							System.out.println("Character array length: " + reader.getTextCharacters().length);
+							System.out.println("Character text length: " + reader.getTextLength());
+							System.out.println("Character offset: " + reader.getTextStart());
 							break;
 						default:
 							break;
 					}
+					
+					eventType = reader.next();
+					System.out.println();
 				}
 			}
 			finally {
