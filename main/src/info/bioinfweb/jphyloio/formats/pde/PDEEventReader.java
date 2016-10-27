@@ -39,13 +39,13 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.StartDocumentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
 
 import java.awt.Color;
@@ -146,13 +146,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 
 	@Override
 	protected void fillMap() {
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
-				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
-					@Override
-					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-					}
-			});
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new StartDocumentElementReader<PDEReaderStreamDataProvider>());
 			
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), 
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {

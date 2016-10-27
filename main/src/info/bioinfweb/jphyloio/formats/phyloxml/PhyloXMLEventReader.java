@@ -40,6 +40,7 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.NodeEdgeInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.PhyloXMLCharactersElementReader;
+import info.bioinfweb.jphyloio.formats.phyloxml.elementreader.PhyloXMLStartDocumentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
@@ -351,14 +352,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {}  // Is used if no meta events should be read from a tag
 		};
 		
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), 
-			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
-				@Override
-				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-					streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-					streamDataProvider.setCreateTreeGroupStart(true);
-				}
-		});
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new PhyloXMLStartDocumentElementReader());
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), 
 			new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {

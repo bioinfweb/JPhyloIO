@@ -43,7 +43,6 @@ import javax.xml.stream.events.DTD;
 import javax.xml.stream.events.EntityReference;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.ProcessingInstruction;
-import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -51,22 +50,28 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  * Adapter class that allows reading a sequence of {@link LiteralMetadataContentEvent}s using an {@link XMLStreamReader}.
- * 
+ * <p>
  * Since it is registered which events are read from the event stream, it is possible to read only a part of the 
  * custom XML tree with this reader, while the rest is read using the original {@link JPhyloIOEventReader}.
+ * <p>
+ * Note that all methods intended to obtain information about the document start refer to the start of the whole 
+ * document, not only the custom XML tree.
+ * <p>
+ * Methods of this reader referring to element text as a character array , e.g. {@link #getTextCharacters()}, all work 
+ * on a string representation obtained from a characters event. Any performance benefits in using these character array 
+ * based methods are therefore not available here.
  * 
  * @author Sarah Wiechers
- * 
  */
-public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStreamDataProvider<P>>> extends AbstractMetaXMLReader<P> implements XMLStreamReader {
+public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStreamReader {
 	private XMLEvent currentEvent;
 	private StartElement currentStartElement;
 	private List<Attribute> currentAttributes = new ArrayList<Attribute>();
 	private List<Attribute> currentNamespaces = new ArrayList<Attribute>();
 	
 
-	public MetaXMLStreamReader(P jPhyloIOEventReader) {
-		super(jPhyloIOEventReader);
+	public MetaXMLStreamReader(JPhyloIOXMLEventReader jPhyloIOEventReader, XMLReaderStreamDataProvider streamDataProvider) {
+		super(jPhyloIOEventReader, streamDataProvider);
 	}
 
 
@@ -170,7 +175,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 	@Override
 	public String getCharacterEncodingScheme() {
 		if ((getEventType() == XMLStreamConstants.START_DOCUMENT)) {
-			return ((StartDocument)currentEvent).getCharacterEncodingScheme();
+			return getStreamDataProvider().getStartDocumentEvent().getCharacterEncodingScheme();
 		}
 		else {
 			throw new IllegalStateException("This method can only be called on a start document event.");
@@ -182,8 +187,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 	public String getElementText() throws XMLStreamException {
 		if (getEventType() != XMLStreamConstants.START_ELEMENT) {			
 				throw new XMLStreamException("To read the next element text this reader must be positioned on a start element.");			
-		}
-		
+		}		
 		
 		int eventType = next();
 		StringBuffer content = new StringBuffer();
@@ -216,9 +220,8 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 	
 	@Override
 	public String getEncoding() {
-		if ((getEventType() == XMLStreamConstants.START_DOCUMENT)) { //TODO return info about format XML document? Would have to be buffered
-//			return ((StartDocument)currentEvent).
-			return null;
+		if ((getEventType() == XMLStreamConstants.START_DOCUMENT)) {
+			return null;  // Encoding is unknown to this reader
 		}
 		else {
 			throw new IllegalStateException("This method can only be called on a start document event.");
@@ -268,8 +271,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 
 	@Override
 	public NamespaceContext getNamespaceContext() {
-		// TODO Auto-generated method stub
-		return null;
+		return getJPhyloIOEventReader().getNamespaceContext(); // Returns the current namespace context of the underlying JPhyloIOEventReader, not the XMLEventReader
 	}
 
 	
@@ -394,7 +396,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 	
 
 	@Override
-	public char[] getTextCharacters() {		
+	public char[] getTextCharacters() {
 		switch (getEventType()) {
 			case XMLStreamConstants.CHARACTERS:
 			case XMLStreamConstants.CDATA:
@@ -414,19 +416,9 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 			case XMLStreamConstants.CHARACTERS:
 			case XMLStreamConstants.CDATA:
 			case XMLStreamConstants.SPACE:
-				char[] source = currentEvent.asCharacters().getData().toCharArray();
-				int count;
-				for (count = 0; count < (target.length) && (count < length); count++) {
-					target[targetStart + count] = source[sourceStart + count];
-				}
-				return count;
 			case XMLStreamConstants.COMMENT:
-				char[] source2 = ((Comment)currentEvent).getText().toCharArray();
-				int count2;
-				for (count2 = 0; count2 < (target.length) && (count2 < length); count2++) {
-					target[targetStart + count2] = source2[sourceStart + count2];
-				}
-				return count2;
+				System.arraycopy(getTextCharacters(), sourceStart, target, targetStart, length);
+				return length;
 			default:
 				throw new IllegalStateException("This method can only be called on an element containing text (characters, cData, space, comment).");
 		}
@@ -440,7 +432,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 			case XMLStreamConstants.CDATA:
 			case XMLStreamConstants.SPACE:
 			case XMLStreamConstants.COMMENT:
-				return getTextCharacters().length;
+				return getText().length();
 			default:
 				throw new IllegalStateException("This method can only be called on an element containing text (characters, cData, space, comment).");
 		}
@@ -454,14 +446,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 			case XMLStreamConstants.CDATA:
 			case XMLStreamConstants.SPACE:
 			case XMLStreamConstants.COMMENT:
-				char[] text = getTextCharacters();
-				int textStart = 0; //TODO what shall be returned if char array is completely empty?
-				for (int i = 0; i < text.length; i++) {
-					if (text[i] != 0) {
-						textStart = i;
-					}
-				}
-				return textStart;
+				return 0; // Since no buffer is used the text always starts at the first position of the according char array
 			default:
 				throw new IllegalStateException("This method can only be called on an element containing text (characters, cData, space, comment).");
 		}
@@ -471,7 +456,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 	@Override
 	public String getVersion() {
 		if ((getEventType() == XMLStreamConstants.START_DOCUMENT)) {
-			return ((StartDocument)currentEvent).getVersion();
+			return getStreamDataProvider().getStartDocumentEvent().getVersion();
 		}
 		else {
 			throw new IllegalStateException("This method can only be called on a start document event.");
@@ -547,7 +532,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 	@Override
 	public boolean isStandalone() {
 		if ((getEventType() == XMLStreamConstants.START_DOCUMENT)) {
-			return ((StartDocument)currentEvent).isStandalone();
+			return getStreamDataProvider().getStartDocumentEvent().isStandalone();
 		}
 		else {
 			throw new IllegalStateException("This method can only be called on a start document event.");
@@ -585,18 +570,9 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 				result = getEventFactory().createStartDocument();
 				setStartDocumentFired(true);
 			}
-			else {
-				LiteralMetadataContentEvent contentEvent;
-				
+			else {				
 				try {
-					contentEvent = getJPhyloIOEventReader().peek().asLiteralMetadataContentEvent();  // No other event type is allowed in a literal meta subsequence
-					
-					if (contentEvent.hasXMLEventValue()) {
-						result = contentEvent.getXMLEvent();
-					}
-					else {
-//						throw new XMLStreamException("No XML event could be obtained from the current content event.");  //TODO return characters event or throw exception?
-					}
+					result = obtainXMLContentEvent(getJPhyloIOEventReader().next());					
 				}
 				catch (IOException e) {
 					if (e.getCause() != null) {
@@ -617,7 +593,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 		}
 		
 		currentEvent = result;
-		evaluateStartElement(result); //TODO do this only in case it is requested?
+		evaluateStartElement(result);
 		
 		return result.getEventType();
 	}
@@ -662,7 +638,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 	@Override
 	public boolean standaloneSet() {
 		if ((getEventType() == XMLStreamConstants.START_DOCUMENT)) {
-			return ((StartDocument)currentEvent).standaloneSet();
+			return getStreamDataProvider().getStartDocumentEvent().standaloneSet();
 		}
 		else {
 			throw new IllegalStateException("This method can only be called on a start document event.");
@@ -670,6 +646,14 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 	}
 	
 	
+	/**
+	 * This method fills lists with attributes and namespaces to allow methods to obtain information 
+	 * about either of those with just an index as a parameter. To ensure that all events are added to the according list,
+	 * whether they are included in a start element or occur as separate events, these lists are filled continuously 
+	 * and not only if needed.
+	 * 
+	 * @param the current XML event
+	 */
 	private void evaluateStartElement(XMLEvent event) {
 		int eventType = event.getEventType();
 		
@@ -684,7 +668,7 @@ public class MetaXMLStreamReader<P extends AbstractXMLEventReader<XMLReaderStrea
 				}
 				
 				@SuppressWarnings("unchecked")
-				Iterator<Attribute> namespaces = currentStartElement.getNamespaces(); 
+				Iterator<Namespace> namespaces = currentStartElement.getNamespaces(); 
 				while (namespaces.hasNext()) {
 					currentNamespaces.add(namespaces.next());
 				}

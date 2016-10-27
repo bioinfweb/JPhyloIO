@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.formats.xml;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
@@ -29,6 +30,8 @@ import info.bioinfweb.jphyloio.push.JPhyloIOEventListener;
 import java.io.IOException;
 
 import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
 
 
 
@@ -36,12 +39,14 @@ import javax.xml.stream.XMLEventFactory;
  * Implements shared functionality for custom XML readers.
  * 
  * @author Sarah Wiechers
- *
  */
-public abstract class AbstractMetaXMLReader<P extends AbstractXMLEventReader<XMLReaderStreamDataProvider<P>>> {
-	private P jPhyloIOEventReader;
+public abstract class AbstractMetaXMLReader {
+	private JPhyloIOXMLEventReader jPhyloIOEventReader;
+	private XMLReaderStreamDataProvider streamDataProvider;
+	
 	private MetaEventListener listener = new MetaEventListener();
 	private XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+	
 	private boolean endReached = false;
 	private boolean startDocumentFired;
 	private boolean endDocumentFired;
@@ -57,15 +62,12 @@ public abstract class AbstractMetaXMLReader<P extends AbstractXMLEventReader<XML
 	}
 
 
-	public AbstractMetaXMLReader(P jPhyloIOEventReader) {
+	public AbstractMetaXMLReader(JPhyloIOXMLEventReader jPhyloIOEventReader, XMLReaderStreamDataProvider streamDataProvider) {
 		super();
 		this.jPhyloIOEventReader = jPhyloIOEventReader;
+		this.streamDataProvider = streamDataProvider;
+		
 		getJPhyloIOEventReader().addEventListener(listener);
-	}
-	
-
-	public Object getProperty(String name) throws IllegalArgumentException {
-		return getJPhyloIOEventReader().getXMLReader().getProperty(name);  // It is possible that implementation specific objects have properties that can be changed by the application in a way that our code does not work anymore
 	}
 	
 	
@@ -75,8 +77,13 @@ public abstract class AbstractMetaXMLReader<P extends AbstractXMLEventReader<XML
 	}
 
 
-	public P getJPhyloIOEventReader() {
+	public JPhyloIOXMLEventReader getJPhyloIOEventReader() {
 		return jPhyloIOEventReader;
+	}
+
+
+	public XMLReaderStreamDataProvider getStreamDataProvider() {
+		return streamDataProvider;
 	}
 
 
@@ -107,5 +114,35 @@ public abstract class AbstractMetaXMLReader<P extends AbstractXMLEventReader<XML
 
 	protected void setEndDocumentFired(boolean endDocumentFired) {
 		this.endDocumentFired = endDocumentFired;
+	}
+	
+
+	public Object getProperty(String name) throws IllegalArgumentException {
+		return getJPhyloIOEventReader().getXMLReader().getProperty(name);  // It is possible that implementation specific objects have properties that can be changed by the application in a way that our code does not work anymore
+	}
+	
+	
+	protected XMLEvent obtainXMLContentEvent(JPhyloIOEvent jPhyloIOEvent) throws XMLStreamException {
+		XMLEvent result;
+		
+		switch (jPhyloIOEvent.getType().getContentType()) {
+			case COMMENT:
+				result = getEventFactory().createComment(jPhyloIOEvent.asCommentEvent().getContent());
+				break;
+			case META_LITERAL_CONTENT:
+				LiteralMetadataContentEvent contentEvent = jPhyloIOEvent.asLiteralMetadataContentEvent();
+				
+				if (contentEvent.hasXMLEventValue()) {
+					result = contentEvent.getXMLEvent();
+				}
+				else {
+					throw new XMLStreamException("No XML event could be obtained from the current metadata content event.");
+				}
+				break;
+			default:
+				throw new XMLStreamException("An event with an unexpected content type was encountered in the literal meta subsequence.");
+		}
+		
+		return result;
 	}
 }

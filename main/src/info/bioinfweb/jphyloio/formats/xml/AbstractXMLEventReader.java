@@ -240,7 +240,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	}
 	
 	
-	protected XMLEventReader getXMLReader() {
+	public XMLEventReader getXMLReader() {
 		return xmlReader;
 	}
 	
@@ -270,7 +270,8 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	public MetaXMLEventReader createMetaXMLEventReader() throws IllegalStateException {
 		if (getParentInformation().getDirectParentContentType().equals(EventContentType.META_LITERAL) 
 				&& getParentInformation().getDirectParent().asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML)) {
-			return new MetaXMLEventReader(this);
+			
+			return new MetaXMLEventReader(this, getStreamDataProvider());
 		}
 		else {
 			throw new IllegalStateException("An instance of MetaXMLEventReader can only be created while this instance is located "
@@ -283,7 +284,7 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 	public MetaXMLStreamReader createMetaXMLStreamReader() throws IllegalStateException {
 		if (getParentInformation().getDirectParentContentType().equals(EventContentType.META_LITERAL) 
 				&& getParentInformation().getDirectParent().asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML)) {
-			return new MetaXMLStreamReader(this);
+			return new MetaXMLStreamReader(this, getStreamDataProvider());
 		}
 		else {
 			throw new IllegalStateException("An instance of MetaXMLEventReader can only be created while this instance is located "

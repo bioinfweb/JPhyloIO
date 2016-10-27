@@ -46,7 +46,6 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.BufferedEventInfo;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
@@ -56,6 +55,7 @@ import info.bioinfweb.jphyloio.formats.nexml.elementreader.AbstractSetElementRea
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaEndElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLMetaStartElementReader;
 import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLSetEndElementReader;
+import info.bioinfweb.jphyloio.formats.nexml.elementreader.NeXMLStartDocumentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.AbstractXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
@@ -449,13 +449,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			}
 		});
 
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new AbstractNeXMLElementReader() {			
-			@Override
-			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-				streamDataProvider.setCurrentSetIsSupported(false);
-			}
-		});
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new NeXMLStartDocumentElementReader());
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), new AbstractNeXMLElementReader() {			
 			@Override

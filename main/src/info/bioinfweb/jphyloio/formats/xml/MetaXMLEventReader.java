@@ -20,7 +20,6 @@ package info.bioinfweb.jphyloio.formats.xml;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
@@ -44,14 +43,11 @@ import javax.xml.stream.events.XMLEvent;
  * custom XML tree with this reader, while the rest is read using the original {@link JPhyloIOEventReader}.
  * 
  * @author Ben St&ouml;ver
- * @author Sarah Wiechers
- * 
+ * @author Sarah Wiechers 
  */
-public class MetaXMLEventReader<P extends AbstractXMLEventReader<XMLReaderStreamDataProvider<P>>> extends AbstractMetaXMLReader<P> implements XMLEventReader {
-	
-	
-	public MetaXMLEventReader(P jPhyloIOEventReader) {
-		super(jPhyloIOEventReader);
+public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEventReader {
+	public MetaXMLEventReader(JPhyloIOXMLEventReader jPhyloIOEventReader, XMLReaderStreamDataProvider streamDataProvider) {
+		super(jPhyloIOEventReader, streamDataProvider);
 	}
 
 
@@ -209,30 +205,5 @@ public class MetaXMLEventReader<P extends AbstractXMLEventReader<XMLReaderStream
 		}
 		
 		return result;  // If the end of the custom XML was already reached this method returns null
-	}
-	
-	
-	private XMLEvent obtainXMLContentEvent(JPhyloIOEvent jPhyloIOEvent) throws XMLStreamException {
-		XMLEvent result;
-		
-		switch (jPhyloIOEvent.getType().getContentType()) {
-			case COMMENT:
-				result = getEventFactory().createComment(jPhyloIOEvent.asCommentEvent().getContent());
-				break;
-			case META_LITERAL_CONTENT:
-				LiteralMetadataContentEvent contentEvent = jPhyloIOEvent.asLiteralMetadataContentEvent();
-				
-				if (contentEvent.hasXMLEventValue()) {
-					result = contentEvent.getXMLEvent();
-				}
-				else {
-					throw new XMLStreamException("No XML event could be obtained from the current metadata content event.");
-				}
-				break;
-			default:
-				throw new XMLStreamException("An event with an unexpected content type was encountered in the literal meta subsequence.");
-		}
-		
-		return result;
 	}
 }

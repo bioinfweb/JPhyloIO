@@ -66,32 +66,32 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	}
 
 
-	protected boolean isCreateTreeGroupStart() {
+	public boolean isCreateTreeGroupStart() {
 		return createTreeGroupStart;
 	}
 
 
-	protected void setCreateTreeGroupStart(boolean createTreeGroupStart) {
+	public void setCreateTreeGroupStart(boolean createTreeGroupStart) {
 		this.createTreeGroupStart = createTreeGroupStart;
 	}
 
 
-	protected boolean isCreatePhylogenyStart() {
+	public boolean isCreatePhylogenyStart() {
 		return createPhylogenyStart;
 	}
 
 
-	protected void setCreatePhylogenyStart(boolean createPhylogenyStart) {
+	public void setCreatePhylogenyStart(boolean createPhylogenyStart) {
 		this.createPhylogenyStart = createPhylogenyStart;
 	}
 
 
-	protected boolean isCreateTreeGroupEnd() {
+	public boolean isCreateTreeGroupEnd() {
 		return createTreeGroupEnd;
 	}
 
 
-	protected void setCreateTreeGroupEnd(boolean createTreeGroupEnd) {
+	public void setCreateTreeGroupEnd(boolean createTreeGroupEnd) {
 		this.createTreeGroupEnd = createTreeGroupEnd;
 	}
 
@@ -106,52 +106,52 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	}
 
 
-	protected Map<String, String> getCladeIDToNodeEventIDMap() {
+	public Map<String, String> getCladeIDToNodeEventIDMap() {
 		return cladeIDToNodeEventIDMap;
 	}
 
 
-	protected List<JPhyloIOEvent> getPropertyEvents() {
+	public List<JPhyloIOEvent> getPropertyEvents() {
 		return propertyEvents;
 	}
 	
 
-	protected boolean isFirstContentEvent() {
+	public boolean isFirstContentEvent() {
 		return isFirstContentEvent;
 	}
 
 
-	protected void setFirstContentEvent(boolean isFirstContentEvent) {
+	public void setFirstContentEvent(boolean isFirstContentEvent) {
 		this.isFirstContentEvent = isFirstContentEvent;
 	}
 
 
-	protected boolean isResetEventCollection() {
+	public boolean isResetEventCollection() {
 		return resetEventCollection;
 	}
 
 
-	protected void setResetEventCollection(boolean resetEventCollection) {
+	public void setResetEventCollection(boolean resetEventCollection) {
 		this.resetEventCollection = resetEventCollection;
 	}
 
 
-	protected boolean isPropertyHasResource() {
+	public boolean isPropertyHasResource() {
 		return propertyHasResource;
 	}
 
 
-	protected void setPropertyHasResource(boolean propertyHasResource) {
+	public void setPropertyHasResource(boolean propertyHasResource) {
 		this.propertyHasResource = propertyHasResource;
 	}
 
 
-	protected boolean isPropertyIsURI() {
+	public boolean isPropertyIsURI() {
 		return propertyIsURI;
 	}
 
 
-	protected void setPropertyIsURI(boolean propertyIsURI) {
+	public void setPropertyIsURI(boolean propertyIsURI) {
 		this.propertyIsURI = propertyIsURI;
 	}
 }

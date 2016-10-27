@@ -142,12 +142,13 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 	
 	
 	@Override
-	protected void doWriteDocument() throws IOException, XMLStreamException {		
-		checkDocument(getDocument());
-		
+	protected void doWriteDocument() throws IOException, XMLStreamException {
+		// Bind default prefixes here to avoid having to change them if an application tries to use them later on
 		getStreamDataProvider().setNamespacePrefix(getStreamDataProvider().getNeXMLPrefix(getXMLWriter()), NEXML_NAMESPACE);
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getXSDPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		
+		checkDocument(getDocument());	
 		
 		getXMLWriter().writeStartElement(TAG_ROOT.getLocalPart());
 

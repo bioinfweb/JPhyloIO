@@ -51,8 +51,7 @@ import javax.xml.stream.events.XMLEvent;
  * <p>
  * No end elements can be written by this writer, if the according start element was not written with this instance as well.
  * 
- * @author Sarah Wiechers
- * 
+ * @author Sarah Wiechers 
  */
 public class MetaXMLStreamWriter<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> implements XMLStreamWriter {
 	private AbstractXMLDataReceiver<P> receiver;

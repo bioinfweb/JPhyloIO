@@ -23,6 +23,7 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.stream.XMLEventReader;
 
 
 
@@ -44,7 +45,14 @@ public interface JPhyloIOXMLEventReader extends JPhyloIOEventReader {
 	 * @return the current namespace context object or {@code null} if the reader did not encounter the first XML tag of the document yet
 	 */
 	public NamespaceContext getNamespaceContext();
-	//TODO Add hint for possible problems with events created from buffered data? (See also #123.)
+	//TODO Add hint for possible problems with events created from buffered data? (See also #123.)	
+	
+	/**
+	 * Returns the underlying {@link XMLEventReader}.
+	 * 
+	 * @return the underlying XML event reader
+	 */
+	public XMLEventReader getXMLReader();
 	
 	/**
 	 * Creates a new instance of {@link MetaXMLEventReader} that allows to read events of XML content of literal metadata from this 

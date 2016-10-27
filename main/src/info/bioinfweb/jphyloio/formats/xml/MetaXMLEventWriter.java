@@ -51,7 +51,6 @@ import javax.xml.stream.events.XMLEvent;
  * written with the wrong default namespace (it would be written with a prefix then).
  * 
  * @author Sarah Wiechers
- * 
  */
 public class MetaXMLEventWriter<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> implements XMLEventWriter {
 	private AbstractXMLDataReceiver<P> receiver;

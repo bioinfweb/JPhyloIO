@@ -20,12 +20,27 @@ package info.bioinfweb.jphyloio.objecttranslation;
 
 
 import info.bioinfweb.commons.io.W3CXSConstants;
-import info.bioinfweb.jphyloio.objecttranslation.implementations.*;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.Base64BinaryTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.BigDecimalTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.BigIntegerTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.BooleanTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.ByteTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.DateTimeTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.DateTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.DoubleTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.FloatTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.HexBinaryTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.IntegerTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.LongTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.QNameTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.ShortTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.StringTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.TimeTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.URITranslator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 

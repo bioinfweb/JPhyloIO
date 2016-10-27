@@ -28,6 +28,7 @@ import java.util.Queue;
 import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.events.StartDocument;
 
 
 
@@ -40,6 +41,8 @@ import javax.xml.stream.XMLEventReader;
 public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? extends XMLReaderStreamDataProvider<R>>> extends ReaderStreamDataProvider<R> {	
 	private String parentName;
 	private String elementName;
+	
+	private StartDocument startDocumentEvent;
 	
 	private Stack<String> nestedMetaNames = new Stack<String>();
 	private boolean customXMLStartWritten = false;
@@ -83,6 +86,16 @@ public class XMLReaderStreamDataProvider<R extends AbstractXMLEventReader<? exte
 
 	public void setElementName(String elementName) {
 		this.elementName = elementName;
+	}
+
+
+	public StartDocument getStartDocumentEvent() {
+		return startDocumentEvent;
+	}
+
+
+	public void setStartDocumentEvent(StartDocument startDocumentEvent) {
+		this.startDocumentEvent = startDocumentEvent;
 	}
 
 

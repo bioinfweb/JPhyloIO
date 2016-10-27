@@ -40,6 +40,7 @@ import info.bioinfweb.jphyloio.formats.xml.AttributeInfo;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.AbstractXMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.CommentElementReader;
+import info.bioinfweb.jphyloio.formats.xml.elementreaders.StartDocumentElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLEndElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLNoCharactersAllowedElementReader;
@@ -185,12 +186,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {}
 		};
 		
-		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {
-			@Override
-			public void readEvent(XMLReaderStreamDataProvider<XTGEventReader> streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.START));
-			}
-		});
+		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_DOCUMENT), new StartDocumentElementReader<XMLReaderStreamDataProvider<XTGEventReader>>());
 		
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_DOCUMENT), new AbstractXMLElementReader<XMLReaderStreamDataProvider<XTGEventReader>>() {
 			@Override
