@@ -67,13 +67,13 @@ public abstract class AbstractMetaXMLReader {
 		this.jPhyloIOEventReader = jPhyloIOEventReader;
 		this.streamDataProvider = streamDataProvider;
 		
-		getJPhyloIOEventReader().addEventListener(listener);
+		this.jPhyloIOEventReader.addEventListener(listener);
 	}
 	
 	
 	protected void setEndReached() {
 		endReached = true;
-		getJPhyloIOEventReader().removeEventListener(listener);
+		jPhyloIOEventReader.removeEventListener(listener);
 	}
 
 

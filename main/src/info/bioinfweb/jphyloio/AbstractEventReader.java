@@ -189,7 +189,7 @@ public abstract class AbstractEventReader<P extends ReaderStreamDataProvider<? e
 	
 	
 	protected void fireEvent(JPhyloIOEvent event) throws IOException {
-		for (JPhyloIOEventListener eventListener : eventListeners) {
+		for (JPhyloIOEventListener eventListener : eventListeners.toArray(new JPhyloIOEventListener[eventListeners.size()])) {  // List must be copied to avoid ConcurrentModificationException in case listeners that are part of the list remove themselves from it
 			eventListener.processEvent(this, event);
 		}
 	}
