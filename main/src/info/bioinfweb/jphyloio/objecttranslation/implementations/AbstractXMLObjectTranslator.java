@@ -47,6 +47,7 @@ public abstract class AbstractXMLObjectTranslator<O> extends AbstractObjectTrans
 		throw new UnsupportedOperationException("This translator does not support simple string representations.");
 	}
 
+	
 	@Override
 	public O representationToJava(String representation, ReaderStreamDataProvider<?> streamDataProvider)
 			throws InvalidObjectSourceDataException, UnsupportedOperationException {
