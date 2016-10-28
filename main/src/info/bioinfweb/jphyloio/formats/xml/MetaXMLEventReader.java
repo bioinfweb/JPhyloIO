@@ -66,15 +66,6 @@ public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEven
 	public void remove() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("A passed event stream cannot be modified.");
 	}
-
-
-	/**
-	 * This method has no effect in this reader. Both the <i>JPhyloIO</i> and the XML event stream will
-	 * still be open, if they were before calling this method. Freeing resources of this reader is not
-	 * necessary, since it just delegates to another reader.
-	 */
-	@Override
-	public void close() throws XMLStreamException {}
 	
 	
 	@Override
@@ -124,16 +115,10 @@ public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEven
 	
 
 	@Override
-	public boolean hasNext() {
-		return !isEndReached();
-	}
-	
-
-	@Override
 	public XMLEvent nextEvent() throws XMLStreamException {
 		XMLEvent result;
 		
-		if (hasNext()) {
+		if (!isEndReached()) {
 			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) 
 					&& !isStartDocumentFired()) {
 				
@@ -188,21 +173,31 @@ public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEven
 
 	@Override
 	public XMLEvent peek() throws XMLStreamException {
-		XMLEvent result = null;
-		
-		if (hasNext()) {			
-			try {				
-				result = obtainXMLContentEvent(getJPhyloIOEventReader().peek());				
+		XMLEvent result = null;		
+
+		if (!isEndReached()) {
+			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) 
+					&& !isStartDocumentFired()) {
+				
+				result = getEventFactory().createStartDocument();
 			}
-			catch (IOException e) {
-				if (e.getCause() != null) {
-					throw new XMLStreamException(e.getCause());
+			else {
+				try {
+					result = obtainXMLContentEvent(getJPhyloIOEventReader().peek());
 				}
-				else {
-					throw new XMLStreamException("No XML event could be obtained from the underlying reader.");
+				catch (IOException e) {
+					if (e.getCause() != null) {
+						throw new XMLStreamException(e.getCause());
+					}
+					else {
+						throw new XMLStreamException("No XML event could be obtained from the underlying reader.");
+					}
 				}
 			}
 		}
+		else if (!isEndDocumentFired()) {
+			result = getEventFactory().createEndDocument();
+		}		
 		
 		return result;  // If the end of the custom XML was already reached this method returns null
 	}

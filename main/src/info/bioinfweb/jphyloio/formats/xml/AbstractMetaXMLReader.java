@@ -115,6 +115,19 @@ public abstract class AbstractMetaXMLReader {
 	protected void setEndDocumentFired(boolean endDocumentFired) {
 		this.endDocumentFired = endDocumentFired;
 	}
+
+
+	/**
+	 * This method has no effect in this reader. Both the <i>JPhyloIO</i> and the XML event stream will
+	 * still be open, if they were before calling this method. Freeing resources of this reader is not
+	 * necessary, since it just delegates to another reader.
+	 */
+	public void close() throws XMLStreamException {}
+	
+
+	public boolean hasNext() {
+		return !isEndDocumentFired();
+	}
 	
 
 	public Object getProperty(String name) throws IllegalArgumentException {
@@ -140,7 +153,8 @@ public abstract class AbstractMetaXMLReader {
 				}
 				break;
 			default:
-				throw new XMLStreamException("An event with an unexpected content type was encountered in the literal meta subsequence.");
+				throw new XMLStreamException("An event with the unexpected content type \"" + jPhyloIOEvent.getType().getContentType() 
+						+ "\" was encountered in the literal meta subsequence.");
 		}
 		
 		return result;

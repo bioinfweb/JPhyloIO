@@ -74,15 +74,6 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 		super(jPhyloIOEventReader, streamDataProvider);
 	}
 
-
-	/**
-	 * This method has no effect in this reader. Both the <i>JPhyloIO</i> and the XML event stream will
-	 * still be open, if they were before calling this method. Freeing resources of this reader is not
-	 * necessary, since it just delegates to another reader.
-	 */
-	@Override
-	public void close() throws XMLStreamException {}
-
 	
 	@Override
 	public int getAttributeCount() {
@@ -477,12 +468,6 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 	
 
 	@Override
-	public boolean hasNext() throws XMLStreamException {
-		return !isEndReached();
-	}
-	
-
-	@Override
 	public boolean hasText() {
 		switch (getEventType()) {
 			case XMLStreamConstants.CHARACTERS:
@@ -563,7 +548,7 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 	@Override
 	public int next() throws XMLStreamException {
 		XMLEvent result = null;
-		if (hasNext()) {
+		if (!isEndReached()) {
 			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) 
 					&& !isStartDocumentFired()) {
 				
@@ -660,6 +645,8 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 		switch (eventType) {
 			case XMLStreamConstants.START_ELEMENT:
 				currentStartElement = event.asStartElement();
+				currentAttributes.clear();
+				currentNamespaces.clear();
 				
 				@SuppressWarnings("unchecked")
 				Iterator<Attribute> attributes = currentStartElement.getAttributes(); 
