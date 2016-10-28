@@ -98,7 +98,7 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 	 * @param asDefault Determines whether the added translators shall become the default translators for their data type, 
 	 *        if another default instance is already registered. (If {@code true} is specified, previous defaults will be
 	 *        overwritten. If {@code false} is specified, previous defaults will be maintained. In all cases previous entries
-	 *        will remain in the factory, of they have a different object type and will be completely overwritten if they have 
+	 *        will remain in the factory, if they have a different object type and will be completely overwritten if they have 
 	 *        the same.)  
 	 */
 	public void addXSDTranslators(boolean asDefault) {
