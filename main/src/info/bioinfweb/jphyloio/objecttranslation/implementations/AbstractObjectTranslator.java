@@ -16,14 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.objecttranslation;
+package info.bioinfweb.jphyloio.objecttranslation.implementations;
+
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 
 
 /**
  * Abstract base class for implementations of {@link ObjectTranslator} that implements {@link #equals(Object)} and
- * {@link #hashCode()} based of the return values of {@link #getDataType()}, {@link #getObjectClass()} and 
- * {@link #hasStringRepresentation()}.
+ * {@link #hashCode()} based of the return values of {@link #getObjectClass()} and {@link #hasStringRepresentation()}.
  * <p>
  * Inherited classes that add additional properties must overwrite these methods. 
  * 

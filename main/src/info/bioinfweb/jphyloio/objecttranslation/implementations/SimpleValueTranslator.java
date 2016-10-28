@@ -29,7 +29,6 @@ import javax.xml.stream.XMLStreamWriter;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
-import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
 
 

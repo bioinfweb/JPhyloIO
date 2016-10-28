@@ -33,8 +33,8 @@ import javax.xml.stream.events.XMLEvent;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.WriterStreamDataProvider;
-import info.bioinfweb.jphyloio.objecttranslation.AbstractObjectTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.AbstractObjectTranslator;
 
 
 
