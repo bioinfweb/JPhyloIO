@@ -338,7 +338,7 @@ public interface ReadWriteParameterNames {
 	 * Specifying a custom factory allows to provide translators for custom data types or to overwrite default 
 	 * translators for common types.
 	 * 
-	 * @see #getObjectTranslatorFactory()
+	 * @see ReadWriteParameterMap#getObjectTranslatorFactory()
 	 */
 	public static final String KEY_OBJECT_TRANSLATOR_FACTORY = KEY_PREFIX + "objectTranslatorFactory";
 	
