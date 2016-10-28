@@ -1,0 +1,43 @@
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" 
+	xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd" xmlns:ex="http://example.org/">
+    <phylogeny rooted="true">
+        <name>Tree 1</name>
+        <clade>	
+			<name>1</name>
+            <clade>
+                <name>A</name>
+				<ex:customTag ex:attribute="true">
+					some more
+					<ex:nestedTag>
+						<ex:secondNested>nested content</ex:secondNested>
+					</ex:nestedTag>
+					characters and even more
+				</ex:customTag>
+            </clade>
+            <clade>
+				<name>2</name>
+				<taxonomy>
+					<id>ID1</id>
+					<ex:customTag xmlns:pre="http://example.com/">
+						<pre:nestedTag pre:attribute="false">
+							<pre:secondNested>nested content</pre:secondNested>
+						</pre:nestedTag>
+					</ex:customTag>
+				</taxonomy>
+                <clade>                    
+					<name>B</name>
+					<sequence>
+						<name>ID1</name>
+					</sequence>
+                </clade>
+                <clade>
+					<name>C</name>
+					<events>
+						<duplications>50</duplications>
+					</events>
+                </clade>
+            </clade>
+        </clade>
+		<ex:customTag xmlns:ex="http://example.com/">some content</ex:customTag>
+    </phylogeny>
+</phyloxml>
