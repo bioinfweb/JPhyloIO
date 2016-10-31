@@ -258,7 +258,24 @@ public class JPhyloIOTestTools {
 		JPhyloIOEvent event = reader.next();
 		assertEquals(EventContentType.COMMENT, event.getType().getContentType());
 		CommentEvent commentEvent = event.asCommentEvent();
-		assertTrue(commentEvent.getContent().matches(expectedContent));
+		assertEquals(expectedContent, commentEvent.getContent());
+		assertEquals(expectedContinuedInNextEvent, commentEvent.isContinuedInNextEvent());
+  }  
+	
+	
+  public static void assertCommentEventRegExp(String expectedContentRegExp, JPhyloIOEventReader reader) throws Exception {
+  	assertCommentEventRegExp(expectedContentRegExp, false, reader);  	
+  }
+  
+  
+  public static void assertCommentEventRegExp(String expectedContentRegExp, boolean expectedContinuedInNextEvent, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+		assertTrue(reader.hasNextEvent());
+		JPhyloIOEvent event = reader.next();
+		assertEquals(EventContentType.COMMENT, event.getType().getContentType());
+		CommentEvent commentEvent = event.asCommentEvent();
+		assertTrue(commentEvent.getContent().matches(expectedContentRegExp));
 		assertEquals(expectedContinuedInNextEvent, commentEvent.isContinuedInNextEvent());
   }  
 	
