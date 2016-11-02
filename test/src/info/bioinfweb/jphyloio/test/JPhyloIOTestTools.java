@@ -324,7 +324,7 @@ public class JPhyloIOTestTools {
   }
   
   
-  public static XMLEvent assertXMLContentEvent(String expectedStringValue, int expectedEventType, QName expectedEventName, String expectedCharacterContent, 
+  public static XMLEvent assertXMLContentEvent(String expectedStringValue, int expectedEventType, QName expectedElementName, String expectedCharacterContent, 
   		boolean testLiteralEndEvent, JPhyloIOEventReader reader) throws Exception {
   	
 		assertTrue(reader.hasNextEvent());
@@ -340,10 +340,10 @@ public class JPhyloIOTestTools {
 			assertTrue(contentEvent.getXMLEvent().asCharacters().getData().matches(expectedCharacterContent));
 		}
 		else if (expectedEventType == XMLStreamConstants.START_ELEMENT) {
-			assertEquals(expectedEventName, contentEvent.getXMLEvent().asStartElement().getName());
+			assertEquals(expectedElementName, contentEvent.getXMLEvent().asStartElement().getName());
 		}
 		else if (expectedEventType == XMLStreamConstants.END_ELEMENT) {
-			assertEquals(expectedEventName, contentEvent.getXMLEvent().asEndElement().getName());
+			assertEquals(expectedElementName, contentEvent.getXMLEvent().asEndElement().getName());
 		}
 		
 		if (testLiteralEndEvent) {

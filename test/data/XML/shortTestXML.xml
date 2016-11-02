@@ -1,0 +1,5 @@
+<ex:customTag xmlns:ex="http://example.org/" xmlns:pre="http://example.com/">
+	<pre:nestedTag pre:attribute="false">
+		<pre:secondNested>nested content</pre:secondNested>
+	</pre:nestedTag>
+</ex:customTag>

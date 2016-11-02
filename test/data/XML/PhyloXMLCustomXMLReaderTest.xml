@@ -39,5 +39,6 @@
             </clade>
         </clade>
 		<ex:customTag xmlns:ex="http://example.com/">some content</ex:customTag>
+		<ex:customTag>some content</ex:customTag>
     </phylogeny>
 </phyloxml>
