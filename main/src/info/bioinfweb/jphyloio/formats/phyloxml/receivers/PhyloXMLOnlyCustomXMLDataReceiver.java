@@ -103,7 +103,7 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 		}
 		
 		if (writeCustomXML) {
-			getStreamDataProvider().getMetaIDs().remove(event.getID());	
+			getStreamDataProvider().getMetaIDs().remove(event.getID());
 		}
 	}
 	

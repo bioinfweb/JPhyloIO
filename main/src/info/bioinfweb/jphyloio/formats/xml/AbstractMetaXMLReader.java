@@ -37,6 +37,10 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  * Implements shared functionality for custom XML readers.
+ * <p>
+ * Each created reader instance will create their own start and end document events. If multiple instances are used for the same literal 
+ * meta subsequence this can lead to multiple start and end document events being generated. However, start document events are only 
+ * created if no literal content event was consumed yet.
  * 
  * @author Sarah Wiechers
  */

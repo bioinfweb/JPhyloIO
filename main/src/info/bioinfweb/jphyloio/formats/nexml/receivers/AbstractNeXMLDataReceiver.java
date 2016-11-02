@@ -20,9 +20,9 @@ package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLConstants;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
+import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
 
 
 
@@ -32,7 +32,7 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
  * @author Sarah Wiechers
  *
  */
-public abstract class AbstractNeXMLDataReceiver extends BasicEventReceiver<NeXMLWriterStreamDataProvider> implements NeXMLConstants {
+public abstract class AbstractNeXMLDataReceiver extends AbstractXMLDataReceiver<NeXMLWriterStreamDataProvider> implements NeXMLConstants {
 
 	
 	public AbstractNeXMLDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider, ReadWriteParameterMap parameterMap) {

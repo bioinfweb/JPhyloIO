@@ -163,7 +163,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		getXMLWriter().writeComment(" " + getFileStartInfo(getParameters()) + " ");
 		
 		if (getStreamDataProvider().isDocumentHasMetadata() || getStreamDataProvider().isDocumentHasPhylogeny()) {			
-			writePhylogenyTags();			
+			writePhylogenyTags();
 			getDocument().writeMetadata(getParameters(), receiver);
 		}
 		else {

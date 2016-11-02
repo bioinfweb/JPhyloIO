@@ -46,7 +46,7 @@ import javax.xml.stream.events.XMLEvent;
  * This writer does not manage namespaces of custom XML elements. The application needs to ensure that all used prefixes 
  * (either in any elements, attributes or character data) are properly declared within the custom XML 
  * (e.g. by adding {@link Namespace} events). Any methods of this writer changing the namespace mapping or obtaining information 
- * it refer to the underlying writer. Note that if the default namespace is changed (either by setting a new default namespace or a completely 
+ * about it refer to the underlying writer. Note that if the default namespace is changed (either by setting a new default namespace or a completely 
  * new namespace context object) while this reader is on the top level of custom XML, it is possible that the literal meta end tag is 
  * written with the wrong default namespace (it would be written with a prefix then).
  * 

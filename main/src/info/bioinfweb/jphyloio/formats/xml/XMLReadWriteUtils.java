@@ -141,14 +141,14 @@ public class XMLReadWriteUtils {
 				StartElement element = event.asStartElement();
 				boolean manageCustomXMLNamespaces = parameters.getBoolean(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING, false);
 				
-				writer.writeStartElement(obtainCustomXMLPrefix(writer, element.getName(), manageCustomXMLNamespaces), element.getName().getLocalPart(), element.getName().getNamespaceURI());
+				writer.writeStartElement(obtainCustomXMLPrefix(writer, element.getName().getPrefix(), element.getName().getNamespaceURI(), manageCustomXMLNamespaces), element.getName().getLocalPart(), element.getName().getNamespaceURI());
 				
 				// Write attributes
 				@SuppressWarnings("unchecked")
 				Iterator<Attribute> attributes = element.getAttributes();
 				while (attributes.hasNext()) {
 					Attribute attribute = attributes.next();					
-					writer.writeAttribute(obtainCustomXMLPrefix(writer, attribute.getName(), manageCustomXMLNamespaces), 
+					writer.writeAttribute(obtainCustomXMLPrefix(writer, attribute.getName().getPrefix(), attribute.getName().getNamespaceURI(), manageCustomXMLNamespaces), 
 							attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
 				}
 				
@@ -162,7 +162,7 @@ public class XMLReadWriteUtils {
 						writer.writeDefaultNamespace(namespace.getNamespaceURI());
 					}
 					else if (!manageCustomXMLNamespaces) {
-						writer.writeNamespace(obtainCustomXMLPrefix(writer, namespace.getName(), manageCustomXMLNamespaces),
+						writer.writeNamespace(obtainCustomXMLPrefix(writer, namespace.getPrefix(), namespace.getNamespaceURI(), manageCustomXMLNamespaces),
 								namespace.getNamespaceURI());
 					}
 				}
@@ -233,12 +233,12 @@ public class XMLReadWriteUtils {
 	}
 	
 	
-	private static String obtainCustomXMLPrefix(XMLStreamWriter writer, QName elementName, boolean manageCustomXMLNamespaces) throws XMLStreamException {
+	private static String obtainCustomXMLPrefix(XMLStreamWriter writer, String prefix, String namespaceURI, boolean manageCustomXMLNamespaces) throws XMLStreamException {
 		if (manageCustomXMLNamespaces) {
-			return writer.getPrefix(elementName.getNamespaceURI());  // Writer obtains the correct prefix from its namespace context if custom XML namespaces are managed
+			return writer.getPrefix(namespaceURI);  // Writer obtains the correct prefix from its namespace context if custom XML namespaces are managed
 		}
 		else {
-			return elementName.getPrefix();
+			return prefix;
 		}
 	}
 	
@@ -267,35 +267,54 @@ public class XMLReadWriteUtils {
 			
 			if (parameters.getBoolean(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING, false)) {
 				
-				if (event.getXMLEvent().getEventType() == XMLStreamConstants.START_ELEMENT) {
-					StartElement element = event.getXMLEvent().asStartElement();
-					resourceIdentifier = element.getName();					
+				switch (event.getXMLEvent().getEventType()) {
+					case XMLStreamConstants.START_ELEMENT:
+						StartElement element = event.getXMLEvent().asStartElement();
+						resourceIdentifier = element.getName();					
 
-					streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(),	
-							resourceIdentifier.getPrefix(), resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-					
-					@SuppressWarnings("unchecked")
-					Iterator<Attribute> attributesIterator = element.getAttributes();
-					while (attributesIterator.hasNext()) {
-						Attribute attribute = attributesIterator.next();
-						resourceIdentifier = attribute.getName();
+						streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(),	
+								resourceIdentifier.getPrefix(), resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
 						
-						streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
-								resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
-					}
-					
-					@SuppressWarnings("unchecked")
-					Iterator<Namespace> namespaceIterator = element.getNamespaces();
-					while (namespaceIterator.hasNext()) {
-						Namespace namespace = namespaceIterator.next();
+						@SuppressWarnings("unchecked")
+						Iterator<Attribute> attributesIterator = element.getAttributes();
+						while (attributesIterator.hasNext()) {
+							Attribute attribute = attributesIterator.next();
+							resourceIdentifier = attribute.getName();
+							
+							streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(), resourceIdentifier.getPrefix(), 
+									resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
+						}
 						
-						// Default namespace declarations are always written, so they do not need to be managed here
+						@SuppressWarnings("unchecked")
+						Iterator<Namespace> namespaceIterator = element.getNamespaces();
+						while (namespaceIterator.hasNext()) {
+							Namespace namespace = namespaceIterator.next();
+							
+							// Default namespace declarations are always written, so they do not need to be managed here
+							if (!namespace.getPrefix().equals("")) {
+								streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(), namespace.getPrefix(), 
+										namespace.getNamespaceURI()), namespace.getNamespaceURI());
+							}							
+						}
+						break;
+					case XMLStreamConstants.ATTRIBUTE:
+						Attribute attribute = (Attribute)event.getXMLEvent();
+						resourceIdentifier = attribute.getName();					
+
+						streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(),	
+								resourceIdentifier.getPrefix(), resourceIdentifier.getNamespaceURI()), resourceIdentifier.getNamespaceURI());
+						break;
+					case XMLStreamConstants.NAMESPACE:
+						Namespace namespace = (Namespace)event.getXMLEvent();
+
 						if (!namespace.getPrefix().equals("")) {
-							streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(), namespace.getPrefix(), 
+							streamDataProvider.setNamespacePrefix(getDefaultNamespacePrefix(streamDataProvider.getWriter(),	namespace.getPrefix(), 
 									namespace.getNamespaceURI()), namespace.getNamespaceURI());
-						}							
-					}					
-				}
+						}
+						break;
+					default:
+						break;
+				}				
 			}
 		}
 		else if (event.hasObjectValue() && (event.getObjectValue() instanceof QName)) {

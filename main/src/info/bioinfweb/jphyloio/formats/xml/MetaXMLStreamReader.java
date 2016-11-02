@@ -67,7 +67,7 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 	private XMLEvent currentEvent;
 	private StartElement currentStartElement;
 	private List<Attribute> currentAttributes = new ArrayList<Attribute>();
-	private List<Attribute> currentNamespaces = new ArrayList<Attribute>();
+	private List<Namespace> currentNamespaces = new ArrayList<Namespace>();
 	
 
 	public MetaXMLStreamReader(JPhyloIOXMLEventReader jPhyloIOEventReader, XMLReaderStreamDataProvider streamDataProvider) {
@@ -284,7 +284,7 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 		if ((getEventType() == XMLStreamConstants.START_ELEMENT) || (getEventType() == XMLStreamConstants.END_ELEMENT)
 				 || (getEventType() == XMLStreamConstants.NAMESPACE)) {
 			
-			return currentNamespaces.get(index).getName().getPrefix();
+			return currentNamespaces.get(index).getPrefix();
 		}
 		else {
 			throw new IllegalStateException("This method can only be called on a start element, end element or namespace.");
@@ -309,8 +309,8 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 	public String getNamespaceURI(int index) {
 		if ((getEventType() == XMLStreamConstants.START_ELEMENT) || (getEventType() == XMLStreamConstants.END_ELEMENT)
 				 || (getEventType() == XMLStreamConstants.NAMESPACE)) {
-			
-			return currentNamespaces.get(index).getName().getNamespaceURI();
+
+			return currentNamespaces.get(index).getNamespaceURI();
 		}
 		else {
 			throw new IllegalStateException("This method can only be called on a start element, end element or namespace.");

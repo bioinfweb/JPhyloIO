@@ -83,7 +83,7 @@ public class XMLWriterStreamDataProvider<R extends AbstractXMLEventWriter<? exte
 						index++;
 					} while (!getNamespacePrefixes().add(nameSpacePrefix));
 				}
-
+				
 				getWriter().setPrefix(nameSpacePrefix, namespace);
 			}
 		}
