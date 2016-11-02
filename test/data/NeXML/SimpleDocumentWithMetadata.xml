@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nex:nexml  id="test" version="0.9" xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ex="http://www.example.net/" 
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-	<meta datatype="rdf:Literal" id="meta1" property="ex:hasCustomXML" xsi:type="nex:LiteralMeta" content="customXML">characters<ex:customTag>some more <ex:nestedTag />characters</ex:customTag></meta>
+	<meta datatype="rdf:Literal" id="meta1" property="ex:hasCustomXML" xsi:type="nex:LiteralMeta" content="customXML">
+		characters
+		<ex:customTag>
+			some more 
+			<ex:nestedTag />
+			characters
+		</ex:customTag>
+	</meta>
 	<meta id="meta28" property="ex:predicate" xsi:type="nex:LiteralMeta">47</meta>
 	<meta datatype="xsd:string" id="meta2" property="ex:predicate" xsi:type="nex:LiteralMeta">someString1</meta>
 	<meta datatype="xsd:int" id="meta3" property="ex:predicate" xsi:type="nex:LiteralMeta" content="forty-seven">47</meta>

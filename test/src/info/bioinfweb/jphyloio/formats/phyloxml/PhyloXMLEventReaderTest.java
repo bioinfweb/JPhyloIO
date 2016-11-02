@@ -849,7 +849,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 						null, null, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "exampleTag", "ex"), null, false, reader);
 				
-				element = assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();
+				element = assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader).asStartElement();				
 				assertAttribute(new QName("http://example.org", "attr", "ex"), "A", element);
 				assertXMLContentEvent("example Text 1", XMLStreamConstants.CHARACTERS, null, "example Text 1", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://example.org", "subTag", "ex"), null, false, reader);				

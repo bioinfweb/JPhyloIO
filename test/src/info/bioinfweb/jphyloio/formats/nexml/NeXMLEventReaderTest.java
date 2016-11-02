@@ -327,12 +327,12 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "hasCustomXML", "ex")), LiteralContentSequenceType.XML, 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "Literal", "rdf")), "customXML", reader);
-				assertXMLContentEvent("characters", XMLStreamConstants.CHARACTERS, null, "characters", false, reader);
+				assertXMLContentEvent("\n\t\tcharacters\n\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\tcharacters\n\t\t", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.example.net/", "customTag", "ex"), null, false, reader);
-				assertXMLContentEvent("some more ", XMLStreamConstants.CHARACTERS, null, "some more ", false, reader);
+				assertXMLContentEvent("\n\t\t\tsome more \n\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\tsome more \n\t\t\t", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.example.net/", "nestedTag", "ex"), null, false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.example.net/", "nestedTag", "ex"), null, false, reader);
-				assertXMLContentEvent("characters", XMLStreamConstants.CHARACTERS, null, "characters", false, reader);
+				assertXMLContentEvent("\n\t\t\tcharacters\n\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\tcharacters\n\t\t", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.example.net/", "customTag", "ex"), null, true, reader);
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "predicate", "ex")), LiteralContentSequenceType.XML, null, 
@@ -549,20 +549,14 @@ public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants 
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, new QName("http://www.example.net/", "hasCustomNeXML", "ex")), LiteralContentSequenceType.XML, 
 						new URIOrStringIdentifier(null, new QName("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "Literal", "rdf")), "customNeXML", reader);
-				assertXMLContentEvent("\n\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otus"), null, false, reader);
-				assertXMLContentEvent("\n\t\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t\t", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent("\n\t\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t\t", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent("\n\t\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t\t", false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.START_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
 				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otu"), null, false, reader);
-				assertXMLContentEvent("\n\t\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t\t", false, reader);
-				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otus"), null, false, reader);
-				assertXMLContentEvent("\n\t\t", XMLStreamConstants.CHARACTERS, null, "\n\t\t", true, reader);
+				assertXMLContentEvent(null, XMLStreamConstants.END_ELEMENT, new QName("http://www.nexml.org/2009", "otus"), null, true, reader);
 				
 				assertLabeledIDEvent(EventContentType.OTU, null, null, reader);
 				assertEndEvent(EventContentType.OTU, reader);

@@ -337,7 +337,7 @@ public class JPhyloIOTestTools {
 		assertEquals(expectedEventType, contentEvent.getXMLEvent().getEventType());
 		
 		if (expectedEventType == XMLStreamConstants.CHARACTERS) {
-			assertEquals(expectedCharacterContent, contentEvent.getXMLEvent().asCharacters().getData());
+			assertTrue(contentEvent.getXMLEvent().asCharacters().getData().matches(expectedCharacterContent));
 		}
 		else if (expectedEventType == XMLStreamConstants.START_ELEMENT) {
 			assertEquals(expectedEventName, contentEvent.getXMLEvent().asStartElement().getName());

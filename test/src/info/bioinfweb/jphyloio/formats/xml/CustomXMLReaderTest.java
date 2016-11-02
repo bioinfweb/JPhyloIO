@@ -70,15 +70,11 @@ public class CustomXMLReaderTest {
 			assertAttribute(new QName("http://example.org/", "attribute", "ex"), "true", element);
 			assertCharactersEvent("\n\t\t\t" + "some more" + "\n\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
 			assertCharactersEvent("nested content", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t" + "characters and even more" + "\n\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t", customXMLReader);
 			assertEndDocument(customXMLReader);			
 			
 			// Skip format specific content
@@ -91,21 +87,15 @@ public class CustomXMLReaderTest {
 			customXMLReader = reader.createMetaXMLEventReader();			
 			
 			assertStartDocument(customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			element = assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			String pre = assertNamespace(new QName("http://example.com/", ""), false, element);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			element = assertStartElement(new QName("http://example.com/", "nestedTag", "ex"), customXMLReader);
 			assertAttribute(new QName("http://example.com/", "attribute", pre), "false", element);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.com/", "secondNested", "ex"), customXMLReader);
 			assertCharactersEvent("nested content", customXMLReader);
 			assertEndElement(new QName("http://example.com/", "secondNested", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.com/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader);
 			assertEndDocument(customXMLReader);
 			
 			// Skip format specific content
@@ -118,12 +108,10 @@ public class CustomXMLReaderTest {
 			customXMLReader = reader.createMetaXMLEventReader();
 			
 			assertStartDocument(customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			element = assertStartElement(new QName("http://example.com/", "customTag", "ex"), customXMLReader);
 			String ex = assertNamespace(new QName("http://example.com/", ""), false, element);
 			assertCharactersEvent("some content", customXMLReader);
-			assertEndElement(new QName("http://example.com/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader);
+			assertEndElement(new QName("http://example.com/", "customTag", ex), customXMLReader);
 			assertEndDocument(customXMLReader);			
 
 			while (reader.hasNextEvent()) {
@@ -155,11 +143,9 @@ public class CustomXMLReaderTest {
 			assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			assertCharactersEvent("\n\t\t\t\t\t" + "some more" + "\n\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
 			assertCharactersEvent("nested content", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
 			assertCharactersEvent("\n\t\t\t\t\t" + "characters and even more" + "\n\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
@@ -176,15 +162,11 @@ public class CustomXMLReaderTest {
 			
 			assertStartDocument(customXMLReader);
 			assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
 			assertCharactersEvent("nested content", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			assertEndDocument(customXMLReader);
 			
@@ -253,18 +235,12 @@ public class CustomXMLReaderTest {
 			customXMLReader = reader.createMetaXMLStreamReader();
 			
 			assertStartDocument(customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
 			assertAttribute(new QName("http://example.org/", "attribute", "ex"), "false", 0, customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertShortElement(new QName("http://example.org/", "secondNested", "ex"), "nested content", customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader);
 			assertEndDocument(customXMLReader);
 			
 			// Skip format specific content
@@ -277,9 +253,7 @@ public class CustomXMLReaderTest {
 			customXMLReader = reader.createMetaXMLStreamReader();
 			
 			assertStartDocument(customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			assertShortElement(new QName("http://example.org/", "customTag", "ex"), "some content", customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader);
 			assertEndDocument(customXMLReader);
 			
 			while (reader.hasNextEvent()) {
@@ -331,16 +305,12 @@ public class CustomXMLReaderTest {
 			
 			assertStartDocument(customXMLReader);
 			assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
 			assertAttribute(new QName("http://example.org/", "attribute", "ex"), "false", 0, customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
 			assertCharactersEvent("nested content", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			assertEndDocument(customXMLReader);
 			
@@ -413,20 +383,14 @@ public class CustomXMLReaderTest {
 			customXMLReader2 = reader.createMetaXMLEventReader();
 			XMLEventReader customXMLReader3 = reader.createMetaXMLEventReader();
 			
-			assertStartDocument(customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader2);  //TODO synchronize creating start document events between readers
-			assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader3);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
+			assertStartDocument(customXMLReader);  //TODO synchronize creating start document events between readers
+			assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader2);
 			assertStartElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader3);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader);
 			assertCharactersEvent("nested content", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "secondNested", "ex"), customXMLReader2);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader2);
 			assertEndDocument(customXMLReader2);
 			
 			// Skip format specific content
@@ -439,11 +403,9 @@ public class CustomXMLReaderTest {
 			customXMLReader = reader.createMetaXMLEventReader();
 			
 			assertStartDocument(customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			assertCharactersEvent("some content", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader);
 			assertEndDocument(customXMLReader);			
 
 			while (reader.hasNextEvent()) {
@@ -498,19 +460,13 @@ public class CustomXMLReaderTest {
 			customXMLReader2 = reader.createMetaXMLStreamReader();
 			MetaXMLStreamReader customXMLReader3 = reader.createMetaXMLStreamReader();
 			
-			assertStartDocument(customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader2);  //TODO synchronize creating start document events between readers
+			assertStartDocument(customXMLReader);  //TODO synchronize creating start document events between readers
 			assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader2);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader);
 			assertStartElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader3);
 			assertAttribute(new QName("http://example.org/", "attribute", "ex"), "false", 0, customXMLReader3);
-			assertCharactersEvent("\n\t\t\t\t\t\t", customXMLReader);
 			assertShortElement(new QName("http://example.org/", "secondNested", "ex"), "nested content", customXMLReader3);
-			assertCharactersEvent("\n\t\t\t\t\t", customXMLReader2);
 			assertEndElement(new QName("http://example.org/", "nestedTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader3);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader);
 			assertEndDocument(customXMLReader2);
 			
 			// Skip format specific content
@@ -523,9 +479,7 @@ public class CustomXMLReaderTest {
 			customXMLReader = reader.createMetaXMLStreamReader();
 			
 			assertStartDocument(customXMLReader);
-			assertCharactersEvent("\n\t\t\t\t", customXMLReader);
 			assertShortElement(new QName("http://example.org/", "customTag", "ex"), "some content", customXMLReader);
-			assertCharactersEvent("\n\t\t\t", customXMLReader);
 			assertEndDocument(customXMLReader);
 			
 			while (reader.hasNextEvent()) {
