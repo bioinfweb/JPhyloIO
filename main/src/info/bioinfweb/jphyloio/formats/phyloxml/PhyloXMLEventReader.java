@@ -1188,8 +1188,10 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				new AbstractXMLElementReader<PhyloXMLReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asCharacters(), 
-								streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS)));
+						if (!event.asCharacters().getData().matches("\\s+")) {						
+							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asCharacters(),
+									streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS)));
+						}
 					}
 			});
 	
