@@ -468,11 +468,11 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 		}
 		catch (ZipException e) {
 			isZipped = false;
-			limitedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, bufferedStream was not set in the try block.)
+			limitedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, limitedStream was not set in the try block.)
 		}
 		
 		// Return reader:
-		String format = guessFormatFromLimitedStream(limitedStream, parameters);  // bufferedStream is already reset in the called method.
+		String format = guessFormatFromLimitedStream(limitedStream, parameters);
 		if (format == null) {
 			return null;
 		}
