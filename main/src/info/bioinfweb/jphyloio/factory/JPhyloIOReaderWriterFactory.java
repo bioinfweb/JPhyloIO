@@ -462,7 +462,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 		
 	  // Try if the input is GZIPed:
 		boolean isZipped = true;
-		try {  // Buffered stream must not be set again here, since the
+		try {
 			limitedStream = new BufferedInputStream(new GZIPInputStream(limitedStream), getReadAheadLimit());  // Test if stream is zipped with limitted stream. Will throw an exception otherwise. Uderlying stream still limits the read length.
 			limitedStream.mark(getReadAheadLimit());
 		}
