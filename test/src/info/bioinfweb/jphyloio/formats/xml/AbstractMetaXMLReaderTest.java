@@ -19,17 +19,9 @@
 package info.bioinfweb.jphyloio.formats.xml;
 
 
-import static info.bioinfweb.commons.testing.XMLAssert.assertAttribute;
-import static info.bioinfweb.commons.testing.XMLAssert.assertAttributeCount;
-import static info.bioinfweb.commons.testing.XMLAssert.assertCharactersEvent;
-import static info.bioinfweb.commons.testing.XMLAssert.assertEndDocument;
-import static info.bioinfweb.commons.testing.XMLAssert.assertEndElement;
-import static info.bioinfweb.commons.testing.XMLAssert.assertNamespace;
-import static info.bioinfweb.commons.testing.XMLAssert.assertNamespaceCount;
-import static info.bioinfweb.commons.testing.XMLAssert.assertShortElement;
-import static info.bioinfweb.commons.testing.XMLAssert.assertStartDocument;
-import static info.bioinfweb.commons.testing.XMLAssert.assertStartElement;
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.assertXMLContentEvent;
+import static info.bioinfweb.commons.testing.XMLAssert.*;
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
@@ -81,6 +73,7 @@ public class AbstractMetaXMLReaderTest {
 			assertCharactersEvent("\n\t\t\tcharacters and even more\n\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			assertEndDocument(customXMLReader);
+			Assert.assertFalse(customXMLReader.hasNext());
 			
 			// Skip format specific content
 			event = reader.next();
@@ -104,6 +97,7 @@ public class AbstractMetaXMLReaderTest {
 			assertEndElement(new QName("http://example.com/", "nestedTag", "ex"), customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			assertEndDocument(customXMLReader);
+			Assert.assertFalse(customXMLReader.hasNext());
 			
 			// Skip format specific content
 			event = reader.next();
@@ -121,6 +115,7 @@ public class AbstractMetaXMLReaderTest {
 			assertCharactersEvent("some content", customXMLReader);
 			assertEndElement(new QName("http://example.com/", "customTag", ex), customXMLReader);
 			assertEndDocument(customXMLReader);
+			Assert.assertFalse(customXMLReader.hasNext());
 			
 			// Skip format specific content
 			event = reader.next();
@@ -135,7 +130,8 @@ public class AbstractMetaXMLReaderTest {
 			element = assertStartElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);			
 			assertCharactersEvent("some content", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", ex), customXMLReader);
-			assertEndDocument(customXMLReader);		
+			assertEndDocument(customXMLReader);
+			Assert.assertFalse(customXMLReader.hasNext());
 
 			while (reader.hasNextEvent()) {
 				event = reader.next();
@@ -175,6 +171,7 @@ public class AbstractMetaXMLReaderTest {
 			assertCharactersEvent("\n\t\t\t\t\t" + "characters and even more" + "\n\t\t\t\t", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			assertEndDocument(customXMLReader);
+			Assert.assertFalse(customXMLReader.hasNext());
 			
 			// Skip format specific content
 			event = reader.next();
@@ -198,6 +195,7 @@ public class AbstractMetaXMLReaderTest {
 			assertEndElement(new QName("http://example.com/", "nestedTag", prefix), customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", "ex"), customXMLReader);
 			assertEndDocument(customXMLReader);
+			Assert.assertFalse(customXMLReader.hasNext());
 			
 			// Skip format specific content
 			event = reader.next();
@@ -215,6 +213,7 @@ public class AbstractMetaXMLReaderTest {
 			assertCharactersEvent("some content", customXMLReader);
 			assertEndElement(new QName("http://example.com/", "customTag", prefix), customXMLReader);
 			assertEndDocument(customXMLReader);
+			Assert.assertFalse(customXMLReader.hasNext());
 			
 			// Skip format specific content
 			event = reader.next();
@@ -230,6 +229,7 @@ public class AbstractMetaXMLReaderTest {
 			assertCharactersEvent("some content", customXMLReader);
 			assertEndElement(new QName("http://example.org/", "customTag", prefix), customXMLReader);
 			assertEndDocument(customXMLReader);
+			Assert.assertFalse(customXMLReader.hasNext());
 			
 			while (reader.hasNextEvent()) {
 				event = reader.next();

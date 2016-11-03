@@ -45,6 +45,8 @@ public class XMLStreamWriterTest {
 				writer.writeCData("This is the second part of a CDATA element.");
 				
 				writer.writeStartElement("nested");
+//				writer.setDefaultNamespace("http://example.org/2");  // Both are not written to the element
+//				writer.setPrefix("p", "http://example.org/");
 				writer.writeDefaultNamespace("http://example.org/2");
 				writer.writeNamespace("p", "http://example.org/");
 				writer.writeCharacters("some characters");
@@ -60,7 +62,7 @@ public class XMLStreamWriterTest {
 			}
 			finally {
 				writer.close();
-				file.delete();
+//				file.delete();
 			}
 		}
 		catch (Exception e) {

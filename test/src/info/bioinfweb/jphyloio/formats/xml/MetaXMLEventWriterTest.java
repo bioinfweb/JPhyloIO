@@ -78,22 +78,7 @@ import org.junit.Test;
 
 
 
-/**
- * customXML mit neuem NS der im StartElement als QName verwendet wird, danach Verwendung dieses neuen NS im character content(z.B. als QName) 
- * 	- möglichst unter Benutzung des NSContext vom Writer -, prefix von definiertem NS sollte im Konflikt zu einem bereits 
- * verwendeten stehen (z.B. "nex") und vom JPhyloIOWriter verändert werden
- * 
- * wird das Überschreiben von prefixes (per NS event oder setPrefix()) wieder rückgängig gemacht nach dem zugehörigen end element im custom XML?
- * 
- * use different instances of writers
- * 
- * test stream and event writer
- * 
- */
-
 public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants, PhyloXMLConstants {
-
-
 	@Test
 	public void testMetaXMLWriterInNeXML() throws Exception {
 		File file = new File("data/testOutput/NeXMLCustomXMLTest.xml");
@@ -119,17 +104,17 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 		};
 		
 		// Add OTU list to document data adapter
-		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX;		
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX;
 		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, otuListID, "taxonlist"), null) {
 			@Override
 			public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id)
 					throws IOException, IllegalArgumentException {
 				
-				if (id.equals(DEFAULT_OTU_ID_PREFIX + "2")) {
+				if (id.equals(DEFAULT_OTU_ID_PREFIX + "2") || id.equals(DEFAULT_OTU_ID_PREFIX + "4")) {
 					MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
 					XMLEventFactory factory = XMLEventFactory.newInstance();
 					
-					receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 1, null, 
+					receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + DEFAULT_OTU_ID_PREFIX + id, null, 
 							new URIOrStringIdentifier(null, new QName("http://test.com/", "testPredicate", "test")), LiteralContentSequenceType.XML));
 					
 					try {
@@ -165,9 +150,10 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 					customXMLEventWriter.add(factory.createNamespace("p", "http://example.com/"));
 					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_one", "p"), "something"));
 					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_two", "p"), "20"));
-					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "another_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
-					customXMLEventWriter.add(factory.createCharacters("some content"));
-					customXMLEventWriter.add(factory.createEndElement("p", "http://example.com/", "another_tag"));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createNamespace("p", "http://example.org/"));
+					customXMLEventWriter.add(factory.createCharacters(customXMLEventWriter.getPrefix("http://example.org/") + ":newQName"));
+					customXMLEventWriter.add(factory.createEndElement("p", "http://example.org/", "another_tag"));
 					customXMLEventWriter.add(factory.createEndElement("p", "http://example.com/", "some_tag"));
 				}
 				catch (XMLStreamException e) {
@@ -192,25 +178,210 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
 		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
-		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, false);
 		writer.writeDocument(document, file, parameters);
 		
 		FileReader fileReader = new FileReader(file);
 		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
 		
 		try {
-			// Validate written file
+			validateNeXMLDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void testMultipleMetaXMLWriterInNeXML() throws Exception {
+		File file = new File("data/testOutput/NeXMLCustomXMLTest.xml");
+		
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter() {
+			@Override
+			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
+				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				
+				receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 0, null, 
+						new URIOrStringIdentifier(null, new QName("http://test.com/", "testPredicate", "test")), LiteralContentSequenceType.XML));
+				
+				try {
+					XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(new FileReader(new File("data/XML/shortTestXML.xml")));
+					customXMLEventWriter.add(reader);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			}
+		};
+		
+		// Add OTU list to document data adapter
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX;		
+		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, otuListID, "taxonlist"), null) {
+			@Override
+			public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id)
+					throws IOException, IllegalArgumentException {
+				
+				if (id.equals(DEFAULT_OTU_ID_PREFIX + "2") || id.equals(DEFAULT_OTU_ID_PREFIX + "4")) {
+					MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+					XMLEventFactory factory = XMLEventFactory.newInstance();
+					
+					receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + id, null, 
+							new URIOrStringIdentifier(null, new QName("http://test.com/", "testPredicate", "test")), LiteralContentSequenceType.XML));
+					
+					try {
+						customXMLEventWriter.add(factory.createStartDocument());
+						customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "test_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+						customXMLEventWriter.add(factory.createNamespace("p", "http://example.org/"));				
+						customXMLEventWriter.add(factory.createCharacters("some content"));
+						customXMLEventWriter.add(factory.createEndElement("p", "http://example.org/", "test_tag"));
+					}
+					catch (XMLStreamException e) {
+						e.printStackTrace();
+					}	
+					
+					receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				}
+				else {
+					super.writeContentData(parameters, receiver, id);
+				}
+			}
+			
+
+			@Override
+			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
+				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter2 = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				XMLEventFactory factory = XMLEventFactory.newInstance();
+				
+				receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 2, null, 
+						new URIOrStringIdentifier(null, new QName("http://test.com/", "testPredicate", "test")), LiteralContentSequenceType.XML));
+				
+				try {
+					customXMLEventWriter.add(factory.createStartDocument());
+					customXMLEventWriter2.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter2.add(factory.createNamespace("p", "http://example.com/"));
+					customXMLEventWriter2.add(factory.createAttribute(new QName("http://example.com/", "attribute_one", "p"), "something"));
+					customXMLEventWriter2.add(factory.createAttribute(new QName("http://example.com/", "attribute_two", "p"), "20"));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createNamespace("p", "http://example.org/"));
+					customXMLEventWriter.add(factory.createCharacters(customXMLEventWriter.getPrefix("http://example.org/") + ":newQName"));
+					customXMLEventWriter2.add(factory.createEndElement("p", "http://example.org/", "another_tag"));
+					customXMLEventWriter2.add(factory.createEndElement("p", "http://example.com/", "some_tag"));
+					customXMLEventWriter.add(factory.createEndDocument());
+				}
+				catch (XMLStreamException e) {
+					e.printStackTrace();
+				}	
+				
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			}
+		};
+		
+		for (int i = 0; i < 5; i++) {
+			String otuID = DEFAULT_OTU_ID_PREFIX + i;
+			otuList.getOtus().getObjectMap().put(otuID, new StoreObjectData<LabeledIDEvent>(new LabeledIDEvent(EventContentType.OTU, 
+					otuID, "taxon" + i), null));			
+		}
+		
+		document.getOTUListsMap().put(otuListID, otuList);
+		
+		// Write file:
+		NeXMLEventWriter writer = new NeXMLEventWriter();
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+		writer.writeDocument(document, file, parameters);
+		
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		
+		try {
+			validateNeXMLDocument(reader);
+		}
+		finally {
+			fileReader.close();
+			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void testMetaXMLWriterInNeXMLWithManagedNamespaces() throws Exception {
+		File file = new File("data/testOutput/NeXMLCustomXMLTest.xml");
+		
+		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+		
+		// Add OTU list to document data adapter
+		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX;		
+		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, otuListID, "taxonlist"), null) {
+			@Override
+			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
+				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				XMLEventFactory factory = XMLEventFactory.newInstance();
+				
+				receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 2, null, 
+						new URIOrStringIdentifier(null, new QName("http://test.com/", "testPredicate", "test")), LiteralContentSequenceType.XML));
+				
+				try {
+					customXMLEventWriter.add(factory.createStartDocument());
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "nex"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_one", "nex"), "something"));
+					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_two", "nex"), "20"));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "nex"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createNamespace("nex", "http://example.org/"));
+					customXMLEventWriter.add(factory.createCharacters(customXMLEventWriter.getPrefix("http://example.org/") + ":someQName"));
+					customXMLEventWriter.add(factory.createEndElement("nex", "http://example.org/", "another_tag"));
+					customXMLEventWriter.add(factory.createEndElement("nex", "http://example.com/", "some_tag"));
+				}
+				catch (XMLStreamException e) {
+					e.printStackTrace();
+				}	
+				
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			}
+		};
+		
+		for (int i = 0; i < 5; i++) {
+			String otuID = DEFAULT_OTU_ID_PREFIX + i;
+			otuList.getOtus().getObjectMap().put(otuID, new StoreObjectData<LabeledIDEvent>(new LabeledIDEvent(EventContentType.OTU, 
+					otuID, "taxon" + i), null));			
+		}
+		
+		document.getOTUListsMap().put(otuListID, otuList);
+		
+		// Write file:
+		NeXMLEventWriter writer = new NeXMLEventWriter();
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, "exampleApplication");
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, 1.0);
+		parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, "http://www.exampleApplication.com");
+		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
+		
+		writer.writeDocument(document, file, parameters);
+		
+		FileReader fileReader = new FileReader(file);
+		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
+		
+		try {
 			StartElement element;
 			
 			assertStartDocument(reader);
 			
 			element = assertStartElement(NeXMLConstants.TAG_ROOT, reader);
-			assertNamespaceCount(5, element);
+			assertNamespaceCount(7, element);
 			assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_NAMESPACE_PREFIX), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);			
 			String prefix = assertNamespace(new QName("http://test.com/", "test", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix2 = assertNamespace(new QName("http://example.com/", "", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+			String prefix3 = assertNamespace(new QName("http://example.org/", "", XMLConstants.XMLNS_ATTRIBUTE), false, element);
 			
 			assertAttributeCount(2, element);
 			assertAttribute(ATTR_VERSION, "0.9", element);
@@ -225,31 +396,6 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 			assertTrue(((Comment)event).getText().matches(
 					" This file was generated by exampleApplication 1.0 <http://www.exampleApplication.com> using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
 			
-			element = assertStartElement(TAG_META, reader);
-			assertAttributeCount(3, element);
-			assertAttribute(NeXMLConstants.ATTR_ID, element);
-			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
-			assertAttribute(ATTR_PROPERTY, prefix + XMLUtils.QNAME_SEPARATOR + "testPredicate", element);
-			
-			element = assertStartElement(new QName("http://example.org/", "customTag", "ex"), reader);
-			assertNamespace(new QName("http://example.org/", "", "ex"), true, element);
-			assertNamespace(new QName("http://example.com/", "", "pre"), true, element);
-			assertNamespaceCount(2, element);
-			assertCharactersEvent("\n\t", reader);
-			element = assertStartElement(new QName("http://example.com/", "nestedTag", "pre"), reader);
-			assertAttribute(new QName("http://example.com/", "attribute", "pre"), "false", element);
-			assertAttributeCount(1, element);
-			assertCharactersEvent("\n\t\t", reader);
-			assertStartElement(new QName("http://example.com/", "secondNested", "pre"), reader);
-			assertCharactersEvent("nested content", reader);
-			assertEndElement(new QName("http://example.com/", "secondNested", "pre"), reader);
-			assertCharactersEvent("\n\t", reader);
-			assertEndElement(new QName("http://example.com/", "nestedTag", "pre"), reader);
-			assertCharactersEvent("\n", reader);
-			assertEndElement(new QName("http://example.org/", "customTag", "ex"), reader);
-			
-			assertEndElement(TAG_META, reader);
-			
 			element = assertStartElement(TAG_OTUS, reader);
 			assertAttributeCount(3, element);
 			assertAttribute(NeXMLConstants.ATTR_ID, element);
@@ -262,16 +408,14 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
 			assertAttribute(ATTR_PROPERTY, prefix + XMLUtils.QNAME_SEPARATOR + "testPredicate", element);
 			
-			element = assertStartElement(new QName("http://example.com/", "some_tag", "p"), reader);
-			assertNamespace(new QName("http://example.com/", "", "p"), true, element);
-			assertNamespaceCount(1, element);
-			assertAttribute(new QName("http://example.com/", "attribute_one", "p"), "something", element);
-			assertAttribute(new QName("http://example.com/", "attribute_two", "p"), "20", element);
+			element = assertStartElement(new QName("http://example.com/", "some_tag", prefix2), reader);			
+			assertAttribute(new QName("http://example.com/", "attribute_one", prefix2), "something", element);
+			assertAttribute(new QName("http://example.com/", "attribute_two", prefix2), "20", element);
 			assertAttributeCount(2, element);
-			assertStartElement(new QName("http://example.com/", "another_tag", "p"), reader);
-			assertCharactersEvent("some content", reader);
-			assertEndElement(new QName("http://example.com/", "another_tag", "p"), reader);
-			assertEndElement(new QName("http://example.com/", "some_tag", "p"), reader);
+			element = assertStartElement(new QName("http://example.org/", "another_tag", prefix3), reader);
+			assertCharactersEvent(prefix3 + ":someQName", reader);
+			assertEndElement(new QName("http://example.org/", "another_tag", prefix3), reader);
+			assertEndElement(new QName("http://example.com/", "some_tag", prefix2), reader);
 			
 			assertEndElement(TAG_META, reader);
 			
@@ -281,24 +425,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 				assertAttributeCount(3, element);
 				otuIDs[i] = assertAttribute(NeXMLConstants.ATTR_ID, element);
 				assertAttribute(ATTR_ABOUT, element);
-				assertAttribute(ATTR_LABEL, "taxon" + i, element);
-				
-				if (i == 2) {
-					element = assertStartElement(TAG_META, reader);
-					assertAttributeCount(3, element);
-					assertAttribute(NeXMLConstants.ATTR_ID, element);
-					assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
-					assertAttribute(ATTR_PROPERTY, prefix + XMLUtils.QNAME_SEPARATOR + "testPredicate", element);
-					
-					element = assertStartElement(new QName("http://example.org/", "test_tag", "p"), reader);
-					assertNamespace(new QName("http://example.org/", "", "p"), true, element);
-					assertNamespaceCount(1, element);					
-					assertCharactersEvent("some content", reader);
-					assertEndElement(new QName("http://example.org/", "test_tag", "p"), reader);
-					
-					assertEndElement(TAG_META, reader);
-				}
-				
+				assertAttribute(ATTR_LABEL, "taxon" + i, element);				
 				assertEndElement(TAG_OTU, reader);
 			}
 			
@@ -311,7 +438,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 		finally {
 			fileReader.close();
 			reader.close();
-			file.delete();
+//			file.delete();
 		}
 	}
 	
@@ -454,5 +581,118 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 			reader.close();
 			file.delete();
 		}
+	}
+	
+	
+	private void validateNeXMLDocument(XMLEventReader reader) throws XMLStreamException {
+		StartElement element;
+		
+		assertStartDocument(reader);
+		
+		element = assertStartElement(NeXMLConstants.TAG_ROOT, reader);
+		assertNamespaceCount(5, element);
+		assertDefaultNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
+		String nexPrefix = assertNamespace(new QName(NEXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE, NEXML_DEFAULT_NAMESPACE_PREFIX), true, element);
+		assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
+		assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);			
+		String prefix = assertNamespace(new QName("http://test.com/", "test", XMLConstants.XMLNS_ATTRIBUTE), false, element);
+		
+		assertAttributeCount(2, element);
+		assertAttribute(ATTR_VERSION, "0.9", element);
+		
+		String generator = assertAttribute(ATTR_GENERATOR, element);
+		assertTrue(generator, generator.matches(
+				"exampleApplication 1.0 using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+"));
+		
+		assertTrue(reader.hasNext());		
+		XMLEvent event = reader.nextEvent();			
+		assertEquals(XMLStreamConstants.COMMENT, event.getEventType());
+		assertTrue(((Comment)event).getText().matches(
+				" This file was generated by exampleApplication 1.0 <http://www.exampleApplication.com> using JPhyloIO \\d+\\.\\d+\\.\\d+-\\d+ .+ <http://bioinfweb.info/JPhyloIO/>. "));
+		
+		element = assertStartElement(TAG_META, reader);
+		assertAttributeCount(3, element);
+		assertAttribute(NeXMLConstants.ATTR_ID, element);
+		assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
+		assertAttribute(ATTR_PROPERTY, prefix + XMLUtils.QNAME_SEPARATOR + "testPredicate", element);
+		
+		element = assertStartElement(new QName("http://example.org/", "customTag", "ex"), reader);
+		assertNamespace(new QName("http://example.org/", "", "ex"), true, element);
+		assertNamespace(new QName("http://example.com/", "", "pre"), true, element);
+		assertNamespaceCount(2, element);
+		assertCharactersEvent("\n\t", reader);
+		element = assertStartElement(new QName("http://example.com/", "nestedTag", "pre"), reader);
+		assertAttribute(new QName("http://example.com/", "attribute", "pre"), "false", element);
+		assertAttributeCount(1, element);
+		assertCharactersEvent("\n\t\t", reader);
+		assertStartElement(new QName("http://example.com/", "secondNested", "pre"), reader);
+		assertCharactersEvent("nested content", reader);
+		assertEndElement(new QName("http://example.com/", "secondNested", "pre"), reader);
+		assertCharactersEvent("\n\t", reader);
+		assertEndElement(new QName("http://example.com/", "nestedTag", "pre"), reader);
+		assertCharactersEvent("\n", reader);
+		assertEndElement(new QName("http://example.org/", "customTag", "ex"), reader);
+		
+		assertEndElement(TAG_META, reader);
+		
+		element = assertStartElement(TAG_OTUS, reader);
+		assertAttributeCount(3, element);
+		assertAttribute(NeXMLConstants.ATTR_ID, element);
+		assertAttribute(ATTR_ABOUT, element);
+		assertAttribute(ATTR_LABEL, "taxonlist", element);			
+		
+		element = assertStartElement(TAG_META, reader);
+		assertAttributeCount(3, element);
+		assertAttribute(NeXMLConstants.ATTR_ID, element);
+		assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
+		assertAttribute(ATTR_PROPERTY, prefix + XMLUtils.QNAME_SEPARATOR + "testPredicate", element);
+		
+		element = assertStartElement(new QName("http://example.com/", "some_tag", "p"), reader);
+		assertNamespace(new QName("http://example.com/", "", "p"), true, element);
+		assertNamespaceCount(1, element);
+		assertAttribute(new QName("http://example.com/", "attribute_one", "p"), "something", element);
+		assertAttribute(new QName("http://example.com/", "attribute_two", "p"), "20", element);
+		assertAttributeCount(2, element);
+		element = assertStartElement(new QName("http://example.org/", "another_tag", "p"), reader);
+		String p = assertNamespace(new QName("http://example.org/", "", "p"), true, element);
+		assertNamespaceCount(1, element);
+		assertCharactersEvent(p + ":newQName", reader);
+		assertEndElement(new QName("http://example.org/", "another_tag", "p"), reader);
+		assertEndElement(new QName("http://example.com/", "some_tag", "p"), reader);
+		
+		assertEndElement(TAG_META, reader);
+		
+		String[] otuIDs = new String[6];
+		for (int i = 0; i < 5; i++) {
+			element = assertStartElement(TAG_OTU, reader);
+			assertAttributeCount(3, element);
+			otuIDs[i] = assertAttribute(NeXMLConstants.ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, "taxon" + i, element);
+			
+			if ((i == 2) || (i == 4)) {
+				element = assertStartElement(TAG_META, reader);
+				assertAttributeCount(3, element);
+				assertAttribute(NeXMLConstants.ATTR_ID, element);
+				assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
+				assertAttribute(ATTR_PROPERTY, prefix + XMLUtils.QNAME_SEPARATOR + "testPredicate", element);
+				
+				element = assertStartElement(new QName("http://example.org/", "test_tag", "p"), reader);
+				assertNamespace(new QName("http://example.org/", "", "p"), true, element);
+				assertNamespaceCount(1, element);					
+				assertCharactersEvent("some content", reader);
+				assertEndElement(new QName("http://example.org/", "test_tag", "p"), reader);
+				
+				assertEndElement(TAG_META, reader);
+			}
+			
+			assertEndElement(TAG_OTU, reader);
+		}
+		
+		assertEndElement(TAG_OTUS, reader);			
+		
+		assertEndElement(NeXMLConstants.TAG_ROOT, reader);
+		
+		assertEndDocument(reader);
 	}
 }

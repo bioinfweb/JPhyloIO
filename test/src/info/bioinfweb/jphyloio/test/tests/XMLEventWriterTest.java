@@ -40,10 +40,16 @@ public class XMLEventWriterTest {
 			
 			try {
 				writer.add(factory.createStartDocument());
-				writer.setDefaultNamespace("http://example.org/main");
+				writer.setDefaultNamespace("http://example.org/main");				
 				writer.add(factory.createStartElement("", null, "tag"));
+				writer.add(factory.createStartElement("", null, "nestedTag"));
+//				writer.setPrefix("p", "http://example.org/p");
+//				writer.setDefaultNamespace("http://example.org/default");
+				writer.add(factory.createNamespace("http://example.org/test"));
 				writer.add(factory.createNamespace("p", "http://example.org/p"));
 				writer.add(factory.createCharacters("abc"));
+				writer.add(factory.createEndElement("", null, "nestedTag"));
+				writer.add(factory.createEndElement("", null, "tag"));
 				writer.add(factory.createEndDocument());
 				
 				
@@ -57,7 +63,7 @@ public class XMLEventWriterTest {
 			}
 			finally {
 				writer.close();
-				file.delete();
+//				file.delete();
 			}
 		}
 		catch (Exception e) {

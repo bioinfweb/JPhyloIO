@@ -76,7 +76,16 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.junit.Test;
 
-
+/**
+ * customXML mit neuem NS der im StartElement als QName verwendet wird, danach Verwendung dieses neuen NS im character content(z.B. als QName) 
+ * 	- möglichst unter Benutzung des NSContext vom Writer -, prefix von definiertem NS sollte im Konflikt zu einem bereits 
+ * verwendeten stehen (z.B. "nex") und vom JPhyloIOWriter verändert werden
+ * 
+ * wird das Überschreiben von prefixes (per NS event oder setPrefix()) wieder rückgängig gemacht nach dem zugehörigen end element im custom XML?
+ * 
+ * use different instances of writers
+ * 
+ */
 //TODO write test with node metadata for both
 public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstants, PhyloXMLConstants {
 	@Test
