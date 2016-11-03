@@ -397,6 +397,7 @@ test/data/Fasta/Test.fasta -text
 test/data/MEGA/HLA-3Seq.meg -text
 test/data/MEGA/HLA-3Seq.meg.gz -text
 test/data/MEGA/MatchToken.meg -text
+test/data/MEGA/hsp20.meg -text
 test/data/NeXML/CURIE_QName_Test.xml -text svneol=unset#text/plain
 test/data/NeXML/CustomNeXML.xml -text svneol=unset#text/plain
 test/data/NeXML/CustomXMLNamespaceDeclarationWithin.xml -text svneol=unset#text/plain
