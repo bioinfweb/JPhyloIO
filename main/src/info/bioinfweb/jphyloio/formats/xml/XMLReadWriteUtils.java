@@ -141,15 +141,24 @@ public class XMLReadWriteUtils {
 				StartElement element = event.asStartElement();
 				boolean manageCustomXMLNamespaces = parameters.getBoolean(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING, false);
 				
-				writer.writeStartElement(obtainCustomXMLPrefix(writer, element.getName().getPrefix(), element.getName().getNamespaceURI(), manageCustomXMLNamespaces), element.getName().getLocalPart(), element.getName().getNamespaceURI());
+				String prefix = obtainCustomXMLPrefix(writer, element.getName().getPrefix(), element.getName().getNamespaceURI(), manageCustomXMLNamespaces);
+				if ((prefix == null) || prefix.isEmpty()) {
+					if ((element.getName().getNamespaceURI() == null) || element.getName().getNamespaceURI().isEmpty()) {
+						writer.writeStartElement(element.getName().getLocalPart());
+					}
+					else {
+						writer.writeStartElement(element.getName().getNamespaceURI(), element.getName().getLocalPart());
+					}
+				}					
+				else {
+					writer.writeStartElement(prefix, element.getName().getLocalPart(), element.getName().getNamespaceURI());
+				}
 				
 				// Write attributes
 				@SuppressWarnings("unchecked")
 				Iterator<Attribute> attributes = element.getAttributes();
-				while (attributes.hasNext()) {
-					Attribute attribute = attributes.next();					
-					writer.writeAttribute(obtainCustomXMLPrefix(writer, attribute.getName().getPrefix(), attribute.getName().getNamespaceURI(), manageCustomXMLNamespaces), 
-							attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
+				while (attributes.hasNext()) {	
+					writeAttribute(writer, attributes.next());
 				}
 				
 				// Write namespace declarations if they define a new default namespace or the according parameter is set to false
@@ -178,9 +187,7 @@ public class XMLReadWriteUtils {
 				writer.writeCData(event.asCharacters().getData()); //TODO multiple events with continued content should be buffered and written to a single CDATA element
 				break;
 			case XMLStreamConstants.ATTRIBUTE:
-				Attribute contentAttribute = ((Attribute)event);
-				writer.writeAttribute(writer.getPrefix(contentAttribute.getName().getNamespaceURI()), contentAttribute.getName().getNamespaceURI(), 
-						contentAttribute.getName().getLocalPart(), contentAttribute.getValue());
+				writeAttribute(writer, ((Attribute)event));
 				break;
 			case XMLStreamConstants.NAMESPACE:
 				Namespace contentNamespace = ((Namespace)event);
@@ -239,6 +246,23 @@ public class XMLReadWriteUtils {
 		}
 		else {
 			return prefix;
+		}
+	}
+	
+	
+	private static void writeAttribute(XMLStreamWriter writer, Attribute attribute) throws XMLStreamException {
+		String prefix = writer.getPrefix(attribute.getName().getNamespaceURI());
+		if ((prefix == null) || prefix.isEmpty()) {
+			if ((attribute.getName().getNamespaceURI() == null) || attribute.getName().getNamespaceURI().isEmpty()) {
+				writer.writeAttribute(attribute.getName().getLocalPart(), attribute.getValue());
+			}
+			else {
+				writer.writeAttribute(attribute.getName().getNamespaceURI(), attribute.getName().getLocalPart(), attribute.getValue());
+			}
+		}
+		else {
+			writer.writeAttribute(writer.getPrefix(attribute.getName().getNamespaceURI()), attribute.getName().getNamespaceURI(), 
+					attribute.getName().getLocalPart(), attribute.getValue());
 		}
 	}
 	

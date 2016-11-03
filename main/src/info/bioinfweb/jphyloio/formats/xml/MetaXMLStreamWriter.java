@@ -131,7 +131,7 @@ public class MetaXMLStreamWriter<P extends XMLWriterStreamDataProvider<? extends
 
 	@Override
 	public void writeAttribute(String localName, String value) throws XMLStreamException {
-		addContentEvent(factory.createAttribute(new QName(localName), value));
+		addContentEvent(factory.createAttribute(localName, value));
 	}
 
 
