@@ -375,7 +375,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	}
 	
 	
-	private String guessFormatFromLimitedStream(LimitedInputStream limitedStream, ReadWriteParameterMap parameters) throws Exception {
+	private String guessFormatFromLimitedStream(InputStream limitedStream, ReadWriteParameterMap parameters) throws Exception {
 		limitedStream.mark(getReadAheadLimit());  // Will also mark the decorated stream.
 		for (SingleReaderWriterFactory factory : formatMap.values()) {
 			boolean formatFound = factory.checkFormat(limitedStream, parameters);
@@ -456,16 +456,18 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 */
 	public JPhyloIOEventReader guessReader(InputStream stream, ReadWriteParameterMap parameters) throws Exception {
 		// Buffer stream for testing:
-		BufferedInputStream bufferedStream = new BufferedInputStream(stream, getReadAheadLimit());
-		LimitedInputStream limitedStream = new LimitedInputStream(bufferedStream, getReadAheadLimit());
+		InputStream bufferedStream = new BufferedInputStream(stream, getReadAheadLimit());
+		InputStream limitedStream = new LimitedInputStream(bufferedStream, getReadAheadLimit());
 		limitedStream.mark(getReadAheadLimit());
 		
 	  // Try if the input is GZIPed:
-		try {
-			bufferedStream = new BufferedInputStream(new GZIPInputStream(limitedStream), getReadAheadLimit());  // Exception would fail here already.
-			limitedStream = new LimitedInputStream(bufferedStream, getReadAheadLimit());  //TODO Is there a more efficient solution than using 5 decorators here?
+		boolean isZipped = true;
+		try {  // Buffered stream must not be set again here, since the
+			limitedStream = new BufferedInputStream(new GZIPInputStream(limitedStream), getReadAheadLimit());  // Test if stream is zipped with limitted stream. Will throw an exception otherwise. Uderlying stream still limits the read length.
+			limitedStream.mark(getReadAheadLimit());
 		}
 		catch (ZipException e) {
+			isZipped = false;
 			limitedStream.reset();  // Reset bytes that have been read by GZIPInputStream. (If this code is called, bufferedStream was not set in the try block.)
 		}
 		
@@ -475,6 +477,10 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 			return null;
 		}
 		else {
+			if (isZipped) {
+				bufferedStream.reset();  // guessFormatFromLimitedStream() resets another buffered reader in this case.
+				bufferedStream = new GZIPInputStream(bufferedStream);
+			}
 			return getReader(format, bufferedStream, parameters);
 		}
 		//TODO Does the any of the created streams in here need to be closed, if the underlying stream is closed later in application code? (Usually the top-most stream would be closed, which is not known by the application.)
