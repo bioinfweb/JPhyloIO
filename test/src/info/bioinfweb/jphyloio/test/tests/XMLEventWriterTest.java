@@ -47,6 +47,7 @@ public class XMLEventWriterTest {
 //				writer.setDefaultNamespace("http://example.org/default");
 				writer.add(factory.createNamespace("http://example.org/test"));
 				writer.add(factory.createNamespace("p", "http://example.org/p"));
+				writer.add(factory.createAttribute("attr", "text"));
 				writer.add(factory.createCharacters("abc"));
 				writer.add(factory.createEndElement("", null, "nestedTag"));
 				writer.add(factory.createEndElement("", null, "tag"));

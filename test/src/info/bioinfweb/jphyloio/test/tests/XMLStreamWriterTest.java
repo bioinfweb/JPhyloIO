@@ -34,6 +34,22 @@ public class XMLStreamWriterTest {
 			XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(new FileWriter(file));
 			
 			try {
+//				writer.writeStartDocument();
+//				writer.setDefaultNamespace("http://example.com/");
+//				writer.writeStartElement("http://example.com/", "root");
+//				writer.writeDefaultNamespace("http://example.com/");
+//				writer.writeAttribute("attribute", "20");
+//				writer.writeStartElement("http://example.com/", "firstNested");
+//				writer.writeNamespace("p", "http://example.org/");
+//				writer.writeAttribute("http://example.org/", "anotherAttr", "text");
+//				writer.writeComment("some comment");
+//				writer.writeCData("some CDATA\n");
+//				writer.writeCharacters(writer.getPrefix("http://example.org/") + ":someQName");
+//				writer.writeEmptyElement("secondNested");
+//				writer.writeEndElement();
+//				writer.writeEndElement();
+//				writer.writeEndDocument();
+				
 				writer.writeStartDocument();
 				writer.writeCharacters("some characters"); // Should not be allowed here, can maybe be written to express DTDs and entity declarations
 				writer.writeProcessingInstruction("startTag", "some data");
@@ -49,6 +65,7 @@ public class XMLStreamWriterTest {
 //				writer.setPrefix("p", "http://example.org/");
 				writer.writeDefaultNamespace("http://example.org/2");
 				writer.writeNamespace("p", "http://example.org/");
+				writer.writeAttribute("http://example.org/", "attr", "text");
 				writer.writeCharacters("some characters");
 				//writer.setPrefix("p", "http://example.org/");
 				writer.writeCharacters("more characters");

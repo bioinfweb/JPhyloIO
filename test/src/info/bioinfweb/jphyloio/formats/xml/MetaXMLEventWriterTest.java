@@ -80,7 +80,7 @@ import org.junit.Test;
 
 public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants, PhyloXMLConstants {
 	@Test
-	public void testMetaXMLWriterInNeXML() throws Exception {
+	public void testMetaXMLEventWriterInNeXML() throws Exception {
 		File file = new File("data/testOutput/NeXMLCustomXMLTest.xml");
 		
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter() {
@@ -195,7 +195,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 	
 	
 	@Test
-	public void testMultipleMetaXMLWriterInNeXML() throws Exception {
+	public void testMultipleMetaXMLEventWriterInNeXML() throws Exception {
 		File file = new File("data/testOutput/NeXMLCustomXMLTest.xml");
 		
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter() {
@@ -312,7 +312,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 	
 	
 	@Test
-	public void testMetaXMLWriterInNeXMLWithManagedNamespaces() throws Exception {
+	public void testMetaXMLEventWriterInNeXMLWithManagedNamespaces() throws Exception {
 		File file = new File("data/testOutput/NeXMLCustomXMLTest.xml");
 		
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
@@ -444,7 +444,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 	
 	
 	@Test
-	public void testMetaXMLWriterInPhyloXML() throws Exception {
+	public void testMetaXMLEventWriterInPhyloXML() throws Exception {
 		File file = new File("data/testOutput/PhyloXMLCustomXMLTest.xml");
 		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
