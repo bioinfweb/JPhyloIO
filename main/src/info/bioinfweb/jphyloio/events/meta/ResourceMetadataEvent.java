@@ -33,7 +33,7 @@ import java.net.URI;
  * <i>RDF</i> which is formed by the set of upcoming nested metaevents.
  * <p>
  * This event has the topology type {@link EventTopologyType#START} and other resource and literal metadata event subsequences may
- * be nested before the according end event.
+ * be nested before the according end event. The content type is {@link EventContentType#META_RESOURCE}.
  *
  * @author Ben St&ouml;ver
  * @since 0.0.0
@@ -47,16 +47,16 @@ public class ResourceMetadataEvent extends LabeledIDEvent {
 	/**
 	 * Creates a new instance of this class.
 	 *
-     * @param id the unique ID associated with the represented data element (Must be a valid
-     *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
-     * @param label a label associated with the represented data element (Maybe {@code null}.)
+	 * @param id the unique ID associated with the represented data element (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
+	 * @param label a label associated with the represented data element (Maybe {@code null}.)
 	 * @param rel the <i>RDF</i> rel URI of this element
 	 * @param hRef the <i>RDF</i> hRef URI of this element
 	 * @param about the content of a specific about attribute to be written on the according <i>XML</i> representation of this element
 	 *        (Maybe {@code null}.)
-     * @throws NullPointerException if {@code id} or {@code rel} are {@code null}
-     * @throws IllegalArgumentException if the specified ID is not a valid
-     *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>
+	 * @throws NullPointerException if {@code id} or {@code rel} are {@code null}
+	 * @throws IllegalArgumentException if the specified ID is not a valid
+	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>
 	 */
 	public ResourceMetadataEvent(String id, String label, URIOrStringIdentifier rel, URI hRef, String about) {
 		super(EventContentType.META_RESOURCE, id, label);

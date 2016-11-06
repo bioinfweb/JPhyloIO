@@ -38,16 +38,24 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  * Adapter class that allows reading a sequence of {@link LiteralMetadataContentEvent}s using an {@link XMLEventReader}.
- * 
+ * Instances of this class should not (and cannot) be created directly in application code, but 
+ * {@link JPhyloIOXMLEventReader#createMetaXMLEventReader()} should be used instead.
+ * <p>
  * Since it is registered which events are read from the event stream, it is possible to read only a part of the 
- * custom XML tree with this reader, while the rest is read using the original {@link JPhyloIOEventReader}.
+ * custom <i>XML</i> tree with this reader, while the rest is read using the original {@link JPhyloIOEventReader}.
  * 
  * @author Ben St&ouml;ver
  * @author Sarah Wiechers 
  */
 public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEventReader {
-	public MetaXMLEventReader(JPhyloIOXMLEventReader jPhyloIOEventReader, XMLReaderStreamDataProvider streamDataProvider) {
-		super(jPhyloIOEventReader, streamDataProvider);
+	/**
+	 * Creates a new instance of this class. Application code should not use this constructor directly, but use
+	 * {@link JPhyloIOXMLEventReader#createMetaXMLEventReader()} instead.
+	 * 
+	 * @param streamDataProvider the stream data provider of the underlying {@link JPhyloIOEventReader} 
+	 */
+	public MetaXMLEventReader(XMLReaderStreamDataProvider streamDataProvider) {
+		super(streamDataProvider);
 	}
 
 

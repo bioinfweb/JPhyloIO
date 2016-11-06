@@ -45,9 +45,8 @@ import javax.xml.stream.events.XMLEvent;
  * @author Sarah Wiechers
  */
 public abstract class AbstractMetaXMLReader {
-	private JPhyloIOXMLEventReader jPhyloIOEventReader;
 	private XMLReaderStreamDataProvider streamDataProvider;
-	
+
 	private MetaEventListener listener = new MetaEventListener();
 	private XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 	
@@ -66,23 +65,21 @@ public abstract class AbstractMetaXMLReader {
 	}
 
 
-	public AbstractMetaXMLReader(JPhyloIOXMLEventReader jPhyloIOEventReader, XMLReaderStreamDataProvider streamDataProvider) {
+	public AbstractMetaXMLReader(XMLReaderStreamDataProvider streamDataProvider) {
 		super();
-		this.jPhyloIOEventReader = jPhyloIOEventReader;
 		this.streamDataProvider = streamDataProvider;
-		
-		this.jPhyloIOEventReader.addEventListener(listener);
+		getJPhyloIOEventReader().addEventListener(listener);
 	}
 	
 	
 	protected void setEndReached() {
 		endReached = true;
-		jPhyloIOEventReader.removeEventListener(listener);
+		getJPhyloIOEventReader().removeEventListener(listener);
 	}
 
 
 	public JPhyloIOXMLEventReader getJPhyloIOEventReader() {
-		return jPhyloIOEventReader;
+		return (JPhyloIOXMLEventReader)streamDataProvider.getEventReader();
 	}
 
 

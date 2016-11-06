@@ -50,6 +50,8 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  * Adapter class that allows reading a sequence of {@link LiteralMetadataContentEvent}s using an {@link XMLStreamReader}.
+ * Instances of this class should not (and cannot) be created directly in application code, but 
+ * {@link JPhyloIOXMLEventReader#createMetaXMLStreamReader()} should be used instead.
  * <p>
  * Since it is registered which events are read from the event stream, it is possible to read only a part of the 
  * custom XML tree with this reader, while the rest is read using the original {@link JPhyloIOEventReader}.
@@ -58,10 +60,12 @@ import javax.xml.stream.events.XMLEvent;
  * document, not only the custom XML tree.
  * <p>
  * Methods of this reader referring to element text as a character array , e.g. {@link #getTextCharacters()}, all work 
- * on a string representation obtained from a characters event. Any performance benefits in using these character array 
- * based methods are therefore not available here.
+ * on a string representation obtained from a characters event. The usual performance benefits in using these character 
+ * array based methods do not apply for this implementation, since it works on an underlying instance of 
+ * {@link JPhyloIOEventReader}.
  * 
  * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
  */
 public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStreamReader {
 	private XMLEvent currentEvent;
@@ -70,8 +74,14 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 	private List<Namespace> currentNamespaces = new ArrayList<Namespace>();
 	
 
-	public MetaXMLStreamReader(JPhyloIOXMLEventReader jPhyloIOEventReader, XMLReaderStreamDataProvider streamDataProvider) {
-		super(jPhyloIOEventReader, streamDataProvider);
+	/**
+	 * Creates a new instance of this class. Application code should not use this constructor directly, but use
+	 * {@link JPhyloIOXMLEventReader#createMetaXMLStreamReader()} instead.
+	 * 
+	 * @param streamDataProvider the stream data provider of the underlying {@link JPhyloIOEventReader} 
+	 */
+	public MetaXMLStreamReader(XMLReaderStreamDataProvider streamDataProvider) {
+		super(streamDataProvider);
 	}
 
 	
