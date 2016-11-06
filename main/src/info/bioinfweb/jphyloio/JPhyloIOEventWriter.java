@@ -31,6 +31,11 @@ import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 
 /**
  * The main JPhyloIO interface to be implemented by all format specific event writers.
+ * <p>
+ * Instances of this interface access application data through an instance of {@link DocumentDataAdapter} that
+ * is passed to a {@code writeDocument()} method. Such an instance links other nested data adapters. Implementations
+ * of the adapters will usually be made in application code (based on abstract implementations provided by <i>JPhyloIO</i>)
+ * and mediate between instances of this class and the classes implementing the application's data model. 
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
