@@ -25,8 +25,8 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 
 
 /**
- * Indicates that literal metadata has been encountered at the current position of the document. The actual literal value will be 
- * represented by one or more nested {@link LiteralMetadataContentEvent}s.
+ * Indicates that literal metadata is modeled at the current position of the document (event stream). The actual literal value 
+ * will be represented by one or more nested {@link LiteralMetadataContentEvent}s.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0

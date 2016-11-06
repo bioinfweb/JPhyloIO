@@ -28,11 +28,11 @@ import java.net.URI;
 
 
 /**
- * Indicates that metadata linking a RDF resource has been encountered at the current position of the document. The resource can
- * either be named and referenced by {@link #getHRef()} or (if {@link #getHRef()} returns {@code null}) be an anonymous RDF which
- * is formed by the set of upcoming nested metaevents.
+ * Indicates that metadata linking a <i>RDF</i> resource has been encountered at the current position of the document. The resource 
+ * can either be named and referenced by {@link #getHRef()} or (if {@link #getHRef()} returns {@code null}) be an anonymous 
+ * <i>RDF</i> which is formed by the set of upcoming nested metaevents.
  * <p>
- * This event has the topology type {@link EventTopologyType#SOLE} and other resource and literal metadata event subsequences may
+ * This event has the topology type {@link EventTopologyType#START} and other resource and literal metadata event subsequences may
  * be nested before the according end event.
  *
  * @author Ben St&ouml;ver
