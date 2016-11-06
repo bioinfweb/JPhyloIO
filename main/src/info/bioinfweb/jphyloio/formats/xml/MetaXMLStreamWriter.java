@@ -40,18 +40,21 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * This writer can be used by applications already implementing XML writing as an adapter to a {@link JPhyloIOEventWriter}.
+ * This writer can be used by applications already implementing <i>SAX</i>-writing of metadata as an adapter to a 
+ * {@link JPhyloIOEventWriter}. Instances of this class can be created directly inside a metadata writing method an an 
+ * application's data adapter implementation, by passing the current event receiver to the constructor.
  * <p>
  * This writer does not manage namespaces of custom XML elements. The application needs to ensure that all used prefixes 
- * (either in any elements, attributes or character data) are properly declared within the custom XML 
+ * (either in any elements, attributes or character data) are properly declared within the custom <i>XML</i> 
  * (e.g. by adding {@link Namespace} events). Any methods of this writer changing the namespace mapping or obtaining information 
  * about it refer to the underlying writer. Note that if the default namespace is changed (either by setting a new default namespace or a completely 
- * new namespace context object) while this reader is on the top level of custom XML, it is possible that the literal meta end tag is 
- * written with the wrong default namespace (it would be written with a prefix then).
+ * new namespace context object) while this reader is on the top level of custom <i>XML</i>, it is possible that the literal meta 
+ * end tag is written with the wrong default namespace (it would be written with a prefix then).
  * <p>
  * No end elements can be written by this writer, if the according start element was not written with this instance as well.
  * 
  * @author Sarah Wiechers 
+ * @author Ben St&ouml;ver
  */
 public class MetaXMLStreamWriter<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> implements XMLStreamWriter {
 	private AbstractXMLDataReceiver<P> receiver;
@@ -59,6 +62,11 @@ public class MetaXMLStreamWriter<P extends XMLWriterStreamDataProvider<? extends
 	private Stack<StartElement> encounteredStartElements = new Stack<StartElement>();
 
 	
+	/**
+	 * Creates a new instance of this class.
+	 * 
+	 * @param receiver the event receiver to write the <i>JPhyloIO</i> events created by this writer to
+	 */
 	public MetaXMLStreamWriter(AbstractXMLDataReceiver<P> receiver) {
 		super();
 		this.receiver = receiver;
