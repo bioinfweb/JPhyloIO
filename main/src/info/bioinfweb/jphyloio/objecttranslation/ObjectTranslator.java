@@ -19,6 +19,9 @@
 package info.bioinfweb.jphyloio.objecttranslation;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 
@@ -32,11 +35,18 @@ import javax.xml.stream.XMLStreamWriter;
 
 /**
  * Classes implementing this interface are able to convert between Java Objects and their text or XML representation.
+ * <p>
+ * Instances of implementations can be obtained using {@link ObjectTranslatorFactory}, which also allows to register
+ * custom implementations (e.g. provided in application code). Instances of {@link JPhyloIOEventReader} and 
+ * {@link JPhyloIOEventWriter} make use of object translators to read and write literal metadata objects. The factory
+ * to be used can be specified using the parameter {@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}.  
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
  *
  * @param <O> the type of Java object this translator instance is able to handle
+ * @see ObjectTranslatorFactory
+ * @see ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY
  */
 public interface ObjectTranslator<O> {
 	//TODO How are object values represented in events, if they are read from a whole sequence of XML-events?

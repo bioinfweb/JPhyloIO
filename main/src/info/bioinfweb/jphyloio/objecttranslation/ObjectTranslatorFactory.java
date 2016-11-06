@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.objecttranslation;
 
 
 import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.Base64BinaryTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.BigDecimalTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.BigIntegerTranslator;
@@ -46,7 +47,9 @@ import javax.xml.namespace.QName;
 
 
 /**
- * Factory to create instances of {@link ObjectTranslator} to be used with readers and writers of <i>JPhyloIO</i>.
+ * Factory to create instances of {@link ObjectTranslator} to be used with readers and writers of <i>JPhyloIO</i> to read 
+ * and write literal metadata objects. The factory to be used can be specified using the parameter 
+ * {@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}.
  * <p>
  * After creation this factory is empty. New translators can be added to this factory using 
  * {@link #addTranslator(ObjectTranslator, boolean)}. A default set of translators for XSD types can be added by calling
@@ -54,6 +57,8 @@ import javax.xml.namespace.QName;
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
+ * @see ObjectTranslator
+ * @see ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY
  */
 public class ObjectTranslatorFactory implements W3CXSConstants {
 	private Map<TranslatorMapKey, ObjectTranslator<?>> translatorMap = new HashMap<TranslatorMapKey, ObjectTranslator<?>>();
