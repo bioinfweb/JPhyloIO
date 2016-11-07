@@ -36,8 +36,8 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * This writer can be used by applications already implementing <i>StAX</i>-writing of metadata as an adapter to a 
- * {@link JPhyloIOEventWriter}. Instances of this class can be created directly inside a metadata writing method an an 
+ * This writer can be used by applications already implementing iterator-based <i>StAX</i>-writing of metadata as an adapter 
+ * to a {@link JPhyloIOEventWriter}. Instances of this class can be created directly inside a metadata writing method an an 
  * application's data adapter implementation, by passing the current event receiver to the constructor.
  * <p>
  * Attributes of a start document event are not processed, since it is not possible to write them at this position of the document.

@@ -40,7 +40,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * This writer can be used by applications already implementing <i>SAX</i>-writing of metadata as an adapter to a 
+ * This writer can be used by applications already implementing cursor-based <i>StAX</i>-writing of metadata as an adapter to a 
  * {@link JPhyloIOEventWriter}. Instances of this class can be created directly inside a metadata writing method an an 
  * application's data adapter implementation, by passing the current event receiver to the constructor.
  * <p>
