@@ -26,7 +26,7 @@ import java.io.Writer;
 
 
 public class TextWriterStreamDataProvider<W extends AbstractTextEventWriter<? extends TextWriterStreamDataProvider<W>>> 
-		extends WriterStreamDataProvider<W>  {
+		extends WriterStreamDataProvider<W> {
 
 	
 	public TextWriterStreamDataProvider(W eventWriter) {

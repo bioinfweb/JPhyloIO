@@ -20,8 +20,6 @@ package info.bioinfweb.jphyloio;
 
 
 
-
-
 public class WriterStreamDataProvider<R extends AbstractEventWriter<? extends WriterStreamDataProvider<R>>> {
 	private R eventWriter;
 
