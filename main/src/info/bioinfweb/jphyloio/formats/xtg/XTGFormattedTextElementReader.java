@@ -102,7 +102,7 @@ public class XTGFormattedTextElementReader extends XMLStartElementReader impleme
 			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(value, value));			
 		}
 		
-		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		readAttributes(streamDataProvider, element, "", getAttributeInformationMap());
 	}

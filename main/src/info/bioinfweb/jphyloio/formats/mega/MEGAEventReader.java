@@ -218,7 +218,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 								getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), 
 								new URIOrStringIdentifier(info.getOriginalKey(), PREDICATE_CHARACTER_COUNT), LiteralContentSequenceType.SIMPLE));
 						getCurrentEventCollection().add(new LiteralMetadataContentEvent(longValue, info.getValue()));
-						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 					}
 				}
 				else if (FORMAT_SUBCOMMAND_NTAXA.equals(key)) {
@@ -231,7 +231,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 								getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), 
 								new URIOrStringIdentifier(info.getOriginalKey(), PREDICATE_SEQUENCE_COUNT), LiteralContentSequenceType.SIMPLE));
 						getCurrentEventCollection().add(new LiteralMetadataContentEvent(longValue, info.getValue()));
-						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 					}
 				}
 				else if (FORMAT_SUBCOMMAND_DATA_TYPE.equals(key)) {
@@ -258,7 +258,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 									new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + info.getOriginalKey().toUpperCase())),  //TODO Should the predicate really be in upper case? 
 							LiteralContentSequenceType.SIMPLE));
 					getCurrentEventCollection().add(new LiteralMetadataContentEvent(info.getValue(), false));
-					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 				}
 			}
 			
@@ -300,7 +300,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 		}
 		
 		getCurrentEventCollection().add(new LiteralMetadataContentEvent(content, false));
-		getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 	
 	
@@ -466,7 +466,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 				case SEQUENCE:
 				case SEQUENCE_TOKENS:
 				case CHARACTER_SET:
-				case META_LITERAL:
+				case LITERAL_META:
 				case COMMENT:
 					// Read commands:
 					readCommand();

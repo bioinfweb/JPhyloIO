@@ -238,7 +238,7 @@ public class BasicEventReceiver<P extends WriterStreamDataProvider<? extends Abs
 				}			
 				
 				switch (event.getType().getContentType()) {
-					case META_RESOURCE:
+					case RESOURCE_META:
 						if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 							handleResourceMetaStart(event.asResourceMetadataEvent());
 						}
@@ -246,8 +246,8 @@ public class BasicEventReceiver<P extends WriterStreamDataProvider<? extends Abs
 							handleMetaEndEvent(event);
 						}
 						break;
-					case META_LITERAL:
-						if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+					case LITERAL_META:
+						if ((parentEvent == null) || !parentEvent.getType().getContentType().equals(EventContentType.LITERAL_META)) {
 							if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 								handleLiteralMetaStart(event.asLiteralMetadataEvent());
 							}
@@ -259,8 +259,8 @@ public class BasicEventReceiver<P extends WriterStreamDataProvider<? extends Abs
 							throw IllegalEventException.newInstance(this, parentEvent, event);
 						}
 						break;
-					case META_LITERAL_CONTENT:
-						if ((parentEvent != null) && parentEvent.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+					case LITERAL_META_CONTENT:
+						if ((parentEvent != null) && parentEvent.getType().getContentType().equals(EventContentType.LITERAL_META)) {
 							handleLiteralContentMeta(event.asLiteralMetadataContentEvent());
 						}
 						else {

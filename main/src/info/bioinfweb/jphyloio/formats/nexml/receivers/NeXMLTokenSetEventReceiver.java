@@ -215,7 +215,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 						LiteralContentSequenceType.SIMPLE));
 		AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(getStreamDataProvider(), getParameterMap(), 
 				new LiteralMetadataContentEvent(content, content));
-		AbstractNeXMLDataReceiverMixin.handleMetaEndEvent(getStreamDataProvider(), ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		AbstractNeXMLDataReceiverMixin.handleMetaEndEvent(getStreamDataProvider(), ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 	
 	

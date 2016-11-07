@@ -90,15 +90,15 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 	
 	@Override
 	protected JPhyloIOFormatInfo createFormatInfo() {
-		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, 
-				EventContentType.META_LITERAL, EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, 
+		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.RESOURCE_META, 
+				EventContentType.LITERAL_META, EventContentType.LITERAL_META_CONTENT, EventContentType.COMMENT, 
 				EventContentType.TREE_NETWORK_GROUP, EventContentType.TREE, EventContentType.NETWORK, EventContentType.NODE, 
 				EventContentType.EDGE, EventContentType.ROOT_EDGE);
 		
 		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
 		supportedMetadataModeling.put(EventContentType.DOCUMENT, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.XML)));
-		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+		supportedMetadataModeling.put(EventContentType.RESOURCE_META, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.NETWORK, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));

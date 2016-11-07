@@ -90,8 +90,8 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 	
 	@Override
 	protected JPhyloIOFormatInfo createFormatInfo() {
-		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, 
-				EventContentType.META_LITERAL, EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, 
+		Set<EventContentType> supportedContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.RESOURCE_META, 
+				EventContentType.LITERAL_META, EventContentType.LITERAL_META_CONTENT, EventContentType.COMMENT, 
 				EventContentType.OTU_LIST, EventContentType.OTU, EventContentType.ALIGNMENT, 
 				EventContentType.CHARACTER_DEFINITION, EventContentType.SEQUENCE,	EventContentType.SEQUENCE_TOKENS, 
 				EventContentType.SINGLE_SEQUENCE_TOKEN, EventContentType.TREE_NETWORK_GROUP, EventContentType.TREE, 
@@ -103,7 +103,7 @@ public class NeXMLFactory extends AbstractXMLFactory implements NeXMLConstants, 
 		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
 		supportedMetadataModeling.put(EventContentType.DOCUMENT, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
-		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+		supportedMetadataModeling.put(EventContentType.RESOURCE_META, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));
 		supportedMetadataModeling.put(EventContentType.OTU_LIST, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE, LiteralContentSequenceType.XML)));

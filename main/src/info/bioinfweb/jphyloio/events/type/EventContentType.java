@@ -36,6 +36,9 @@ import info.bioinfweb.jphyloio.events.SingleSequenceTokenEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
 import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 
 
 
@@ -49,6 +52,7 @@ import info.bioinfweb.jphyloio.events.UnknownCommandEvent;
  * documentation of {@link JPhyloIOEventReader} contains a full grammar of JPhyloIO event streams.
  * 
  * @author Ben St&ouml;ver
+ * @author Sarah Wiechers
  * @see JPhyloIOEventReader
  * @see EventTopologyType
  * @see EventType
@@ -68,9 +72,33 @@ public enum EventContentType {
 	 */
 	DOCUMENT,
 	
-	META_RESOURCE,
-	META_LITERAL,
-	META_LITERAL_CONTENT,
+	/**
+	 * Indicates the start or the end of a resource meta information.
+	 * <p>
+	 * Start events of this type are instances of {@link ResourceMetadataEvent}, end events are
+	 * instances of {@link ConcreteJPhyloIOEvent}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}.
+	 */
+	RESOURCE_META,
+	
+	/**
+	 * Indicates the start or the end of a literal meta information.
+	 * <p>
+	 * Start events of this type are instances of {@link LiteralMetadataEvent}, end events are
+	 * instances of {@link ConcreteJPhyloIOEvent}.
+	 * <p>
+	 * This content type will never be combined with {@link EventTopologyType#SOLE}.
+	 */
+	LITERAL_META,
+	
+	/** 
+	 * Indicates literal metadata content was found in the underlying data source.
+	 * <p>
+	 * Events of this type are instances of {@link LiteralMetadataContentEvent} and always have the
+	 * topology type {@link EventTopologyType#SOLE} and therefore no nested events.
+	 */
+	LITERAL_META_CONTENT,
 	
 	/** 
 	 * Events of this type are used by some readers to provide the application with contents

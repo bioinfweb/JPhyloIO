@@ -103,8 +103,8 @@ public class PDEFactory extends AbstractXMLFactory implements PDEConstants, JPhy
 		supportedParameters.add(ReadWriteParameterNames.KEY_LOGGER);
 		
 		return new DefaultFormatInfo(this, PDE_FORMAT_ID, PDE_FORMAT_NAME, 
-				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, EventContentType.META_LITERAL, 
-						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.OTU_LIST, 
+				EnumSet.of(EventContentType.DOCUMENT, EventContentType.RESOURCE_META, EventContentType.LITERAL_META, 
+						EventContentType.LITERAL_META_CONTENT, EventContentType.COMMENT, EventContentType.OTU_LIST, 
 						EventContentType.OTU, EventContentType.ALIGNMENT, EventContentType.SEQUENCE,
 						EventContentType.SEQUENCE_TOKENS, EventContentType.TOKEN_SET_DEFINITION, EventContentType.CHARACTER_SET, 
 						EventContentType.CHARACTER_SET_INTERVAL),

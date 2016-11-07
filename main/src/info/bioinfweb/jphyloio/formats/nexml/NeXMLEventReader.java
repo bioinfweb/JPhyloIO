@@ -392,7 +392,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(TAG_META, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				if ((streamDataProvider.getMetaType() != null) && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events
+				if ((streamDataProvider.getMetaType() != null) && streamDataProvider.getMetaType().peek().equals(EventContentType.LITERAL_META)) {  // Content events are only allowed under literal meta events
 					String content = event.asCharacters().getData();
 					boolean isContinued = streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS);
 					
@@ -423,7 +423,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.START_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events					
+				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.LITERAL_META)) {  // Content events are only allowed under literal meta events					
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asStartElement(), false));
 				}
 			}
@@ -432,7 +432,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.CHARACTERS), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {				
-				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events
+				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.LITERAL_META)) {  // Content events are only allowed under literal meta events
 					if (!event.asCharacters().getData().matches("\\s+")) {
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(event.asCharacters(), 
 								streamDataProvider.getXMLReader().peek().equals(XMLStreamConstants.CHARACTERS)));
@@ -444,7 +444,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.END_ELEMENT), new AbstractNeXMLElementReader() {			
 			@Override
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.META_LITERAL)) {  // Content events are only allowed under literal meta events					
+				if (!streamDataProvider.getMetaType().isEmpty() && streamDataProvider.getMetaType().peek().equals(EventContentType.LITERAL_META)) {  // Content events are only allowed under literal meta events					
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataContentEvent(event.asEndElement(), false));
 				}
@@ -570,7 +570,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				// Fire resource end event if format meta events are present
 				if (streamDataProvider.getAdditionalResourceMetaRel() != null) {
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 					streamDataProvider.setAdditionalResourceMetaRel(null);
 				}
 				
@@ -610,7 +610,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				// Fire resource end event if format meta events are present
 				if (streamDataProvider.getAdditionalResourceMetaRel() != null) {
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 					streamDataProvider.setAdditionalResourceMetaRel(null);
 				}				
 				
@@ -738,7 +738,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 			public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				// Fire resource end event if matrix meta events are present
 				if (streamDataProvider.getAdditionalResourceMetaRel() != null) {
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 					streamDataProvider.setAdditionalResourceMetaRel(null);
 				}
 				
@@ -875,7 +875,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 				XMLStreamException {
 					// Fire resource end event if matrix meta events are present and were not fired yet
 					if (streamDataProvider.getAdditionalResourceMetaRel() != null) {
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 						streamDataProvider.setAdditionalResourceMetaRel(null);
 					}				
 			}
@@ -1026,7 +1026,7 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 
 	@Override
 	protected XMLElementReader<NeXMLReaderStreamDataProvider> getElementReader(QName parentTag, QName elementTag, int eventType) {
-		if (!getStreamDataProvider().getMetaType().isEmpty() && getStreamDataProvider().getMetaType().peek().equals(EventContentType.META_LITERAL) 
+		if (!getStreamDataProvider().getMetaType().isEmpty() && getStreamDataProvider().getMetaType().peek().equals(EventContentType.LITERAL_META) 
 				&& (currentMetaLiteralStartLevel == -1) && getStreamDataProvider().getCurrentLiteralContentSequenceType().equals(LiteralContentSequenceType.XML)) {
 			currentMetaLiteralStartLevel = getEncounteredTags().size();
 		}

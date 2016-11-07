@@ -160,7 +160,7 @@ public class HotCommentDataReader implements NewickConstants, ReadWriteConstants
 	
 	
 	private void addLiteralMetaEnd(Collection<JPhyloIOEvent> eventQueue) {
-		eventQueue.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		eventQueue.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 	
 	

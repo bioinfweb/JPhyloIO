@@ -113,7 +113,7 @@ public class PhyloXMLPropertyMetadataReceiver extends PhyloXMLMetaDataReceiver {
 
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if (event.getType().getContentType().equals(EventContentType.META_RESOURCE) && isProperty) {
+		if (event.getType().getContentType().equals(EventContentType.RESOURCE_META) && isProperty) {
 			if ((ref != null) && (datatype != null)) {
 				getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());	
 				

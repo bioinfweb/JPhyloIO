@@ -90,7 +90,7 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 					info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), genericPredicate), LiteralContentSequenceType.SIMPLE));
 			events.add(new LiteralMetadataContentEvent(info.getValue(), false));
 		}
-		events.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		events.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		return true;  // An event is added to the queue in every case.
 	}

@@ -29,7 +29,7 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  * This event represents a value of a literal metadata and is therefore always nested inside start and end events of the type
- * {@link EventContentType#META_LITERAL}.
+ * {@link EventContentType#LITERAL_META}.
  * <p>
  * Values can be represented in the following ways:
  * <ul>
@@ -95,7 +95,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 * @throws NullPointerException if {@code stringValue} is {@code null} and {@code alternativeStringValue} is not
 	 */
 	private LiteralMetadataContentEvent(String stringValue, Object objectValue, boolean continuedInNextEvent) {		
-		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
+		super(EventContentType.LITERAL_META_CONTENT, continuedInNextEvent);
 		
 		if ((stringValue == null) && (objectValue == null)) {
 			throw new NullPointerException("Either stringValue or objectValue must be specified. If a literal meta event has no content, the content event should be omitted.");
@@ -123,7 +123,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 	 *         was not a characters event 
 	 */
 	public LiteralMetadataContentEvent(XMLEvent xmlEvent, boolean continuedInNextEvent) {
-		super(EventContentType.META_LITERAL_CONTENT, continuedInNextEvent);
+		super(EventContentType.LITERAL_META_CONTENT, continuedInNextEvent);
 		
 		if (!xmlEvent.isCharacters() && continuedInNextEvent) {
 			throw new IllegalArgumentException("Only character XML events may be continued in the next event. "

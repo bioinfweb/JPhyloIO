@@ -102,8 +102,8 @@ public class MEGAFactory extends AbstractStartStringSingleFactory implements Sin
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_COMMENT_LENGTH);
 
 		return new DefaultFormatInfo(this, MEGA_FORMAT_ID, MEGA_FORMAT_NAME, 
-				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
-						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.ALIGNMENT, 
+				EnumSet.of(EventContentType.DOCUMENT, EventContentType.LITERAL_META, 
+						EventContentType.LITERAL_META_CONTENT, EventContentType.COMMENT, EventContentType.ALIGNMENT, 
 						EventContentType.SEQUENCE, EventContentType.SEQUENCE_TOKENS, EventContentType.CHARACTER_SET, 
 						EventContentType.CHARACTER_SET_INTERVAL), null,	
 				supportedMetadataModeling, Collections.<EventContentType, MetadataModeling>emptyMap(),

@@ -93,7 +93,7 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 		Map<EventContentType, MetadataModeling> supportedMetadataModeling = new EnumMap<EventContentType, MetadataModeling>(EventContentType.class);
 		supportedMetadataModeling.put(EventContentType.DOCUMENT, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
-		supportedMetadataModeling.put(EventContentType.META_RESOURCE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
+		supportedMetadataModeling.put(EventContentType.RESOURCE_META, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
 		supportedMetadataModeling.put(EventContentType.TREE, new MetadataModeling(MetadataTopologyType.FULL_TREE, 
 				EnumSet.of(LiteralContentSequenceType.SIMPLE)));
@@ -109,8 +109,8 @@ public class XTGFactory extends AbstractXMLFactory implements XTGConstants, JPhy
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_LOGGER);
 		
 		return new DefaultFormatInfo(this, XTG_FORMAT_ID, XTG_FORMAT_NAME, 
-				EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_RESOURCE, EventContentType.META_LITERAL, 
-						EventContentType.META_LITERAL_CONTENT, EventContentType.COMMENT, EventContentType.TREE_NETWORK_GROUP, 
+				EnumSet.of(EventContentType.DOCUMENT, EventContentType.RESOURCE_META, EventContentType.LITERAL_META, 
+						EventContentType.LITERAL_META_CONTENT, EventContentType.COMMENT, EventContentType.TREE_NETWORK_GROUP, 
 						EventContentType.TREE, EventContentType.NODE, EventContentType.EDGE, EventContentType.ROOT_EDGE),
 						
 				null, supportedMetadataModeling, null,

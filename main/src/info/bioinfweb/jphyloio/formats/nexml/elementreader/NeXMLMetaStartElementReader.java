@@ -59,7 +59,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
   	URIOrStringIdentifier predicate;  	
 		
 		if (type.getLocalPart().equals(TYPE_LITERAL_META)) {
-			streamDataProvider.getMetaType().push(EventContentType.META_LITERAL);
+			streamDataProvider.getMetaType().push(EventContentType.LITERAL_META);
 			
 			predicate = new URIOrStringIdentifier(null, 
 					streamDataProvider.getEventReader().parseQName(XMLUtils.readStringAttr(element, ATTR_PROPERTY, null), element));
@@ -134,7 +134,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 			}
 		}
 		else if (type.getLocalPart().equals(TYPE_RESOURCE_META)) {
-			streamDataProvider.getMetaType().push(EventContentType.META_RESOURCE);
+			streamDataProvider.getMetaType().push(EventContentType.RESOURCE_META);
 			predicate = new URIOrStringIdentifier(null, 
 					streamDataProvider.getEventReader().parseQName(XMLUtils.readStringAttr(element, ATTR_REL, null), element));
 			String about = XMLUtils.readStringAttr(element, ATTR_ABOUT, null);

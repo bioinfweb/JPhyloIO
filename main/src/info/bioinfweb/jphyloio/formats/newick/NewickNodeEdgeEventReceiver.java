@@ -202,7 +202,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
-		if (event.getType().getContentType().equals(EventContentType.META_LITERAL) && currentLiteralValue.length() > 0) {
+		if (event.getType().getContentType().equals(EventContentType.LITERAL_META) && currentLiteralValue.length() > 0) {
 			throw new InconsistentAdapterDataException("A literal meta end event was encounterd, although the last literal meta content "
 					+ "event was marked to be continued in a subsequent event.");
 		}

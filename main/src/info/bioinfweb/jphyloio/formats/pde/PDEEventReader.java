@@ -180,7 +180,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 				new AbstractXMLElementReader<PDEReaderStreamDataProvider>() {
 					@Override
 					public void readEvent(PDEReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));						
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));						
 					}
 			});
 		
@@ -345,7 +345,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									LiteralContentSequenceType.SIMPLE));
 							streamDataProvider.getCurrentEventCollection().add(
 									new LiteralMetadataContentEvent(visibility, Boolean.toString(visibility)));
-							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 						}
 						
 						if (hexColor != null) {
@@ -355,7 +355,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 									new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 									new URIOrStringIdentifier(null, PREDICATE_CHARSET_COLOR), LiteralContentSequenceType.SIMPLE));		
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(charSetColor, hexColor));
-							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 						}
 					}
 			});
@@ -652,7 +652,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 					getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), columnLabel, 
 							predicate, datatype, LiteralContentSequenceType.SIMPLE));					
 					getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, sequenceInfo.get(key)));
-					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 					
 					objectValue = null;
 				}
@@ -669,7 +669,7 @@ public class PDEEventReader extends AbstractXMLEventReader<PDEReaderStreamDataPr
 						}
 
 						getCurrentEventCollection().add(new ResourceMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), columnLabel, predicate, resource, null));
-						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+						getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 					}
 					catch (URISyntaxException e) {}
 				}

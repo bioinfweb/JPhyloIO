@@ -33,7 +33,7 @@ import java.net.URI;
  * <i>RDF</i> which is formed by the set of upcoming nested metaevents.
  * <p>
  * This event has the topology type {@link EventTopologyType#START} and other resource and literal metadata event subsequences may
- * be nested before the according end event. The content type is {@link EventContentType#META_RESOURCE}.
+ * be nested before the according end event. The content type is {@link EventContentType#RESOURCE_META}.
  *
  * @author Ben St&ouml;ver
  * @since 0.0.0
@@ -59,7 +59,7 @@ public class ResourceMetadataEvent extends LabeledIDEvent {
 	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>
 	 */
 	public ResourceMetadataEvent(String id, String label, URIOrStringIdentifier rel, URI hRef, String about) {
-		super(EventContentType.META_RESOURCE, id, label);
+		super(EventContentType.RESOURCE_META, id, label);
 		if (rel == null) {
 			throw new NullPointerException("\"rel\" must not be null.");
 		}

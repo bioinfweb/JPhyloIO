@@ -154,7 +154,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			@Override
 			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				if (streamDataProvider.isCustomXMLStartWritten()) {
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 					streamDataProvider.setCustomXMLStartWritten(false);
 				}
 				
@@ -271,7 +271,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						
 						streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 								predicate, uri, null));
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 					}
 					catch (InvalidObjectSourceDataException e) {
 						throw new JPhyloIOReaderException("The content of this property tag could not be parsed to a URI.", event.getLocation());
@@ -328,11 +328,11 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			@Override
 			public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 				if (!streamDataProvider.isPropertyIsURI()) {
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 				}
 				
 				if (streamDataProvider.isPropertyHasResource()) {
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 				}
 				
 				if (streamDataProvider.isResetEventCollection()) {
@@ -376,7 +376,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					@Override
 					public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 						if (streamDataProvider.isCustomXMLStartWritten()) {
-							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 							streamDataProvider.setCustomXMLStartWritten(false);
 						}
 					}
@@ -416,7 +416,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {					
 					if (streamDataProvider.isCustomXMLStartWritten()) {
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 						streamDataProvider.setCustomXMLStartWritten(false);
 					}
 					
@@ -579,7 +579,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(cladeID0, cladeID0));
 								
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 						
 						streamDataProvider.getCurrentEventCollection().add(
 								new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
@@ -588,7 +588,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 		
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(cladeID1, cladeID1));
 								
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 						
 						if (Double.compare(branchLength, Double.NaN) != 0) {
 							streamDataProvider.getCurrentEventCollection().add(
@@ -598,7 +598,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(branchLength, Double.toString(branchLength)));
 									
-							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 						}
 						
 						readAttributes(streamDataProvider, element, "", 
@@ -623,7 +623,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				
 								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true)));
 										
-								streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+								streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 								
 								readAttributes(streamDataProvider, element, "", 
 										new AttributeInfo(ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN));								
@@ -653,7 +653,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				@Override
 				public void readEvent(PhyloXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 					if (getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false)) {
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 					}
 					else {
 						getStreamDataProvider().getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.EDGE));
@@ -836,7 +836,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 							externalResource = new URI(uri);
 							streamDataProvider.getCurrentEventCollection().add(new ResourceMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 									new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_VALUE), externalResource, null));
-							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		  			}
 		  			catch (URISyntaxException e) {
 		  				throw new JPhyloIOReaderException("A URI element must specify a valid URI. Instead the string\"" + uri + "\" was given.", event.getLocation());
@@ -1203,7 +1203,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					streamDataProvider.getNestedMetaNames().pop();
 					
 					if (streamDataProvider.getNestedMetaNames().isEmpty()) {
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 					}
 				}
 		});
@@ -1286,7 +1286,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(false, Boolean.toString(false)));
 							
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 				}
 				
 				for (JPhyloIOEvent nextEvent : edgeInfo.getNestedEdgeEvents()) {

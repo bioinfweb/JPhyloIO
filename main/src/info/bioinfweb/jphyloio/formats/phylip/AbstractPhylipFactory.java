@@ -112,8 +112,8 @@ public abstract class AbstractPhylipFactory extends AbstractSingleReaderWriterFa
 	protected JPhyloIOFormatInfo createFormatInfo(String formatID, String formatName, Set<String> supportedReaderParameters, 
 			Set<String> supportedWriterParameters, String adapterDescription) {
 		
-		Set<EventContentType> supportedReaderContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.META_LITERAL, 
-				EventContentType.META_LITERAL_CONTENT, EventContentType.ALIGNMENT, EventContentType.SEQUENCE, 
+		Set<EventContentType> supportedReaderContentTypes = EnumSet.of(EventContentType.DOCUMENT, EventContentType.LITERAL_META, 
+				EventContentType.LITERAL_META_CONTENT, EventContentType.ALIGNMENT, EventContentType.SEQUENCE, 
 				EventContentType.SEQUENCE_TOKENS);
 
 		Set<EventContentType> supportedWriterContentTypes = EnumSet.copyOf(supportedReaderContentTypes);

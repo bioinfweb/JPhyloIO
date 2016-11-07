@@ -58,7 +58,7 @@ public abstract class AbstractMetaXMLReader {
 	private class MetaEventListener implements JPhyloIOEventListener { 
 		@Override
 		public void processEvent(JPhyloIOEventReader source, JPhyloIOEvent event) throws IOException {
-			if (source.peek().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.END))) {
+			if (source.peek().getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.END))) {
 				setEndReached();
 			}
 		}
@@ -143,7 +143,7 @@ public abstract class AbstractMetaXMLReader {
 			case COMMENT:
 				result = getEventFactory().createComment(jPhyloIOEvent.asCommentEvent().getContent());
 				break;
-			case META_LITERAL_CONTENT:
+			case LITERAL_META_CONTENT:
 				LiteralMetadataContentEvent contentEvent = jPhyloIOEvent.asLiteralMetadataContentEvent();
 				
 				if (contentEvent.hasXMLEventValue()) {

@@ -86,7 +86,7 @@ public class JPhyloIOWritingUtils {
 
 		receiver.add(new LiteralMetadataEvent(id, label, predicate, originalType, LiteralContentSequenceType.SIMPLE));
 		receiver.add(new LiteralMetadataContentEvent(objectValue, stringRepresentation));
-		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 
 
@@ -126,7 +126,7 @@ public class JPhyloIOWritingUtils {
             URIOrStringIdentifier rel, URI hRef, String about) throws IOException {
 
         receiver.add(new ResourceMetadataEvent(id, label, rel, hRef, about));
-        receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+        receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
     }
 
 

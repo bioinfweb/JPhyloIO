@@ -137,7 +137,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextR
 				case ALIGNMENT:  // Only for the END case. START cannot happen, because it is directly followed by metaevents.
 					getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 					break;
-				case META_LITERAL:
+				case LITERAL_META:
 					if (getSequenceCount() == 0) {  // Empty alignment:
 						getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 						break;
@@ -152,7 +152,7 @@ public class SequentialPhylipEventReader extends AbstractPhylipEventReader<TextR
 							currentSequenceName = readSequenceName();
 							charactersRead = 0;
 							
-							if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_LITERAL)) {
+							if (!getPreviousEvent().getType().getContentType().equals(EventContentType.LITERAL_META)) {
 								getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, 
 										getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
 							}

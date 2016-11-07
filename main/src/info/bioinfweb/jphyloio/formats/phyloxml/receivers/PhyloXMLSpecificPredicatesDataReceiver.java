@@ -260,12 +260,12 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	@Override
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.TAG_AND_VALUE)
-				&& event.getType().getContentType().equals(EventContentType.META_LITERAL)) {
+				&& event.getType().getContentType().equals(EventContentType.LITERAL_META)) {
 			getStreamDataProvider().getWriter().writeEndElement();
 			predicates.pop();
 		}
 		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.TAG)
-				&& event.getType().getContentType().equals(EventContentType.META_RESOURCE) && (predicates.size() > 1)) {
+				&& event.getType().getContentType().equals(EventContentType.RESOURCE_META) && (predicates.size() > 1)) {
 			
 			if (!predicates.peek().equals(PREDICATE_PROPERTY)) {				
 				getStreamDataProvider().getWriter().writeEndElement();
@@ -274,14 +274,14 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 			childIndices.pop();			
 		}
 		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.VALUE)
-			&& event.getType().getContentType().equals(EventContentType.META_RESOURCE) && (predicates.size() > 1)) {
+			&& event.getType().getContentType().equals(EventContentType.RESOURCE_META) && (predicates.size() > 1)) {
 				predicates.pop();
 				childIndices.pop();
 		}
 		else if (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment().equals(PhyloXMLPredicateTreatment.CUSTOM_XML)) {
 			predicates.pop();
 			
-			if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
+			if (event.getType().getContentType().equals(EventContentType.RESOURCE_META)) {
 				childIndices.pop();
 			}
 		}

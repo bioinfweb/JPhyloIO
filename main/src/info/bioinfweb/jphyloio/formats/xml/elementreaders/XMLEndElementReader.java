@@ -56,16 +56,16 @@ public class XMLEndElementReader extends AbstractXMLElementReader {
 	public void readEvent(XMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
 		if (createLiteralEnd) {
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		}
 		
 		if (streamDataProvider.isCustomXMLStartWritten()) {
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 			streamDataProvider.setCustomXMLStartWritten(false);
 		}
 		
 		if (createResourceEnd) {
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		}
 		
 		if (isEdgeMeta && streamDataProvider.hasSpecialEventCollection()) {

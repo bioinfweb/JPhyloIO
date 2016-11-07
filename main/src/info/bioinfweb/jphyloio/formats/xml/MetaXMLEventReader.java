@@ -81,7 +81,7 @@ public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEven
 		StringBuffer content = new StringBuffer();
 		
 		// Check if the reader is currently located at a start element
-		if (getJPhyloIOEventReader().getPreviousEvent().getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+		if (getJPhyloIOEventReader().getPreviousEvent().getType().getContentType().equals(EventContentType.LITERAL_META_CONTENT)) {
 			XMLEvent lastEvent = getJPhyloIOEventReader().getPreviousEvent().asLiteralMetadataContentEvent().getXMLEvent();
 			
 			if (lastEvent.getEventType() != XMLStreamConstants.START_ELEMENT) {
@@ -127,7 +127,7 @@ public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEven
 		XMLEvent result;
 		
 		if (!isEndReached()) {
-			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) 
+			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START)) 
 					&& !isStartDocumentFired()) {
 				
 				result = getEventFactory().createStartDocument();
@@ -184,7 +184,7 @@ public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEven
 		XMLEvent result = null;		
 
 		if (!isEndReached()) {
-			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) 
+			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START)) 
 					&& !isStartDocumentFired()) {
 				
 				result = getEventFactory().createStartDocument();

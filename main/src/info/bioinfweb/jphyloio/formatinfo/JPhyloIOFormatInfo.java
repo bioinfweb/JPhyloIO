@@ -64,7 +64,7 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	 * writer. In such cases {@code false} would be returned here for the according content type.
 	 * <p>
 	 * Note that this method will return {@code true} for content types that may occur at multiple positions in the event stream 
-	 * (e.g. {@link EventContentType#META_LITERAL} or {@link EventContentType#SET_ELEMENT}), if they are supported at least
+	 * (e.g. {@link EventContentType#LITERAL_META} or {@link EventContentType#SET_ELEMENT}), if they are supported at least
 	 * at one position. Use {@link #isMetadataModeled(EventContentType)} to check at which position metadata elements are
 	 * supported.
 	 * 

@@ -40,13 +40,13 @@ public class NeXMLMetaEndElementReader extends AbstractNeXMLElementReader {
 	public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException, XMLStreamException {
 		EventContentType type = streamDataProvider.getMetaType().pop();
 
-		if (type.equals(EventContentType.META_LITERAL)) {
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		if (type.equals(EventContentType.LITERAL_META)) {
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			streamDataProvider.setAlternativeStringRepresentation(null);
 			streamDataProvider.setCurrentLiteralContentSequenceType(null);
 		}
-		else if (type.equals(EventContentType.META_RESOURCE)) {
-			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		else if (type.equals(EventContentType.RESOURCE_META)) {
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		}		
 	}	
 }

@@ -112,7 +112,7 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 	protected void handleMetaEndEvent(JPhyloIOEvent event) throws IOException, XMLStreamException {
 		super.handleMetaEndEvent(event);
 		
-		if (event.getType().getContentType().equals(EventContentType.META_RESOURCE)) {
+		if (event.getType().getContentType().equals(EventContentType.RESOURCE_META)) {
 			writeCustomXML = false;
 		}
 	}

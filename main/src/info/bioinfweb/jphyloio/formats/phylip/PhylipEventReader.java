@@ -159,7 +159,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextReaderStrea
 				case ALIGNMENT:  // Only for the END case. START cannot happen, because it is directly followed by metaevents.
 					getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.DOCUMENT, EventTopologyType.END));
 					break;
-				case META_LITERAL:  //TODO This case needs to be handled differently, if additional metaevents will be fired in the future.
+				case LITERAL_META:  //TODO This case needs to be handled differently, if additional metaevents will be fired in the future.
 					if (getSequenceCount() == 0) {  // Empty alignment:
 						getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.ALIGNMENT, EventTopologyType.END));
 						break;
@@ -184,7 +184,7 @@ public class PhylipEventReader extends AbstractPhylipEventReader<TextReaderStrea
 										getReader());
 							}
 						}
-						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.META_LITERAL)) {
+						if (!getPreviousEvent().getType().getContentType().equals(EventContentType.LITERAL_META)) {
 							getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, 
 									getSequenceTokensEventManager().getCurrentPosition() >= getCharacterCount()));
 						}

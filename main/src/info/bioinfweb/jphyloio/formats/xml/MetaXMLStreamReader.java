@@ -559,7 +559,7 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 	public int next() throws XMLStreamException {
 		XMLEvent result = null;
 		if (!isEndReached()) {
-			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START)) 
+			if (getJPhyloIOEventReader().getPreviousEvent().getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START)) 
 					&& !isStartDocumentFired()) {
 				
 				result = getEventFactory().createStartDocument();

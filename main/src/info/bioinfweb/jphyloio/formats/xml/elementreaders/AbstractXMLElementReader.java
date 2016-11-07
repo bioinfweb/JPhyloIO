@@ -111,7 +111,7 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, attributeValue));
 					}
 							
-					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));					
+					streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));					
 				}
 			}
 		}

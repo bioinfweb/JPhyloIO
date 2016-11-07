@@ -51,7 +51,7 @@ public class LiteralMetadataEvent extends LabeledIDEvent {
 	public LiteralMetadataEvent(String id, String label, URIOrStringIdentifier predicate, String alternativeStringValue, URIOrStringIdentifier originalType, 
 				LiteralContentSequenceType sequenceType) {
 		
-		super(EventContentType.META_LITERAL, id, label);
+		super(EventContentType.LITERAL_META, id, label);
 		if (predicate == null) {
 			throw new NullPointerException("The predicate must not be null.");
 		}

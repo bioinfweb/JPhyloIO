@@ -106,7 +106,7 @@ public abstract class AbstractPhylipEventReader<P extends TextReaderStreamDataPr
 						getStreamDataProvider().getIDManager().createNewID(), null, 
 						new URIOrStringIdentifier(null, PREDICATE_SEQUENCE_COUNT), LiteralContentSequenceType.SIMPLE));
 				getCurrentEventCollection().add(new LiteralMetadataContentEvent(sequenceCount, parts[0]));
-				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 
 				try {
 					characterCount = Long.parseLong(parts[1]);
@@ -119,7 +119,7 @@ public abstract class AbstractPhylipEventReader<P extends TextReaderStreamDataPr
 						getStreamDataProvider().getIDManager().createNewID(), null, 
 						new URIOrStringIdentifier(null, PREDICATE_CHARACTER_COUNT), LiteralContentSequenceType.SIMPLE));
 				getCurrentEventCollection().add(new LiteralMetadataContentEvent(characterCount, parts[1]));
-				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			}
 			else {
 				throw new JPhyloIOReaderException("The first line of a Phylip file needs to contain exactly two integer values "

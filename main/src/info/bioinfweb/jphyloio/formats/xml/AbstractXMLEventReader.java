@@ -268,9 +268,9 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 
 	@Override
 	public MetaXMLEventReader createMetaXMLEventReader() throws IllegalStateException {
-		if ((getPreviousEvent().getType().getContentType().equals(EventContentType.META_LITERAL) 
+		if ((getPreviousEvent().getType().getContentType().equals(EventContentType.LITERAL_META) 
 				&& getPreviousEvent().asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))
-				|| (getParentInformation().getDirectParentContentType().equals(EventContentType.META_LITERAL) 
+				|| (getParentInformation().getDirectParentContentType().equals(EventContentType.LITERAL_META) 
 				&& getParentInformation().getDirectParent().asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 			
 			return new MetaXMLEventReader(getStreamDataProvider());
@@ -284,9 +284,9 @@ public abstract class AbstractXMLEventReader<P extends XMLReaderStreamDataProvid
 
 	@Override
 	public MetaXMLStreamReader createMetaXMLStreamReader() throws IllegalStateException {
-		if ((getPreviousEvent().getType().getContentType().equals(EventContentType.META_LITERAL) 
+		if ((getPreviousEvent().getType().getContentType().equals(EventContentType.LITERAL_META) 
 				&& getPreviousEvent().asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))
-				|| (getParentInformation().getDirectParentContentType().equals(EventContentType.META_LITERAL) 
+				|| (getParentInformation().getDirectParentContentType().equals(EventContentType.LITERAL_META) 
 				&& getParentInformation().getDirectParent().asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 			
 			return new MetaXMLStreamReader(getStreamDataProvider());
