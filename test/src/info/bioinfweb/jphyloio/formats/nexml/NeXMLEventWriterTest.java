@@ -867,7 +867,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters(" and even more"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("ex", "http://example.com/", "customTag"), false));
 		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			
 		// Write file:
 		NeXMLEventWriter writer = new NeXMLEventWriter();
@@ -989,7 +989,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createCharacters(" and even more"), false));
 		document.getAnnotations().add(new LiteralMetadataContentEvent(factory.createEndElement("nex", "http://new-example.com/", "customTag"), false));
 		
-		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		document.getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			
 		// Write file:
 		NeXMLEventWriter writer = new NeXMLEventWriter();
@@ -2887,7 +2887,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 				new QName(W3CXSConstants.DATA_TYPE_INTEGER.getNamespaceURI(), W3CXSConstants.DATA_TYPE_INTEGER.getLocalPart())), 
 				LiteralContentSequenceType.SIMPLE));
 		annotations.add(new LiteralMetadataContentEvent(25, "25"));		
-		annotations.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		annotations.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 	
 	
@@ -2910,7 +2910,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		annotations.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
 			resourcePredicate, null, null));		
 		addLiteralMeta(annotations, null);
-		annotations.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		annotations.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 	}
 	
 	
@@ -2937,13 +2937,13 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		metaData.add(new LiteralMetadataContentEvent("This is a long ", true));
 		metaData.add(new LiteralMetadataContentEvent("literal text", false));
 		
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));		
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));		
 		
 		metaData.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "relations")), example, about));
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		
 		metaData.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), LiteralContentSequenceType.XML));
@@ -2959,7 +2959,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		metaData.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("test", "http://test.com/", "nestedTest"), false));
 		metaData.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("test", "http://test.com/", "topLevelTest"), false));
 		
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		metaData.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate", "pre")), new URIOrStringIdentifier(null, new QName(W3CXSConstants.DATA_TYPE_QNAME.getNamespaceURI(), W3CXSConstants.DATA_TYPE_QNAME.getLocalPart())), 
@@ -2967,14 +2967,14 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 
 		metaData.add(new LiteralMetadataContentEvent(new QName("www.another-test.net", "test2", "pre"), null));
 		
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		metaData.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + obtainCurrentIDIndex(), null, 
 				new URIOrStringIdentifier("my string key", null), new URIOrStringIdentifier(null, 
 				new QName(W3CXSConstants.DATA_TYPE_INTEGER.getNamespaceURI(), W3CXSConstants.DATA_TYPE_INTEGER.getLocalPart())), 
 				LiteralContentSequenceType.SIMPLE));
 		metaData.add(new LiteralMetadataContentEvent(25, "25"));		
-		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		metaData.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		return metaData;
 	}

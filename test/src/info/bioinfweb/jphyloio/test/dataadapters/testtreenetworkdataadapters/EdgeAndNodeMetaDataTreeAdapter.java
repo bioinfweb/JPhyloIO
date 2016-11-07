@@ -78,13 +78,13 @@ public class EdgeAndNodeMetaDataTreeAdapter extends StoreTreeNetworkDataAdapter 
 				new URIOrStringIdentifier("splitString", new QName("http://example.org/", "somePredicate")), LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent("ABC", true));
 		nestedEvents.add(new LiteralMetadataContentEvent("DEF", false));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "eAmeta2", null,  //TODO Prefix was not added here in previous implementation. => Adjust test cases. 
 				new URIOrStringIdentifier("array", new QName("http://example.org/", "somePredicate")), 
 				new URIOrStringIdentifier(null, NewickConstants.DATA_TYPE_NEWICK_ARRAY), LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent(Arrays.asList(new Integer(100), "abc"), null));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "eB", "Leaf edge B", nodeEdgeIDPrefix + "n1", nodeEdgeIDPrefix + "nB", 0.9));
 		edges.setObjectStartEvent(new EdgeEvent(nodeEdgeIDPrefix + "eC", "Leaf edge C", nodeEdgeIDPrefix + "nRoot", nodeEdgeIDPrefix + "nC", 2.0));
@@ -98,11 +98,11 @@ public class EdgeAndNodeMetaDataTreeAdapter extends StoreTreeNetworkDataAdapter 
 				new URIOrStringIdentifier("a1", new QName("http://example.org/", "somePredicate")),
 				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent(new Integer(100), "100"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "n1meta2", null, new URIOrStringIdentifier("a2", new QName("http://example.org/", "somePredicate")),  //TODO Prefix was not added here in previous implementation. => Adjust test cases. 
 				LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent("ab 'c", "ab 'c"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nRoot", "Node " + nodeEdgeIDPrefix + "nRoot", null, true));
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nA", "Node " + nodeEdgeIDPrefix + "nA", linkedOTUs != null ? linkedOTUs[0] : null, false));

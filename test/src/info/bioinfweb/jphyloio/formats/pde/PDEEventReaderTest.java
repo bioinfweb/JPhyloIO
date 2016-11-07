@@ -55,7 +55,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
@@ -117,7 +117,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				assertLabeledIDEvent(EventContentType.OTU, null, "A", reader);
@@ -162,7 +162,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, null, reader);
 				
@@ -214,7 +214,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
@@ -271,7 +271,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				assertEndEvent(EventContentType.DOCUMENT, reader);
 				
@@ -299,7 +299,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				assertLabeledIDEvent(EventContentType.OTU, null, "C", reader);
@@ -347,7 +347,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
@@ -399,7 +399,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
@@ -473,7 +473,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
@@ -535,7 +535,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
@@ -597,7 +597,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
@@ -679,7 +679,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
@@ -742,7 +742,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
@@ -820,7 +820,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
@@ -882,7 +882,7 @@ public class PDEEventReaderTest implements PDEConstants {
 				
 				assertLiteralMetaStartEvent(new URIOrStringIdentifier(null, PREDICATE_DESCRIPTION), LiteralContentSequenceType.SIMPLE, 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), null, reader);
-				assertEndEvent(EventContentType.META_LITERAL, reader);
+				assertEndEvent(EventContentType.LITERAL_META, reader);
 				
 				String taxonList = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
 				String taxon1 = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();

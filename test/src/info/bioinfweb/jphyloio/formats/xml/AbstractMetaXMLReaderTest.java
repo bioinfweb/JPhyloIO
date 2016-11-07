@@ -52,7 +52,7 @@ public class AbstractMetaXMLReaderTest {
 		try {			
 			// Skip format specific content
 			JPhyloIOEvent event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -77,7 +77,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();				
 			}
@@ -101,7 +101,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -119,7 +119,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -151,7 +151,7 @@ public class AbstractMetaXMLReaderTest {
 		try {				
 			// Skip format specific content
 			JPhyloIOEvent event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -175,7 +175,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -199,7 +199,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -217,7 +217,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -249,7 +249,7 @@ public class AbstractMetaXMLReaderTest {
 		try {			
 			// Skip format specific content
 			JPhyloIOEvent event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -271,7 +271,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -292,7 +292,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -309,7 +309,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -338,7 +338,7 @@ public class AbstractMetaXMLReaderTest {
 		try {			
 			// Skip format specific content
 			JPhyloIOEvent event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -358,7 +358,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -380,7 +380,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -397,7 +397,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -428,7 +428,7 @@ public class AbstractMetaXMLReaderTest {
 		try {
 			// Skip format specific content
 			JPhyloIOEvent event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -454,7 +454,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();				
 			}
@@ -482,7 +482,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -499,7 +499,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -530,7 +530,7 @@ public class AbstractMetaXMLReaderTest {
 		try {			
 			// Skip format specific content
 			JPhyloIOEvent event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -555,7 +555,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -578,7 +578,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -595,7 +595,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -624,7 +624,7 @@ public class AbstractMetaXMLReaderTest {
 		try {			
 			// Skip format specific content
 			JPhyloIOEvent event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -647,7 +647,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -667,7 +667,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}
@@ -685,7 +685,7 @@ public class AbstractMetaXMLReaderTest {
 			
 			// Skip format specific content
 			event = reader.next();
-			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.META_LITERAL, EventTopologyType.START))
+			while (reader.hasNextEvent() && !(event.getType().equals(new EventType(EventContentType.LITERAL_META, EventTopologyType.START))
 					&& event.asLiteralMetadataEvent().getSequenceType().equals(LiteralContentSequenceType.XML))) {
 				event = reader.next();
 			}

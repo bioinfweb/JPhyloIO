@@ -106,7 +106,7 @@ public class TestSingleTokenSetAdapter extends EmptyAnnotatedDataAdapter<Concret
 					new URIOrStringIdentifier("someKey", new QName("somePredicate")), new URIOrStringIdentifier(null, new QName("string")), 
 					LiteralContentSequenceType.SIMPLE));
 			receiver.add(new LiteralMetadataContentEvent("someValue", false));
-			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		}
 		else {
 			throw new IllegalArgumentException("No token set with the ID " + id + " could be found.");

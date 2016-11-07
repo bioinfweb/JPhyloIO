@@ -49,7 +49,7 @@ public class BasicEventReceiverTest {
 		
 		receiver.add(new LiteralMetadataEvent("someID", "someLabel", new URIOrStringIdentifier("someKey", ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA), LiteralContentSequenceType.SIMPLE));
 		receiver.add(new LiteralMetadataContentEvent("someValue", "someValue"));
-		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		receiver.add(new CommentEvent("some comment"));
 		
 		assertTrue(receiver.didIgnoreMetadata());

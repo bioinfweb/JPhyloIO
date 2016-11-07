@@ -285,7 +285,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.META_LITERAL, EventTopologyType.START, event);
+		assertEventType(EventContentType.LITERAL_META, EventTopologyType.START, event);
 		
 		LiteralMetadataEvent metaInformationEvent = event.asLiteralMetadataEvent();
 		assertEquals(expectedSequenceType, metaInformationEvent.getSequenceType());
@@ -310,7 +310,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);
+		assertEventType(EventContentType.LITERAL_META_CONTENT, EventTopologyType.SOLE, event);
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 		assertEquals(expectedStringValue, contentEvent.getStringValue());
 		assertEquals(expectedObjectValue, contentEvent.getObjectValue());
@@ -319,7 +319,7 @@ public class JPhyloIOTestTools {
 		}
 		
 		if (testLiteralEndEvent) {
-			assertEndEvent(EventContentType.META_LITERAL, reader);
+			assertEndEvent(EventContentType.LITERAL_META, reader);
 		}
   }
   
@@ -329,7 +329,7 @@ public class JPhyloIOTestTools {
   	
 		assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.META_LITERAL_CONTENT, EventTopologyType.SOLE, event);
+		assertEventType(EventContentType.LITERAL_META_CONTENT, EventTopologyType.SOLE, event);
 		LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 		assertEquals(expectedStringValue, contentEvent.getStringValue());
 		
@@ -347,7 +347,7 @@ public class JPhyloIOTestTools {
 		}
 		
 		if (testLiteralEndEvent) {
-			assertEndEvent(EventContentType.META_LITERAL, reader);
+			assertEndEvent(EventContentType.LITERAL_META, reader);
 		}
 		
 		return contentEvent.getXMLEvent();
@@ -371,7 +371,7 @@ public class JPhyloIOTestTools {
   	
   	FileReader valueReader = new FileReader(expectedStringValueFile);
   	try {
-  		while (eventReader.hasNextEvent() && eventReader.peek().getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+  		while (eventReader.hasNextEvent() && eventReader.peek().getType().getContentType().equals(EventContentType.LITERAL_META_CONTENT)) {
   			LiteralMetadataContentEvent event = eventReader.next().asLiteralMetadataContentEvent();  			
   			for (int i = 0; i < event.getStringValue().length(); i++) {
   				int c = valueReader.read();
@@ -382,7 +382,7 @@ public class JPhyloIOTestTools {
   		assertEquals(-1, valueReader.read());  // Test if whole string has been found.
   		
   		if (testEndEvent) {
-  			assertEndEvent(EventContentType.META_LITERAL, eventReader);
+  			assertEndEvent(EventContentType.LITERAL_META, eventReader);
   		}
   	}
   	finally {
@@ -394,7 +394,7 @@ public class JPhyloIOTestTools {
   public static String assertResourceMetaEvent(URIOrStringIdentifier expectedRel, URI expectedHref, String expectedAbout, boolean testEndEvent, JPhyloIOEventReader reader) throws Exception {
   	assertTrue(reader.hasNextEvent());
 		JPhyloIOEvent event = reader.next();
-		assertEventType(EventContentType.META_RESOURCE, EventTopologyType.START, event);
+		assertEventType(EventContentType.RESOURCE_META, EventTopologyType.START, event);
 		
 		ResourceMetadataEvent metaInformationEvent = event.asResourceMetadataEvent();
 		assertEquals(expectedRel, metaInformationEvent.getRel());
@@ -402,7 +402,7 @@ public class JPhyloIOTestTools {
 		assertEquals(expectedAbout, metaInformationEvent.getAbout());
   	
   	if (testEndEvent) {
-			assertEndEvent(EventContentType.META_RESOURCE, reader);
+			assertEndEvent(EventContentType.RESOURCE_META, reader);
 		}
   	
   	return metaInformationEvent.getID();

@@ -67,8 +67,8 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DOCUMENT_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS), null, null, false, reader);				
 				
@@ -79,7 +79,7 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 						VALUE_LEAVES_ADAPTER, null, VALUE_LEAVES_ADAPTER, true, reader);			
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_NAME), 
@@ -88,9 +88,9 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 						VALUE_SUPPORT_VALUES_ADAPTER, null, VALUE_SUPPORT_VALUES_ADAPTER, true, reader);			
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 	
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 				
@@ -133,7 +133,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -174,14 +174,14 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "9.4", null, 9.4, true, reader);			
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID2", null, "ID2", true, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -222,7 +222,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -263,7 +263,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 		
@@ -334,9 +334,9 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.EDGE, reader);
 				
@@ -377,14 +377,14 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "test invisible data", null, "test invisible data", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID2", null, "ID2", true, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -434,7 +434,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DATA_IDS), null, null, false, reader);
 				
@@ -443,25 +443,25 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, DATA_TYPE_COLOR), "#0000FF", null, Color.decode("#0000FF"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DATA_ID_VALUE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID2", null, null, true, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DATA_ID), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DATA_ID_ATTR_PIE_COLOR), 
 						new URIOrStringIdentifier(null, DATA_TYPE_COLOR), "#FF0000", null, Color.decode("#FF0000"), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DATA_ID_VALUE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID3", null, null, true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "18.3", null, 18.3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID3", null, "ID3", true, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.EDGE, reader);
 				
@@ -511,9 +511,9 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.EDGE, reader);				
 				
@@ -536,7 +536,7 @@ public class XTGEventReaderTest implements XTGConstants {
 //				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL), null, "10", null, "10", true, reader);
 //				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_START_LEFT), null, "true", null, "true", true, reader);
 //				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_INCREASING), null, "true", null, "true", true, reader);				
-//				assertEndEvent(EventContentType.META_RESOURCE, reader);
+//				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEdgeEvent(null, node1, 2.0, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_BRANCH_ATTR_LINE_COLOR), 
@@ -601,8 +601,8 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DOCUMENT_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS), null, null, false, reader);				
 				
@@ -613,7 +613,7 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 						VALUE_LEAVES_ADAPTER, null, VALUE_LEAVES_ADAPTER, true, reader);			
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_NAME), 
@@ -622,9 +622,9 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 						VALUE_SUPPORT_VALUES_ADAPTER, null, VALUE_SUPPORT_VALUES_ADAPTER, true, reader);			
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 	
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 				
@@ -667,7 +667,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -706,7 +706,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -747,7 +747,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -788,7 +788,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -829,7 +829,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -915,7 +915,7 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertEndEvent(EventContentType.NODE, reader);
 				
@@ -1012,8 +1012,8 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DOCUMENT_MARGIN_ATTR_BOTTOM), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);				
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS), null, null, false, reader);				
 				
@@ -1024,7 +1024,7 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 						VALUE_LEAVES_ADAPTER, null, VALUE_LEAVES_ADAPTER, true, reader);			
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_NAME), 
@@ -1033,9 +1033,9 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 						VALUE_SUPPORT_VALUES_ADAPTER, null, VALUE_SUPPORT_VALUES_ADAPTER, true, reader);			
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 	
-				assertEndEvent(EventContentType.META_RESOURCE, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
 				
@@ -1060,7 +1060,7 @@ public class XTGEventReaderTest implements XTGConstants {
 //				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL), null, "10", null, "10", true, reader);
 //				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_START_LEFT), null, "true", null, "true", true, reader);
 //				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ATTR_INCREASING), null, "true", null, "true", true, reader);				
-//				assertEndEvent(EventContentType.META_RESOURCE, reader);			
+//				assertEndEvent(EventContentType.RESOURCE_META, reader);			
 				
 				assertEndEvent(EventContentType.TREE, reader);
 				

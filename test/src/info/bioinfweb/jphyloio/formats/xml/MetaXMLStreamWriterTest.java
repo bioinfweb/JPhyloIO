@@ -112,7 +112,7 @@ public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstan
 					e.printStackTrace();
 				}
 				
-				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			}
 		};
 		
@@ -142,7 +142,7 @@ public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstan
 						e.printStackTrace();
 					}	
 					
-					receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 				}
 				else {
 					super.writeContentData(parameters, receiver, id);
@@ -177,7 +177,7 @@ public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstan
 					e.printStackTrace();
 				}
 				
-				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			}
 		};
 		
@@ -246,7 +246,7 @@ public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstan
 					e.printStackTrace();
 				}
 				
-				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			}
 		};
 		
@@ -277,7 +277,7 @@ public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstan
 						e.printStackTrace();
 					}	
 					
-					receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+					receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 				}
 				else {
 					super.writeContentData(parameters, receiver, id);
@@ -313,7 +313,7 @@ public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstan
 					e.printStackTrace();
 				}	
 				
-				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			}
 		};
 		
@@ -382,7 +382,7 @@ public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstan
 					e.printStackTrace();
 				}	
 				
-				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 			}
 		};
 		
@@ -523,9 +523,9 @@ public class MetaXMLStreamWriterTest implements ReadWriteConstants, NeXMLConstan
 					e.printStackTrace();
 				}
 				
-				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 				
-				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 			}
 		};
 		

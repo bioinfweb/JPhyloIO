@@ -68,7 +68,7 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 				new URIOrStringIdentifier(null, PREDICATE_COLOR), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent(new Color(70, 90, 240), null));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		edges.setObjectStartEvent(new EdgeEvent(getNodeEdgeIDPrefix() + "eA", "Leaf edge A", getNodeEdgeIDPrefix() + "n1", getNodeEdgeIDPrefix() + "nA", 1.1));
 		nestedEvents = edges.getObjectContent(getNodeEdgeIDPrefix() + "eA");
@@ -76,13 +76,13 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 				new URIOrStringIdentifier(null, PREDICATE_WIDTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
 				LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent(7.3, "7.3"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 
 		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_COLOR), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent(new Color(45, 210, 78), null));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		edges.setObjectStartEvent(new EdgeEvent(getNodeEdgeIDPrefix() + "eB", "Leaf edge B", getNodeEdgeIDPrefix() + "n1", getNodeEdgeIDPrefix() + "nB", 0.9));
 		edges.setObjectStartEvent(new EdgeEvent(getNodeEdgeIDPrefix() + "eC", "Leaf edge C", getNodeEdgeIDPrefix() + "nRoot", getNodeEdgeIDPrefix() + "nC", 2.0));
@@ -100,7 +100,7 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 				new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_SCIENTIFIC_NAME), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent("Mus musculus", "Mus musculus"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		nestedEvents.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI), null, null));		
@@ -109,16 +109,16 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 				new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_ATTR_DESC), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent("Some URI", "Some URI"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		try {
 			nestedEvents.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 					new URIOrStringIdentifier(null, PREDICATE_TAXONOMY_URI_VALUE), new URI("http://www.some-uri.com"), null));
-			nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+			nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		}
 		catch (URISyntaxException e) {}
 
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		
 		nestedEvents.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_HAS_CUSTOM_XML), null, null));
@@ -126,10 +126,10 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "XMLPredicate")), LiteralContentSequenceType.XML));		
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createStartElement("pre", "http://test.com/", "customTest"), false));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		
 		nestedEvents.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null));
@@ -138,15 +138,15 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 				new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_ID_REF), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent("someID", "someID"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		nestedEvents.add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		nestedEvents.add(new LiteralMetadataContentEvent("myValue", "myValue"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		
 		nodes.setObjectStartEvent(new NodeEvent(getNodeEdgeIDPrefix() + "nRoot", "Node " + getNodeEdgeIDPrefix() + "nRoot", null, true));
 		nodes.setObjectStartEvent(new NodeEvent(getNodeEdgeIDPrefix() + "nA", "Node " + getNodeEdgeIDPrefix() + "nA", getLinkedOTUs() != null ? getLinkedOTUs()[0] : null, false));
@@ -161,8 +161,8 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createCharacters("test "), true));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createCharacters("characters"), false));
 		nestedEvents.add(new LiteralMetadataContentEvent(XMLEventFactory.newInstance().createEndElement("pre", "http://test.com/", "customTest"), false));		
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		
 		nodes.setObjectStartEvent(new NodeEvent(getNodeEdgeIDPrefix() + "nC", "Node " + getNodeEdgeIDPrefix() + "nC", getLinkedOTUs() != null ? getLinkedOTUs()[2] : null, false));
 	}
@@ -173,7 +173,7 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 				new URIOrStringIdentifier(null, PREDICATE_PHYLOGENY_DESCRIPTION), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		getAnnotations().add(new LiteralMetadataContentEvent("example tree", "example tree"));
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		getAnnotations().add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null));
@@ -182,20 +182,20 @@ public class PhyloXMLSpecificMetadataTreeAdapter extends PhyloXMLEdgeAndNodeMeta
 				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		getAnnotations().add(new LiteralMetadataContentEvent("bootstrap", "bootstrap"));
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 
 		getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE),
 				LiteralContentSequenceType.SIMPLE));
 		getAnnotations().add(new LiteralMetadataContentEvent(0.6, "0.6"));
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_RESOURCE));
+		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		
 		getAnnotations().add(new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + getIDIndex(), null, 
 				new URIOrStringIdentifier(null, new QName("http://meta.net/", "predicate")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
 				LiteralContentSequenceType.SIMPLE));
 		getAnnotations().add(new LiteralMetadataContentEvent("myValue", "myValue"));
-		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		getAnnotations().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 }
