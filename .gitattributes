@@ -553,6 +553,9 @@ test/lib/commons-io-2.4.jar -text
 test/lib/hamcrest-core-1.3.jar -text
 test/lib/junit-4.12.jar -text
 test/lib/org.nexml.model.jar -text
+test/src/GPL.txt -text svneol=unset#text/plain
+test/src/LGPL.txt -text svneol=unset#text/plain
+test/src/NOTICE.txt -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/ParentEventInformationTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/BasicEventReceiverTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/factory/JPhyloIOReaderWriterFactoryTest.java -text svneol=unset#text/plain
