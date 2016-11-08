@@ -7,19 +7,6 @@ demo/info.bioinfweb.jphyloio.demo.metadata/ReadMe.txt -text svneol=unset#text/pl
 demo/info.bioinfweb.jphyloio.demo.metadata/src/GPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.metadata/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.metadata/src/NOTICE.txt -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/.classpath -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/.project -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/data/LargeNeXMLFile.xml -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/data/MatrixInterleaved.nex -text
-demo/info.bioinfweb.jphyloio.demo.old/data/test.fasta -text
-demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/CollectionToElementCollectionAdapter.java -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoModel.java -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoPhyloDocument.java -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoReader.java -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/DemoWriter.java -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/ModelCharacterData.java -text svneol=unset#text/plain
-demo/info.bioinfweb.jphyloio.demo.old/src/info/bioinfweb/jphyloio/demo/ReadWriteDemo.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
