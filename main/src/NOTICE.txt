@@ -14,3 +14,9 @@ GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with this program. (See LGPL.txt.) If not, see <http://www.gnu.org/licenses/>.
+
+
+This product includes dependencies developed by the
+Apache Software Foundation (http://www.apache.org/)
+distributed under the terms of the Apache License Version 2.0.
+(See APACHE-LICENSE.txt)

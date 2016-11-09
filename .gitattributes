@@ -39,9 +39,12 @@ main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+main/lib/bioinfweb.commons.java-Bio-2.0.0.jar -text
+main/lib/bioinfweb.commons.java-Core-2.0.0.jar -text
 main/lib/commons-collections4-4.1.jar -text
 main/lib/commons-lang3-3.1.jar -text
 main/lib/owlapi-XMLUtils-4.1.4.jar -text
+main/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
 main/src/GPL.txt -text svneol=unset#text/plain
 main/src/LGPL.txt -text svneol=unset#text/plain
 main/src/NOTICE.txt -text svneol=unset#text/plain
