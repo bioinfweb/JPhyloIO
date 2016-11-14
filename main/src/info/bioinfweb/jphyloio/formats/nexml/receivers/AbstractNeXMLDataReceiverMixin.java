@@ -141,7 +141,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 				ObjectTranslator<?> translator = parameters.getObjectTranslatorFactory()
 						.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
 				if ((event.hasObjectValue())) {
-					if ((translator != null) && translator.hasStringRepresentation()) {
+					if (translator != null) {
 						if (translator.hasStringRepresentation()) {
 							try {
 								writer.writeCharacters(translator.javaToRepresentation(event.getObjectValue(), streamDataProvider));
@@ -152,7 +152,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 							}
 						}
 						else {
-							translator.writeXMLRepresentation(writer, event.getObjectValue(), null);
+							translator.writeXMLRepresentation(writer, event.getObjectValue(), null); //TODO this code may never be reached
 						}
 					}
 					else if (event.hasStringValue()) {		
