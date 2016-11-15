@@ -142,18 +142,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 						.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
 				if ((event.hasObjectValue())) {
 					if (translator != null) {
-						if (translator.hasStringRepresentation()) {
-							try {
-								writer.writeCharacters(translator.javaToRepresentation(event.getObjectValue(), streamDataProvider));
-							}
-							catch (ClassCastException e) {
-								throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
-										+ "Therefore it could not be parsed.");
-							}
-						}
-						else {
-							translator.writeXMLRepresentation(writer, event.getObjectValue(), null); //TODO this code may never be reached
-						}
+						translator.writeXMLRepresentation(writer, event.getObjectValue(), null);
 					}
 					else if (event.hasStringValue()) {		
 						writer.writeCharacters(event.getStringValue());

@@ -298,16 +298,14 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		String value = null;
 		
 		if (event.hasObjectValue()) {
-			if ((translator != null)) {
-				if (translator.hasStringRepresentation()) {
-					try {
-						value = translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider());
-					}
-					catch (ClassCastException e) {
-						throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
-								+ "Therefore it could not be parsed.");
-					}
+			if ((translator != null) && translator.hasStringRepresentation()) {
+				try {
+					value = translator.javaToRepresentation(event.getObjectValue(), getStreamDataProvider());
 				}
+				catch (ClassCastException e) {
+					throw new JPhyloIOWriterException("The original type of the object declared in this event did not match the actual object type. "
+							+ "Therefore it could not be parsed.");
+				}				
 			}
 			else if (event.hasStringValue()) {
 				value = event.getStringValue();  // It is not validated if the string value has the correct format as required by the datatype

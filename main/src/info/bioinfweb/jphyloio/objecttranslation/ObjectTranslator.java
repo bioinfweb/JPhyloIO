@@ -92,9 +92,6 @@ public interface ObjectTranslator<O> {
 	
 	/**
 	 * Writes the XML representation of the specified object into the specified XML writer.
-	 * <p>
-	 * If {@link #hasStringRepresentation()} of this instance returns {@code true}, the XML representation will only contain characters
-	 * and no tags.
 	 * 
 	 * @param writer the writer to be used to write the XML representation
 	 * @param object the object to be converted

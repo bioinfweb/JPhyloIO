@@ -99,8 +99,8 @@ import javax.xml.stream.XMLStreamException;
  * {@link PhyloXMLConstants#PREDICATE_PROPERTY}
  * <p>
  * Custom XML can be written nested under {@code clade} and {@code phylogeny} tags if it does not consist of character 
- * data that is not nested under any tags or tags that are already defined in <i>PhyloXML</i>. Metadata with literal 
- * values that belongs to a tree, network, node or edge can be written to {@code property} tags nested under
+ * data that is not nested under any tags or tags that are already defined in <i>PhyloXML</i>, otherwise it will be igmored.
+ * Metadata with literal values that belongs to a tree, network, node or edge can be written to {@code property} tags nested under
  * {@code phylogeny} or {@code clade}. Since these can not be nested in each other, the user can define a strategy
  * to deal with nested meta-events with a parameter of the type {@link PhyloXMLMetadataTreatment}. This allows
  * to e.g. write all meta-event values sequentially or ignore any nested metadata.

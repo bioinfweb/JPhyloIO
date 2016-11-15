@@ -44,7 +44,6 @@ main/lib/bioinfweb.commons.java-Core-2.0.0.jar -text
 main/lib/commons-collections4-4.1.jar -text
 main/lib/commons-lang3-3.1.jar -text
 main/lib/owlapi-XMLUtils-4.1.4.jar -text
-main/lib/stylesheet.css -text svneol=unset#text/plain
 main/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
 main/src/GPL.txt -text svneol=unset#text/plain
 main/src/LGPL.txt -text svneol=unset#text/plain
