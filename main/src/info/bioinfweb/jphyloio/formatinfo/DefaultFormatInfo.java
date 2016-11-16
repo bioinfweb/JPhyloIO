@@ -177,9 +177,9 @@ public class DefaultFormatInfo implements JPhyloIOFormatInfo {
 
 	
 	@Override
-	public ContentExtensionFileFilter createFileFilter() {
-		return new JPhyloIOContentExtensionFileFilter(factory, filterParameters, filterDescription, true, 
-				ContentExtensionFileFilter.TestStrategy.CONTENT, false, filterExtensions);
+	public ContentExtensionFileFilter createFileFilter(ContentExtensionFileFilter.TestStrategy testStrategy) {
+		return new JPhyloIOContentExtensionFileFilter(factory, filterParameters, filterDescription, true,	testStrategy, false, 
+				filterExtensions);
 	}
 	
 	

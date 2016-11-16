@@ -51,9 +51,11 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	 * Creates a new file filter instance that is associated with the modeled format. It will check valid file extensions and 
 	 * possibly the contents of the file, if the extension is not unique.
 	 * 
+	 * @param testStrategy the strategy to be used to accept a file or not
+	 * 
 	 * @return a new file filter instance
 	 */
-	public ContentExtensionFileFilter createFileFilter();
+	public ContentExtensionFileFilter createFileFilter(ContentExtensionFileFilter.TestStrategy testStrategy);
 	
 	/**
 	 * Determines whether the represented format allows to model the specified data element (content type). Readers will not 
