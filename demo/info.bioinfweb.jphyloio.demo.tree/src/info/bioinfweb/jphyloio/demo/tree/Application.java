@@ -23,6 +23,7 @@ import info.bioinfweb.commons.appversion.ApplicationType;
 import info.bioinfweb.commons.appversion.ApplicationVersion;
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.commons.io.ExtensionFileFilter;
+import info.bioinfweb.commons.io.ContentExtensionFileFilter.TestStrategy;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
@@ -128,9 +129,9 @@ public class Application {
 			for (String formatID : factory.getFormatIDsSet()) {
 				JPhyloIOFormatInfo info = factory.getFormatInfo(formatID);
 				if (info.isElementModeled(EventContentType.TREE, true)) {  // Check if the current format can contain trees.
-					ContentExtensionFileFilter filter = info.createFileFilter();  // Create a filter filter instance for the current format.
+					ContentExtensionFileFilter filter = info.createFileFilter(TestStrategy.CONTENT);  // Create a filter filter instance for the current format.
 					validExtensions.addAll(filter.getExtensions());  // Add the file extensions of this filter to the set of all supported extensions.
-					fileChooser.addChoosableFileFilter(info.createFileFilter());  // Add the current filter to the file chooser.
+					fileChooser.addChoosableFileFilter(filter);  // Add the current filter to the file chooser.
 				}
 			}
 			
