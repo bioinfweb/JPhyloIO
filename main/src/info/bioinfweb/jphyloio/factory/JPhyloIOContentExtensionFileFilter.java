@@ -36,7 +36,7 @@ public class JPhyloIOContentExtensionFileFilter extends ContentExtensionFileFilt
 			String description,	boolean addExtensionListToDescription, TestStrategy testStrategy, 
 			boolean acceptFilesWithExceptions,	String... extensions) {
 		
-		super(description, addExtensionListToDescription,	testStrategy, acceptFilesWithExceptions, extensions);
+		super(description, addExtensionListToDescription, testStrategy, acceptFilesWithExceptions, extensions);
 		
 		if (factory == null) {
 			throw new IllegalArgumentException("factory must not be null.");
