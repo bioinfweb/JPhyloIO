@@ -27,6 +27,7 @@ import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.factory.JPhyloIOContentExtensionFileFilter;
 
 
 
@@ -55,7 +56,7 @@ public interface JPhyloIOFormatInfo extends JPhyloIOFormatSpecificObject {
 	 * 
 	 * @return a new file filter instance
 	 */
-	public ContentExtensionFileFilter createFileFilter(ContentExtensionFileFilter.TestStrategy testStrategy);
+	public JPhyloIOContentExtensionFileFilter createFileFilter(ContentExtensionFileFilter.TestStrategy testStrategy);
 	
 	/**
 	 * Determines whether the represented format allows to model the specified data element (content type). Readers will not 
