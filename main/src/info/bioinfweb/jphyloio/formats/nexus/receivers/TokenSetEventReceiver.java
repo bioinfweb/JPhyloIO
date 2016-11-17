@@ -89,6 +89,10 @@ public class TokenSetEventReceiver extends AbstractNexusEventReceiver {
 			}
 			return true;			
 		}
+		else if (event.getType().getContentType().equals(EventContentType.CHARACTER_SET_INTERVAL) && (getParentEvent() == null)) {  // Such events are only allowed on the top level.
+			//TODO Store position information somewhere, if MrBayes extension for having multiple token sets is supported.
+			return true;
+		}
 		else {  // No other events would be valid here.
 			throw IllegalEventException.newInstance(this, getParentEvent(), event);
 		}

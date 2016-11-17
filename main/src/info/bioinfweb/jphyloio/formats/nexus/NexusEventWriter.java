@@ -65,13 +65,13 @@ import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
  * format only supports trees.
  * 
  * <h3><a id="commentsMeta"></a>Comments and metadata</h3> 
- * <p>
+ * 
  * Comments nested in any of the supported elements will usually be written. Metadata is only supported nested in
  * tree node or edge definitions and is written into hot comments as they are supported by {@link NewickStringWriter}.
  * Metadata nested into other elements will be ignored.
  * 
  * <h3><a id="labelsIDs"></a>Labels and IDs</h3> 
- * <p>
+ * 
  * Note that the Nexus format does not differentiate between labels and IDs and because of this, labels of OTUs and 
  * labels of sequences or nodes linked to them must have identical names in Nexus. Therefore this writer will always use
  * the OTU label of the linked OTU, also for writing sequences and nodes. Labels of sequences and nodes will be ignored
@@ -91,6 +91,16 @@ import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
  * to the parameter map using {@link ReadWriteParameterMap#getLabelEditingReporter()}. (A reference to the parameter map 
  * passed to one of the {@code #writeDocument()} methods must be kept by the application code, in order to access the
  * label editing reporter after the document has been written.)
+ *  
+ * <h3><a id="tokenSets"></a>Token sets</h3>
+ * 
+ * Note that this writer (and the <i>Nexus</i> format) does not support multiple token sets for a single matrix. If multiple 
+ * sets are provided, only the first one will be considered to determine the symbols to be declared in the {@code FORMAT}
+ * command. According warnings will be logged, if multiple token sets are found.
+ * <p>
+ * {@link NexusEventReader} supports an extension of the <i>Nexus</i> format introduced by <i>MrBayes</i> but this writer
+ * currently does not make use of that, since the output would not be conform with the <i>Nexus</i> standard and some
+ * applications may not be able to read it. 
  *  
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
@@ -351,66 +361,67 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	private void writeFormatCommand(MatrixDataAdapter matrix) throws IOException {
 		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = matrix.getTokenSets(getParameters());
-		if (tokenSets.getCount(getParameters()) > 0) {
+		long tokenSetCount = tokenSets.getCount(getParameters());
+		if (tokenSetCount > 0) {
 			writeLineStart(getWriter(), COMMAND_NAME_FORMAT);
 			Iterator<String> iterator = tokenSets.getIDIterator(getParameters());
-			if (tokenSets.getCount(getParameters()) == 1) {
-				TokenSetEventReceiver receiver = new TokenSetEventReceiver(getStreamDataProvider());
+
+			TokenSetEventReceiver receiver = new TokenSetEventReceiver(getStreamDataProvider());
 				
-				String dataType;
-				String tokenSetID = iterator.next();
-				switch (tokenSets.getObjectStartEvent(getParameters(), tokenSetID).asTokenSetDefinitionEvent().getSetType()) {
-					case DISCRETE:
-						dataType = FORMAT_VALUE_STANDARD_DATA_TYPE;
-						break;
-					case NUCLEOTIDE:
-						dataType = FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE;
-						break;
-					case DNA:
-						dataType = FORMAT_VALUE_DNA_DATA_TYPE;
-						break;
-					case RNA:
-						dataType = FORMAT_VALUE_RNA_DATA_TYPE;
-						break;
-					case AMINO_ACID:
-						dataType = FORMAT_VALUE_PROTEIN_DATA_TYPE;
-						break;
-					case CONTINUOUS:
-						dataType = FORMAT_VALUE_CONTINUOUS_DATA_TYPE;
-						break;
-					default:  // UNKNOWN
-						dataType = null;
-						break;
-				}
-				
-				if (dataType != null) {
-					getWriter().write(' ');
-					NexusEventWriter.writeKeyValueExpression(getWriter(), FORMAT_SUBCOMMAND_DATA_TYPE, dataType);
-				}			
-				
-				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);
-				
-				if (receiver.getSingleTokens() != null) {
-					getWriter().write(' ');
-					writeKeyValueExpression(FORMAT_SUBCOMMAND_SYMBOLS, VALUE_DELIMITER + receiver.getSingleTokens() + VALUE_DELIMITER);
-				}
-				if (receiver.getIgnoredMetadata() > 0) {
-					logger.addWarning("A token definition of a character matrix contained metadata which has been ignored, "
-							+ "since the Nexus format does not support writing such data.");
-				}
-				
-				getWriter().write(' ');
-				if (matrix.containsLongTokens(getParameters())) {
-					getWriter().write(FORMAT_SUBCOMMAND_TOKENS);
-				}
-				else {
-					getWriter().write(FORMAT_SUBCOMMAND_NO_TOKENS);
-				}
+			String dataType;
+			String tokenSetID = iterator.next();
+			switch (tokenSets.getObjectStartEvent(getParameters(), tokenSetID).asTokenSetDefinitionEvent().getSetType()) {
+				case DISCRETE:
+					dataType = FORMAT_VALUE_STANDARD_DATA_TYPE;
+					break;
+				case NUCLEOTIDE:
+					dataType = FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE;
+					break;
+				case DNA:
+					dataType = FORMAT_VALUE_DNA_DATA_TYPE;
+					break;
+				case RNA:
+					dataType = FORMAT_VALUE_RNA_DATA_TYPE;
+					break;
+				case AMINO_ACID:
+					dataType = FORMAT_VALUE_PROTEIN_DATA_TYPE;
+					break;
+				case CONTINUOUS:
+					dataType = FORMAT_VALUE_CONTINUOUS_DATA_TYPE;
+					break;
+				default:  // UNKNOWN
+					dataType = null;
+					break;
 			}
-			else {  // MrBayes extension (or exception if according parameter is set?)
-				
+			
+			if (dataType != null) {
+				getWriter().write(' ');
+				NexusEventWriter.writeKeyValueExpression(getWriter(), FORMAT_SUBCOMMAND_DATA_TYPE, dataType);
+			}			
+			
+			tokenSets.writeContentData(getParameters(), receiver, tokenSetID);
+			
+			if (receiver.getSingleTokens() != null) {
+				getWriter().write(' ');
+				writeKeyValueExpression(FORMAT_SUBCOMMAND_SYMBOLS, VALUE_DELIMITER + receiver.getSingleTokens() + VALUE_DELIMITER);
+			}
+			if (receiver.getIgnoredMetadata() > 0) {
+				logger.addWarning("A token definition of a character matrix contained metadata which has been ignored, "
+						+ "since the Nexus format does not support writing such data.");
+			}
+			
+			getWriter().write(' ');
+			if (matrix.containsLongTokens(getParameters())) {
+				getWriter().write(FORMAT_SUBCOMMAND_TOKENS);
+			}
+			else {
+				getWriter().write(FORMAT_SUBCOMMAND_NO_TOKENS);
 			}
 			writeCommandEnd();
+			
+			if (tokenSetCount > 1) {  //TODO Possibly support MrBayes extension for multiple token sets here.
+				getParameters().getLogger().addWarning("Multiple token sets where provided for a matrix. Only the first one was considered.");
+			}
 		}
 	}
 	
