@@ -436,7 +436,6 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	 */
 	private void writeMatrixTaxLabelsCommand(MatrixDataAdapter matrix) throws IOException {
 		final LabelEditingReporter reporter = parameters.getLabelEditingReporter(); 
-		boolean beforeFirst = true;
 		boolean anyWritten = false;
 		Set<String> encounteredOTUs = new HashSet<String>();
 		Iterator<String> iterator = matrix.getSequenceIDIterator(getParameters());
@@ -457,7 +456,7 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 			
 			String label;
 			if (createNewLabel) {
-				if (beforeFirst) {
+				if (!anyWritten) {
 					writeLineStart(getWriter(), COMMAND_NAME_TAX_LABELS);
 					writeLineBreak(getWriter(), parameters);
 					increaseIndention();
@@ -466,7 +465,6 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 				}
 				else {
 					writeLineBreak(getWriter(), parameters);
-					beforeFirst = false;
 				}
 				label = createUniqueLabel(
 						parameters, 
