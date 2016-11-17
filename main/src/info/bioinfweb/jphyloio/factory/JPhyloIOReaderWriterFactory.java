@@ -130,7 +130,7 @@ public class JPhyloIOReaderWriterFactory implements JPhyloIOFormatIDs {
 	 * Allows to add additional or replace existing single format factories to be used by this instance. Using this method
 	 * will only be necessary, if third party readers or writers shall be created by this instance.  
 	 * 
-	 * @param factory the single format factory object to be added to the internal map of this factory instance
+	 * @param factory the single format factory object to be add to the internal map of this factory instance
 	 * @return the previous value associated with the format ID of the specified factory, or {@code null} if there was no 
 	 *         mapping for that format ID
 	 * @since 0.1.0

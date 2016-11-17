@@ -366,7 +366,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	
 	
 	/**
-	 * @return {@code true} if at least one event was added to the event queue as a result of calling this method
+	 * @return {@code true} if at least one event was add to the event queue as a result of calling this method
 	 * @throws Exception
 	 */
 	private void readCommand() throws IOException {

@@ -92,7 +92,7 @@ public class DimensionsReader extends AbstractKeyValueCommandReader implements N
 		}
 		events.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
-		return true;  // An event is added to the queue in every case.
+		return true;  // An event is add to the queue in every case.
 	}
 
 

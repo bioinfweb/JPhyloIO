@@ -48,8 +48,8 @@ public class CharacterSetIntervalEvent extends ConcreteJPhyloIOEvent {
 	 * <p>
 	 * A segment ranges from {@link #getStart()} to {@link #getEnd()} {@code - 1}.
 	 *
-	 * @param start the index of the first position of the sequence segment to be added to the specified character set
-	 * @param end the first index after the end of the sequence segment to be added to the specified character set
+	 * @param start the index of the first position of the sequence segment to be add to the specified character set
+	 * @param end the first index after the end of the sequence segment to be add to the specified character set
 	 * @throws IndexOutOfBoundsException if {@code start} or {@code end} are below 0
 	 * @throws IllegalArgumentException if {@code end} is not greater than {@code start} (If a character set shall have
 	 *         no length, just omit nested interval event.)
@@ -74,7 +74,7 @@ public class CharacterSetIntervalEvent extends ConcreteJPhyloIOEvent {
 
 
 	/**
-	 * The first position of the new segment to be added to the character set with the specified name.
+	 * The first position of the new segment to be add to the character set with the specified name.
 	 * <p>
 	 * A segment ranges from {@link #getStart()} to {@code getEnd() - 1}.
 	 *
@@ -86,11 +86,11 @@ public class CharacterSetIntervalEvent extends ConcreteJPhyloIOEvent {
 
 
 	/**
-	 * The first index after the new segment to be added to the character set with the specified name.
+	 * The first index after the new segment to be add to the character set with the specified name.
 	 * <p>
 	 * A segment ranges from {@link #getStart()} to {@code getEnd() - 1}.
 	 *
-	 * @return the first index after the segment to be added
+	 * @return the first index after the segment to be add
 	 */
 	public long getEnd() {
 		return end;

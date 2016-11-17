@@ -197,7 +197,7 @@ public class NewickStringReader implements ReadWriteConstants {
 						else {  // After length token
 							edgeTokens.add(token);
 						}
-						scanner.nextToken();  // Skip added token.
+						scanner.nextToken();  // Skip add token.
 						break;
 					default:
 						throw new InternalError("Impossible case");  // If this happens, the loop condition has errors.
@@ -354,7 +354,7 @@ public class NewickStringReader implements ReadWriteConstants {
 	/**
 	 * Creates the next JPhyloIO event(s) from the Newick string provided by the underlying reader.
 	 * 
-	 * @return {@code true} if more events were added to the queue or {@code false} if reading of the current tree(s)
+	 * @return {@code true} if more events were add to the queue or {@code false} if reading of the current tree(s)
 	 *         is finished.
 	 * @throws IOException
 	 */

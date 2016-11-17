@@ -138,7 +138,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 	@Override
 	protected boolean processSubcommand(KeyValueInformation info) throws IOException {
 		boolean eventCreated = false;
-		boolean eventAddedToQueue = false;
+		boolean eventAddToQueue = false;
 		
 		String key = info.getOriginalKey().toUpperCase();
 		String upperCaseValue = info.getValue().toUpperCase();
@@ -153,7 +153,7 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 			if (matcher.matches()) {  // Parse MrBayes extension
 				if (parseMixedDataType(matcher.group(1))) {  // Otherwise the previously constructed meta event for datatype will be returned.
 					eventCreated = true;
-					eventAddedToQueue = true;
+					eventAddToQueue = true;
 				}
 			}
 			else {
@@ -216,9 +216,9 @@ public class FormatReader extends AbstractKeyValueCommandReader implements Nexus
 					LiteralContentSequenceType.SIMPLE));
 			events.add(new LiteralMetadataContentEvent(info.getValue(), false));
 			events.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
-			eventAddedToQueue = true;
+			eventAddToQueue = true;
 		}
-		return eventAddedToQueue;
+		return eventAddToQueue;
 	}
 	
 	

@@ -198,7 +198,7 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			}
 			
 			if (columns.get(i) && ((i + 1 == columns.size()) || !columns.get(i + 1))) {
-				streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex + 1)); //the end of a character set interval is specified as the first index after the end of the sequence segment to be added to the specified character set
+				streamDataProvider.getCurrentEventCollection().add(new CharacterSetIntervalEvent(startIndex, currentIndex + 1)); //the end of a character set interval is specified as the first index after the end of the sequence segment to be add to the specified character set
 			}
 		}
 	}

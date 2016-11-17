@@ -94,13 +94,13 @@ import javax.xml.stream.XMLStreamException;
  * new OTU list or OTU with the ID prefix {@link NeXMLConstants#UNDEFINED_OTU_ID_PREFIX} or 
  * {@link NeXMLConstants#UNDEFINED_OTUS_ID_PREFIX}. If no token set is present in the data, a new token set with the type
  * {@link CharacterStateSetType#DISCRETE} and the ID prefix {@link NeXMLConstants#DEFAULT_TOKEN_DEFINITION_SET_ID_PREFIX} will 
- * be written to the file. If not all alignment characters are defined in the document data, missing definitions will be added.
+ * be written to the file. If not all alignment characters are defined in the document data, missing definitions will be add.
  * <p>
  * Before writing, the token definitions and sequence data are checked if they fit the specified {@link CharacterStateSetType}.
  * If this is not the case, the {@link CharacterStateSetType#DISCRETE} is assumed. In case of {@code DNA}, {@code RNA} 
  * or {@code NUCLEOTIDE} data it is first checked if the data could also be of another nucleotide data type. All molecular
  * data token definition sets contain all token definitions defined in the IUPAC standards. If single token definitions are missing, 
- * they are added. Token definitions of standard tokens found in the sequence data but not defined previously are also added
+ * they are add. Token definitions of standard tokens found in the sequence data but not defined previously are also add
  * in case of standard data.
  * <p>
  * Restriction data can not be written, since it is not modeled by <i>JPhyloIO</i>. If the {@link CharacterStateSetType} of the 

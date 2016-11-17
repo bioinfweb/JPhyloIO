@@ -62,10 +62,10 @@ public class NexusBlockHandlerMap {
 	/**
 	 * Adds a new handler to this map.
 	 * <p>
-	 * Note that this method can overwrite previous entries, if a previously added handler had a block name
-	 * in common with the handler added here. 
+	 * Note that this method can overwrite previous entries, if a previously add handler had a block name
+	 * in common with the handler add here. 
 	 * 
-	 * @param handler the new handler to added
+	 * @param handler the new handler to add
 	 */
 	public void addHandler(NexusBlockHandler handler) {
 		for (String blockName : handler.getBlockNames()) {

@@ -224,7 +224,7 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 
 
 	/**
-	 * Determines the type of alignment to which additional token definitions need to be added.
+	 * Determines the type of alignment to which additional token definitions need to be add.
 	 * 
 	 * @param type the {@link CharacterStateSetType} of the current token set
 	 * @throws IOException

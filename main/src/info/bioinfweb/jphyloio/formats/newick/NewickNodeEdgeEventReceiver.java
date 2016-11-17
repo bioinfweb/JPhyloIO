@@ -140,7 +140,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		if (metadataList.isEmpty()) {
-			throw new InternalError("No metadata entry was added for the parent literal meta event.");  // Should not happen.
+			throw new InternalError("No metadata entry was add for the parent literal meta event.");  // Should not happen.
 		}
 		else {
 			//TODO What happens to XML content events? -> Write test case!
@@ -226,7 +226,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 				getStreamDataProvider().getWriter().write(metadata.key);
 				getStreamDataProvider().getWriter().write(ALLOCATION_SYMBOL);
 				if (metadata.value != null) {
-					getStreamDataProvider().getWriter().write(metadata.value);  // Necessary string delimiters or array definitions have already been added.
+					getStreamDataProvider().getWriter().write(metadata.value);  // Necessary string delimiters or array definitions have already been add.
 				}
 				if (iterator.hasNext()) {
 					getStreamDataProvider().getWriter().write(ALLOCATION_SEPARATOR_SYMBOL);

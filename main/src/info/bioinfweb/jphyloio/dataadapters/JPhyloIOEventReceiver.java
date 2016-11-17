@@ -57,7 +57,7 @@ public interface JPhyloIOEventReceiver {
 	 * {@link JPhyloIOEventWriter#writeDocument(DocumentDataAdapter, Writer, ReadWriteParameterMap)}
 	 * (or one of the other overloaded versions) are called. 
 	 * 
-	 * @param event the event to be added
+	 * @param event the event to be add
 	 * @return {@code true} if more events can be written to this acceptor or {@code false} if writing should
 	 *         be aborted
 	 * @throws IllegalEventException if the specified event is illegal in this acceptor in general or at

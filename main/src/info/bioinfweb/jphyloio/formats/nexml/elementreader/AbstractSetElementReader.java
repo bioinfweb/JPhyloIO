@@ -72,7 +72,7 @@ public abstract class AbstractSetElementReader extends AbstractNeXMLElementReade
 			String linkedIDString = XMLUtils.readStringAttr(element, linkedIDsAttributes[i], null);
 			if (linkedIDString != null) {
 				String[] linkedIDs = linkedIDString.split("\\s+");  // IDs are not allowed to contain spaces
-				linkedIDString = null;  // Free memory in case of large lists before events are added to the queue.
+				linkedIDString = null;  // Free memory in case of large lists before events are add to the queue.
 				processIDs(streamDataProvider, linkedIDs, linkedIDsAttributes[i]);
 			}
 		}
