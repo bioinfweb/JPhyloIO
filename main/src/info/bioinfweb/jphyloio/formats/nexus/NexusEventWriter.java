@@ -428,10 +428,10 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	/**
 	 * Writes the TAXLABELS command inside a CHARACTERS or UNALIGNED block. New taxa added here are created either for
-	 * sequences without a linked OTU or if more than one sequence is linked to the same OTU (which is valid in JPhyloIO
-	 * but not in Nexus). 
+	 * sequences without a linked OTU or if more than one sequence is linked to the same OTU (which is valid in <i>JPhyloIO</i>
+	 * but not in <i>Nexus</i>). 
 	 * 
-	 * @param matrix the matrix to be writte
+	 * @param matrix the matrix to be written
 	 * @throws IOException
 	 */
 	private void writeMatrixTaxLabelsCommand(MatrixDataAdapter matrix) throws IOException {
@@ -580,10 +580,10 @@ public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamD
 	
 	
 	/**
-	 * Writes a Nexus {@code CHARACTERS} or {@code UNALIGNED} block. 
+	 * Writes a <i>Nexus</i> {@code CHARACTERS} or {@code UNALIGNED} block. 
 	 * 
 	 * @param matrix the character data to be written
-	 * @return a value indicating if and which Nexus block was written
+	 * @return a value indicating if and which <i>Nexus</i> block was written
 	 * @throws IOException
 	 */
 	private NexusMatrixWriteResult writeCharactersUnalignedBlock(DocumentDataAdapter document, MatrixDataAdapter matrix, ReadWriteParameterMap parameters) throws IOException {
