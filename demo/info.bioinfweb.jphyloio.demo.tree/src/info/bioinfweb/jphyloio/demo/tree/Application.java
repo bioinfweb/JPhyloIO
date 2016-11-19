@@ -22,8 +22,8 @@ package info.bioinfweb.jphyloio.demo.tree;
 import info.bioinfweb.commons.appversion.ApplicationType;
 import info.bioinfweb.commons.appversion.ApplicationVersion;
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
-import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.commons.io.ContentExtensionFileFilter.TestStrategy;
+import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
@@ -52,6 +52,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultTreeModel;
@@ -61,16 +62,12 @@ import org.apache.commons.collections4.set.ListOrderedSet;
 
 
 public class Application {
-	public static final ApplicationVersion VERSION = new ApplicationVersion(1, 0, 0, 1231, ApplicationType.BETA);
-	public static final String APPLICATION_URL = "http://bioinfweb.info/JPhyloIO/Documentation/Demos/Tree";  //TODO Replace by r.bioinfweb.info
-	
-	
-	private JFrame mainFrame;
-	private JTree tree;
+	protected JFrame mainFrame;
+	protected JTree tree;
 	private JFileChooser fileChooser;
 	private ExtensionFileFilter allFormatsFilter;
 	
-	private JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
+	protected JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
 
 	
 	/**
@@ -89,7 +86,8 @@ public class Application {
 				try {
 					Application window = new Application();
 					window.mainFrame.setVisible(true);
-				} catch (Exception e) {
+				} 
+				catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -101,70 +99,84 @@ public class Application {
 	 * Create the application.
 	 */
 	public Application() {
-		initialize();
+		initialize();  // Create GUI components.
 	}
 	
 	
-	/**
-	 * Returns a file chooser with file filters for all tree formats supported by <i>JPhyloIO</i> and a filter filter
-	 * accepting valid extensions of all tree formats.
-	 * <p>
-	 * The goal of this dialog is on the one hand to filter all supported tree files using the "All supported formats" 
-	 * filter. {@link JPhyloIOReaderWriterFactory#guessReader(File, ReadWriteParameterMap)} will be used to determine
-	 * an appropriate reader for files selected this way later. On the other hand, single filters for all supported
-	 * formats are offered, so the user can manually define the format of a file. In that case the format will not be
-	 * guessed but directly determined using {@link JPhyloIOContentExtensionFileFilter#getFormatID()}.
-	 * 
-	 * @return the file chooser instance for opening files in this application
-	 */
-	private JFileChooser getFileChooser() {
-		if (fileChooser == null) {  // if fileChooser was not initialized yet
-			// Create file chooser:
-			fileChooser = new JFileChooser();
-			fileChooser.setMultiSelectionEnabled(false);  // Do not allow to select more than one file.
-			fileChooser.setAcceptAllFileFilterUsed(false);  // Do not include predefined "All files (*.*)" filter, since we will create a special instance later.
-			
-			// Add file filters for supported formats and collect extensions for "All supported formats" filter:
-			ListOrderedSet<String> validExtensions = new ListOrderedSet<String>();  // This set is used to collect valid extensions of all formats to create the "All supported formats" filter later.
-			for (String formatID : factory.getFormatIDsSet()) {
-				JPhyloIOFormatInfo info = factory.getFormatInfo(formatID);
-				if (info.isElementModeled(EventContentType.TREE, true)) {  // Check if the current format can contain trees.
-					ContentExtensionFileFilter filter = info.createFileFilter(TestStrategy.CONTENT);  // Create a filter filter instance for the current format.
-					validExtensions.addAll(filter.getExtensions());  // Add the file extensions of this filter to the set of all supported extensions.
-					fileChooser.addChoosableFileFilter(filter);  // Add the current filter to the file chooser.
-				}
-			}
-			
-			// Add "All supported formats" filter:
-			allFormatsFilter = new ExtensionFileFilter("All supported formats", false, validExtensions.asList());
-					// Create a file filter accepting extensions of all supported formats at the same time. 
-			fileChooser.addChoosableFileFilter(allFormatsFilter);  // Add the "All supported formats" filter to the list.
-			fileChooser.setFileFilter(allFormatsFilter);  // Select this filter as the default.
+	public String getName() {
+		return "JPhyloIO tree demo application";
+	}
+	
+	
+	public ApplicationVersion getVersion() {
+		return new ApplicationVersion(1, 1, 0, 1368, ApplicationType.BETA);
+	}
+	
+	
+	public String getApplicationURL() {
+		return "http://r.bioinfweb.info/JPhyloIODemoTree";
+	}
+	
+	
+	protected void readTree(String formatID, File file) throws Exception {
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterNames.KEY_USE_OTU_LABEL, true);  // Use OTU labels as node labels if no node label is present.
+		
+		JPhyloIOEventReader eventReader = factory.getReader(formatID, file, parameters);  // Create JPhyloIO reader instance for the determined format.
+		try {
+			new TreeReader().read(eventReader, getTreeModel());  // Read tree into the data model of this application.
 		}
-		return fileChooser;
+		finally {
+			eventReader.close();
+		}
 	}
 	
 	
-	protected ExtensionFileFilter getAllFormatsFilter() {
-		getFileChooser();  // Make sure the field is initialized.
-		return allFormatsFilter;
+	protected void writeTree(String formatID, File file) {
+		// Create data adapters:
+		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
+		StoreTreeNetworkGroupDataAdapter treeGroup = new StoreTreeNetworkGroupDataAdapter(
+				new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treeGroup", null, null), null);
+		document.getTreeNetworkGroups().add(treeGroup);
+		treeGroup.getTreesAndNetworks().add(new TreeNetworkDataAdapterImpl(getTreeModel()));
+		
+		// Define writer parameters:
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		parameters.put(ReadWriteParameterNames.KEY_APPLICATION_NAME, getName());
+		parameters.put(ReadWriteParameterNames.KEY_APPLICATION_VERSION, getVersion());
+		parameters.put(ReadWriteParameterNames.KEY_APPLICATION_URL, getApplicationURL());
+		
+		// Write document:
+		JPhyloIOEventWriter writer = factory.getWriter(formatID);
+		try {
+			writer.writeDocument(document, file, parameters);
+		}
+		catch (IOException ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(mainFrame, "The error \"" + ex.getLocalizedMessage() + "\" occurred.", 
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
-
-
+	
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	protected void initialize() {
 		mainFrame = new JFrame();
 		mainFrame.setTitle("JPhyloIO tree demo");
 		mainFrame.setBounds(100, 100, 450, 300);
 		mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		tree = new JTree(new DefaultTreeModel(null));
-		mainFrame.getContentPane().add(tree, BorderLayout.CENTER);
-		
+		JScrollPane scrollPane = new JScrollPane(tree);
+		mainFrame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		mainFrame.setJMenuBar(createMenuBar());
+	}
+	
+	
+	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		mainFrame.setJMenuBar(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
@@ -183,20 +195,11 @@ public class Application {
 						}
 						
 						if (formatID != null) {
-							ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-							parameters.put(ReadWriteParameterNames.KEY_USE_OTU_LABEL, true);  // Use OTU labels as node labels if no node label is present.
-							
-							JPhyloIOEventReader eventReader = factory.getReader(formatID, getFileChooser().getSelectedFile(), parameters);  // Create JPhyloIO reader instance for the determined format.
-							try {
-								new TreeReader().read(eventReader, getTreeModel());  // Read tree into the business model of this application.
-							}
-							finally {
-								eventReader.close();
-							}
+							readTree(formatID, getFileChooser().getSelectedFile());
 						}
 						else {  // If the format had to be guessed and none was found.
-							JOptionPane.showMessageDialog(mainFrame, "The format of the file \"" + getFileChooser().getSelectedFile() + "\" is not supported.", 
-									"Unsupported format", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(mainFrame, "The format of the file \"" + getFileChooser().getSelectedFile() + 
+									"\" is not supported.", "Unsupported format", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				}
@@ -215,29 +218,7 @@ public class Application {
 				getFileChooser().removeChoosableFileFilter(allFormatsFilter);  // Temporarily remove the "All supported formats" filter from the dialog for saving to a specific format.
 				try {
 					if (getFileChooser().showSaveDialog(mainFrame) == JFileChooser.APPROVE_OPTION) {
-						// Create data adapters:
-						ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
-						StoreTreeNetworkGroupDataAdapter treeGroup = new StoreTreeNetworkGroupDataAdapter(
-								new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treeGroup", null, null), null);
-						document.getTreeNetworkGroups().add(treeGroup);
-						treeGroup.getTreesAndNetworks().add(new TreeNetworkDataAdapterImpl(getTreeModel()));
-						
-						// Define writer parameters:
-						ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-						parameters.put(ReadWriteParameterNames.KEY_APPLICATION_NAME, "JPhyloIO tree demo application");
-						parameters.put(ReadWriteParameterNames.KEY_APPLICATION_VERSION, VERSION);
-						parameters.put(ReadWriteParameterNames.KEY_APPLICATION_URL, APPLICATION_URL);
-						
-						// Write document:
-						JPhyloIOEventWriter writer = factory.getWriter(((JPhyloIOFormatSpecificObject)getFileChooser().getFileFilter()).getFormatID());
-						try {
-							writer.writeDocument(document, getFileChooser().getSelectedFile(), parameters);
-						}
-						catch (IOException ex) {
-							ex.printStackTrace();
-							JOptionPane.showMessageDialog(mainFrame, "The error \"" + ex.getLocalizedMessage() + "\" occurred.", 
-									"Error", JOptionPane.ERROR_MESSAGE);
-						}
+						writeTree(((JPhyloIOFormatSpecificObject)getFileChooser().getFileFilter()).getFormatID(), getFileChooser().getSelectedFile());
 					}
 				}
 				finally {  // Reinsert "All supported formats" filter for upcoming calls of "Open...".
@@ -264,7 +245,7 @@ public class Application {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Desktop.getDesktop().browse(new URI(APPLICATION_URL));
+					Desktop.getDesktop().browse(new URI(getApplicationURL()));
 				}
 				catch (Exception ex) {
 					ex.printStackTrace();
@@ -272,6 +253,8 @@ public class Application {
 			}
 		});
 		mnHelp.add(mntmAbout);
+		
+		return menuBar;
 	}
 	
 	
@@ -280,7 +263,53 @@ public class Application {
 	}
 	
 	
-	private DefaultTreeModel getTreeModel() {
+	protected DefaultTreeModel getTreeModel() {
 		return (DefaultTreeModel)getTree().getModel();
+	}
+	
+	
+	/**
+	 * Returns a file chooser with file filters for all tree formats supported by <i>JPhyloIO</i> and a filter filter
+	 * accepting valid extensions of all tree formats.
+	 * <p>
+	 * The goal of this dialog is on the one hand to filter all supported tree files using the "All supported formats" 
+	 * filter. {@link JPhyloIOReaderWriterFactory#guessReader(File, ReadWriteParameterMap)} will be used to determine
+	 * an appropriate reader for files selected this way later. On the other hand, single filters for all supported
+	 * formats are offered, so the user can manually define the format of a file. In that case the format will not be
+	 * guessed but directly determined using {@link JPhyloIOContentExtensionFileFilter#getFormatID()}.
+	 * 
+	 * @return the file chooser instance for opening files in this application
+	 */
+	private JFileChooser getFileChooser() {
+		if (fileChooser == null) {  // if fileChooser was not initialized yet
+			// Create file chooser:
+			fileChooser = new JFileChooser();
+			fileChooser.setMultiSelectionEnabled(false);  // Do not allow to select more than one file.
+			fileChooser.setAcceptAllFileFilterUsed(false);  // Do not include predefined "All files (*.*)" filter, since we will create a special filter later.
+			
+			// Add file filters for supported formats and collect extensions for "All supported formats" filter:
+			ListOrderedSet<String> validExtensions = new ListOrderedSet<String>();  // This set is used to collect valid extensions of all formats to create the "All supported formats" filter later.
+			for (String formatID : factory.getFormatIDsSet()) {
+				JPhyloIOFormatInfo info = factory.getFormatInfo(formatID);
+				if (info.isElementModeled(EventContentType.TREE, true)) {  // Check if the current format can contain trees.
+					ContentExtensionFileFilter filter = info.createFileFilter(TestStrategy.CONTENT);  // Create a filter filter instance for the current format.
+					validExtensions.addAll(filter.getExtensions());  // Add the file extensions of this filter to the set of all supported extensions.
+					fileChooser.addChoosableFileFilter(filter);  // Add the current filter to the file chooser.
+				}
+			}
+			
+			// Add "All supported formats" filter:
+			allFormatsFilter = new ExtensionFileFilter("All supported formats", false, validExtensions.asList());
+					// Create a file filter accepting extensions of all supported formats at the same time. 
+			fileChooser.addChoosableFileFilter(allFormatsFilter);  // Add the "All supported formats" filter to the list.
+			fileChooser.setFileFilter(allFormatsFilter);  // Select this filter as the default.
+		}
+		return fileChooser;
+	}
+	
+	
+	protected ExtensionFileFilter getAllFormatsFilter() {
+		getFileChooser();  // Make sure the field is initialized.
+		return allFormatsFilter;
 	}
 }

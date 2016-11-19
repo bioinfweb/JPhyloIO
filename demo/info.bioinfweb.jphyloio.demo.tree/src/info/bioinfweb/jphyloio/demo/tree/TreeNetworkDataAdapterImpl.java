@@ -52,14 +52,14 @@ public class TreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAdapter imp
 		List<TreeNode> nodes = new ArrayList<TreeNode>();
 		addSubtreeToList((TreeNode)model.getRoot(), nodes);
 		
-		nodeList = new NodeEdgeDataAdapter<NodeEvent>(nodes, NODE_ID_PREFIX) {
+		nodeList = new NodeEdgeListDataAdapter<NodeEvent>(nodes, NODE_ID_PREFIX) {
 			@Override
 			protected NodeEvent createEvent(String id, int index, TreeNode node) {
 				return new NodeEvent(id, node.toString(), null, node.getParent() == null);  // Note that this implementation will always specify a node label, even if none is present, the label will be stored as "" in formats that support it.
 			}
 		};
 		
-		edgeList = new NodeEdgeDataAdapter<EdgeEvent>(nodes, EDGE_ID_PREFIX) {
+		edgeList = new NodeEdgeListDataAdapter<EdgeEvent>(nodes, EDGE_ID_PREFIX) {
 			@Override
 			protected EdgeEvent createEvent(String id, int index, TreeNode node) {
 				String sourceID = null;
@@ -70,8 +70,8 @@ public class TreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAdapter imp
 			}
 		};
 	}
-
-
+	
+	
 	private void addSubtreeToList(TreeNode root, List<TreeNode> list) {
 		list.add(root);
 		for (int i = 0; i < root.getChildCount(); i++) {
@@ -83,7 +83,7 @@ public class TreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAdapter imp
 	@Override
 	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return new LabeledIDEvent(EventContentType.TREE, TREE_ID, null);  
-		// Since this application supports only one alignment at a time, a static ID may be used. //TODO alignment?
+		// Since this application supports only one tree at a time, a static ID may be used.
 	}
 	
 

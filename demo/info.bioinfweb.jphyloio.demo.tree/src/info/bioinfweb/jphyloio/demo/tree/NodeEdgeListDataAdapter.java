@@ -41,12 +41,12 @@ import javax.swing.tree.TreeNode;
  *
  * @param <E> the event type of start events representing elements of this list
  */
-public abstract class NodeEdgeDataAdapter<E extends LabeledIDEvent> implements ObjectListDataAdapter<E> {
+public abstract class NodeEdgeListDataAdapter<E extends LabeledIDEvent> implements ObjectListDataAdapter<E> {
 	private List<TreeNode> nodes;
 	private String idPrefix;
 	
 	
-	public NodeEdgeDataAdapter(List<TreeNode> nodes, String idPrefix) {
+	public NodeEdgeListDataAdapter(List<TreeNode> nodes, String idPrefix) {
 		super();
 		this.nodes = nodes;
 		this.idPrefix = idPrefix;
@@ -85,7 +85,22 @@ public abstract class NodeEdgeDataAdapter<E extends LabeledIDEvent> implements O
 	}
 
 	
+	/**
+	 * This method could be empty respective to this demo application. It is just implemented as a basis for the metadata demo and
+	 * it's content is not relevant for this demo.
+	 */
 	@Override
 	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) 
-			throws IOException, IllegalArgumentException {}  // No node or branch metadata present in the model of this application.
+			throws IOException, IllegalArgumentException {
+		
+		int index = NumberedStringsIterator.extractIntIndexFromString(id, idPrefix);
+		writeContentData(parameters, receiver, id, index, nodes.get(index));
+	}
+	
+	
+	/**
+	 * This method is empty but declared here to implement it in the metadata demo.
+	 */
+	protected void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id, int index, 
+			TreeNode node) throws IOException, IllegalArgumentException {}  // No node or branch metadata present in the model of this application.
 }

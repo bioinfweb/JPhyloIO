@@ -36,7 +36,6 @@ import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 
 
 
@@ -56,22 +55,22 @@ import javax.swing.tree.MutableTreeNode;
  */
 public class TreeReader {
 	/** Stores the <i>JPhyloIO</i> event reader that is currently used by this instance. */
-	private JPhyloIOEventReader reader;
+	protected JPhyloIOEventReader reader;
 	
 	/** Stores the application model that is the current target for data read by this instance. */
-	private DefaultTreeModel model;
+	protected DefaultTreeModel model;
 	
 	/** 
 	 * A map for internal use storing node objects created from encountered node events until they are combined to 
 	 * form a tree topology. 
 	 */
-	private Map<String, MutableTreeNode> idToNodeMap = new HashMap<String, MutableTreeNode>();
+	protected Map<String, DefaultMutableTreeNode> idToNodeMap = new HashMap<String, DefaultMutableTreeNode>();
 	
 	/** 
 	 * A list of nodes that could become the tree root. (After all branches have been processed this list will 
 	 * contain only one entry in case of trees.) 
 	 */
-	private List<String> possiblePaintStartIDs = new ArrayList<String>();
+	protected List<String> possiblePaintStartIDs = new ArrayList<String>();
 	
 	
 	/**
@@ -86,7 +85,6 @@ public class TreeReader {
 	 * @throws IOException exceptions thrown during the I/O operation
 	 */
 	public void read(JPhyloIOEventReader reader, DefaultTreeModel model) throws IOException {
-		
 		// Store parameters in instance variables to have them available in all methods:
 		this.reader = reader;
 		this.model = model;
@@ -204,17 +202,30 @@ public class TreeReader {
 	
 	
 	private void readNode(NodeEvent nodeEvent) throws IOException {
-		MutableTreeNode node = new DefaultMutableTreeNode(nodeEvent.getLabel());
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode(nodeEvent.getLabel());
 		idToNodeMap.put(nodeEvent.getID(), node);
 		possiblePaintStartIDs.add(nodeEvent.getID());
 		
-  	JPhyloIOReadingUtils.reachElementEnd(reader);  // Consume possible nested events.
+		readNodeContents(node);
   }
 	
 	
+	/**
+	 * Since this application does not model any metadata, this method just skips all events nested under the node event.
+	 * <p>
+	 * This method is defined to be overwritten in the metadata demo application.
+	 * 
+	 * @param node the node object that could model the contents
+	 * @throws IOException
+	 */
+	protected void readNodeContents(DefaultMutableTreeNode node) throws IOException {
+  	JPhyloIOReadingUtils.reachElementEnd(reader);  // Consume possible nested events.
+	}
+	
+	
 	private void readEdge(EdgeEvent edgeEvent) throws IOException {
-		MutableTreeNode targetNode = idToNodeMap.get(edgeEvent.getTargetID());
-		MutableTreeNode sourceNode = idToNodeMap.get(edgeEvent.getSourceID());		
+		DefaultMutableTreeNode targetNode = idToNodeMap.get(edgeEvent.getTargetID());
+		DefaultMutableTreeNode sourceNode = idToNodeMap.get(edgeEvent.getSourceID());		
 		
 		if (targetNode.getParent() == null) {
 			if (sourceNode != null) {
@@ -227,6 +238,19 @@ public class TreeReader {
 					", but networks can not be displayed by this application.");
 		}
 		
-   	JPhyloIOReadingUtils.reachElementEnd(reader);  // Consume possible nested events.
+		readEdgeContents(targetNode);
   }
+	
+	
+	/**
+	 * Since this application does not model any metadata, this method just skips all events nested under the edge event.
+	 * <p>
+	 * This method is defined to be overwritten in the metadata demo application.
+	 * 
+	 * @param targetNode the target node object linked to the current edge
+	 * @throws IOException
+	 */
+	protected void readEdgeContents(DefaultMutableTreeNode targetNode) throws IOException {
+  	JPhyloIOReadingUtils.reachElementEnd(reader);  // Consume possible nested events.
+	}
 }
