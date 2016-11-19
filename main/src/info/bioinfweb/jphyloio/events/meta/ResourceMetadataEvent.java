@@ -51,7 +51,7 @@ public class ResourceMetadataEvent extends LabeledIDEvent {
 	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
 	 * @param label a label associated with the represented data element (Maybe {@code null}.)
 	 * @param rel the <i>RDF</i> rel URI of this element
-	 * @param hRef the <i>RDF</i> hRef URI of this element
+	 * @param hRef the <i>RDF</i> hRef URI of this element (Maybe {@code null}.)
 	 * @param about the content of a specific about attribute to be written on the according <i>XML</i> representation of this element
 	 *        (Maybe {@code null}.)
 	 * @throws NullPointerException if {@code id} or {@code rel} are {@code null}
