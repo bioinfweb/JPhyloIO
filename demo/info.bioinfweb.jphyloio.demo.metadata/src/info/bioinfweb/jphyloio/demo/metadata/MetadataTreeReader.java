@@ -138,7 +138,9 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
 					if (PREDICATE_HAS_SUPPORT.equals(literalEvent.getPredicate().getURI())) {
 						((NodeData)targetNode.getUserObject()).setSupport(
-								JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Double.class));
+								JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Number.class).doubleValue());
+								// By specifying Nubmer.class instead of Double.class, this method would also work for support values declared 
+								// as e.g. Float or Integer.
 					}
 					else {  // Skip all nested events and the end event if another literal metadata element is nested.
 						JPhyloIOReadingUtils.reachElementEnd(reader);
