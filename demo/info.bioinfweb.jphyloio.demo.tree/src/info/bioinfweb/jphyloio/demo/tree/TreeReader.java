@@ -94,20 +94,19 @@ public class TreeReader {
 			                               // document is reached). 
 			JPhyloIOEvent event = reader.next();  // Read the next event from the JPhyloIO reader.
   		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-	      switch (event.getType().getContentType()) {  // This switch statement handles all types of elements on the top level that are 
-	      	                                           // relevant for this application. The others are skipped in the default block. 
+  				// We are only interested in start events, since all end events will already be consumed within the loop.
+  				// Other events (e.g. for comments) with the topology type SOLE will just be ignored here.
+  			
+	      switch (event.getType().getContentType()) {
+	      		// This switch statement handles all types of elements on the top level that are 
+	      	  // relevant for this application. The others are skipped in the default block.
+	      	
 	      	case DOCUMENT:
-	      		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
-	      			model.setRoot(null);  // Remove possible previous data from the model instance.
-	      		}
-	      		// Document end events do not need any treatment in this application.
+      			model.setRoot(null);  // Remove possible previous data from the model instance.
 	      		break;
 	      		
 	      	case TREE_NETWORK_GROUP:
-	      		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
-	      			readTreeNetworkGroup();
-	      			
-	      		}
+      			readTreeNetworkGroup();
 	        	break;
 	        	
 	        default:  // Here possible additional events on the top level are handled.
