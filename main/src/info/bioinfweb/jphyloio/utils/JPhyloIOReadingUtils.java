@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.utils;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
@@ -172,13 +173,18 @@ public class JPhyloIOReadingUtils {
    * {@link #readLiteralMetadataContentAsStringBuilder(JPhyloIOEventReader)} or 
    * {@link #readLiteralMetadataContentAsString(JPhyloIOEventReader)} should be used instead to read strings.
    * <p>
-   * If numeric values shall be read it is beneficial in many cases use a value for {@code objectClass} that is as general as
-   * possible. If e.g. a double value is expected, the expression 
+   * It is beneficial in many cases to use a value for {@code objectClass} that is as general as possible. If e.g. a double 
+   * value is expected, the expression 
    * <pre>double d = JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Number.class).doubleValue();</pre> 
    * should be used instead of 
    * <pre>double d = JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Double.class);</pre> 
    * This allows to read metadata declaring different numeric types into the {@code double}. Otherwise processing of metadata 
-   * of e.g. the type {@link Float} or {@link Integer} would cause a {@link ClassCastException}. 
+   * of e.g. the type {@link Float} or {@link Integer} would cause a {@link ClassCastException}. The same applies for all
+   * classes that have commons supertypes that would be sufficient for reading.
+   * <p>
+   * Note that <i>JPhyloIO</i> readers will only produce content events with Java objects for which an appropriate 
+   * {@link ObjectTranslator} instance is available. Custom object translators can be provided using the parameter
+   * {@link ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY}.
    * 
    * @param reader the <i>JPhyloIO</i> event reader providing the event stream
    * @param objectClass the type of object value to be read
