@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.demo.tree.TreeReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.utils.JPhyloIOReadingUtils;
 
@@ -57,25 +58,22 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 				// in the loop, so checking the content type of the end event is unnecessary.)
 			
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				switch (event.getType().getContentType()) { 
-					case LITERAL_META:
-						LiteralMetadataEvent resourceEvent = event.asLiteralMetadataEvent();
-						if (PREDICATE_HAS_GENUS.equals(resourceEvent.getPredicate().getURI())) { 
-							taxonomy.setGenus(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
-						}
-						else if (PREDICATE_HAS_SPECIES.equals(resourceEvent.getPredicate().getURI())) {
-							taxonomy.setSpecies(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
-						}
-						else {
-							JPhyloIOReadingUtils.reachElementEnd(reader);
-						  		// Skip all nested events and the end event if another literal metadata element (with an unsupported 
-									// predicate) is nested.
-						}
-						break;
-
-					default:  // Here possible additional events on the top level are handled.
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
+					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+					if (PREDICATE_HAS_GENUS.equals(literalEvent.getPredicate().getURI())) { 
+						taxonomy.setGenus(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+					}
+					else if (PREDICATE_HAS_SPECIES.equals(literalEvent.getPredicate().getURI())) {
+						taxonomy.setSpecies(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+					}
+					else {
 						JPhyloIOReadingUtils.reachElementEnd(reader);
-						break;
+					  		// Skip all nested events and the end event if another literal metadata element (with an unsupported 
+								// predicate) is nested.
+					}
+				}
+				else {  // Skip possible other event subsequences.
+					JPhyloIOReadingUtils.reachElementEnd(reader);
 				}
 			}
 			event = reader.next();
@@ -105,9 +103,8 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 						if (PREDICATE_HAS_TAXONOMY.equals(resourceEvent.getRel().getURI())) {
 							readTaxonomy(data.getTaxonomy());
 						}
-						else {
+						else {  // Skip all nested events and the end event if other (unsupported) resource metadata are nested.
 							JPhyloIOReadingUtils.reachElementEnd(reader);
-									// Skip all nested events and the end event if other (unsupported) resource metadata are nested.
 						}
 						break;
 
@@ -133,6 +130,25 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 	protected void readEdgeContents(DefaultMutableTreeNode targetNode) throws IOException {
 		// targetNode already has a NodeData instance as a user object, since it has been loaded using the readNodeContents() method above.
 		
-  	JPhyloIOReadingUtils.reachElementEnd(reader);  // Consume possible nested events.
+		// Read application specific metadata:
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
+					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+					if (PREDICATE_HAS_SUPPORT.equals(literalEvent.getPredicate().getURI())) {
+						((NodeData)targetNode.getUserObject()).setSupport(
+								JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Double.class));
+					}
+					else {  // Skip all nested events and the end event if another literal metadata element is nested.
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+					}
+				}
+				else {  // Skip possible other event subsequences.
+					JPhyloIOReadingUtils.reachElementEnd(reader);
+				}
+			}
+			event = reader.next();
+		}
 	}
 }
