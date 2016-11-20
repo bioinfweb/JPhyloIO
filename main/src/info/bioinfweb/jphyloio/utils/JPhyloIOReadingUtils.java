@@ -171,6 +171,14 @@ public class JPhyloIOReadingUtils {
    * Note that this method is not able to read strings that are separated among multiple content events. 
    * {@link #readLiteralMetadataContentAsStringBuilder(JPhyloIOEventReader)} or 
    * {@link #readLiteralMetadataContentAsString(JPhyloIOEventReader)} should be used instead to read strings.
+   * <p>
+   * If numeric values shall be read it is beneficial in many cases use a value for {@code objectClass} that is as general as
+   * possible. If e.g. a double value is expected, the expression 
+   * <pre>double d = JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Number.class).doubleValue();</pre> 
+   * should be used instead of 
+   * <pre>double d = JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Double.class);</pre> 
+   * This allows to read metadata declaring different numeric types into the {@code double}. Otherwise processing of metadata 
+   * of e.g. the type {@link Float} or {@link Integer} would cause a {@link ClassCastException}. 
    * 
    * @param reader the <i>JPhyloIO</i> event reader providing the event stream
    * @param objectClass the type of object value to be read
