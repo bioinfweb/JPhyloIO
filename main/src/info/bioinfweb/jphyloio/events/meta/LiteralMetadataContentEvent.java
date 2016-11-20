@@ -45,8 +45,9 @@ import javax.xml.stream.events.XMLEvent;
  * If the declared data type is mapped to an instance of {@link String} (e.g. {@code xsd:string} or {@code xsd:token}) the object
  * value and its string representation are the same {@link String} instance. Large strings may be separated among several events
  * for performance reasons, while {@link #isContinuedInNextEvent()} will be {@code true} in all but the last event of such a 
- * sequence. If a string is separated among multiple events, the object value in all of these events will be {@code null}. 
- * (That is because only the whole string is considered as the object and not its parts.)
+ * sequence. If a string is separated among multiple events, the object value in all of these events will be {@code null} and 
+ * the single parts can be obtained using {@link #getStringValue()}. (That is because only the whole string is considered as the 
+ * object and not its parts.)
  * <p>
  * <i>JPhyloIO</i> event objects are generally immutable. Anyway complex object values may have editable properties themselves. 
  * In application code, it should be absolutely avoided to edit such properties while the according event object is still in use, 
