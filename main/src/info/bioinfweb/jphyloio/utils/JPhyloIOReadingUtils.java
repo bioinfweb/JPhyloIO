@@ -93,6 +93,8 @@ public class JPhyloIOReadingUtils {
    *         {@link JPhyloIOEventReader}.)
    * @see LiteralMetadataContentEvent
    * @see ObjectTranslator
+   * @see #readLiteralMetadataContentAsString(JPhyloIOEventReader)
+   * @see #readLiteralMetadataContentAsObject(JPhyloIOEventReader, Class)
    */
   public static StringBuilder readLiteralMetadataContentAsStringBuilder(JPhyloIOEventReader reader) throws IOException {
   	JPhyloIOEvent event = reader.next();
@@ -136,7 +138,7 @@ public class JPhyloIOReadingUtils {
    * converts its content to a {@link String} if the builder is not {@code null}.
    * 
    * @param reader the <i>JPhyloIO</i> event reader providing the event stream
-   * @return an string content or {@code null} if no content events were
+   * @return the string content or {@code null} if no content events were
    *         encountered before the literal metadata end event
    * @throws IOException if an I/O error occurs while reading from {@code reader} or if another content event was encountered
    *         although sequence was declared to be terminated by the last event (See the documentation of 
@@ -153,5 +155,68 @@ public class JPhyloIOReadingUtils {
   	else {
   		return result.toString();
   	}
+  }
+  
+  
+  /**
+   * Reads a subsequence from an <i>JPhyloIO</i> event stream modeling contents of a literal metadata element into an object of
+   * the specified class. This is only possible if a single metadata content event containing an object value implementing
+   * the specified type is nested. Encountered comment events are skipped and ignored.
+   * <p>
+   * This tool method can be called after a start event with the content type {@link EventContentType#LITERAL_META} was read 
+   * from {@code reader} and will consume all following events including the respective end event with the type 
+   * {@link EventContentType#LITERAL_META}. Note that this method may only be used if the sequence type of the literal 
+   * metadata start event is {@link LiteralContentSequenceType#SIMPLE} and the specified type of the object value is expected.
+   * <p>
+   * Note that this method is not able to read strings that are separated among multiple content events. 
+   * {@link #readLiteralMetadataContentAsStringBuilder(JPhyloIOEventReader)} or 
+   * {@link #readLiteralMetadataContentAsString(JPhyloIOEventReader)} should be used instead to read strings.
+   * 
+   * @param reader the <i>JPhyloIO</i> event reader providing the event stream
+   * @param objectClass the type of object value to be read
+   * @return the object value or {@code null} if no content events were
+   *         encountered before the literal metadata end event
+   * @throws IOException if an I/O error occurs while reading from {@code reader} or if more then one content event was 
+   *         encountered or if the encountered content event did not have an object value
+   * @throws ClassCastException if the encountered object values does not implement {@code objectClass}
+   * @see #readLiteralMetadataContentAsStringBuilder(JPhyloIOEventReader)
+   * @see ObjectTranslator
+   */
+  @SuppressWarnings("unchecked")
+	public static <O> O readLiteralMetadataContentAsObject(JPhyloIOEventReader reader, Class<O> objectClass) 
+			throws IOException, ClassCastException {
+  	
+  	O result = null;
+  	JPhyloIOEvent event = reader.next();
+  	if (!event.getType().equals(LITERAL_META_END)) {
+    	do {
+    		if (event.getType().getContentType().equals(EventContentType.LITERAL_META_CONTENT)) {
+    			if (result == null) {
+      			LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
+      			if (contentEvent.hasObjectValue()) {
+      				if (objectClass.isInstance(contentEvent.getObjectValue())) {
+      					result = (O)contentEvent.getObjectValue();
+      				}
+      				else {
+      					throw new ClassCastException("The encountered object value does not implement the specified type " + 
+      							objectClass.getCanonicalName() + ".");
+      				}
+      			}
+      			else {
+      				throw new IOException("The encountered literal metadata content event did not carry an object value.");  //TODO Use other exception type.
+      			}
+    			}
+    			else {
+    				throw new IOException("More than one literal metadata content event was encountered, although a single object value was expected.");  //TODO Use other exception type.
+    			}
+    		}
+    		else if (!event.getType().getTopologyType().equals(EventTopologyType.SOLE)) {
+    			reachElementEnd(reader);  // Skip over possibly nested events. (The current grammar does not allow such events here, so this implementation treats possible future extensions.)
+    		}
+    		
+    		event = reader.next();  // May throw a NoSuchElementException, if the sequence ends before a literal metadata end event is encountered (which would be invalid).
+    	} while (!event.getType().equals(LITERAL_META_END));
+  	}
+  	return result;
   }
 }
