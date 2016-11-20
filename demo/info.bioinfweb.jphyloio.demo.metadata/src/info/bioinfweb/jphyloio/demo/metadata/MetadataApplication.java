@@ -127,6 +127,8 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 	 */
 	@Override
 	protected void writeTree(String formatID, File file) {
+		saveMetadataPanel();  // The last edit might not have been saved, if the selected node did not change since then.
+		
 		// Create data adapters:
 		ListBasedDocumentDataAdapter document = new ListBasedDocumentDataAdapter();
 		StoreTreeNetworkGroupDataAdapter treeGroup = new StoreTreeNetworkGroupDataAdapter(
