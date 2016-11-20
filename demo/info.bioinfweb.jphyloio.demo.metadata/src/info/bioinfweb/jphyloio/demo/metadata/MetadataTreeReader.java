@@ -19,6 +19,13 @@
 package info.bioinfweb.jphyloio.demo.metadata;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.demo.metadata.NodeData.Taxonomy;
+import info.bioinfweb.jphyloio.demo.tree.TreeReader;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.utils.JPhyloIOReadingUtils;
 
 import java.io.IOException;
@@ -27,25 +34,105 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 
 
-public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeReader {
-	@Override
-	protected void readEdgeContents(DefaultMutableTreeNode targetNode) throws IOException {
-  	JPhyloIOReadingUtils.reachElementEnd(reader);  // Consume possible nested events.
+/**
+ * The reader class of this demo application that consumes the stream of <i>JPhyloIO</i> events from an instance
+ * of {@link JPhyloIOEventReader} and writes according data in the application model is this demo.
+ * <p>
+ * It is based on {@link TreeReader} that was implemented and explained in the tree demo project. To read metadata
+ * it overwrites the methods {@link #readNodeContents(DefaultMutableTreeNode)} and 
+ * {@link #readEdgeContents(DefaultMutableTreeNode)}, which handle the event subsequence modeling the contents of
+ * a node or edge. (The inherited implementation just skips over these events and ignored them, since the tree
+ * demo does not model metadata.)
+ * 
+ * @author Ben St&ouml;ver
+ */
+public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeReader implements IOConstants {
+	/**
+	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream.
+	 */
+	private void readTaxonomy(Taxonomy taxonomy) throws IOException {
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+				// This loop shall stop, if a resource metadata end event is encountered. (Nested end events are already consumed 
+				// in the loop, so checking the content type of the end event is unnecessary.)
+			
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				switch (event.getType().getContentType()) { 
+					case LITERAL_META:
+						LiteralMetadataEvent resourceEvent = event.asLiteralMetadataEvent();
+						if (PREDICATE_HAS_GENUS.equals(resourceEvent.getPredicate().getURI())) { 
+							taxonomy.setGenus(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+						}
+						else if (PREDICATE_HAS_SPECIES.equals(resourceEvent.getPredicate().getURI())) {
+							taxonomy.setSpecies(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+						}
+						else {
+							JPhyloIOReadingUtils.reachElementEnd(reader);
+						  		// Skip all nested events and the end event if another literal metadata element (with an unsupported 
+									// predicate) is nested.
+						}
+						break;
+
+					default:  // Here possible additional events on the top level are handled.
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+						break;
+				}
+			}
+			event = reader.next();
+		}
 	}
-
-
+	
+	
+	/**
+	 * Processes the events nested between a node start and end event.
+	 */
 	@Override
 	protected void readNodeContents(DefaultMutableTreeNode node) throws IOException {
+		// Replace String user object (inherited from tree demo) by NodeData object:
 		NodeData data = new NodeData(node.toString());
-		
-		if (data.getLabel().equals("A")) {
-			data.setSupport(18.2);
-			data.getTaxonomy().setGenus("Cavia");
-			data.getTaxonomy().setSpecies("porcellus");
-		}
-		
 		node.setUserObject(data);
 
+		// Read application specific metadata:
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+				// This loop shall stop, if a node end event is encountered. (Nested end events are already consumed in the loop, so 
+				// checking the content type of the end event is unnecessary.)
+			
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				switch (event.getType().getContentType()) { 
+					case RESOURCE_META:  // Handle taxonomy resource metadata event that may be nested under a node.
+						ResourceMetadataEvent resourceEvent = event.asResourceMetadataEvent();
+						if (PREDICATE_HAS_TAXONOMY.equals(resourceEvent.getRel().getURI())) {
+							readTaxonomy(data.getTaxonomy());
+						}
+						else {
+							JPhyloIOReadingUtils.reachElementEnd(reader);
+									// Skip all nested events and the end event if other (unsupported) resource metadata are nested.
+						}
+						break;
+
+					case LITERAL_META:  // This case is only relevant for Nexus and Newick, where to parent taxonomy resource meta-element can be modeled.
+						//TODO Process
+				  	JPhyloIOReadingUtils.reachElementEnd(reader);
+						break;
+
+					default:  // Here possible additional events on the top level are handled.
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+						break;
+				}
+			}
+			event = reader.next();
+		}
+	}
+
+	
+	/**
+	 * Processes the events nested between an edge start and end event.
+	 */
+	@Override
+	protected void readEdgeContents(DefaultMutableTreeNode targetNode) throws IOException {
+		// targetNode already has a NodeData instance as a user object, since it has been loaded using the readNodeContents() method above.
+		
   	JPhyloIOReadingUtils.reachElementEnd(reader);  // Consume possible nested events.
 	}
 }
