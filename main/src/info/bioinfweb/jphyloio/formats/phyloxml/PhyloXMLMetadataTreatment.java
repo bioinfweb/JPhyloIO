@@ -40,6 +40,8 @@ public enum PhyloXMLMetadataTreatment {
 	 */
 	SEQUENTIAL,
 	
+	//TOP_LEVEL_ONLY,  //TODO This parameter is currently not supported by PhyloXMLWriter, see comment below.
+	
 	/**
 	 * Only the contents of metadata events on the top level of a hierarchical structure are written, if they 
 	 * have further events nested under them. The contents of the nested events are not written to the file.
@@ -55,7 +57,7 @@ public enum PhyloXMLMetadataTreatment {
 	/**
 	 * Only the contents of metadata events without any nested events are written.
 	 */
-	ONLY_LEAFS,
+	LEAFS_ONLY,
 	
 	/**
 	 * No content of metadata events is written.

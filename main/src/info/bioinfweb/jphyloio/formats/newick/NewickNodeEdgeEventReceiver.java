@@ -70,7 +70,6 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	private List<Metadata> metadataList = new ArrayList<Metadata>();
 	private List<CommentEvent> commentEvents = new ArrayList<CommentEvent>();
 	private boolean ignoredXMLMetadata = false;
-	private boolean ignoredNestedMetadata = false;
 	private StringBuilder currentLiteralValue = new StringBuilder();
 	private ListTranslator listTranslator = new ListTranslator();
 	private StringTranslator stringTranslator = new StringTranslator();
@@ -93,11 +92,6 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	}
 
 
-	public boolean isIgnoredNestedMetadata() {
-		return ignoredNestedMetadata;
-	}
-	
-	
 	private void clearCurrentLiteralValue() {
 		currentLiteralValue.delete(0, currentLiteralValue.length());
 	}
@@ -105,7 +99,6 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	
 	public void clear() {
 		commentEvents.clear();
-		ignoredNestedMetadata = false;
 		ignoredXMLMetadata = false;
 		clearCurrentLiteralValue();
 	}
@@ -113,33 +106,28 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		if (getParentEvents().isEmpty()) {
-			if (event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE)) {
-				String key = event.getPredicate().getStringRepresentation();
-				if (key == null) {
-					if (event.getPredicate().getURI() == null) {
-						throw new JPhyloIOWriterException("A literal metadata event without predicate or alternative string representation was encountered.");  // Should not happen, since this was already checked in the constructor of URIOrStringIdentifier.
-					}
-					else {
-						key = event.getPredicate().getURI().getLocalPart();  // uri cannot be null, if stringRepresentation was null. 
-					}
+		if (event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE)) {
+			String key = event.getPredicate().getStringRepresentation();
+			if (key == null) {
+				if (event.getPredicate().getURI() == null) {
+					throw new JPhyloIOWriterException("A literal metadata event without predicate or alternative string representation was encountered.");  // Should not happen, since this was already checked in the constructor of URIOrStringIdentifier.
 				}
-				metadataList.add(new Metadata(key, event.getOriginalType()));
-				//TODO Add values later. Possibly throw exception e.g. in handleMetaEndEvent, if no value was specified or allow empty annotations.
+				else {
+					key = event.getPredicate().getURI().getLocalPart();  // uri cannot be null, if stringRepresentation was null. 
+				}
 			}
-			else {  // Will also be executed for OTHER.
-				ignoredXMLMetadata = true;
-			}
+			metadataList.add(new Metadata(key, event.getOriginalType()));
+			//TODO Add values later. Possibly throw exception e.g. in handleMetaEndEvent, if no value was specified or allow empty annotations.
 		}
-		else {
-			ignoredNestedMetadata = true;
+		else {  // Will also be executed for OTHER.
+			ignoredXMLMetadata = true;
 		}
 	}
 
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (metadataList.isEmpty()) {  //TODO Happens, if the first meta event is a resource meta with nested literals.
+		if (metadataList.isEmpty()) {
 			throw new InternalError("No metadata entry was add for the parent literal meta event.");  // Should not happen.
 		}
 		else {

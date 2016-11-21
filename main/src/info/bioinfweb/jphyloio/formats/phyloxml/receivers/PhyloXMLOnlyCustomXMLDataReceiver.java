@@ -92,7 +92,7 @@ public class PhyloXMLOnlyCustomXMLDataReceiver extends PhyloXMLMetaDataReceiver 
 				switch (getParameterMap().getPhyloXMLMetadataTreatment()) {
 					case NONE:
 						break;
-					case ONLY_LEAFS:
+					case LEAFS_ONLY:
 					case SEQUENTIAL:
 					case TOP_LEVEL_WITH_CHILDREN:
 					case TOP_LEVEL_WITHOUT_CHILDREN:

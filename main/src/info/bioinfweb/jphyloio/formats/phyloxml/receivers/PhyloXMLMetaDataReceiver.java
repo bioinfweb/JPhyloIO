@@ -265,7 +265,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 					case NONE:
 						writeMeta = false;
 						break;
-					case ONLY_LEAFS:
+					case LEAFS_ONLY:
 						writeMeta = metaInfo.getChildIDs().isEmpty();
 						break;
 					case SEQUENTIAL:
