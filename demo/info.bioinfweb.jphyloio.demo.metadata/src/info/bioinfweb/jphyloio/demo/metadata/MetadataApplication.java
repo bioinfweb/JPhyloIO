@@ -50,6 +50,7 @@ import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreTreeNetwo
 import info.bioinfweb.jphyloio.demo.metadata.adapters.MetadataTreeNetworkDataAdapterImpl;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetadataTreatment;
 
 
 
@@ -142,6 +143,7 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 		parameters.put(ReadWriteParameterNames.KEY_APPLICATION_NAME, getName());
 		parameters.put(ReadWriteParameterNames.KEY_APPLICATION_VERSION, getVersion());
 		parameters.put(ReadWriteParameterNames.KEY_APPLICATION_URL, getApplicationURL());
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.LEAVES_ONLY);
 		
 		// Write document:
 		JPhyloIOEventWriter writer = factory.getWriter(formatID);
