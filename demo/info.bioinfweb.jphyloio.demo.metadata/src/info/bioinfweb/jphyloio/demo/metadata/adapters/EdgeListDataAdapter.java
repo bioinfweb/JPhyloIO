@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.demo.metadata.adapters;
 
 import info.bioinfweb.commons.IntegerIDManager;
 import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.demo.metadata.IOConstants;
@@ -43,11 +44,11 @@ import javax.swing.tree.TreeNode;
  * 
  * @author Ben St&ouml;ver
  */
-public class EdgeListDataAdapter extends AbstractMetadataNodeEdgeListDataAdapter<EdgeEvent> 
-		implements IOConstants, W3CXSConstants {
+public class EdgeListDataAdapter extends NodeEdgeListDataAdapter<EdgeEvent> 
+		implements IOConstants, W3CXSConstants, ReadWriteConstants {
 	
-	public EdgeListDataAdapter(List<TreeNode> nodes, IntegerIDManager idManager) {
-		super(nodes, EDGE_ID_PREFIX, idManager);
+	public EdgeListDataAdapter(List<TreeNode> nodes) {
+		super(nodes, EDGE_ID_PREFIX);
 	}
 
 	
@@ -68,7 +69,7 @@ public class EdgeListDataAdapter extends AbstractMetadataNodeEdgeListDataAdapter
 		// Write support value as simple literal metadata:
 		double support = ((NodeData)((DefaultMutableTreeNode)node).getUserObject()).getSupport();
 		if (!Double.isNaN(support)) {
-	    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, createNewMetadataID(), null,
+	    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Support", null,
 	        PREDICATE_HAS_SUPPORT, DATA_TYPE_DOUBLE, support, null);
 	    		// Simple literal metadata of this type will automatically be written to a property tag in PhyloXML.  //TODO Test
 		}

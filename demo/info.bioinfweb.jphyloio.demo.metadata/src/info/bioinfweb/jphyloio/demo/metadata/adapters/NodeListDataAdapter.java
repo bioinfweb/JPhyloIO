@@ -27,6 +27,7 @@ import javax.swing.tree.TreeNode;
 
 import info.bioinfweb.commons.IntegerIDManager;
 import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.demo.metadata.IOConstants;
@@ -47,11 +48,11 @@ import info.bioinfweb.jphyloio.utils.JPhyloIOWritingUtils;
  * 
  * @author Ben St&ouml;ver
  */
-public class NodeListDataAdapter extends AbstractMetadataNodeEdgeListDataAdapter<NodeEvent> 
-		implements IOConstants, W3CXSConstants {
+public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent> 
+		implements IOConstants, W3CXSConstants, ReadWriteConstants {
 	
-	public NodeListDataAdapter(List<TreeNode> nodes, IntegerIDManager idManager) {
-		super(nodes, NODE_ID_PREFIX, idManager);
+	public NodeListDataAdapter(List<TreeNode> nodes) {
+		super(nodes, NODE_ID_PREFIX);
 	}
 
 	
@@ -70,15 +71,15 @@ public class NodeListDataAdapter extends AbstractMetadataNodeEdgeListDataAdapter
 		
     // Write taxonomy information:
 		if ((data.getTaxonomy() != null) && !data.getTaxonomy().isEmpty()) {
-	    receiver.add(new ResourceMetadataEvent(createNewMetadataID(), null, new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));
+	    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax", null, new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));
 	    
 	    if ((data.getTaxonomy().getGenus() != null) && !data.getTaxonomy().getGenus().isEmpty()) {
-		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, createNewMetadataID(), null,
+		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Genus", null,
 		        PREDICATE_HAS_GENUS, DATA_TYPE_STRING, data.getTaxonomy().getGenus(), null);
 	    }
 	    
 	    if ((data.getTaxonomy().getSpecies() != null) && !data.getTaxonomy().getSpecies().isEmpty()) {
-		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, createNewMetadataID(), null,
+		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Species", null,
 		        PREDICATE_HAS_SPECIES, DATA_TYPE_STRING, data.getTaxonomy().getSpecies(), null);
 	    }
 	    

@@ -50,7 +50,6 @@ public class MetadataTreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAda
 	
 	private ObjectListDataAdapter<NodeEvent> nodeList;
 	private ObjectListDataAdapter<EdgeEvent> edgeList;
-	private IntegerIDManager idManager = new IntegerIDManager();
 	
 	
 	public MetadataTreeNetworkDataAdapterImpl(DefaultTreeModel model) {
@@ -59,8 +58,8 @@ public class MetadataTreeNetworkDataAdapterImpl extends NoSetsTreeNetworkDataAda
 		List<TreeNode> nodes = new ArrayList<TreeNode>();
 		addSubtreeToList((TreeNode)model.getRoot(), nodes);
 		
-		nodeList = new NodeListDataAdapter(nodes, idManager);
-		edgeList = new EdgeListDataAdapter(nodes, idManager);
+		nodeList = new NodeListDataAdapter(nodes);
+		edgeList = new EdgeListDataAdapter(nodes);
 	}
 	
 	
