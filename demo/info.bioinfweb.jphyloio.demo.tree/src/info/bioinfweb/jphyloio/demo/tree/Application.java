@@ -120,8 +120,13 @@ public class Application {
 	
 	protected void readTree(String formatID, File file) throws Exception {
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-		parameters.put(ReadWriteParameterNames.KEY_USE_OTU_LABEL, true);  // Use OTU labels as node labels if no node label is present.
-		parameters.put(ReadWriteParameterNames.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);  // Per default every phylogeny is considered to be a network by PhyloXMLEventReader
+		parameters.put(ReadWriteParameterNames.KEY_USE_OTU_LABEL, true);  
+				// Use OTU labels as node labels if no node label is present.
+		parameters.put(ReadWriteParameterNames.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);
+				// This parameter defines if cross links between nodes (defined by the clade_relation tag of PhyloXML) should be
+				// modeled as metadata attached to a node or if the whole phylogeny shall be interpreted as a phylogenetic network.
+				// Since the network interpretation is the default, we need to set this parameter in order to receive tree events
+				// and not network events.
 		
 		JPhyloIOEventReader eventReader = factory.getReader(formatID, file, parameters);  // Create JPhyloIO reader instance for the determined format.
 		try {
@@ -165,7 +170,7 @@ public class Application {
 	 */
 	protected void initialize() {
 		mainFrame = new JFrame();
-		mainFrame.setTitle("JPhyloIO tree demo");
+		mainFrame.setTitle(getName());
 		mainFrame.setBounds(100, 100, 450, 300);
 		mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
