@@ -273,7 +273,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
-		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.ONLY_LEAFS);
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.LEAVES_ONLY);
 		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writeDocument(document, parameters, file);
 		
@@ -1713,7 +1713,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		MessageListApplicationLogger logger = new MessageListApplicationLogger();
 		parameters.put(ReadWriteParameterMap.KEY_LOGGER, logger);
-		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.ONLY_LEAFS);
+		parameters.put(ReadWriteParameterMap.KEY_PHYLOXML_METADATA_TREATMENT, PhyloXMLMetadataTreatment.LEAVES_ONLY);
 		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writeDocument(document, parameters, file);
 		
