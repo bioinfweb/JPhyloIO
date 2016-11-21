@@ -64,7 +64,6 @@ public class EdgeListDataAdapter extends AbstractMetadataNodeEdgeListDataAdapter
 	@Override
 	protected void writeContentData(ReadWriteParameterMap parameters,	JPhyloIOEventReceiver receiver, String id, int index, 
 			TreeNode node) throws IOException, IllegalArgumentException {
-
 		
 		// Write support value as simple literal metadata:
 		double support = ((NodeData)((DefaultMutableTreeNode)node).getUserObject()).getSupport();

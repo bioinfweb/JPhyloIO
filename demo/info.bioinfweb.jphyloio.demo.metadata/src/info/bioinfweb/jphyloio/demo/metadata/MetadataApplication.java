@@ -111,6 +111,7 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 	protected void readTree(String formatID, File file) throws Exception {
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 		parameters.put(ReadWriteParameterNames.KEY_USE_OTU_LABEL, true);  // Use OTU labels as node labels if no node label is present.
+		parameters.put(ReadWriteParameterNames.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, true);  // Per default every phylogeny is considered to be a network by PhyloXMLEventReader
 		
 		JPhyloIOEventReader eventReader = factory.getReader(formatID, file, parameters);  // Create JPhyloIO reader instance for the determined format.
 		try {
