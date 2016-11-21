@@ -57,7 +57,7 @@ public enum PhyloXMLMetadataTreatment {
 	/**
 	 * Only the contents of metadata events without any nested events are written.
 	 */
-	LEAFS_ONLY,
+	LEAVES_ONLY,
 	
 	/**
 	 * No content of metadata events is written.
