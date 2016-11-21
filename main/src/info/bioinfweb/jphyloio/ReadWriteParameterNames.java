@@ -357,7 +357,7 @@ public interface ReadWriteParameterNames {
 	 * an adapter should be written.
 	 * <p>
 	 * The value must have the type {@link PhyloXMLMetadataTreatment}. If no value is specified, all metadata events
-	 * will be written sequentially (a possible hierarchical structure will be lost. 
+	 * will be written sequentially. A possible hierarchical structure will be lost. 
 	 */
 	public static final String KEY_PHYLOXML_METADATA_TREATMENT = KEY_PREFIX + "phyloXMLMetadataTreatment";
 	

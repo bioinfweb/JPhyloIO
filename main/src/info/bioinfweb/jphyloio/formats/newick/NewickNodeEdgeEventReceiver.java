@@ -139,7 +139,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 
 	@Override
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		if (metadataList.isEmpty()) {
+		if (metadataList.isEmpty()) {  //TODO Happens, if the first meta event is a resource meta with nested literals.
 			throw new InternalError("No metadata entry was add for the parent literal meta event.");  // Should not happen.
 		}
 		else {

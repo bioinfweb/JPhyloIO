@@ -74,30 +74,33 @@ import javax.xml.stream.XMLStreamException;
  * More information about this can be found in the documentation of {@link XMLReadWriteUtils#manageLiteralContentMetaNamespaces()}.
  * <p>
  * Predicates allowed nested under events with {@link EventContentType#TREE} or {@link EventContentType#NETWORK}:
- * {@link PhyloXMLConstants#PREDICATE_PHYLOGENY_ATTR_REROOTABLE}, 
- * {@link PhyloXMLConstants#PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT}, 
- * {@link PhyloXMLConstants#PREDICATE_PHYLOGENY_ATTR_TYPE}, 
- * {@link PhyloXMLConstants#PREDICATE_PHYLOGENY_DESCRIPTION}, 
- * {@link PhyloXMLConstants#PREDICATE_PHYLOGENY_DATE}, 
- * {@link PhyloXMLConstants#PREDICATE_CONFIDENCE},
- * {@link PhyloXMLConstants#PREDICATE_PROPERTY}
+ * <ul>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_PHYLOGENY_ATTR_REROOTABLE}</li> 
+ *   <li>{@link PhyloXMLConstants#PREDICATE_PHYLOGENY_ATTR_BRANCH_LENGTH_UNIT}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_PHYLOGENY_ATTR_TYPE}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_PHYLOGENY_DESCRIPTION}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_PHYLOGENY_DATE}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_CONFIDENCE}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_PROPERTY}</li>
+ * </ul>
  * <p>
  * Predicates allowed nested under events with {@link EventContentType#EDGE} or {@link EventContentType#ROOT_EDGE}: 
- * {@link PhyloXMLConstants#PREDICATE_CONFIDENCE}, 
- * {@link PhyloXMLConstants#PREDICATE_WIDTH}, 
- * {@link PhyloXMLConstants#PREDICATE_COLOR}
- * <p>
+ * <ul>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_CONFIDENCE}, 
+ *   <li>{@link PhyloXMLConstants#PREDICATE_WIDTH}, 
+ *   <li>{@link PhyloXMLConstants#PREDICATE_COLOR}
+ * </ul>
  * Predicates allowed nested under events with {@link EventContentType#NODE}: 
- * {@link PhyloXMLConstants#PREDICATE_NODE_ID}, 
- * {@link PhyloXMLConstants#PREDICATE_TAXONOMY}, 
- * {@link PhyloXMLConstants#PREDICATE_SEQUENCE}, 
- * {@link PhyloXMLConstants#PREDICATE_EVENTS}, 
- * {@link PhyloXMLConstants#PREDICATE_BINARY_CHARACTERS}, 
- * {@link PhyloXMLConstants#PREDICATE_DISTRIBUTION},	
- * {@link PhyloXMLConstants#PREDICATE_DATE}, 
- * {@link PhyloXMLConstants#PREDICATE_REFERENCE}, 
- * {@link PhyloXMLConstants#PREDICATE_PROPERTY}
- * <p>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_NODE_ID}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_TAXONOMY}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_SEQUENCE}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_EVENTS}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_BINARY_CHARACTERS}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_DISTRIBUTION}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_DATE}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_REFERENCE}</li>
+ *   <li>{@link PhyloXMLConstants#PREDICATE_PROPERTY}</li>
+ * </ul>
  * Custom XML can be written nested under {@code clade} and {@code phylogeny} tags if it does not consist of character 
  * data that is not nested under any tags or tags that are already defined in <i>PhyloXML</i>, otherwise it will be igmored.
  * Metadata with literal values that belongs to a tree, network, node or edge can be written to {@code property} tags nested under

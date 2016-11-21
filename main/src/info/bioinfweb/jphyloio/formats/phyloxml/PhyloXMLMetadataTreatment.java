@@ -25,8 +25,8 @@ import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 
 /**
  * Instances of this enum can be used as parameter values for {@link ReadWriteParameterNames#KEY_PHYLOXML_METADATA_TREATMENT}.
- * It enumerates ways how metadata from hierarchical metadata structures shall be written to a <i>PhyloXML</i> document. 
- * This is necessary, since it is not possible to write nested annotations in a <i>PhyloXML</i> document.
+ * It enumerates ways how metadata from hierarchical <i>RDF</i>-like structures is be written to a <i>PhyloXML</i> document. 
+ * This is necessary, since it is not possible to represent nested annotations in <i>PhyloXML</i>.
  * 
  * @author Sarah Wiechers
  * @see ReadWriteParameterNames#KEY_PHYLOXML_METADATA_TREATMENT
@@ -35,30 +35,30 @@ import info.bioinfweb.jphyloio.ReadWriteParameterNames;
  */
 public enum PhyloXMLMetadataTreatment {
 	/**
-	 * The contents of all hierarchically structured meta events are written to the file in a sequential order. 
-	 * Information about the structure gets lost, while all contents are written to the file.
+	 * The contents of all hierarchically structured metadata events are written to the file in a sequential order. 
+	 * Topological information gets lost in this strategy.
 	 */
 	SEQUENTIAL,
 	
 	/**
-	 * Only the contents of meta events on the top level of a hierarchical structure are written to the file, if they 
-	 * had further events nested under them. The contents of the nested events are not written to the file.
+	 * Only the contents of metadata events on the top level of a hierarchical structure are written, if they 
+	 * have further events nested under them. The contents of the nested events are not written to the file.
 	 */
-	TOP_LEVEL_WITH_CHILDREN,
+	TOP_LEVEL_WITH_CHILDREN,  //TODO Why is there no TOP_LEVEL_ONLY strategy or is this meant here?
 	
 	/**
-	 * Only the contents of meta events on the top level of a hierarchical structure are written to the file, if they 
+	 * Only the contents of metadata events on the top level of a hierarchical structure are written, if they 
 	 * do not have further events nested under them.
 	 */
 	TOP_LEVEL_WITHOUT_CHILDREN,
 	
 	/**
-	 * Only the contents of meta events without any nested events are written to teh file.
+	 * Only the contents of metadata events without any nested events are written.
 	 */
 	ONLY_LEAFS,
 	
 	/**
-	 * The content of meta events is not written to the file.
+	 * No content of metadata events is written.
 	 */
 	NONE;
 }

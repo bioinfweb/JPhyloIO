@@ -260,7 +260,7 @@ public class PhyloXMLMetaDataReceiver extends AbstractXMLDataReceiver<PhyloXMLWr
 		PhyloXMLMetaEventInfo metaInfo = getStreamDataProvider().getMetaEvents().get(id);
 		
 		if (getStreamDataProvider().getMetaIDs().contains(id)) {
-			if (!(predicate.getURI() != null && predicate.getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE))) {
+			if (!(predicate.getURI() != null && predicate.getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE))) {  //TODO Should really all non-PhyloXML attributes that are not null cause an exception? Or should the condition be: (predicate.getURI() != null) && !predicate.getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE)?
 				switch (getParameterMap().getPhyloXMLMetadataTreatment()) {
 					case NONE:
 						writeMeta = false;
