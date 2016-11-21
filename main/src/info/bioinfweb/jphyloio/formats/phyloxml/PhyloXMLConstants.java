@@ -34,6 +34,7 @@ public interface PhyloXMLConstants {
 	public static final String PHYLOXML_FORMAT_NAME = "PhyloXML";
 	public static final String PHYLOXML_DEFAULT_PRE = "phy";
 	public static final String PHYLOXML_NAMESPACE = "http://www.phyloxml.org";
+	public static final String PHYLOXML_SCHEMA_LOCATION_URI = PHYLOXML_NAMESPACE + " " + "http://www.phyloxml.org/1.10/phyloxml.xsd";
 	
 	public static final QName TAG_ROOT = new QName(PHYLOXML_NAMESPACE, "phyloxml");
 	

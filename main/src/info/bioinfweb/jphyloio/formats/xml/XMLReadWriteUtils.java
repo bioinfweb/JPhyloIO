@@ -57,6 +57,8 @@ public class XMLReadWriteUtils {
 	public static final String XSD_DEFAULT_PRE = "xsd";	
 	public static final String RDF_DEFAULT_PRE = "rdf";
 	
+	public static final String SCHEMA_LOCATION = "schemaLocation";
+	
 	public static final String NAMESPACE_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
 	
 //	public static final QName ATTRIBUTE_RDF_PROPERTY = new QName(NAMESPACE_RDF, "property");

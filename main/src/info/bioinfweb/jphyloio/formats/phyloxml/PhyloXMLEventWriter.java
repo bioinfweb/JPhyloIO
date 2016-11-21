@@ -163,6 +163,9 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			getXMLWriter().writeNamespace(prefix, getXMLWriter().getNamespaceContext().getNamespaceURI(prefix));
 		}
 		
+		// Write schema location
+		getXMLWriter().writeAttribute(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLReadWriteUtils.SCHEMA_LOCATION, PHYLOXML_SCHEMA_LOCATION_URI);
+		
 		getXMLWriter().writeComment(" " + getFileStartInfo(getParameters()) + " ");
 		
 		if (getStreamDataProvider().isDocumentHasMetadata() || getStreamDataProvider().isDocumentHasPhylogeny()) {			
