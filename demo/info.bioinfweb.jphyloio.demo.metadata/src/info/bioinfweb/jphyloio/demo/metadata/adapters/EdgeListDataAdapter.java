@@ -19,7 +19,6 @@
 package info.bioinfweb.jphyloio.demo.metadata.adapters;
 
 
-import info.bioinfweb.commons.IntegerIDManager;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
