@@ -714,4 +714,57 @@ public class NewickEventReaderTest implements ReadWriteConstants, NewickConstant
 			reader.close();
 		}
 	}
+
+
+	@Test
+	public void test_readNextEvent_delimitedNames() throws Exception {
+		NewickEventReader reader = new NewickEventReader(new File("data/Newick/DelimitedNames.nwk"),
+				new ReadWriteParameterMap());
+		
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
+			assertEventType(EventContentType.TREE, EventTopologyType.START, reader);
+			
+			String idGuineaPig = assertNodeEvent(null, "Guinea pig", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idLouse = assertNodeEvent(null, "Hair louse", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idAnimals = assertNodeEvent(null, "Animals", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			assertEdgeEvent(idAnimals, idGuineaPig, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idAnimals, idLouse, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			String idGrass = assertNodeEvent(null, "Grass", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idDandelion = assertNodeEvent(null, "Dandelion", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idPlants = assertNodeEvent(null, "Plants", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			assertEdgeEvent(idPlants, idGrass, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idPlants, idDandelion, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			String idRoot = assertNodeEvent(null, "Root", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			assertEdgeEvent(idRoot, idAnimals, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idRoot, idPlants, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEdgeEvent(null, idRoot, Double.NaN, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
+			
+			assertEventType(EventContentType.TREE, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
 }

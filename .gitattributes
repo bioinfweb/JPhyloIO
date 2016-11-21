@@ -452,6 +452,7 @@ test/data/NeXML/longContinuousSequence.txt -text svneol=unset#text/plain
 test/data/NeXML/nexml_treebase_example.xml -text svneol=unset#text/plain
 test/data/NeXML/xml2rdf.rdf -text
 test/data/Newick/Comments.nwk -text
+test/data/Newick/DelimitedNames.nwk -text
 test/data/Newick/InternalsTerminalsLength.nwk -text
 test/data/Newick/InvalidNewick.txt -text svneol=unset#text/plain
 test/data/Newick/LeafNodesNamed.nwk -text
