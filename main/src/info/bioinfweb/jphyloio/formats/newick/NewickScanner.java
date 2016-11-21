@@ -73,7 +73,7 @@ public class NewickScanner implements NewickConstants {
 	
 	
 	private NewickToken readDelimitedName(char delimiter) throws IOException {
-		reader.read();  // skip NAME_DELIMITER.
+		reader.read();  // Skip initial delimiter.
 		StringBuilder result = new StringBuilder();
 		do {
 			while ((reader.peek() != -1) && (reader.peekChar() != delimiter)) {
@@ -90,6 +90,7 @@ public class NewickScanner implements NewickConstants {
 			throw new JPhyloIOReaderException("Unterminated Newick token.", reader);
 		}
 		else {
+			reader.read();  // Skip terminal delimiter.
 			NewickToken token = new NewickToken(NewickTokenType.NAME, reader);
 			token.setText(result.toString());
 			token.setDelimited(true);
