@@ -171,7 +171,7 @@ public class Application {
 	protected void initialize() {
 		mainFrame = new JFrame();
 		mainFrame.setTitle(getName());
-		mainFrame.setBounds(100, 100, 450, 300);
+		mainFrame.setBounds(100, 100, 600, 400);
 		mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		tree = new JTree(new DefaultTreeModel(null));
