@@ -82,6 +82,11 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 		        PREDICATE_HAS_SPECIES, DATA_TYPE_STRING, data.getTaxonomy().getSpecies(), null);
 	    }
 	    
+	    // Write size measurements:
+//	    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Sizes", null, 
+//	    		PREDICATE_HAS_SIZE_MEASUREMENTS, originalType, objectValue);
+	    //TODO Decide if list data type (to be used with XML formats) should be defined here or in JPhyloIO. 
+	    
 	    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
 		}
 	}

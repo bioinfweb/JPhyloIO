@@ -19,6 +19,10 @@
 package info.bioinfweb.jphyloio.demo.metadata;
 
 
+import java.util.List;
+import java.util.ArrayList;
+
+
 
 /**
  * The object modeling data attached to a node and the edge leading to it.
@@ -60,6 +64,7 @@ public class NodeData {
 	private String label = "";
 	private double support = Double.NaN;
 	private Taxonomy taxonomy = new Taxonomy();
+	private List<Double> sizeMeasurements = new ArrayList<Double>();
 	
 	
 	public NodeData(String label) {
@@ -95,6 +100,16 @@ public class NodeData {
 	
 	public void setTaxonomy(Taxonomy taxonomy) {
 		this.taxonomy = taxonomy;
+	}
+
+
+	public List<Double> getSizeMeasurements() {
+		return sizeMeasurements;
+	}
+
+
+	public void setSizeMeasurements(List<Double> sizeMeasurements) {
+		this.sizeMeasurements = sizeMeasurements;
 	}
 
 

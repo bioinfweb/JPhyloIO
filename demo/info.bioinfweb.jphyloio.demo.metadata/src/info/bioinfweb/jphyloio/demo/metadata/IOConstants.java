@@ -35,5 +35,5 @@ public interface IOConstants {
   public static final QName PREDICATE_HAS_TAXONOMY = new QName(NAMESPACE_URI, "hasTaxonomy", NAMESPACE_PREFIX);
   public static final QName PREDICATE_HAS_GENUS = new QName(NAMESPACE_URI, "hasGenus", NAMESPACE_PREFIX);
   public static final QName PREDICATE_HAS_SPECIES = new QName(NAMESPACE_URI, "hasSpecies", NAMESPACE_PREFIX);
-
+  public static final QName PREDICATE_HAS_SIZE_MEASUREMENTS = new QName(NAMESPACE_URI, "hasSizeMeasurements", NAMESPACE_PREFIX);
 }

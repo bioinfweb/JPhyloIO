@@ -30,6 +30,7 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.utils.JPhyloIOReadingUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -103,14 +104,21 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 						if (PREDICATE_HAS_TAXONOMY.equals(resourceEvent.getRel().getURI())) {
 							readTaxonomy(data.getTaxonomy());
 						}
-						else {  // Skip all nested events and the end event if other (unsupported) resource metadata are nested.
+						else {  // Skip all nested events and their end event if other (unsupported) resource metadata are nested.
 							JPhyloIOReadingUtils.reachElementEnd(reader);
 						}
 						break;
 
-					case LITERAL_META:  // This case is only relevant for Nexus and Newick, where to parent taxonomy resource meta-element can be modeled.
-						//TODO Process
-				  	JPhyloIOReadingUtils.reachElementEnd(reader);
+					case LITERAL_META:
+						LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+						if (PREDICATE_HAS_SIZE_MEASUREMENTS.equals(literalEvent.getPredicate().getURI())) {
+							data.setSizeMeasurements(JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, List.class));
+							//TODO If the document is invalid, the list would not necessarily contain only double values. This would have to checked.
+							//TODO ListTranslator wird momentan nur in Newick und Nexus zum Schreiben verwendet. Soll das auch in den anderen Formate passieren? Welchen Datentyp (URI) haben Listen dann?
+						}
+						else {  // Skip all nested events and their end event if other (unsupported) literal metadata are nested.
+							JPhyloIOReadingUtils.reachElementEnd(reader);
+						}
 						break;
 
 					default:  // Here possible additional events on the top level are handled.
