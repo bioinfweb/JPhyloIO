@@ -29,11 +29,13 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -52,6 +54,14 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetadataTreatment;
 
+import javax.swing.JList;
+import javax.swing.JButton;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import java.awt.Font;
+
 
 
 public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Application {
@@ -60,6 +70,9 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 	private JTextField speciesTextField;
 	
 	private NodeData selection = null;
+	private JPanel listPanel;
+	private JFormattedTextField sizeTextField;
+	private JList<Double> sizeList;
 
 	
 	/**
@@ -210,65 +223,190 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 	}
 
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	private JPanel createMetadataPanel() {
 		JPanel metadataPanel = new JPanel();
 		GridBagLayout gbl_metadataPanel = new GridBagLayout();
-		gbl_metadataPanel.columnWidths = new int[]{0, 0, 0};
-		gbl_metadataPanel.rowHeights = new int[]{0, 0, 0, 0};
-		gbl_metadataPanel.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gbl_metadataPanel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_metadataPanel.columnWidths = new int[] {0, 0};
+		gbl_metadataPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gbl_metadataPanel.columnWeights = new double[]{0.0, 1.0};
+		gbl_metadataPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		metadataPanel.setLayout(gbl_metadataPanel);
+		
+		JLabel lblEdgeAnnotations = new JLabel("Edge annotations:");
+		lblEdgeAnnotations.setFont(new Font("Tahoma", Font.BOLD, 13));
+		GridBagConstraints gbc_lblEdgeAnnotations = new GridBagConstraints();
+		gbc_lblEdgeAnnotations.anchor = GridBagConstraints.WEST;
+		gbc_lblEdgeAnnotations.insets = new Insets(0, 2, 5, 5);
+		gbc_lblEdgeAnnotations.gridx = 0;
+		gbc_lblEdgeAnnotations.gridy = 0;
+		metadataPanel.add(lblEdgeAnnotations, gbc_lblEdgeAnnotations);
 		
 		JLabel supportLabel = new JLabel("Support:");
 		GridBagConstraints gbc_supportLabel = new GridBagConstraints();
 		gbc_supportLabel.anchor = GridBagConstraints.WEST;
 		gbc_supportLabel.insets = new Insets(2, 3, 5, 5);
 		gbc_supportLabel.gridx = 0;
-		gbc_supportLabel.gridy = 0;
+		gbc_supportLabel.gridy = 1;
 		metadataPanel.add(supportLabel, gbc_supportLabel);
 		
 		supportTextField = new JFormattedTextField(NumberFormat.getNumberInstance(Locale.US));
 		GridBagConstraints gbc_suuportTextField = new GridBagConstraints();
-		gbc_suuportTextField.insets = new Insets(2, 3, 5, 3);
+		gbc_suuportTextField.weightx = 1.0;
+		gbc_suuportTextField.insets = new Insets(2, 3, 5, 5);
 		gbc_suuportTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_suuportTextField.gridx = 1;
-		gbc_suuportTextField.gridy = 0;
+		gbc_suuportTextField.gridy = 1;
 		metadataPanel.add(supportTextField, gbc_suuportTextField);
 		supportTextField.setColumns(10);
+		
+		JLabel lblNodeAnnotations = new JLabel("Node annotations:");
+		lblNodeAnnotations.setFont(new Font("Tahoma", Font.BOLD, 13));
+		GridBagConstraints gbc_lblNodeAnnotations = new GridBagConstraints();
+		gbc_lblNodeAnnotations.anchor = GridBagConstraints.WEST;
+		gbc_lblNodeAnnotations.insets = new Insets(20, 2, 5, 5);
+		gbc_lblNodeAnnotations.gridx = 0;
+		gbc_lblNodeAnnotations.gridy = 2;
+		metadataPanel.add(lblNodeAnnotations, gbc_lblNodeAnnotations);
 		
 		JLabel genusLabel = new JLabel("Genus:");
 		GridBagConstraints gbc_genusLabel = new GridBagConstraints();
 		gbc_genusLabel.anchor = GridBagConstraints.WEST;
 		gbc_genusLabel.insets = new Insets(2, 3, 5, 5);
 		gbc_genusLabel.gridx = 0;
-		gbc_genusLabel.gridy = 1;
+		gbc_genusLabel.gridy = 3;
 		metadataPanel.add(genusLabel, gbc_genusLabel);
 		
 		genusTextField = new JTextField();
 		GridBagConstraints gbc_genusTextField = new GridBagConstraints();
-		gbc_genusTextField.insets = new Insets(2, 3, 5, 3);
+		gbc_genusTextField.weightx = 1.0;
+		gbc_genusTextField.insets = new Insets(2, 3, 5, 5);
 		gbc_genusTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_genusTextField.gridx = 1;
-		gbc_genusTextField.gridy = 1;
+		gbc_genusTextField.gridy = 3;
 		metadataPanel.add(genusTextField, gbc_genusTextField);
 		genusTextField.setColumns(10);
 		
 		JLabel speciesLabel = new JLabel("Species:");
 		GridBagConstraints gbc_speciesLabel = new GridBagConstraints();
-		gbc_speciesLabel.anchor = GridBagConstraints.EAST;
-		gbc_speciesLabel.insets = new Insets(2, 3, 2, 5);
+		gbc_speciesLabel.anchor = GridBagConstraints.WEST;
+		gbc_speciesLabel.insets = new Insets(2, 3, 5, 5);
 		gbc_speciesLabel.gridx = 0;
-		gbc_speciesLabel.gridy = 2;
+		gbc_speciesLabel.gridy = 4;
 		metadataPanel.add(speciesLabel, gbc_speciesLabel);
 		
 		speciesTextField = new JTextField();
 		GridBagConstraints gbc_speciesTextField = new GridBagConstraints();
-		gbc_speciesTextField.insets = new Insets(2, 3, 2, 3);
+		gbc_speciesTextField.weightx = 1.0;
+		gbc_speciesTextField.insets = new Insets(2, 3, 5, 5);
 		gbc_speciesTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_speciesTextField.gridx = 1;
-		gbc_speciesTextField.gridy = 2;
+		gbc_speciesTextField.gridy = 4;
 		metadataPanel.add(speciesTextField, gbc_speciesTextField);
 		speciesTextField.setColumns(10);
+		
+		GridBagConstraints gbc_listPanel = new GridBagConstraints();
+		gbc_listPanel.gridwidth = 2;
+		gbc_listPanel.insets = new Insets(10, 0, 0, 5);
+		gbc_listPanel.fill = GridBagConstraints.BOTH;
+		gbc_listPanel.gridx = 0;
+		gbc_listPanel.gridy = 5;
+		metadataPanel.add(getListPanel(), gbc_listPanel);
+		
 		return metadataPanel;
+	}
+	
+	
+	/**
+	 * This methods creates the GUI element to edit a list of body size measures. Such a list is attached to tree nodes as one
+	 * type of example metadata. The GUI implementations in this method are not relevant for this example application to 
+	 * understand how metadata is processed in <i>JPhyloIO</i>. 
+	 * 
+	 * @return a panel with an editable list of body size measures
+	 */
+	protected JPanel getListPanel() {
+		if (listPanel == null) {
+			listPanel = new JPanel();
+			GridBagLayout gbl_listPanel = new GridBagLayout();
+			gbl_listPanel.columnWidths = new int[]{0, 0};
+			gbl_listPanel.rowHeights = new int[]{0, 0, 0, 0};
+			gbl_listPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+			gbl_listPanel.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+			listPanel.setLayout(gbl_listPanel);
+			
+			JLabel lblBodySizeMeasurements = new JLabel("Body size measurements:");
+			GridBagConstraints gbc_lblBodySizeMeasurements = new GridBagConstraints();
+			gbc_lblBodySizeMeasurements.weightx = 1.0;
+			gbc_lblBodySizeMeasurements.anchor = GridBagConstraints.WEST;
+			gbc_lblBodySizeMeasurements.insets = new Insets(2, 3, 5, 5);
+			gbc_lblBodySizeMeasurements.gridx = 0;
+			gbc_lblBodySizeMeasurements.gridy = 0;
+			listPanel.add(lblBodySizeMeasurements, gbc_lblBodySizeMeasurements);
+			
+			sizeTextField = new JFormattedTextField(NumberFormat.getNumberInstance(Locale.US));
+			GridBagConstraints gbc_sizeTextField = new GridBagConstraints();
+			gbc_sizeTextField.weightx = 1.0;
+			gbc_sizeTextField.insets = new Insets(0, 2, 5, 5);
+			gbc_sizeTextField.fill = GridBagConstraints.HORIZONTAL;
+			gbc_sizeTextField.gridx = 0;
+			gbc_sizeTextField.gridy = 1;
+			listPanel.add(sizeTextField, gbc_sizeTextField);
+			sizeTextField.setColumns(10);
+			
+			JButton addButton = new JButton("Add");
+			addButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (!sizeTextField.getText().isEmpty()) {
+						getSizeListModel().addElement(Double.parseDouble(sizeTextField.getText()));  // Add a new element to the list.
+					}
+				}
+			});
+			GridBagConstraints gbc_addButton = new GridBagConstraints();
+			gbc_addButton.fill = GridBagConstraints.HORIZONTAL;
+			gbc_addButton.insets = new Insets(0, 0, 5, 0);
+			gbc_addButton.gridx = 1;
+			gbc_addButton.gridy = 1;
+			listPanel.add(addButton, gbc_addButton);
+			
+			JButton removeButton = new JButton("Remove");
+			removeButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (getSizeList().getSelectedIndex() >= 0) {
+						getSizeListModel().remove(getSizeList().getSelectedIndex());  // Remove the currently selected element from the list.
+					}
+				}
+			});
+			
+			JScrollPane sizeListScrollPane = new JScrollPane(getSizeList());
+			GridBagConstraints gbc_sizeListScrollPane = new GridBagConstraints();
+			gbc_sizeListScrollPane.insets = new Insets(3, 2, 3, 5);
+			gbc_sizeListScrollPane.fill = GridBagConstraints.BOTH;
+			gbc_sizeListScrollPane.gridx = 0;
+			gbc_sizeListScrollPane.gridy = 2;
+			listPanel.add(sizeListScrollPane, gbc_sizeListScrollPane);
+			GridBagConstraints gbc_removeButton = new GridBagConstraints();
+			gbc_removeButton.fill = GridBagConstraints.HORIZONTAL;
+			gbc_removeButton.anchor = GridBagConstraints.NORTH;
+			gbc_removeButton.gridx = 1;
+			gbc_removeButton.gridy = 2;
+			listPanel.add(removeButton, gbc_removeButton);
+		}
+		return listPanel;
+	}
+	
+	
+	protected JList<Double> getSizeList() {
+		if (sizeList == null) {
+			sizeList = new JList<Double>(new DefaultListModel<Double>());
+			sizeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		}
+		return sizeList;
+	}
+	
+	
+	protected DefaultListModel<Double> getSizeListModel() {
+		return (DefaultListModel<Double>)getSizeList().getModel();
 	}
 }
