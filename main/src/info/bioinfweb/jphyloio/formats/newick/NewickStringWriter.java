@@ -127,7 +127,7 @@ public class NewickStringWriter implements NewickConstants {
 	private void writeSubtree(String nodeID) throws IOException {
 		TopoplogicalNodeInfo nodeInfo = topologyExtractor.getIDToNodeInfoMap().get(nodeID);
 		NewickNodeEdgeEventReceiver<EdgeEvent> edgeReceiver = new NewickNodeEdgeEventReceiver<EdgeEvent>(streamDataProvider, parameters);
-		edges.writeContentData(parameters, edgeReceiver, nodeInfo.getAfferentBranchID());  //TODO It would theoretically possible to save memory, if only the node ID would be read here and the associated metadata and comments would be read after the recursion.
+		edges.writeContentData(parameters, edgeReceiver, nodeInfo.getAfferentBranchID());  //TODO It would theoretically possible to save memory, if only the node ID would be processed here and the associated metadata and comments would be processed after the recursion.
 		Iterator<String> childNodeIDIterator = nodeInfo.getChildNodeIDs().iterator();
 		if (childNodeIDIterator.hasNext()) {
 			streamDataProvider.getWriter().write(SUBTREE_START);
@@ -152,6 +152,11 @@ public class NewickStringWriter implements NewickConstants {
 		if (edges.getObjectStartEvent(parameters, nodeInfo.getAfferentBranchID()).hasLength()) {
 			streamDataProvider.getWriter().write(LENGTH_SEPERATOR);
 			streamDataProvider.getWriter().write(Double.toString(edges.getObjectStartEvent(parameters, nodeInfo.getAfferentBranchID()).getLength()));
+		}
+		else if (!nodeReceiver.hasMetadataToWrite() && edgeReceiver.hasMetadataToWrite()) {  // If no node annotations and not branch length were written, an empty hot comment needs to be placed before the edge metadata. Otherwise it would become node metadata, when the output is read again.
+			streamDataProvider.getWriter().write(COMMENT_START);
+			streamDataProvider.getWriter().write(HOT_COMMENT_START_SYMBOL);
+			streamDataProvider.getWriter().write(COMMENT_END);
 		}
 		edgeReceiver.writeMetadata();
 		edgeReceiver.writeComments();

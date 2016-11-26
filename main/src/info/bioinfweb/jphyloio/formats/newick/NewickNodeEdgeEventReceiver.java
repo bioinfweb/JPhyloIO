@@ -203,9 +203,24 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 		commentEvents.add(event.asCommentEvent());
 	}
 
+	
+	/**
+	 * Determines whether this receiver currently stores metadata to be written into a <i>Newick</i>/<i>Nexus</i> hot comment.
+	 * 
+	 * @return {@code true} if any data can be written, {@code false} otherwise
+	 */
+	public boolean hasMetadataToWrite() {
+		return !metadataList.isEmpty();
+	}
+	
 
+	/**
+	 * Write the metadata stored in this receiver into a <i>Newick</i>/<i>Nexus</i> hot comment.
+	 * 
+	 * @throws IOException
+	 */
 	public void writeMetadata() throws IOException {
-		if (!metadataList.isEmpty()) {
+		if (hasMetadataToWrite()) {
 			getStreamDataProvider().getWriter().write(COMMENT_START);
 			getStreamDataProvider().getWriter().write(HOT_COMMENT_START_SYMBOL);
 			Iterator<Metadata> iterator = metadataList.iterator();
