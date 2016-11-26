@@ -99,8 +99,11 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 			
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				switch (event.getType().getContentType()) { 
-					case RESOURCE_META:  // Handle taxonomy resource metadata event that may be nested under a node.
+					case RESOURCE_META:  
 						ResourceMetadataEvent resourceEvent = event.asResourceMetadataEvent();
+						
+						// Handle taxonomy resource metadata event that may be nested under a node:
+						// (Such nested metadata can only be read from NeXML. Other formats like Nexus do not model such data.)
 						if (PREDICATE_HAS_TAXONOMY.equals(resourceEvent.getRel().getURI())) {
 							readTaxonomy(data.getTaxonomy());
 						}
@@ -111,7 +114,15 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 
 					case LITERAL_META:
 						LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
-						if (PREDICATE_HAS_SIZE_MEASUREMENTS.equals(literalEvent.getPredicate().getURI())) {
+						
+						// Load the list of possibly attached size measurements.
+						if (PREDICATE_HAS_SIZE_MEASUREMENTS.equals(literalEvent.getPredicate().getURI()) ||
+								PREDICATE_HAS_SIZE_MEASUREMENTS.getLocalPart().equals(literalEvent.getPredicate().getStringRepresentation())) {
+								// The first part of the condition is sufficient for formats that store predicates, e.g. NeXML.
+								// The second part compares the CURIE's local part and the string representation in addition, to be able to load
+								// the data from formats that use string keys instead of RDF-predicates, e.g. Nexus.
+							
+							
 							data.setSizeMeasurements(JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, List.class));
 							// If the document is invalid, the list would not necessarily contain only double values. This would have to checked in a real-world application to avoid exceptions.
 						}
@@ -143,7 +154,11 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
 					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
-					if (PREDICATE_HAS_SUPPORT.equals(literalEvent.getPredicate().getURI())) {
+					
+					// Load possible support value:
+					if (PREDICATE_HAS_SUPPORT.equals(literalEvent.getPredicate().getURI()) ||
+							PREDICATE_HAS_SUPPORT.getLocalPart().equals(literalEvent.getPredicate().getStringRepresentation())) {
+						
 						((NodeData)targetNode.getUserObject()).setSupport(
 								JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Number.class).doubleValue());
 								// By specifying Nubmer.class instead of Double.class, this method would also work for support values declared 

@@ -350,7 +350,9 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 			gbc_lblBodySizeMeasurements.gridy = 0;
 			listPanel.add(lblBodySizeMeasurements, gbc_lblBodySizeMeasurements);
 			
-			sizeTextField = new JFormattedTextField(NumberFormat.getNumberInstance(Locale.US));
+			NumberFormat sizeFormat = NumberFormat.getNumberInstance(Locale.US);
+			sizeFormat.setMaximumFractionDigits(10);
+			sizeTextField = new JFormattedTextField(sizeFormat);
 			GridBagConstraints gbc_sizeTextField = new GridBagConstraints();
 			gbc_sizeTextField.weightx = 1.0;
 			gbc_sizeTextField.insets = new Insets(0, 2, 5, 5);
