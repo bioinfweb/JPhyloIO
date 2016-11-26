@@ -84,12 +84,12 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 	    }
 	    
 	    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
-	    
-	    // Write size measurements:
-	    if ((data.getSizeMeasurements() != null) && !data.getSizeMeasurements().isEmpty()) {
-		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Sizes", null, 
-		    		PREDICATE_HAS_SIZE_MEASUREMENTS, DATA_TYPE_SIMPLE_VALUE_LIST, data.getSizeMeasurements());
-	    }
 		}
+		
+    // Write size measurements:
+    if ((data.getSizeMeasurements() != null) && !data.getSizeMeasurements().isEmpty()) {
+	    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Sizes", null, 
+	    		PREDICATE_HAS_SIZE_MEASUREMENTS, DATA_TYPE_SIMPLE_VALUE_LIST, data.getSizeMeasurements());
+    }
 	}
 }
