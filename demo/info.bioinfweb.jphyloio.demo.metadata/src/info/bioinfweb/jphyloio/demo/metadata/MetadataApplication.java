@@ -341,7 +341,7 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 			gbl_listPanel.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
 			listPanel.setLayout(gbl_listPanel);
 			
-			JLabel lblBodySizeMeasurements = new JLabel("Body size measurements:");
+			JLabel lblBodySizeMeasurements = new JLabel("Body size measurements [m]:");
 			GridBagConstraints gbc_lblBodySizeMeasurements = new GridBagConstraints();
 			gbc_lblBodySizeMeasurements.weightx = 1.0;
 			gbc_lblBodySizeMeasurements.anchor = GridBagConstraints.WEST;
@@ -360,7 +360,6 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 			gbc_sizeTextField.gridx = 0;
 			gbc_sizeTextField.gridy = 1;
 			listPanel.add(sizeTextField, gbc_sizeTextField);
-			sizeTextField.setColumns(10);
 			
 			JButton addButton = new JButton("Add");
 			addButton.addActionListener(new ActionListener() {

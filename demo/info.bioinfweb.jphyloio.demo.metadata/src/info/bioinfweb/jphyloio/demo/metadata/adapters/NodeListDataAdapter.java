@@ -24,10 +24,13 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.xml.namespace.QName;
 
 import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.demo.metadata.IOConstants;
 import info.bioinfweb.jphyloio.demo.metadata.NodeData;
@@ -37,6 +40,8 @@ import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 import info.bioinfweb.jphyloio.utils.JPhyloIOWritingUtils;
 
 
@@ -48,7 +53,7 @@ import info.bioinfweb.jphyloio.utils.JPhyloIOWritingUtils;
  * @author Ben St&ouml;ver
  */
 public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent> 
-		implements IOConstants, W3CXSConstants, ReadWriteConstants {
+		implements IOConstants, W3CXSConstants, ReadWriteConstants, ReadWriteParameterNames {
 	
 	public NodeListDataAdapter(List<TreeNode> nodes) {
 		super(nodes, NODE_ID_PREFIX);
@@ -70,20 +75,53 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 		
     // Write taxonomy information:
 		if ((data.getTaxonomy() != null) && !data.getTaxonomy().isEmpty()) {
-	    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax", null, 
-	    		new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));
-	    
-	    if ((data.getTaxonomy().getGenus() != null) && !data.getTaxonomy().getGenus().isEmpty()) {
-		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Genus", null,
-		        PREDICATE_HAS_GENUS, DATA_TYPE_STRING, data.getTaxonomy().getGenus(), null);
-	    }
-	    
-	    if ((data.getTaxonomy().getSpecies() != null) && !data.getTaxonomy().getSpecies().isEmpty()) {
-		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Species", null,
-		        PREDICATE_HAS_SPECIES, DATA_TYPE_STRING, data.getTaxonomy().getSpecies(), null);
-	    }
-	    
-	    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+			
+			// In order to use the special phyloXML tags, according predicates need to be used:
+			if (parameters.getObject(KEY_WRITER_INSTANCE, null, JPhyloIOEventWriter.class).getFormatID().equals(
+					JPhyloIOFormatIDs.PHYLOXML_FORMAT_ID)) {
+					// Each writer stores a reference to itself into it's parameter map, so it can be accessed by data adapters like this one.
+				
+				// Write taxonomy tag for genus:
+		    if ((data.getTaxonomy().getGenus() != null) && !data.getTaxonomy().getGenus().isEmpty()) {
+			    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax1", null, 
+			    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY), null, null));
+			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax2", null,
+			        PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME, DATA_TYPE_STRING, data.getTaxonomy().getGenus(), null);
+			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax3", null,
+			        PhyloXMLConstants.PREDICATE_TAXONOMY_RANK, DATA_TYPE_STRING, "genus", null);
+			    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+		    }
+		    
+		    // Write taxonomy tag for species:
+		    if ((data.getTaxonomy().getSpecies() != null) && !data.getTaxonomy().getSpecies().isEmpty()) {
+			    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax4", null, 
+			    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY), null, null));
+			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax5", null,
+			        PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME, DATA_TYPE_STRING, data.getTaxonomy().getSpecies(), null);
+			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax6", null,
+			        PhyloXMLConstants.PREDICATE_TAXONOMY_RANK, DATA_TYPE_STRING, "species", null);
+			    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+		    }
+		    
+			}
+			
+		  // Use "real" predicates for all other formats:
+			else {
+		    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax1", null, 
+		    		new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));
+		    
+		    if ((data.getTaxonomy().getGenus() != null) && !data.getTaxonomy().getGenus().isEmpty()) {
+			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax2", null,
+			        PREDICATE_HAS_GENUS, DATA_TYPE_STRING, data.getTaxonomy().getGenus(), null);
+		    }
+		    
+		    if ((data.getTaxonomy().getSpecies() != null) && !data.getTaxonomy().getSpecies().isEmpty()) {
+			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax3", null,
+			        PREDICATE_HAS_SPECIES, DATA_TYPE_STRING, data.getTaxonomy().getSpecies(), null);
+		    }
+		    
+		    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+			}
 		}
 		
     // Write size measurements:

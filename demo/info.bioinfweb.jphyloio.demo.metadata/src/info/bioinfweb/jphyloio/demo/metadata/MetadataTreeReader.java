@@ -27,6 +27,9 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
+import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.ListTranslator;
 import info.bioinfweb.jphyloio.utils.JPhyloIOReadingUtils;
 
 import java.io.IOException;
@@ -52,7 +55,7 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 	/**
 	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream.
 	 */
-	private void readTaxonomy(Taxonomy taxonomy) throws IOException {
+	private void readStandardTaxonomy(Taxonomy taxonomy) throws IOException {
 		JPhyloIOEvent event = reader.next();
 		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
 				// This loop shall stop, if a resource metadata end event is encountered. (Nested end events are already consumed 
@@ -83,8 +86,54 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 	
 	
 	/**
+	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream modeling a <i>PhyloXML</i>
+	 * document. Since <i>PhyloXML</i> offers specialized <i>XML</i> tags for taxonomy information, events with different 
+	 * predicates are produces from such a document.
+	 * <p>
+	 * Note that in contrast to {@link #readStandardTaxonomy(Taxonomy)} this method is called once for the genus and once for 
+	 * the species, due to the structure of <i>PhyloXML</i>.
+	 */
+	private void readPhyloXMLTaxonomy(Taxonomy taxonomy) throws IOException {
+		String rank = null;
+		String name = null;
+		
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
+					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+					if (PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) { 
+						name = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					}
+					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_RANK.equals(literalEvent.getPredicate().getURI())) { 
+						rank = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					}
+					else {
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+					}
+				}
+				else {  // Skip possible other event subsequences.
+					JPhyloIOReadingUtils.reachElementEnd(reader);
+				}
+			}
+			event = reader.next();
+		}
+		
+		if ((name != null) && (rank != null)) {
+			if (rank.equals("genus")) {
+				taxonomy.setGenus(name);
+			}
+			else if (rank.equals("species")) {
+				taxonomy.setSpecies(name);
+			}
+		}
+	}
+	
+	
+	/**
 	 * Processes the events nested between a node start and end event.
 	 */
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Override
 	protected void readNodeContents(DefaultMutableTreeNode node) throws IOException {
 		// Replace String user object (inherited from tree demo) by NodeData object:
@@ -105,7 +154,10 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 						// Handle taxonomy resource metadata event that may be nested under a node:
 						// (Such nested metadata can only be read from NeXML. Other formats like Nexus do not model such data.)
 						if (PREDICATE_HAS_TAXONOMY.equals(resourceEvent.getRel().getURI())) {
-							readTaxonomy(data.getTaxonomy());
+							readStandardTaxonomy(data.getTaxonomy());
+						}
+						else if (PhyloXMLConstants.PREDICATE_TAXONOMY.equals(resourceEvent.getRel().getURI())) {
+							readPhyloXMLTaxonomy(data.getTaxonomy());
 						}
 						else {  // Skip all nested events and their end event if other (unsupported) resource metadata are nested.
 							JPhyloIOReadingUtils.reachElementEnd(reader);
@@ -123,8 +175,24 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 								// the data from formats that use string keys instead of RDF-predicates, e.g. Nexus.
 							
 							
-							data.setSizeMeasurements(JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, List.class));
-							// If the document is invalid, the list would not necessarily contain only double values. This would have to checked in a real-world application to avoid exceptions.
+							Object list = JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Object.class);
+							if (list instanceof List) {  // This case is used when reading valid documents of all formats but PhyloXML.
+								data.setSizeMeasurements((List<Double>)list);  // If the document is invalid, the list would not necessarily contain only double values. This would have to checked in a real-world application to avoid exceptions.
+							}
+							else if (list instanceof String) {  // This block is used when reading valid PhyloXML documents.
+								// Since PhyloXML does not allow to specify externally defined datatypes in it's property tags, the list needs to
+								// be represented as a string there. Therefore JPhyloIO cannot know about the correct object translator and returns
+								// the value as a string, that still needs to be parsed.
+								
+								try {
+									data.setSizeMeasurements((List)new ListTranslator().representationToJava((String)list, null));
+									// This manual call of the object translator is a quick and dirty solution for this example, since null is
+									// specified as the steamDataProvider, which is not available here. Therefore object translators should usually
+									// not be called from application code directly. There is no guarantee that ListTranslator will work with
+									// streamDataProvider = null in future versions of JPhyloIO.
+								} 
+								catch (UnsupportedOperationException | InvalidObjectSourceDataException e) {}
+							}
 						}
 						else {  // Skip all nested events and their end event if other (unsupported) literal metadata are nested.
 							JPhyloIOReadingUtils.reachElementEnd(reader);
