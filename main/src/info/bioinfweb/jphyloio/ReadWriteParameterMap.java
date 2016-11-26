@@ -123,6 +123,7 @@ public class ReadWriteParameterMap extends ParameterMap implements ReadWritePara
 		if (!(result instanceof ObjectTranslatorFactory)) {  // Also checks for null.
 			result = new ObjectTranslatorFactory();
 			((ObjectTranslatorFactory)result).addXSDTranslators(true);
+			((ObjectTranslatorFactory)result).addJPhyloIOTranslators(true);
 			put(KEY_OBJECT_TRANSLATOR_FACTORY, result);
 		}
 		return (ObjectTranslatorFactory)result;

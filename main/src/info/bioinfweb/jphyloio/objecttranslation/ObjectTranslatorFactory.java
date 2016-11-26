@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.objecttranslation;
 
 
 import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.Base64BinaryTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.BigDecimalTranslator;
@@ -32,6 +33,7 @@ import info.bioinfweb.jphyloio.objecttranslation.implementations.DoubleTranslato
 import info.bioinfweb.jphyloio.objecttranslation.implementations.FloatTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.HexBinaryTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.IntegerTranslator;
+import info.bioinfweb.jphyloio.objecttranslation.implementations.ListTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.LongTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.QNameTranslator;
 import info.bioinfweb.jphyloio.objecttranslation.implementations.ShortTranslator;
@@ -53,14 +55,15 @@ import javax.xml.namespace.QName;
  * <p>
  * After creation this factory is empty. New translators can be added to this factory using 
  * {@link #addTranslator(ObjectTranslator, boolean)}. A default set of translators for XSD types can be added by calling
- * {@link #addXSDTranslators(boolean)}. 
+ * {@link #addXSDTranslators(boolean)}. Support for custom <i>JPhyloIO</i> data types can be added using 
+ * {@link #addJPhyloIOTranslators(boolean)}.
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
  * @see ObjectTranslator
  * @see ReadWriteParameterNames#KEY_OBJECT_TRANSLATOR_FACTORY
  */
-public class ObjectTranslatorFactory implements W3CXSConstants {
+public class ObjectTranslatorFactory implements W3CXSConstants, ReadWriteConstants {
 	private Map<TranslatorMapKey, ObjectTranslator<?>> translatorMap = new HashMap<TranslatorMapKey, ObjectTranslator<?>>();
 	
 	
@@ -133,6 +136,22 @@ public class ObjectTranslatorFactory implements W3CXSConstants {
 		addTranslator(new HexBinaryTranslator(), asDefault, DATA_TYPE_HEX_BINARY);
 		
 		//TODO Add support for additional XSD types.
+	}
+	
+	
+	/**
+	 * Adds all translators for custom types defined in <i>JPhyloIO</i>. Currently {@link ListTranslator} is registered
+	 * under {@link ReadWriteConstants#DATA_TYPE_SIMPLE_VALUE_LIST}.
+	 * 
+	 * @param asDefault Determines whether the added translators shall become the default translators for their data type, 
+	 *        if another default instance is already registered. (If {@code true} is specified, previous defaults will be
+	 *        overwritten. If {@code false} is specified, previous defaults will be maintained. In all cases previous entries
+	 *        will remain in the factory, if they have a different object type and will be completely overwritten if they have 
+	 *        the same.)
+	 * @since 0.3.0  
+	 */
+	public void addJPhyloIOTranslators(boolean asDefault) {
+		addTranslator(new ListTranslator(), asDefault, DATA_TYPE_SIMPLE_VALUE_LIST);
 	}
 	
 	

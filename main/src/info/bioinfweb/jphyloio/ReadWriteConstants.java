@@ -19,6 +19,8 @@
 package info.bioinfweb.jphyloio;
 
 
+import info.bioinfweb.jphyloio.objecttranslation.implementations.ListTranslator;
+
 import javax.xml.namespace.QName;
 
 
@@ -49,26 +51,48 @@ public interface ReadWriteConstants {
 	
 	public static final String JPHYLOIO_ATTRIBUTES_NAMESPACE = JPHYLOIO_GENERAL_NAMESPACE + ATTRIBUTES_NAMESPACE_FOLDER + "/";
 	public static final String JPHYLOIO_ATTRIBUTES_PREFIX = "jpa";
-	public static final QName ATTRIBUTE_STRING_KEY = new QName(JPHYLOIO_ATTRIBUTES_NAMESPACE, "stringKey");
+	public static final QName ATTRIBUTE_STRING_KEY = new QName(JPHYLOIO_ATTRIBUTES_NAMESPACE, "stringKey", JPHYLOIO_ATTRIBUTES_PREFIX);
 	
 	public static final String JPHYLOIO_PREDICATE_NAMESPACE = JPHYLOIO_GENERAL_NAMESPACE + PREDICATE_NAMESPACE_FOLDER + "/";
 	public static final String JPHYLOIO_PREDICATE_PREFIX = "jpp";
 	public static final String JPHYLOIO_FORMATS_NAMESPACE_PREFIX = JPHYLOIO_NAMESPACE_PREFIX + "Formats/";
 	
-	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata");
-	public static final QName PREDICATE_HAS_RESOURCE_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasResourceMetadata");
-	public static final QName PREDICATE_HAS_CUSTOM_XML = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasCustomXML");
+	public static final QName PREDICATE_HAS_LITERAL_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasLiteralMetadata", JPHYLOIO_PREDICATE_PREFIX);
+	public static final QName PREDICATE_HAS_RESOURCE_METADATA = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasResourceMetadata", JPHYLOIO_PREDICATE_PREFIX);
+	public static final QName PREDICATE_HAS_CUSTOM_XML = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "hasCustomXML", JPHYLOIO_PREDICATE_PREFIX);
 	
-	public static final QName PREDICATE_SEQUENCE_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "sequenceCount");
-	public static final QName PREDICATE_CHARACTER_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "characterCount");
-	public static final QName PREDICATE_IS_ALIGNED = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isAligned");  //TODO Is this still needed? (If so, make sure not to produce reader-writer-inconsistencies in its use.)
+	public static final QName PREDICATE_SEQUENCE_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "sequenceCount", JPHYLOIO_PREDICATE_PREFIX);
+	public static final QName PREDICATE_CHARACTER_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "characterCount", JPHYLOIO_PREDICATE_PREFIX);
+	public static final QName PREDICATE_IS_ALIGNED = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isAligned", JPHYLOIO_PREDICATE_PREFIX);  //TODO Is this still needed? (If so, make sure not to produce reader-writer-inconsistencies in its use.)
 	
 	//TODO Are these predicates intended for general use or should they be moved to the PhyloXML namespace?
-	public static final QName PREDICATE_EDGE_SOURCE_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeSourceNode");
-	public static final QName PREDICATE_EDGE_TARGET_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeTargetNode");
-	public static final QName PREDICATE_EDGE_LENGTH = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeLength");
-	public static final QName PREDICATE_IS_CROSSLINK = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isCrosslink");  // Can be written e.g. to NeXML. Will not be written as metadata to PhyloXML, since the cladeRelation-tag does not allow nested metadata.
+	public static final QName PREDICATE_EDGE_SOURCE_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeSourceNode", JPHYLOIO_PREDICATE_PREFIX);
+	public static final QName PREDICATE_EDGE_TARGET_NODE = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeTargetNode", JPHYLOIO_PREDICATE_PREFIX);
+	public static final QName PREDICATE_EDGE_LENGTH = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "edgeLength", JPHYLOIO_PREDICATE_PREFIX);
+	public static final QName PREDICATE_IS_CROSSLINK = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isCrosslink", JPHYLOIO_PREDICATE_PREFIX);  // Can be written e.g. to NeXML. Will not be written as metadata to PhyloXML, since the cladeRelation-tag does not allow nested metadata.
 	
+	/**
+	 * The namespace for data types defined in <i>JPhyloIO</i>.
+	 *  
+	 * @since 0.3.0  
+	 */
+	public static final String JPHYLOIO_DATA_TYPE_NAMESPACE = JPHYLOIO_GENERAL_NAMESPACE + DATA_TYPE_NAMESPACE_FOLDER + "/";
+	
+	/**
+	 * The default namespace prefix for {@link #JPHYLOIO_DATA_TYPE_NAMESPACE}.
+	 *  
+	 * @since 0.3.0  
+	 */
+	public static final String JPHYLOIO_DATA_TYPE_PREFIX = "jpd";
+	
+	/**
+	 * A custom data type defined in <i>JPhyloIO</i> that indicates that a list in the <i>Newick</i>/<i>Nexus</i> metadata notation 
+	 * as processed by {@link ListTranslator} is stored in an <i>XML</i> format.
+	 *  
+	 * @since 0.3.0  
+	 */
+	public static final QName DATA_TYPE_SIMPLE_VALUE_LIST = new QName(JPHYLOIO_DATA_TYPE_NAMESPACE, "simpleValueList", JPHYLOIO_DATA_TYPE_PREFIX);	
+
 	public static final String RESERVED_ID_PREFIX = "info.bioinfweb.jphyloio.reservedIDs.";
 	
 	public static final String DEFAULT_GENERAL_ID_PREFIX = "id";

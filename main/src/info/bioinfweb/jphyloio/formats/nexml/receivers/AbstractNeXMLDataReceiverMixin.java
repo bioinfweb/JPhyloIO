@@ -73,7 +73,7 @@ public class AbstractNeXMLDataReceiverMixin implements NeXMLConstants {
 			predicate = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
 		}
 		
-		if (event.getPredicate().getStringRepresentation() != null) {  // URIORSTringIdentifier checks if either string representation or URI are present, both can not be null
+		if (event.getPredicate().getStringRepresentation() != null) {  // URIORStringIdentifier checks if either a string representation or an URI are present, both can not be null.
 			writer.writeAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY.getNamespaceURI(), ReadWriteConstants.ATTRIBUTE_STRING_KEY.getLocalPart(), event.getPredicate().getStringRepresentation());
 		}
 		

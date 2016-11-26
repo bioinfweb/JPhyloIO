@@ -19,18 +19,34 @@
 package info.bioinfweb.jphyloio.objecttranslation.implementations;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.WriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.newick.NewickConstants;
 import info.bioinfweb.jphyloio.formats.newick.NewickUtils;
 import info.bioinfweb.jphyloio.objecttranslation.InvalidObjectSourceDataException;
+import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 
 
 
+/**
+ * Reads and writes string representations of simple values as used in <i>Newick</i> or <i>Nexus</i>. Elements can
+ * either be strings or numeric values.
+ * <p>
+ * <b>Example:</b>
+ * <pre>{18.2, 'AB C', 22}</pre>
+ * For a possible format independent use, the data type {@link ReadWriteConstants#DATA_TYPE_SIMPLE_VALUE_LIST}
+ * allows to use this translator also in <i>NeXML</i>, although it primarily meant for <i>Newick</i> and <i>Nexus</i>.
+ * 
+ * @author Ben St&ouml;ver
+ * @see ReadWriteConstants#DATA_TYPE_SIMPLE_VALUE_LIST
+ * @see ObjectTranslatorFactory#addJPhyloIOTranslators(boolean)
+ */
 public class ListTranslator extends SimpleValueTranslator<List<Object>> implements NewickConstants {
 	@SuppressWarnings("unchecked")
 	@Override
@@ -39,6 +55,13 @@ public class ListTranslator extends SimpleValueTranslator<List<Object>> implemen
 	}
 		
 	
+	/**
+	 * Reads a string representation of a simple value list into an implementation of {@link List}. The single elements are either
+	 * instances of {@link String} or any implementation of {@link Number}. {@link Double} will be used by default, for values
+	 * having a higher precision, {@link BigDecimal} will be used instead.
+	 * 
+	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#representationToJava(java.lang.String, info.bioinfweb.jphyloio.ReaderStreamDataProvider)
+	 */
 	@Override
 	public List<Object> representationToJava(String representation,	ReaderStreamDataProvider<?> streamDataProvider)
 			throws InvalidObjectSourceDataException, UnsupportedOperationException {
@@ -65,10 +88,17 @@ public class ListTranslator extends SimpleValueTranslator<List<Object>> implemen
 	}
 
 
+	/**
+	 * Creates the string representation of a simple value list from any object that implements {@link Iterable}.
+	 * 
+	 * @param object the {@link Iterable} to be converted
+	 * @return the string representation of the list 
+	 * @throws ClassCastException if {@code object} does not implement {@link Iterable}
+	 */
 	@Override
-	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider)	throws UnsupportedOperationException, ClassCastException {
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider)	throws ClassCastException {
 		@SuppressWarnings("unchecked")
-		List<Object> list = (List<Object>)object;  // Possible ClassCastException is intended.
+		Iterable<Object> list = (Iterable<Object>)object;  // Possible ClassCastException is intended.
 		StringBuilder result = new StringBuilder();
 		result.append(FIELD_START_SYMBOL);
 		
