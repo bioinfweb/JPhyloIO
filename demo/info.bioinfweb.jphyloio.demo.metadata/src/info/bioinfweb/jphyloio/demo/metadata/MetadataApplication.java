@@ -19,28 +19,6 @@
 package info.bioinfweb.jphyloio.demo.metadata;
 
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.Locale;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import info.bioinfweb.commons.appversion.ApplicationType;
 import info.bioinfweb.commons.appversion.ApplicationVersion;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
@@ -54,13 +32,34 @@ import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetadataTreatment;
 
-import javax.swing.JList;
-import javax.swing.JButton;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.Locale;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 
@@ -183,6 +182,7 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 			}
 			selection.getTaxonomy().setGenus(genusTextField.getText());
 			selection.getTaxonomy().setSpecies(speciesTextField.getText());
+			selection.setSizeMeasurements(Collections.list(getSizeListModel().elements()));
 		}
 	}
 	
@@ -210,6 +210,11 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 					}
 					genusTextField.setText(selection.getTaxonomy().getGenus());
 					speciesTextField.setText(selection.getTaxonomy().getSpecies());
+					
+					getSizeListModel().clear();
+					for (Double size : selection.getSizeMeasurements()) {
+						getSizeListModel().addElement(size);
+					}
 				}
 				else {
 					selection = null;

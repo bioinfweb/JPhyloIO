@@ -70,7 +70,8 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 		
     // Write taxonomy information:
 		if ((data.getTaxonomy() != null) && !data.getTaxonomy().isEmpty()) {
-	    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax", null, new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));
+	    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax", null, 
+	    		new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));
 	    
 	    if ((data.getTaxonomy().getGenus() != null) && !data.getTaxonomy().getGenus().isEmpty()) {
 		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Genus", null,
@@ -82,12 +83,13 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 		        PREDICATE_HAS_SPECIES, DATA_TYPE_STRING, data.getTaxonomy().getSpecies(), null);
 	    }
 	    
-	    // Write size measurements:
-//	    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Sizes", null, 
-//	    		PREDICATE_HAS_SIZE_MEASUREMENTS, originalType, objectValue);
-	    //TODO Decide if list data type (to be used with XML formats) should be defined here or in JPhyloIO. 
-	    
 	    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+	    
+	    // Write size measurements:
+	    if ((data.getSizeMeasurements() != null) && !data.getSizeMeasurements().isEmpty()) {
+		    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Sizes", null, 
+		    		PREDICATE_HAS_SIZE_MEASUREMENTS, DATA_TYPE_SIMPLE_VALUE_LIST, data.getSizeMeasurements());
+	    }
 		}
 	}
 }

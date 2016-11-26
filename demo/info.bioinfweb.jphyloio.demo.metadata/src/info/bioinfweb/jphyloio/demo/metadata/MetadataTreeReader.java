@@ -113,8 +113,7 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 						LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
 						if (PREDICATE_HAS_SIZE_MEASUREMENTS.equals(literalEvent.getPredicate().getURI())) {
 							data.setSizeMeasurements(JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, List.class));
-							//TODO If the document is invalid, the list would not necessarily contain only double values. This would have to checked.
-							//TODO ListTranslator wird momentan nur in Newick und Nexus zum Schreiben verwendet. Soll das auch in den anderen Formate passieren? Welchen Datentyp (URI) haben Listen dann?
+							// If the document is invalid, the list would not necessarily contain only double values. This would have to checked in a real-world application to avoid exceptions.
 						}
 						else {  // Skip all nested events and their end event if other (unsupported) literal metadata are nested.
 							JPhyloIOReadingUtils.reachElementEnd(reader);
