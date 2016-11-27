@@ -23,6 +23,11 @@ import javax.xml.namespace.QName;
 
 
 
+/**
+ * Provides constants necessary for reading and writing the metadata of this demo application.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public interface IOConstants {
 	public static final String TREE_ID = "tree";
 	public static final String EDGE_ID_PREFIX = "edge";
