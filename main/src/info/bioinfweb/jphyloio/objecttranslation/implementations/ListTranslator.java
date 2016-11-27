@@ -58,14 +58,13 @@ public class ListTranslator extends SimpleValueTranslator<List<Object>> implemen
 	/**
 	 * Reads a string representation of a simple value list into an implementation of {@link List}. The single elements are either
 	 * instances of {@link String} or any implementation of {@link Number}. {@link Double} will be used by default, for values
-	 * having a higher precision, {@link BigDecimal} will be used instead.
+	 * having a higher precision, {@link BigDecimal} will be used instead. 
 	 * 
-	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#representationToJava(java.lang.String, info.bioinfweb.jphyloio.ReaderStreamDataProvider)
+	 * @param representation the string representation of the list
+	 * @return a list instance
+	 * @throws InvalidObjectSourceDataException
 	 */
-	@Override
-	public List<Object> representationToJava(String representation,	ReaderStreamDataProvider<?> streamDataProvider)
-			throws InvalidObjectSourceDataException, UnsupportedOperationException {
-
+	public static List<Object> parseList(String representation) throws InvalidObjectSourceDataException {
 		representation = representation.trim();
 		if (representation.startsWith("" + FIELD_START_SYMBOL) && representation.endsWith("" + FIELD_END_SYMBOL)) {
 			List<Object> result = new ArrayList<Object>();
@@ -86,23 +85,28 @@ public class ListTranslator extends SimpleValueTranslator<List<Object>> implemen
 					+ FIELD_END_SYMBOL + "'.");
 		}
 	}
-
-
+	
+	
 	/**
-	 * Creates the string representation of a simple value list from any object that implements {@link Iterable}.
+	 * Reads a string representation of a simple value list into an implementation of {@link List}. The single elements are either
+	 * instances of {@link String} or any implementation of {@link Number}. {@link Double} will be used by default, for values
+	 * having a higher precision, {@link BigDecimal} will be used instead.
 	 * 
-	 * @param object the {@link Iterable} to be converted
-	 * @return the string representation of the list 
-	 * @throws ClassCastException if {@code object} does not implement {@link Iterable}
+	 * @see info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator#representationToJava(java.lang.String, info.bioinfweb.jphyloio.ReaderStreamDataProvider)
 	 */
 	@Override
-	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider)	throws ClassCastException {
-		@SuppressWarnings("unchecked")
-		Iterable<Object> list = (Iterable<Object>)object;  // Possible ClassCastException is intended.
+	public List<Object> representationToJava(String representation,	ReaderStreamDataProvider<?> streamDataProvider)
+			throws InvalidObjectSourceDataException, UnsupportedOperationException {
+
+		return parseList(representation);
+	}
+
+
+	public static String listToString(Iterable<?> list)	throws ClassCastException {
 		StringBuilder result = new StringBuilder();
 		result.append(FIELD_START_SYMBOL);
 		
-		Iterator<Object> iterator = list.iterator();
+		Iterator<?> iterator = list.iterator();
 		while (iterator.hasNext()) {
 			Object element = iterator.next();
 			if (element instanceof Number) {  // Write numeric value
@@ -122,5 +126,18 @@ public class ListTranslator extends SimpleValueTranslator<List<Object>> implemen
 		
 		result.append(FIELD_END_SYMBOL);
 		return result.toString();
+	}
+	
+	
+	/**
+	 * Creates the string representation of a simple value list from any object that implements {@link Iterable}.
+	 * 
+	 * @param object the {@link Iterable} to be converted
+	 * @return the string representation of the list 
+	 * @throws ClassCastException if {@code object} does not implement {@link Iterable}
+	 */
+	@Override
+	public String javaToRepresentation(Object object, WriterStreamDataProvider<?> streamDataProvider)	throws ClassCastException {
+		return listToString((List<?>)object);
 	}
 }
