@@ -30,6 +30,9 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
+ * @see LiteralMetadataContentEvent
+ * @see ResourceMetadataEvent
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class LiteralMetadataEvent extends LabeledIDEvent {
 	private URIOrStringIdentifier predicate;

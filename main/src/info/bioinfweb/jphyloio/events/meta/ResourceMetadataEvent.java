@@ -37,6 +37,8 @@ import java.net.URI;
  *
  * @author Ben St&ouml;ver
  * @since 0.0.0
+ * @see LiteralMetadataEvent
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class ResourceMetadataEvent extends LabeledIDEvent {
 	private URIOrStringIdentifier rel;
