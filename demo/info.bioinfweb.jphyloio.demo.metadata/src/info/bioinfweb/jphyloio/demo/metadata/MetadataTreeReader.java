@@ -185,11 +185,7 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 								// the value as a string, that still needs to be parsed.
 								
 								try {
-									data.setSizeMeasurements((List)new ListTranslator().representationToJava((String)list, null));
-									// This manual call of the object translator is a quick and dirty solution for this example, since null is
-									// specified as the steamDataProvider, which is not available here. Therefore object translators should usually
-									// not be called from application code directly. There is no guarantee that ListTranslator will work with
-									// streamDataProvider = null in future versions of JPhyloIO.
+									data.setSizeMeasurements((List)ListTranslator.parseList((String)list));
 								} 
 								catch (UnsupportedOperationException | InvalidObjectSourceDataException e) {}
 							}
