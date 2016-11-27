@@ -80,6 +80,25 @@ public class JPhyloIOWritingUtils {
 	}
 
 
+	/**
+	 * Writes an event subsequence modeling a literal metadata annotation with a simple value. The generated content event will have 
+	 * the sequence type {@link LiteralContentSequenceType#SIMPLE}.
+	 * <p>
+	 * This tool method can be useful in an application's implementation of a data adapter providing metadata.
+	 * 
+	 * @param receiver the event receiver to write the event sequence to
+	 * @param id the ID of the literal metadata start event to be written
+	 * @param label the label of the literal metadata start event to be written
+	 * @param predicate the predicate of the literal metadata start event to be written
+	 * @param originalType the type of the literal metadata start event to be written
+	 * @param objectValue the object value of the literal metadata content event to be written
+	 * @param stringRepresentation the string value of the literal metadata content event to be written
+	 * @throws IOException if an I/O exception is thrown by {@code receiver}
+	 * @see #writeSimpleLiteralMetadata(JPhyloIOEventReceiver, String, String, QName, QName, Object, String)
+	 * @see LiteralMetadataEvent
+	 * @see LiteralMetadataContentEvent
+	 * @see LiteralContentSequenceType#SIMPLE
+	 */
 	public static void writeSimpleLiteralMetadata(JPhyloIOEventReceiver receiver, String id, String label,
 			URIOrStringIdentifier predicate, URIOrStringIdentifier originalType, Object objectValue, String stringRepresentation)
 			throws IOException {
@@ -90,6 +109,28 @@ public class JPhyloIOWritingUtils {
 	}
 
 
+	/**
+	 * Writes an event subsequence modeling a literal metadata annotation with a simple value. The generated content event will have 
+	 * the sequence type {@link LiteralContentSequenceType#SIMPLE}. In contrast to
+	 * {@link #writeSimpleLiteralMetadata(JPhyloIOEventReceiver, String, String, URIOrStringIdentifier, URIOrStringIdentifier, Object, String)}
+	 * this convenience method accepts {@link QName}s instead of {@link URIOrStringIdentifier}s as the predicate and original type 
+	 * and will assume {@code null} for the respective string keys.
+	 * <p>
+	 * This tool method can be useful in an application's implementation of a data adapter providing metadata.
+	 * 
+	 * @param receiver the event receiver to write the event sequence to
+	 * @param id the ID of the literal metadata start event to be written
+	 * @param label the label of the literal metadata start event to be written
+	 * @param predicate the predicate of the literal metadata start event to be written
+	 * @param originalType the type of the literal metadata start event to be written
+	 * @param objectValue the object value of the literal metadata content event to be written
+	 * @param stringRepresentation the string value of the literal metadata content event to be written
+	 * @throws IOException if an I/O exception is thrown by {@code receiver}
+	 * @see #writeSimpleLiteralMetadata(JPhyloIOEventReceiver, String, String, URIOrStringIdentifier, URIOrStringIdentifier, Object, String)
+	 * @see LiteralMetadataEvent
+	 * @see LiteralMetadataContentEvent
+	 * @see LiteralContentSequenceType#SIMPLE
+	 */
 	public static void writeSimpleLiteralMetadata(JPhyloIOEventReceiver receiver, String id, String label,
 			QName predicate, QName originalType, Object objectValue, String stringRepresentation)
 			throws IOException {
@@ -99,6 +140,29 @@ public class JPhyloIOWritingUtils {
 	}
 
 
+	/**
+	 * Writes an event subsequence modeling a literal metadata annotation with a simple value. The generated content event will have 
+	 * the sequence type {@link LiteralContentSequenceType#SIMPLE}. In contrast to
+	 * {@link #writeSimpleLiteralMetadata(JPhyloIOEventReceiver, String, String, URIOrStringIdentifier, URIOrStringIdentifier, Object, String)}
+	 * this convenience method accepts {@link QName}s instead of {@link URIOrStringIdentifier}s as the predicate and original type 
+	 * and will assume {@code null} for the respective string keys. Compared to 
+	 * {@link #writeSimpleLiteralMetadata(JPhyloIOEventReceiver, String, String, QName, QName, Object, String)} this method also
+	 * omits the value's string representation and assumes {@code null} for it.
+	 * <p>
+	 * This tool method can be useful in an application's implementation of a data adapter providing metadata.
+	 * 
+	 * @param receiver the event receiver to write the event sequence to
+	 * @param id the ID of the literal metadata start event to be written
+	 * @param label the label of the literal metadata start event to be written
+	 * @param predicate the predicate of the literal metadata start event to be written
+	 * @param originalType the type of the literal metadata start event to be written
+	 * @param objectValue the object value of the literal metadata content event to be written
+	 * @throws IOException if an I/O exception is thrown by {@code receiver}
+	 * @see #writeSimpleLiteralMetadata(JPhyloIOEventReceiver, String, String, URIOrStringIdentifier, URIOrStringIdentifier, Object, String)
+	 * @see LiteralMetadataEvent
+	 * @see LiteralMetadataContentEvent
+	 * @see LiteralContentSequenceType#SIMPLE
+	 */
 	public static void writeSimpleLiteralMetadata(JPhyloIOEventReceiver receiver, String id, String label,
 			QName predicate, QName originalType, Object objectValue) throws IOException {
 
