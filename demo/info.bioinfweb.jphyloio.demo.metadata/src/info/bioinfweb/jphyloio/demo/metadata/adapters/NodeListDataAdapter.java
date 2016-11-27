@@ -105,7 +105,7 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 		    
 			}
 			
-		  // Use "real" predicates for all other formats:
+			// Use "real" predicates for all other formats:
 			else {
 		    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax1", null, 
 		    		new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));

@@ -69,7 +69,7 @@ public class EdgeListDataAdapter extends NodeEdgeListDataAdapter<EdgeEvent>
 		double support = ((NodeData)((DefaultMutableTreeNode)node).getUserObject()).getSupport();
 		if (!Double.isNaN(support)) {
 	    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Support", null,
-	        PREDICATE_HAS_SUPPORT, DATA_TYPE_DOUBLE, support, null);
+	    			PREDICATE_HAS_SUPPORT, DATA_TYPE_DOUBLE, support, null);
 	    		// Simple literal metadata of this type will automatically be written to a property tag in PhyloXML.  //TODO Test
 		}
 	}
