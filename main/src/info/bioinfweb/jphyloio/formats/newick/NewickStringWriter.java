@@ -42,6 +42,9 @@ import java.util.Iterator;
  * Implementation to write Newick tree definitions to be used by {@link NewickEventWriter} and {@link NexusEventWriter}.
  * 
  * @author Ben St&ouml;ver
+ * @see NewickEventWriter
+ * @see NexusEventWriter
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class NewickStringWriter implements NewickConstants {
 	private TextWriterStreamDataProvider<?> streamDataProvider;

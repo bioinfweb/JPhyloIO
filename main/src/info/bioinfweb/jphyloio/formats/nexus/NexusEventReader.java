@@ -116,6 +116,7 @@ import java.io.Reader;
  * </ul>
  * 
  * @author Ben St&ouml;ver
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamDataProvider> implements NexusConstants {
 	private NexusBlockHandlerMap blockHandlerMap;

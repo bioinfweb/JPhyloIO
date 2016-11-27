@@ -51,27 +51,44 @@ import javax.xml.stream.XMLStreamException;
 
 /**
  * Event writer for the <a href="http://phyloxml.org/">PhyloXML</a> format.
- * <p>
+ * 
+ * <h3><a id="treesNetworks"></a>Phylogenetic trees or networks</h3>
+ *  
  * This writer supports writing phylogenetic trees and rooted networks. Phylogenetic networks are represented using 
  * the {@code clade_rel} tag in <i>PhyloXML</i>. To be able to write a hierarchical tree structure, the topology is 
  * reconstructed in the tool class {@link TreeTopologyExtractor} from the node and edge lists provided by 
  * {@link TreeNetworkDataAdapter}. This writer does not support writing phylogenetic networks with multiple roots 
  * due to the way topologies are reconstructed from the sequential lists of nodes and edges in <i>JPhyloIO</i>.
+ * 
+ * <h3><a id="simpleLiteralMetadata"></a>Simple literal metadata</h3>
+ * 
+ * Metadata with literal values that belongs to a tree, network, node or edge can be written to {@code property} tags nested under
+ * {@code phylogeny} or {@code clade}. Since these can not be nested in each other, the user can define a strategy
+ * to deal with nested meta-events with a parameter of the type {@link PhyloXMLMetadataTreatment}. This allows
+ * to e.g. write all meta-event values sequentially or ignore any nested metadata.
+ * 
+ * <h3><a id="specificMetadata"></a><i>PhyloXML</i>-specific metadata</h3>
+ * 
+ * <i>PhyloXML</i> specific metadata can be written using metadata events with respective predicates, which are declared
+ * in {@link PhyloXMLConstants}. The nesting of the tags to be written must be reflected in the nesting of the metadata
+ * events, where parent tags are modeled with {@link ResourceMetadataEvent}s using respective predicates and textual data
+ * of terminal tags and attribute values are modeled with {@link LiteralMetadataEvent}s also using respective predicates.
+ * If terminal tags have attributes, there is a predicate to be used for a parent resource metadata event and additional
+ * predicates for each attribute. The textual value nested in this tag has the form {@code XXX_VALUE}. (An example would
+ * be {@link PhyloXMLConstants#PREDICATE_NODE_ID_VALUE}, which would be nested under 
+ * {@link PhyloXMLConstants#PREDICATE_NODE_ID} together with {@link PhyloXMLConstants#PREDICATE_NODE_ID_ATTR_PROVIDER}.)
  * <p>
- * Meta-events with specific, internally used predicates are translated to the according <i>PhyloXML</i> tags.
  * Since the <i>PhyloXML</i> schema defines a fixed order of tags, only meta-events with certain predicates
  * are allowed in the content of different data elements and they also need to be in a specific order. Otherwise
  * an {@link InconsistentAdapterDataException} will be thrown.
- * In the following the allowed predicates nested under a {@link JPhyloIOEvent} with a certain content type are listed. Which 
- * predicates are allowed to be present in the content of these meta-events results from the information in the
- * <a href="http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html">PhyloXML schema</a> and the 
- * accordingly named predicates in the {ink {@link PhyloXMLConstants}. Some predicates representing tags with more content
- * than just free text (e.g. attributes or nested tags) may only appear in {@link ResourceMetadataEvent}s used to group 
- * literal meta-events representing these contents. Tags with text only content are represented by 
- * {@link LiteralMetadataEvent}s. This information can also be obtained from the <i>PhyloXML</i> schema.
- * <p>
- * Namespaces used or declared in custom XML elements are managed according to {@link ReadWriteParameterNames#KEY_CUSTOM_XML_NAMESPACE_HANDLING}. 
- * More information about this can be found in the documentation of {@link XMLReadWriteUtils#manageLiteralContentMetaNamespaces()}.
+ * 
+ * <h4><a id="specificMetadataPredicates"></a>Where to use which predicates</h4>
+ * 
+ * In the following the allowed predicates nested under an event with a certain content type are listed. (Which 
+ * predicates are allowed to be present in the content of these metadata events results from the information in the
+ * <i>PhyloXML</i> schema (version <a href="http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html">1.10</a> and 
+ * <a href="http://www.phyloxml.org/documentation/version_1.20/phyloxml.html">1.20</a>) and the accordingly named predicates 
+ * declared in {@link PhyloXMLConstants}.)
  * <p>
  * Predicates allowed nested under events with {@link EventContentType#TREE} or {@link EventContentType#NETWORK}:
  * <ul>
@@ -101,12 +118,16 @@ import javax.xml.stream.XMLStreamException;
  *   <li>{@link PhyloXMLConstants#PREDICATE_REFERENCE}</li>
  *   <li>{@link PhyloXMLConstants#PREDICATE_PROPERTY}</li>
  * </ul>
- * Custom XML can be written nested under {@code clade} and {@code phylogeny} tags if it does not consist of character 
- * data that is not nested under any tags or tags that are already defined in <i>PhyloXML</i>, otherwise it will be igmored.
- * Metadata with literal values that belongs to a tree, network, node or edge can be written to {@code property} tags nested under
- * {@code phylogeny} or {@code clade}. Since these can not be nested in each other, the user can define a strategy
- * to deal with nested meta-events with a parameter of the type {@link PhyloXMLMetadataTreatment}. This allows
- * to e.g. write all meta-event values sequentially or ignore any nested metadata.
+ * 
+ * <h3><a id="customXML"></a>Custom XML annotations</h3>
+ * 
+ * Custom XML can be written nested under the {@code clade} and the {@code phylogeny} tag if it does not consist of character 
+ * data that is not nested under any tags or tags that are already defined in <i>PhyloXML</i>. <i>XML</i> metadata not fulfilling
+ * this conditions will be ignored.
+ * <p>
+ * Namespaces used or declared in custom XML elements are managed according to 
+ * {@link ReadWriteParameterNames#KEY_CUSTOM_XML_NAMESPACE_HANDLING}. 
+ * More information about this can be found in the documentation of {@link XMLReadWriteUtils#manageLiteralContentMetaNamespaces()}.
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
@@ -123,6 +144,9 @@ import javax.xml.stream.XMLStreamException;
  * @author Sarah Wiechers
  * @author Ben St&ouml;ver
  * @since 0.0.0
+ * @see PhyloXMLConstants
+ * @see PhyloXMLMetadataTreatment
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterStreamDataProvider> implements PhyloXMLConstants, PhyloXMLPrivateConstants {
 	

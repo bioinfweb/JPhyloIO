@@ -27,8 +27,15 @@ import javax.xml.namespace.QName;
 
 /**
  * Defines constants necessary to read and write <i>PhyloXML</i> files.
+ * <p>
+ * Of interest for application developers are the predicates defined here that allow to read and write <i>PhyloXML</i>-specific
+ * tags for predefined annotations.
  * 
  * @author Sarah Wiechers
+ * @author Ben St&ouml;ver
+ * @see PhyloXMLEventReader
+ * @see PhyloXMLEventWriter
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public interface PhyloXMLConstants {
 	public static final String PHYLOXML_FORMAT_NAME = "PhyloXML";

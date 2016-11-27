@@ -120,6 +120,7 @@ import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
  * 
  * @author Ben St&ouml;ver
  * @since 0.0.0
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class NexusEventWriter extends AbstractTextEventWriter<NexusWriterStreamDataProvider> implements NexusConstants {
 	private static final String UNDEFINED_OTUS_ID = "\n";  // Should not occur as a real ID;

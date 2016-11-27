@@ -122,6 +122,7 @@ import javax.xml.stream.XMLStreamException;
  * @author Sarah Wiechers
  * @author Ben St&ouml;ver
  * @since 0.0.0
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDataProvider> implements NeXMLConstants {
 	public NeXMLEventWriter() {

@@ -48,6 +48,7 @@ import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
  * None. 
  * 
  * @author Ben St&ouml;ver
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamDataProvider<NewickEventReader>> 
 		implements NewickConstants {

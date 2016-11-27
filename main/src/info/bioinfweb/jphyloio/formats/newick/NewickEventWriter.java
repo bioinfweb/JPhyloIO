@@ -51,6 +51,7 @@ import java.util.Iterator;
  * 
  * @author Ben St&ouml;ver
  * @see 0.0.0
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class NewickEventWriter extends AbstractTextEventWriter<TextWriterStreamDataProvider<NewickEventWriter>> implements NewickConstants {
 	@Override

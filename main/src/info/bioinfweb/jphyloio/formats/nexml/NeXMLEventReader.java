@@ -115,6 +115,7 @@ import javax.xml.stream.events.XMLEvent;
  * @author Sarah Wiechers
  * @author Ben St&ouml;ver
  * @since 0.0.0
+ * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
  */
 public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDataProvider> implements NeXMLConstants {
 
