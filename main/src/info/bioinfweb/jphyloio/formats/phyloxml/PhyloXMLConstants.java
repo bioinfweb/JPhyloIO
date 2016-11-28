@@ -41,6 +41,7 @@ public interface PhyloXMLConstants {
 	public static final String PHYLOXML_FORMAT_NAME = "PhyloXML";
 	public static final String PHYLOXML_DEFAULT_PRE = "phy";
 	public static final String PHYLOXML_NAMESPACE = "http://www.phyloxml.org";
+	public static final String JPHYLOIO_PHYLOXML_NAMESPACE = ReadWriteConstants.JPHYLOIO_PREDICATE_NAMESPACE + "PhyloXML/";
 	public static final String PHYLOXML_SCHEMA_LOCATION_URI = PHYLOXML_NAMESPACE + " " + "http://www.phyloxml.org/1.10/phyloxml.xsd";
 	
 	public static final QName TAG_ROOT = new QName(PHYLOXML_NAMESPACE, "phyloxml");
@@ -316,6 +317,10 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_PROPERTY_ATTR_APPLIES_TO = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AppliesTo");
 	public static final QName PREDICATE_PROPERTY_ATTR_ID_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Property" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDRef");
 
+	public static final QName PREDICATE_EDGE_SOURCE_NODE = new QName(JPHYLOIO_PHYLOXML_NAMESPACE, "edgeSourceNode");
+	public static final QName PREDICATE_EDGE_TARGET_NODE = new QName(JPHYLOIO_PHYLOXML_NAMESPACE, "edgeTargetNode");
+	public static final QName PREDICATE_EDGE_LENGTH = new QName(JPHYLOIO_PHYLOXML_NAMESPACE, "edgeLength");
+	public static final QName PREDICATE_IS_CROSSLINK = new QName(JPHYLOIO_PHYLOXML_NAMESPACE, "isCrosslink");  // Can be written e.g. to NeXML. Will not be written as metadata to PhyloXML, since the cladeRelation-tag does not allow nested metadata.
 
 	public static final String PHYLOXML_DATA_TYPE_NAMESPACE = PHYLOXML_NAMESPACE_PREFIX + ReadWriteConstants.DATA_TYPE_NAMESPACE_FOLDER + "/";
 	

@@ -577,7 +577,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						
 						streamDataProvider.getCurrentEventCollection().add(
 								new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-								new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_SOURCE_NODE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
+								new URIOrStringIdentifier(null, PREDICATE_EDGE_SOURCE_NODE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
 								LiteralContentSequenceType.SIMPLE));
 		
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(cladeID0, cladeID0));
@@ -586,7 +586,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						
 						streamDataProvider.getCurrentEventCollection().add(
 								new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-								new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_TARGET_NODE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN),
+								new URIOrStringIdentifier(null, PREDICATE_EDGE_TARGET_NODE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN),
 								LiteralContentSequenceType.SIMPLE));
 		
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(cladeID1, cladeID1));
@@ -596,7 +596,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 						if (Double.compare(branchLength, Double.NaN) != 0) {
 							streamDataProvider.getCurrentEventCollection().add(
 									new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-									new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_LENGTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
+									new URIOrStringIdentifier(null, PREDICATE_EDGE_LENGTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
 									LiteralContentSequenceType.SIMPLE));
 			
 							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(branchLength, Double.toString(branchLength)));
@@ -621,7 +621,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 								
 								streamDataProvider.getCurrentEventCollection().add(
 										new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-										new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
+										new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
 										LiteralContentSequenceType.SIMPLE));
 				
 								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true)));
@@ -1284,7 +1284,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 				if (!getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false)) {
 					streamDataProvider.getCurrentEventCollection().add(
 							new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-							new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
+							new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
 							LiteralContentSequenceType.SIMPLE));
 			
 					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(false, Boolean.toString(false)));
