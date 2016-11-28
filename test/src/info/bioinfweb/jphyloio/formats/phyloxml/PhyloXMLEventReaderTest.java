@@ -381,11 +381,11 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_SOURCE_NODE), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_SOURCE_NODE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID1", null, "ID1", true, reader);	
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_TARGET_NODE), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_TARGET_NODE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID2", null, "ID2", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_LENGTH), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_LENGTH), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.5", null, 0.5, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_IDREF0), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID1", null, "ID1", true, reader);
@@ -404,9 +404,9 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_SOURCE_NODE), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_SOURCE_NODE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID2", null, "ID2", true, reader);	
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_EDGE_TARGET_NODE), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_TARGET_NODE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID1", null, "ID1", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_IDREF0), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID2", null, "ID2", true, reader);
@@ -453,26 +453,26 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				String node4 = assertNodeEvent(null, "2", false, null, true, reader);
 				
 				assertEdgeEvent(node4, node2, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);				
 				assertEdgeEvent(node4, node3, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);			
 				
 				String node5 = assertNodeEvent(null, "1", true, null, true, reader);				
 				assertEdgeEvent(node5, node1, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);				
 				assertEdgeEvent(node5, node4, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);				
 				
 				assertEdgeEvent(node2, node3, 0.5, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_TYPE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "extraEdge", null, "extraEdge", true, reader);
@@ -485,7 +485,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEdgeEvent(node3, node2, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_TYPE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "extraEdge", null, "extraEdge", true, reader);
@@ -793,26 +793,26 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				
 				String node4 = assertNodeEvent(null, "2", false, null, true, reader);				
 				assertEdgeEvent(node4, node2, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);				
 				assertEdgeEvent(node4, node3, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				String node5 = assertNodeEvent(null, "1", true, null, true, reader);				
 				assertEdgeEvent(node5, node1, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);				
 				assertEdgeEvent(node5, node4, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
 				assertEdgeEvent(null, node5, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, ReadWriteConstants.PREDICATE_IS_CROSSLINK), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
 				assertEndEvent(EventContentType.ROOT_EDGE, reader);
 				
