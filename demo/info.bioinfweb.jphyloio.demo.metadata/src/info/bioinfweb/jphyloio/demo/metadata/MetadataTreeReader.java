@@ -103,7 +103,7 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 					if (PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) {
 						taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
 					}					
-					else {
+					else {  // Skip possible other literal metadata events.
 						JPhyloIOReadingUtils.reachElementEnd(reader);
 					}
 				}
@@ -113,7 +113,7 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 					if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID.equals(resourceEvent.getRel().getURI())) {
 						readPhyloXMLTaxonomyID(taxonomy);
 					}
-					else {
+					else {  // Skip possible other resource metadata events.
 						JPhyloIOReadingUtils.reachElementEnd(reader);
 					}
 				}
