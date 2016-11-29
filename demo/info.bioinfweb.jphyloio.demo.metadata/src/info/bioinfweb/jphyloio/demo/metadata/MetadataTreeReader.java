@@ -89,9 +89,6 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream modeling a <i>PhyloXML</i>
 	 * document. Since <i>PhyloXML</i> offers specialized <i>XML</i> tags for taxonomy information, events with different 
 	 * predicates are produces from such a document.
-	 * <p>
-	 * Note that in contrast to {@link #readStandardTaxonomy(Taxonomy)} this method is called once for the genus and once for 
-	 * the species, due to the structure of <i>PhyloXML</i>.
 	 */
 	private void readPhyloXMLTaxonomy(Taxonomy taxonomy) throws IOException {
 		JPhyloIOEvent event = reader.next();
@@ -112,7 +109,7 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 					readPhyloXMLTaxonomyID(taxonomy);
 				}
 				
-				// Skip possible other events:
+				// Skip possible other event subsequences:
 				else {
 					JPhyloIOReadingUtils.reachElementEnd(reader);
 				}
@@ -122,6 +119,9 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 	}
 	
 	
+	/**
+	 * Reads the <i>NCBI</i> taxonomy ID from a <i>PhyloXML</i> document.
+	 */
 	private void readPhyloXMLTaxonomyID(Taxonomy taxonomy) throws IOException {
 		String provider = null;
 		String id = null;
@@ -180,10 +180,14 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 						if (PREDICATE_HAS_TAXONOMY.equals(resourceEvent.getRel().getURI())) {
 							readStandardTaxonomy(data.getTaxonomy());
 						}
+						
+						// Handle PhyloXML-specific taxonomy metadata:
 						else if (PhyloXMLConstants.PREDICATE_TAXONOMY.equals(resourceEvent.getRel().getURI())) {
 							readPhyloXMLTaxonomy(data.getTaxonomy());
 						}
-						else {  // Skip all nested events and their end event if other (unsupported) resource metadata are nested.
+						
+					  // Skip all nested events and their end event if other (unsupported) resource metadata are nested:
+						else {
 							JPhyloIOReadingUtils.reachElementEnd(reader);
 						}
 						break;
