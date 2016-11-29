@@ -58,9 +58,7 @@ import org.junit.Test;
 
 
 
-public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
-	
-	
+public class PhyloXMLEventReaderTest implements PhyloXMLConstants {	
 	@Test
 	public void testReadingSingleTree() {
 		try {
