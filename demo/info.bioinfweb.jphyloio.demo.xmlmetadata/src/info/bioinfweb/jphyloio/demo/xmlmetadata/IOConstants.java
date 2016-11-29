@@ -36,7 +36,7 @@ public interface IOConstants {
 	public static final String CUSTOM_XML_NAMESPACE_URI = "http://example.org/customXML/";
 	public static final String CUSTOM_XML_NAMESPACE_PREFIX = "c";
 	
-	public static final QName TAG_RELATED_RESOURCE = new QName(CUSTOM_XML_NAMESPACE_URI, "relatedResource", CUSTOM_XML_NAMESPACE_PREFIX);
+	public static final QName TAG_RELATED_RESOURCE = new QName(CUSTOM_XML_NAMESPACE_URI, "relatedReference", CUSTOM_XML_NAMESPACE_PREFIX);
 	public static final QName TAG_TITLE = new QName(CUSTOM_XML_NAMESPACE_URI, "title", CUSTOM_XML_NAMESPACE_PREFIX);
 	public static final QName TAG_URL = new QName(CUSTOM_XML_NAMESPACE_URI, "url", CUSTOM_XML_NAMESPACE_PREFIX);
 	public static final QName ATTR_TYPE = new QName(CUSTOM_XML_NAMESPACE_URI, "type", CUSTOM_XML_NAMESPACE_PREFIX);

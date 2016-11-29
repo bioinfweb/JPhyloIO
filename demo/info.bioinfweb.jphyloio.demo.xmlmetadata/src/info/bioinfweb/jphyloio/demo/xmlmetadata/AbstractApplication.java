@@ -19,15 +19,17 @@
 package info.bioinfweb.jphyloio.demo.xmlmetadata;
 
 
-import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.stream.XMLStreamException;
 
 
 
@@ -36,18 +38,20 @@ public abstract class AbstractApplication {
 	private JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
 	
 	
-	protected abstract RelatedResource readMetadata(JPhyloIOEventReader reader) throws IOException;
+	protected abstract RelatedResource readMetadata(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException;
 	
 	
 	private List<RelatedResource> read(File file) throws Exception {
-		List<RelatedResource> result = new ArrayList<RelatedResource>();
+		System.out.println("Reading file \"" + file.getAbsolutePath() + "\".");
 		
-		JPhyloIOEventReader eventReader = factory.guessReader(file, new ReadWriteParameterMap());
+		List<RelatedResource> result = new ArrayList<RelatedResource>();
+		JPhyloIOXMLEventReader eventReader = (JPhyloIOXMLEventReader)factory.guessReader(file, new ReadWriteParameterMap());  // This code only works for XML formats, otherwise a ClassCastException would be thrown. In real-world applications this should be handled properly.
+		
 		if (eventReader != null) {
 			try {
 				new ApplicationReader() {
 					@Override
-					protected RelatedResource readRelatedResource(JPhyloIOEventReader reader) throws IOException {
+					protected RelatedResource readRelatedResource(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException {
 						return readMetadata(reader);
 					}
 				}.read(eventReader, result);
@@ -67,19 +71,25 @@ public abstract class AbstractApplication {
 
 	
 	protected void write(File file, String formatID, List<RelatedResource> resources) {
-		
+		System.out.println("Writing file \"" + file.getAbsolutePath() + "\".");
 	}
 	
 	
 	protected void run() {
 		try {
-  		List<RelatedResource> list = read(new File("data/Input.xml"));
+			// Read:
+  		List<RelatedResource> list = read(new File("data/ExampleInput.xml"));
+  		System.out.println();
   		
+  		// Output:
+  		System.out.println("Loaded contents:");
   		for (RelatedResource relatedResource : list) {
   			System.out.println(relatedResource);
   		}
+  		System.out.println();
   		
-  		write(new File("data/Output.xml"), JPhyloIOFormatIDs.NEXML_FORMAT_ID, list);
+  		// Write:
+  		write(new File("data/output/NeXML.xml"), JPhyloIOFormatIDs.NEXML_FORMAT_ID, list);
   	}
   	catch (Exception e) {
   		e.printStackTrace();

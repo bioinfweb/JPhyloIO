@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nex:nexml xmlns:nex="http://www.nexml.org/2009" xmlns="http://www.nexml.org/2009" 
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9"
+		xmlns:p="http://example.org/predicates/" xmlns:c="http://example.org/customXML/" >
+    
+	<!-- This NeXML file is only meant to test reading and writing XML metadata. The OTU list is only contained, since completely 
+			empty NeXML documents are illegal. -->
+
+	<meta datatype="rdf:Literal" id="meta1" property="p:relatedReference" xsi:type="nex:LiteralMeta">
+		<c:relatedReference c:type="WEBSITE">
+			<c:title>JPhyloIO</c:title>
+			<c:url>http://bioinfweb.info/JPhyloIO/</c:url>
+		</c:relatedReference>
+	</meta>
+	
+	<meta datatype="rdf:Literal" id="meta2" property="p:relatedReference" xsi:type="nex:LiteralMeta">
+		<c:relatedReference c:type="JOURNAL_ARTICLE">
+			<!-- Some test comment. -->
+			<c:title>Sample data processing in an additive and reproducible taxonomic workflow by using character data persistently linked to preserved individual specimens</c:title>
+			<c:url>http://dx.doi.org/10.1093/database/bav094</c:url>
+		</c:relatedReference>
+	</meta>
+  
+	<otus id="otus1" label="Taxon list">
+		<otu id="otu1" label="Taxon 1"></otu>
+	</otus>
+</nex:nexml>

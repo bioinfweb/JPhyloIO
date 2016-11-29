@@ -33,15 +33,42 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 
 
 
 public class StandardApplication extends AbstractApplication implements IOConstants {
+	private RelatedResource readRelatedResource(StartElement parentEvent, JPhyloIOEventReader reader) throws IOException {
+		RelatedResource result = new RelatedResource();
+		result.setType(RelatedResource.Type.valueOf(parentEvent.getAttributeByName(ATTR_TYPE).getValue()));
+		
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getContentType().equals(EventContentType.LITERAL_META_CONTENT)) {
+			//TODO Are comments producing comment events or content events as well? (JPhyloIO Comment events would possibly have to be handled here.)
+			
+			LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
+			if (contentEvent.getXMLEvent().isStartElement()) {
+				StartElement startEvent = contentEvent.getXMLEvent().asStartElement();
+				if (startEvent.getName().equals(TAG_TITLE)) {
+					//result.setTitle(title);  //TODO Use tool method to read title
+				}
+				else if (startEvent.getName().equals(TAG_URL)) {
+					//result.setURL(url);  //TODO Use tool method to read url
+				}
+				else {
+					//TODO Consume other tag and subelements (with new tool method).
+				}
+			}
+			event = reader.next();
+		}
+		
+		return result;
+	}
+	
+	
 	@Override
-	protected RelatedResource readMetadata(JPhyloIOEventReader reader) throws IOException {
-		String title = null;
-		String url = null;
-		RelatedResource.Type type = null;
+	protected RelatedResource readMetadata(JPhyloIOXMLEventReader reader) throws IOException {
+		RelatedResource result = null;
 		
 		JPhyloIOEvent event = reader.next();
 		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
@@ -50,16 +77,17 @@ public class StandardApplication extends AbstractApplication implements IOConsta
 				if (contentEvent.getXMLEvent().isStartElement()) {
 					StartElement startEvent = contentEvent.getXMLEvent().asStartElement();
 					if (startEvent.getName().equals(TAG_RELATED_RESOURCE)) {
-						
+						result = readRelatedResource(startEvent, reader);
+					}
+					else {
+						//TODO Consume other tag and subelements (with new tool method).
 					}
 				}
-				
-				//TODO Read (nested) XML events. (Possibly in multiple loops/methods.)
 			}
 			event = reader.next();
 		}
 		
-		return null;
+		return result;
 	}
 
 	

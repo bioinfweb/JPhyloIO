@@ -88,6 +88,6 @@ public class RelatedResource {
 
 	@Override
 	public String toString() {
-		return "Related resource (" + getType() + "): " + getTitle() + " (" + getURL() + ")";
+		return "Related resource (" + getType() + "): " + getTitle() + " <" + getURL() + ">";
 	}
 }
