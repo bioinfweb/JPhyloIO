@@ -43,11 +43,7 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
 			throws IOException, XMLStreamException {
 		
 		RelatedResource result = new RelatedResource();
-		result.
-		setType(RelatedResource.Type.valueOf(
-				parentEvent.
-				getAttributeByName(ATTR_TYPE).
-				getValue()));
+		result.setType(RelatedResource.Type.valueOf(parentEvent.getAttributeByName(ATTR_TYPE).getValue()));
 		
     XMLEvent event = xmlReader.nextEvent();
     while (event.getEventType() != XMLStreamConstants.END_ELEMENT) {
