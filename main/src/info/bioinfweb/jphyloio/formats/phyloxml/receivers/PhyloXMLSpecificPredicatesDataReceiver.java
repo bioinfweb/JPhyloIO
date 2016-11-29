@@ -171,7 +171,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
 		switch (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment()) {
 			case VALUE:
-				getStreamDataProvider().getWriter().writeCharacters(event.getStringValue());  //TODO Why not use object value as below? (stringValue may be null!)
+				getStreamDataProvider().getWriter().writeCharacters(event.toString());
 				predicates.pop();
 				break;
 			case TAG_AND_VALUE:
@@ -196,7 +196,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 				break;
 			case ATTRIBUTE:
 				QName attribute = getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTranslation();
-				getStreamDataProvider().getWriter().writeAttribute(attribute.getPrefix(), attribute.getNamespaceURI(), attribute.getLocalPart(), event.getStringValue());
+				getStreamDataProvider().getWriter().writeAttribute(attribute.getPrefix(), attribute.getNamespaceURI(), attribute.getLocalPart(), event.toString());
 				predicates.pop();
 				
 				if (attribute.equals(ATTR_APPLIES_TO)) {

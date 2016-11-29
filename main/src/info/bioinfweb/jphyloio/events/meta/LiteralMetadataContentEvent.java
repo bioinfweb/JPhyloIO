@@ -23,6 +23,7 @@ import info.bioinfweb.jphyloio.events.ContinuedEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 
+import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
 
 
@@ -134,7 +135,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 		}
 		else {
 			if (xmlEvent.isCharacters()) {
-				this.stringValue = xmlEvent.asCharacters().getData();  //TODO Also store tags as string representations?
+				this.stringValue = xmlEvent.asCharacters().getData();
 			}			
 			this.objectValue = xmlEvent;
 		}
@@ -143,36 +144,103 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 
 	/**
 	 * Returns the string value of the meta information.
+	 * <p>
+	 * If larger strings are separated among multiple content events, this property returns the part of the string modeled by this
+	 * event.
+	 * <p>
+	 * It may return {@code null} if no string representation was provided in the constructor. Note that no instance of this
+	 * class will return {@code null} for both the object value and the string representation.
+	 * <p>
+	 * If this instance represents carries an {@link XMLEvent} as its object value, this method will return the characters for
+	 * <i>XML</i> event instances implementing {@link Characters} and {@code null} for other implementations.
 	 * 
-	 * @return the string representation of the meta information or {@code null} if this metaevent carries no value (e.g.
-	 *         when nested metaevent will follow)
+	 * @return the string representation of the meta information or {@code null} if this metadata event carries no string value
+	 * @see #getObjectValue()
 	 */
 	public String getStringValue() {
 		return stringValue;
 	}
 
 
+	/**
+	 * Returns the <i>Java</i> object representing the metadata element modeled by this event. An alternative string representation 
+	 * of this object may be provided that can be obtained using {@link #getStringValue()}.
+	 * <p>
+	 * This method can return {@code null} if this content event represents are larger string that is separated among multiple 
+	 * events. In such cases {@link #getStringValue()} returns the part of the string that is modeled by this event. This method
+	 * may also return {@code null} if {@code null} was specified as the object value in the constructor.
+	 * 
+	 * @return the metadata object modeled by this event or {@code null} 
+	 */
 	public Object getObjectValue() {
 		return objectValue;
 	}
 	
 	
+	/**
+	 * Determines whether this instance carries a string representation of the metadata element it models.
+	 * 
+	 * @return {@code true} of a string representation is available or {@code false} if {@link #getStringValue()} will
+	 *         return {@code null}
+	 */
 	public boolean hasStringValue() {
 		return (getStringValue() != null);
 	}
 	
 	
+	/**
+	 * Determines whether this instance carries a <i>Java</i> object of the metadata element it models.
+	 * 
+	 * @return {@code true} of an object is available or {@code false} if {@link #getObjectValue()} will return {@code null}
+	 */
 	public boolean hasObjectValue() {
 		return (getObjectValue() != null);
 	}
 	
 	
+	/**
+	 * Determines whether this instance carries an {@link XMLEvent} as its object value. This happens if this instance is
+	 * used to represent a part the content of an <i>XML</i> representation of a literal metadata element.
+	 * 
+	 * @return {@code true} if an <i>XML</i> stream event can be returned by {@link #getXMLEvent()} or {@code false} otherwise
+	 */
 	public boolean hasXMLEventValue() {
 		return getObjectValue() instanceof XMLEvent;
 	}
 	
 	
-	public XMLEvent getXMLEvent() {  //TODO Should simple strings also be converted to a characters event here or in the constructor?
+	/**
+	 * Returns the {@link XMLEvent} modeled by this instance. This is only possible if this instance is used to represent a part 
+	 * the content of an <i>XML</i> representation of a literal metadata element.
+	 * <p>
+	 * This convenience method calls {@link #getObjectValue()} internally and tries to cast it to {@link XMLEvent}.
+	 * 
+	 * @return the {@link XMLEvent} or {@code null} if this instance carries no object value
+	 * @throws ClassCastException if the object value of this instance does not implement {@link XMLEvent}
+	 * @see #hasXMLEventValue()
+	 * @see #getObjectValue()
+	 */
+	public XMLEvent getXMLEvent() throws ClassCastException {
 		return (XMLEvent)getObjectValue();
+	}
+
+
+	/**
+	 * Returns the stored string representation of the modeled metadata element if available. If not, the {@link Object#toString()} 
+	 * method of the object value is returned.
+	 * 
+	 * @return the string representation of the metadata element modeled by this event
+	 */
+	@Override
+	public String toString() {
+		if (hasStringValue()) {
+			return getStringValue();
+		}
+		else if (hasObjectValue()) {
+			return getObjectValue().toString();
+		}
+		else {
+			return super.toString();
+		}
 	}
 }
