@@ -52,6 +52,43 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author Ben St&ouml;ver
  */
 public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeReader implements IOConstants {
+	// Methods for reading node metadata:
+	
+	/**
+	 * Reads the <i>NCBI</i> taxonomy ID from a <i>PhyloXML</i> document.
+	 */
+	private void readPhyloXMLTaxonomyID(Taxonomy taxonomy) throws IOException {
+		String provider = null;
+		String id = null;
+		
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
+					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+					if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER.equals(literalEvent.getPredicate().getURI())) {
+						provider = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					}
+					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE.equals(literalEvent.getPredicate().getURI())) {
+						id = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					}
+					else {
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+					}
+				}
+				else {  // Skip possible other event subsequences.
+					JPhyloIOReadingUtils.reachElementEnd(reader);
+				}
+			}
+			event = reader.next();
+		}
+		
+		if (PHYLOXML_ID_PROVIDER_NCBI.equals(provider.toLowerCase())) {  // Set the ID only if the provider is really NCBI, since other IDs might also be specified.
+			taxonomy.setNCBIID(id);
+		}
+	}
+	
+	
 	/**
 	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream.
 	 */
@@ -120,41 +157,6 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 	
 	
 	/**
-	 * Reads the <i>NCBI</i> taxonomy ID from a <i>PhyloXML</i> document.
-	 */
-	private void readPhyloXMLTaxonomyID(Taxonomy taxonomy) throws IOException {
-		String provider = null;
-		String id = null;
-		
-		JPhyloIOEvent event = reader.next();
-		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
-			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
-					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
-					if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER.equals(literalEvent.getPredicate().getURI())) {
-						provider = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
-					}
-					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE.equals(literalEvent.getPredicate().getURI())) {
-						id = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
-					}
-					else {
-						JPhyloIOReadingUtils.reachElementEnd(reader);
-					}
-				}
-				else {  // Skip possible other event subsequences.
-					JPhyloIOReadingUtils.reachElementEnd(reader);
-				}
-			}
-			event = reader.next();
-		}
-		
-		if (PHYLOXML_ID_PROVIDER_NCBI.equals(provider.toLowerCase())) {  // Set the ID only if the provider is really NCBI, since other IDs might also be specified.
-			taxonomy.setNCBIID(id);
-		}
-	}
-	
-	
-	/**
 	 * Processes the events nested between a node start and end event.
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -202,7 +204,6 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 								// The second part compares the CURIE's local part and the string representation in addition, to be able to load
 								// the data from formats that use string keys instead of RDF-predicates, e.g. Nexus.
 							
-							
 							Object list = JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Object.class);
 							if (list instanceof List) {  // This case is used when reading valid documents of all formats but PhyloXML.
 								data.setSizeMeasurements((List<Double>)list);  // If the document is invalid, the list would not necessarily contain only double values. This would have to checked in a real-world application to avoid exceptions.
@@ -232,6 +233,8 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 		}
 	}
 
+	
+	// Methods for reading edge metadata:
 	
 	/**
 	 * Processes the events nested between an edge start and end event.
