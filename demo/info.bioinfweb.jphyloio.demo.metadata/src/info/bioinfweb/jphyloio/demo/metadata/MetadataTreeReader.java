@@ -97,27 +97,23 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 		JPhyloIOEvent event = reader.next();
 		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
-					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+				
+				// Read scientific name:
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META) 
+						&& PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(event.asLiteralMetadataEvent().getPredicate().getURI())) {
 					
-					if (PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) {
-						taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
-					}					
-					else {  // Skip possible other literal metadata events.
-						JPhyloIOReadingUtils.reachElementEnd(reader);
-					}
+					taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
 				}
-				else if (event.getType().getContentType().equals(EventContentType.RESOURCE_META)) { 
-					ResourceMetadataEvent resourceEvent = event.asResourceMetadataEvent();
+				
+				// Read NCBI taxonomy ID:
+				else if (event.getType().getContentType().equals(EventContentType.RESOURCE_META) 
+						&& PhyloXMLConstants.PREDICATE_TAXONOMY_ID.equals(event.asResourceMetadataEvent().getRel().getURI())) {
 					
-					if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID.equals(resourceEvent.getRel().getURI())) {
-						readPhyloXMLTaxonomyID(taxonomy);
-					}
-					else {  // Skip possible other resource metadata events.
-						JPhyloIOReadingUtils.reachElementEnd(reader);
-					}
+					readPhyloXMLTaxonomyID(taxonomy);
 				}
-				else {  // Skip possible other event subsequences.
+				
+				// Skip possible other events:
+				else {
 					JPhyloIOReadingUtils.reachElementEnd(reader);
 				}
 			}
