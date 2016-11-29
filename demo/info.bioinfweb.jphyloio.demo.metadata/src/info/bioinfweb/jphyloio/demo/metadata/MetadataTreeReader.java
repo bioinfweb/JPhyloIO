@@ -99,12 +99,18 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
 					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
-					System.out.println(literalEvent.getPredicate().getURI());
 					
 					if (PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) {
 						taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+					}					
+					else {
+						JPhyloIOReadingUtils.reachElementEnd(reader);
 					}
-					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID.equals(literalEvent.getPredicate().getURI())) {
+				}
+				else if (event.getType().getContentType().equals(EventContentType.RESOURCE_META)) { 
+					ResourceMetadataEvent resourceEvent = event.asResourceMetadataEvent();
+					
+					if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID.equals(resourceEvent.getRel().getURI())) {
 						readPhyloXMLTaxonomyID(taxonomy);
 					}
 					else {
