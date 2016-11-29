@@ -55,108 +55,6 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 	// Methods for reading node metadata:
 	
 	/**
-	 * Reads the <i>NCBI</i> taxonomy ID from a <i>PhyloXML</i> document.
-	 */
-	private void readPhyloXMLTaxonomyID(Taxonomy taxonomy) throws IOException {
-		String provider = null;
-		String id = null;
-		
-		JPhyloIOEvent event = reader.next();
-		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
-			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
-					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
-					if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER.equals(literalEvent.getPredicate().getURI())) {
-						provider = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
-					}
-					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE.equals(literalEvent.getPredicate().getURI())) {
-						id = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
-					}
-					else {
-						JPhyloIOReadingUtils.reachElementEnd(reader);
-					}
-				}
-				else {  // Skip possible other event subsequences.
-					JPhyloIOReadingUtils.reachElementEnd(reader);
-				}
-			}
-			event = reader.next();
-		}
-		
-		if (PHYLOXML_ID_PROVIDER_NCBI.equals(provider.toLowerCase())) {  // Set the ID only if the provider is really NCBI, since other IDs might also be specified.
-			taxonomy.setNCBIID(id);
-		}
-	}
-	
-	
-	/**
-	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream.
-	 */
-	private void readStandardTaxonomy(Taxonomy taxonomy) throws IOException {
-		JPhyloIOEvent event = reader.next();
-		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
-				// This loop shall stop, if a resource metadata end event is encountered. (Nested end events are already consumed 
-				// in the loop, so checking the content type of the end event is unnecessary.)
-			
-			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
-					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
-					if (PREDICATE_HAS_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) { 
-						taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
-					}
-					else if (PREDICATE_HAS_NCBI_ID.equals(literalEvent.getPredicate().getURI())) {
-						taxonomy.setNCBIID(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
-					}
-					else {
-						JPhyloIOReadingUtils.reachElementEnd(reader);
-					  		// Skip all nested events and the end event if another literal metadata element (with an unsupported 
-								// predicate) is nested.
-					}
-				}
-				else {  // Skip possible other event subsequences.
-					JPhyloIOReadingUtils.reachElementEnd(reader);
-				}
-			}
-			event = reader.next();
-		}
-	}
-	
-	
-	/**
-	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream modeling a <i>PhyloXML</i>
-	 * document. Since <i>PhyloXML</i> offers specialized <i>XML</i> tags for taxonomy information, events with different 
-	 * predicates are produces from such a document.
-	 */
-	private void readPhyloXMLTaxonomy(Taxonomy taxonomy) throws IOException {
-		JPhyloIOEvent event = reader.next();
-		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
-			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-				
-				// Read scientific name:
-				if (event.getType().getContentType().equals(EventContentType.LITERAL_META) 
-						&& PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(event.asLiteralMetadataEvent().getPredicate().getURI())) {
-					
-					taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
-				}
-				
-				// Read NCBI taxonomy ID:
-				else if (event.getType().getContentType().equals(EventContentType.RESOURCE_META) 
-						&& PhyloXMLConstants.PREDICATE_TAXONOMY_ID.equals(event.asResourceMetadataEvent().getRel().getURI())) {
-					
-					readPhyloXMLTaxonomyID(taxonomy);
-				}
-				
-				// Skip possible other event subsequences:
-				else {
-					JPhyloIOReadingUtils.reachElementEnd(reader);
-				}
-			}
-			event = reader.next();
-		}
-	}
-	
-	
-	/**
 	 * Processes the events nested between a node start and end event.
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -233,6 +131,108 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 		}
 	}
 
+	
+	/**
+	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream.
+	 */
+	private void readStandardTaxonomy(Taxonomy taxonomy) throws IOException {
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+				// This loop shall stop, if a resource metadata end event is encountered. (Nested end events are already consumed 
+				// in the loop, so checking the content type of the end event is unnecessary.)
+			
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
+					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+					if (PREDICATE_HAS_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) { 
+						taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+					}
+					else if (PREDICATE_HAS_NCBI_ID.equals(literalEvent.getPredicate().getURI())) {
+						taxonomy.setNCBIID(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+					}
+					else {
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+					  		// Skip all nested events and the end event if another literal metadata element (with an unsupported 
+								// predicate) is nested.
+					}
+				}
+				else {  // Skip possible other event subsequences.
+					JPhyloIOReadingUtils.reachElementEnd(reader);
+				}
+			}
+			event = reader.next();
+		}
+	}
+	
+	
+	/**
+	 * Reads the contents of a {@link Taxonomy} metadata object from an <i>JPhyloIO</i> event stream modeling a <i>PhyloXML</i>
+	 * document. Since <i>PhyloXML</i> offers specialized <i>XML</i> tags for taxonomy information, events with different 
+	 * predicates are produces from such a document.
+	 */
+	private void readPhyloXMLTaxonomy(Taxonomy taxonomy) throws IOException {
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				
+				// Read scientific name:
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META) 
+						&& PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(event.asLiteralMetadataEvent().getPredicate().getURI())) {
+					
+					taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+				}
+				
+				// Read NCBI taxonomy ID:
+				else if (event.getType().getContentType().equals(EventContentType.RESOURCE_META) 
+						&& PhyloXMLConstants.PREDICATE_TAXONOMY_ID.equals(event.asResourceMetadataEvent().getRel().getURI())) {
+					
+					readPhyloXMLTaxonomyID(taxonomy);
+				}
+				
+				// Skip possible other event subsequences:
+				else {
+					JPhyloIOReadingUtils.reachElementEnd(reader);
+				}
+			}
+			event = reader.next();
+		}
+	}
+	
+	
+	/**
+	 * Reads the <i>NCBI</i> taxonomy ID from a <i>PhyloXML</i> document.
+	 */
+	private void readPhyloXMLTaxonomyID(Taxonomy taxonomy) throws IOException {
+		String provider = null;
+		String id = null;
+		
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
+					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+					if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER.equals(literalEvent.getPredicate().getURI())) {
+						provider = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					}
+					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE.equals(literalEvent.getPredicate().getURI())) {
+						id = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					}
+					else {
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+					}
+				}
+				else {  // Skip possible other event subsequences.
+					JPhyloIOReadingUtils.reachElementEnd(reader);
+				}
+			}
+			event = reader.next();
+		}
+		
+		if (PHYLOXML_ID_PROVIDER_NCBI.equals(provider.toLowerCase())) {  // Set the ID only if the provider is really NCBI, since other IDs might also be specified.
+			taxonomy.setNCBIID(id);
+		}
+	}
+	
 	
 	// Methods for reading edge metadata:
 	
