@@ -136,7 +136,7 @@ public class LiteralMetadataContentEvent extends ContinuedEvent {
 		else {
 			if (xmlEvent.isCharacters()) {
 				this.stringValue = xmlEvent.asCharacters().getData();
-			}			
+			}
 			this.objectValue = xmlEvent;
 		}
 	}

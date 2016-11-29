@@ -63,7 +63,6 @@ public interface ReadWriteConstants {
 	
 	public static final QName PREDICATE_SEQUENCE_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "sequenceCount", JPHYLOIO_PREDICATE_PREFIX);
 	public static final QName PREDICATE_CHARACTER_COUNT = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "characterCount", JPHYLOIO_PREDICATE_PREFIX);
-	public static final QName PREDICATE_IS_ALIGNED = new QName(JPHYLOIO_PREDICATE_NAMESPACE, "isAligned", JPHYLOIO_PREDICATE_PREFIX);  //TODO Not used at the moment. Is this still needed (would only be relevant in text formats)? (If so, make sure not to produce reader-writer-inconsistencies in its use.)
 	
 	/**
 	 * The namespace for data types defined in <i>JPhyloIO</i>.

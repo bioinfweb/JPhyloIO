@@ -59,6 +59,7 @@ import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
  */
 public enum EventContentType {
 	//TODO Add some types reserved for later use (e.g. for currently unsupported sets)?
+	//     - Possibly state sets from NeXML? 
 	
 	
 	// General events:
