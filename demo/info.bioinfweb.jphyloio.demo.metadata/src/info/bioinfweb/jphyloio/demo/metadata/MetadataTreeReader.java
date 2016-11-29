@@ -64,11 +64,11 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
 					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
-					if (PREDICATE_HAS_GENUS.equals(literalEvent.getPredicate().getURI())) { 
-						taxonomy.setGenus(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+					if (PREDICATE_HAS_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) { 
+						taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
 					}
-					else if (PREDICATE_HAS_SPECIES.equals(literalEvent.getPredicate().getURI())) {
-						taxonomy.setSpecies(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+					else if (PREDICATE_HAS_NCBI_ID.equals(literalEvent.getPredicate().getURI())) {
+						taxonomy.setNCBIID(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
 					}
 					else {
 						JPhyloIOReadingUtils.reachElementEnd(reader);
@@ -121,10 +121,10 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 		
 		if ((name != null) && (rank != null)) {
 			if (rank.equals("genus")) {
-				taxonomy.setGenus(name);
+				taxonomy.setScientificName(name);
 			}
 			else if (rank.equals("species")) {
-				taxonomy.setSpecies(name);
+				taxonomy.setNCBIID(name);
 			}
 		}
 	}

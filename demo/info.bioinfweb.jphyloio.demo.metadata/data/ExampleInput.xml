@@ -12,36 +12,40 @@
 			<node id="node0" about="#node0" label="Root" root="true"></node>
 			<node id="node1" about="#node1" label="Animals"></node>
 			<node id="node2" about="#node2" label="Guinea pig">
-				<meta id="node2metaTax" xsi:type="nex:ResourceMeta" rel="a:hasTaxonomy">
-					<meta id="node2metaGenus" xsi:type="nex:LiteralMeta" property="a:hasGenus" datatype="xsd:string">Cavia</meta>
-					<meta id="node2metaSpecies" xsi:type="nex:LiteralMeta" property="a:hasSpecies" datatype="xsd:string">porcellus</meta>
+				<meta id="node2meta1" xsi:type="nex:ResourceMeta" rel="a:hasTaxonomy">
+					<meta id="node2meta2" xsi:type="nex:LiteralMeta" property="a:hasScientificName" 
+							datatype="xsd:string">Cavia porcellus</meta>
+					<meta id="node2meta3" xsi:type="nex:LiteralMeta" property="a:hasNCBIID" datatype="xsd:string">10141</meta>
 				</meta>
-				<meta id="node2metaSizes" xsi:type="nex:LiteralMeta" property="a:hasSizeMeasurements"
+				<meta id="node2meta4" xsi:type="nex:LiteralMeta" property="a:hasSizeMeasurements"
 						datatype="jpd:simpleValueList">{0.3, 0.31, 0.24}</meta>
 			</node>
 			<node id="node3" about="#node3" label="Louse">
-				<meta id="node3metaTax" xsi:type="nex:ResourceMeta" rel="a:hasTaxonomy">
-					<meta id="node3metaGenus" xsi:type="nex:LiteralMeta" property="a:hasGenus" datatype="xsd:string">Gyropus</meta>
-					<meta id="node3metaSpecies" xsi:type="nex:LiteralMeta" property="a:hasSpecies" datatype="xsd:string">ovalis</meta>
+				<meta id="node3meta1" xsi:type="nex:ResourceMeta" rel="a:hasTaxonomy">
+					<meta id="node3meta2" xsi:type="nex:LiteralMeta" property="a:hasScientificName" 
+							datatype="xsd:string">Gyropus ovalis</meta>
+					<meta id="node3meta3" xsi:type="nex:LiteralMeta" property="a:hasNCBIID" datatype="xsd:string">209364</meta>
 				</meta>
-				<meta id="node3metaSizes" xsi:type="nex:LiteralMeta" property="a:hasSizeMeasurements"
+				<meta id="node3meta4" xsi:type="nex:LiteralMeta" property="a:hasSizeMeasurements"
 						datatype="jpd:simpleValueList">{0.0012, 9.0E-4, 0.0011, 0.0013, 0.0012}</meta>
 			</node>
 			<node id="node4" about="#node4" label="Plants"></node>
 			<node id="node5" about="#node5" label="Grass">
-				<meta id="node5metaTax" xsi:type="nex:ResourceMeta" rel="a:hasTaxonomy">
-					<meta id="node5metaGenus" xsi:type="nex:LiteralMeta" property="a:hasGenus" datatype="xsd:string">Lolium</meta>
-					<meta id="node5metaSpecies" xsi:type="nex:LiteralMeta" property="a:hasSpecies" datatype="xsd:string">perenne</meta>
+				<meta id="node5meta1" xsi:type="nex:ResourceMeta" rel="a:hasTaxonomy">
+					<meta id="node5meta2" xsi:type="nex:LiteralMeta" property="a:hasScientificName" 
+							datatype="xsd:string">Lolium perenne</meta>
+					<meta id="node5meta3" xsi:type="nex:LiteralMeta" property="a:hasNCBIID" datatype="xsd:string">4522</meta>
 				</meta>
-				<meta id="node5metaSizes" xsi:type="nex:LiteralMeta" property="a:hasSizeMeasurements"
+				<meta id="node5meta4" xsi:type="nex:LiteralMeta" property="a:hasSizeMeasurements"
 						datatype="jpd:simpleValueList">{0.07, 0.32, 0.1}</meta>
 			</node>
 			<node id="node6" about="#node6" label="Dandelion">
-				<meta id="node6metaTax" xsi:type="nex:ResourceMeta" rel="a:hasTaxonomy">
-					<meta id="node6metaGenus" xsi:type="nex:LiteralMeta" property="a:hasGenus" datatype="xsd:string">Taraxacum</meta>
-					<meta id="node6metaSpecies" xsi:type="nex:LiteralMeta" property="a:hasSpecies" datatype="xsd:string">disseminatum</meta>
+				<meta id="node6meta1" xsi:type="nex:ResourceMeta" rel="a:hasTaxonomy">
+					<meta id="node6meta2" xsi:type="nex:LiteralMeta" property="a:hasScientificName" 
+							datatype="xsd:string">Taraxacum disseminatum</meta>
+					<meta id="node6meta3" xsi:type="nex:LiteralMeta" property="a:hasNCBIID" datatype="xsd:string">511095</meta>
 				</meta>
-				<meta id="node6metaSizes" xsi:type="nex:LiteralMeta" property="a:hasSizeMeasurements"
+				<meta id="node6meta4" xsi:type="nex:LiteralMeta" property="a:hasSizeMeasurements"
 						datatype="jpd:simpleValueList">{0.12, 0.15, 0.08}</meta>
 			</node>
 			<rootedge target="node0" id="edge0" about="#edge0"></rootedge>

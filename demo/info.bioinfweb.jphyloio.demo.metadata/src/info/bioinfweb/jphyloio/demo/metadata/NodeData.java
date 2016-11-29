@@ -31,32 +31,32 @@ import java.util.ArrayList;
  */
 public class NodeData {
 	public static class Taxonomy {
-		private String genus = "";
-		private String species = "";
+		private String scientificName = "";
+		private String ncbiID = "";
 		
 		
-		public String getGenus() {
-			return genus;
+		public String getScientificName() {
+			return scientificName;
 		}
 		
 		
-		public void setGenus(String genus) {
-			this.genus = genus;
+		public void setScientificName(String genus) {
+			this.scientificName = genus;
 		}
 		
 		
-		public String getSpecies() {
-			return species;
+		public String getNCBIID() {
+			return ncbiID;
 		}
 		
 		
-		public void setSpecies(String species) {
-			this.species = species;
+		public void setNCBIID(String species) {
+			this.ncbiID = species;
 		}
 		
 		
 		public boolean isEmpty() {
-			return ((species == null) || species.isEmpty()) && ((genus == null) || genus.isEmpty());
+			return ((ncbiID == null) || ncbiID.isEmpty()) && ((scientificName == null) || scientificName.isEmpty());
 		}
 	}
 	

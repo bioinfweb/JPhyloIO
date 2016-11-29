@@ -180,8 +180,8 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 			if (!supportTextField.getText().isEmpty()) {
 				selection.setSupport(Double.parseDouble(supportTextField.getText()));
 			}
-			selection.getTaxonomy().setGenus(genusTextField.getText());
-			selection.getTaxonomy().setSpecies(speciesTextField.getText());
+			selection.getTaxonomy().setScientificName(genusTextField.getText());
+			selection.getTaxonomy().setNCBIID(speciesTextField.getText());
 			selection.setSizeMeasurements(Collections.list(getSizeListModel().elements()));
 		}
 	}
@@ -208,8 +208,8 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 					else {
 						supportTextField.setText(Double.toString(selection.getSupport()));
 					}
-					genusTextField.setText(selection.getTaxonomy().getGenus());
-					speciesTextField.setText(selection.getTaxonomy().getSpecies());
+					genusTextField.setText(selection.getTaxonomy().getScientificName());
+					speciesTextField.setText(selection.getTaxonomy().getNCBIID());
 					
 					getSizeListModel().clear();
 					for (Double size : selection.getSizeMeasurements()) {
@@ -276,7 +276,7 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 		gbc_lblNodeAnnotations.gridy = 2;
 		metadataPanel.add(lblNodeAnnotations, gbc_lblNodeAnnotations);
 		
-		JLabel genusLabel = new JLabel("Genus:");
+		JLabel genusLabel = new JLabel("Scientific name:");
 		GridBagConstraints gbc_genusLabel = new GridBagConstraints();
 		gbc_genusLabel.anchor = GridBagConstraints.WEST;
 		gbc_genusLabel.insets = new Insets(2, 3, 5, 5);
@@ -294,7 +294,7 @@ public class MetadataApplication extends info.bioinfweb.jphyloio.demo.tree.Appli
 		metadataPanel.add(genusTextField, gbc_genusTextField);
 		genusTextField.setColumns(10);
 		
-		JLabel speciesLabel = new JLabel("Species:");
+		JLabel speciesLabel = new JLabel("NCBI taxonomy ID:");
 		GridBagConstraints gbc_speciesLabel = new GridBagConstraints();
 		gbc_speciesLabel.anchor = GridBagConstraints.WEST;
 		gbc_speciesLabel.insets = new Insets(2, 3, 5, 5);

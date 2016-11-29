@@ -71,7 +71,6 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 			TreeNode node) throws IOException, IllegalArgumentException {
 
 		NodeData data = (NodeData)((DefaultMutableTreeNode)node).getUserObject();
-		//TODO Adjust the following to PhyloXML:
 		
     // Write taxonomy information:
 		if ((data.getTaxonomy() != null) && !data.getTaxonomy().isEmpty()) {
@@ -81,28 +80,32 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 					JPhyloIOFormatIDs.PHYLOXML_FORMAT_ID)) {
 					// Each writer stores a reference to itself into it's parameter map, so it can be accessed by data adapters like this one.
 				
-				// Write taxonomy tag for genus:
-		    if ((data.getTaxonomy().getGenus() != null) && !data.getTaxonomy().getGenus().isEmpty()) {
-			    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax1", null, 
-			    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY), null, null));
-			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax2", null,
-			        PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME, DATA_TYPE_STRING, data.getTaxonomy().getGenus(), null);
-			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax3", null,
-			        PhyloXMLConstants.PREDICATE_TAXONOMY_RANK, DATA_TYPE_STRING, "genus", null);
-			    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
-		    }
-		    
-		    // Write taxonomy tag for species:
-		    if ((data.getTaxonomy().getSpecies() != null) && !data.getTaxonomy().getSpecies().isEmpty()) {
-			    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax4", null, 
-			    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY), null, null));
+		    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax1", null, 
+		    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY), null, null));
+			  
+		    // Write NCBI taxonomy ID to JPhyloIO:
+		    if ((data.getTaxonomy().getNCBIID() != null) && !data.getTaxonomy().getNCBIID().isEmpty()) {
+			    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax3", null, 
+			    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY_ID), null, null));
+			    
+			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax4", null,
+			        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER, DATA_TYPE_STRING, "ncbi_taxonomy", null);
 			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax5", null,
-			        PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME, DATA_TYPE_STRING, data.getTaxonomy().getSpecies(), null);
-			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax6", null,
-			        PhyloXMLConstants.PREDICATE_TAXONOMY_RANK, DATA_TYPE_STRING, "species", null);
-			    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+			        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE, DATA_TYPE_STRING, data.getTaxonomy().getNCBIID(), null);
+			    
+			    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));  // Terminate the taxonomy ID resource metadata element.
+		    }
+
+		    // Write scientific name to JPhyloIO:
+		    if ((data.getTaxonomy().getScientificName() != null) && !data.getTaxonomy().getScientificName().isEmpty()) {
+			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax2", null,
+			        PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME, DATA_TYPE_STRING, data.getTaxonomy().getScientificName(), null);
 		    }
 		    
+		    // It is important to write the ID before the scientific name, since PhyloXML forces this order in its schema. 
+		    // JPhyloIO would throw an exception if the order would be invalid.
+			    
+		    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));  // Terminate the taxonomy resource metadata element.
 			}
 			
 			// Use "real" predicates for all other formats:
@@ -110,17 +113,17 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 		    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax1", null, 
 		    		new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));
 		    
-		    if ((data.getTaxonomy().getGenus() != null) && !data.getTaxonomy().getGenus().isEmpty()) {
+		    if ((data.getTaxonomy().getScientificName() != null) && !data.getTaxonomy().getScientificName().isEmpty()) {
 			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax2", null,
-			        PREDICATE_HAS_GENUS, DATA_TYPE_STRING, data.getTaxonomy().getGenus(), null);
+			        PREDICATE_HAS_SCIENTIFIC_NAME, DATA_TYPE_STRING, data.getTaxonomy().getScientificName(), null);
 		    }
 		    
-		    if ((data.getTaxonomy().getSpecies() != null) && !data.getTaxonomy().getSpecies().isEmpty()) {
+		    if ((data.getTaxonomy().getNCBIID() != null) && !data.getTaxonomy().getNCBIID().isEmpty()) {
 			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax3", null,
-			        PREDICATE_HAS_SPECIES, DATA_TYPE_STRING, data.getTaxonomy().getSpecies(), null);
+			        PREDICATE_HAS_NCBI_ID, DATA_TYPE_STRING, data.getTaxonomy().getNCBIID(), null);
 		    }
 		    
-		    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+		    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));  // Terminate the taxonomy resource metadata element.
 			}
 		}
 		
