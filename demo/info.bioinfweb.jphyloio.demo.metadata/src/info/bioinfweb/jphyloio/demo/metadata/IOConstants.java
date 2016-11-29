@@ -41,4 +41,6 @@ public interface IOConstants {
   public static final QName PREDICATE_HAS_SCIENTIFIC_NAME = new QName(NAMESPACE_URI, "hasScientificName", NAMESPACE_PREFIX);
   public static final QName PREDICATE_HAS_NCBI_ID = new QName(NAMESPACE_URI, "hasNCBIID", NAMESPACE_PREFIX);
   public static final QName PREDICATE_HAS_SIZE_MEASUREMENTS = new QName(NAMESPACE_URI, "hasSizeMeasurements", NAMESPACE_PREFIX);
+  
+	public static final String PHYLOXML_ID_PROVIDER_NCBI = "ncbi_taxonomy";
 }

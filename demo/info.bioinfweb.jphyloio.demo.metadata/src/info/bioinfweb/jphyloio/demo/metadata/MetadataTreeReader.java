@@ -94,19 +94,46 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 	 * the species, due to the structure of <i>PhyloXML</i>.
 	 */
 	private void readPhyloXMLTaxonomy(Taxonomy taxonomy) throws IOException {
-		String rank = null;
-		String name = null;
+		JPhyloIOEvent event = reader.next();
+		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
+					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
+					System.out.println(literalEvent.getPredicate().getURI());
+					
+					if (PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) {
+						taxonomy.setScientificName(JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader));
+					}
+					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID.equals(literalEvent.getPredicate().getURI())) {
+						readPhyloXMLTaxonomyID(taxonomy);
+					}
+					else {
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+					}
+				}
+				else {  // Skip possible other event subsequences.
+					JPhyloIOReadingUtils.reachElementEnd(reader);
+				}
+			}
+			event = reader.next();
+		}
+	}
+	
+	
+	private void readPhyloXMLTaxonomyID(Taxonomy taxonomy) throws IOException {
+		String provider = null;
+		String id = null;
 		
 		JPhyloIOEvent event = reader.next();
 		while (reader.hasNextEvent() && !event.getType().getTopologyType().equals(EventTopologyType.END)) {
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) { 
 					LiteralMetadataEvent literalEvent = event.asLiteralMetadataEvent();
-					if (PhyloXMLConstants.PREDICATE_TAXONOMY_SCIENTIFIC_NAME.equals(literalEvent.getPredicate().getURI())) { 
-						name = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER.equals(literalEvent.getPredicate().getURI())) {
+						provider = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
 					}
-					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_RANK.equals(literalEvent.getPredicate().getURI())) { 
-						rank = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					else if (PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE.equals(literalEvent.getPredicate().getURI())) {
+						id = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
 					}
 					else {
 						JPhyloIOReadingUtils.reachElementEnd(reader);
@@ -119,13 +146,8 @@ public class MetadataTreeReader extends info.bioinfweb.jphyloio.demo.tree.TreeRe
 			event = reader.next();
 		}
 		
-		if ((name != null) && (rank != null)) {
-			if (rank.equals("genus")) {
-				taxonomy.setScientificName(name);
-			}
-			else if (rank.equals("species")) {
-				taxonomy.setNCBIID(name);
-			}
+		if (PHYLOXML_ID_PROVIDER_NCBI.equals(provider.toLowerCase())) {  // Set the ID only if the provider is really NCBI, since other IDs might also be specified.
+			taxonomy.setNCBIID(id);
 		}
 	}
 	

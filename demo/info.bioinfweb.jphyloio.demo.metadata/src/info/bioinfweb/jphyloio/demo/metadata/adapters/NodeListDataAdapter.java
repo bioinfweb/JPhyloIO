@@ -89,7 +89,7 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 			    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY_ID), null, null));
 			    
 			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax4", null,
-			        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER, DATA_TYPE_STRING, "ncbi_taxonomy", null);
+			        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER, DATA_TYPE_STRING, PHYLOXML_ID_PROVIDER_NCBI, null);
 			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax5", null,
 			        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE, DATA_TYPE_STRING, data.getTaxonomy().getNCBIID(), null);
 			    
@@ -113,14 +113,14 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 		    receiver.add(new ResourceMetadataEvent(id + DEFAULT_META_ID_PREFIX + "Tax1", null, 
 		    		new URIOrStringIdentifier(null, PREDICATE_HAS_TAXONOMY), null, null));
 		    
-		    if ((data.getTaxonomy().getScientificName() != null) && !data.getTaxonomy().getScientificName().isEmpty()) {
+		    if ((data.getTaxonomy().getNCBIID() != null) && !data.getTaxonomy().getNCBIID().isEmpty()) {
 			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax2", null,
-			        PREDICATE_HAS_SCIENTIFIC_NAME, DATA_TYPE_STRING, data.getTaxonomy().getScientificName(), null);
+			        PREDICATE_HAS_NCBI_ID, DATA_TYPE_STRING, data.getTaxonomy().getNCBIID(), null);
 		    }
 		    
-		    if ((data.getTaxonomy().getNCBIID() != null) && !data.getTaxonomy().getNCBIID().isEmpty()) {
+		    if ((data.getTaxonomy().getScientificName() != null) && !data.getTaxonomy().getScientificName().isEmpty()) {
 			    JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + DEFAULT_META_ID_PREFIX + "Tax3", null,
-			        PREDICATE_HAS_NCBI_ID, DATA_TYPE_STRING, data.getTaxonomy().getNCBIID(), null);
+			        PREDICATE_HAS_SCIENTIFIC_NAME, DATA_TYPE_STRING, data.getTaxonomy().getScientificName(), null);
 		    }
 		    
 		    receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));  // Terminate the taxonomy resource metadata element.
