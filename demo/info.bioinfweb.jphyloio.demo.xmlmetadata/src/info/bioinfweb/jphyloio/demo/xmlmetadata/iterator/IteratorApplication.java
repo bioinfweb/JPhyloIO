@@ -20,17 +20,28 @@ package info.bioinfweb.jphyloio.demo.xmlmetadata.iterator;
 
 
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.demo.xmlmetadata.AbstractApplication;
 import info.bioinfweb.jphyloio.demo.xmlmetadata.IOConstants;
 import info.bioinfweb.jphyloio.demo.xmlmetadata.RelatedResource;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
-import info.bioinfweb.jphyloio.formats.xml.MetaXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.util.Collections;
 
+import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
@@ -39,7 +50,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 public class IteratorApplication extends AbstractApplication implements IOConstants {
-	private RelatedResource readRelatedResource(StartElement parentEvent, MetaXMLEventReader xmlReader) 
+	private RelatedResource readRelatedResource(StartElement parentEvent, XMLEventReader xmlReader) 
 			throws IOException, XMLStreamException {
 		
 		RelatedResource result = new RelatedResource();
@@ -68,7 +79,7 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
 	protected RelatedResource readMetadata(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException {
 		RelatedResource result = null;
 		
-		MetaXMLEventReader xmlReader = reader.createMetaXMLEventReader();
+		XMLEventReader xmlReader = reader.createMetaXMLEventReader();
 		XMLEvent event;
 		while (xmlReader.hasNext()) {
       event = xmlReader.nextEvent();
@@ -88,9 +99,37 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
 
 	
 	@Override
-	protected void writeMetadata(File file, String formatID, List<RelatedResource> resources) {
-		// TODO Auto-generated method stub
+	protected void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, 
+			RelatedResource resource) throws IOException, XMLStreamException {
 		
+		XMLEventWriter writer = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).
+				createMetaXMLEventWriter(receiver);  
+				// This will cause a NullPointerException, if the writer does not implement JPhyloIOXMLEventWriter (e.g. writers for text 
+				// formats like Nexus). Real-world applications should handle this case. 
+		
+		XMLEventFactory factory = XMLEventFactory.newInstance();
+		writer.add(factory.createNamespace(CUSTOM_XML_NAMESPACE_PREFIX, CUSTOM_XML_NAMESPACE_URI));
+		
+		String prefix = writer.getNamespaceContext().getPrefix(CUSTOM_XML_NAMESPACE_URI);  //TODO Use this prefix, since it might have been changed.
+		//TODO Discuss why automatic namespace collecting was not implemeted/possible here.
+		writer.add(factory.createStartElement(TAG_RELATED_RESOURCE, Collections.emptyIterator(), Collections.emptyIterator()));
+		if (resource.getType() != null) {
+			writer.add(factory.createAttribute(ATTR_TYPE, resource.getType().toString()));
+		}
+		
+		if (resource.getTitle() != null) {
+			writer.add(factory.createStartElement(TAG_TITLE, Collections.emptyIterator(), Collections.emptyIterator()));
+			writer.add(factory.createCharacters(resource.getTitle()));
+			writer.add(factory.createEndElement(TAG_TITLE, Collections.emptyIterator()));
+		}
+		
+		if (resource.getURL() != null) {
+			writer.add(factory.createStartElement(TAG_URL, Collections.emptyIterator(), Collections.emptyIterator()));
+			writer.add(factory.createCharacters(resource.getURL().toExternalForm()));
+			writer.add(factory.createEndElement(TAG_URL, Collections.emptyIterator()));
+		}
+		
+		writer.add(factory.createEndElement(TAG_RELATED_RESOURCE, Collections.emptyIterator()));
 	}
 	
 	

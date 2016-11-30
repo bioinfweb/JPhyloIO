@@ -19,13 +19,14 @@
 package info.bioinfweb.jphyloio.demo.xmlmetadata.standard;
 
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.xml.stream.events.StartElement;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.demo.xmlmetadata.AbstractApplication;
 import info.bioinfweb.jphyloio.demo.xmlmetadata.IOConstants;
 import info.bioinfweb.jphyloio.demo.xmlmetadata.RelatedResource;
@@ -92,7 +93,7 @@ public class StandardApplication extends AbstractApplication implements IOConsta
 
 	
 	@Override
-	protected void writeMetadata(File file, String formatID, List<RelatedResource> resources) {
+	protected void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, RelatedResource resource) {
 		// TODO Auto-generated method stub
 		
 	}

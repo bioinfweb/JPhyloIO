@@ -19,7 +19,17 @@
 package info.bioinfweb.jphyloio.demo.xmlmetadata;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
+import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyDocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
@@ -67,11 +77,40 @@ public abstract class AbstractApplication {
 	}	
 
 	
-	protected abstract void writeMetadata(File file, String formatID, List<RelatedResource> resources);
+	protected abstract void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, 
+			RelatedResource resource) throws IOException, XMLStreamException;
 
 	
-	protected void write(File file, String formatID, List<RelatedResource> resources) {
+	protected void write(File file, String formatID, final List<RelatedResource> resources) {
 		System.out.println("Writing file \"" + file.getAbsolutePath() + "\".");
+		
+		// Prepare document adapter:
+		final AbstractApplication application = this;
+		DocumentDataAdapter document = new EmptyDocumentDataAdapter() {  // An document containing only metadata shall be written.
+			@Override
+			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
+				try {
+					for (int i = 0; i < resources.size(); i++) {
+						receiver.add(new LiteralMetadataEvent("meta" + i, null, 
+								new URIOrStringIdentifier(null, IOConstants.PREDICATE_RELATED_REFERENCE), LiteralContentSequenceType.XML));
+						application.writeMetadata(parameters, receiver, resources.get(i));  // In here the XML content is written (in an application specific way).
+						receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
+					}
+				}
+				catch (XMLStreamException e) {
+					throw new IOException(e);
+				}
+			}
+		};
+		
+		// Write data:
+		JPhyloIOEventWriter writer = factory.getWriter(formatID);
+		try {
+			writer.writeDocument(document, file, new ReadWriteParameterMap());
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
