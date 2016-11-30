@@ -58,7 +58,6 @@ import javax.xml.stream.events.XMLEvent;
  * @author Ben St&ouml;ver
  */
 public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStreamWriter {
-	private JPhyloIOEventReceiver receiver;
 	private XMLEventFactory factory = XMLEventFactory.newInstance();
 	private Stack<StartElement> encounteredStartElements = new Stack<StartElement>();
 
@@ -298,7 +297,7 @@ public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStr
 	
 	private void addContentEvent(XMLEvent event) throws XMLStreamException {
 		try {
-			receiver.add(new LiteralMetadataContentEvent(event, false));
+			getReceiver().add(new LiteralMetadataContentEvent(event, false));
 		}
 		catch (IOException e) {
 			if (e.getCause() != null) {
