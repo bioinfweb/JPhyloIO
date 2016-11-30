@@ -24,14 +24,15 @@ import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamReader;
 
 
 
 /**
- * Interface providing basic functionality for all JPhyloIO readers of XML formats.
+ * Interface providing basic functionality for all <i>JPhyloIO</i> readers of <i>XML</i> formats.
  * 
  * @author Sarah Wiechers
- *
+ * @author Ben St&ouml;ver
  */
 public interface JPhyloIOXMLEventReader extends JPhyloIOEventReader {
 	/**
@@ -48,14 +49,7 @@ public interface JPhyloIOXMLEventReader extends JPhyloIOEventReader {
 	//TODO Add hint for possible problems with events created from buffered data? (See also #123.)	
 	
 	/**
-	 * Returns the underlying {@link XMLEventReader}.
-	 * 
-	 * @return the underlying XML event reader
-	 */
-	public XMLEventReader getXMLReader();
-	
-	/**
-	 * Creates a new instance of {@link MetaXMLEventReader} that allows to read events of XML content of literal metadata from this 
+	 * Creates a new {@link XMLEventReader} that allows to read events of XML content of literal metadata from this 
 	 * <i>JPhyloIO</i> event reader instance through that interface. Instances can be created any time, while this instance is located
 	 * inside a literal metadata subsequence with the {@link LiteralContentSequenceType#XML}, but not outside of such a sequence.
 	 * <p>
@@ -64,12 +58,13 @@ public interface JPhyloIOXMLEventReader extends JPhyloIOEventReader {
 	 * reasons.
 	 * 
 	 * @return the new reader instance
-	 * @throws IllegalStateException if no reader can be created at the current position (outside of a literal metadata event subsequence with type XML)
+	 * @throws IllegalStateException if no reader can be created at the current position (outside of a literal metadata event 
+	 *         subsequence with type {@link LiteralContentSequenceType#XML})
 	 */
-	public MetaXMLEventReader createMetaXMLEventReader() throws IllegalStateException;	
+	public XMLEventReader createMetaXMLEventReader() throws IllegalStateException;	
 	
 	/**
-	 * Creates a new instance of {@link MetaXMLStreamReader} that allows to read events of XML content of literal metadata from this 
+	 * Creates a {@link XMLStreamReader} that allows to read events of XML content of literal metadata from this 
 	 * <i>JPhyloIO</i> event reader instance through that interface. Instances can be created any time, while this instance is located
 	 * inside a literal metadata subsequence with the {@link LiteralContentSequenceType#XML}, but not outside of such a sequence.
 	 * <p>
@@ -78,7 +73,8 @@ public interface JPhyloIOXMLEventReader extends JPhyloIOEventReader {
 	 * reasons.
 	 * 
 	 * @return the new reader instance
-	 * @throws IllegalStateException if no reader can be created at the current position (outside of a literal metadata event subsequence with type XML)
+	 * @throws IllegalStateException if no reader can be created at the current position (outside of a literal metadata event 
+	 *         subsequence with type {@link LiteralContentSequenceType#XML})
 	 */
-	public MetaXMLStreamReader createMetaXMLStreamReader() throws IllegalStateException;
+	public XMLStreamReader createMetaXMLStreamReader() throws IllegalStateException;
 }

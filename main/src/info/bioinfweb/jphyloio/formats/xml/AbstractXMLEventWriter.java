@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -31,7 +32,10 @@ import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.AbstractEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.exception.JPhyloIOWriterException;
+import info.bioinfweb.jphyloio.formats.xml.stax.MetaXMLEventWriter;
+import info.bioinfweb.jphyloio.formats.xml.stax.MetaXMLStreamWriter;
 
 
 
@@ -95,5 +99,17 @@ public abstract class AbstractXMLEventWriter<P extends XMLWriterStreamDataProvid
 		catch (XMLStreamException e) {
 			throw new JPhyloIOWriterException("An XML stream exception occured in the underlying XMLStreamWriter.", e);
 		}
+	}
+
+
+	@Override
+	public XMLEventWriter createMetaXMLEventWriter(JPhyloIOEventReceiver receiver) throws IllegalStateException { 	// TODO Auto-generated method stub
+		return new MetaXMLEventWriter(receiver, getXMLWriter());
+	}
+
+
+	@Override
+	public XMLStreamWriter createMetaXMLStreamWriter(JPhyloIOEventReceiver receiver) throws IllegalStateException {
+		return new MetaXMLStreamWriter(receiver, getXMLWriter());
 	}
 }

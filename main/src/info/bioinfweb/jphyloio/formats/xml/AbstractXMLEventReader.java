@@ -28,6 +28,8 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReader;
 import info.bioinfweb.jphyloio.formats.xml.elementreaders.XMLElementReaderKey;
+import info.bioinfweb.jphyloio.formats.xml.stax.MetaXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.stax.MetaXMLStreamReader;
 
 import java.io.BufferedReader;
 import java.io.File;

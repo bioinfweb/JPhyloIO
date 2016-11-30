@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xml;
+package info.bioinfweb.jphyloio.formats.xml.stax;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
@@ -24,6 +24,8 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;

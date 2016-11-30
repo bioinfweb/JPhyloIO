@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xml;
+package info.bioinfweb.jphyloio.formats.xml.stax;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
@@ -25,6 +25,8 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.push.JPhyloIOEventListener;
 
 import java.io.IOException;
@@ -45,7 +47,7 @@ import javax.xml.stream.events.XMLEvent;
  * @author Sarah Wiechers
  */
 public abstract class AbstractMetaXMLReader {
-	private XMLReaderStreamDataProvider streamDataProvider;
+	private XMLReaderStreamDataProvider<?> streamDataProvider;
 
 	private MetaEventListener listener = new MetaEventListener();
 	private XMLEventFactory eventFactory = XMLEventFactory.newInstance();
@@ -65,7 +67,7 @@ public abstract class AbstractMetaXMLReader {
 	}
 
 
-	public AbstractMetaXMLReader(XMLReaderStreamDataProvider streamDataProvider) {
+	public AbstractMetaXMLReader(XMLReaderStreamDataProvider<?> streamDataProvider) {
 		super();
 		this.streamDataProvider = streamDataProvider;
 		getJPhyloIOEventReader().addEventListener(listener);
@@ -78,12 +80,12 @@ public abstract class AbstractMetaXMLReader {
 	}
 
 
-	public JPhyloIOXMLEventReader getJPhyloIOEventReader() {
+	protected JPhyloIOXMLEventReader getJPhyloIOEventReader() {
 		return (JPhyloIOXMLEventReader)streamDataProvider.getEventReader();
 	}
 
 
-	public XMLReaderStreamDataProvider getStreamDataProvider() {
+	protected XMLReaderStreamDataProvider<?> getStreamDataProvider() {
 		return streamDataProvider;
 	}
 
@@ -131,8 +133,9 @@ public abstract class AbstractMetaXMLReader {
 	}
 	
 
+	// This method is declared by the reader and writer interfaces that are implemented by the inherited classes.
 	public Object getProperty(String name) throws IllegalArgumentException {
-		return getJPhyloIOEventReader().getXMLReader().getProperty(name);  // It is possible that implementation specific objects have properties that can be changed by the application in a way that our code does not work anymore
+		return streamDataProvider.getXMLReader().getProperty(name);  // It is possible that implementation specific objects have properties that can be changed by the application in a way that our code does not work anymore
 	}
 	
 	

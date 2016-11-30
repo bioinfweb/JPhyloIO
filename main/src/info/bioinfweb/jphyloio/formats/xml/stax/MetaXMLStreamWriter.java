@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xml;
+package info.bioinfweb.jphyloio.formats.xml.stax;
 
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
+import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -56,8 +56,8 @@ import javax.xml.stream.events.XMLEvent;
  * @author Sarah Wiechers 
  * @author Ben St&ouml;ver
  */
-public class MetaXMLStreamWriter<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> implements XMLStreamWriter {
-	private AbstractXMLDataReceiver<P> receiver;
+public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStreamWriter {
+	private JPhyloIOEventReceiver receiver;
 	private XMLEventFactory factory = XMLEventFactory.newInstance();
 	private Stack<StartElement> encounteredStartElements = new Stack<StartElement>();
 
@@ -66,10 +66,10 @@ public class MetaXMLStreamWriter<P extends XMLWriterStreamDataProvider<? extends
 	 * Creates a new instance of this class.
 	 * 
 	 * @param receiver the event receiver to write the <i>JPhyloIO</i> events created by this writer to
+	 * @param underlyingXMLWriter the <i>XML</i> writer used by the associated <i>JPhyloIO</i> event writer 
 	 */
-	public MetaXMLStreamWriter(AbstractXMLDataReceiver<P> receiver) {
-		super();
-		this.receiver = receiver;
+	public MetaXMLStreamWriter(JPhyloIOEventReceiver receiver, XMLStreamWriter underlyingXMLWriter) {
+		super(receiver, underlyingXMLWriter);
 	}
 
 
@@ -91,37 +91,37 @@ public class MetaXMLStreamWriter<P extends XMLWriterStreamDataProvider<? extends
 
 	@Override
 	public NamespaceContext getNamespaceContext() {
-		return receiver.getStreamDataProvider().getWriter().getNamespaceContext();
+		return getUnderlyingXMLWriter().getNamespaceContext();
 	}
 
 
 	@Override
 	public String getPrefix(String uri) throws XMLStreamException {
-		return receiver.getStreamDataProvider().getWriter().getPrefix(uri);
+		return getUnderlyingXMLWriter().getPrefix(uri);
 	}
 
 
 	@Override
 	public Object getProperty(String name) throws IllegalArgumentException {
-		return receiver.getStreamDataProvider().getWriter().getProperty(name);  // It is possible that implementation specific objects have properties that can be changed by the application in a way that our code does not work anymore
+		return getUnderlyingXMLWriter().getProperty(name);  // It is possible that implementation specific objects have properties that can be changed by the application in a way that our code does not work anymore
 	}
 
 
 	@Override
 	public void setDefaultNamespace(String uri) throws XMLStreamException {
-		receiver.getStreamDataProvider().getWriter().setDefaultNamespace(uri);  // It is possible that this method is called on the top level, which would lead to the literal end tag to be written with the wrong default namespace (it would be written with a prefix then)
+		getUnderlyingXMLWriter().setDefaultNamespace(uri);  // It is possible that this method is called on the top level, which would lead to the literal end tag to be written with the wrong default namespace (it would be written with a prefix then)
 	}
 
 
 	@Override
 	public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
-		receiver.getStreamDataProvider().getWriter().setNamespaceContext(context);  // It is possible that this method is called on the top level, which would lead to the literal end tag to be written with the wrong default namespace (it would be written with a prefix then)
+		getUnderlyingXMLWriter().setNamespaceContext(context);  // It is possible that this method is called on the top level, which would lead to the literal end tag to be written with the wrong default namespace (it would be written with a prefix then)
 	}
 
 
 	@Override
 	public void setPrefix(String prefix, String uri) throws XMLStreamException {
-		receiver.getStreamDataProvider().getWriter().setPrefix(prefix, uri);
+		getUnderlyingXMLWriter().setPrefix(prefix, uri);
 	}
 
 
