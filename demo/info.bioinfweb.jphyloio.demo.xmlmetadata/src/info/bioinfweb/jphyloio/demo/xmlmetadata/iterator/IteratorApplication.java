@@ -106,12 +106,8 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
 				createMetaXMLEventWriter(receiver);  
 				// This will cause a NullPointerException, if the writer does not implement JPhyloIOXMLEventWriter (e.g. writers for text 
 				// formats like Nexus). Real-world applications should handle this case. 
-		
 		XMLEventFactory factory = XMLEventFactory.newInstance();
-		writer.add(factory.createNamespace(CUSTOM_XML_NAMESPACE_PREFIX, CUSTOM_XML_NAMESPACE_URI));
 		
-		String prefix = writer.getNamespaceContext().getPrefix(CUSTOM_XML_NAMESPACE_URI);  //TODO Use this prefix, since it might have been changed.
-		//TODO Discuss why automatic namespace collecting was not implemeted/possible here.
 		writer.add(factory.createStartElement(TAG_RELATED_RESOURCE, Collections.emptyIterator(), Collections.emptyIterator()));
 		if (resource.getType() != null) {
 			writer.add(factory.createAttribute(ATTR_TYPE, resource.getType().toString()));

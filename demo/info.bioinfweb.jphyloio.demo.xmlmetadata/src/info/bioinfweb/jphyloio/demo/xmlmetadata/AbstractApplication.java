@@ -21,6 +21,7 @@ package info.bioinfweb.jphyloio.demo.xmlmetadata;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyDocumentDataAdapter;
@@ -106,7 +107,10 @@ public abstract class AbstractApplication {
 		// Write data:
 		JPhyloIOEventWriter writer = factory.getWriter(formatID);
 		try {
-			writer.writeDocument(document, file, new ReadWriteParameterMap());
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterNames.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);  // This way namespaces used in custom XML do not need to be declared manually.
+			
+			writer.writeDocument(document, file, parameters);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
