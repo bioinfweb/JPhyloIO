@@ -281,7 +281,7 @@ public interface ReadWriteParameterNames {
 	public static final String KEY_IGNORE_COMMENTS = KEY_PREFIX + "ignoreComments";
 	
 	/**
-	 * This parameter can be used to specify whether readers of XML formats shall also accept tags of their target format
+	 * This parameter can be used to specify whether readers of <i>XML</i> formats shall also accept tags of their target format
 	 * without any namespace definition.
 	 * <p>
 	 * The value should have the type {@link Boolean}. If {@code true} or no value is specified, tags without the target format
@@ -363,7 +363,7 @@ public interface ReadWriteParameterNames {
 	
 	/**
 	 * This parameter will be used by XML writers to determine whether namespaces used or declared in customXML shall
-	 * be managed together with other namespaces of the document by the used JPhyloIO writer. Managing may include 
+	 * be managed together with other namespaces of the document by the used <i>JPhyloIO</i> writer. Managing may include 
 	 * changing the prefix a namespace is bound to.
 	 * <p>
 	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, the JPhyloIO writer

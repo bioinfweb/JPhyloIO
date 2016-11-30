@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.formats.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;

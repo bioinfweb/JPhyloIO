@@ -22,7 +22,6 @@ package info.bioinfweb.jphyloio.formats.xml.stax;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
 
 import java.io.IOException;
