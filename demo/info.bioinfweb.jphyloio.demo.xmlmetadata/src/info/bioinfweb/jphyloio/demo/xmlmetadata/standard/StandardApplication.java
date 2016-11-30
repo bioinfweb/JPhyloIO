@@ -19,12 +19,7 @@
 package info.bioinfweb.jphyloio.demo.xmlmetadata.standard;
 
 
-import java.io.IOException;
-
-import javax.xml.stream.events.StartElement;
-
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
-import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.demo.xmlmetadata.AbstractApplication;
@@ -36,9 +31,18 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 
+import java.io.IOException;
+
+import javax.xml.stream.events.StartElement;
+
 
 
 public class StandardApplication extends AbstractApplication implements IOConstants {
+	public StandardApplication() {
+		super("standard");
+	}
+
+
 	private RelatedResource readRelatedResource(StartElement parentEvent, JPhyloIOEventReader reader) throws IOException {
 		RelatedResource result = new RelatedResource();
 		result.setType(RelatedResource.Type.valueOf(parentEvent.getAttributeByName(ATTR_TYPE).getValue()));

@@ -25,7 +25,6 @@ import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.DocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyDocumentDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.ListBasedDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
@@ -48,7 +47,15 @@ public abstract class AbstractApplication {
 	/** Factory instance to be used, to create format specific <i>JPhyloIO</i> readers and writers. */
 	private JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
 	
+	private String outputFolder;
 	
+	
+	public AbstractApplication(String outputFolder) {
+		super();
+		this.outputFolder = outputFolder;
+	}
+
+
 	protected abstract RelatedResource readMetadata(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException;
 	
 	
@@ -132,7 +139,7 @@ public abstract class AbstractApplication {
   		System.out.println();
   		
   		// Write:
-  		write(new File("data/output/NeXML.xml"), JPhyloIOFormatIDs.NEXML_FORMAT_ID, list);
+  		write(new File("data/output/" + outputFolder + "/NeXML.xml"), JPhyloIOFormatIDs.NEXML_FORMAT_ID, list);
   	}
   	catch (Exception e) {
   		e.printStackTrace();

@@ -55,6 +55,7 @@ demo/info.bioinfweb.jphyloio.demo.xmlmetadata/src/info/bioinfweb/jphyloio/demo/x
 demo/info.bioinfweb.jphyloio.demo.xmlmetadata/src/info/bioinfweb/jphyloio/demo/xmlmetadata/ApplicationReader.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.xmlmetadata/src/info/bioinfweb/jphyloio/demo/xmlmetadata/IOConstants.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.xmlmetadata/src/info/bioinfweb/jphyloio/demo/xmlmetadata/RelatedResource.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.xmlmetadata/src/info/bioinfweb/jphyloio/demo/xmlmetadata/cursor/CursorApplication.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.xmlmetadata/src/info/bioinfweb/jphyloio/demo/xmlmetadata/cursor/package-info.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.xmlmetadata/src/info/bioinfweb/jphyloio/demo/xmlmetadata/iterator/IteratorApplication.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.xmlmetadata/src/info/bioinfweb/jphyloio/demo/xmlmetadata/iterator/package-info.java -text svneol=unset#text/plain
