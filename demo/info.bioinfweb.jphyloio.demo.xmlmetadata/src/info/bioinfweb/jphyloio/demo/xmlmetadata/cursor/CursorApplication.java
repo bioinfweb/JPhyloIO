@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.demo.xmlmetadata.cursor;
 
 
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -32,6 +33,7 @@ import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -73,19 +75,21 @@ public class CursorApplication extends AbstractApplication implements IOConstant
 	
 	
 	@Override
-	protected RelatedResource readMetadata(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException {
+	protected RelatedResource readMetadata(JPhyloIOEventReader reader) throws IOException, XMLStreamException {
 		RelatedResource result = null;
 		
-		XMLStreamReader xmlReader = reader.createMetaXMLStreamReader();
-		while (xmlReader.hasNext()) {
-			if (xmlReader.next() == XMLStreamConstants.START_ELEMENT) {
-				if (xmlReader.getName().equals(TAG_RELATED_RESOURCE)) {
-        	result = readRelatedResource(xmlReader);
-				}
-				else {
-					XMLUtils.reachElementEnd(xmlReader);
-				}
-			}
+		if (reader instanceof JPhyloIOXMLEventReader) {
+  		XMLStreamReader xmlReader = ((JPhyloIOXMLEventReader)reader).createMetaXMLStreamReader();
+    	while (xmlReader.hasNext()) {
+    		if (xmlReader.next() == XMLStreamConstants.START_ELEMENT) {
+    			if (xmlReader.getName().equals(TAG_RELATED_RESOURCE)) {
+          	result = readRelatedResource(xmlReader);
+    			}
+    			else {
+    				XMLUtils.reachElementEnd(xmlReader);
+    			}
+    		}
+    	}
 		}
 		
 		return result;
@@ -96,29 +100,29 @@ public class CursorApplication extends AbstractApplication implements IOConstant
 	protected void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, 
 			RelatedResource resource) throws IOException, XMLStreamException {
 		
-		XMLStreamWriter writer = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).
-				createMetaXMLStreamWriter(receiver);  
-				// This will cause a NullPointerException, if the writer does not implement JPhyloIOXMLEventWriter (e.g. writers for text 
-				// formats like Nexus). Real-world applications should handle this case. 
-
-		writer.writeStartElement(TAG_RELATED_RESOURCE.getPrefix(), TAG_RELATED_RESOURCE.getLocalPart(), TAG_RELATED_RESOURCE.getNamespaceURI());
-		if (resource.getType() != null) {
-			writer.writeAttribute(ATTR_TYPE.getPrefix(), ATTR_TYPE.getNamespaceURI(), ATTR_TYPE.getLocalPart(), resource.getType().toString());
+		if (parameters.get(ReadWriteParameterNames.KEY_WRITER_INSTANCE) instanceof JPhyloIOXMLEventWriter) {  // XML metadata can only be written to XML formats.
+  		XMLStreamWriter writer = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, 
+  				JPhyloIOXMLEventWriter.class).createMetaXMLStreamWriter(receiver);  
+  
+  		writer.writeStartElement(TAG_RELATED_RESOURCE.getPrefix(), TAG_RELATED_RESOURCE.getLocalPart(), TAG_RELATED_RESOURCE.getNamespaceURI());
+  		if (resource.getType() != null) {
+  			writer.writeAttribute(ATTR_TYPE.getPrefix(), ATTR_TYPE.getNamespaceURI(), ATTR_TYPE.getLocalPart(), resource.getType().toString());
+  		}
+  		
+  		if (resource.getTitle() != null) {
+  			writer.writeStartElement(TAG_TITLE.getPrefix(), TAG_TITLE.getLocalPart(), TAG_TITLE.getNamespaceURI());
+  			writer.writeCharacters(resource.getTitle());
+  			writer.writeEndElement();
+  		}
+  		
+  		if (resource.getURL() != null) {
+  			writer.writeStartElement(TAG_URL.getPrefix(), TAG_URL.getLocalPart(), TAG_URL.getNamespaceURI());
+  			writer.writeCharacters(resource.getURL().toExternalForm());
+  			writer.writeEndElement();
+  		}
+  		
+  		writer.writeEndElement();
 		}
-		
-		if (resource.getTitle() != null) {
-			writer.writeStartElement(TAG_TITLE.getPrefix(), TAG_TITLE.getLocalPart(), TAG_TITLE.getNamespaceURI());
-			writer.writeCharacters(resource.getTitle());
-			writer.writeEndElement();
-		}
-		
-		if (resource.getURL() != null) {
-			writer.writeStartElement(TAG_URL.getPrefix(), TAG_URL.getLocalPart(), TAG_URL.getNamespaceURI());
-			writer.writeCharacters(resource.getURL().toExternalForm());
-			writer.writeEndElement();
-		}
-		
-		writer.writeEndElement();
 	}
 	
 	

@@ -19,11 +19,11 @@
 package info.bioinfweb.jphyloio.demo.xmlmetadata;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 import info.bioinfweb.jphyloio.utils.JPhyloIOReadingUtils;
 
 import java.io.IOException;
@@ -34,10 +34,10 @@ import javax.xml.stream.XMLStreamException;
 
 
 public abstract class ApplicationReader implements IOConstants {
-	protected abstract RelatedResource readRelatedResource(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException;
+	protected abstract RelatedResource readRelatedResource(JPhyloIOEventReader reader) throws IOException, XMLStreamException;
 	
 	
-	public void read(JPhyloIOXMLEventReader reader, List<RelatedResource> resources) throws IOException, XMLStreamException {
+	public void read(JPhyloIOEventReader reader, List<RelatedResource> resources) throws IOException, XMLStreamException {
 		while (reader.hasNextEvent()) {
 			JPhyloIOEvent event = reader.next();	     
 			

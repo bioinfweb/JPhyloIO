@@ -20,6 +20,7 @@ package info.bioinfweb.jphyloio.demo.xmlmetadata.iterator;
 
 
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -75,23 +76,25 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
 	
 	
 	@Override
-	protected RelatedResource readMetadata(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException {
+	protected RelatedResource readMetadata(JPhyloIOEventReader reader) throws IOException, XMLStreamException {
 		RelatedResource result = null;
 		
-		XMLEventReader xmlReader = reader.createMetaXMLEventReader();
-		XMLEvent event;
-		while (xmlReader.hasNext()) {
-      event = xmlReader.nextEvent();
-      if (event.isStartElement()) {
-      	StartElement element = event.asStartElement();
-        if (element.getName().equals(TAG_RELATED_RESOURCE)) {
-        	result = readRelatedResource(element, xmlReader);
-        }
-        else {
-        	XMLUtils.reachElementEnd(xmlReader);
+		if (reader instanceof JPhyloIOXMLEventReader) {
+  		XMLEventReader xmlReader = ((JPhyloIOXMLEventReader)reader).createMetaXMLEventReader();
+  		XMLEvent event;
+  		while (xmlReader.hasNext()) {
+        event = xmlReader.nextEvent();
+        if (event.isStartElement()) {
+        	StartElement element = event.asStartElement();
+          if (element.getName().equals(TAG_RELATED_RESOURCE)) {
+          	result = readRelatedResource(element, xmlReader);
+          }
+          else {
+          	XMLUtils.reachElementEnd(xmlReader);
+          }
         }
       }
-    }
+		}
 		
 		return result;
 	}
@@ -101,30 +104,30 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
 	protected void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, 
 			RelatedResource resource) throws IOException, XMLStreamException {
 		
-		XMLEventWriter writer = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).
-				createMetaXMLEventWriter(receiver);  
-				// This will cause a NullPointerException, if the writer does not implement JPhyloIOXMLEventWriter (e.g. writers for text 
-				// formats like Nexus). Real-world applications should handle this case. 
-		XMLEventFactory factory = XMLEventFactory.newInstance();
-		
-		writer.add(factory.createStartElement(TAG_RELATED_RESOURCE, Collections.emptyIterator(), Collections.emptyIterator()));
-		if (resource.getType() != null) {
-			writer.add(factory.createAttribute(ATTR_TYPE, resource.getType().toString()));
+		if (parameters.get(ReadWriteParameterNames.KEY_WRITER_INSTANCE) instanceof JPhyloIOXMLEventWriter) {  // XML metadata can only be written to XML formats.
+  		XMLEventWriter writer = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, 
+  				JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);  
+  		XMLEventFactory factory = XMLEventFactory.newInstance();
+  		
+  		writer.add(factory.createStartElement(TAG_RELATED_RESOURCE, Collections.emptyIterator(), Collections.emptyIterator()));
+  		if (resource.getType() != null) {
+  			writer.add(factory.createAttribute(ATTR_TYPE, resource.getType().toString()));
+  		}
+  		
+  		if (resource.getTitle() != null) {
+  			writer.add(factory.createStartElement(TAG_TITLE, Collections.emptyIterator(), Collections.emptyIterator()));
+  			writer.add(factory.createCharacters(resource.getTitle()));
+  			writer.add(factory.createEndElement(TAG_TITLE, Collections.emptyIterator()));
+  		}
+  		
+  		if (resource.getURL() != null) {
+  			writer.add(factory.createStartElement(TAG_URL, Collections.emptyIterator(), Collections.emptyIterator()));
+  			writer.add(factory.createCharacters(resource.getURL().toExternalForm()));
+  			writer.add(factory.createEndElement(TAG_URL, Collections.emptyIterator()));
+  		}
+  		
+  		writer.add(factory.createEndElement(TAG_RELATED_RESOURCE, Collections.emptyIterator()));
 		}
-		
-		if (resource.getTitle() != null) {
-			writer.add(factory.createStartElement(TAG_TITLE, Collections.emptyIterator(), Collections.emptyIterator()));
-			writer.add(factory.createCharacters(resource.getTitle()));
-			writer.add(factory.createEndElement(TAG_TITLE, Collections.emptyIterator()));
-		}
-		
-		if (resource.getURL() != null) {
-			writer.add(factory.createStartElement(TAG_URL, Collections.emptyIterator(), Collections.emptyIterator()));
-			writer.add(factory.createCharacters(resource.getURL().toExternalForm()));
-			writer.add(factory.createEndElement(TAG_URL, Collections.emptyIterator()));
-		}
-		
-		writer.add(factory.createEndElement(TAG_RELATED_RESOURCE, Collections.emptyIterator()));
 	}
 	
 	

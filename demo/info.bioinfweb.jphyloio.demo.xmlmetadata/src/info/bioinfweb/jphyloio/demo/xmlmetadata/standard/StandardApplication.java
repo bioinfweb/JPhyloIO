@@ -29,7 +29,6 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
-import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 
 import java.io.IOException;
 
@@ -72,7 +71,7 @@ public class StandardApplication extends AbstractApplication implements IOConsta
 	
 	
 	@Override
-	protected RelatedResource readMetadata(JPhyloIOXMLEventReader reader) throws IOException {
+	protected RelatedResource readMetadata(JPhyloIOEventReader reader) throws IOException {
 		RelatedResource result = null;
 		
 		JPhyloIOEvent event = reader.next();

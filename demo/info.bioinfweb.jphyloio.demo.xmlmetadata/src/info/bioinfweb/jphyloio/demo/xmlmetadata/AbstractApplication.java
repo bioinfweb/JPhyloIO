@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.demo.xmlmetadata;
 
 
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
@@ -32,7 +33,6 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
-import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,20 +56,20 @@ public abstract class AbstractApplication {
 	}
 
 
-	protected abstract RelatedResource readMetadata(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException;
+	protected abstract RelatedResource readMetadata(JPhyloIOEventReader reader) throws IOException, XMLStreamException;
 	
 	
 	private List<RelatedResource> read(File file) throws Exception {
 		System.out.println("Reading file \"" + file.getAbsolutePath() + "\".");
 		
 		List<RelatedResource> result = new ArrayList<RelatedResource>();
-		JPhyloIOXMLEventReader eventReader = (JPhyloIOXMLEventReader)factory.guessReader(file, new ReadWriteParameterMap());  // This code only works for XML formats, otherwise a ClassCastException would be thrown. In real-world applications this should be handled properly.
+		JPhyloIOEventReader eventReader = factory.guessReader(file, new ReadWriteParameterMap());  // This code only works for XML formats, otherwise a ClassCastException would be thrown. In real-world applications this should be handled properly.
 		
 		if (eventReader != null) {
 			try {
 				new ApplicationReader() {
 					@Override
-					protected RelatedResource readRelatedResource(JPhyloIOXMLEventReader reader) throws IOException, XMLStreamException {
+					protected RelatedResource readRelatedResource(JPhyloIOEventReader reader) throws IOException, XMLStreamException {
 						return readMetadata(reader);
 					}
 				}.read(eventReader, result);
