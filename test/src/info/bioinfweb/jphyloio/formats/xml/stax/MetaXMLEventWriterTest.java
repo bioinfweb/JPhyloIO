@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xml;
+package info.bioinfweb.jphyloio.formats.xml.stax;
 
 
 import static info.bioinfweb.commons.testing.XMLAssert.assertAttribute;
@@ -36,6 +36,7 @@ import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.io.XMLUtils;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreDocumentDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreOTUListDataAdapter;
@@ -55,6 +56,8 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLEventWriter;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
+import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 
@@ -67,6 +70,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -86,7 +90,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter() {
 			@Override
 			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				XMLEventWriter customXMLEventWriter = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
 				
 				receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 0, null, 
 						new URIOrStringIdentifier(null, new QName("http://test.com/", "testPredicate", "test")), LiteralContentSequenceType.XML));
@@ -111,7 +115,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 					throws IOException, IllegalArgumentException {
 				
 				if (id.equals(DEFAULT_OTU_ID_PREFIX + "2") || id.equals(DEFAULT_OTU_ID_PREFIX + "4")) {
-					MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+					XMLEventWriter customXMLEventWriter = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
 					XMLEventFactory factory = XMLEventFactory.newInstance();
 					
 					receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + DEFAULT_OTU_ID_PREFIX + id, null, 
@@ -138,7 +142,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 
 			@Override
 			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				XMLEventWriter customXMLEventWriter = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
 				XMLEventFactory factory = XMLEventFactory.newInstance();
 				
 				receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 2, null, 
@@ -201,7 +205,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter() {
 			@Override
 			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				XMLEventWriter customXMLEventWriter = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
 				
 				receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 0, null, 
 						new URIOrStringIdentifier(null, new QName("http://test.com/", "testPredicate", "test")), LiteralContentSequenceType.XML));
@@ -226,7 +230,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 					throws IOException, IllegalArgumentException {
 				
 				if (id.equals(DEFAULT_OTU_ID_PREFIX + "2") || id.equals(DEFAULT_OTU_ID_PREFIX + "4")) {
-					MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+					XMLEventWriter customXMLEventWriter = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
 					XMLEventFactory factory = XMLEventFactory.newInstance();
 					
 					receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + id, null, 
@@ -253,8 +257,8 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 
 			@Override
 			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
-				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter2 = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				XMLEventWriter customXMLEventWriter = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
+				XMLEventWriter customXMLEventWriter2 = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
 				XMLEventFactory factory = XMLEventFactory.newInstance();
 				
 				receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 2, null, 
@@ -322,7 +326,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 		StoreOTUListDataAdapter otuList = new StoreOTUListDataAdapter(new LabeledIDEvent(EventContentType.OTU_LIST, otuListID, "taxonlist"), null) {
 			@Override
 			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				XMLEventWriter customXMLEventWriter = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
 				XMLEventFactory factory = XMLEventFactory.newInstance();
 				
 				receiver.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 2, null, 
@@ -453,7 +457,7 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 		StoreDocumentDataAdapter document = new StoreDocumentDataAdapter() {
 			@Override
 			public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-				MetaXMLEventWriter<NeXMLWriterStreamDataProvider> customXMLEventWriter = new MetaXMLEventWriter(((AbstractXMLDataReceiver)receiver));
+				XMLEventWriter customXMLEventWriter = parameters.getObject(ReadWriteParameterNames.KEY_WRITER_INSTANCE, null, JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);
 				XMLEventFactory factory = XMLEventFactory.newInstance();
 				
 				receiver.add(new ResourceMetadataEvent(DEFAULT_META_ID_PREFIX + 0, null, new URIOrStringIdentifier(null, PREDICATE_HAS_CUSTOM_XML), null, null));

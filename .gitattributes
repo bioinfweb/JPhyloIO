@@ -613,9 +613,9 @@ test/src/info/bioinfweb/jphyloio/formats/phylip/SequentialPhylipEventReaderTest.
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLEventWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/phyloxml/PhyloXMLFactoryTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/formats/xml/AbstractMetaXMLReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLEventWriterTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/formats/xml/MetaXMLStreamWriterTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/xml/stax/AbstractMetaXMLReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/xml/stax/MetaXMLEventWriterTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/formats/xml/stax/MetaXMLStreamWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/xtg/XTGFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/objecttranslation/ObjectTranslatorFactoryTest.java -text svneol=unset#text/plain

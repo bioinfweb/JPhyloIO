@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.formats.xml;
+package info.bioinfweb.jphyloio.formats.xml.stax;
 
 
 import static info.bioinfweb.commons.testing.XMLAssert.*;
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
