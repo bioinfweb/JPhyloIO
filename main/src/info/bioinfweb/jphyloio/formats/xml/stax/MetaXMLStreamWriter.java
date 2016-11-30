@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.xml.stax;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -41,8 +42,8 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  * This writer can be used by applications already implementing cursor-based <i>StAX</i>-writing of metadata as an adapter to a 
- * {@link JPhyloIOEventWriter}. Instances of this class can be created directly inside a metadata writing method an an 
- * application's data adapter implementation, by passing the current event receiver to the constructor.
+ * {@link JPhyloIOEventWriter}. Instances of this class should not (and cannot) be created directly in application code, but 
+ * {@link JPhyloIOXMLEventWriter#createMetaXMLStreamWriter(JPhyloIOEventReceiver)} should be used instead.
  * <p>
  * This writer does not manage namespaces of custom XML elements. The application needs to ensure that all used prefixes 
  * (either in any elements, attributes or character data) are properly declared within the custom <i>XML</i> 

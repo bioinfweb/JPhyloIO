@@ -22,12 +22,15 @@ package info.bioinfweb.jphyloio.formats.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.XMLEvent;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.formats.xml.stax.MetaXMLEventWriter;
+import info.bioinfweb.jphyloio.formats.xml.stax.MetaXMLStreamWriter;
 
 
 
@@ -58,6 +61,10 @@ public interface JPhyloIOXMLEventWriter extends JPhyloIOEventWriter {
 	 * In principle this method may be called multiple times within the same literal metadata event subsequence, which would result in 
 	 * having multiple <i>XML</i> event writer instances delegating to the same <i>JPhyloIO</i> reader, although that is not 
 	 * recommended.
+	 * <p>
+	 * In implementations of this interface that are part of <i>JPhyloIO</i>, the returned writer is an instance of 
+	 * {@link MetaXMLEventWriter}. You can have a look at its documentation for furthter details in how the returned instance
+	 * behaves. (Note that third party implementations might return a different implementation of {@link XMLEventWriter} here.)
 	 * 
 	 * @param receiver the receiver to write events to (Each {@link XMLEvent} will be translated into a 
 	 *        {@link LiteralMetadataContentEvent}.)
@@ -75,6 +82,10 @@ public interface JPhyloIOXMLEventWriter extends JPhyloIOEventWriter {
 	 * In theory this method may be called multiple times within the same literal metadata event subsequence, which would result in 
 	 * having multiple <i>XML</i> event writer instances delegating to the same <i>JPhyloIO</i> reader, although that is not 
 	 * recommended.
+	 * <p>
+	 * In implementations of this interface that are part of <i>JPhyloIO</i>, the returned writer is an instance of 
+	 * {@link MetaXMLStreamWriter}. You can have a look at its documentation for furthter details in how the returned instance
+	 * behaves. (Note that third party implementations might return a different implementation of {@link XMLStreamWriter} here.)
 	 * 
 	 * @param receiver the receiver to write events to (Each writing operation will be translated into a 
 	 *        {@link LiteralMetadataContentEvent}.)

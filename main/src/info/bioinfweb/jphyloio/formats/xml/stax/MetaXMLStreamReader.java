@@ -82,7 +82,7 @@ public class MetaXMLStreamReader extends AbstractMetaXMLReader implements XMLStr
 	 * 
 	 * @param streamDataProvider the stream data provider of the underlying {@link JPhyloIOEventReader} 
 	 */
-	public MetaXMLStreamReader(XMLReaderStreamDataProvider streamDataProvider) {
+	public MetaXMLStreamReader(XMLReaderStreamDataProvider<?> streamDataProvider) {
 		super(streamDataProvider);
 	}
 

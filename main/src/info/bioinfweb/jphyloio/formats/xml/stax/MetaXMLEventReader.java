@@ -56,7 +56,7 @@ public class MetaXMLEventReader extends AbstractMetaXMLReader implements XMLEven
 	 * 
 	 * @param streamDataProvider the stream data provider of the underlying {@link JPhyloIOEventReader} 
 	 */
-	public MetaXMLEventReader(XMLReaderStreamDataProvider streamDataProvider) {
+	public MetaXMLEventReader(XMLReaderStreamDataProvider<?> streamDataProvider) {
 		super(streamDataProvider);
 	}
 

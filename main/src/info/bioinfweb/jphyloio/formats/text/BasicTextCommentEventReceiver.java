@@ -73,8 +73,8 @@ public class BasicTextCommentEventReceiver<P extends TextWriterStreamDataProvide
 	}
 	
 	
-	public static void writeComment(BasicEventReceiver receiver, CommentEvent event, String commentStart, String commentEnd) throws IOException {
-		Writer writer = ((TextWriterStreamDataProvider)receiver.getStreamDataProvider()).getWriter();
+	public static void writeComment(BasicEventReceiver<?> receiver, CommentEvent event, String commentStart, String commentEnd) throws IOException {
+		Writer writer = ((TextWriterStreamDataProvider<?>)receiver.getStreamDataProvider()).getWriter();
 		if (!receiver.isInComment()) {
 			writer.write(commentStart);
 		}

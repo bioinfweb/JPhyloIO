@@ -21,10 +21,9 @@ package info.bioinfweb.jphyloio.formats.xml.stax;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.dataadapters.implementations.receivers.BasicEventReceiver;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
-import info.bioinfweb.jphyloio.formats.xml.XMLWriterStreamDataProvider;
-import info.bioinfweb.jphyloio.formats.xml.receivers.AbstractXMLDataReceiver;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
+import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
 
 import java.io.IOException;
 
@@ -34,15 +33,14 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.XMLEvent;
 
 
 
 /**
  * This writer can be used by applications already implementing iterator-based <i>StAX</i>-writing of metadata as an adapter 
- * to a {@link JPhyloIOEventWriter}. Instances of this class can be created directly inside a metadata writing method an an 
- * application's data adapter implementation, by passing the current event receiver to the constructor.
+ * to a {@link JPhyloIOEventWriter}. Instances of this class should not (and cannot) be created directly in application code, but 
+ * {@link JPhyloIOXMLEventWriter#createMetaXMLEventWriter(JPhyloIOEventReceiver)} should be used instead.
  * <p>
  * Attributes of a start document event are not processed, since it is not possible to write them at this position of the document.
  * <p>
@@ -112,19 +110,6 @@ public class MetaXMLEventWriter extends AbstractMetaXMLWriter implements XMLEven
 	public void flush() throws XMLStreamException {}
 
 	
-	private XMLStreamWriter getUnderlyingXMLStreamWriter() {
-		if (getReceiver() instanceof BasicEventReceiver) {
-			BasicEventReceiver<?> basicReceiver = (BasicEventReceiver<?>)getReceiver(); 
-			if (basicReceiver.getStreamDataProvider() instanceof XMLWriterStreamDataProvider) {
-				return (XMLStreamWriter)((XMLWriterStreamDataProvider<?>)basicReceiver.getStreamDataProvider()).getEventWriter();
-				// Casting the receiver to AbstractXMLDataReceiver instead does not work, since not all receivers provided by XML writers inherit from this class.
-				//TODO This implementation might become problematic with third party JPhyloIO event writers that do not use this class hierarchy for the receiver or streamDataProvider. Maybe an architecture change providing a different way to access the XMLStreamWriter will some day be necessary to improve this.
-			}
-		}
-		return null;
-	}
-	
-	
 	/**
 	 * Returns the current namespace context of the underlying <i>XML</i> event writer, if
 	 * 
@@ -132,51 +117,30 @@ public class MetaXMLEventWriter extends AbstractMetaXMLWriter implements XMLEven
 	 */
 	@Override
 	public NamespaceContext getNamespaceContext() {
-		XMLStreamWriter writer = getUnderlyingXMLStreamWriter();
-		if (writer != null) {
-			return writer.getNamespaceContext();
-		}
-		else {
-			return null;  //TODO Return empty context here. 
-		}
+		return getUnderlyingXMLWriter().getNamespaceContext();
 	}
 	
 
 	@Override
 	public String getPrefix(String uri) throws XMLStreamException {
-		XMLStreamWriter writer = getUnderlyingXMLStreamWriter();
-		if (writer != null) {
-			return writer.getPrefix(uri);
-		}
-		else {
-			return null;  //TODO Call getPrefix() from own namespace context
-		}
+		return getUnderlyingXMLWriter().getPrefix(uri);
 	}
 	
 
 	@Override
 	public void setDefaultNamespace(String uri) throws XMLStreamException {
-		XMLStreamWriter writer = getUnderlyingXMLStreamWriter();
-		if (writer != null) {
-			writer.setDefaultNamespace(uri);  // It is possible that this method is called on the top level, which would lead to the literal end tag to be written with the wrong default namespace (it would be written with a prefix then)
-		}
+		getUnderlyingXMLWriter().setDefaultNamespace(uri);  // It is possible that this method is called on the top level, which would lead to the literal end tag to be written with the wrong default namespace (it would be written with a prefix then)
 	}
 	
 
 	@Override
 	public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
-		XMLStreamWriter writer = getUnderlyingXMLStreamWriter();
-		if (writer != null) {
-			writer.setNamespaceContext(context);  // It is possible that this method is called on the top level, which would lead to the literal end tag to be written with the wrong default namespace (it would be written with a prefix then)
-		}
+		getUnderlyingXMLWriter().setNamespaceContext(context);  // It is possible that this method is called on the top level, which would lead to the literal end tag to be written with the wrong default namespace (it would be written with a prefix then)
 	}
 	
 
 	@Override
 	public void setPrefix(String prefix, String uri) throws XMLStreamException {
-		XMLStreamWriter writer = getUnderlyingXMLStreamWriter();
-		if (writer != null) {
-			writer.setPrefix(prefix, uri);
-		}
+		getUnderlyingXMLWriter().setPrefix(prefix, uri);
 	}
 }
