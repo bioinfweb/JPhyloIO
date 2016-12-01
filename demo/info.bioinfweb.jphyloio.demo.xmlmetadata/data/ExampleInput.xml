@@ -16,7 +16,7 @@
 	<meta datatype="rdf:Literal" id="meta2" property="p:relatedReference" xsi:type="nex:LiteralMeta">
 		<c:relatedReference c:type="JOURNAL_ARTICLE">
 			<!-- Some test comment. -->
-			<c:title>Sample data processing in an additive and reproducible taxonomic workflow by using character data persistently linked to preserved individual specimens</c:title>
+			<c:title><!-- Other test comment. -->Sample data processing in an additive and reproducible taxonomic workflow<!-- Comment 3. --> by using character data persistently linked to preserved individual specimens</c:title>
 			<c:url>http://dx.doi.org/10.1093/database/bav094</c:url>
 		</c:relatedReference>
 	</meta>

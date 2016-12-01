@@ -33,7 +33,6 @@ import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -47,9 +46,7 @@ public class CursorApplication extends AbstractApplication implements IOConstant
 	}
 
 
-	private RelatedResource readRelatedResource(XMLStreamReader xmlReader) 
-			throws IOException, XMLStreamException {
-		
+	private RelatedResource readRelatedResource(XMLStreamReader xmlReader) throws IOException, XMLStreamException {
 		RelatedResource result = new RelatedResource();
 		result.setType(RelatedResource.Type.valueOf(
 				xmlReader.getAttributeValue(ATTR_TYPE.getNamespaceURI(), ATTR_TYPE.getLocalPart())));
