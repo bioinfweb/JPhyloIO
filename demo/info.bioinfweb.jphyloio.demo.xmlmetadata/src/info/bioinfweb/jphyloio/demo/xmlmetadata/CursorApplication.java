@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.demo.xmlmetadata.cursor;
+package info.bioinfweb.jphyloio.demo.xmlmetadata;
 
 
 import info.bioinfweb.commons.io.XMLUtils;
@@ -24,9 +24,6 @@ import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
-import info.bioinfweb.jphyloio.demo.xmlmetadata.AbstractApplication;
-import info.bioinfweb.jphyloio.demo.xmlmetadata.IOConstants;
-import info.bioinfweb.jphyloio.demo.xmlmetadata.RelatedResource;
 import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventReader;
 import info.bioinfweb.jphyloio.formats.xml.JPhyloIOXMLEventWriter;
 
