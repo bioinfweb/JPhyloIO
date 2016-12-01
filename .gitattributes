@@ -404,7 +404,6 @@ main/src/info/bioinfweb/jphyloio/push/EventForwarder.java -text svneol=unset#tex
 main/src/info/bioinfweb/jphyloio/push/JPhyloIOEventListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/push/package-info.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/IDToNameManager.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/jphyloio/utils/JPhyloIOEventFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/JPhyloIOReadingUtils.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/JPhyloIOWritingUtils.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/jphyloio/utils/LabelEditingReporter.java -text svneol=unset#text/plain
