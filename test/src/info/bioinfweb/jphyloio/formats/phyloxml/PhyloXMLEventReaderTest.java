@@ -380,9 +380,9 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_SOURCE_NODE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID1", null, "ID1", true, reader);	
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), node2, null, node2, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_TARGET_NODE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID2", null, "ID2", true, reader);
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), node3, null, node3, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_LENGTH), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.5", null, 0.5, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_IDREF0), 
@@ -395,7 +395,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "extraEdge", null, "extraEdge", true, reader);
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_ATTR_TYPE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "bootstrap", null, "bootstrap", true, reader);	//TODO why is this missing?
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "bootstrap", null, "bootstrap", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CONFIDENCE_VALUE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
 						"78.0", null, 78.0, true, reader);				
 				assertEndEvent(EventContentType.RESOURCE_META, reader);				
@@ -403,9 +403,9 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL), null, null, false, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_SOURCE_NODE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID2", null, "ID2", true, reader);	
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), node3, null, node3, true, reader);	
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_EDGE_TARGET_NODE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID1", null, "ID1", true, reader);
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), node2, null, node2, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_IDREF0), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID2", null, "ID2", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_CLADE_REL_ATTR_IDREF1), 
@@ -817,7 +817,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				fail("Exception not thrown");
 			}
 			catch (Exception e) {
-				assertEquals(e.getMessage(), "A node ID was referenced by a clade relation element, that was not defined before.");
+				assertEquals(e.getMessage(), "A node event ID was referenced by a clade relation element, but was not defined before.");
 			}
 		}
 		finally {
