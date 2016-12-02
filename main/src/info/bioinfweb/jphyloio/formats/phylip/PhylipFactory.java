@@ -70,7 +70,6 @@ public class PhylipFactory extends AbstractPhylipFactory {
 		writerParameters.add(ReadWriteParameterNames.KEY_LOGGER);
 		writerParameters.add(ReadWriteParameterNames.KEY_LINE_SEPARATOR);
 		writerParameters.add(ReadWriteParameterNames.KEY_MAXIMUM_NAME_LENGTH);
-		writerParameters.add(ReadWriteParameterNames.KEY_LABEL_EDITING_REPORTER);
 
 		return createFormatInfo(PHYLIP_FORMAT_ID, PHYLIP_FORMAT_NAME, readerParameters, writerParameters, "Phylip format (non-sequential)");
 	}

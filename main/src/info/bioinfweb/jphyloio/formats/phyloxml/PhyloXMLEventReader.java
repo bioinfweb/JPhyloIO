@@ -571,74 +571,72 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 					String cladeID1 = XMLUtils.readStringAttr(element, ATTR_ID_REF_1, null);
 					double branchLength = XMLUtils.readDoubleAttr(element, ATTR_DISTANCE, Double.NaN);
 					
-					if (getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false)) {
-						getStreamDataProvider().getCurrentEventCollection().add(new ResourceMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
-								null, new URIOrStringIdentifier(null, PREDICATE_CLADE_REL), null, null));
+					if ((cladeID0 != null) && (cladeID1 != null)) {
+						String eventID0 = getParameters().getPhyloXMLEventIDTranslationMap().get(XMLUtils.readStringAttr(element, ATTR_ID_REF_0, null));
+						String eventID1 = getParameters().getPhyloXMLEventIDTranslationMap().get(XMLUtils.readStringAttr(element, ATTR_ID_REF_1, null));
 						
-						streamDataProvider.getCurrentEventCollection().add(
-								new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-								new URIOrStringIdentifier(null, PREDICATE_EDGE_SOURCE_NODE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
-								LiteralContentSequenceType.SIMPLE));
-		
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(cladeID0, cladeID0));
+						if ((eventID0 != null) && (eventID1 != null)) {							
+							if (getParameters().getBoolean(ReadWriteParameterMap.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE, false)) {								
+								getStreamDataProvider().getCurrentEventCollection().add(new ResourceMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+										null, new URIOrStringIdentifier(null, PREDICATE_CLADE_REL), null, null));
 								
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
-						
-						streamDataProvider.getCurrentEventCollection().add(
-								new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-								new URIOrStringIdentifier(null, PREDICATE_EDGE_TARGET_NODE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN),
-								LiteralContentSequenceType.SIMPLE));
-		
-						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(cladeID1, cladeID1));
+								streamDataProvider.getCurrentEventCollection().add(
+										new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+										new URIOrStringIdentifier(null, PREDICATE_EDGE_SOURCE_NODE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), 
+										LiteralContentSequenceType.SIMPLE));
+				
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(eventID0, eventID0));
+										
+								streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 								
-						streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
-						
-						if (Double.compare(branchLength, Double.NaN) != 0) {
-							streamDataProvider.getCurrentEventCollection().add(
-									new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-									new URIOrStringIdentifier(null, PREDICATE_EDGE_LENGTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
-									LiteralContentSequenceType.SIMPLE));
-			
-							streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(branchLength, Double.toString(branchLength)));
-									
-							streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
-						}
-						
-						readAttributes(streamDataProvider, element, "", 
-								new AttributeInfo(ATTR_ID_REF_0, PREDICATE_CLADE_REL_ATTR_IDREF0, W3CXSConstants.DATA_TYPE_TOKEN),
-								new AttributeInfo(ATTR_ID_REF_1, PREDICATE_CLADE_REL_ATTR_IDREF1, W3CXSConstants.DATA_TYPE_TOKEN),
-								new AttributeInfo(ATTR_DISTANCE, PREDICATE_CLADE_REL_ATTR_DISTANCE, W3CXSConstants.DATA_TYPE_DOUBLE),
-								new AttributeInfo(ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN));
-					}
-					else {  // The phylogeny is considered as a network
-						if ((cladeID0 != null) && (cladeID1 != null)) {
-							String eventID0 = streamDataProvider.getCladeIDToNodeEventIDMap().get(cladeID0);
-							String eventID1 = streamDataProvider.getCladeIDToNodeEventIDMap().get(cladeID1);
-							
-							if ((eventID0 != null) && (eventID1 != null)) {								
-								getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-										eventID0, eventID1, branchLength));
+								streamDataProvider.getCurrentEventCollection().add(
+										new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+										new URIOrStringIdentifier(null, PREDICATE_EDGE_TARGET_NODE), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN),
+										LiteralContentSequenceType.SIMPLE));
+				
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(eventID1, eventID1));
+										
+								streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
+								
+								if (Double.compare(branchLength, Double.NaN) != 0) {
+									streamDataProvider.getCurrentEventCollection().add(
+											new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+											new URIOrStringIdentifier(null, PREDICATE_EDGE_LENGTH), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), 
+											LiteralContentSequenceType.SIMPLE));
+					
+									streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(branchLength, Double.toString(branchLength)));
+											
+									streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
+								}
+								
+								readAttributes(streamDataProvider, element, "", 
+										new AttributeInfo(ATTR_ID_REF_0, PREDICATE_CLADE_REL_ATTR_IDREF0, W3CXSConstants.DATA_TYPE_TOKEN),
+										new AttributeInfo(ATTR_ID_REF_1, PREDICATE_CLADE_REL_ATTR_IDREF1, W3CXSConstants.DATA_TYPE_TOKEN),
+										new AttributeInfo(ATTR_DISTANCE, PREDICATE_CLADE_REL_ATTR_DISTANCE, W3CXSConstants.DATA_TYPE_DOUBLE),
+										new AttributeInfo(ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN));													
+							}
+							else {  // The phylogeny is considered as a network
+								getStreamDataProvider().getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + streamDataProvider.getIDManager()
+										.createNewID(), null, eventID0, eventID1, branchLength));
 								
 								streamDataProvider.getCurrentEventCollection().add(
 										new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 										new URIOrStringIdentifier(null, PREDICATE_IS_CROSSLINK), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), 
-										LiteralContentSequenceType.SIMPLE));
-				
-								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true)));
-										
+										LiteralContentSequenceType.SIMPLE));				
+								streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(true, Boolean.toString(true)));										
 								streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 								
 								readAttributes(streamDataProvider, element, "", 
-										new AttributeInfo(ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN));								
-							}
-							else {
-								throw new JPhyloIOReaderException("A node ID was referenced by a clade relation element, that was not defined before.", event.getLocation());
+										new AttributeInfo(ATTR_TYPE, PREDICATE_CLADE_REL_ATTR_TYPE, W3CXSConstants.DATA_TYPE_TOKEN));															
 							}
 						}
 						else {
-							throw new JPhyloIOReaderException("No valid edge was referenced by a clade relation element. Both the source and target node must not be null.", event.getLocation());
-						}						
-					}									
+							throw new JPhyloIOReaderException("A node event ID was referenced by a clade relation element, but was not defined before.", event.getLocation());
+						}		
+					}
+					else {
+						throw new JPhyloIOReaderException("No valid edge was referenced by a clade relation element. Both the source and target of an edge must not be null.", event.getLocation());
+					}		
 				}
 		});		
 		
@@ -1250,7 +1248,7 @@ public class PhyloXMLEventReader extends AbstractXMLEventReader<PhyloXMLReaderSt
 			NodeEdgeInfo nodeInfo = streamDataProvider.getSourceNode().peek();
 			
 			if (streamDataProvider.getLastNodeID() != null) {
-				streamDataProvider.getCladeIDToNodeEventIDMap().put(streamDataProvider.getLastNodeID(), nodeInfo.getID());
+				getParameters().getPhyloXMLEventIDTranslationMap().put(streamDataProvider.getLastNodeID(), nodeInfo.getID());
 			}
 			
 			getStreamDataProvider().getCurrentEventCollection().add(new NodeEvent(nodeInfo.getID(), nodeInfo.getLabel(), null, nodeInfo.isRoot()));

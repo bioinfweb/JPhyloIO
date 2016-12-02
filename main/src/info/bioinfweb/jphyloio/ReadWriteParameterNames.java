@@ -360,6 +360,16 @@ public interface ReadWriteParameterNames {
 	 * will be written sequentially. A possible hierarchical structure will be lost. 
 	 */
 	public static final String KEY_PHYLOXML_METADATA_TREATMENT = KEY_PREFIX + "phyloXMLMetadataTreatment";
+
+	/**
+	 * This parameter will only be used by {@link PhyloXMLEventReader} and allows to obtain a map that maps
+	 * the IDs used in a PhyloXML document to refer to specific elements to according JPhyloIO event IDs.
+	 * <p>
+	 * The value will have the type {@link Map<String, String>}. If no instance is specified, the reader
+	 * will create a new one and put it in its parameter map. If a map is specified, its previous contents 
+	 * will be cleared by the reader. If an object of another type is specified using this key, it will be replaced.
+	 */
+	public static final String KEY_PHYLOXML_EVENT_ID_TRANSLATION_MAP = KEY_PREFIX + "phyloXMLEventIDTranslationMap";
 	
 	/**
 	 * This parameter will be used by XML writers to determine whether namespaces used or declared in customXML shall
