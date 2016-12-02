@@ -41,12 +41,27 @@ import javax.xml.stream.events.XMLEvent;
 
 
 
+/**
+ * This is the main class of one of two example applications contained in this demo project. It inherits from
+ * {@link AbstractApplication} and implements the abstract methods {@link #readMetadata(JPhyloIOEventReader)} and
+ * {@link #writeMetadata(ReadWriteParameterMap, JPhyloIOEventReceiver, RelatedResource)}, which are used to read and write
+ * an <i>XML</i> representation of the contents of a {@link RelatedResource} instance. This class does this using
+ * the iterator-based <i>StAX</i> approach with {@link XMLEventReader} and {@link XMLEventWriter}, while
+ * {@link CursorApplication} uses the cursor-based approach.
+ * 
+ * @author Ben St&ouml;ver
+ * @see AbstractApplication
+ * @see IteratorApplication
+ */
 public class IteratorApplication extends AbstractApplication implements IOConstants {
 	public IteratorApplication() {
 		super("iterator");
 	}
 
 
+	/**
+	 * Used internally by {@link #readMetadata(JPhyloIOEventReader)}.
+	 */
 	private RelatedResource readRelatedResource(StartElement parentEvent, XMLEventReader xmlReader) 
 			throws IOException, XMLStreamException {
 		
@@ -72,6 +87,10 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
 	}
 	
 	
+	/**
+	 * Reads the <i>XML</i> representation of an instance of {@link RelatedResource} using an {@link XMLEventReader} obtained
+	 * from the <i>JPhyloIO</i> writer.
+	 */
 	@Override
 	protected RelatedResource readMetadata(JPhyloIOEventReader reader) throws IOException, XMLStreamException {
 		RelatedResource result = null;
@@ -97,6 +116,10 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
 	}
 
 	
+	/**
+	 * Writes the <i>XML</i> representation of an instance of {@link RelatedResource} using an {@link XMLEventWriter} obtained
+	 * from the <i>JPhyloIO</i> writer.
+	 */
 	@Override
 	protected void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, 
 			RelatedResource resource) throws IOException, XMLStreamException {

@@ -37,12 +37,27 @@ import javax.xml.stream.XMLStreamWriter;
 
 
 
+/**
+ * This is the main class of one of two example applications contained in this demo project. It inherits from
+ * {@link AbstractApplication} and implements the abstract methods {@link #readMetadata(JPhyloIOEventReader)} and
+ * {@link #writeMetadata(ReadWriteParameterMap, JPhyloIOEventReceiver, RelatedResource)}, which are used to read and write
+ * an <i>XML</i> representation of the contents of a {@link RelatedResource} instance. This class does this using
+ * the cursor-based <i>StAX</i> approach with {@link XMLStreamReader} and {@link XMLStreamWriter}, while
+ * {@link IteratorApplication} uses the iterator-based approach.
+ * 
+ * @author Ben St&ouml;ver
+ * @see AbstractApplication
+ * @see IteratorApplication
+ */
 public class CursorApplication extends AbstractApplication implements IOConstants {
 	public CursorApplication() {
 		super("cursor");
 	}
 
 
+	/**
+	 * Used internally by {@link #readMetadata(JPhyloIOEventReader)}.
+	 */
 	private RelatedResource readRelatedResource(XMLStreamReader xmlReader) throws IOException, XMLStreamException {
 		RelatedResource result = new RelatedResource();
 		result.setType(RelatedResource.Type.valueOf(
@@ -68,6 +83,10 @@ public class CursorApplication extends AbstractApplication implements IOConstant
 	}
 	
 	
+	/**
+	 * Reads the <i>XML</i> representation of an instance of {@link RelatedResource} using an {@link XMLStreamReader} obtained
+	 * from the <i>JPhyloIO</i> writer.
+	 */
 	@Override
 	protected RelatedResource readMetadata(JPhyloIOEventReader reader) throws IOException, XMLStreamException {
 		RelatedResource result = null;
@@ -90,6 +109,10 @@ public class CursorApplication extends AbstractApplication implements IOConstant
 	}
 
 	
+	/**
+	 * Writes the <i>XML</i> representation of an instance of {@link RelatedResource} using an {@link XMLStreamWriter} obtained
+	 * from the <i>JPhyloIO</i> writer.
+	 */
 	@Override
 	protected void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, 
 			RelatedResource resource) throws IOException, XMLStreamException {
