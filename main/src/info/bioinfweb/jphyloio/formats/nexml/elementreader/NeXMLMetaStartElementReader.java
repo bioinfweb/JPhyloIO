@@ -53,6 +53,7 @@ public class NeXMLMetaStartElementReader extends AbstractNeXMLElementReader {
 	@Override
 	public void readEvent(NeXMLReaderStreamDataProvider streamDataProvider, XMLEvent event) throws IOException,
 			XMLStreamException {
+		
 		StartElement element = event.asStartElement();
   	LabeledIDEventInformation info = getLabeledIDEventInformation(streamDataProvider, element);
   	QName type = streamDataProvider.getEventReader().parseQName(XMLUtils.readStringAttr(element, ATTR_XSI_TYPE, null), element);
