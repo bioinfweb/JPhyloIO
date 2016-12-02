@@ -41,7 +41,7 @@ import java.util.Map;
  * Each application based on <i>JPhyloIO</i> needs to implement one such reader to support all available formats. The application 
  * can use this reader by calling {@link #read(JPhyloIOEventReader, Map)}.
  * <p>
- * Each method in this reader handles a sequence of events nested between a start and end event. although there are alternatives,
+ * Each method in this reader handles a sequence of events nested between a start and end event. Although there are alternatives,
  * this is usually a good way to implement pull parsing. Each of these methods corresponds to a grammar node of the <i>JPhyloIO</i>
  * event sequence that can be found in the documentation of {@link JPhyloIOEventReader}. 
  * 
