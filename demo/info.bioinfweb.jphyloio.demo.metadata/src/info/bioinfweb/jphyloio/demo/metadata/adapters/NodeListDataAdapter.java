@@ -19,13 +19,6 @@
 package info.bioinfweb.jphyloio.demo.metadata.adapters;
 
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
-import javax.xml.namespace.QName;
-
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.JPhyloIOEventWriter;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -43,6 +36,12 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 import info.bioinfweb.jphyloio.utils.JPhyloIOWritingUtils;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 
 
@@ -72,7 +71,7 @@ public class NodeListDataAdapter extends NodeEdgeListDataAdapter<NodeEvent>
 
 		NodeData data = (NodeData)((DefaultMutableTreeNode)node).getUserObject();
 		
-    // Write taxonomy information:
+		// Write taxonomy information:
 		if ((data.getTaxonomy() != null) && !data.getTaxonomy().isEmpty()) {
 			
 			// In order to use the special phyloXML tags, according predicates need to be used:
