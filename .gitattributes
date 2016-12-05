@@ -67,6 +67,7 @@ main/info.bioinfweb.jphyloio.core/lib/bioinfweb.commons.java-Core-2.0.0.jar -tex
 main/info.bioinfweb.jphyloio.core/lib/commons-collections4-4.1.jar -text
 main/info.bioinfweb.jphyloio.core/lib/commons-lang3-3.1.jar -text
 main/info.bioinfweb.jphyloio.core/lib/owlapi-XMLUtils-4.1.4.jar -text
+main/info.bioinfweb.jphyloio.core/pom.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/GPL.txt -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/LGPL.txt -text svneol=unset#text/plain
