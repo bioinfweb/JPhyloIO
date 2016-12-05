@@ -19,18 +19,28 @@
 package info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters;
 
 
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreObjectData;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreTreeNetworkDataAdapter;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.SetElementEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
+
+import java.util.List;
 
 
 
@@ -77,11 +87,32 @@ public class NetworkDataAdapter extends StoreTreeNetworkDataAdapter implements T
 
 
 	private void addNodes(StoreObjectListDataAdapter<NodeEvent> nodes) {
-		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "n1", "Node '_1", null, false));		
+		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "n1", "Node '_1", null, false));
+		List<JPhyloIOEvent> nestedEvents = nodes.getObjectContent(nodeEdgeIDPrefix + "n1");
+		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "n1meta1", null,
+				new URIOrStringIdentifier("idSourceN1", PhyloXMLConstants.PREDICATE_ATTR_ID_SOURCE),
+				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), LiteralContentSequenceType.SIMPLE));
+		nestedEvents.add(new LiteralMetadataContentEvent("NodeN1", "NodeN1"));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));		
+		
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nRoot", "Node " + nodeEdgeIDPrefix + "nRoot", null, true));
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nA", "Node " + nodeEdgeIDPrefix + "nA", linkedOTUs != null ? linkedOTUs[0] : null, false));
+		
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nB", "Node " + nodeEdgeIDPrefix + "nB", linkedOTUs != null ? linkedOTUs[1] : null, false));
+		nestedEvents = nodes.getObjectContent(nodeEdgeIDPrefix + "nB");
+		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "nBmeta1", null,
+				new URIOrStringIdentifier("idSourceNB", PhyloXMLConstants.PREDICATE_ATTR_ID_SOURCE),
+				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), LiteralContentSequenceType.SIMPLE));
+		nestedEvents.add(new LiteralMetadataContentEvent("NodeNB", "NodeNB"));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));		
+		
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nC", "Node " + nodeEdgeIDPrefix + "nC", linkedOTUs != null ? linkedOTUs[2] : null, false));
+		nestedEvents = nodes.getObjectContent(nodeEdgeIDPrefix + "nC");
+		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "nCmeta1", null,
+				new URIOrStringIdentifier("idSourceNC", PhyloXMLConstants.PREDICATE_ATTR_ID_SOURCE),
+				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), LiteralContentSequenceType.SIMPLE));
+		nestedEvents.add(new LiteralMetadataContentEvent("NodeNC", "NodeNC"));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 	
 	

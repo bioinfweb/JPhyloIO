@@ -2035,7 +2035,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		trees.getTreesAndNetworks().add(new NetworkDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
 		document.getTreesNetworks().add(trees);
 		
-		writeDocument(document, null, file);
+		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+		writeDocument(document, parameters, file);
 		
 		// Validate file:
 		FileReader fileReader = new FileReader(file);
@@ -2047,10 +2048,11 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_ROOT, reader);
 			
-			assertNamespaceCount(3, element);
+			assertNamespaceCount(4, element);
 			assertDefaultNamespace(new QName(PHYLOXML_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSI_DEFAULT_PRE), true, element);
 			assertNamespace(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.XSD_DEFAULT_PRE), true, element);
+			assertNamespace(new QName(PHYLOXML_PREDICATE_NAMESPACE, XMLConstants.XMLNS_ATTRIBUTE), false, element);
 //			assertNamespace(new QName(XMLReadWriteUtils.NAMESPACE_RDF, XMLConstants.XMLNS_ATTRIBUTE, XMLReadWriteUtils.RDF_DEFAULT_PRE), true, element);
 			assertAttributeCount(1, element);
 			assertAttribute(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, XMLReadWriteUtils.SCHEMA_LOCATION, XMLReadWriteUtils.XSI_DEFAULT_PRE), 
@@ -2081,7 +2083,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_CLADE, reader);
 			assertAttributeCount(2, element);
-			assertAttribute(ATTR_ID_SOURCE, element);
+			assertAttribute(ATTR_ID_SOURCE, "NodeN1", element);
 			assertAttribute(ATTR_BRANCH_LENGTH, "1.0", element);
 			assertShortElement(TAG_NAME, "Node '_1", reader);
 			
@@ -2094,7 +2096,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_CLADE, reader);
 			assertAttributeCount(1, element);
-			assertAttribute(ATTR_ID_SOURCE, element);
+			assertAttribute(ATTR_ID_SOURCE, "NodeNB", element);
 			assertShortElement(TAG_NAME, "Node nodeEdgeIDnB", reader);
 			assertEndElement(TAG_CLADE, reader);
 			
@@ -2102,7 +2104,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_CLADE, reader);
 			assertAttributeCount(2, element);
-			assertAttribute(ATTR_ID_SOURCE, element);
+			assertAttribute(ATTR_ID_SOURCE, "NodeNC", element);
 			assertAttribute(ATTR_BRANCH_LENGTH, "2.0", element);
 			assertShortElement(TAG_NAME, "Node nodeEdgeIDnC", reader);
 			assertEndElement(TAG_CLADE, reader);
@@ -2111,8 +2113,8 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			
 			element = assertStartElement(TAG_CLADE_RELATION, reader);
 			assertAttributeCount(4, element);
-			assertAttribute(ATTR_ID_REF_0, "nodeEdgeIDnB", element);
-			assertAttribute(ATTR_ID_REF_1, "nodeEdgeIDnC", element);
+			assertAttribute(ATTR_ID_REF_0, "NodeNB", element);
+			assertAttribute(ATTR_ID_REF_1, "NodeNC", element);
 			assertAttribute(ATTR_DISTANCE, "1.4", element);
 			assertAttribute(ATTR_TYPE, TYPE_NETWORK_EDGE, element);
 			assertEndElement(TAG_CLADE_RELATION, reader);
@@ -2189,6 +2191,43 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 		finally {
 			fileReader.close();
 			reader.close();
+			file.delete();
+		}
+	}
+	
+	
+	@Test
+	public void assertDuplicateIDSourceDocument() throws IOException, XMLStreamException {
+		File file = new File("data/testOutput/PhyloXMLTest.xml");
+		
+		// Write file
+		try {
+			idIndex = 1;
+			StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
+			StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
+					EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
+			
+			StoreTreeNetworkDataAdapter network = new NetworkDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
+			
+			// Add duplicate id_source value
+			List<JPhyloIOEvent> nestedEvents = network.getNodes(new ReadWriteParameterMap()).getObjectContent("nodeEdgeIDnA");
+			nestedEvents.add(new LiteralMetadataEvent("nodeEdgeIDn1meta1", null,
+					new URIOrStringIdentifier("idSourceN1", PhyloXMLConstants.PREDICATE_ATTR_ID_SOURCE),
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), LiteralContentSequenceType.SIMPLE));
+			nestedEvents.add(new LiteralMetadataContentEvent("NodeN1", "NodeN1"));
+			nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));	
+			
+			trees.getTreesAndNetworks().add(network);
+			document.getTreesNetworks().add(trees);
+			
+			writeDocument(document, null, file);
+			fail("Exception not thrown");
+		}
+		catch (InconsistentAdapterDataException e) {
+			assertEquals(e.getMessage(), "Duplicate value \"NodeN1\" found in attribute \"id_source\". "
+							+ "All values of such an attribute need to be unique in the document.");
+		}
+		finally {			
 			file.delete();
 		}
 	}

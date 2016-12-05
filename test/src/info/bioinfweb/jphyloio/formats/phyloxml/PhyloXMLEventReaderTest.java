@@ -58,7 +58,7 @@ import org.junit.Test;
 
 
 
-public class PhyloXMLEventReaderTest implements PhyloXMLConstants {	
+public class PhyloXMLEventReaderTest implements PhyloXMLConstants, ReadWriteConstants {	
 	@Test
 	public void testReadingSingleTree() {
 		try {
@@ -259,13 +259,16 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				assertEndEvent(EventContentType.NODE, reader);				
 				
-				String node2 = assertNodeEvent(null, "B", false, null, true, reader);				
+				String node2 = assertNodeEvent(null, "B", false, null, reader);				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_APPLIES_TO), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "phylogeny", null, "phylogeny", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_UNIT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "METRIC:m", null, "METRIC:m", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DATE), 
 						"2016-05-31", null, DatatypeConverter.parseDate("2016-05-31"), true, reader);
-				assertEndEvent(EventContentType.RESOURCE_META, reader);				
+				assertEndEvent(EventContentType.RESOURCE_META, reader);
+				assertEndEvent(EventContentType.NODE, reader);
 				
 				String node3 = assertNodeEvent(null, "2", false, null, reader);				
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, new QName("http://example.org", "predicate", "ex")), new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING),
@@ -275,7 +278,7 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEdgeEvent(node3, node1, reader);				
 				assertEndEvent(EventContentType.EDGE, reader);
 				
-				assertEdgeEvent(node3, node2, reader);				
+				assertEdgeEvent(node3, node2, reader);
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PROPERTY_ATTR_UNIT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "METRIC:m", null, "METRIC:m", true, reader);
@@ -359,9 +362,18 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				
 				assertLabeledIDEvent(EventContentType.TREE, null, "Tree 1", reader);
 				
-				String node1 = assertNodeEvent(null, "A", false, null, true, reader);				
-				String node2 = assertNodeEvent(null, "B", false, null, true, reader);				
-				String node3 = assertNodeEvent(null, "C", false, null, true, reader);				
+				String node1 = assertNodeEvent(null, "A", false, null, true, reader);
+				
+				String node2 = assertNodeEvent(null, "B", false, null, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ATTR_ID_SOURCE), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID1", null, "ID1", true, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				String node3 = assertNodeEvent(null, "C", false, null, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ATTR_ID_SOURCE), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID2", null, "ID2", true, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
 				String node4 = assertNodeEvent(null, "2", false, null, true, reader);
 				
 				assertEdgeEvent(node4, node2, reader);
@@ -420,6 +432,8 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.DOCUMENT, reader);
 				
 				assertFalse(reader.hasNextEvent());
+				
+				assertEquals(2, parameters.getPhyloXMLEventIDTranslationMap().size());
 			}
 			finally {
 				reader.close();
@@ -446,8 +460,17 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertLabeledIDEvent(EventContentType.NETWORK, null, "Tree 1", reader);
 				
 				String node1 = assertNodeEvent(null, "A", false, null, true, reader);
-				String node2 = assertNodeEvent(null, "B", false, null, true, reader);
-				String node3 = assertNodeEvent(null, "C", false, null, true, reader);
+				
+				String node2 = assertNodeEvent(null, "B", false, null, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ATTR_ID_SOURCE), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID1", null, "ID1", true, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
+				String node3 = assertNodeEvent(null, "C", false, null, reader);
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ATTR_ID_SOURCE), 
+						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), "ID2", null, "ID2", true, reader);
+				assertEndEvent(EventContentType.NODE, reader);
+				
 				String node4 = assertNodeEvent(null, "2", false, null, true, reader);
 				
 				assertEdgeEvent(node4, node2, reader);
@@ -495,6 +518,8 @@ public class PhyloXMLEventReaderTest implements PhyloXMLConstants {
 				assertEndEvent(EventContentType.DOCUMENT, reader);
 				
 				assertFalse(reader.hasNextEvent());
+				
+				assertEquals(2, parameters.getPhyloXMLEventIDTranslationMap().size());
 			}
 			finally {
 				reader.close();
