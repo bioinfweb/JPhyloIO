@@ -65,6 +65,7 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	private Stack<Integer> childIndices = new Stack<Integer>();	
 	private QName currentDatatype;
 	private boolean writeAppliesTo = false;
+	private boolean writeElement = true;
 	
 
 	public PhyloXMLSpecificPredicatesDataReceiver(PhyloXMLWriterStreamDataProvider streamDataProvider,
@@ -84,175 +85,189 @@ public class PhyloXMLSpecificPredicatesDataReceiver extends PhyloXMLMetaDataRece
 	 */
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
-		int currentIndex = 0;
-		PhyloXMLPredicateInfo predicateInfo = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI());
+		if (getStreamDataProvider().getMetaIDs().contains(event.getID()) && writeElement) {
+			int currentIndex = 0;
+			writeElement = true;
+			PhyloXMLPredicateInfo predicateInfo = getStreamDataProvider().getPredicateInfoMap().get(event.getPredicate().getURI());
+	
+			if (event.getPredicate().getURI() != null) {
+				
+				if (event.getPredicate().getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE) 
+						&& !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getPredicate().getURI())) {
+					throw new InconsistentAdapterDataException("The element \"" + event.getPredicate().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
+							+ predicates.peek().getLocalPart() + "\".");
+				}
+				
+				for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
+					currentIndex++;
+					
+					if (child.equals(event.getPredicate().getURI()) 
+							|| ((child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML) || child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE)) 
+									&& (predicateInfo == null))) {
+						
+						// Attributes and values can not be repeated (if the content is split, more than one content event should be nested instead of repeating the literal meta)
+						boolean writeAttribute = (predicateInfo != null) && predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.ATTRIBUTE) 
+								&& currentIndex > childIndices.peek();
+						boolean writeValue = (predicateInfo != null) && predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.VALUE) 
+								&& currentIndex > childIndices.peek();
+						boolean writeTag = ((predicateInfo != null) && !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.ATTRIBUTE) 
+								&& !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.VALUE) && currentIndex >= childIndices.peek());
+						boolean writeOtherContent = ((predicateInfo == null) && currentIndex >= childIndices.peek());
+						
+						if (writeAttribute || writeValue || writeTag || writeOtherContent) {
+							childIndices.pop();
+							childIndices.push(currentIndex);
+							
+							if (predicateInfo != null) {
+								predicates.push(event.getPredicate().getURI());
+								getStreamDataProvider().getMetaIDs().remove(event.getID());
+								
+								switch (predicateInfo.getTreatment()) {
+									case TAG_AND_VALUE:
+										QName tagName = predicateInfo.getTranslation();
+										getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());
+										
+										if (event.getOriginalType() != null) {
+											currentDatatype = event.getOriginalType().getURI();
+										}
+										break;
+									default:
+										break;
+								}
+							}
+							else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML)) {
+								predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML);
+								getStreamDataProvider().getMetaIDs().remove(event.getID());
+							}
+							else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_NODE)) {
+								predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE);
+								getStreamDataProvider().getMetaIDs().remove(event.getID());
+								writeAppliesTo = true;
+								
+								if (event.getOriginalType() != null) {
+									currentDatatype = event.getOriginalType().getURI();
+								}
+								
+								if (predicates.peek().equals(PREDICATE_ANNOTATION)) {
+									getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
+								}
+								
+								getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
+										getStreamDataProvider().getWriter().getPrefix(event.getPredicate().getURI().getNamespaceURI()) 
+										+ XMLUtils.QNAME_SEPARATOR + event.getPredicate().getURI().getLocalPart());
+								
+								getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
+										+ XMLUtils.QNAME_SEPARATOR + event.getOriginalType().getURI().getLocalPart());						
+							}					
+						}
+						else {
+							throw new InconsistentAdapterDataException("Metaevents with PhyloXML-specific predicates must be given in the correct order. "
+									+ "Attributes can only be written once.");
+						}
+					}
+				}
+			}
+		}
+		else {
+			writeElement = false;
+		}
+	}
 
-		if (event.getPredicate().getURI() != null) {
+
+	@Override
+	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
+		if (writeElement) {
+			switch (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment()) {
+				case VALUE:
+					getStreamDataProvider().getWriter().writeCharacters(event.toString());
+					predicates.pop();
+					break;
+				case TAG_AND_VALUE:
+					if (writeAppliesTo) {
+						getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), getPropertyOwner().toString().toLowerCase());
+						writeAppliesTo = false;
+					}
+					
+					if (event.hasObjectValue() && predicates.peek().equals(PREDICATE_COLOR)) {
+						PhyloXMLColorTranslator colorTranslator = new PhyloXMLColorTranslator();
+						colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
+					}
+					else {
+						ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslatorWithPossiblyInvalidNamespace(currentDatatype);
+						String value = processLiteralContent(event, translator, currentDatatype);
+						
+						if (value != null) {
+							getStreamDataProvider().getWriter().writeCharacters(value);
+						}
+					}
+					
+					break;
+				case ATTRIBUTE:
+					QName attribute = getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTranslation();
+					getStreamDataProvider().getWriter().writeAttribute(attribute.getPrefix(), attribute.getNamespaceURI(), attribute.getLocalPart(), event.toString());
+					predicates.pop();
+					
+					if (attribute.equals(ATTR_APPLIES_TO)) {
+						writeAppliesTo = false;
+					}				
+					break;
+				case CUSTOM_XML:
+					if (event.hasXMLEventValue()) {					
+						writeCustomXMLTag(event.getXMLEvent());
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+
+	@Override
+	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
+		if (getStreamDataProvider().getMetaIDs().contains(event.getID())) {
+			int currentIndex = 0;
+			writeElement = true;
 			
-			if (event.getPredicate().getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE) 
-					&& !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getPredicate().getURI())) {
-				throw new InconsistentAdapterDataException("The element \"" + event.getPredicate().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
+			if (event.getRel().getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE) 
+					&& !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getRel().getURI())) {
+				throw new InconsistentAdapterDataException("The element \"" + event.getRel().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
 						+ predicates.peek().getLocalPart() + "\".");
 			}
 			
 			for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
 				currentIndex++;
 				
-				if (child.equals(event.getPredicate().getURI()) 
-						|| ((child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML) || child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE)) 
-								&& (predicateInfo == null))) {
-					
-					// Attributes and values can not be repeated (if the content is split, more than one content event should be nested instead of repeating the literal meta)
-					boolean writeAttribute = (predicateInfo != null) && predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.ATTRIBUTE) 
-							&& currentIndex > childIndices.peek();
-					boolean writeValue = (predicateInfo != null) && predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.VALUE) 
-							&& currentIndex > childIndices.peek();
-					boolean writeTag = ((predicateInfo != null) && !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.ATTRIBUTE) 
-							&& !predicateInfo.getTreatment().equals(PhyloXMLPredicateTreatment.VALUE) && currentIndex >= childIndices.peek());
-					boolean writeOtherContent = ((predicateInfo == null) && currentIndex >= childIndices.peek());
-					
-					if (writeAttribute || writeValue || writeTag || writeOtherContent) {
+				if (child.equals(event.getRel().getURI())) {
+					if (currentIndex >= childIndices.peek()) {
 						childIndices.pop();
 						childIndices.push(currentIndex);
 						
-						if (predicateInfo != null) {
-							predicates.push(event.getPredicate().getURI());
-							getStreamDataProvider().getMetaIDs().remove(event.getID());
-							
-							switch (predicateInfo.getTreatment()) {
-								case TAG_AND_VALUE:
-									QName tagName = predicateInfo.getTranslation();
-									getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());
-									
-									if (event.getOriginalType() != null) {
-										currentDatatype = event.getOriginalType().getURI();
-									}
-									break;
-								default:
-									break;
-							}
+						getStreamDataProvider().getMetaIDs().remove(event.getID());
+						predicates.push(event.getRel().getURI());
+						childIndices.push(-1);
+						
+						switch (getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTreatment()) {
+							case TAG:
+								QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTranslation();
+								getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());							
+								break;
+							case VALUE:
+								getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString());
+								break;
+							default:
+								break;
 						}
-						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML)) {
-							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_CUSTOM_XML);
-							getStreamDataProvider().getMetaIDs().remove(event.getID());
-						}
-						else if (child.equals(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE) && !predicates.peek().equals(PhyloXMLPrivateConstants.IDENTIFIER_NODE)) {
-							predicates.push(PhyloXMLPrivateConstants.IDENTIFIER_ANY_PREDICATE);
-							getStreamDataProvider().getMetaIDs().remove(event.getID());
-							writeAppliesTo = true;
-							
-							if (event.getOriginalType() != null) {
-								currentDatatype = event.getOriginalType().getURI();
-							}
-							
-							if (predicates.peek().equals(PREDICATE_ANNOTATION)) {
-								getStreamDataProvider().getWriter().writeStartElement(TAG_PROPERTY.getLocalPart());
-							}
-							
-							getStreamDataProvider().getWriter().writeAttribute(ATTR_REF.getLocalPart(), 
-									getStreamDataProvider().getWriter().getPrefix(event.getPredicate().getURI().getNamespaceURI()) 
-									+ XMLUtils.QNAME_SEPARATOR + event.getPredicate().getURI().getLocalPart());
-							
-							getStreamDataProvider().getWriter().writeAttribute(ATTR_DATATYPE.getLocalPart(), XMLReadWriteUtils.XSD_DEFAULT_PRE 
-									+ XMLUtils.QNAME_SEPARATOR + event.getOriginalType().getURI().getLocalPart());						
-						}					
 					}
 					else {
-						throw new InconsistentAdapterDataException("Metaevents with PhyloXML-specific predicates must be given in the correct order. "
-								+ "Attributes can only be written once.");
+						throw new InconsistentAdapterDataException("The metaevent with the predicate \"" + event.getRel().getURI().getLocalPart() 
+								+ "\" was not nested under the element \"" + predicates.peek() + "\" in the correct order.");
 					}
 				}
 			}
-		}		
-	}
-
-
-	@Override
-	protected void handleLiteralContentMeta(LiteralMetadataContentEvent event) throws IOException, XMLStreamException {
-		switch (getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTreatment()) {
-			case VALUE:
-				getStreamDataProvider().getWriter().writeCharacters(event.toString());
-				predicates.pop();
-				break;
-			case TAG_AND_VALUE:
-				if (writeAppliesTo) {
-					getStreamDataProvider().getWriter().writeAttribute(ATTR_APPLIES_TO.getLocalPart(), getPropertyOwner().toString().toLowerCase());
-					writeAppliesTo = false;
-				}
-				
-				if (event.hasObjectValue() && predicates.peek().equals(PREDICATE_COLOR)) {
-					PhyloXMLColorTranslator colorTranslator = new PhyloXMLColorTranslator();
-					colorTranslator.writeXMLRepresentation(getStreamDataProvider().getWriter(), event.getObjectValue(), getStreamDataProvider());
-				}
-				else {
-					ObjectTranslator<?> translator = getParameterMap().getObjectTranslatorFactory().getDefaultTranslatorWithPossiblyInvalidNamespace(currentDatatype);
-					String value = processLiteralContent(event, translator, currentDatatype);
-					
-					if (value != null) {
-						getStreamDataProvider().getWriter().writeCharacters(value);
-					}
-				}
-				
-				break;
-			case ATTRIBUTE:
-				QName attribute = getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getTranslation();
-				getStreamDataProvider().getWriter().writeAttribute(attribute.getPrefix(), attribute.getNamespaceURI(), attribute.getLocalPart(), event.toString());
-				predicates.pop();
-				
-				if (attribute.equals(ATTR_APPLIES_TO)) {
-					writeAppliesTo = false;
-				}				
-				break;
-			case CUSTOM_XML:
-				if (event.hasXMLEventValue()) {					
-					writeCustomXMLTag(event.getXMLEvent());
-				}
-				break;
-			default:
-				break;
-		}		
-	}
-
-
-	@Override
-	protected void handleResourceMetaStart(ResourceMetadataEvent event) throws IOException, XMLStreamException {
-		int currentIndex = 0;
-		
-		if (event.getRel().getURI().getNamespaceURI().equals(PHYLOXML_PREDICATE_NAMESPACE) 
-				&& !Arrays.asList(getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()).contains(event.getRel().getURI())) {
-			throw new InconsistentAdapterDataException("The element \"" + event.getRel().getURI().getLocalPart() + "\" is not allowed to occur under the element \"" 
-					+ predicates.peek().getLocalPart() + "\".");
 		}
-		
-		for (QName child : getStreamDataProvider().getPredicateInfoMap().get(predicates.peek()).getAllowedChildren()) {
-			currentIndex++;
-			
-			if (child.equals(event.getRel().getURI())) {
-				if (currentIndex >= childIndices.peek()) {
-					childIndices.pop();
-					childIndices.push(currentIndex);
-					
-					getStreamDataProvider().getMetaIDs().remove(event.getID());
-					predicates.push(event.getRel().getURI());
-					childIndices.push(-1);
-					
-					switch (getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTreatment()) {
-						case TAG:
-							QName tagName = getStreamDataProvider().getPredicateInfoMap().get(event.getRel().getURI()).getTranslation();
-							getStreamDataProvider().getWriter().writeStartElement(tagName.getNamespaceURI(), tagName.getLocalPart());							
-							break;
-						case VALUE:
-							getStreamDataProvider().getWriter().writeCharacters(event.getHRef().toString());
-							break;
-						default:
-							break;
-					}
-				}
-				else {
-					throw new InconsistentAdapterDataException("The metaevent with the predicate \"" + event.getRel().getURI().getLocalPart() 
-							+ "\" was not nested under the element \"" + predicates.peek() + "\" in the correct order.");
-				}
-			}
+		else {
+			writeElement = false;
 		}
 	}
 

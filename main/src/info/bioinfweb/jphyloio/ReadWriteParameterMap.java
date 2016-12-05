@@ -29,7 +29,6 @@ import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetadataTreatment;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslatorFactory;
 import info.bioinfweb.jphyloio.utils.LabelEditingReporter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -113,20 +112,8 @@ public class ReadWriteParameterMap extends ParameterMap implements ReadWritePara
 	}
 	
 	
-	/**
-	 * Returns the map stored under {@link #KEY_PHYLOXML_EVENT_ID_TRANSLATION_MAP}. If no object for 
-	 * this key is present in this instance, a new one is created, added to this instance and returned. The same is done, 
-	 * if an object which is not an instance of {@link Map<String, String>} is found for this key.
-	 * 
-	 * @return the map instance
-	 */
 	public Map<String, String> getPhyloXMLEventIDTranslationMap() {
-		Object result = get(KEY_PHYLOXML_EVENT_ID_TRANSLATION_MAP);
-		if (!(result instanceof Map<?, ?>)) {  // Also checks for null. //TODO Can I somehow check if the generic types are correct as well?
-			result = new HashMap<String, String>();
-			put(KEY_PHYLOXML_EVENT_ID_TRANSLATION_MAP, result);
-		}
-		return (Map<String, String>)result;
+		return getObject(ReadWriteParameterMap.KEY_PHYLOXML_EVENT_ID_TRANSLATION_MAP, null, Map.class);
 	}
 
 

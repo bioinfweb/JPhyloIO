@@ -61,7 +61,7 @@ import javax.xml.stream.XMLStreamException;
  * 
  * <h3><a id="simpleLiteralMetadata"></a>Simple literal metadata</h3>
  * 
- * Metadata with literal values that belongs to a tree, network, node or edge can be written to {@code property} tags nested under
+ * Metadata with literal values that belong to a tree, network, node or edge can be written to {@code property} tags nested under
  * {@code phylogeny} or {@code clade}. Since these can not be nested in each other, the user can define a strategy
  * to deal with nested meta-events with a parameter of the type {@link PhyloXMLMetadataTreatment}. This allows
  * to e.g. write all meta-event values sequentially or ignore any nested metadata.
@@ -174,7 +174,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		// Bind default prefixes here to avoid having to change them if an application tries to use them later on
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.XSD_DEFAULT_PRE, XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getXSIPrefix(getXMLWriter()), XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-//	getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getRDFPrefix(getXMLWriter()), XMLReadWriteUtils.NAMESPACE_RDF);
+//			getStreamDataProvider().setNamespacePrefix(XMLReadWriteUtils.getRDFPrefix(getXMLWriter()), XMLReadWriteUtils.NAMESPACE_RDF);
 		
 		checkDocument();
 		
@@ -234,7 +234,12 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 				
 				Iterator<String> nodeIDIterator = tree.getNodes(getParameters()).getIDIterator(getParameters());
 				while (nodeIDIterator.hasNext()) {
-					tree.getNodes(getParameters()).writeContentData(getParameters(), receiver, nodeIDIterator.next());
+					String nodeID = nodeIDIterator.next();
+					
+					tree.getNodes(getParameters()).writeContentData(getParameters(), receiver, nodeID);
+					
+					getStreamDataProvider().getNodeEventIDToIDSourceMap().put(nodeID, getStreamDataProvider().getCurrentCladeIDSource());
+					getStreamDataProvider().setCurrentCladeIDSource(null);
 				}
 			}
 		}
@@ -290,7 +295,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		}
 		
 		getXMLWriter().writeCharacters(phylogenyID);
-		getXMLWriter().writeEndElement();		
+		getXMLWriter().writeEndElement();
 		
 		// Write metadata with PhyloXML-specific predicates
 		tree.writeMetadata(getParameters(), receiver);
@@ -300,8 +305,8 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		for (String networkEdgeID : topologyExtractor.getNetworkEdgeIDs()) {
 			EdgeEvent networkEdgeEvent = tree.getEdges(getParameters()).getObjectStartEvent(getParameters(), networkEdgeID);
 			getXMLWriter().writeStartElement(TAG_CLADE_RELATION.getLocalPart());
-			getXMLWriter().writeAttribute(ATTR_ID_REF_0.getLocalPart(), networkEdgeEvent.getSourceID());
-			getXMLWriter().writeAttribute(ATTR_ID_REF_1.getLocalPart(), networkEdgeEvent.getTargetID());
+			getXMLWriter().writeAttribute(ATTR_ID_REF_0.getLocalPart(), getStreamDataProvider().getNodeEventIDToIDSourceMap().get(networkEdgeEvent.getSourceID()));
+			getXMLWriter().writeAttribute(ATTR_ID_REF_1.getLocalPart(), getStreamDataProvider().getNodeEventIDToIDSourceMap().get(networkEdgeEvent.getTargetID()));
 			getXMLWriter().writeAttribute(ATTR_DISTANCE.getLocalPart(), Double.toString(networkEdgeEvent.getLength()));
 			getXMLWriter().writeAttribute(ATTR_TYPE.getLocalPart(), TYPE_NETWORK_EDGE);
 		}
@@ -332,7 +337,14 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		getXMLWriter().writeStartElement(TAG_CLADE.getLocalPart());
 		
-		getXMLWriter().writeAttribute(ATTR_ID_SOURCE.getLocalPart(), rootNodeID);
+		String idSource = getStreamDataProvider().getNodeEventIDToIDSourceMap().get(rootNodeID);
+		if (idSource != null) {
+			getXMLWriter().writeAttribute(ATTR_ID_SOURCE.getLocalPart(), idSource);
+		}
+		else {
+			getStreamDataProvider().getNodeEventIDToIDSourceMap().put(rootNodeID, rootNodeID);
+			getXMLWriter().writeAttribute(ATTR_ID_SOURCE.getLocalPart(), rootNodeID);
+		}
 		
 		if (!Double.isNaN(afferentEdge.getLength())) {
 			getXMLWriter().writeAttribute(ATTR_BRANCH_LENGTH.getLocalPart(), Double.toString(afferentEdge.getLength()));
@@ -342,7 +354,7 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 		
 		// Write PhyloXML-specific metadata
 		tree.getEdges(getParameters()).writeContentData(getParameters(), edgeReceiver, afferentEdge.getID());
-		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);	
+		tree.getNodes(getParameters()).writeContentData(getParameters(), nodeReceiver, rootNodeID);
 		
 		// Write general metadata
 		nodeReceiver = new PhyloXMLMetaDataReceiver(getStreamDataProvider(), getParameters(), PropertyOwner.NODE);

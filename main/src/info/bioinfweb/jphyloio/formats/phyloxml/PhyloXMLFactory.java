@@ -115,7 +115,8 @@ public class PhyloXMLFactory extends AbstractXMLFactory implements PhyloXMLConst
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_LOGGER);
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_OBJECT_TRANSLATOR_FACTORY);
 		supportedReaderParameters.add(ReadWriteParameterNames.KEY_ALLOW_DEFAULT_NAMESPACE);
-		supportedReaderParameters.add(ReadWriteParameterNames.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE);		
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_PHYLOXML_CONSIDER_PHYLOGENY_AS_TREE);
+		supportedReaderParameters.add(ReadWriteParameterNames.KEY_PHYLOXML_EVENT_ID_TRANSLATION_MAP);		
 		
 		Set<String> supportedWriterParameters = new HashSet<String>();
 		supportedWriterParameters.add(ReadWriteParameterNames.KEY_WRITER_INSTANCE);

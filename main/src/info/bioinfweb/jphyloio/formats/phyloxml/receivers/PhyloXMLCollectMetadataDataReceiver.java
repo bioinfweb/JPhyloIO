@@ -26,6 +26,7 @@ import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLMetaEventInfo;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLWriterStreamDataProvider;
@@ -42,7 +43,7 @@ import javax.xml.stream.XMLStreamException;
 
 
 /**
- * Reaceiver that is used to collect information from meta events (e.g. used namespaces).
+ * Receiver that is used to collect information from meta events (e.g. used namespaces).
  * 
  * @author Sarah Wiechers
  *
@@ -51,6 +52,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 	private Stack<String> metaIDs = new Stack<String>();
 	private boolean isPhylogenyIDValue = false;
 	private boolean isPhylogenyIDProvider = false;
+	private boolean isIDSource = false;
 	private boolean hasMetadata = false;
 	
 	
@@ -100,6 +102,10 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 				isPhylogenyIDValue = true;
 				getStreamDataProvider().getMetaIDs().remove(event.getID());
 			}
+			else if (resourceIdentifier.equals(PREDICATE_ATTR_ID_SOURCE)) {
+				isIDSource = true;
+				getStreamDataProvider().getMetaIDs().remove(event.getID());
+			}
 		}
 		else {
 			resourceIdentifier = ReadWriteConstants.PREDICATE_HAS_LITERAL_METADATA;
@@ -120,13 +126,26 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 		XMLReadWriteUtils.manageLiteralContentMetaNamespaces(getStreamDataProvider(), getParameterMap(), event);
 		
 		if (event.hasStringValue()) {
+			String value = event.getStringValue();
+			
 			if (isPhylogenyIDProvider) {
-				getStreamDataProvider().setPhylogenyIDProvider(event.getStringValue());
+				getStreamDataProvider().setPhylogenyIDProvider(value);
 				isPhylogenyIDProvider = false;
 			}
 			else if (isPhylogenyIDValue) {
-				getStreamDataProvider().setPhylogenyID(event.getStringValue());
+				getStreamDataProvider().setPhylogenyID(value);
 				isPhylogenyIDValue = false;
+			}
+			else if (isIDSource) {
+				if (!getStreamDataProvider().getIdSources().add(value)) {
+					throw new InconsistentAdapterDataException("Duplicate value \"" + value + "\" found in attribute \"id_source\". "
+							+ "All values of such an attribute need to be unique in the document.");
+				}
+				else {
+					getStreamDataProvider().setCurrentCladeIDSource(value);
+				}
+				
+				isIDSource = false;
 			}
 		}
 	}
@@ -171,6 +190,7 @@ public class PhyloXMLCollectMetadataDataReceiver extends AbstractXMLDataReceiver
 		metaIDs.pop();
 		isPhylogenyIDProvider = false;
 		isPhylogenyIDValue = false;
+		isIDSource = false;
 	}
 
 	

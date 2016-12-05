@@ -19,11 +19,10 @@
 package info.bioinfweb.jphyloio.formats.phyloxml;
 
 
-import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.formats.xml.XMLReaderStreamDataProvider;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -37,12 +36,12 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	private boolean createTreeGroupStart;
 	private boolean createPhylogenyStart;
 	private boolean createTreeGroupEnd;	
-	private String lastNodeID;	
-	private List<JPhyloIOEvent> propertyEvents = new ArrayList<JPhyloIOEvent>();
+	private String lastNodeID;
 	private boolean propertyHasResource;
 	private boolean propertyIsURI;
 	private boolean resetEventCollection;
 	private boolean isFirstContentEvent;
+	private Map<String, String> idSourceToEventIDMap = new HashMap<String, String>();
 	
 
 	public PhyloXMLReaderStreamDataProvider(PhyloXMLEventReader eventReader) {
@@ -98,11 +97,6 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 	public void setLastNodeID(String lastNodeID) {
 		this.lastNodeID = lastNodeID;
 	}
-
-
-	public List<JPhyloIOEvent> getPropertyEvents() {
-		return propertyEvents;
-	}
 	
 
 	public boolean isFirstContentEvent() {
@@ -112,6 +106,11 @@ public class PhyloXMLReaderStreamDataProvider extends XMLReaderStreamDataProvide
 
 	public void setFirstContentEvent(boolean isFirstContentEvent) {
 		this.isFirstContentEvent = isFirstContentEvent;
+	}
+
+
+	public Map<String, String> getIdSourceToEventIDMap() {
+		return idSourceToEventIDMap;
 	}
 
 
