@@ -11,4 +11,4 @@ locations:
 
 - <https://secure.bioinfweb.info/Code/svn/commons.java/trunk/main/info.bioinfweb.commons.core>
 - <https://secure.bioinfweb.info/Code/svn/commons.java/trunk/main/info.bioinfweb.commons.bio>
-- <https://secure.bioinfweb.info/Code/svn/JPhyloIO/trunk/main>
+- <https://secure.bioinfweb.info/Code/svn/JPhyloIO/trunk/main/info.bioinfweb.jphyloio.core>
