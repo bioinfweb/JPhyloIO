@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE project [
+<!ENTITY libraryReleaseTargets SYSTEM "/srv/bioinfweb/data/ReleaseManager/shared/ant/Library_Release_Targets.xml">
+<!ENTITY additionalClasspathEntries SYSTEM "additional_classpath_entries.xml">
+<!ENTITY javadocLinks SYSTEM "javaDoc_links.xml">
+<!ENTITY binaries SYSTEM "binaries.xml">
+<!ENTITY sourcefiles SYSTEM "sourcefiles.xml">
+<!ENTITY libraryJars SYSTEM "library_jars.xml">
+<!ENTITY javadocSourceLocations SYSTEM "javaDoc_sourceLocations.xml">
+<!ENTITY dbPassword SYSTEM "secure/dbPassword.xml">
+]>
+<!-- The value of 'projectLabel' may not contain the following characters: '%', '_', '[', ']' -->
+<project default="bioinfweb.commons.java">
+	<property name="projectLabel" value="JPhyloIO" />
+	<property name="simpleProjectLabel" value="jphyloio" />
+	<property name="projectFolderPrefix" value="info.bioinfweb.jphyloio" />
+	<property name="projectFolder" value="/srv/bioinfweb/data/ReleaseManager/JPhyloIO" />
+	<property name="sharedFolder" value="/srv/bioinfweb/data/ReleaseManager/shared" />
+	<property name="tempFolder" value="${projectFolder}/temp" />
+	<property name="sourceDataFolder" value="${tempFolder}/checkout" />
+	<property name="webspaceRootFolder" value="/srv/bioinfweb/content/JPhyloIO" />
+	<property name="webspaceJavaDocFolder" value="${webspaceRootFolder}/PROTECTED/tree/Documentation/API" />
+	<property name="webspaceDownloadFolder" value="${webspaceRootFolder}/Download" />	
+	<property name="svnRepositoryPath" value="https://secure.bioinfweb.info/Code/svn/JPhyloIO/trunk/main/" />
+	<property name="defaultJavaDocSourceLocation" value="https://secure.bioinfweb.info/Code/svn/JPhyloIO/trunk/main/info.bioinfweb.jphyloio.core/" />
+	<property name="styleName" value="JPhyloIO" />
+	<property name="dbName" value="biw_JPhyloIO" />
+	<property name="dbUser" value="biw_rm_JPhyloIO" />
+	&dbPassword;
+	<property name="softwareID" value="19" />
+	<property name="containedItems" value="1 2" />
+	<property name="javadocSourcePath" value="${sourceDataFolder}/${projectFolderPrefix}.core/src;" />
+	<property name="defaultNewsTextEn" value="A [LINK http://bioinfweb.info/JPhyloIO/Download new version] of our library for reading and writing of phylogenetic file formats through one event-based interface was released." />
+	<property name="defaultNewsTextDe" value="Eine [LINK http://bioinfweb.info/JPhyloIO/Download neue Version] unserer Bibliothek zum Lesen und Schreiben phylogenetischer Dateiformate über eine einheitliche Ereignis-basierte Schnittstelle wurde veröffentlicht." />
+	<property name="defaultImageURL" value="http://bioinfweb.info/Software/JPhyloIOList.png" />
+	<property name="defaultImageLinkURL" value="http://bioinfweb.info/JPhyloIO/" />
+	<property name="displayGroups" value="BIW,AG" />
+	
+	&libraryReleaseTargets;
+</project>

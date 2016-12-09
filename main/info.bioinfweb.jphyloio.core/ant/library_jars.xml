@@ -1,0 +1,3 @@
+<fileset dir="${sourceDataFolder}/${projectFolderPrefix}.core/include">
+	<include name="**/*" />
+</fileset>

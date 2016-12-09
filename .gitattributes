@@ -62,6 +62,13 @@ main/info.bioinfweb.jphyloio.core/.classpath -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/.project -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/ant/additional_classpath_entries.xml -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/ant/binaries.xml -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/ant/build.xml -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/ant/javaDoc_links.xml -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/ant/javaDoc_sourceLocations.xml -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/ant/library_jars.xml -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/ant/sourcefiles.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb.commons.java-Bio-2.0.0.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb.commons.java-Core-2.0.0.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/commons-collections4-4.1.jar -text
