@@ -40,12 +40,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>info.bioinfweb.commons.java</groupId>
-			<artifactId>bioinfweb-commons-core</artifactId>
+			<artifactId>bioinfweb-commons-java-core</artifactId>
 			<version>[2.0.0,3.0.0)</version>
 		</dependency>
 		<dependency>
 			<groupId>info.bioinfweb.commons.java</groupId>
-			<artifactId>bioinfweb-commons-bio</artifactId>
+			<artifactId>bioinfweb-commons-java-bio</artifactId>
 			<version>[2.0.0,3.0.0)</version>
 		</dependency>
 		
