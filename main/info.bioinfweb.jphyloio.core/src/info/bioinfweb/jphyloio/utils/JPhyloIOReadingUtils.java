@@ -27,11 +27,13 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
-import info.bioinfweb.jphyloio.exception.IllegalEventException;
 import info.bioinfweb.jphyloio.objecttranslation.ObjectTranslator;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 
 
@@ -232,5 +234,47 @@ public class JPhyloIOReadingUtils {
     	} while (!event.getType().equals(LITERAL_META_END));
   	}
   	return result;
+  }
+  
+  
+  /**
+   * Reads all (remaining) events from the specified reader and adds events that implement the specified class and have
+   * a type that is contained in the specified set to the returned list.
+   * <p>
+   * Possible use cases could e.g. be to collect all alignment start events from a document to display a list of alignments
+   * contained in a file. 
+   * 
+   * @param reader the reader to read the events from
+   * @param types a set of types to be collected
+   * @param instanceClass the type that needs to be implemented by the collected event instances
+   * @return a list of collected events
+   * @throws IOException if an I/O error occurs while reading events from {@code reader}
+   */
+  @SuppressWarnings("unchecked")
+	public static <E extends JPhyloIOEvent> List<E> collectEvents(JPhyloIOEventReader reader, Set<EventType> types, 
+  		Class<E> instanceClass) throws IOException {
+  	
+  	List<E> result = new ArrayList<E>();
+  	while (reader.hasNextEvent()) {
+  		JPhyloIOEvent event = reader.next();
+  		if (instanceClass.isInstance(event) && (types.contains(event.getType()))) {
+  			result.add((E)event);
+  		}
+  	}
+  	return result;
+  }
+  
+  
+  /**
+   * Reads all (remaining) events from the specified reader and adds events that have a type that is contained in the #
+   * specified set to the returned list.
+   * 
+   * @param reader the reader to read the events from
+   * @param types a set of types to be collected
+   * @return a list of collected events
+   * @throws IOException if an I/O error occurs while reading events from {@code reader}
+   */
+	public static List<JPhyloIOEvent> collectEvents(JPhyloIOEventReader reader, Set<EventType> types) throws IOException {
+		return collectEvents(reader, types, JPhyloIOEvent.class);
   }
 }
