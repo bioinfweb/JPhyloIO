@@ -62,7 +62,8 @@ public interface PhyloXMLConstants {
 	public static final QName TAG_BRANCH_COLOR = new QName(PHYLOXML_NAMESPACE, "color");
 	public static final QName TAG_RED = new QName(PHYLOXML_NAMESPACE, "red");
 	public static final QName TAG_GREEN = new QName(PHYLOXML_NAMESPACE, "green");
-	public static final QName TAG_BLUE = new QName(PHYLOXML_NAMESPACE, "blue");	
+	public static final QName TAG_BLUE = new QName(PHYLOXML_NAMESPACE, "blue");
+	public static final QName TAG_ALPHA = new QName(PHYLOXML_NAMESPACE, "alpha");
 	public static final QName TAG_NODE_ID = new QName(PHYLOXML_NAMESPACE, "node_id");
 	
 	public static final QName TAG_TAXONOMY = new QName(PHYLOXML_NAMESPACE, "taxonomy");
@@ -82,6 +83,8 @@ public interface PhyloXMLConstants {
 	public static final QName TAG_ANNOTATION = new QName(PHYLOXML_NAMESPACE, "annotation");
 	public static final QName TAG_DOMAIN_ARCHITECTURE = new QName(PHYLOXML_NAMESPACE, "domain_architecture");
 	public static final QName TAG_DOMAIN = new QName(PHYLOXML_NAMESPACE, "domain");
+	public static final QName TAG_GENE_NAME = new QName(PHYLOXML_NAMESPACE, "gene_name");
+	public static final QName TAG_CROSS_REFERENCES = new QName(PHYLOXML_NAMESPACE, "cross_references");
 	
 	public static final QName TAG_EVENTS = new QName(PHYLOXML_NAMESPACE, "events");
 	public static final QName TAG_TYPE = new QName(PHYLOXML_NAMESPACE, "type");
@@ -107,8 +110,7 @@ public interface PhyloXMLConstants {
 	public static final QName TAG_REFERENCE = new QName(PHYLOXML_NAMESPACE, "reference");
 	public static final QName TAG_VALUE = new QName(PHYLOXML_NAMESPACE, "value");
 	public static final QName TAG_MINIMUM = new QName(PHYLOXML_NAMESPACE, "minimum");
-	public static final QName TAG_MAXIMUM = new QName(PHYLOXML_NAMESPACE, "maximum");
-	
+	public static final QName TAG_MAXIMUM = new QName(PHYLOXML_NAMESPACE, "maximum");	
 		
 	public static final QName ATTR_ROOTED = new QName("rooted");
 	public static final QName ATTR_REROOTABLE = new QName("rerootable");
@@ -117,6 +119,7 @@ public interface PhyloXMLConstants {
 	
 	public static final QName ATTR_BRANCH_LENGTH = new QName("branch_length");
 	public static final QName ATTR_ID_SOURCE = new QName("id_source");
+	public static final QName ATTR_COLLAPSE = new QName("collapse");
 	
 	public static final QName ATTR_ID_PROVIDER = new QName("provider");
 	
@@ -148,6 +151,8 @@ public interface PhyloXMLConstants {
 	public static final QName ATTR_TO = new QName("to");
 	public static final QName ATTR_CONFIDENCE = new QName("confidence");
 	public static final QName ATTR_ID = new QName("id");
+	public static final QName ATTR_COMMENT = new QName("comment");
+	public static final QName ATTR_STANDARD_DEVIATION = new QName("stddev");
 	
 	
 	public static final String APPLIES_TO_PHYLOGENY = "phylogeny";
@@ -187,12 +192,18 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_SEQ_REL_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "SequenceRelation" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	
 	public static final QName PREDICATE_ATTR_ID_SOURCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "IDSource");
+	public static final QName PREDICATE_ATTR_COLLAPSE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Collapse");
 	public static final QName PREDICATE_WIDTH = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchWidth");
 	public static final QName PREDICATE_COLOR = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchColor");
+	public static final QName PREDICATE_COLOR_RED = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchColor" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Red");
+	public static final QName PREDICATE_COLOR_GREEN = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchColor" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Green");
+	public static final QName PREDICATE_COLOR_BLUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchColor" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Blue");
+	public static final QName PREDICATE_COLOR_ALPHA = new QName(PHYLOXML_PREDICATE_NAMESPACE, "BranchColor" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Alpha"); //TODO Adjust color translator to existence of new predicate
 	
 	public static final QName PREDICATE_CONFIDENCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Confidence");
 	public static final QName PREDICATE_CONFIDENCE_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_CONFIDENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
+	public static final QName PREDICATE_CONFIDENCE_ATTR_STDDEV = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Confidence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "StandardDeviation");
 	
 	public static final QName PREDICATE_NODE_ID = new QName(PHYLOXML_PREDICATE_NAMESPACE, "NodeID");
 	public static final QName PREDICATE_NODE_ID_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "NodeID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
@@ -217,6 +228,7 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_SEQUENCE_SYMBOL = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Symbol");
 	public static final QName PREDICATE_SEQUENCE_ACCESSION = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession");
 	public static final QName PREDICATE_SEQUENCE_ACCESSION_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
+	public static final QName PREDICATE_SEQUENCE_ACCESSION_ATTR_COMMENT = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Comment");
 	public static final QName PREDICATE_SEQUENCE_ACCESSION_ATTR_SOURCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Source");
 	public static final QName PREDICATE_SEQUENCE_NAME = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Name");
 	public static final QName PREDICATE_SEQUENCE_LOCATION = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Location");
@@ -227,6 +239,12 @@ public interface PhyloXMLConstants {
 	public static final QName PREDICATE_SEQUENCE_URI_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	public static final QName PREDICATE_SEQUENCE_URI_ATTR_DESC = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Desc");
 	public static final QName PREDICATE_SEQUENCE_URI_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "URI" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
+	public static final QName PREDICATE_SEQUENCE_GENE_NAME = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "GeneName");
+	public static final QName PREDICATE_SEQUENCE_CROSS_REFERENCES = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CrossReferences");
+	public static final QName PREDICATE_SEQUENCE_CROSS_REFERENCES_ACCESSION = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CrossReferences" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession");
+	public static final QName PREDICATE_SEQUENCE_CROSS_REFERENCES_ACCESSION_VALUE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CrossReferences" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
+	public static final QName PREDICATE_SEQUENCE_CROSS_REFERENCES_ACCESSION_ATTR_COMMENT = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CrossReferences" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Comment");
+	public static final QName PREDICATE_SEQUENCE_CROSS_REFERENCES_ACCESSION_ATTR_SOURCE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Sequence" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CrossReferences" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Accession" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Source");
 	public static final QName PREDICATE_SEQUENCE_ATTR_TYPE = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Type");
 	public static final QName PREDICATE_SEQUENCE_ATTR_ID_REF = new QName(PHYLOXML_PREDICATE_NAMESPACE, "Taxonomy" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IDRef");
 	
