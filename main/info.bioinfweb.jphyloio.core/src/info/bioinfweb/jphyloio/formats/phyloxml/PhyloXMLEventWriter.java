@@ -59,6 +59,19 @@ import javax.xml.stream.XMLStreamException;
  * {@link TreeNetworkDataAdapter}. This writer does not support writing phylogenetic networks with multiple roots 
  * due to the way topologies are reconstructed from the sequential lists of nodes and edges in <i>JPhyloIO</i>.
  * 
+ * <h3><a id="ids"></a>Element IDs</h3>
+ * 
+ * Some elements in a <i>PhyloXML</i> document have IDs given either via the {@link PhyloXMLConstants#ATTR_ID_SOURCE} 
+ * or nested <code>ID</code> tags. These IDs are not necessarily identical with according <i>JPhyloIO</i> event IDs.
+ * If information about either type of ID is present in meta events with PhyloXML specific predicates, these IDs will be
+ * written to the file. All <code>id_ref</code> attributes (e.g. of a <code>clade_rel</code> tag) reference IDs given 
+ * previously in an <code>id_source</code> attribute, never those from an <code>ID</code> tag.
+ * If a phylogeny has no previously specified ID, the according <i>JPhyloIO</i> event ID is written to the nested 
+ * <code>ID</code> tag. If a <code>clade</code> tag has no previously specified ID, it is checked whether the <i>JPhyloIO</i> 
+ * event ID was already used in another <code>id_source</code> attribute in the document (since all such values have 
+ * to be unique docuemnt-wide). If so the ID is modified by adding a numerical suffix and then written to the file, 
+ * otherwise the event ID is directly written.
+ * 
  * <h3><a id="simpleLiteralMetadata"></a>Simple literal metadata</h3>
  * 
  * Metadata with literal values that belong to a tree, network, node or edge can be written to {@code property} tags nested under
@@ -122,7 +135,7 @@ import javax.xml.stream.XMLStreamException;
  * 
  * Custom XML can be written nested under the {@code clade} and the {@code phylogeny} tag if it does not consist of character 
  * data that is not nested under any tags or tags that are already defined in <i>PhyloXML</i>. <i>XML</i> metadata not fulfilling
- * this conditions will be ignored.
+ * these conditions will be ignored.
  * <p>
  * Namespaces used or declared in custom XML elements are managed according to 
  * {@link ReadWriteParameterNames#KEY_CUSTOM_XML_NAMESPACE_HANDLING}. 
@@ -342,8 +355,15 @@ public class PhyloXMLEventWriter extends AbstractXMLEventWriter<PhyloXMLWriterSt
 			getXMLWriter().writeAttribute(ATTR_ID_SOURCE.getLocalPart(), idSource);
 		}
 		else {
-			getStreamDataProvider().getNodeEventIDToIDSourceMap().put(rootNodeID, rootNodeID);
-			getXMLWriter().writeAttribute(ATTR_ID_SOURCE.getLocalPart(), rootNodeID);
+			int idSuffix = 1;
+			idSource = rootNodeID;
+			while (!getStreamDataProvider().getIdSources().add(idSource)) {
+				idSource = rootNodeID + idSuffix;
+				idSuffix++;
+			}
+			
+			getStreamDataProvider().getNodeEventIDToIDSourceMap().put(rootNodeID, idSource);
+			getXMLWriter().writeAttribute(ATTR_ID_SOURCE.getLocalPart(), idSource);
 		}
 		
 		if (!Double.isNaN(afferentEdge.getLength())) {
