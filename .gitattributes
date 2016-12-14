@@ -27,6 +27,7 @@ demo/info.bioinfweb.jphyloio.demo.simplealignment/.settings/org.eclipse.jdt.core
 demo/info.bioinfweb.jphyloio.demo.simplealignment/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/ReadMe.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/data/input/Alignment.fasta -text
+demo/info.bioinfweb.jphyloio.demo.simplealignment/data/output/Test.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/GPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/NOTICE.txt -text svneol=unset#text/plain
