@@ -37,6 +37,10 @@ demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.core.prefs -tex
 demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/ReadMe.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/data/Test.nwk -text
+demo/info.bioinfweb.jphyloio.demo.tree/data/output/NeXML.xml -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.tree/data/output/Newick.nwk -text
+demo/info.bioinfweb.jphyloio.demo.tree/data/output/Nexus.nex -text
+demo/info.bioinfweb.jphyloio.demo.tree/data/output/PhyloXML.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/src/GPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/src/NOTICE.txt -text svneol=unset#text/plain

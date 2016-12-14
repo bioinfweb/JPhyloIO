@@ -45,6 +45,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -55,6 +57,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.commons.collections4.set.ListOrderedSet;
@@ -65,7 +68,8 @@ public class Application {
 	protected JFrame mainFrame;
 	protected JTree tree;
 	private JFileChooser fileChooser;
-	private ExtensionFileFilter allFormatsFilter;
+	private List<FileFilter> readingFilters = new ArrayList<FileFilter>();
+	private List<FileFilter> writingFilters = new ArrayList<FileFilter>();
 	
 	protected JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
 
@@ -181,6 +185,14 @@ public class Application {
 	}
 	
 	
+	private void setFileFilters(List<FileFilter> filters) {
+		getFileChooser().resetChoosableFileFilters();
+		for (FileFilter filter : filters) {
+			getFileChooser().addChoosableFileFilter(filter);
+		}
+	}
+	
+	
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		
@@ -191,6 +203,7 @@ public class Application {
 		mntmOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					setFileFilters(readingFilters);
 					if (getFileChooser().showOpenDialog(mainFrame) == JFileChooser.APPROVE_OPTION) {
 						String formatID;
 						if (getFileChooser().getFileFilter() instanceof JPhyloIOFormatSpecificObject) {
@@ -221,15 +234,9 @@ public class Application {
 		JMenuItem mntmSaveAs = new JMenuItem("Save as...");
 		mntmSaveAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getFileChooser().removeChoosableFileFilter(allFormatsFilter);  // Temporarily remove the "All supported formats" filter from the dialog for saving to a specific format.
-				try {
-					if (getFileChooser().showSaveDialog(mainFrame) == JFileChooser.APPROVE_OPTION) {
-						writeTree(((JPhyloIOFormatSpecificObject)getFileChooser().getFileFilter()).getFormatID(), getFileChooser().getSelectedFile());
-					}
-				}
-				finally {  // Reinsert "All supported formats" filter for upcoming calls of "Open...".
-					getFileChooser().addChoosableFileFilter(allFormatsFilter);
-					getFileChooser().setFileFilter(allFormatsFilter);
+				setFileFilters(writingFilters);
+				if (getFileChooser().showSaveDialog(mainFrame) == JFileChooser.APPROVE_OPTION) {
+					writeTree(((JPhyloIOFormatSpecificObject)getFileChooser().getFileFilter()).getFormatID(), getFileChooser().getSelectedFile());
 				}
 			}
 		});
@@ -297,25 +304,20 @@ public class Application {
 			ListOrderedSet<String> validExtensions = new ListOrderedSet<String>();  // This set is used to collect valid extensions of all formats to create the "All supported formats" filter later.
 			for (String formatID : factory.getFormatIDsSet()) {
 				JPhyloIOFormatInfo info = factory.getFormatInfo(formatID);
-				if (info.isElementModeled(EventContentType.TREE, true)) {  // Check if the current format can contain trees.
-					ContentExtensionFileFilter filter = info.createFileFilter(TestStrategy.CONTENT);  // Create a filter filter instance for the current format.
+				ContentExtensionFileFilter filter = info.createFileFilter(TestStrategy.CONTENT);  // Create a filter filter instance for the current format.
+				if (info.isElementModeled(EventContentType.TREE, true)) {  // Check if the current format can contain trees and can be read.
 					validExtensions.addAll(filter.getExtensions());  // Add the file extensions of this filter to the set of all supported extensions.
-					fileChooser.addChoosableFileFilter(filter);  // Add the current filter to the file chooser.
+					readingFilters.add(filter);
+				}
+				if (info.isElementModeled(EventContentType.TREE, false)) {  // The same for writing. (Not all formats in JPhyloIO can be read and written.)
+					writingFilters.add(filter);
 				}
 			}
 			
 			// Add "All supported formats" filter:
-			allFormatsFilter = new ExtensionFileFilter("All supported formats", false, validExtensions.asList());
+			readingFilters.add(0, new ExtensionFileFilter("All supported formats", false, validExtensions.asList()));
 					// Create a file filter accepting extensions of all supported formats at the same time. 
-			fileChooser.addChoosableFileFilter(allFormatsFilter);  // Add the "All supported formats" filter to the list.
-			fileChooser.setFileFilter(allFormatsFilter);  // Select this filter as the default.
 		}
 		return fileChooser;
-	}
-	
-	
-	protected ExtensionFileFilter getAllFormatsFilter() {
-		getFileChooser();  // Make sure the field is initialized.
-		return allFormatsFilter;
 	}
 }
