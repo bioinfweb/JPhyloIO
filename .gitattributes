@@ -41,6 +41,7 @@ demo/info.bioinfweb.jphyloio.demo.tree/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.tree/MANIFEST.MF -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/ReadMe.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/data/Test.nwk -text
 demo/info.bioinfweb.jphyloio.demo.tree/data/output/NeXML.xml -text svneol=unset#text/plain
