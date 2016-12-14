@@ -68,6 +68,7 @@ main/info.bioinfweb.jphyloio.core/ant/build.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/ant/javaDoc_links.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/ant/javaDoc_sourceLocations.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/ant/library_jars.xml -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/ant/rename_binaries.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/ant/sourcefiles.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb.commons.java-Bio-2.0.0.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb.commons.java-Core-2.0.0.jar -text
