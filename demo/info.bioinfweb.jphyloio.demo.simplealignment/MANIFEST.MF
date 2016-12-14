@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Main-Class: info.bioinfweb.jphyloio.demo.simplealignment.Application
+Class-Path: lib/jphyloio-core-0.3.0.jar
+            lib/bioinfweb-commons-java-core-2.1.0.jar
+            lib/bioinfweb-commons-java-bio-2.0.0.jar
+            lib/commons-collections4-4.1.jar
+            lib/commons-lang3-3.1.jar
+            lib/owlapi-XMLUtils-4.1.4.jar
