@@ -23,14 +23,12 @@
 	<property name="webspaceJavaDocFolder" value="${webspaceRootFolder}/PROTECTED/tree/Documentation/API" />
 	<property name="webspaceDownloadFolder" value="${webspaceRootFolder}/Download" />	
 	<property name="svnRepositoryPath" value="https://secure.bioinfweb.info/Code/svn/JPhyloIO/trunk/main/" />
-	<property name="defaultJavaDocSourceLocation" value="https://secure.bioinfweb.info/Code/svn/JPhyloIO/trunk/main/info.bioinfweb.jphyloio.core/" />
 	<property name="styleName" value="JPhyloIO" />
 	<property name="dbName" value="biw_JPhyloIO" />
 	<property name="dbUser" value="biw_rm_JPhyloIO" />
 	&dbPassword;
 	<property name="softwareID" value="19" />
 	<property name="containedItems" value="0 1" />
-	<property name="javadocSourcePath" value="${sourceDataFolder}/${projectFolderPrefix}.core/src;" />
 	<property name="defaultNewsTextEn" value="A [LINK http://bioinfweb.info/JPhyloIO/Download new version] of our library for reading and writing of phylogenetic file formats through one event-based interface was released." />
 	<property name="defaultNewsTextDe" value="Eine [LINK http://bioinfweb.info/JPhyloIO/Download neue Version] unserer Bibliothek zum Lesen und Schreiben phylogenetischer Dateiformate über eine einheitliche Ereignis-basierte Schnittstelle wurde veröffentlicht." />
 	<property name="defaultImageURL" value="http://bioinfweb.info/Software/JPhyloIOList.png" />
