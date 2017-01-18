@@ -11,7 +11,7 @@
 <!ENTITY dbPassword SYSTEM "secure/dbPassword.xml">
 ]>
 <!-- The value of 'projectLabel' may not contain the following characters: '%', '_', '[', ']' -->
-<project default="bioinfweb.commons.java">
+<project>
 	<property name="projectLabel" value="JPhyloIO" />
 	<property name="simpleProjectLabel" value="jphyloio" />
 	<property name="projectFolderPrefix" value="info.bioinfweb.jphyloio" />
