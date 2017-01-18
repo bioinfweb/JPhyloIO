@@ -29,6 +29,8 @@
 	&dbPassword;
 	<property name="softwareID" value="19" />
 	<property name="containedItems" value="0 1" />
+	<property name="singleModuleDownloadTypes" value="1,6" />
+	<property name="completeDownloadTypes" value="4,5" /> 
 	<property name="defaultNewsTextEn" value="A [LINK http://bioinfweb.info/JPhyloIO/Download new version] of our library for reading and writing of phylogenetic file formats through one event-based interface was released." />
 	<property name="defaultNewsTextDe" value="Eine [LINK http://bioinfweb.info/JPhyloIO/Download neue Version] unserer Bibliothek zum Lesen und Schreiben phylogenetischer Dateiformate über eine einheitliche Ereignis-basierte Schnittstelle wurde veröffentlicht." />
 	<property name="defaultImageURL" value="http://bioinfweb.info/Software/JPhyloIOList.png" />
