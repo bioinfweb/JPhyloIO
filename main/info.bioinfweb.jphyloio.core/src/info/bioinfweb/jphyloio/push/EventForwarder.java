@@ -56,7 +56,7 @@ public class EventForwarder {
 	 * Consumes all available events from the specified listener and forwards them to the registered listeners.
 	 * 
 	 * @param reader the reader to read the events from
-	 * @throws Exception if {@code reader} throws an exception while parsing
+	 * @throws IOException if {@code reader} throws an I/O exception while parsing
 	 */
 	public void readAll(JPhyloIOEventReader reader) throws IOException {
 		doReadUntil(reader, null);
@@ -69,7 +69,7 @@ public class EventForwarder {
 	 * 
 	 * @param reader the reader to read the events from
 	 * @param type the type of the event that shall trigger the end of reading
-	 * @throws Exception if {@code reader} throws an exception while parsing
+	 * @throws IOException if {@code reader} throws an I/O exception while parsing
 	 */
 	public void readUntil(JPhyloIOEventReader reader, EventContentType type) throws IOException {
 		doReadUntil(reader, EnumSet.of(type));
@@ -82,13 +82,20 @@ public class EventForwarder {
 	 * 
 	 * @param reader the reader to read the events from
 	 * @param types a set of types of the events that shall trigger the end of reading
-	 * @throws Exception if {@code reader} throws an exception while parsing
+	 * @throws IOException if {@code reader} throws an exception while parsing
 	 */
 	public void readUntil(JPhyloIOEventReader reader, Set<EventContentType> types) throws IOException {
 		doReadUntil(reader, types);
 	}
 	
 	
+	/**
+	 * Consumes all events between a start and its respective end event. The reader must be positioned at a start event
+	 * when calling this method and will consume all events including the respective end event on the same level.
+	 * 
+	 * @param reader the reader to read the events from
+	 * @throws IOException if {@code reader} throws an I/O exception while parsing
+	 */
 	public void readCurrentNode(JPhyloIOEventReader reader) throws IOException {
 		if (reader.hasNextEvent() && reader.peek().getType().getTopologyType().equals(EventTopologyType.START)) {
 			fireNextEvent(reader);  // Consume start event to increase parent count.
