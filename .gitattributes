@@ -6,6 +6,7 @@ demo/info.bioinfweb.jphyloio.demo.gccontent/ReadMe.txt -text svneol=unset#text/p
 demo/info.bioinfweb.jphyloio.demo.gccontent/src/GPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/src/NOTICE.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.gccontent/src/info/bioinfweb/jphyloio/demo/gccontent/GCContent.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/src/info/bioinfweb/jphyloio/demo/gccontent/package-info.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.metadata/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.metadata/.project -text svneol=unset#text/plain

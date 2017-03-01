@@ -2,5 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.commons.bio/bin" sourcepath="/info.bioinfweb.commons.bio/src"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.commons.core/bin" sourcepath="/info.bioinfweb.commons.core/src"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/bin" sourcepath="/info.bioinfweb.jphyloio.core/src"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/include/lib/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/include/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/include/lib/owlapi-XMLUtils-4.1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
