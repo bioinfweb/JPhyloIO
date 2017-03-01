@@ -15,11 +15,10 @@ import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 
 
 public class GCContent {
-	public static final String DEFAULT_INPUT_FILE = "";  //TODO Define file
+	public static final String DEFAULT_INPUT_FILE = "data/Test.fasta";
 	
 	
 	private static long countGC(String token) {
-		token = token.toUpperCase();
 		if ("G".equals(token) || "C".equals(token)) {
 			return 1;
 		}
@@ -29,24 +28,40 @@ public class GCContent {
 	}
 
 
+	private static long countNucleotide(String token) {
+		if ("G".equals(token) || "C".equals(token) || "T".equals(token) || "A".equals(token)) {  // Do not count e.g. gaps.
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	
 	private static void processFile(JPhyloIOEventReader eventReader) throws IOException {
 		long gcCount = 0;
 		long nucleotideCount = 0;
 		
 		while (eventReader.hasNextEvent()) {
 			JPhyloIOEvent event = eventReader.next();
-			if (event.getType().equals(new EventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.START))) {
+			//System.out.println(event.getType());
+			if (event.getType().equals(new EventType(EventContentType.SEQUENCE_TOKENS, EventTopologyType.SOLE))) {
 				for (String token : event.asSequenceTokensEvent().getTokens()) {
-					nucleotideCount++;
+					token = token.toUpperCase();
+					nucleotideCount += countNucleotide(token);
 					gcCount += countGC(token);
 				}
 			}
 			else if (event.getType().equals(new EventType(EventContentType.SINGLE_SEQUENCE_TOKEN, EventTopologyType.START))) {
-				nucleotideCount++;
-				gcCount += countGC(event.asSingleSequenceTokenEvent().getToken().toUpperCase());
+				String token = event.asSingleSequenceTokenEvent().getToken().toUpperCase();
+				nucleotideCount += countNucleotide(token);
+				gcCount += countGC(token);
 			}
 			else if (event.getType().equals(new EventType(EventContentType.ALIGNMENT, EventTopologyType.END))) {
-				System.out.println("GC content: " + ((double)nucleotideCount / (double)gcCount));
+				System.out.println("Number of nucleotides: " + nucleotideCount);
+				System.out.println("Number of C or C: " + gcCount);
+				System.out.println("GC content: " + ((double)gcCount / (double)nucleotideCount));
+				System.out.println();
 				nucleotideCount = 0;
 				gcCount = 0;
 			}
@@ -67,6 +82,7 @@ public class GCContent {
 			if (eventReader != null) {
 				try {
 					System.out.println("Processing file \"" + inputFile + "\"...");
+					System.out.println();
 					processFile(eventReader);
 				}
 				finally {
