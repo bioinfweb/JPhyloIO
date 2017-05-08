@@ -25,6 +25,7 @@ import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.events.SequenceTokensEvent;
 import info.bioinfweb.jphyloio.events.SingleTokenDefinitionEvent;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
+import info.bioinfweb.jphyloio.formats.newick.NewickEventReader;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 import info.bioinfweb.jphyloio.formats.nexml.TokenDefinitionLabelHandling;
@@ -149,6 +150,17 @@ public interface ReadWriteParameterNames {
 	 * interleaved files will be possible. If {@code false} is specified parsing interleaved files will not be possible. 
 	 */
 	public static final String KEY_ALLOW_INTERLEAVED_PARSING = KEY_PREFIX + "allowInterleavedParsing";
+	
+	/**
+	 * This parameter will only be used by {@link NexusEventReader} and {@link NewickEventReader} and allows to specify whether 
+	 * the <a href="http://dx.doi.org/10.1186/1471-2105-9-532"><i>eNewick</i> extension</a> of <i>Newick</i> strings is supported. 
+	 * As a consequence, all trees will be considered as networks when reading <i>Newick</i> and <i>Nexus</i> files, when this 
+	 * option is activated.  
+	 * <p>
+	 * It must have the type {@link Boolean}. If it is omitted <i>eNewick</i> will not be expected. Network nodes will appear twice 
+	 * and labels will still contain possible network information.
+	 */
+	public static final String KEY_EXPECT_E_NEWICK = KEY_PREFIX + "expectENewick";
 	
 	/**
 	 * This parameter will only be used by {@link NexusEventReader} and allows to define a custom block handler map.

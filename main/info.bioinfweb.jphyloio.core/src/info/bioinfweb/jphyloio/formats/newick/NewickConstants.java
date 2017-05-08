@@ -69,6 +69,8 @@ public interface NewickConstants {
 //	public static final String UNNAMED_EDGE_DATA_NAME = "unnamedEdgeHotComment";  //TODO Specify URL or similar ID here?
 //	public static final String UNNAMED_NODE_DATA_NAME = "unnamedNodeHotComment";  //TODO Specify URL or similar ID here?
 	
+	public static final String E_NEWICK_NETWORK_DATA_SEPARATOR = "#";
+	
 	
 	// Data type constants:
 	
