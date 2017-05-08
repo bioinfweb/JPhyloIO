@@ -37,9 +37,9 @@ import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 
 
 /**
- * Reads tree files in Newick format. Newick files are considered as text files, that contain trees as Newick strings
- * which are separated by {@code ';'}. Any whitespace, as well as comments contained in {@code '['} and {@code ']'} 
- * is allowed between all tokens.
+ * Reads tree files in <i>Newick</i> format. <i>Newick</i> files are considered as text files, that contain trees as 
+ * <i>Newick</i> strings which are separated by {@code ';'}. Any whitespace, as well as comments contained in {@code '['} 
+ * and {@code ']'} is allowed between all tokens.
  * <p>
  * Additionally this reader is able to parse hot comments associated with nodes or edges as described in the 
  * documentation of {@link NewickStringReader}.

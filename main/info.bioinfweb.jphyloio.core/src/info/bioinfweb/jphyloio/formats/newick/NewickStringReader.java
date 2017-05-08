@@ -262,7 +262,8 @@ public class NewickStringReader implements ReadWriteConstants {
 			Collection<JPhyloIOEvent> nestedEdgeEvents = createMetaAndCommentEvents(tokens[1], false);
 			
 			// Generate node information:
-			passedSubnodes.peek().add(new NodeEdgeInfo(nodeID, length, nestedEdgeEvents));
+			passedSubnodes.peek().add(new NodeEdgeInfo(nodeID, length, null, nestedEdgeEvents));
+			// eNewick support could be implemented here.
 			String processedLabel = nodeLabelProcessor.processLabel(label);
 			NodeEvent result = new NodeEvent(nodeID, processedLabel,	nodeLabelProcessor.getLinkedOTUID(processedLabel), 
 					currentTreeRooted && (passedSubnodes.size() == 1));  //TODO Does the rooted expression work?
@@ -280,7 +281,7 @@ public class NewickStringReader implements ReadWriteConstants {
 			NodeEdgeInfo nodeInfo = nodeInfos.poll();
 			streamDataProvider.getCurrentEventCollection().add(new EdgeEvent(DEFAULT_EDGE_ID_PREFIX + 
 					streamDataProvider.getIDManager().createNewID(), null, sourceID, nodeInfo.getID(), nodeInfo.getLength()));
-			streamDataProvider.getCurrentEventCollection().addAll(nodeInfo.nestedNodeEvents);
+			streamDataProvider.getCurrentEventCollection().addAll(nodeInfo.getNestedEdgeEvents());
 			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(
 					sourceID == null ? EventContentType.ROOT_EDGE : EventContentType.EDGE, EventTopologyType.END));
 		}		
