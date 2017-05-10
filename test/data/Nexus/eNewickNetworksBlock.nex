@@ -1,0 +1,5 @@
+#NEXUS
+
+BEGIN NETWORKS;
+	NETWORK network1 = (((n3, n4)Z#H1, n1)i1, (Z#H1, n2)i2)i3;
+END;

@@ -19,9 +19,14 @@
 package info.bioinfweb.jphyloio.formats.nexus;
 
 
+import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
+import static org.junit.Assert.*;
+
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.collections.ParameterMap;
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.commons.testing.TestTools;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -40,14 +45,11 @@ import java.util.Arrays;
 
 import javax.xml.namespace.QName;
 
-import org.junit.* ;
-
-import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
-import static org.junit.Assert.* ;
+import org.junit.Test;
 
 
 
-public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants, NewickConstants {
+public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants, NewickConstants, W3CXSConstants {
 	public NexusEventReaderTest() {
 		super();
 	}
@@ -1964,6 +1966,68 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertPartEndEvent(EventContentType.TREE_NETWORK_SET, true, reader);
 			
 			assertEndEvent(EventContentType.DOCUMENT, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	@Test
+	public void test_readingeNewickNetwork() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/eNewickNetworksBlock.nex"), new ReadWriteParameterMap());
+		reader.addENewickNetworksBlockSupport();
+		
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
+			assertEventType(EventContentType.NETWORK, EventTopologyType.START, reader);
+			
+			String id3 = assertNodeEvent(null, "n3", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String id4 = assertNodeEvent(null, "n4", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idZ = assertNodeEvent(null, "Z", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			assertEdgeEvent(idZ, id3, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idZ, id4, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			String id1 = assertNodeEvent(null, "n1", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idi1 = assertNodeEvent(null, "i1", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			assertEdgeEvent(idi1, idZ, Double.NaN, reader);
+			assertLiteralMetaEvent(PREDICATE_E_NEWICK_EDGE_TYPE, DATA_TYPE_NAME, E_NEWICK_EDGE_TYPE_HYBRIDIZATION, null, 
+					E_NEWICK_EDGE_TYPE_HYBRIDIZATION, true, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idi1, id1, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			String id2 = assertNodeEvent(null, "n2", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			String idi2 = assertNodeEvent(null, "i2", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			assertEdgeEvent(idi2, idZ, Double.NaN, reader);
+			assertLiteralMetaEvent(PREDICATE_E_NEWICK_EDGE_TYPE, DATA_TYPE_NAME, E_NEWICK_EDGE_TYPE_HYBRIDIZATION, null, 
+					E_NEWICK_EDGE_TYPE_HYBRIDIZATION, true, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idi2, id2, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			String idi3 = assertNodeEvent(null, "i3", false, null, reader);
+			assertEndEvent(EventContentType.NODE, reader);
+			assertEdgeEvent(idi3, idi1, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			assertEdgeEvent(idi3, idi2, Double.NaN, reader);
+			assertEndEvent(EventContentType.EDGE, reader);
+			
+			assertEdgeEvent(null, idi3, Double.NaN, reader);
+			assertEndEvent(EventContentType.ROOT_EDGE, reader);
+			
+			assertEventType(EventContentType.NETWORK, EventTopologyType.END, reader);
+			assertEventType(EventContentType.TREE_NETWORK_GROUP, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
 			assertFalse(reader.hasNextEvent());
 		}
 		finally {
