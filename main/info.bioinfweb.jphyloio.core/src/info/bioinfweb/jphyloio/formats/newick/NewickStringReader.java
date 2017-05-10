@@ -377,7 +377,11 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 				streamDataProvider.getCurrentEventCollection().addAll(nestedNodeEvents);
 				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
 			}
-			
+			else if (!nestedNodeEvents.isEmpty()) {
+				streamDataProvider.getParameters().getLogger().addWarning("Some metadata in hot comments attached to an eNewick network "
+						+ "node were ignored. Note that JPhyloIO currently only handles hot comments attached to the first (left most) appearance "
+						+ "of a network node.");
+			}
 			return nodeID;
 		}		
 	}
