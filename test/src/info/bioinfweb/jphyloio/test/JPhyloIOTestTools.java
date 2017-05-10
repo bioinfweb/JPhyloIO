@@ -354,6 +354,16 @@ public class JPhyloIOTestTools {
   }
   
   
+  public static String assertLiteralMetaEvent(QName expectedPredicate, QName expectedOriginalType, 
+  		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testEndEvent, 
+  		JPhyloIOEventReader reader) throws Exception {
+  	
+  	return assertLiteralMetaEvent(new URIOrStringIdentifier(null, expectedPredicate), 
+  			new URIOrStringIdentifier(null, expectedOriginalType), expectedStringValue, expectedAlternativeStringValue, 
+  			expectedObjectValue, testEndEvent, reader);
+  }
+  
+  
   public static String assertLiteralMetaEvent(URIOrStringIdentifier expectedPredicate, URIOrStringIdentifier expectedOriginalType, 
   		String expectedStringValue, String expectedAlternativeStringValue, Object expectedObjectValue, boolean testEndEvent, 
   		JPhyloIOEventReader reader) throws Exception {
