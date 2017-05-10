@@ -348,11 +348,12 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 			boolean fireNodeEvent = true;
 			String processedLabel = nodeLabelProcessor.processLabel(label);
 			String nodeID = null;
-			//TODO Are names like "A#14" also eNewick names/ is it possible to include '#' in a usual label using quotations? Probably yes and that should be checked here. Otherwise labels like "A F# f 5" could cause problems.
 			if (streamDataProvider.getParameters().getBoolean(ReadWriteParameterNames.KEY_EXPECT_E_NEWICK, false) && 
+				//TODO It is currently not easy to determine, if a name was delimited or not, since NewickScanner processed delimited tokens.
+				//     Currently A#H1 is treated in the same way as "A#H1" although it would be desirable not to treat delimted names as 
+				//     eNewick names.
+				
 				processedLabel.contains(E_NEWICK_NETWORK_DATA_SEPARATOR)) {
-				//TODO Log warning, if nestedNodeEvents is not empty, because node metadata of additional appearances of the same network node are lost.
-					
 				ENewickNodeLabel labelParts = splitENewickNodeLabel(processedLabel);
 				processedLabel = labelParts.label;
 				
