@@ -53,10 +53,11 @@ import java.util.regex.Pattern;
 
 
 /**
- * Implementation to read Newick tree definitions to be used by {@link NewickEventReader} and {@link TreeReader}.
+ * Implementation to read <i>Newick</i> tree definitions to be used by {@link NewickEventReader} and {@link TreeReader}.
  * Any whitespace, as well as comments contained in {@code '['} and {@code ']'} is allowed between all tokens.
- * <p>
- * Additionally this reader is able to parse hot comments associated with nodes or edges as metadata as they are used 
+ * 
+ * <h3><a id="hotComments"></a>Metadata from hot comments</h3>
+ * This reader is able to parse hot comments associated with nodes or edges as metadata as they are used 
  * in the output of <a href="http://beast.bio.ed.ac.uk/treeannotator">TreeAnnotator</a> or 
  * <a href="http://mrbayes.sourceforge.net/">MrBayes</a>. (See 
  * <a href="https://code.google.com/archive/p/beast-mcmc/wikis/NexusMetacommentFormat.wiki">here</a> for a definition.)
@@ -79,6 +80,23 @@ import java.util.regex.Pattern;
  * are combined, with the exception that a branch length definition is omitted. In such a case, the first hot 
  * comment is considered to attached to the node and all subsequent hot comments are considered to be attached to
  * the edge.
+ * 
+ * <h3><a id="eNewick"></a>Phylogenetic networks in eNewick format</h3>
+ * If the parameter {@link ReadWriteParameterNames#KEY_EXPECT_E_NEWICK} is set to {@code true} this reader will
+ * assume an <a href="http://dx.doi.org/10.1186/1471-2105-9-532"><i>eNewick<i></a> (or <i>extended Newick</i>) file containing 
+ * special <i>Newick</i> strings that define phylogenetic networks. As a consequence all trees (no matter if they really contain 
+ * network edges or not) will be enclosed between events of the type {@link EventContentType#NETWORK} if this parameter is set 
+ * to {@code true}. Special <i>eNewick</i> will be parsed and the actual label is extracted. The edge type of each edge leading 
+ * to a network node will be represented by literal metadata events with the predicate 
+ * {@link NewickConstants#PREDICATE_E_NEWICK_EDGE_TYPE} and a string value. (Possible values as defined in 
+ * <a href="http://dx.doi.org/10.1186/1471-2105-9-532">Cardona et al. (2008)</a> are also declared as constants in 
+ * {@link NewickConstants#E_NEWICK_EDGE_TYPE_HYBRIDIZATION}, {@link NewickConstants#E_NEWICK_EDGE_TYPE_RECOMBINATION} and 
+ * {@link NewickConstants#E_NEWICK_EDGE_TYPE_LATERAL_GENE_TRANSFER}.)
+ * <p>
+ * Note that additional metadata definitions separated by additional ':' as defined in the 
+ * <a href="https://wiki.rice.edu/confluence/download/attachments/5216841/RichNewick-2012-02-16.pdf?version=1&modificationDate=1330535426168&api=v2">Rich Newick format</a>
+ * used by <a href="https://bioinfocs.rice.edu/phylonet">PhyloNet</a> are not supported, but <i>PhyloNet</i> allows to ommit these
+ * with its "-di" option.
  * 
  * @author Ben St&ouml;ver
  */
@@ -116,7 +134,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	 *        from the underlying reader. If a string is specified, only one tree is read and the specified label is used for it.
 	 *        If {@code null} is specified, multiple trees are read until the end of the file is reached. None of them gets a
 	 *        defined label.)
-	 * @param nodeLabelProcessor the node label processor to be used to possibly translate node labels in Newick strings
+	 * @param nodeLabelProcessor the node label processor to be used to possibly translate node labels in <i>Newick</i> strings
 	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
 	public NewickStringReader(TextReaderStreamDataProvider<?> streamDataProvider, String treeID, String treeLabel, 
@@ -270,7 +288,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 		}
 		result.index = Long.parseLong(index.toString());
 		
-		result.edgeType = parts[1].substring(0, pos + 1).toUpperCase();
+		result.edgeType = parts[1].substring(0, pos + 1);
 		return result;
 	}
 	
