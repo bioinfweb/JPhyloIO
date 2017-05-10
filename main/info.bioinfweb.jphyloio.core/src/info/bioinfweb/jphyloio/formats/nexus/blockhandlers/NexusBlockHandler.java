@@ -28,10 +28,10 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventRea
 
 
 /**
- * A Nexus block handler implements methods that shall be executed by {@link NexusEventReader}
+ * A <i>Nexus</i> block handler implements methods that shall be executed by {@link NexusEventReader}
  * each time an according block {@code BEGIN} or {@code END} command is read.
  * <p>
- * Application developers implementing support for custom Nexus blocks can implement this interface
+ * Application developers implementing support for custom <i>Nexus</i> blocks can implement this interface
  * for their block is necessary. In most cases it will be useful to inherit such implementations from
  * {@link AbstractNexusBlockHandler}.
  * 

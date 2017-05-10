@@ -41,17 +41,17 @@ import java.util.TreeMap;
 
 
 /**
- * A factory class that creates instance of {@link NexusCommandEventReader}. Each Nexus command can have a specific
- * reader, which can be created by an instance of this class. The readers that can be created by a factory instance
- * depend on the registered reader classes (see below). 
+ * A factory class that creates instance of {@link NexusCommandEventReader}. Each <i>Nexus</i> command can have a 
+ * specific reader, which can be created by an instance of this class. The readers that can be created by a factory 
+ * instance depend on the registered reader classes (see below). 
  * <p>
  * An instance of this class needs to be passed to the constructor of {@link NexusEventReader}. The readers added to
- * this factory determine the Nexus commands that will be supported by that reader instance. 
+ * this factory determine the <i>Nexus</i> commands that will be supported by that reader instance. 
  * <p>
- * Any class of command reader can be added to this factory to be associated with a certain Nexus command in a certain 
- * Nexus block. The method {@link #addJPhyloIOReaders()} can be used to add all command readers that are defined in 
- * JPhyloIO to an instance. If additional custom readers are defined on application level, these can be added using 
- * {@link #addReaderClass(Class)}.
+ * Any class of command reader can be added to this factory to be associated with a certain <i>Nexus</i> command in a 
+ * certain <i>Nexus</i> block. The method {@link #addJPhyloIOReaders()} can be used to add all command readers that 
+ * are defined in <i>JPhyloIO</i> to an instance. If additional custom readers are defined on application level, 
+ * these can be added using {@link #addReaderClass(Class)}.
  * 
  * @author Ben St&ouml;ver
  */
@@ -89,7 +89,7 @@ public class NexusCommandReaderFactory {
 
 
 	/**
-	 * Adds all Nexus command readers available in JPhyloIO to this instance.
+	 * Adds all <i>Nexus</i> command readers available in <i>JPhyloIO</i> to this instance.
 	 */
 	public void addJPhyloIOReaders() {
 		addReaderClass(TitleReader.class);

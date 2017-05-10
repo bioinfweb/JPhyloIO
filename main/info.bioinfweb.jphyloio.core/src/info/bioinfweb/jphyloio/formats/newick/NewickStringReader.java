@@ -93,6 +93,10 @@ import java.util.regex.Pattern;
  * {@link NewickConstants#E_NEWICK_EDGE_TYPE_HYBRIDIZATION}, {@link NewickConstants#E_NEWICK_EDGE_TYPE_RECOMBINATION} and 
  * {@link NewickConstants#E_NEWICK_EDGE_TYPE_LATERAL_GENE_TRANSFER}.)
  * <p>
+ * In the current version <i>JPhyloIO</i> will treat all nodes containing a '#' as <i>eNewick</i> labels, no matter if they are
+ * enclosed in quotations or not. Therefore it is not possible to use '#' within actual labels as long as the 
+ * {@link ReadWriteParameterNames#KEY_EXPECT_E_NEWICK} option is activated.
+ * <p>
  * Note that additional metadata definitions separated by additional ':' as defined in the 
  * <a href="https://wiki.rice.edu/confluence/download/attachments/5216841/RichNewick-2012-02-16.pdf?version=1&modificationDate=1330535426168&api=v2">Rich Newick format</a>
  * used by <a href="https://bioinfocs.rice.edu/phylonet">PhyloNet</a> are not supported, but <i>PhyloNet</i> allows to ommit these
@@ -117,6 +121,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	private boolean currentTreeRooted = false;
 	private String treeID;
 	private String treeLabel;
+	private boolean expectENewick;
 	private NewickReaderNodeLabelProcessor nodeLabelProcessor;
 	private NewickScanner scanner;
 	private Stack<Queue<NodeEdgeInfo>> passedSubnodes;
@@ -138,7 +143,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	 * @throws NullPointerException if {@code streamDataProvider} or {@code nodeLabelProcessor} are {@code null}
 	 */
 	public NewickStringReader(TextReaderStreamDataProvider<?> streamDataProvider, String treeID, String treeLabel, 
-			NewickReaderNodeLabelProcessor nodeLabelProcessor) {
+			NewickReaderNodeLabelProcessor nodeLabelProcessor, boolean expectENewick) {
 		
 		super();
 		
@@ -158,6 +163,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 		}
 		this.treeLabel = treeLabel;
 		this.nodeLabelProcessor = nodeLabelProcessor;
+		this.expectENewick = expectENewick;
 		
 		scanner = new NewickScanner(streamDataProvider.getDataReader(), treeLabel == null);
 		passedSubnodes = new Stack<Queue<NodeEdgeInfo>>();
@@ -165,7 +171,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	
 	
 	private EventContentType getTreeContentType() {
-		if (streamDataProvider.getParameters().getBoolean(ReadWriteParameterNames.KEY_EXPECT_E_NEWICK, false)) {
+		if (expectENewick) {
 			return EventContentType.NETWORK;
 		}
 		else {
@@ -348,12 +354,11 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 			boolean fireNodeEvent = true;
 			String processedLabel = nodeLabelProcessor.processLabel(label);
 			String nodeID = null;
-			if (streamDataProvider.getParameters().getBoolean(ReadWriteParameterNames.KEY_EXPECT_E_NEWICK, false) && 
+			if (expectENewick && processedLabel.contains(E_NEWICK_NETWORK_DATA_SEPARATOR)) {
 				//TODO It is currently not easy to determine, if a name was delimited or not, since NewickScanner processed delimited tokens.
 				//     Currently A#H1 is treated in the same way as "A#H1" although it would be desirable not to treat delimted names as 
 				//     eNewick names.
 				
-				processedLabel.contains(E_NEWICK_NETWORK_DATA_SEPARATOR)) {
 				ENewickNodeLabel labelParts = splitENewickNodeLabel(processedLabel);
 				processedLabel = labelParts.label;
 				

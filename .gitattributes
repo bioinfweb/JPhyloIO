@@ -278,6 +278,7 @@ main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/Nexu
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/NexusWriterStreamDataProvider.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/AbstractNexusBlockHandler.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/CharactersDataUnalignedBlockHandler.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/ENewickNetworksBlockHandler.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/NexusBlockHandler.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/NexusBlockHandlerMap.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/blockhandlers/TaxaBlockHandler.java -text svneol=unset#text/plain
@@ -308,6 +309,7 @@ main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/comm
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/sets/package-info.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/taxa/TaxLabelsReader.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/taxa/package-info.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/ENewickNetworkReader.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/NexusNewickReaderNodeLabelProcessor.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/NexusTranslationTable.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/formats/nexus/commandreaders/trees/TranslateReader.java -text svneol=unset#text/plain

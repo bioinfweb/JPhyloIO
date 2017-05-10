@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import info.bioinfweb.commons.io.PeekReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
@@ -42,6 +43,21 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 	}
 
 	
+	protected TreeReader(String commandName, String[] validBlocks, NexusReaderStreamDataProvider streamDataProvider) {
+		super(commandName, validBlocks, streamDataProvider);
+	}
+
+
+	protected boolean getExpectENewick() {
+		return getStreamDataProvider().getParameters().getBoolean(ReadWriteParameterNames.KEY_EXPECT_E_NEWICK, false);
+	}
+	
+
+	protected EventContentType getElementContentType() {
+		return EventContentType.TREE;
+	}
+	
+	
 	@Override
 	protected boolean doReadNextEvent() throws IOException {
 		PeekReader reader = getStreamDataProvider().getDataReader();
@@ -54,24 +70,24 @@ public class TreeReader extends AbstractNexusCommandEventReader implements Nexus
 				
 				String treeGroupID = getStreamDataProvider().getSharedInformationMap().getString(
 						NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID);
-				getStreamDataProvider().getElementList(EventContentType.TREE, treeGroupID).add(treeLabel);
+				getStreamDataProvider().getElementList(getElementContentType(), treeGroupID).add(treeLabel);
 				String treeID = DEFAULT_TREE_ID_PREFIX + getStreamDataProvider().getIDManager().createNewID();
-				getStreamDataProvider().getNexusNameToIDMap(EventContentType.TREE, treeGroupID).put(treeLabel, treeID);
+				getStreamDataProvider().getNexusNameToIDMap(getElementContentType(), treeGroupID).put(treeLabel, treeID);
 				
 				if (reader.peekChar() == KEY_VALUE_SEPARATOR) {
 					reader.read();  // Skip KEY_VALUE_SEPARATOR.
 					newickStringReader = new NewickStringReader(getStreamDataProvider(), treeID, treeLabel, 
-							new NexusNewickReaderNodeLabelProcessor(getStreamDataProvider()));
+							new NexusNewickReaderNodeLabelProcessor(getStreamDataProvider()), getExpectENewick());
 				}
 				else {
 					throw new JPhyloIOReaderException("Expected \"" + KEY_VALUE_SEPARATOR + 
-							"\" behind the tree label in the TREE command, but found \"" + reader.peekChar() + "\".", reader);
+							"\" behind the tree label in the " + getCommandName() + " command, but found \"" + reader.peekChar() + "\".", reader);
 				}
 			}
 			return newickStringReader.addNextEvents();
 		}
 		catch (EOFException e) {
-			throw new JPhyloIOReaderException("Unexpected end of file inside a Nexus TREE command.", reader, e);
+			throw new JPhyloIOReaderException("Unexpected end of file inside a Nexus " + getCommandName() + " command.", reader, e);
 		}
 	}
 }

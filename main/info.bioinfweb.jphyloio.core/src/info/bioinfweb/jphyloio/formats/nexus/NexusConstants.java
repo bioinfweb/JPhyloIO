@@ -20,13 +20,15 @@ package info.bioinfweb.jphyloio.formats.nexus;
 
 
 import info.bioinfweb.jphyloio.ReadWriteConstants;
+import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.ENewickNetworksBlockHandler;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.ENewickNetworkReader;
 
 import java.util.regex.Pattern;
 
 
 
 /**
- * Defines constants necessary to read and write Nexus files.
+ * Defines constants necessary to read and write <i>Nexus</i> files.
  * 
  * @author Ben St&ouml;ver
  */
@@ -51,6 +53,8 @@ public interface NexusConstants {
 	public static final String BLOCK_NAME_DATA = "DATA";
 	public static final String BLOCK_NAME_SETS = "SETS";
 	public static final String BLOCK_NAME_TREES = "TREES";
+	/** This block name is not part of the initial <i>Nexus</i> standard and used by {@link ENewickNetworksBlockHandler}. */ 
+	public static final String BLOCK_NAME_NETWORKS = "NETWORKS";
 	
 	public static final String COMMAND_NAME_TITLE = "TITLE";
 	public static final String COMMAND_NAME_LINK = "LINK";
@@ -65,6 +69,8 @@ public interface NexusConstants {
 	public static final String COMMAND_NAME_CHAR_SET = "CHARSET";
 	public static final String COMMAND_NAME_TAXON_SET = "TAXSET";
 	public static final String COMMAND_NAME_TREE_SET = "TREESET";
+	/** This command name is not part of the initial <i>Nexus</i> standard and used by {@link ENewickNetworkReader}. */ 
+	public static final String COMMAND_NAME_NETWORK = "NETWORK";
 	
 	public static final String DIMENSIONS_SUBCOMMAND_NEW_TAXA = "NEWTAXA";
 	public static final String DIMENSIONS_SUBCOMMAND_NTAX = "NTAX";

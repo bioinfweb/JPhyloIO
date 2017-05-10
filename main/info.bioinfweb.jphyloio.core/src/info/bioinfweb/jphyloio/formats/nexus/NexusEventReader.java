@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 import info.bioinfweb.jphyloio.exception.UnsupportedFormatFeatureException;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.newick.NewickStringReader;
+import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.ENewickNetworksBlockHandler;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandler;
 import info.bioinfweb.jphyloio.formats.nexus.blockhandlers.NexusBlockHandlerMap;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.DefaultCommandReader;
@@ -42,6 +43,7 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandReaderFa
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.FormatReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.characters.MatrixReader;
 import info.bioinfweb.jphyloio.formats.nexus.commandreaders.sets.AbstractNexusSetReader;
+import info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees.ENewickNetworkReader;
 import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.utils.SequenceTokensEventManager;
@@ -55,12 +57,14 @@ import java.io.Reader;
 
 
 /**
- * Event based reader for Nexus files.
+ * Event based reader for <i>Nexus</i> files.
  * <p>
- * This reader as able to read data from the Nexus {@code TAXA}, {@code CHARACTERS}, {@code UNALIGNED}, {@code DATA}, 
+ * This reader as able to read data from the <i>Nexus</i> {@code TAXA}, {@code CHARACTERS}, {@code UNALIGNED}, {@code DATA}, 
  * {@code TREES} and {@code SETS} blocks, although not all commands of the {@code SETS} block are currently supported (see below).
- * Furthermore it can read metadata provided in hot comments in trees as described in the documentation of {@link NewickStringReader}. 
- * It will also handle Nexus comments as comment events and optionally unknown commands as {@link UnknownCommandEvent}s.
+ * Furthermore it can read metadata provided in hot comments in trees and the <i>eNexus</i> network format as described in the 
+ * documentation of {@link NewickStringReader}. Reading phylogenetic networks from one type of custom {@code NETWORKS} block
+ * is optionally also supported, if {@link #addENewickNetworksBlockSupport()} is called after construction.
+ * It will also handle <i>Nexus</i> comments as comment events and optionally unknown commands as {@link UnknownCommandEvent}s.
  * 
  * <h3><a id="sets"></a>Supported sets</h3>
  * <p>
@@ -71,7 +75,7 @@ import java.io.Reader;
  *  
  * <h3><a id="linking"></a>Links between blocks</h3> 
  * <p>
- * In addition to the core Nexus standards, this reader also supports the {@code TITLE} and {@code LINK} commands
+ * In addition to the core <i>Nexus</i> standards, this reader also supports the {@code TITLE} and {@code LINK} commands
  * introduced by <a href="http://mesquiteproject.org/">Mesquite</a> e.g. to assign {@code TAXA} blocks to character 
  * or tree data, if more than one {@code TAXA} block is present.
  * <p>
@@ -89,7 +93,7 @@ import java.io.Reader;
  * 
  * <h3><a id="unsupportedFeatures"></a>Unsupported features</h3> 
  * <p>
- * Currently this implementation (if used with the default command readers) does not support the following Nexus features and will throw
+ * Currently this implementation (if used with the default command readers) does not support the following <i>Nexus</i> features and will throw
  * an {@link UnsupportedFormatFeatureException} if one of them is encountered:
  * <ul>
  *   <li>Character matrices using the {@code FORMAT} subcommand {@code TRANSPOSE}, indicating that columns and rows are shifted can 
@@ -97,7 +101,7 @@ import java.io.Reader;
  *   <li>Set definitions in a {@code SETS} block using the {@code REMAINING} keyword to indicate that they contain all elements that
  *       were not contained in a previous set are currently not supported by {@link AbstractNexusSetReader} and its descendants.</li>
  * </ul>
- * Note that this list only contains Nexus features that trigger an exception, if encountered. There may be additional featured (e.g.
+ * Note that this list only contains <i>Nexus</i> features that trigger an exception, if encountered. There may be additional featured (e.g.
  * the {@code NOTES} block) that are currently not supported, but are just ignored by the reader without throwing an exception.
  * 
  * <h3><a id="extending"></a>Extending this implementation</h3> 
@@ -107,6 +111,7 @@ import java.io.Reader;
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3> 
  * <ul>
+ *   <li>{@link ReadWriteParameterNames#KEY_EXPECT_E_NEWICK}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_NEXUS_BLOCK_HANDLER_MAP}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_NEXUS_COMMAND_READER_FACTORY}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_CREATE_UNKNOWN_COMMAND_EVENTS}</li>
@@ -114,6 +119,8 @@ import java.io.Reader;
  *   <li>{@link ReadWriteParameterNames#KEY_MAXIMUM_COMMENT_LENGTH}</li>
  *   <li>{@link ReadWriteParameterNames#KEY_REPLACE_MATCH_TOKENS}</li>
  * </ul>
+ * If custom or third parts block handlers are used together with an instance of this reader, these may support additional 
+ * custom parameters.
  * 
  * @author Ben St&ouml;ver
  * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
@@ -131,7 +138,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	 * Creates a new instance of this class with a default block handler map and command reader factory. These contain all
 	 * handlers and command readers available in the core module of <i>JPhyloIO</i>. 
 	 * 
-	 * @param file the Nexus file to be read 
+	 * @param file the <i>Nexus</i> file to be read 
 	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
@@ -144,7 +151,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	/**
 	 * Creates a new instance of this class.
 	 * 
-	 * @param stream the stream providing the Nexus data to be read 
+	 * @param stream the stream providing the <i>Nexus</i> data to be read 
 	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
@@ -158,7 +165,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	 * Creates a new instance of this class with a default block handler map and command reader factory. These contain all
 	 * handlers and command readers available in the core module of <i>JPhyloIO</i>. 
 	 * 
-	 * @param reader the reader providing the Nexus data to be read 
+	 * @param reader the reader providing the <i>Nexus</i> data to be read 
 	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
@@ -172,7 +179,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 	 * Creates a new instance of this class with a default block handler map and command reader factory. These contain all
 	 * handlers and command readers available in the core module of <i>JPhyloIO</i>. 
 	 * 
-	 * @param reader the reader providing the Nexus data to be read 
+	 * @param reader the reader providing the <i>Nexus</i> data to be read 
 	 * @param parameters the parameter map for this reader instance 
 	 * @throws IOException if an I/O exception occurs while parsing the first event
 	 */
@@ -191,6 +198,33 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 				ReadWriteParameterMap.KEY_CREATE_UNKNOWN_COMMAND_EVENTS, false);
 	}
 	
+	
+	/**
+	 * Adds an instance of {@link ENewickNetworksBlockHandler} and {@link ENewickNetworkReader} to the maps
+	 * of this instance in order to be able to read custom {@code NETWORK} blocks containing phylogenetic
+	 * networks in the <a href="http://dx.doi.org/10.1186/1471-2105-9-532">eNewick</i> format.
+	 * <p>
+	 * Both maps (ReadWriteParameterNames#KEY_NEXUS_BLOCK_HANDLER_MAP and ReadWriteParameterNames#KEY_NEXUS_COMMAND_READER_FACTORY) 
+	 * are contained in the parameters map of this instance and may also be modified there.
+	 * <p>
+	 * Note that calling this method or not affects id {@code NETWORK} blocks are processed, while the 
+	 * {@link ReadWriteParameterNames#KEY_EXPECT_E_NEWICK} parameter determines whether 
+	 * <a href="http://dx.doi.org/10.1186/1471-2105-9-532">eNewick</i> strings are expected in the 
+	 * {@code TREE} commands of {@code TREES} blocks. Both features can be used independently.
+	 * <p>
+	 * This method should not be called more than once on each instance.
+	 * 
+	 * @see ENewickNetworksBlockHandler
+	 * @see ENewickNetworkReader
+	 * @see ReadWriteParameterNames#KEY_EXPECT_E_NEWICK
+	 * @see ReadWriteParameterNames#KEY_NEXUS_BLOCK_HANDLER_MAP
+	 * @see ReadWriteParameterNames#KEY_NEXUS_COMMAND_READER_FACTORY
+	 */
+	public void addENewickNetworksBlockSupport() {
+		blockHandlerMap.addHandler(new ENewickNetworksBlockHandler());
+		factory.addReaderClass(ENewickNetworkReader.class);
+	}
+	
 
 	@Override
 	public String getFormatID() {
@@ -205,10 +239,10 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 
 
 	/**
-	 * Specifies whether {@link UnknownCommandEvent}s will be fired for all Nexus commands with no according reader
+	 * Specifies whether {@link UnknownCommandEvent}s will be fired for all <i>Nexus</i> commands with no according reader
 	 * stored in the factory. The key will be the name of the command and the value will be its contents.
 	 * <p>
-	 * Note that e.g. {@link FormatReader} will fire additional Nexus specific meta events, even if this property
+	 * Note that e.g. {@link FormatReader} will fire additional <i>Nexus</i> specific meta events, even if this property
 	 * is set to {@code false}.  
 	 * 
 	 * @return {@code true} if unknown command events will be fired, {@code false} otherwise
@@ -219,7 +253,7 @@ public class NexusEventReader extends AbstractTextEventReader<NexusReaderStreamD
 
 
 	/**
-	 * Returns the name of the current Nexus block (e.g. {@code TAXA}). Note that this is different from a possible title of
+	 * Returns the name of the current <i>Nexus</i> block (e.g. {@code TAXA}). Note that this is different from a possible title of
 	 * this block.
 	 * 
 	 * @return the current block name or {@code null} if the reader is currently not located inside a block

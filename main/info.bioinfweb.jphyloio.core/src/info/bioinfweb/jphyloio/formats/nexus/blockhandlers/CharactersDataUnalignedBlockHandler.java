@@ -31,6 +31,12 @@ import info.bioinfweb.jphyloio.formats.nexus.commandreaders.NexusCommandEventRea
 
 
 
+/**
+ * A <i>Nexus</i> block handler to read sequence data from the {@code CHARACTERS}, {@code DATA} or {@code UNALIGNED}
+ * blocks.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class CharactersDataUnalignedBlockHandler extends AbstractNexusBlockHandler 
 		implements NexusBlockHandler, ReadWriteConstants, NexusConstants {
 	

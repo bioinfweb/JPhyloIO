@@ -34,6 +34,11 @@ public class TreesBlockHandler extends AbstractNexusBlockHandler implements Nexu
 	public TreesBlockHandler() {
 		super(new String[]{BLOCK_NAME_TREES});
 	}
+	
+	
+	protected TreesBlockHandler(String[] blockNames) {
+		super(blockNames);
+	}
 
 
 	@Override
@@ -49,19 +54,29 @@ public class TreesBlockHandler extends AbstractNexusBlockHandler implements Nexu
 		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE_NETWORK_GROUP));
 		streamDataProvider.getTreesTranslationTable().clear();  // Clear for another possible upcoming TREES block.
 	}
+	
+	
+	protected String getStartTriggerCommand() {
+		return COMMAND_NAME_TREE;
+	}
+	
+	
+	protected String getBlockName() {
+		return BLOCK_NAME_TREES;
+	}
 
 
 	@Override
 	public void beforeCommand(NexusReaderStreamDataProvider streamDataProvider,	String commandName, NexusCommandEventReader commandReader) {
 		ParameterMap map = streamDataProvider.getSharedInformationMap();
 		if (!map.getBoolean(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, false) 
-				&& (commandName.equals(COMMAND_NAME_TREE))) {  // Fire start event, as soon as one of these commands is encountered.
+				&& (commandName.equals(getStartTriggerCommand()))) {  // Fire start event, as soon as one of these commands is encountered.
 			
 			String blockID = map.getString(NexusReaderStreamDataProvider.INFO_KEY_CURRENT_BLOCK_ID);
 			streamDataProvider.getCurrentEventCollection().add(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, blockID, 
 					map.getString(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_TITLE), streamDataProvider.getCurrentLinkedBlockID(BLOCK_NAME_TAXA)));
-			if (!streamDataProvider.getBlockTitleToIDMap().hasDefaultBlockID(BLOCK_NAME_TREES)) {				
-				streamDataProvider.getBlockTitleToIDMap().putDefaultBlockID(BLOCK_NAME_TREES, blockID);  // Set first block as the default.
+			if (!streamDataProvider.getBlockTitleToIDMap().hasDefaultBlockID(getBlockName())) {				
+				streamDataProvider.getBlockTitleToIDMap().putDefaultBlockID(getBlockName(), blockID);  // Set first block as the default.
 			}
 			map.put(NexusReaderStreamDataProvider.INFO_KEY_BLOCK_START_EVENT_FIRED, true);
 		}

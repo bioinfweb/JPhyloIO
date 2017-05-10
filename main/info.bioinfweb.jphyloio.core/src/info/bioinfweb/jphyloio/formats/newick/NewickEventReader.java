@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -41,11 +42,13 @@ import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
  * <i>Newick</i> strings which are separated by {@code ';'}. Any whitespace, as well as comments contained in {@code '['} 
  * and {@code ']'} is allowed between all tokens.
  * <p>
- * Additionally this reader is able to parse hot comments associated with nodes or edges as described in the 
- * documentation of {@link NewickStringReader}.
+ * Additionally this reader is able to parse hot comments associated with nodes or edges and the <i>eNexus</i> network formats 
+ * as described in the documentation of {@link NewickStringReader}.
  * 
  * <h3><a id="parameters"></a>Recognized parameters</h3>
- * None. 
+ * <ul>
+ *   <li>{@link ReadWriteParameterNames#KEY_EXPECT_E_NEWICK}</li>
+ * </ul>
  * 
  * @author Ben St&ouml;ver
  * @see <a href="http://r.bioinfweb.info/JPhyloIODemoMetadata">Metadata demo application</a>
@@ -65,7 +68,8 @@ public class NewickEventReader extends AbstractTextEventReader<TextReaderStreamD
 	
 	
 	private void init() {
-		newickStringReader = new NewickStringReader(getStreamDataProvider(), null, null, new DefaultNewickReaderNodeLabelProcessor());
+		newickStringReader = new NewickStringReader(getStreamDataProvider(), null, null, new DefaultNewickReaderNodeLabelProcessor(),
+				getStreamDataProvider().getParameters().getBoolean(ReadWriteParameterNames.KEY_EXPECT_E_NEWICK, false));
 	}
 	
 	
