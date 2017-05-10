@@ -70,7 +70,13 @@ public interface NewickConstants {
 //	public static final String UNNAMED_NODE_DATA_NAME = "unnamedNodeHotComment";  //TODO Specify URL or similar ID here?
 	
 	public static final String E_NEWICK_NETWORK_DATA_SEPARATOR = "#";
-	
+	public static final String E_NEWICK_EDGE_TYPE_RECOMBINATION = "R";
+	public static final String E_NEWICK_EDGE_TYPE_HYBRIDIZATION = "H";
+	public static final String E_NEWICK_EDGE_TYPE_LATERAL_GENE_TRANSFER = "LRT";
+
+	public static final String E_NEWICK_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_FORMATS_NAMESPACE_PREFIX + "ENewick/";
+	public static final QName PREDICATE_E_NEWICK_EDGE_TYPE = new QName(E_NEWICK_NAMESPACE_PREFIX, "EdgeType");
+
 	
 	// Data type constants:
 	

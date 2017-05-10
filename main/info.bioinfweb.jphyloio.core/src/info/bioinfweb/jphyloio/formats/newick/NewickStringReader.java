@@ -19,6 +19,7 @@
 package info.bioinfweb.jphyloio.formats.newick;
 
 
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.CommentEvent;
@@ -27,6 +28,10 @@ import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
+import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
@@ -82,6 +87,14 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	private static final int NO_HOT_COMMENT_READ = -2;
 	private static final int ONE_HOT_COMMENT_READ = -1;	
 	
+	
+	private static class ENewickNodeLabel {
+		public String label = "";
+		public long index = -1;
+		public String edgeType = "";
+	}
+	
+	
 	private TextReaderStreamDataProvider<?> streamDataProvider;
 	private boolean currentTreeRooted = false;
 	private String treeID;
@@ -89,7 +102,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	private NewickReaderNodeLabelProcessor nodeLabelProcessor;
 	private NewickScanner scanner;
 	private Stack<Queue<NodeEdgeInfo>> passedSubnodes;
-	private Map<String, String> networkNodeLabelToIDMap = new HashMap<String, String>();
+	private Map<Long, String> networkNodeLabelToIDMap = new HashMap<Long, String>();
 	private HotCommentDataReader hotCommentDataReader = new HotCommentDataReader();
 	private boolean isInTree = false;
 	private boolean afterTree = false;
@@ -130,6 +143,16 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 		
 		scanner = new NewickScanner(streamDataProvider.getDataReader(), treeLabel == null);
 		passedSubnodes = new Stack<Queue<NodeEdgeInfo>>();
+	}
+	
+	
+	private EventContentType getTreeContentType() {
+		if (streamDataProvider.getParameters().getBoolean(ReadWriteParameterNames.KEY_EXPECT_E_NEWICK, false)) {
+			return EventContentType.NETWORK;
+		}
+		else {
+			return EventContentType.TREE;
+		}
 	}
 	
 	
@@ -229,6 +252,40 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	}
 	
 	
+	private String createNodeID() {
+		return DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+	}
+	
+	
+	private ENewickNodeLabel splitENewickNodeLabel(String label) {
+		ENewickNodeLabel result = new ENewickNodeLabel();
+		String[] parts = label.split("\\" + E_NEWICK_NETWORK_DATA_SEPARATOR);
+		result.label = parts[0];
+		
+		StringBuilder index = new StringBuilder();
+		int pos = parts[1].length() - 1;
+		while ((pos >= 0) && (Character.isDigit(parts[1].charAt(pos)))) {
+			index.insert(0, parts[1].charAt(pos));
+			pos--;
+		}
+		result.index = Long.parseLong(index.toString());
+		
+		result.edgeType = parts[1].substring(0, pos + 1).toUpperCase();
+		return result;
+	}
+	
+	
+	private void addENewickEdgeTypeEvents(Collection<JPhyloIOEvent> nestedEdgeEvents, String edgeType) {
+		if ((edgeType != null) && !"".equals(edgeType)) {
+			nestedEdgeEvents.add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), 
+					null, new URIOrStringIdentifier(null, PREDICATE_E_NEWICK_EDGE_TYPE), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_NAME), LiteralContentSequenceType.SIMPLE));
+			nestedEdgeEvents.add(new LiteralMetadataContentEvent(edgeType, edgeType));
+			nestedEdgeEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
+		}
+	}
+	
+	
 	/**
 	 * Reads information on a tree node.
 	 * 
@@ -251,8 +308,6 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 			return null;
 		}
 		else {  // In this a case a node is defined, even if no name or length token are present (if this method is called only at appropriate positions). 
-			String nodeID = DEFAULT_NODE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
-			
 			List<NewickToken>[] tokens = collectNodeEdgeTokens();  // All tokens need to be read before, to determine if a length definition exists behind a possible second hot comment.
 			
 			// Read node data:
@@ -272,22 +327,40 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 			Collection<JPhyloIOEvent> nestedEdgeEvents = createMetaAndCommentEvents(tokens[1], false);
 			
 			// Generate node information:
-			passedSubnodes.peek().add(new NodeEdgeInfo(nodeID, length, null, nestedEdgeEvents));
+			boolean fireNodeEvent = true;
 			String processedLabel = nodeLabelProcessor.processLabel(label);
-			// eNewick support could be implemented here.
-					//TODO Log warning, if nestedNodeEvents is not empty, because node metadata of additional appearances of the same network node are lost.
-					//TODO IDs of network nodes need to be mapped to their names in order to be reused in additional appearances.
-//			if (streamDataProvider.getParameters().getBoolean(ReadWriteParameterNames.KEY_EXPECT_E_NEWICK, false) && 
-//					processedLabel.contains(E_NEWICK_NETWORK_DATA_SEPARATOR)) {  //TODO Check eNewick parameter
-//				
-//			}
-			NodeEvent result = new NodeEvent(nodeID, processedLabel,	nodeLabelProcessor.getLinkedOTUID(processedLabel), 
-					currentTreeRooted && (passedSubnodes.size() == 1));  //TODO Does the rooted expression work?
-			streamDataProvider.getCurrentEventCollection().add(result);
-			streamDataProvider.getCurrentEventCollection().addAll(nestedNodeEvents);
-			streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+			String nodeID = null;
+			//TODO Are names like "A#14" also eNewick names/ is it possible to include '#' in a usual label using quotations? Probably yes and that should be checked here. Otherwise labels like "A F# f 5" could cause problems.
+			if (streamDataProvider.getParameters().getBoolean(ReadWriteParameterNames.KEY_EXPECT_E_NEWICK, false) && 
+				processedLabel.contains(E_NEWICK_NETWORK_DATA_SEPARATOR)) {
+				//TODO Log warning, if nestedNodeEvents is not empty, because node metadata of additional appearances of the same network node are lost.
+					
+				ENewickNodeLabel labelParts = splitENewickNodeLabel(processedLabel);
+				processedLabel = labelParts.label;
+				
+				nodeID = networkNodeLabelToIDMap.get(labelParts.index);
+				if (nodeID == null) {
+					nodeID = createNodeID();
+					networkNodeLabelToIDMap.put(labelParts.index, nodeID);
+				}
+				else {
+					fireNodeEvent = false;  // In this case the label references a network node a second time. Possible node metadata declared here would be lost.
+				}
+				addENewickEdgeTypeEvents(nestedEdgeEvents, labelParts.edgeType);
+			}
+			else {
+				nodeID = createNodeID();
+			}
 			
-			return result.getID();
+			passedSubnodes.peek().add(new NodeEdgeInfo(nodeID, length, null, nestedEdgeEvents));
+			if (fireNodeEvent) {
+				streamDataProvider.getCurrentEventCollection().add(new NodeEvent(nodeID, processedLabel, 
+						nodeLabelProcessor.getLinkedOTUID(processedLabel), currentTreeRooted && (passedSubnodes.size() == 1)));  //TODO Does the rooted expression work?
+				streamDataProvider.getCurrentEventCollection().addAll(nestedNodeEvents);
+				streamDataProvider.getCurrentEventCollection().add(new ConcreteJPhyloIOEvent(EventContentType.NODE, EventTopologyType.END));
+			}
+			
+			return nodeID;
 		}		
 	}
 	
@@ -311,7 +384,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	
 	private void endTree() {
 		addEdgeEvents(null, passedSubnodes.pop());  // Add events for root branch.
-		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.TREE));  // End of file without terminal symbol.
+		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(getTreeContentType()));  // End of file without terminal symbol.
 		isInTree = false;
 		currentTreeRooted = false;
 	}
@@ -323,7 +396,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	 * @return {@code true} if the end of the tree was reached or {@code false} if reading this Newick string needs to be continued 
 	 * @throws IOException
 	 */
-	public void processTree() throws IOException {
+	private void processTree() throws IOException {
 		while (streamDataProvider.getCurrentEventCollection().isEmpty()) {
 			if (!scanner.hasMoreTokens()) {
 				if (passedSubnodes.size() == 1) {
@@ -404,7 +477,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 					addCommentEvent(scanner.nextToken());
 				}
 				else {
-					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(EventContentType.TREE, treeID, treeLabel));
+					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(getTreeContentType(), treeID, treeLabel));
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 						currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 						scanner.nextToken();  // Skip rooted token.
