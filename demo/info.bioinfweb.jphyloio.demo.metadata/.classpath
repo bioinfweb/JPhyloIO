@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/bin" sourcepath="/info.bioinfweb.jphyloio.core/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.demo.tree/bin" sourcepath="/info.bioinfweb.jphyloio.demo.tree/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/include/lib/commons-collections4-4.1.jar"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/include/lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/include/lib/owlapi-XMLUtils-4.1.4.jar"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/include/lib/commons-lang3-3.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
