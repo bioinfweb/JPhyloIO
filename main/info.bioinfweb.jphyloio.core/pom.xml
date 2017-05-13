@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>info.bioinfweb.jphyloio</groupId>
 	<artifactId>jphyloio-core</artifactId>
-	<version>0.3.0</version>
+	<version>0.4.0</version>
 	<packaging>jar</packaging>
 	<name>JPhyloIO core</name>
 	<description>The core module of JPhyloIO.</description>
@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>info.bioinfweb.commons.java</groupId>
 			<artifactId>bioinfweb-commons-java-core</artifactId>
-			<version>[2.0.0,3.0.0)</version>
+			<version>[2.3.0,3.0.0)</version>
 		</dependency>
 		<dependency>
 			<groupId>info.bioinfweb.commons.java</groupId>

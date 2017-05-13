@@ -96,10 +96,10 @@ main/info.bioinfweb.jphyloio.core/ant/javaDoc_sourceLocations.xml -text svneol=u
 main/info.bioinfweb.jphyloio.core/ant/library_jars.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/ant/rename_binaries.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/ant/sourcefiles.xml -text svneol=unset#text/plain
-main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb.commons.java-Bio-2.0.0.jar -text
-main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb.commons.java-Core-2.0.0.jar -text
+main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb-commons-java-bio-2.0.0.jar -text
+main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb-commons-java-core-2.3.0.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/commons-collections4-4.1.jar -text
-main/info.bioinfweb.jphyloio.core/include/lib/commons-lang3-3.1.jar -text
+main/info.bioinfweb.jphyloio.core/include/lib/commons-lang3-3.5.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/owlapi-XMLUtils-4.1.4.jar -text
 main/info.bioinfweb.jphyloio.core/pom.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
