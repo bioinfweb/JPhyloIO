@@ -1,1 +1,1 @@
-<move file="${tempFolder}/downloads/complete/bin/${simpleProjectLabel}.core.jar" tofile="${tempFolder}/downloads/complete/bin/${simpleProjectLabel}-${itemNameLower}-${majorNo}.${minorNo}.${revisionNo}.jar"/>
+<move file="${tempFolder}/downloads/complete/bin/${simpleProjectLabel}.core.jar" tofile="${tempFolder}/downloads/complete/bin/${simpleProjectLabel}-core-${majorNo}.${minorNo}.${revisionNo}.jar"/>
