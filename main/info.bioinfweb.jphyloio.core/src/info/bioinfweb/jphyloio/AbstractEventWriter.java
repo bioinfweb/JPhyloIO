@@ -473,7 +473,13 @@ public abstract class AbstractEventWriter<P extends WriterStreamDataProvider<? e
 
 	@Override
 	public void writeDocument(DocumentDataAdapter document, OutputStream stream, ReadWriteParameterMap parameters) throws IOException {
-		writeDocument(document, new BufferedWriter(new OutputStreamWriter(stream)), parameters);
+		OutputStreamWriter writer = new OutputStreamWriter(stream);
+		try {
+			writeDocument(document, writer, parameters);
+		}
+		finally {
+			writer.close();  //TODO This is necessary but will probably prevent applications from writing further in the child stream. How can this be solved?
+		}
 	}
 
 
