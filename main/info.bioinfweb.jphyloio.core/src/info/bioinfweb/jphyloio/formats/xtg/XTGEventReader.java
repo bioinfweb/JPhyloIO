@@ -141,17 +141,17 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedNodeEvents());
 				
 				readAttributes(getStreamDataProvider(), event.asStartElement(), "",	
-						new AttributeInfo(ATTR_TEXT_IS_DECIMAL, PREDICATE_NODE_ATTR_IS_DECIMAL, W3CXSConstants.DATA_TYPE_BOOLEAN),
-						new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_NODE_ATTR_TEXT_COLOR, DATA_TYPE_COLOR),
-						new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_NODE_ATTR_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
-						new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_NODE_ATTR_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
-						new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_NODE_ATTR_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
-						new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_NODE_ATTR_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
-						new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_NODE_ATTR_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
-						new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_NODE_ATTR_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
-						new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_NODE_ATTR_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
-						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_NODE_ATTR_LINE_COLOR, DATA_TYPE_COLOR),
-						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_NODE_ATTR_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_TEXT_IS_DECIMAL, PREDICATE_IS_DECIMAL, W3CXSConstants.DATA_TYPE_BOOLEAN),
+						new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_UNIQUE_NAME, PREDICATE_NODE_ATTR_UNIQUE_NAME, W3CXSConstants.DATA_TYPE_STRING),
 						new AttributeInfo(ATTR_EDGE_RADIUS, PREDICATE_NODE_ATTR_EDGE_RADIUS, W3CXSConstants.DATA_TYPE_FLOAT));
 			}
@@ -174,10 +174,10 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		XMLEndElementReader edgeResourceEndReader = new XMLEndElementReader(false, true, true);
 		
 		XMLStartElementReader labelMarginStartReader = new XMLStartElementReader(null, PREDICATE_LABEL_MARGIN, null, true, 
-				new AttributeInfo(ATTR_LEFT, PREDICATE_LABEL_MARGIN_ATTR_LEFT, W3CXSConstants.DATA_TYPE_FLOAT),
-				new AttributeInfo(ATTR_TOP, PREDICATE_LABEL_MARGIN_ATTR_TOP, W3CXSConstants.DATA_TYPE_FLOAT),
-				new AttributeInfo(ATTR_RIGHT, PREDICATE_LABEL_MARGIN_ATTR_RIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
-				new AttributeInfo(ATTR_BOTTOM, PREDICATE_LABEL_MARGIN_ATTR_BOTTOM, W3CXSConstants.DATA_TYPE_FLOAT));
+				new AttributeInfo(ATTR_LEFT, PREDICATE_MARGIN_LEFT, W3CXSConstants.DATA_TYPE_FLOAT),
+				new AttributeInfo(ATTR_TOP, PREDICATE_MARGIN_TOP, W3CXSConstants.DATA_TYPE_FLOAT),
+				new AttributeInfo(ATTR_RIGHT, PREDICATE_MARGIN_RIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+				new AttributeInfo(ATTR_BOTTOM, PREDICATE_MARGIN_BOTTOM, W3CXSConstants.DATA_TYPE_FLOAT));
 
 		putElementReader(new XMLElementReaderKey(TAG_LABEL_MARGIN, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
@@ -251,8 +251,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 				streamDataProvider.setCurrentEventCollection(streamDataProvider.getSourceNode().peek().getNestedEdgeEvents());
 				
 				readAttributes(getStreamDataProvider(), event.asStartElement(), "", 
-						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_BRANCH_ATTR_LINE_COLOR, DATA_TYPE_COLOR),
-						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_BRANCH_ATTR_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_CONSTANT_WIDTH, PREDICATE_BRANCH_ATTR_CONSTANT_WIDTH, W3CXSConstants.DATA_TYPE_BOOLEAN),
 						new AttributeInfo(ATTR_MIN_BRANCH_LENGTH, PREDICATE_BRANCH_ATTR_MIN_LENGTH, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_MIN_SPACE_ABOVE, PREDICATE_BRANCH_ATTR_MIN_SPACE_ABOVE, W3CXSConstants.DATA_TYPE_FLOAT),
@@ -297,10 +297,10 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		
 		putElementReader(new XMLElementReaderKey(TAG_GLOBAL_FORMATS, TAG_DOCUMENT_MARGIN, XMLStreamConstants.START_ELEMENT), 
 				new XMLStartElementReader(null, PREDICATE_DOCUMENT_MARGIN, null, false, 
-						new AttributeInfo(ATTR_LEFT, PREDICATE_DOCUMENT_MARGIN_ATTR_LEFT, W3CXSConstants.DATA_TYPE_FLOAT),
-						new AttributeInfo(ATTR_TOP, PREDICATE_DOCUMENT_MARGIN_ATTR_TOP, W3CXSConstants.DATA_TYPE_FLOAT),
-						new AttributeInfo(ATTR_RIGHT, PREDICATE_DOCUMENT_MARGIN_ATTR_RIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
-						new AttributeInfo(ATTR_BOTTOM, PREDICATE_DOCUMENT_MARGIN_ATTR_BOTTOM, W3CXSConstants.DATA_TYPE_FLOAT)));	
+						new AttributeInfo(ATTR_LEFT, PREDICATE_MARGIN_LEFT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_TOP, PREDICATE_MARGIN_TOP, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_RIGHT, PREDICATE_MARGIN_RIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_BOTTOM, PREDICATE_MARGIN_BOTTOM, W3CXSConstants.DATA_TYPE_FLOAT)));	
 		putElementReader(new XMLElementReaderKey(TAG_DOCUMENT_MARGIN, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());		
 		putElementReader(new XMLElementReaderKey(TAG_GLOBAL_FORMATS, TAG_DOCUMENT_MARGIN, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 		
@@ -341,25 +341,25 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		// Node.LeafMargin
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_LEAF_MARGIN, XMLStreamConstants.START_ELEMENT), 
 				new XMLStartElementReader(null, PREDICATE_LEAF_MARGIN, null, false, 
-						new AttributeInfo(ATTR_LEFT, PREDICATE_LEAF_MARGIN_ATTR_LEFT, W3CXSConstants.DATA_TYPE_FLOAT),
-						new AttributeInfo(ATTR_TOP, PREDICATE_LEAF_MARGIN_ATTR_TOP, W3CXSConstants.DATA_TYPE_FLOAT),
-						new AttributeInfo(ATTR_RIGHT, PREDICATE_LEAF_MARGIN_ATTR_RIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
-						new AttributeInfo(ATTR_BOTTOM, PREDICATE_LEAF_MARGIN_ATTR_BOTTOM, W3CXSConstants.DATA_TYPE_FLOAT)));	
+						new AttributeInfo(ATTR_LEFT, PREDICATE_MARGIN_LEFT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_TOP, PREDICATE_MARGIN_TOP, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_RIGHT, PREDICATE_MARGIN_RIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_BOTTOM, PREDICATE_MARGIN_BOTTOM, W3CXSConstants.DATA_TYPE_FLOAT)));	
 		
 		putElementReader(new XMLElementReaderKey(TAG_LEAF_MARGIN, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());		
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_LEAF_MARGIN, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 		
 		// Branch.TextLabel		
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_TEXT_LABEL, XMLStreamConstants.START_ELEMENT), 
-			new XTGFormattedTextElementReader(null, PREDICATE_TEXT_LABEL, null, PREDICATE_TEXT_LABEL_ATTR_TEXT,	true, 
-					new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_TEXT_LABEL_ATTR_TEXT_COLOR, DATA_TYPE_COLOR),
-					new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_TEXT_LABEL_ATTR_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
-					new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_TEXT_LABEL_ATTR_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
-					new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_TEXT_LABEL_ATTR_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
-					new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_TEXT_LABEL_ATTR_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
-					new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_TEXT_LABEL_ATTR_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
-					new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_TEXT_LABEL_ATTR_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
-					new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_TEXT_LABEL_ATTR_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
+			new XTGFormattedTextElementReader(null, PREDICATE_TEXT_LABEL, null, PREDICATE_TEXT,	true, 
+					new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR),
+					new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+					new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
+					new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
+					new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
+					new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
+					new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
+					new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
 					new AttributeInfo(ATTR_ID, PREDICATE_TEXT_LABEL_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING),
 					new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_TEXT_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
 					new AttributeInfo(ATTR_LINE_NO, PREDICATE_TEXT_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
@@ -376,8 +376,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		// Branch.IconLabel
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_ICON_LABEL, XMLStreamConstants.START_ELEMENT), 
 				new XMLStartElementReader(null, PREDICATE_ICON_LABEL, null,	true, 
-						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_ICON_LABEL_ATTR_LINE_COLOR, DATA_TYPE_COLOR),
-						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_ICON_LABEL_ATTR_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_WIDTH, PREDICATE_ICON_LABEL_ATTR_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_HEIGHT, PREDICATE_ICON_LABEL_ATTR_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_ICON, PREDICATE_ICON_LABEL_ATTR_ICON, W3CXSConstants.DATA_TYPE_STRING),
@@ -398,8 +398,8 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		// Branch.PieChartLabel
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_PIE_CHART_LABEL, XMLStreamConstants.START_ELEMENT), 
 				new XMLStartElementReader(null, PREDICATE_PIE_CHART_LABEL, null,	true, 
-						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_COLOR, DATA_TYPE_COLOR),
-						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_LABEL_WIDTH, PREDICATE_PIE_CHART_LABEL_ATTR_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_LABEL_HEIGHT, PREDICATE_PIE_CHART_LABEL_ATTR_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_SHOW_INTERNAL_LINES, PREDICATE_PIE_CHART_LABEL_ATTR_INTERNAL_LINES, W3CXSConstants.DATA_TYPE_BOOLEAN),
