@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TreegraphDocument xmlns="http://bioinfweb.info/xmlns/xtg"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://bioinfweb.info/xmlns/xtg http://bioinfweb.info/xmlns/xtg/1.5.xsd">
+	<GlobalFormats BgColor="#FFFFFF" BranchLengthScale="0.1"
+		ShowScaleBar="true" ShowRooted="false" AlignToSubtree="true"
+		LabelsLeft="true">
+		<DocMargin Left="2.0" Top="2.0" Right="2.0" Bottom="2.0"></DocMargin>
+	</GlobalFormats>
+	<NodeBranchDataAdapters>
+		<Adapter Name="info.bioinfweb.treegraph.nodeName" Purpose="info.bioinfweb.treegraph.defaultLeavesAdapter"></Adapter>
+		<Adapter Name="info.bioinfweb.treegraph.voidNodeBranchData"
+			Purpose="info.bioinfweb.treegraph.defaultSupportAdapter"></Adapter>
+	</NodeBranchDataAdapters>
+	<Tree>
+		<Node Text="Internal1" IsDecimal="false" UniqueName="qy07eczjbe"
+			TextColor="#000000" TextHeight="6.0" TextStyle="" FontFamily="Arial"
+			DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+			LocaleVariant="" LineColor="#000000" LineWidth="0.3" EdgeRadius="1.0">
+			<LeafMargin Left="1.0" Top="0.3" Right="1.0" Bottom="0.3"></LeafMargin>
+			<Branch Length="2.0" LineColor="#000000" LineWidth="0.3"
+				ConstantWidth="false" MinLength="4.0" MinSpaceAbove="0.0"
+				MinSpaceBelow="0.0"></Branch>
+			<Node Text="Internal2" IsDecimal="false" UniqueName="3gozymvt9n"
+				TextColor="#000000" TextHeight="6.0" TextStyle="" FontFamily="Arial"
+				DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+				LocaleVariant="" LineColor="#000000" LineWidth="0.3" EdgeRadius="1.0">
+				<LeafMargin Left="1.0" Top="0.3" Right="1.0" Bottom="0.3"></LeafMargin>
+				<Branch LineColor="#000000" LineWidth="0.3" ConstantWidth="false"
+					MinLength="4.0" MinSpaceAbove="0.0" MinSpaceBelow="0.0">
+					<PieChartLabel Text="Heading" IsDecimal="false"
+						TextColor="#000000" TextHeight="6.0" TextStyle="" FontFamily="Arial"
+						DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+						LocaleVariant="" LineColor="#000000" LineWidth="0.3" Width="3.0"
+						Height="3.0" InternalLines="true" NullLines="false" ShowTitle="true"
+						CaptionType="NONE" CaptionLinkType="STRAIGHT_LINES" Id="ID1"
+						Above="true" LineNo="0" LinePos="0.0">
+						<LabelMargin Left="1.0" Top="1.0" Right="1.0" Bottom="1.0"></LabelMargin>
+						<DataIds TextColor="#000000" TextStyle="" FontFamily="Arial"
+							DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+							LocaleVariant="">
+							<DataId PieColor="#0000FF" PieCaption="">ID2</DataId>
+							<DataId PieColor="#FF0000" PieCaption="">ID3</DataId>
+						</DataIds>
+					</PieChartLabel>
+					<InvisibleData Id="ID3" Text="18.3" IsDecimal="true"></InvisibleData>
+				</Branch>
+				<InvisibleData Id="ID2" Text="9.4" IsDecimal="true"></InvisibleData>
+				<Node Text="A" IsDecimal="false" UniqueName="09q8i4x4s6"
+					TextColor="#000000" TextHeight="6.0" TextStyle="" FontFamily="Arial"
+					DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+					LocaleVariant="" LineColor="#000000" LineWidth="0.3" EdgeRadius="1.0">
+					<LeafMargin Left="1.0" Top="0.3" Right="1.0" Bottom="0.3"></LeafMargin>
+					<Branch Length="5.0" LineColor="#000000" LineWidth="0.3"
+						ConstantWidth="false" MinLength="4.0" MinSpaceAbove="0.0"
+						MinSpaceBelow="0.0"></Branch>
+				</Node>
+				<Node Text="B" IsDecimal="false" UniqueName="rggkem0ajy"
+					TextColor="#000000" TextHeight="6.0" TextStyle="" FontFamily="Arial"
+					DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+					LocaleVariant="" LineColor="#000000" LineWidth="0.3" EdgeRadius="1.0">
+					<LeafMargin Left="1.0" Top="0.3" Right="1.0" Bottom="0.3"></LeafMargin>
+					<Branch Length="3.0" LineColor="#000000" LineWidth="0.3"
+						ConstantWidth="false" MinLength="4.0" MinSpaceAbove="0.0"
+						MinSpaceBelow="0.0">
+						<TextLabel Text="test" IsDecimal="false" TextColor="#000000"
+							TextHeight="4.0" TextStyle="" FontFamily="Arial" DecimalFormat="#0.0#####"
+							LocaleLang="en" LocaleCountry="" LocaleVariant="" Id="ID1" Above="true"
+							LineNo="0" LinePos="0.0">
+							<LabelMargin Left="1.0" Top="1.0" Right="1.0" Bottom="1.0"></LabelMargin>
+						</TextLabel>
+					</Branch>
+				</Node>
+			</Node>
+			<Node Text="C" IsDecimal="false" UniqueName="iq80ulayeq"
+				TextColor="#000000" TextHeight="6.0" TextStyle="" FontFamily="Arial"
+				DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+				LocaleVariant="" LineColor="#000000" LineWidth="0.3" EdgeRadius="1.0">
+				<LeafMargin Left="1.0" Top="0.3" Right="1.0" Bottom="0.3"></LeafMargin>
+				<Branch Length="7.0" LineColor="#000000" LineWidth="0.3"
+					ConstantWidth="false" MinLength="4.0" MinSpaceAbove="0.0"
+					MinSpaceBelow="0.0">
+					<IconLabel LineColor="#FF9900" LineWidth="0.3" Width="3.0"
+						Height="3.0" Icon="Star" IconFilled="false" Id="ID1" Above="false"
+						LineNo="0" LinePos="0.0">
+						<LabelMargin Left="1.0" Top="1.0" Right="1.0" Bottom="1.0"></LabelMargin>
+					</IconLabel>
+				</Branch>
+				<InvisibleData Id="ID2" Text="test invisible data"
+					IsDecimal="false"></InvisibleData>
+			</Node>
+		</Node>
+		<ScaleBar LineColor="#000000" LineWidth="0.3" TextColor="#000000"
+			TextHeight="4.0" TextStyle="" FontFamily="Arial" DecimalFormat="#0.0#####"
+			LocaleLang="en" LocaleCountry="" LocaleVariant="" Align="left"
+			TreeDistance="3.0" Width="20.0mm" Height="3.0" SmallInterval="10.0"
+			LongInterval="10" StartLeft="true" Increasing="true"></ScaleBar>
+		<Legend Text="L" IsDecimal="false" Anchor0="rggkem0ajy"
+			Anchor1="iq80ulayeq" LegendPos="0" MinTreeDistance="0.0"
+			LegendSpacing="1.0" LegendStyle="bracket" Orientation="horizontal"
+			LineColor="#000000" LineWidth="0.3" EdgeRadius="1.0" TextColor="#000000"
+			TextHeight="6.0" TextStyle="" FontFamily="Arial" DecimalFormat="#0.0#####"
+			LocaleLang="en" LocaleCountry="" LocaleVariant="">
+			<LegendMargin Left="1.0" Top="0.0" Right="1.0" Bottom="0.0"></LegendMargin>
+		</Legend>
+	</Tree>
+</TreegraphDocument>

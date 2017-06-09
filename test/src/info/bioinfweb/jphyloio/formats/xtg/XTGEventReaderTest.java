@@ -179,7 +179,7 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "9.4", null, 9.4, true, reader);			
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLUMN_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID2", null, "ID2", true, reader);
 				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
@@ -316,13 +316,13 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "", null, "", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LOCALE_VARIANT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "", null, "", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_ID), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLUMN_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID1", null, "ID1", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_ABOVE), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_ABOVE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_LINE_NO), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_LINE_NO), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "0", null, 0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_TEXT_LABEL_ATTR_LINE_POS), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_LINE_POS), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.0", null, 0.0, true, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_MARGIN), null, null, false, reader);				
@@ -382,7 +382,7 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "test invisible data", null, "test invisible data", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLUMN_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID2", null, "ID2", true, reader);
 				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
@@ -416,13 +416,13 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PIE_CHART_LABEL_ATTR_NULL_LINES), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PIE_CHART_LABEL_ATTR_ID), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLUMN_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID1", null, "ID1", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PIE_CHART_LABEL_ATTR_ABOVE), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_ABOVE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_NO), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_LINE_NO), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "0", null, 0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_POS), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_LINE_POS), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.0", null, 0.0, true, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_MARGIN), null, null, false, reader);				
@@ -459,7 +459,7 @@ public class XTGEventReaderTest implements XTGConstants {
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA), null, null, false, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "18.3", null, 18.3, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_INVISIBLE_DATA_ATTR_ID), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLUMN_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID3", null, "ID3", true, reader);
 				assertEndEvent(EventContentType.RESOURCE_META, reader);
 				
@@ -493,13 +493,13 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "Star", null, "Star", true, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ICON_LABEL_ATTR_ICON_FILLED), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ICON_LABEL_ATTR_ID), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLUMN_ID), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID1", null, "ID1", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ICON_LABEL_ATTR_ABOVE), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_ABOVE), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ICON_LABEL_ATTR_LINE_NO), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_LINE_NO), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), "0", null, 0, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ICON_LABEL_ATTR_LINE_POS), 
+				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ATTR_LINE_POS), 
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.0", null, 0.0, true, reader);
 				
 				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_MARGIN), null, null, false, reader);				

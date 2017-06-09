@@ -610,6 +610,7 @@ test/data/XML/shortTestXML.xml -text svneol=unset#text/plain
 test/data/XTG/EmptyDocument.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml -text svneol=unset#text/plain
 test/data/XTG/ExampleXTGDocument.xml.gz -text
+test/data/XTG/ExampleXTGDocument_new.xml -text svneol=unset#text/plain
 test/data/XTG/Polytomy.xml -text svneol=unset#text/plain
 test/data/other/Namespace.xml -text svneol=unset#text/plain
 test/data/other/Test.png -text
