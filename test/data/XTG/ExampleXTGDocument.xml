@@ -33,8 +33,8 @@
 						Id="ID1" Above="true" LineNo="0" LinePos="0.0">
 						<LabelMargin Left="1.0" Top="1.0" Right="1.0" Bottom="1.0"></LabelMargin>
 						<DataIds>
-							<DataID PieColor="#0000FF">ID2</DataID>
-							<DataID PieColor="#FF0000">ID3</DataID>
+							<DataId PieColor="#0000FF">ID2</DataId>
+							<DataId PieColor="#FF0000">ID3</DataId>
 						</DataIds>
 					</PieChartLabel>
 					<InvisibleData Id="ID3" Text="18.3" IsDecimal="true"></InvisibleData>
