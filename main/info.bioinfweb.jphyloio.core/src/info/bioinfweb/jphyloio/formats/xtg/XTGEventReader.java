@@ -360,10 +360,10 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 					new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
 					new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
 					new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
-					new AttributeInfo(ATTR_ID, PREDICATE_TEXT_LABEL_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING),
-					new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_TEXT_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
-					new AttributeInfo(ATTR_LINE_NO, PREDICATE_TEXT_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
-					new AttributeInfo(ATTR_LINE_POS, PREDICATE_TEXT_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
+					new AttributeInfo(ATTR_ID, PREDICATE_COLUMN_ID, W3CXSConstants.DATA_TYPE_STRING),
+					new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
+					new AttributeInfo(ATTR_LINE_NO, PREDICATE_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
+					new AttributeInfo(ATTR_LINE_POS, PREDICATE_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
 		
 		putElementReader(new XMLElementReaderKey(TAG_TEXT_LABEL, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
@@ -382,10 +382,10 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 						new AttributeInfo(ATTR_HEIGHT, PREDICATE_ICON_LABEL_ATTR_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_ICON, PREDICATE_ICON_LABEL_ATTR_ICON, W3CXSConstants.DATA_TYPE_STRING),
 						new AttributeInfo(ATTR_ICON_FILLED, PREDICATE_ICON_LABEL_ATTR_ICON_FILLED, W3CXSConstants.DATA_TYPE_BOOLEAN),
-						new AttributeInfo(ATTR_ID, PREDICATE_ICON_LABEL_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING),
-						new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_ICON_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
-						new AttributeInfo(ATTR_LINE_NO, PREDICATE_ICON_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
-						new AttributeInfo(ATTR_LINE_POS, PREDICATE_ICON_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
+						new AttributeInfo(ATTR_ID, PREDICATE_COLUMN_ID, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
+						new AttributeInfo(ATTR_LINE_NO, PREDICATE_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
+						new AttributeInfo(ATTR_LINE_POS, PREDICATE_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
 
 		putElementReader(new XMLElementReaderKey(TAG_ICON_LABEL, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
@@ -404,10 +404,10 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 						new AttributeInfo(ATTR_LABEL_HEIGHT, PREDICATE_PIE_CHART_LABEL_ATTR_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
 						new AttributeInfo(ATTR_SHOW_INTERNAL_LINES, PREDICATE_PIE_CHART_LABEL_ATTR_INTERNAL_LINES, W3CXSConstants.DATA_TYPE_BOOLEAN),
 						new AttributeInfo(ATTR_SHOW_NULL_LINES, PREDICATE_PIE_CHART_LABEL_ATTR_NULL_LINES, W3CXSConstants.DATA_TYPE_BOOLEAN),
-						new AttributeInfo(ATTR_ID, PREDICATE_PIE_CHART_LABEL_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING),
-						new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_PIE_CHART_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
-						new AttributeInfo(ATTR_LINE_NO, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
-						new AttributeInfo(ATTR_LINE_POS, PREDICATE_PIE_CHART_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
+						new AttributeInfo(ATTR_ID, PREDICATE_COLUMN_ID, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LABEL_ABOVE, PREDICATE_LABEL_ATTR_ABOVE, W3CXSConstants.DATA_TYPE_BOOLEAN),
+						new AttributeInfo(ATTR_LINE_NO, PREDICATE_LABEL_ATTR_LINE_NO, W3CXSConstants.DATA_TYPE_INT),
+						new AttributeInfo(ATTR_LINE_POS, PREDICATE_LABEL_ATTR_LINE_POS, W3CXSConstants.DATA_TYPE_DOUBLE)));
 			
 		putElementReader(new XMLElementReaderKey(TAG_PIE_CHART_LABEL, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
@@ -440,7 +440,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		// Node.InvisibleData
 		putElementReader(new XMLElementReaderKey(TAG_NODE, TAG_HIDDEN_DATA, XMLStreamConstants.START_ELEMENT), 
 				new XTGFormattedTextElementReader(null, PREDICATE_INVISIBLE_DATA, null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT, false, 
-						new AttributeInfo(ATTR_ID, PREDICATE_INVISIBLE_DATA_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING)));
+						new AttributeInfo(ATTR_ID, PREDICATE_COLUMN_ID, W3CXSConstants.DATA_TYPE_STRING)));
 		
 		putElementReader(new XMLElementReaderKey(TAG_HIDDEN_DATA, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
 		
@@ -449,7 +449,7 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		// Branch.InvisibleData
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_HIDDEN_DATA, XMLStreamConstants.START_ELEMENT), 
 				new XTGFormattedTextElementReader(null, PREDICATE_INVISIBLE_DATA, null, PREDICATE_INVISIBLE_DATA_ATTR_TEXT, true, 
-						new AttributeInfo(ATTR_ID, PREDICATE_INVISIBLE_DATA_ATTR_ID, W3CXSConstants.DATA_TYPE_STRING)));
+						new AttributeInfo(ATTR_ID, PREDICATE_COLUMN_ID, W3CXSConstants.DATA_TYPE_STRING)));
 		
 		// Element reader for character content of hidden data tag was registered before
 		
