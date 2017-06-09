@@ -85,10 +85,14 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 							}
 							catch (IllegalArgumentException f) {}
 						}
+						//TODO Handle new custom XTG types here or find different strategy, when legends are supported.
+						//     => Another map or adding respective translators to the default map would be better, because otherwise custom reader cannot use custom data types.
 						else {
 							ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory()
 									.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
 							
+							//TODO Check if no object translator was found. (Otherwise a NullPointerException will be thrown here.) It would be useful to debug custom readers defining custom data types.
+							//     Should the string value be used or should an exception be thrown?
 							try {
 								objectValue = translator.representationToJava(attributeValue, streamDataProvider);
 							}

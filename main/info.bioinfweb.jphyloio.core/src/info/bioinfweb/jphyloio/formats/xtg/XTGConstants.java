@@ -160,6 +160,8 @@ public interface XTGConstants {
   
   public static final String XTG_DATA_TYPE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.DATA_TYPE_NAMESPACE_FOLDER + "/";	
 	public static final QName DATA_TYPE_COLOR = new QName(XTG_NAMESPACE_PREFIX, "Color");  
+	public static final QName DATA_TYPE_LEGEND_STYLE = new QName(XTG_NAMESPACE_PREFIX, "LegendStyle");  
+	public static final QName DATA_TYPE_TEXT_ORIENTATION = new QName(XTG_NAMESPACE_PREFIX, "TextOrientation");  
   
 	public static final String XTG_PREDICATE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 	
@@ -210,8 +212,6 @@ public interface XTGConstants {
 	// Invisible data:
 	public static final QName PREDICATE_INVISIBLE_DATA = new QName(XTG_PREDICATE_NAMESPACE, "InvisibleData");
 	public static final QName PREDICATE_COLUMN_ID = new QName(XTG_PREDICATE_NAMESPACE, "ColumnID");
-	public static final QName PREDICATE_INVISIBLE_DATA_ATTR_TEXT = new QName(XTG_PREDICATE_NAMESPACE, "InvisibleData" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Text");
-	public static final QName PREDICATE_INVISIBLE_DATA_ATTR_IS_DECIMAL = new QName(XTG_PREDICATE_NAMESPACE, "InvisibleData" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IsDecimal");
 	
 	// Label:
 	public static final QName PREDICATE_LABEL_ATTR_ABOVE = new QName(XTG_PREDICATE_NAMESPACE, "Label" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Above");

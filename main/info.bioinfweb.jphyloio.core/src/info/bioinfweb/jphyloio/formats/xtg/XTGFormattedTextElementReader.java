@@ -52,14 +52,10 @@ import javax.xml.stream.events.XMLEvent;
  *
  */
 public class XTGFormattedTextElementReader extends XMLStartElementReader implements XTGConstants {
-	private QName textPredicate;
-
-	
 	public XTGFormattedTextElementReader(QName literalPredicate, QName resourcePredicate, URIOrStringIdentifier datatype,
-			QName textPredicate, boolean isEdgeMeta, AttributeInfo... attributeInformation) {
-		super(literalPredicate, resourcePredicate, datatype, isEdgeMeta, attributeInformation);
+			boolean isEdgeMeta, AttributeInfo... attributeInformation) {
 		
-		this.textPredicate = textPredicate;
+		super(literalPredicate, resourcePredicate, datatype, isEdgeMeta, attributeInformation);
 	}
 
 
@@ -88,7 +84,7 @@ public class XTGFormattedTextElementReader extends XMLStartElementReader impleme
 		
 		streamDataProvider.getCurrentEventCollection().add(
 				new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-				new URIOrStringIdentifier(null, textPredicate), datatype, LiteralContentSequenceType.SIMPLE));
+				new URIOrStringIdentifier(null, PREDICATE_TEXT), datatype, LiteralContentSequenceType.SIMPLE));
 		
 		if ((value != null) && !value.isEmpty() && isDecimal) {
 			try {
