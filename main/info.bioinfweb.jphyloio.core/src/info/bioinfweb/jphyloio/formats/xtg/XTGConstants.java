@@ -118,7 +118,7 @@ public interface XTGConstants {
   public static final QName ATTR_SHOW_INTERNAL_LINES = new QName("InternalLines");
   public static final QName ATTR_SHOW_NULL_LINES = new QName("NullLines");
   public static final QName TAG_PIE_CHART_IDS = new QName(NAMESPACE_URI, "DataIds");  // Might be corrected to "DataIDs" in newer XTG-versions
-  public static final QName TAG_PIE_CHART_ID = new QName(NAMESPACE_URI, "DataID");
+  public static final QName TAG_PIE_CHART_ID = new QName(NAMESPACE_URI, "DataId");
   public static final QName ATTR_PIE_COLOR = new QName("PieColor");
   
   public static final QName TAG_HIDDEN_DATA = new QName(NAMESPACE_URI, "InvisibleData");
