@@ -150,8 +150,8 @@ public interface XTGConstants {
   public static final String BRANCH_LENGTH_UNITS = "u";
   public static final String MILLIMETERS = "mm";
   public static final QName ATTR_SCALE_BAR_HEIGHT = new QName("Height");
-  public static final QName ATTR_SMALL_INTERVAL = new QName("SmallInterval");
-  public static final QName ATTR_LONG_INTERVAL = new QName("LongInterval");
+  public static final QName ATTR_SCALE_BAR_SMALL_INTERVAL = new QName("SmallInterval");
+  public static final QName ATTR_SCALE_BAR_LONG_INTERVAL = new QName("LongInterval");
   public static final QName ATTR_SCALE_BAR_START = new QName("StartLeft");
   public static final QName ATTR_SCALE_BAR_INCREASE = new QName("Increasing");
   

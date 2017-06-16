@@ -489,6 +489,30 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 //		
 //		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.END_ELEMENT), resourceEndReader);		
 		
+		// Scale bar
+//		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.START_ELEMENT), 
+//				new XTGFormattedTextElementReader(null, PREDICATE_SCALE_BAR, null, false,
+//						new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR),
+//						new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+//						new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
+//						new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
+//						new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
+//						new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
+//						new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
+//						new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
+//						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
+//						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
+//						new AttributeInfo(ATTR_SCALE_BAR_ALIGN, PREDICATE_SCALE_BAR_ATTR_ALIGN, W3CXSConstants.DATA_TYPE_FLOAT), 
+//						new AttributeInfo(ATTR_SCALE_BAR_DISTANCE, PREDICATE_SCALE_BAR_ATTR_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT),
+//						new AttributeInfo(ATTR_SCALE_BAR_START, PREDICATE_SCALE_BAR_ATTR_START_LEFT, W3CXSConstants.DATA_TYPE_),
+//						new AttributeInfo(ATTR_SCALE_BAR_INCREASE, PREDICATE_SCALE_BAR_ATTR_INCREASING, W3CXSConstants.DATA_TYPE_),
+//						new AttributeInfo(ATTR_SCALE_BAR_WIDTH, PREDICATE_SCALE_BAR_ATTR_WIDTH, W3CXSConstants.DATA_TYPE_),
+//						new AttributeInfo(ATTR_SCALE_BAR_HEIGHT, PREDICATE_SCALE_BAR_ATTR_HEIGHT, W3CXSConstants.DATA_TYPE_),
+//						new AttributeInfo(ATTR_SCALE_BAR_SMALL_INTERVAL, PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL, W3CXSConstants.DATA_TYPE_),
+//						new AttributeInfo(ATTR_SCALE_BAR_LONG_INTERVAL, PREDICATE_SCALE_BAR_ATTR_SMALL_INTERVAL, W3CXSConstants.DATA_TYPE_)));
+//		putElementReader(new XMLElementReaderKey(TAG_LEGEND, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
+//		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+				
 		// Comments
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader<XMLReaderStreamDataProvider<XTGEventReader>>());
 	}
