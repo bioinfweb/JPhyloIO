@@ -107,7 +107,7 @@ public class NewickNodeEdgeEventReceiver<E extends JPhyloIOEvent> extends BasicE
 	@Override
 	protected void handleLiteralMetaStart(LiteralMetadataEvent event) throws IOException, XMLStreamException {
 		if (event.getSequenceType().equals(LiteralContentSequenceType.SIMPLE)) {
-			String key = event.getPredicate().getStringRepresentation();
+			String key = event.getPredicate().getStringRepresentation();  //TODO Does the string representation need to be checked e.g. for spaces?
 			if (key == null) {
 				if (event.getPredicate().getURI() == null) {
 					throw new JPhyloIOWriterException("A literal metadata event without predicate or alternative string representation was encountered.");  // Should not happen, since this was already checked in the constructor of URIOrStringIdentifier.
