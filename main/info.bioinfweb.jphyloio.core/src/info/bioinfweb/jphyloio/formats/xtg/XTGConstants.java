@@ -242,14 +242,14 @@ public interface XTGConstants {
 	public static final QName PREDICATE_PIE_CHART_LABEL = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel");
 	public static final QName PREDICATE_PIE_CHART_LABEL_INTERNAL_LINES = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "InternalLines");
 	public static final QName PREDICATE_PIE_CHART_LABEL_NULL_LINES = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "NullLines");
-  public static final QName PREDICATE_PIE_CHART_LABEL_SHOW_TITLE = new QName("PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowTitle");
-  public static final QName PREDICATE_PIE_CHART_LABEL_CAPTION_TYPE = new QName("PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CaptionType");
-  public static final QName PREDICATE_PIE_CHART_LABEL_CAPTION_LINK_TYPE = new QName("PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CaptionLinkType");
+  public static final QName PREDICATE_PIE_CHART_LABEL_SHOW_TITLE = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowTitle");
+  public static final QName PREDICATE_PIE_CHART_LABEL_CAPTION_TYPE = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CaptionType");
+  public static final QName PREDICATE_PIE_CHART_LABEL_CAPTION_LINK_TYPE = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CaptionLinkType");
 	
 	public static final QName PREDICATE_DATA_IDS = new QName(XTG_PREDICATE_NAMESPACE, "DataIDs");
 	public static final QName PREDICATE_DATA_ID = new QName(XTG_PREDICATE_NAMESPACE, "DataID");
 	public static final QName PREDICATE_PIE_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PieColor");
-  public static final QName PREDICATE_PIE_CAPTION = new QName("DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PieCaption");
+  public static final QName PREDICATE_PIE_CAPTION = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PieCaption");
 	public static final QName PREDICATE_DATA_ID_VALUE = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	
 	public static final QName PREDICATE_LABEL_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "LabelMargin");
