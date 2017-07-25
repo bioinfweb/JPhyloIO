@@ -34,6 +34,7 @@ import javax.xml.namespace.QName;
 public interface XTGConstants {
 	//TODO Should more or all predicate prefixes referencing their parent element be removed?
 	
+	// XML constants:
 	public static final String XTG_FORMAT_NAME = "Extensible TreeGraph 2 format";
 	public static final String XTG = "xtg";
 	
@@ -162,14 +163,16 @@ public interface XTGConstants {
   public static final QName ATTR_SCALE_BAR_INCREASE = new QName("Increasing");
   
   
+  // Ontology constants:
   public static final String XTG_NAMESPACE_PREFIX = ReadWriteConstants.JPHYLOIO_FORMATS_NAMESPACE_PREFIX + "XTG/";	
   
+  // Custom data types:
   public static final String XTG_DATA_TYPE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.DATA_TYPE_NAMESPACE_FOLDER + "/";	
 	public static final QName DATA_TYPE_COLOR = new QName(XTG_NAMESPACE_PREFIX, "Color");  
 	public static final QName DATA_TYPE_LEGEND_STYLE = new QName(XTG_NAMESPACE_PREFIX, "LegendStyle");  
+	public static final QName DATA_TYPE_TEXT_ORIENTATION = new QName(XTG_NAMESPACE_PREFIX, "TextOrientation");  
 	public static final QName DATA_TYPE_PIE_CHART_LABEL_CAPTION_TYPE = new QName(XTG_NAMESPACE_PREFIX, "PieChartLabelCaptionType");  
 	public static final QName DATA_TYPE_PIE_CHART_LABEL_CAPTION_LINK_TYPE = new QName(XTG_NAMESPACE_PREFIX, "PieChartLabelCaptionLinkType");  
-	public static final QName DATA_TYPE_TEXT_ORIENTATION = new QName(XTG_NAMESPACE_PREFIX, "TextOrientation");  
   
 	public static final String XTG_PREDICATE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
 	
@@ -206,6 +209,10 @@ public interface XTGConstants {
 	
 	public static final QName PREDICATE_DOCUMENT_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin");
 	
+	// General:
+	public static final QName PREDICATE_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "Width");
+	public static final QName PREDICATE_HEIGHT = new QName(XTG_PREDICATE_NAMESPACE, "Height");
+
 	// Node:
 	public static final QName PREDICATE_NODE_UNIQUE_NAME = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "UniqueName");
 	public static final QName PREDICATE_EDGE_RADIUS = new QName(XTG_PREDICATE_NAMESPACE, "EdgeRadius");
@@ -228,9 +235,6 @@ public interface XTGConstants {
 	
 	public static final QName PREDICATE_TEXT_LABEL = new QName(XTG_PREDICATE_NAMESPACE, "TextLabel");
 	
-	public static final QName PREDICATE_GRAPHICAL_LABEL_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "Width");
-	public static final QName PREDICATE_GRAPHICAL_LABEL_HEIGHT = new QName(XTG_PREDICATE_NAMESPACE, "Height");
-
 	public static final QName PREDICATE_ICON_LABEL = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel");
 	public static final QName PREDICATE_ICON_LABEL_ICON = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Icon");
 	public static final QName PREDICATE_ICON_LABEL_ICON_FILLED = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IconFilled");
