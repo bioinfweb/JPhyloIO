@@ -484,9 +484,9 @@ public class XTGEventReaderTest implements XTGConstants {
 					new URIOrStringIdentifier(null, DATA_TYPE_COLOR), "#FF9900", null, Color.decode("#FF9900"), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINE_WIDTH), 
 					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);
-			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GRAPHICAL_LABEL_WIDTH), 
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_WIDTH), 
 					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "5.0", null, new Float(5.0), true, reader);
-			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GRAPHICAL_LABEL_HEIGHT), 
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_HEIGHT), 
 					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "5.0", null, new Float(5.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ICON_LABEL_ICON), 
 					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "Star", null, "Star", true, reader);
