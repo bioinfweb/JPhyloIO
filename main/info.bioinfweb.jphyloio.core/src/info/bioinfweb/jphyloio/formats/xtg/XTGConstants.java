@@ -32,6 +32,8 @@ import javax.xml.namespace.QName;
  * @author Ben St&ouml;ver
  */
 public interface XTGConstants {
+	//TODO Should more or all predicate prefixes referencing their parent element be removed?
+	
 	public static final String XTG_FORMAT_NAME = "Extensible TreeGraph 2 format";
 	public static final String XTG = "xtg";
 	
@@ -118,9 +120,13 @@ public interface XTGConstants {
   public static final QName TAG_PIE_CHART_LABEL = new QName(NAMESPACE_URI, "PieChartLabel");
   public static final QName ATTR_SHOW_INTERNAL_LINES = new QName("InternalLines");
   public static final QName ATTR_SHOW_NULL_LINES = new QName("NullLines");
+  public static final QName ATTR_SHOW_TITLE = new QName("ShowTitle");
+  public static final QName ATTR_CAPTION_TYPE = new QName("CaptionType");
+  public static final QName ATTR_CAPTION_LINK_TYPE = new QName("CaptionLinkType");
   public static final QName TAG_PIE_CHART_IDS = new QName(NAMESPACE_URI, "DataIds");  // Might be corrected to "DataIDs" in newer XTG-versions
   public static final QName TAG_PIE_CHART_ID = new QName(NAMESPACE_URI, "DataId");
   public static final QName ATTR_PIE_COLOR = new QName("PieColor");
+  public static final QName ATTR_PIE_CAPTION = new QName("PieCaption");
   
   public static final QName TAG_HIDDEN_DATA = new QName(NAMESPACE_URI, "InvisibleData");
   
@@ -161,6 +167,8 @@ public interface XTGConstants {
   public static final String XTG_DATA_TYPE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.DATA_TYPE_NAMESPACE_FOLDER + "/";	
 	public static final QName DATA_TYPE_COLOR = new QName(XTG_NAMESPACE_PREFIX, "Color");  
 	public static final QName DATA_TYPE_LEGEND_STYLE = new QName(XTG_NAMESPACE_PREFIX, "LegendStyle");  
+	public static final QName DATA_TYPE_PIE_CHART_LABEL_CAPTION_TYPE = new QName(XTG_NAMESPACE_PREFIX, "PieChartLabelCaptionType");  
+	public static final QName DATA_TYPE_PIE_CHART_LABEL_CAPTION_LINK_TYPE = new QName(XTG_NAMESPACE_PREFIX, "PieChartLabelCaptionLinkType");  
 	public static final QName DATA_TYPE_TEXT_ORIENTATION = new QName(XTG_NAMESPACE_PREFIX, "TextOrientation");  
   
 	public static final String XTG_PREDICATE_NAMESPACE = XTG_NAMESPACE_PREFIX + ReadWriteConstants.PREDICATE_NAMESPACE_FOLDER + "/";
@@ -189,80 +197,80 @@ public interface XTGConstants {
 
 	// Global formats:
 	public static final QName PREDICATE_GLOBAL_FORMATS = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats");
-	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_BG_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BgColor");
-	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_BRANCH_LENGTH_SCALE = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BranchLengthScale");
-	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_SCALE_BAR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowScaleBar");
-	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_SHOW_ROOTED = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowRooted");
-	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_ALIGN_TO_SUBTREE = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AlignToSubtree");
-	public static final QName PREDICATE_GLOBAL_FORMATS_ATTR_POSITION_LABELS_TO_LEFT = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LabelsLeft");
+	public static final QName PREDICATE_GLOBAL_FORMATS_BG_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BgColor");
+	public static final QName PREDICATE_GLOBAL_FORMATS_BRANCH_LENGTH_SCALE = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "BranchLengthScale");
+	public static final QName PREDICATE_GLOBAL_FORMATS_SHOW_SCALE_BAR = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowScaleBar");
+	public static final QName PREDICATE_GLOBAL_FORMATS_SHOW_ROOTED = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowRooted");
+	public static final QName PREDICATE_GLOBAL_FORMATS_ALIGN_TO_SUBTREE = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "AlignToSubtree");
+	public static final QName PREDICATE_GLOBAL_FORMATS_POSITION_LABELS_TO_LEFT = new QName(XTG_PREDICATE_NAMESPACE, "GlobalFormats" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LabelsLeft");
 	
 	public static final QName PREDICATE_DOCUMENT_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "DocMargin");
 	
 	// Node:
-	public static final QName PREDICATE_NODE_ATTR_UNIQUE_NAME = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "UniqueName");
-	public static final QName PREDICATE_NODE_ATTR_EDGE_RADIUS = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "EdgeRadius");
+	public static final QName PREDICATE_NODE_UNIQUE_NAME = new QName(XTG_PREDICATE_NAMESPACE, "Node" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "UniqueName");
+	public static final QName PREDICATE_EDGE_RADIUS = new QName(XTG_PREDICATE_NAMESPACE, "EdgeRadius");
 	public static final QName PREDICATE_LEAF_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "LeafMargin");
 
 	// Branch:
-	public static final QName PREDICATE_BRANCH_ATTR_CONSTANT_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ConstantWidth");
-	public static final QName PREDICATE_BRANCH_ATTR_MIN_LENGTH = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinLength");
-	public static final QName PREDICATE_BRANCH_ATTR_MIN_SPACE_ABOVE = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinSpaceAbove");
-	public static final QName PREDICATE_BRANCH_ATTR_MIN_SPACE_BELOW = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinSpaceBelow");
+	public static final QName PREDICATE_BRANCH_CONSTANT_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ConstantWidth");
+	public static final QName PREDICATE_BRANCH_MIN_LENGTH = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinLength");
+	public static final QName PREDICATE_BRANCH_MIN_SPACE_ABOVE = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinSpaceAbove");
+	public static final QName PREDICATE_BRANCH_MIN_SPACE_BELOW = new QName(XTG_PREDICATE_NAMESPACE, "Branch" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinSpaceBelow");
 	
 	// Invisible data:
 	public static final QName PREDICATE_INVISIBLE_DATA = new QName(XTG_PREDICATE_NAMESPACE, "InvisibleData");
 	public static final QName PREDICATE_COLUMN_ID = new QName(XTG_PREDICATE_NAMESPACE, "ColumnID");
 	
 	// Label:
-	public static final QName PREDICATE_LABEL_ATTR_ABOVE = new QName(XTG_PREDICATE_NAMESPACE, "Label" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Above");
-	public static final QName PREDICATE_LABEL_ATTR_LINE_NO = new QName(XTG_PREDICATE_NAMESPACE, "Label" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LineNo");
-	public static final QName PREDICATE_LABEL_ATTR_LINE_POS = new QName(XTG_PREDICATE_NAMESPACE, "Label" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LinePos");
+	public static final QName PREDICATE_LABEL_ABOVE = new QName(XTG_PREDICATE_NAMESPACE, "Label" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Above");
+	public static final QName PREDICATE_LABEL_LINE_NO = new QName(XTG_PREDICATE_NAMESPACE, "Label" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LineNo");
+	public static final QName PREDICATE_LABEL_LINE_POS = new QName(XTG_PREDICATE_NAMESPACE, "Label" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LinePos");
 	
 	public static final QName PREDICATE_TEXT_LABEL = new QName(XTG_PREDICATE_NAMESPACE, "TextLabel");
 	
+	public static final QName PREDICATE_GRAPHICAL_LABEL_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "Width");
+	public static final QName PREDICATE_GRAPHICAL_LABEL_HEIGHT = new QName(XTG_PREDICATE_NAMESPACE, "Height");
+
 	public static final QName PREDICATE_ICON_LABEL = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel");
-	public static final QName PREDICATE_ICON_LABEL_ATTR_ICON = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Icon");
-	public static final QName PREDICATE_ICON_LABEL_ATTR_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Width");
-	public static final QName PREDICATE_ICON_LABEL_ATTR_HEIGHT = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Height");
-	public static final QName PREDICATE_ICON_LABEL_ATTR_ICON_FILLED = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IconFilled");
+	public static final QName PREDICATE_ICON_LABEL_ICON = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Icon");
+	public static final QName PREDICATE_ICON_LABEL_ICON_FILLED = new QName(XTG_PREDICATE_NAMESPACE, "IconLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "IconFilled");
 	
 	public static final QName PREDICATE_PIE_CHART_LABEL = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel");
-	public static final QName PREDICATE_PIE_CHART_LABEL_ATTR_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Width");
-	public static final QName PREDICATE_PIE_CHART_LABEL_ATTR_HEIGHT = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Height");
-	public static final QName PREDICATE_PIE_CHART_LABEL_ATTR_INTERNAL_LINES = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "InternalLines");
-	public static final QName PREDICATE_PIE_CHART_LABEL_ATTR_NULL_LINES = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "NullLines");
+	public static final QName PREDICATE_PIE_CHART_LABEL_INTERNAL_LINES = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "InternalLines");
+	public static final QName PREDICATE_PIE_CHART_LABEL_NULL_LINES = new QName(XTG_PREDICATE_NAMESPACE, "PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "NullLines");
+  public static final QName PREDICATE_PIE_CHART_LABEL_SHOW_TITLE = new QName("PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ShowTitle");
+  public static final QName PREDICATE_PIE_CHART_LABEL_CAPTION_TYPE = new QName("PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CaptionType");
+  public static final QName PREDICATE_PIE_CHART_LABEL_CAPTION_LINK_TYPE = new QName("PieChartLabel" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "CaptionLinkType");
 	
 	public static final QName PREDICATE_DATA_IDS = new QName(XTG_PREDICATE_NAMESPACE, "DataIDs");
 	public static final QName PREDICATE_DATA_ID = new QName(XTG_PREDICATE_NAMESPACE, "DataID");
-	public static final QName PREDICATE_DATA_ID_ATTR_PIE_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PieColor");
+	public static final QName PREDICATE_PIE_COLOR = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PieColor");
+  public static final QName PREDICATE_PIE_CAPTION = new QName("DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "PieCaption");
 	public static final QName PREDICATE_DATA_ID_VALUE = new QName(XTG_PREDICATE_NAMESPACE, "DataID" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Value");
 	
 	public static final QName PREDICATE_LABEL_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "LabelMargin");
 	
 	public static final QName PREDICATE_SCALE_BAR = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar");
-	public static final QName PREDICATE_SCALE_BAR_ATTR_ALIGN = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Align");
-	public static final QName PREDICATE_SCALE_BAR_ATTR_TREE_DISTANCE = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "TreeDistance");
-	public static final QName PREDICATE_SCALE_BAR_ATTR_WIDTH = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Width");
-	public static final QName PREDICATE_SCALE_BAR_ATTR_HEIGHT = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Height");
-	public static final QName PREDICATE_SCALE_BAR_ATTR_SMALL_INTERVAL = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "SmallInterval");
-	public static final QName PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LongInterval");
-	public static final QName PREDICATE_SCALE_BAR_ATTR_START_LEFT = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "StartLeft");
-	public static final QName PREDICATE_SCALE_BAR_ATTR_INCREASING = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Increasing");
+	public static final QName PREDICATE_SCALE_BAR_ALIGN = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Align");
+	public static final QName PREDICATE_SCALE_BAR_TREE_DISTANCE = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "TreeDistance");
+	public static final QName PREDICATE_SCALE_BAR_SMALL_INTERVAL = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "SmallInterval");
+	public static final QName PREDICATE_SCALE_BAR_LONG_INTERVAL = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LongInterval");
+	public static final QName PREDICATE_SCALE_BAR_START_LEFT = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "StartLeft");
+	public static final QName PREDICATE_SCALE_BAR_INCREASING = new QName(XTG_PREDICATE_NAMESPACE, "ScaleBar" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Increasing");
 	
 	public static final QName PREDICATE_LEGEND = new QName(XTG_PREDICATE_NAMESPACE, "Legend");
-	public static final QName PREDICATE_LEGEND_ATTR_ANCHOR_0 = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Anchor0");
-	public static final QName PREDICATE_LEGEND_ATTR_ANCHOR_1 = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Anchor1");
-	public static final QName PREDICATE_LEGEND_ATTR_LEGEND_POSITION = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendPosition");
-	public static final QName PREDICATE_LEGEND_ATTR_MIN_TREE_DISTANCE = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinTreeDistance");
-	public static final QName PREDICATE_LEGEND_ATTR_LEGEND_SPACING = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendSpacing");
-	public static final QName PREDICATE_LEGEND_ATTR_LEGEND_STYLE = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendStyle");
-	public static final QName PREDICATE_LEGEND_ATTR_ORIENTATION = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Orientation");
-	public static final QName PREDICATE_LEGEND_ATTR_EDGE_RADIUS = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "EdgeRadius");
+	public static final QName PREDICATE_LEGEND_ANCHOR_0 = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Anchor0");
+	public static final QName PREDICATE_LEGEND_ANCHOR_1 = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Anchor1");
+	public static final QName PREDICATE_LEGEND_LEGEND_POSITION = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendPosition");
+	public static final QName PREDICATE_LEGEND_MIN_TREE_DISTANCE = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinTreeDistance");
+	public static final QName PREDICATE_LEGEND_LEGEND_SPACING = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendSpacing");
+	public static final QName PREDICATE_LEGEND_LEGEND_STYLE = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendStyle");
+	public static final QName PREDICATE_LEGEND_ORIENTATION = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Orientation");
 	public static final QName PREDICATE_LEGEND_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "LegendMargin");
 	
 	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter");
 	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter");
-	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_NAME = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Name");
-	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_ID = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID");
-	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ATTR_PURPOSE = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Purpose");
+	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_NAME = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Name");
+	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_ID = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "ID");
+	public static final QName PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_PURPOSE = new QName(XTG_PREDICATE_NAMESPACE, "NodeBranchDataAdapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Adapter" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Purpose");
 }
