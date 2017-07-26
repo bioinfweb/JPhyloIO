@@ -421,8 +421,10 @@ main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/DateTimeTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/DateTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/DoubleTranslator.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/EnumTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/FloatTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/HexBinaryTranslator.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/HexadecimalColorTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/IllegalArgumentExceptionSimpleValueTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/IntegerTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/ListTranslator.java -text svneol=unset#text/plain

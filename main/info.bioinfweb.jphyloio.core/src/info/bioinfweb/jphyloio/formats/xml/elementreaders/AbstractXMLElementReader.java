@@ -43,9 +43,9 @@ import javax.xml.stream.events.StartElement;
 
 
 /**
- * Abstract implementation of an element reader that is used to process parts of an XML document.
+ * Abstract implementation of an element reader that is used to process parts of an <i>XML</i> document.
  * <p>
- * Methods implemented here are used commonly by element readers used to process XML formats.
+ * Methods implemented here are used commonly by element readers used to process <i>XML</i> formats.
  * 
  * @author Sarah Wiechers
  *
