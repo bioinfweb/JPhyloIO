@@ -171,6 +171,8 @@ public interface XTGConstants {
 	public static final QName DATA_TYPE_COLOR = new QName(XTG_NAMESPACE_PREFIX, "Color");  
 	public static final QName DATA_TYPE_LEGEND_STYLE = new QName(XTG_NAMESPACE_PREFIX, "LegendStyle");  
 	public static final QName DATA_TYPE_TEXT_ORIENTATION = new QName(XTG_NAMESPACE_PREFIX, "TextOrientation");  
+	public static final QName DATA_TYPE_SCALE_BAR_ALIGNMENT = new QName(XTG_NAMESPACE_PREFIX, "ScaleBarAlignment");  
+	public static final QName DATA_TYPE_SCALE_VALUE = new QName(XTG_NAMESPACE_PREFIX, "ScaleValue");  
 	public static final QName DATA_TYPE_PIE_CHART_LABEL_CAPTION_TYPE = new QName(XTG_NAMESPACE_PREFIX, "PieChartLabelCaptionType");  
 	public static final QName DATA_TYPE_PIE_CHART_LABEL_CAPTION_LINK_TYPE = new QName(XTG_NAMESPACE_PREFIX, "PieChartLabelCaptionLinkType");  
   
