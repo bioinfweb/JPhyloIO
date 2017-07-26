@@ -104,7 +104,9 @@ public class JPhyloIOWritingUtils {
 			throws IOException {
 
 		receiver.add(new LiteralMetadataEvent(id, label, predicate, originalType, LiteralContentSequenceType.SIMPLE));
-		receiver.add(new LiteralMetadataContentEvent(objectValue, stringRepresentation));
+		if ((objectValue != null) || (stringRepresentation != null)) {
+			receiver.add(new LiteralMetadataContentEvent(objectValue, stringRepresentation));
+		}
 		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 
