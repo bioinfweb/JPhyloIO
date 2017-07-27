@@ -459,62 +459,62 @@ public class XTGEventReader extends AbstractXMLEventReader<XMLReaderStreamDataPr
 		putElementReader(new XMLElementReaderKey(TAG_BRANCH, TAG_HIDDEN_DATA, XMLStreamConstants.END_ELEMENT), edgeResourceEndReader);
 		
 		// Tree.Legend
-//		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.START_ELEMENT), 
-//				new XTGFormattedTextElementReader(null, PREDICATE_LEGEND, null, false,
-//						new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR),
-//						new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
-//						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_LEGEND_POS, PREDICATE_LEGEND_ATTR_LEGEND_POSITION, W3CXSConstants.DATA_TYPE_INT),
-//						new AttributeInfo(ATTR_MIN_TREE_DISTANCE, PREDICATE_LEGEND_ATTR_MIN_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT), 
-//						new AttributeInfo(ATTR_LEGEND_SPACING, PREDICATE_LEGEND_ATTR_LEGEND_SPACING, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_LEGEND_STYLE, PREDICATE_LEGEND_ATTR_LEGEND_STYLE, DATA_TYPE_LEGEND_STYLE),
-//						new AttributeInfo(ATTR_TEXT_ORIENTATION, PREDICATE_LEGEND_ATTR_ORIENTATION, DATA_TYPE_TEXT_ORIENTATION),
-//						new AttributeInfo(ATTR_EDGE_RADIUS, PREDICATE_LEGEND_ATTR_EDGE_RADIUS, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_ANCHOR_0, PREDICATE_LEGEND_ATTR_ANCHOR_0, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_ANCHOR_1, PREDICATE_LEGEND_ATTR_ANCHOR_1, W3CXSConstants.DATA_TYPE_STRING)));
-//		putElementReader(new XMLElementReaderKey(TAG_LEGEND, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
-//		
-//		putElementReader(new XMLElementReaderKey(TAG_LEGEND, TAG_LEGEND_MARGIN, XMLStreamConstants.START_ELEMENT), 
-//				new XMLStartElementReader(null, PREDICATE_LEGEND_MARGIN, null, false, 
-//						new AttributeInfo(ATTR_LEFT, PREDICATE_MARGIN_LEFT, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_TOP, PREDICATE_MARGIN_TOP, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_RIGHT, PREDICATE_MARGIN_RIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_BOTTOM, PREDICATE_MARGIN_BOTTOM, W3CXSConstants.DATA_TYPE_FLOAT)));	
-//		putElementReader(new XMLElementReaderKey(TAG_LEGEND_MARGIN, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());		
-//		putElementReader(new XMLElementReaderKey(TAG_LEGEND, TAG_LEGEND_MARGIN, XMLStreamConstants.END_ELEMENT), resourceEndReader);
-//		
-//		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.END_ELEMENT), resourceEndReader);		
+		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.START_ELEMENT), 
+				new XTGFormattedTextElementReader(null, PREDICATE_LEGEND, null, false,
+						new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_LEGEND_POS, PREDICATE_LEGEND_POSITION, W3CXSConstants.DATA_TYPE_INT),
+						new AttributeInfo(ATTR_MIN_TREE_DISTANCE, PREDICATE_LEGEND_MIN_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT), 
+						new AttributeInfo(ATTR_LEGEND_SPACING, PREDICATE_LEGEND_SPACING, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_LEGEND_STYLE, PREDICATE_LEGEND_STYLE, DATA_TYPE_LEGEND_STYLE),
+						new AttributeInfo(ATTR_TEXT_ORIENTATION, PREDICATE_LEGEND_ORIENTATION, DATA_TYPE_TEXT_ORIENTATION),
+						new AttributeInfo(ATTR_EDGE_RADIUS, PREDICATE_EDGE_RADIUS, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_ANCHOR_0, PREDICATE_LEGEND_ANCHOR_0, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_ANCHOR_1, PREDICATE_LEGEND_ANCHOR_1, W3CXSConstants.DATA_TYPE_STRING)));
+		putElementReader(new XMLElementReaderKey(TAG_LEGEND, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
+		
+		putElementReader(new XMLElementReaderKey(TAG_LEGEND, TAG_LEGEND_MARGIN, XMLStreamConstants.START_ELEMENT), 
+				new XMLStartElementReader(null, PREDICATE_LEGEND_MARGIN, null, false, 
+						new AttributeInfo(ATTR_LEFT, PREDICATE_MARGIN_LEFT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_TOP, PREDICATE_MARGIN_TOP, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_RIGHT, PREDICATE_MARGIN_RIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_BOTTOM, PREDICATE_MARGIN_BOTTOM, W3CXSConstants.DATA_TYPE_FLOAT)));	
+		putElementReader(new XMLElementReaderKey(TAG_LEGEND_MARGIN, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());		
+		putElementReader(new XMLElementReaderKey(TAG_LEGEND, TAG_LEGEND_MARGIN, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		
+		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_LEGEND, XMLStreamConstants.END_ELEMENT), resourceEndReader);		
 		
 		// Scale bar
-//		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.START_ELEMENT), 
-//				new XTGFormattedTextElementReader(null, PREDICATE_SCALE_BAR, null, false,
-//						new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR),
-//						new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
-//						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
-//						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_SCALE_BAR_ALIGN, PREDICATE_SCALE_BAR_ATTR_ALIGN, W3CXSConstants.DATA_TYPE_FLOAT), 
-//						new AttributeInfo(ATTR_SCALE_BAR_DISTANCE, PREDICATE_SCALE_BAR_ATTR_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT),
-//						new AttributeInfo(ATTR_SCALE_BAR_START, PREDICATE_SCALE_BAR_ATTR_START_LEFT, W3CXSConstants.DATA_TYPE_),
-//						new AttributeInfo(ATTR_SCALE_BAR_INCREASE, PREDICATE_SCALE_BAR_ATTR_INCREASING, W3CXSConstants.DATA_TYPE_),
-//						new AttributeInfo(ATTR_SCALE_BAR_WIDTH, PREDICATE_SCALE_BAR_ATTR_WIDTH, W3CXSConstants.DATA_TYPE_),
-//						new AttributeInfo(ATTR_SCALE_BAR_HEIGHT, PREDICATE_SCALE_BAR_ATTR_HEIGHT, W3CXSConstants.DATA_TYPE_),
-//						new AttributeInfo(ATTR_SCALE_BAR_SMALL_INTERVAL, PREDICATE_SCALE_BAR_ATTR_LONG_INTERVAL, W3CXSConstants.DATA_TYPE_),
-//						new AttributeInfo(ATTR_SCALE_BAR_LONG_INTERVAL, PREDICATE_SCALE_BAR_ATTR_SMALL_INTERVAL, W3CXSConstants.DATA_TYPE_)));
-//		putElementReader(new XMLElementReaderKey(TAG_LEGEND, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
-//		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.END_ELEMENT), resourceEndReader);
+		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.START_ELEMENT), 
+				new XTGFormattedTextElementReader(null, PREDICATE_SCALE_BAR, null, false,
+						new AttributeInfo(ATTR_TEXT_COLOR, PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_TEXT_HEIGHT, PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_TEXT_STYLE, PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_FONT_FAMILY, PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_DECIMAL_FORMAT, PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_LANG, PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_COUNTRY, PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LOCALE_VARIANT, PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING),
+						new AttributeInfo(ATTR_LINE_COLOR, PREDICATE_LINE_COLOR, DATA_TYPE_COLOR),
+						new AttributeInfo(ATTR_LINE_WIDTH, PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_SCALE_BAR_ALIGN, PREDICATE_SCALE_BAR_ALIGN, DATA_TYPE_SCALE_BAR_ALIGNMENT), 
+						new AttributeInfo(ATTR_SCALE_BAR_DISTANCE, PREDICATE_SCALE_BAR_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_SCALE_BAR_START, PREDICATE_SCALE_BAR_START_LEFT, W3CXSConstants.DATA_TYPE_BOOLEAN),
+						new AttributeInfo(ATTR_SCALE_BAR_INCREASE, PREDICATE_SCALE_BAR_INCREASING, W3CXSConstants.DATA_TYPE_BOOLEAN),
+						new AttributeInfo(ATTR_SCALE_BAR_WIDTH, PREDICATE_WIDTH, DATA_TYPE_SCALE_VALUE),
+						new AttributeInfo(ATTR_SCALE_BAR_HEIGHT, PREDICATE_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT),
+						new AttributeInfo(ATTR_SCALE_BAR_LONG_INTERVAL, PREDICATE_SCALE_BAR_LONG_INTERVAL, W3CXSConstants.DATA_TYPE_INT),
+						new AttributeInfo(ATTR_SCALE_BAR_SMALL_INTERVAL, PREDICATE_SCALE_BAR_SMALL_INTERVAL, W3CXSConstants.DATA_TYPE_FLOAT)));
+		putElementReader(new XMLElementReaderKey(TAG_LEGEND, null, XMLStreamConstants.CHARACTERS), new XMLNoCharactersAllowedElementReader());
+		putElementReader(new XMLElementReaderKey(TAG_TREE, TAG_SCALE_BAR, XMLStreamConstants.END_ELEMENT), resourceEndReader);
 				
 		// Comments
 		putElementReader(new XMLElementReaderKey(null, null, XMLStreamConstants.COMMENT), new CommentElementReader<XMLReaderStreamDataProvider<XTGEventReader>>());

@@ -45,11 +45,11 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * This element reader is used to process the contents of XTG tags that also contained information about 
+ * This element reader is used to process the contents of <i>XTG</i> tags that also contain information about 
  * the intended formatting (e.g. textual or as a decimal value).
  * 
  * @author Sarah Wiechers
- *
+ * @author Ben St&ouml;ver
  */
 public class XTGFormattedTextElementReader extends XMLStartElementReader implements XTGConstants {
 	public XTGFormattedTextElementReader(QName literalPredicate, QName resourcePredicate, URIOrStringIdentifier datatype,
@@ -82,23 +82,25 @@ public class XTGFormattedTextElementReader extends XMLStartElementReader impleme
 				new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
 						new URIOrStringIdentifier(null, getResourcePredicate()), null, null));
 		
-		streamDataProvider.getCurrentEventCollection().add(
-				new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
-				new URIOrStringIdentifier(null, PREDICATE_TEXT), datatype, LiteralContentSequenceType.SIMPLE));
-		
-		if ((value != null) && !value.isEmpty() && isDecimal) {
-			try {
-				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Double.parseDouble(value), value));				
+		if (value != null) {  //TODO Wird isDecimal auch irgendwo ausgegeben?
+			streamDataProvider.getCurrentEventCollection().add(
+					new LiteralMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + streamDataProvider.getIDManager().createNewID(), null, 
+					new URIOrStringIdentifier(null, PREDICATE_TEXT), datatype, LiteralContentSequenceType.SIMPLE));
+			
+			if (isDecimal) {
+				try {
+					streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(Double.parseDouble(value), value));				
+				}
+				catch (NumberFormatException e) {
+					throw new JPhyloIOReaderException("The value \"" + value + "\" was marked as decimal, but could not be parsed.", event.getLocation());
+				}
 			}
-			catch (NumberFormatException e) {
-				throw new JPhyloIOReaderException("The value \"" + value + "\" was marked as decimal, but could not be parsed.", event.getLocation());
+			else {			
+				streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(value, value));			
 			}
+			
+			streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		}
-		else {			
-			streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(value, value));			
-		}
-		
-		streamDataProvider.getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		readAttributes(streamDataProvider, element, "", getAttributeInformationMap());
 	}

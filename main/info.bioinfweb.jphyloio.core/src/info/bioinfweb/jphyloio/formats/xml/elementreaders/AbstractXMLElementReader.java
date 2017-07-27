@@ -79,31 +79,25 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 					Object objectValue = null;					
 
 					if (datatype != null) {
-						if (datatype.equals(XTGConstants.DATA_TYPE_COLOR)) {
+						ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory()
+								.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
+						
+						if (translator != null) {
+							try {
+								objectValue = translator.representationToJava(attributeValue, streamDataProvider);
+							}
+							catch (InvalidObjectSourceDataException e) {
+								throw new JPhyloIOReaderException("The content of the XML attribute \"" + attribute + "\" (\"" + attributeValue + 
+										"\") could not be parsed as class " + translator.getObjectClass().getSimpleName() + ".", 
+										element.getLocation());
+							}
+						}
+						else if (datatype.equals(XTGConstants.DATA_TYPE_COLOR)) {  //TODO Handle this after checking for a translator or do not handle at all. (TG translators could be used instead.)
 							try {
 								objectValue = Color.decode(attributeValue);
 							}
 							catch (IllegalArgumentException f) {}
 						}
-						//TODO Handle new custom XTG types here or find different strategy, when legends are supported.
-						//     => Another map or adding respective translators to the default map would be better, because otherwise custom reader cannot use custom data types.
-						else {
-							ObjectTranslator<?> translator = streamDataProvider.getParameters().getObjectTranslatorFactory()
-									.getDefaultTranslatorWithPossiblyInvalidNamespace(datatype);
-							
-							//TODO Check if no object translator was found. (Otherwise a NullPointerException will be thrown here.) It would be useful to debug custom readers defining custom data types.
-							//     Should the string value be used or should an exception be thrown?
-							try {
-								objectValue = translator.representationToJava(attributeValue, streamDataProvider);
-							}
-							catch (InvalidObjectSourceDataException e) {
-								throw new JPhyloIOReaderException("The content of this tag could not be parsed to class " + translator.getObjectClass().getSimpleName() + ".", element.getLocation());
-							}
-						}
-					}
-					
-					if (objectValue == null) {
-						objectValue = attributeValue;
 					}
 					
 					streamDataProvider.getCurrentEventCollection().add(
@@ -111,7 +105,7 @@ public abstract class AbstractXMLElementReader<P extends XMLReaderStreamDataProv
 							new URIOrStringIdentifier(null, attributeInformationMap.get(attribute).getPredicate()), 
 							new URIOrStringIdentifier(null, attributeInformationMap.get(attribute).getDatatype()), LiteralContentSequenceType.SIMPLE));
 					
-					if ((attributeValue != null)) {
+					if (attributeValue != null) {
 						streamDataProvider.getCurrentEventCollection().add(new LiteralMetadataContentEvent(objectValue, attributeValue));
 					}
 							

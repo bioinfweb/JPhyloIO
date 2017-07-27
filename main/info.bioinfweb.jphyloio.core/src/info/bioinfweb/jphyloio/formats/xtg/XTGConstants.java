@@ -267,10 +267,10 @@ public interface XTGConstants {
 	public static final QName PREDICATE_LEGEND = new QName(XTG_PREDICATE_NAMESPACE, "Legend");
 	public static final QName PREDICATE_LEGEND_ANCHOR_0 = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Anchor0");
 	public static final QName PREDICATE_LEGEND_ANCHOR_1 = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Anchor1");
-	public static final QName PREDICATE_LEGEND_LEGEND_POSITION = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendPosition");
+	public static final QName PREDICATE_LEGEND_POSITION = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendPosition");
 	public static final QName PREDICATE_LEGEND_MIN_TREE_DISTANCE = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "MinTreeDistance");
-	public static final QName PREDICATE_LEGEND_LEGEND_SPACING = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendSpacing");
-	public static final QName PREDICATE_LEGEND_LEGEND_STYLE = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendStyle");
+	public static final QName PREDICATE_LEGEND_SPACING = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendSpacing");
+	public static final QName PREDICATE_LEGEND_STYLE = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "LegendStyle");
 	public static final QName PREDICATE_LEGEND_ORIENTATION = new QName(XTG_PREDICATE_NAMESPACE, "Legend" + ReadWriteConstants.PREDICATE_PART_SEPERATOR + "Orientation");
 	public static final QName PREDICATE_LEGEND_MARGIN = new QName(XTG_PREDICATE_NAMESPACE, "LegendMargin");
 	
