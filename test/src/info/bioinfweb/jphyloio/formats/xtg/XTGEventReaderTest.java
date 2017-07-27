@@ -21,7 +21,6 @@ package info.bioinfweb.jphyloio.formats.xtg;
 
 import static info.bioinfweb.jphyloio.test.JPhyloIOTestTools.*;
 import static org.junit.Assert.*;
-
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
@@ -415,6 +414,12 @@ public class XTGEventReaderTest implements XTGConstants {
 					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PIE_CHART_LABEL_NULL_LINES), 
 					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_PIE_CHART_LABEL_SHOW_TITLE), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
+			assertLiteralMetaEvent(PREDICATE_PIE_CHART_LABEL_CAPTION_TYPE, DATA_TYPE_PIE_CHART_LABEL_CAPTION_TYPE, 
+					"NONE", null, null, true, reader);
+			assertLiteralMetaEvent(PREDICATE_PIE_CHART_LABEL_CAPTION_LINK_TYPE, DATA_TYPE_PIE_CHART_LABEL_CAPTION_LINK_TYPE, 
+					"STRAIGHT_LINES", null, null, true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_COLUMN_ID), 
 					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "ID1", null, "ID1", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LABEL_ABOVE), 
@@ -482,12 +487,11 @@ public class XTGEventReaderTest implements XTGConstants {
 			
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINE_COLOR), 
 					new URIOrStringIdentifier(null, DATA_TYPE_COLOR), "#FF9900", null, Color.decode("#FF9900"), true, reader);
-			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINE_WIDTH), 
-					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.3", null, new Float(0.3), true, reader);
+			assertLiteralMetaEvent(PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT, "0.3", null, new Float(0.3), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_WIDTH), 
-					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "5.0", null, new Float(5.0), true, reader);
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "3.0", null, new Float(3.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_HEIGHT), 
-					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "5.0", null, new Float(5.0), true, reader);
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "3.0", null, new Float(3.0), true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ICON_LABEL_ICON), 
 					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), "Star", null, "Star", true, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_ICON_LABEL_ICON_FILLED), 
@@ -516,26 +520,61 @@ public class XTGEventReaderTest implements XTGConstants {
 			
 			assertEndEvent(EventContentType.EDGE, reader);				
 			
-//				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_TEXT_COLOR), null, "#000000", null, "#000000", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_TEXT_HEIGHT), null, "4.0", null, "4.0", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_TEXT_STYLE), null, "", null, "", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LOCALE_LANG), null, "en", null, "en", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LOCALE_COUNTRY), null, "", null, "", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LOCALE_VARIANT), null, "", null, "", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LINE_COLOR), null, "#000000", null, "#000000", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LINE_WIDTH), null, "0.3", null, "0.3", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ALIGN), null, "left", null, "left", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_TREE_DISTANCE), null, "2.0", null, "2.0", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_WIDTH), null, "20.0mm", null, "20.0mm", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_HEIGHT), null, "3.0", null, "3.0", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_SMALL_INTERVAL), null, "10.0", null, "10.0", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LONG_INTERVAL), null, "10", null, "10", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_START_LEFT), null, "true", null, "true", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_INCREASING), null, "true", null, "true", true, reader);				
-//				assertEndEvent(EventContentType.RESOURCE_META, reader);
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
+			assertLiteralMetaEvent(PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR, "#000000", null, Color.BLACK, true, reader);
+			assertLiteralMetaEvent(PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT, "4.0", null, new Float(4), true, reader);
+			assertLiteralMetaEvent(PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING, "Arial", null, "Arial", true, reader);
+			assertLiteralMetaEvent(PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING, "#0.0#####", null, "#0.0#####", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING, "en", null, "en", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LINE_COLOR, DATA_TYPE_COLOR, "#000000", null, Color.BLACK, true, reader);
+			assertLiteralMetaEvent(PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT, "0.3", null, new Float(0.3), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_ALIGN, DATA_TYPE_SCALE_BAR_ALIGNMENT, "left", null, null, true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT, "3.0", null, new Float(3.0), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_START_LEFT, W3CXSConstants.DATA_TYPE_BOOLEAN, "true", null, new Boolean(true), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_INCREASING, W3CXSConstants.DATA_TYPE_BOOLEAN, "true", null, new Boolean(true), true, reader);				
+			assertLiteralMetaEvent(PREDICATE_WIDTH, DATA_TYPE_SCALE_VALUE, "20.0mm", null, null, true, reader);  // Object value is null as long as not translator is defined.
+			assertLiteralMetaEvent(PREDICATE_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT, "3.0", null, new Float(3), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_LONG_INTERVAL, W3CXSConstants.DATA_TYPE_INT, "10", null, new Integer(10), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_SMALL_INTERVAL, W3CXSConstants.DATA_TYPE_FLOAT, "10.0", null, new Float(10), true, reader);
+			assertEndEvent(EventContentType.RESOURCE_META, reader);			
+
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEGEND), null, null, false, reader);				
+			assertLiteralMetaEvent(PREDICATE_TEXT, W3CXSConstants.DATA_TYPE_STRING, "L", null, "L", true, reader);
+			//assertLiteralMetaEvent(PREDICATE_IS_DECIMAL, W3CXSConstants.DATA_TYPE_BOOLEAN, "false", null, new Boolean(false), true, reader);
+			assertLiteralMetaEvent(PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR, "#000000", null, Color.BLACK, true, reader);
+			assertLiteralMetaEvent(PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT, "6.0", null, new Float(6), true, reader);
+			assertLiteralMetaEvent(PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING, "Arial", null, "Arial", true, reader);
+			assertLiteralMetaEvent(PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING, "#0.0#####", null, "#0.0#####", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING, "en", null, "en", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LINE_COLOR, DATA_TYPE_COLOR, "#000000", null, Color.BLACK, true, reader);
+			assertLiteralMetaEvent(PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT, "0.3", null, new Float(0.3), true, reader);
+			assertLiteralMetaEvent(PREDICATE_LEGEND_POSITION, W3CXSConstants.DATA_TYPE_INT, "0", null, new Integer(0), true, reader);
+			assertLiteralMetaEvent(PREDICATE_LEGEND_MIN_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT, "0.0", null, new Float(0), true, reader);
+			assertLiteralMetaEvent(PREDICATE_LEGEND_SPACING, W3CXSConstants.DATA_TYPE_FLOAT, "1.0", null, new Float(1), true, reader);
+			assertLiteralMetaEvent(PREDICATE_LEGEND_STYLE, DATA_TYPE_LEGEND_STYLE, "bracket", null, null, true, reader);  //TODO In TG-NeXML this is in capital letters. Would the object translator work here anyway?
+			assertLiteralMetaEvent(PREDICATE_LEGEND_ORIENTATION, DATA_TYPE_TEXT_ORIENTATION, "horizontal", null, null, true, reader);  //TODO In TG-NeXML this is in capital letters. Would the object translator work here anyway?
+			assertLiteralMetaEvent(PREDICATE_EDGE_RADIUS, W3CXSConstants.DATA_TYPE_FLOAT, "1.0", null, new Float(1.0), true, reader);
+			assertLiteralMetaEvent(PREDICATE_LEGEND_ANCHOR_0, W3CXSConstants.DATA_TYPE_STRING, "rggkem0ajy", null, "rggkem0ajy", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LEGEND_ANCHOR_1, W3CXSConstants.DATA_TYPE_STRING, "iq80ulayeq", null, "iq80ulayeq", true, reader);
+			
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LEGEND_MARGIN), null, null, false, reader);				
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_LEFT), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_TOP), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.0", null, new Float(0), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_RIGHT), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "1.0", null, new Float(1), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_BOTTOM), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.0", null, new Float(0), true, reader);				
+			assertEndEvent(EventContentType.RESOURCE_META, reader);
+
+			assertEndEvent(EventContentType.RESOURCE_META, reader);			
 			
 			assertEdgeEvent(null, node1, 2.0, reader);
 			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINE_COLOR), 
@@ -943,6 +982,27 @@ public class XTGEventReaderTest implements XTGConstants {
 						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "0.0", null, new Float(0.0), true, reader);
 				assertEndEvent(EventContentType.EDGE, reader);
 				
+				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
+				assertLiteralMetaEvent(PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR, "#000000", null, Color.BLACK, true, reader);
+				assertLiteralMetaEvent(PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT, "4.0", null, new Float(4), true, reader);
+				assertLiteralMetaEvent(PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+				assertLiteralMetaEvent(PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING, "Arial", null, "Arial", true, reader);
+				assertLiteralMetaEvent(PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING, "#0.0#####", null, "#0.0#####", true, reader);
+				assertLiteralMetaEvent(PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING, "en", null, "en", true, reader);
+				assertLiteralMetaEvent(PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+				assertLiteralMetaEvent(PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+				assertLiteralMetaEvent(PREDICATE_LINE_COLOR, DATA_TYPE_COLOR, "#000000", null, Color.BLACK, true, reader);
+				assertLiteralMetaEvent(PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT, "0.3", null, new Float(0.3), true, reader);
+				assertLiteralMetaEvent(PREDICATE_SCALE_BAR_ALIGN, DATA_TYPE_SCALE_BAR_ALIGNMENT, "left", null, null, true, reader);
+				assertLiteralMetaEvent(PREDICATE_SCALE_BAR_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT, "2.0", null, new Float(2.0), true, reader);
+				assertLiteralMetaEvent(PREDICATE_SCALE_BAR_START_LEFT, W3CXSConstants.DATA_TYPE_BOOLEAN, "true", null, new Boolean(true), true, reader);
+				assertLiteralMetaEvent(PREDICATE_SCALE_BAR_INCREASING, W3CXSConstants.DATA_TYPE_BOOLEAN, "true", null, new Boolean(true), true, reader);				
+				assertLiteralMetaEvent(PREDICATE_WIDTH, DATA_TYPE_SCALE_VALUE, "20.0mm", null, null, true, reader);  // Object value is null as long as not translator is defined.
+				assertLiteralMetaEvent(PREDICATE_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT, "3.0", null, new Float(3), true, reader);
+				assertLiteralMetaEvent(PREDICATE_SCALE_BAR_LONG_INTERVAL, W3CXSConstants.DATA_TYPE_INT, "10", null, new Integer(10), true, reader);
+				assertLiteralMetaEvent(PREDICATE_SCALE_BAR_SMALL_INTERVAL, W3CXSConstants.DATA_TYPE_FLOAT, "10.0", null, new Float(10), true, reader);
+				assertEndEvent(EventContentType.RESOURCE_META, reader);			
+
 				assertEdgeEvent(null, node1, 3.0, reader);
 				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_LINE_COLOR), 
 						new URIOrStringIdentifier(null, DATA_TYPE_COLOR), "#000000", null, Color.decode("#000000"), true, reader);
@@ -978,99 +1038,91 @@ public class XTGEventReaderTest implements XTGConstants {
 	
 	
 	@Test
-	public void testReadingEmptyDocument() {
+	public void testReadingEmptyDocument() throws Exception {
+		XTGEventReader reader = new XTGEventReader(new File("data/XTG/EmptyDocument.xml"), new ReadWriteParameterMap());
+		
 		try {
-			XTGEventReader reader = new XTGEventReader(new File("data/XTG/EmptyDocument.xml"), new ReadWriteParameterMap());
-			
-			try {
-				assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_BG_COLOR), 
-						new URIOrStringIdentifier(null, DATA_TYPE_COLOR), "#FFFFFF", null, Color.decode("#FFFFFF"), true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_BRANCH_LENGTH_SCALE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.1", null, 0.1, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_SHOW_SCALE_BAR), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ALIGN_TO_SUBTREE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_POSITION_LABELS_TO_LEFT), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);				
-				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DOCUMENT_MARGIN), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_LEFT), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_TOP), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_RIGHT), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_BOTTOM), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);				
-				assertEndEvent(EventContentType.RESOURCE_META, reader);
-				assertEndEvent(EventContentType.RESOURCE_META, reader);
-				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS), null, null, false, reader);				
-				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_NAME), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
-						"info.bioinfweb.treegraph.nodeName", null, "info.bioinfweb.treegraph.nodeName", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_PURPOSE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
-						VALUE_LEAVES_ADAPTER, null, VALUE_LEAVES_ADAPTER, true, reader);			
-				assertEndEvent(EventContentType.RESOURCE_META, reader);
-				
-				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER), null, null, false, reader);				
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_NAME), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
-						"info.bioinfweb.treegraph.voidNodeBranchData", null, "info.bioinfweb.treegraph.voidNodeBranchData", true, reader);
-				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_PURPOSE), 
-						new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
-						VALUE_SUPPORT_VALUES_ADAPTER, null, VALUE_SUPPORT_VALUES_ADAPTER, true, reader);			
-				assertEndEvent(EventContentType.RESOURCE_META, reader);
-	
-				assertEndEvent(EventContentType.RESOURCE_META, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
-				
-				assertLinkedLabeledIDEvent(EventContentType.TREE, null, null, null, reader);
-				
-//				assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_TEXT_COLOR), null, "#000000", null, "#000000", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_TEXT_HEIGHT), null, "4.0", null, "4.0", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_TEXT_STYLE), null, null, null, null, true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_FONT_FAMILY), null, "Arial", null, "Arial", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_DECIMAL_FORMAT), null, "#0.0#####", null, "#0.0#####", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LOCALE_LANG), null, "en", null, "en", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LOCALE_COUNTRY), null, null, null, null, true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LOCALE_VARIANT), null, null, null, null, true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LINE_COLOR), null, "#000000", null, "#000000", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LINE_WIDTH), null, "0.3", null, "0.3", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_ALIGN), null, "left", null, "left", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_TREE_DISTANCE), null, "2.0", null, "2.0", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_WIDTH), null, "20.0mm", null, "20.0mm", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_HEIGHT), null, "3.0", null, "3.0", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_SMALL_INTERVAL), null, "10.0", null, "10.0", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_LONG_INTERVAL), null, "10", null, "10", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_START_LEFT), null, "true", null, "true", true, reader);
-//				assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR_INCREASING), null, "true", null, "true", true, reader);				
-//				assertEndEvent(EventContentType.RESOURCE_META, reader);			
-				
-				assertEndEvent(EventContentType.TREE, reader);
-				
-				assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);				
-				
-				assertEndEvent(EventContentType.DOCUMENT, reader);
-				
-				assertFalse(reader.hasNextEvent());
-			}
-			finally {
-				reader.close();
-			}			
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS), null, null, false, reader);				
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_BG_COLOR), 
+					new URIOrStringIdentifier(null, DATA_TYPE_COLOR), "#FFFFFF", null, Color.decode("#FFFFFF"), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_BRANCH_LENGTH_SCALE), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_DOUBLE), "0.1", null, 0.1, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_SHOW_SCALE_BAR), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "false", null, false, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_ALIGN_TO_SUBTREE), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_GLOBAL_FORMATS_POSITION_LABELS_TO_LEFT), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_BOOLEAN), "true", null, true, true, reader);				
+			
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_DOCUMENT_MARGIN), null, null, false, reader);				
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_LEFT), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_TOP), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_RIGHT), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_MARGIN_BOTTOM), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_FLOAT), "2.0", null, new Float(2.0), true, reader);				
+			assertEndEvent(EventContentType.RESOURCE_META, reader);
+			assertEndEvent(EventContentType.RESOURCE_META, reader);
+			
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS), null, null, false, reader);				
+			
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER), null, null, false, reader);				
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_NAME), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+					"info.bioinfweb.treegraph.nodeName", null, "info.bioinfweb.treegraph.nodeName", true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_PURPOSE), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+					VALUE_LEAVES_ADAPTER, null, VALUE_LEAVES_ADAPTER, true, reader);			
+			assertEndEvent(EventContentType.RESOURCE_META, reader);
+			
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER), null, null, false, reader);				
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_NAME), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+					"info.bioinfweb.treegraph.voidNodeBranchData", null, "info.bioinfweb.treegraph.voidNodeBranchData", true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier(null, PREDICATE_NODE_BRANCH_DATA_ADAPTERS_ADAPTER_PURPOSE), 
+					new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), 
+					VALUE_SUPPORT_VALUES_ADAPTER, null, VALUE_SUPPORT_VALUES_ADAPTER, true, reader);			
+			assertEndEvent(EventContentType.RESOURCE_META, reader);
+
+			assertEndEvent(EventContentType.RESOURCE_META, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, null, reader);
+			assertLinkedLabeledIDEvent(EventContentType.TREE, null, null, null, reader);
+			
+			assertResourceMetaEvent(new URIOrStringIdentifier(null, PREDICATE_SCALE_BAR), null, null, false, reader);				
+			assertLiteralMetaEvent(PREDICATE_TEXT_COLOR, DATA_TYPE_COLOR, "#000000", null, Color.BLACK, true, reader);
+			assertLiteralMetaEvent(PREDICATE_TEXT_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT, "4.0", null, new Float(4), true, reader);
+			assertLiteralMetaEvent(PREDICATE_TEXT_STYLE, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_FONT_FAMILY, W3CXSConstants.DATA_TYPE_STRING, "Arial", null, "Arial", true, reader);
+			assertLiteralMetaEvent(PREDICATE_DECIMAL_FORMAT, W3CXSConstants.DATA_TYPE_STRING, "#0.0#####", null, "#0.0#####", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_LANG, W3CXSConstants.DATA_TYPE_STRING, "en", null, "en", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_COUNTRY, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LOCALE_VARIANT, W3CXSConstants.DATA_TYPE_STRING, "", null, "", true, reader);
+			assertLiteralMetaEvent(PREDICATE_LINE_COLOR, DATA_TYPE_COLOR, "#000000", null, Color.BLACK, true, reader);
+			assertLiteralMetaEvent(PREDICATE_LINE_WIDTH, W3CXSConstants.DATA_TYPE_FLOAT, "0.3", null, new Float(0.3), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_ALIGN, DATA_TYPE_SCALE_BAR_ALIGNMENT, "left", null, null, true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_TREE_DISTANCE, W3CXSConstants.DATA_TYPE_FLOAT, "2.0", null, new Float(2.0), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_START_LEFT, W3CXSConstants.DATA_TYPE_BOOLEAN, "true", null, new Boolean(true), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_INCREASING, W3CXSConstants.DATA_TYPE_BOOLEAN, "true", null, new Boolean(true), true, reader);				
+			assertLiteralMetaEvent(PREDICATE_WIDTH, DATA_TYPE_SCALE_VALUE, "20.0mm", null, null, true, reader);  // Object value is null as long as not translator is defined.
+			assertLiteralMetaEvent(PREDICATE_HEIGHT, W3CXSConstants.DATA_TYPE_FLOAT, "3.0", null, new Float(3), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_LONG_INTERVAL, W3CXSConstants.DATA_TYPE_INT, "10", null, new Integer(10), true, reader);
+			assertLiteralMetaEvent(PREDICATE_SCALE_BAR_SMALL_INTERVAL, W3CXSConstants.DATA_TYPE_FLOAT, "10.0", null, new Float(10), true, reader);
+			assertEndEvent(EventContentType.RESOURCE_META, reader);			
+			
+			assertEndEvent(EventContentType.TREE, reader);
+			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);				
+			
+			assertEndEvent(EventContentType.DOCUMENT, reader);
+			
+			assertFalse(reader.hasNextEvent());
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
-		}
+		finally {
+			reader.close();
+		}			
 	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TreegraphDocument xmlns="http://bioinfweb.info/xmlns/xtg"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://bioinfweb.info/xmlns/xtg http://bioinfweb.info/xmlns/xtg/1.4.xsd">
+	xsi:schemaLocation="http://bioinfweb.info/xmlns/xtg http://bioinfweb.info/xmlns/xtg/1.5.xsd">
 	<GlobalFormats BgColor="#FFFFFF" BranchLengthScale="0.1"
 		ShowScaleBar="true" ShowRooted="false" AlignToSubtree="true"
 		LabelsLeft="true">
@@ -28,13 +28,19 @@
 				<LeafMargin Left="1.0" Top="0.3" Right="1.0" Bottom="0.3"></LeafMargin>
 				<Branch LineColor="#000000" LineWidth="0.3" ConstantWidth="false"
 					MinLength="4.0" MinSpaceAbove="0.0" MinSpaceBelow="0.0">
-					<PieChartLabel LineColor="#000000" LineWidth="0.3"
-						Width="3.0" Height="3.0" InternalLines="true" NullLines="false"
-						Id="ID1" Above="true" LineNo="0" LinePos="0.0">
+					<PieChartLabel Text="Heading" IsDecimal="false"
+						TextColor="#000000" TextHeight="6.0" TextStyle="" FontFamily="Arial"
+						DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+						LocaleVariant="" LineColor="#000000" LineWidth="0.3" Width="3.0"
+						Height="3.0" InternalLines="true" NullLines="false" ShowTitle="true"
+						CaptionType="NONE" CaptionLinkType="STRAIGHT_LINES" Id="ID1"
+						Above="true" LineNo="0" LinePos="0.0">
 						<LabelMargin Left="1.0" Top="1.0" Right="1.0" Bottom="1.0"></LabelMargin>
-						<DataIds>
-							<DataId PieColor="#0000FF">ID2</DataId>
-							<DataId PieColor="#FF0000">ID3</DataId>
+						<DataIds TextColor="#000000" TextStyle="" FontFamily="Arial"
+							DecimalFormat="#0.0#####" LocaleLang="en" LocaleCountry=""
+							LocaleVariant="">
+							<DataId PieColor="#0000FF" PieCaption="">ID2</DataId>
+							<DataId PieColor="#FF0000" PieCaption="">ID3</DataId>
 						</DataIds>
 					</PieChartLabel>
 					<InvisibleData Id="ID3" Text="18.3" IsDecimal="true"></InvisibleData>
@@ -74,8 +80,8 @@
 				<Branch Length="7.0" LineColor="#000000" LineWidth="0.3"
 					ConstantWidth="false" MinLength="4.0" MinSpaceAbove="0.0"
 					MinSpaceBelow="0.0">
-					<IconLabel LineColor="#FF9900" LineWidth="0.3" Width="5.0"
-						Height="5.0" Icon="Star" IconFilled="false" Id="ID1" Above="false"
+					<IconLabel LineColor="#FF9900" LineWidth="0.3" Width="3.0"
+						Height="3.0" Icon="Star" IconFilled="false" Id="ID1" Above="false"
 						LineNo="0" LinePos="0.0">
 						<LabelMargin Left="1.0" Top="1.0" Right="1.0" Bottom="1.0"></LabelMargin>
 					</IconLabel>
