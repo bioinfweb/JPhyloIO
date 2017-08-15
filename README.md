@@ -19,7 +19,7 @@ Application developers are able to implement format-independent data processing 
 
 ## Source code
 
-This *GitHub* repository in a synchronized mirror of the [master repository at bioinfweb](http://bioinfweb.info/Code/sventon/repos/JPhyloIO/list/). Feedback and pull requests are welcome. Synchronizations was made possible by [SubGit](https://subgit.com/).
+This *GitHub* repository in a synchronized mirror of the [master repository at bioinfweb](http://bioinfweb.info/Code/sventon/repos/JPhyloIO/list/). Feedback and pull requests are welcome. Synchronization was made possible by [SubGit](https://subgit.com/).
 
 ## License
 
