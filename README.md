@@ -17,6 +17,10 @@ Application developers are able to implement format-independent data processing 
 
 *JPhyloIO* is distributed under [LGPL](http://bioinfweb.info/JPhyloIO/License/LGPL). More information can be found at http://bioinfweb.info/JPhyloIO/.
 
+## Getting started
+
+We have several [tutorials](http://r.bioinfweb.info/JPIODemo) available that show how to use *JPhyloIO* for reading and writing phylogentic data step by step. Additionally the [general documentation](http://bioinfweb.info/JPhyloIO/Documentation) provides and overview and contains a detailed [JavaDoc](http://bioinfweb.info/JPhyloIO/Documentation/API/Latest/). If you have further questions, feel free to contact [@BenStoever](https://github.com/BenStoever) at stoever@bioinfweb.info.
+
 ## Source code
 
 This *GitHub* repository in a synchronized mirror of the [master repository at bioinfweb](http://bioinfweb.info/Code/sventon/repos/JPhyloIO/list/). Feedback and pull requests are welcome. Synchronization was made possible by [SubGit](https://subgit.com/).
