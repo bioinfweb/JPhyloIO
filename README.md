@@ -10,8 +10,8 @@ JPhyloIO is an open source *Java* library for reading and writing phylogenetic f
 * *Phylip*
 * *Extended Phylip*
 * *MEGA* (including different types character set definitions, reading only)
-* *PDE* (the format of the alignment editor [PhyDE](http://phyde.de/), reading only)
-* *XTG* (the format of the phylogenetic tree editor [TreeGraph 2](http://treegraph.bioinfweb.info/), reading only)
+* *PDE* (the format of the alignment editor [*PhyDE*](http://phyde.de/), reading only)
+* *XTG* (the format of the phylogenetic tree editor [*TreeGraph 2*](http://treegraph.bioinfweb.info/), reading only)
 
 Application developers are able to implement format-independent data processing by including event based readers from *JPhyloIO* via the abstract strategy pattern. All readers in *JPhyloIO* are designed to deal with large amounts of data (alignments with many and/or very long sequences, large trees) without using a great amount of resources (CPU or RAM).
 
@@ -23,7 +23,7 @@ We have several [tutorials](http://r.bioinfweb.info/JPIODemo) available that sho
 
 ## Source code
 
-This *GitHub* repository in a synchronized mirror of the [master repository at bioinfweb](http://bioinfweb.info/Code/sventon/repos/JPhyloIO/list/). Feedback and pull requests are welcome. Synchronization was made possible by [SubGit](https://subgit.com/).
+This *GitHub* repository in a synchronized mirror of the [master repository at bioinfweb](http://bioinfweb.info/Code/sventon/repos/JPhyloIO/list/). Feedback and pull requests are welcome. Synchronization was made possible by [*SubGit*](https://subgit.com/).
 
 ## License
 
