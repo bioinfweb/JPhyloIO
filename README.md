@@ -3,7 +3,7 @@
 JPhyloIO is an open source *Java* library for reading and writing phylogenetic file formats. The main aim is to provide a library that allows access to various formats using a single interface, while being independent of the concrete application data model, to achieve maximal flexibility. It supports event based reading and writing of the following alignment and tree formats:
 
 * [*NeXML*](https://github.com/NeXML) including its different types of metadata
-* *Nexus* (including the `TAXA`, `DATA`, `CHARACTERS`, `UNALIGNED`, `TREES` and `SETS` blocks, as well as the `MIXED` data type extension defined by *MrBayes*). In addition a *Nexus* API is offered that allows application developers to easily add support for additional (custom) blocks and commands.
+* *Nexus* (including the `TAXA`, `DATA`, `CHARACTERS`, `UNALIGNED`, `TREES` and `SETS` blocks, as well as the `MIXED` data type extension defined by [*MrBayes*](https://github.com/NBISweden/MrBayes)). In addition a *Nexus* API is offered that allows application developers to easily add support for additional (custom) blocks and commands.
 * *PhyloXML*
 * *FASTA* (including support for *FASTA* comments and column indices)
 * *Newick* tree format
