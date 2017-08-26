@@ -19,7 +19,9 @@ Application developers are able to implement format-independent data processing 
 
 ## Getting started
 
-We have several [tutorials](http://r.bioinfweb.info/JPIODemo) available that show how to use *JPhyloIO* for reading and writing phylogentic data step by step. Additionally the [general documentation](http://bioinfweb.info/JPhyloIO/Documentation) provides and overview and contains a detailed [JavaDoc](http://bioinfweb.info/JPhyloIO/Documentation/API/Latest/). If you have further questions, feel free to contact [@BenStoever](https://github.com/BenStoever) at stoever@bioinfweb.info.
+We have several [tutorials](http://r.bioinfweb.info/JPIODemo) available that show how to use *JPhyloIO* for reading and writing phylogentic data step by step. Additionally the [general documentation](http://bioinfweb.info/JPhyloIO/Documentation) provides and overview and contains a detailed [JavaDoc](http://bioinfweb.info/JPhyloIO/Documentation/API/Latest/).
+
+If you have further questions, feel free to ask a question on our [ResearchGate project page](http://r.bioinfweb.info/RGJPhyloIO) or contact [@BenStoever](https://github.com/BenStoever) at stoever@bioinfweb.info.
 
 ## Source code
 
