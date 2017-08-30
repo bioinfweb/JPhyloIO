@@ -29,7 +29,9 @@ This *GitHub* repository in a synchronized mirror of the [master repository at b
 
 ## License
 
-The latest versions of *JPhyloIO* are distrubuted under [GNU General Lesser Public License Version 3](http://bioinfweb.info/JPhyloIO/License/LGPL).
+The latest versions of *JPhyloIO* are distrubuted under [GNU General Lesser Public License Version 3](http://bioinfweb.info/JPhyloIO/License/LGPL). See [NOTICE.txt](https://github.com/bioinfweb/JPhyloIO/blob/master/main/info.bioinfweb.jphyloio.core/src/NOTICE.txt) fur further details.
+
+This product includes dependencies developed by the [Apache Software Foundation](http://www.apache.org/) distributed under the terms of the [Apache License Version 2.0](https://github.com/bioinfweb/JPhyloIO/blob/master/main/info.bioinfweb.jphyloio.core/src/APACHE-LICENSE.txt).
 
 ## Binary releases
 
