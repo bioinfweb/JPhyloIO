@@ -1,3 +1,0 @@
-<fileset dir="${tempFolder}">
-	<include name="${simpleProjectLabel}.core.jar" />
-</fileset>

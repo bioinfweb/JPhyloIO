@@ -3,8 +3,6 @@
 <!ENTITY libraryReleaseTargets SYSTEM "/srv/bioinfweb/data/ReleaseManager/shared/ant/Library_Release_Targets.xml">
 <!ENTITY additionalClasspathEntries SYSTEM "additional_classpath_entries.xml">
 <!ENTITY javadocLinks SYSTEM "javaDoc_links.xml">
-<!ENTITY binaries SYSTEM "binaries.xml">
-<!ENTITY renameBinaries SYSTEM "rename_binaries.xml">
 <!ENTITY sourcefiles SYSTEM "sourcefiles.xml">
 <!ENTITY libraryJars SYSTEM "library_jars.xml">
 <!ENTITY javadocSourceLocations SYSTEM "javaDoc_sourceLocations.xml">
@@ -23,12 +21,14 @@
 	<property name="webspaceJavaDocFolder" value="${webspaceRootFolder}/PROTECTED/tree/Documentation/API" />
 	<property name="webspaceDownloadFolder" value="${webspaceRootFolder}/Download" />	
 	<property name="svnRepositoryPath" value="https://secure.bioinfweb.info/Code/svn/JPhyloIO/trunk/main/" />
+	<property name="javaVersion" value="1.8" /> 
 	<property name="styleName" value="JPhyloIO" />
 	<property name="dbName" value="biw_JPhyloIO" />
 	<property name="dbUser" value="biw_rm_JPhyloIO" />
 	&dbPassword;
 	<property name="softwareID" value="19" />
 	<property name="containedItems" value="0 1" />
+	<property name="containedModuleItems" value="1" />
 	<property name="singleModuleDownloadTypes" value="1,6" />
 	<property name="completeDownloadTypes" value="4,5" /> 
 	<property name="defaultNewsTextEn" value="A [LINK http://bioinfweb.info/JPhyloIO/Download new version] of our library for reading and writing of phylogenetic file formats through one event-based interface was released." />
