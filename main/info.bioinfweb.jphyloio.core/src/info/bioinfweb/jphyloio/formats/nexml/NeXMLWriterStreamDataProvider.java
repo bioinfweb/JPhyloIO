@@ -63,7 +63,7 @@ public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<N
 	private String undefinedOTUsID;
 	
 	private NeXMLWriterAlignmentInformation currentAlignmentInfo;
-	private Map<String, NeXMLWriterAlignmentInformation> idToAlignmentInfo = new HashMap<String, NeXMLWriterAlignmentInformation>();
+	private Map<String, NeXMLWriterAlignmentInformation> alignmentInfoByIDMap = new HashMap<String, NeXMLWriterAlignmentInformation>();
 	
 	private NeXMLWriterTokenSetInformation currentTokenSetInfo;
 	
@@ -142,8 +142,8 @@ public class NeXMLWriterStreamDataProvider extends XMLWriterStreamDataProvider<N
 	}
 
 
-	public Map<String, NeXMLWriterAlignmentInformation> getIdToAlignmentInfo() {
-		return idToAlignmentInfo;
+	public Map<String, NeXMLWriterAlignmentInformation> getAlignmentInfoByIDMap() {
+		return alignmentInfoByIDMap;
 	}
 
 

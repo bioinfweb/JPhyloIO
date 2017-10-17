@@ -406,7 +406,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 
 
 	private void writeCharactersTag(MatrixDataAdapter alignment) throws IOException, XMLStreamException {
-		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getAlignmentInfoByIDMap().get(alignment.getStartEvent(getParameters()).getID());
 		
 		if (alignmentInfo.isWriteAlignment()) {
 			getXMLWriter().writeStartElement(TAG_CHARACTERS.getLocalPart());
@@ -520,7 +520,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 		
 		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSetDefinitions = alignment.getTokenSets(getParameters());
 		Iterator<String> tokenSetDefinitionIDs = tokenSetDefinitions.getIDIterator(getParameters());		
-		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getAlignmentInfoByIDMap().get(alignment.getStartEvent(getParameters()).getID());
 		
 		if (alignmentInfo.hasTokenDefinitionSet()) {
 			while (tokenSetDefinitionIDs.hasNext()) {
@@ -587,7 +587,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 	
 	
 	private void writeCharacterDefinitionTags(MatrixDataAdapter alignment) throws XMLStreamException, IOException {
-		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getAlignmentInfoByIDMap().get(alignment.getStartEvent(getParameters()).getID());
 		getStreamDataProvider().setIDIndex(0);
 		
 		// Write character definitions from adapter
@@ -653,7 +653,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 	private void writeCharacterSets(MatrixDataAdapter alignment) throws IllegalArgumentException, XMLStreamException, IOException {
 		Iterator<String> characterSetIDs = alignment.getCharacterSets(getParameters()).getIDIterator(getParameters());
 		NeXMLCharacterSetEventReceiver receiver = new NeXMLCharacterSetEventReceiver(getStreamDataProvider(), getParameters());
-		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getAlignmentInfoByIDMap().get(alignment.getStartEvent(getParameters()).getID());
 
 		while (characterSetIDs.hasNext()) {
 			String charSetID = characterSetIDs.next();
@@ -683,7 +683,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 
 	private void writeRowTag(LinkedLabeledIDEvent sequenceEvent, MatrixDataAdapter alignment) throws IOException, XMLStreamException {
 		boolean longTokens = alignment.containsLongTokens(getParameters());
-		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getIdToAlignmentInfo().get(alignment.getStartEvent(getParameters()).getID());
+		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getAlignmentInfoByIDMap().get(alignment.getStartEvent(getParameters()).getID());
 
 		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)
 				|| alignmentInfo.getAlignmentType().equals(CharacterStateSetType.CONTINUOUS)) {
@@ -727,7 +727,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 		getStreamDataProvider().setCurrentAlignmentInfo(new NeXMLWriterAlignmentInformation());		
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();		
 		getStreamDataProvider().addToDocumentIDs(alignmentID);
-		getStreamDataProvider().getIdToAlignmentInfo().put(alignmentID, alignmentInfo);
+		getStreamDataProvider().getAlignmentInfoByIDMap().put(alignmentID, alignmentInfo);
 
 		if (alignment.getStartEvent(getParameters()).getLinkedID() == null) {
 			getStreamDataProvider().setWriteUndefinedOtuList(true);
@@ -848,6 +848,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 
 
 	private void checkTokenSets(MatrixDataAdapter alignment) throws IllegalArgumentException, IOException {
+		System.out.println("checkTokenSets:");
+		
 		NeXMLCollectTokenSetDefinitionDataReceiver receiver;
 		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = alignment.getTokenSets(getParameters());
 		Iterator<String> tokenSetDefinitionIDs = tokenSets.getIDIterator(getParameters());
@@ -867,16 +869,20 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 
 				CharacterStateSetType previousType = alignmentInfo.getTokenSetType();
 				if ((previousType == null) || previousType.equals(CharacterStateSetType.UNKNOWN)) {
+					System.out.println("  setting type");
 					alignmentInfo.setTokenSetType(alignmentType);
+					System.out.println("  1 " + alignmentInfo.getTokenSetType() + " " + alignmentType);
 				}
 				else {
 					if (!previousType.equals(alignmentType)) {
-						throw new JPhyloIOWriterException("Different data types were encountered but only character data of one type (e.g DNA or amino acid) "
-								+ "can be written to a single NeXML characters tag.");
+						throw new JPhyloIOWriterException("Different data types were encountered but only character data of one type "
+								+ "(e.g DNA or amino acid) can be written to a single NeXML characters tag.");
 					}
 				}
 				alignmentInfo.getIDToTokenSetInfoMap().put(tokenSetID, getStreamDataProvider().getCurrentTokenSetInfo());
+				System.out.println("  2 " + alignmentInfo.getTokenSetType());
 				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);
+				System.out.println("  3 " + alignmentInfo.getTokenSetType());
 			}
 		}
 		
@@ -884,6 +890,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 			alignmentInfo.setTokenSetType(CharacterStateSetType.CONTINUOUS);
 		}
 		
+		System.out.println("  4 " + alignmentInfo.getTokenSetType());
 		alignmentInfo.setTokenType(alignmentInfo.getTokenSetType());
 	}	
 

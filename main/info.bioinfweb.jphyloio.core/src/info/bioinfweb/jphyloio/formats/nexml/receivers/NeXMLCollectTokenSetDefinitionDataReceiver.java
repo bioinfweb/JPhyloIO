@@ -54,6 +54,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 
 	public NeXMLCollectTokenSetDefinitionDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
 			ReadWriteParameterMap parameterMap, String tokenSetDefinitionID) {
+		
 		super(streamDataProvider, parameterMap);
 		this.tokenSetDefinitionID = tokenSetDefinitionID;
 	}
@@ -62,6 +63,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		
+		//TODO Add warnings, if the token set is changed
 		switch (alignmentInfo.getTokenSetType()) {
 			case DNA:
 				if (!isDNAToken(event)) {
@@ -110,7 +112,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	private boolean isDNAToken(SingleTokenDefinitionEvent event) {
 		if (event.getTokenName().length() == 1) {
 			char token = event.getTokenName().charAt(0);
-			if (((token != 'U') && SequenceUtils.getNucleotideCharacters().contains(token))) {
+			if (token != 'U') {
 				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {					
 					if (SequenceUtils.isNonAmbiguityNucleotide(token)) {
 						return true;
@@ -129,7 +131,6 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				}				
 			}
 		}
-		
 		return false;
 	}
 
@@ -137,7 +138,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 	private boolean isRNAToken(SingleTokenDefinitionEvent event) {
 		if (event.getTokenName().length() == 1) {
 			char token = event.getTokenName().charAt(0);
-			if (((token != 'T') && SequenceUtils.getNucleotideCharacters().contains(token))) {
+			if (token != 'T') {
 				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
 					if (SequenceUtils.isNonAmbiguityNucleotide(token)) {
 						return true;
@@ -199,12 +200,12 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 
 
 	private boolean isGapChar(SingleTokenDefinitionEvent event) {
-		return (event.getMeaning().equals(CharacterSymbolMeaning.GAP) && event.getTokenName().equals(SequenceUtils.GAP_CHAR));
+		return (event.getMeaning().equals(CharacterSymbolMeaning.GAP) && event.getTokenName().equals(Character.toString(SequenceUtils.GAP_CHAR)));
 	}
 
 
 	private boolean isMissingChar(SingleTokenDefinitionEvent event) {
-		return (event.getMeaning().equals(CharacterSymbolMeaning.MISSING) && event.getTokenName().equals(SequenceUtils.MISSING_DATA_CHAR));
+		return (event.getMeaning().equals(CharacterSymbolMeaning.MISSING) && event.getTokenName().equals(Character.toString(SequenceUtils.MISSING_DATA_CHAR)));
 	}
 
 
