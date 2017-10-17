@@ -59,19 +59,30 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 		this.tokenSetDefinitionID = tokenSetDefinitionID;
 	}
 
+	
+	private void logTokenSetWarning(SingleTokenDefinitionEvent event, CharacterStateSetType specifiedType, 
+			CharacterStateSetType newType) {
+		
+		getLogger().addWarning("Switching from the specified " + specifiedType + " token set to " + newType + 
+				" token (" + event.getLabel() + ", " + event.getTokenType() + ", " + event.getMeaning() + 
+				") set, since a token was encountered that is invalid for a " + specifiedType + 
+				" token set in NeXML or such a token set does not exist in this format.");
+	}
+	
 
 	private void checkSingleTokenDefinition(SingleTokenDefinitionEvent event) throws JPhyloIOWriterException {
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		
-		//TODO Add warnings, if the token set is changed
 		switch (alignmentInfo.getTokenSetType()) {
 			case DNA:
 				if (!isDNAToken(event)) {
 					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isRNAToken(event) && !alignmentInfo.getDefinedTokens().contains("T")) {
 						alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
+						logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.RNA);
 					}
 					else {
 						alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
+						logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DISCRETE);
 					}
 				}
 				break;
@@ -79,25 +90,31 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				if (!isRNAToken(event)) {
 					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isDNAToken(event) && !alignmentInfo.getDefinedTokens().contains("U")) {
 						alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
+						logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DNA);
 					}
 					else {
 						alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
-					}					
+						logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DISCRETE);
+					}
 				}
 				break;
 			case NUCLEOTIDE:
 				if (isDNAToken(event)) {
 					alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
+					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DNA);
 				}
 				else if (isRNAToken(event)) {
 					alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
+					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.RNA);
 				}
 				else {
 					alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
+					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DISCRETE);
 				}
 				break;
 			case AMINO_ACID:
 				if (!isAAToken(event)) {
+					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DISCRETE);
 					alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 				}
 				break;
@@ -114,10 +131,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			char token = event.getTokenName().charAt(0);
 			if (token != 'U') {
 				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {					
-					if (SequenceUtils.isNonAmbiguityNucleotide(token)) {
-						return true;
-					}
-					else if (isMissingChar(event) || isGapChar(event)) {
+					if (SequenceUtils.isNonAmbiguityNucleotide(token) || isMissingChar(event) || isGapChar(event)) {
 						return true;
 					}
 				}
@@ -125,7 +139,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
 						return checkConstituents(event.getConstituents(), SequenceUtils.nucleotideConstituents(token));
 					}
-					else if (isGapChar(event)) {
+					else if (isGapChar(event)) {  //TODO Is the missing character not allowed here? (Is currently the reason, why the demo application does not write DNA sequences.)
 						return true;
 					}
 				}				
@@ -140,10 +154,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			char token = event.getTokenName().charAt(0);
 			if (token != 'T') {
 				if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
-					if (SequenceUtils.isNonAmbiguityNucleotide(token)) {
-						return true;
-					}
-					else if (isMissingChar(event) || isGapChar(event)) {
+					if (SequenceUtils.isNonAmbiguityNucleotide(token) || isMissingChar(event) || isGapChar(event)) {
 						return true;
 					}
 				}
