@@ -139,7 +139,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
 						return checkConstituents(event.getConstituents(), SequenceUtils.nucleotideConstituents(token));
 					}
-					else if (isGapChar(event)) {  //TODO Is the missing character not allowed here? (Is currently the reason, why the demo application does not write DNA sequences.)
+					else if (isGapChar(event) || isMissingChar(event)) {
 						return true;
 					}
 				}				
@@ -162,7 +162,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					if (SequenceUtils.isNucleotideAmbuguityCode(token)) {
 						return checkConstituents(event.getConstituents(), SequenceUtils.rnaConstituents(token));
 					}
-					else if (isGapChar(event)) {
+					else if (isGapChar(event) || isMissingChar(event)) {
 						return true;
 					}
 				}
@@ -177,14 +177,10 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 		String token = event.getTokenName();
 
 		if (event.getTokenType().equals(CharacterSymbolType.ATOMIC_STATE)) {
-			if (SequenceUtils.isNonAmbiguityAminoAcid(token)) {
-				return true;
-			}
-			else if (isMissingChar(event) || isGapChar(event)) {
-				return true;
-			}
-			else if (event.getMeaning().equals(CharacterSymbolMeaning.CHARACTER_STATE) && token.equals(SequenceUtils.STOP_CODON_CHAR)) {
-				return true;
+			if (SequenceUtils.isNonAmbiguityAminoAcid(token) || isMissingChar(event) || isGapChar(event) ||
+				(event.getMeaning().equals(CharacterSymbolMeaning.CHARACTER_STATE) && token.equals(SequenceUtils.STOP_CODON_CHAR))) {
+			
+					return true;
 			}
 		}
 		else if (event.getTokenType().equals(CharacterSymbolType.UNCERTAIN)) {
@@ -201,7 +197,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 					return true;
 				}
 			}
-			else if (isGapChar(event)) {
+			else if (isGapChar(event) || isMissingChar(event)) {
 				return true;
 			}
 		}
@@ -232,7 +228,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 
 
 	private boolean checkConstituents(Collection<String> constituents, String[] expectedConstituents) {
-		if (!constituents.isEmpty()) {
+		if ((constituents != null) && !constituents.isEmpty()) {
 			if (constituents.size() == expectedConstituents.length) {
 				boolean isContained = true;
 				for (int i = 0; i < expectedConstituents.length; i++) {

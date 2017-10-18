@@ -123,7 +123,10 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 					getStreamDataProvider().getWriter().writeAttribute(ATTR_SINGLE_STATE_LINK.getLocalPart(), memberID);
 				}
 				else {
-					throw new InconsistentAdapterDataException("The token \"" + tokenDefinition + "\" was referenced in a token definition but not defined before.");
+					throw new InconsistentAdapterDataException("The token \"" + tokenDefinition + 
+							"\" was referenced in a token definition but not defined before. This may error may be solved by "
+							+ "providing tokens in the correct order (atomic states before uncertain states that reference them "
+							+ "as constituents).");
 				}
 			}
 		}

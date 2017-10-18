@@ -848,8 +848,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 
 
 	private void checkTokenSets(MatrixDataAdapter alignment) throws IllegalArgumentException, IOException {
-		System.out.println("checkTokenSets:");
-		
 		NeXMLCollectTokenSetDefinitionDataReceiver receiver;
 		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSets = alignment.getTokenSets(getParameters());
 		Iterator<String> tokenSetDefinitionIDs = tokenSets.getIDIterator(getParameters());
@@ -869,9 +867,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 
 				CharacterStateSetType previousType = alignmentInfo.getTokenSetType();
 				if ((previousType == null) || previousType.equals(CharacterStateSetType.UNKNOWN)) {
-					System.out.println("  setting type");
 					alignmentInfo.setTokenSetType(alignmentType);
-					System.out.println("  1 " + alignmentInfo.getTokenSetType() + " " + alignmentType);
 				}
 				else {
 					if (!previousType.equals(alignmentType)) {
@@ -880,9 +876,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 					}
 				}
 				alignmentInfo.getIDToTokenSetInfoMap().put(tokenSetID, getStreamDataProvider().getCurrentTokenSetInfo());
-				System.out.println("  2 " + alignmentInfo.getTokenSetType());
 				tokenSets.writeContentData(getParameters(), receiver, tokenSetID);
-				System.out.println("  3 " + alignmentInfo.getTokenSetType());
 			}
 		}
 		
@@ -890,7 +884,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 			alignmentInfo.setTokenSetType(CharacterStateSetType.CONTINUOUS);
 		}
 		
-		System.out.println("  4 " + alignmentInfo.getTokenSetType());
 		alignmentInfo.setTokenType(alignmentInfo.getTokenSetType());
 	}	
 
