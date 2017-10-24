@@ -81,8 +81,6 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 		for (int i = 0; i < SequenceUtils.DNA_CHARS.length(); i++) {  // This is done to have the atomic states at the beginning of the list, although they would anyway be added in the next loop.
 			remainingTokens.add(SequenceUtils.DNA_CHARS.charAt(i));
 		}
-		remainingTokens.add(SequenceUtils.GAP_CHAR);
-		remainingTokens.add(SequenceUtils.MISSING_DATA_CHAR);
 		
 		// Ambiguity codes second: (Otherwise constituent references would be invalid.)
 		for (Character state : SequenceUtils.getNucleotideCharacters()) {
@@ -97,7 +95,8 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 			states.add(Character.toString(SequenceUtils.DNA_CHARS.charAt(i)));
 		}
 
-		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.DNA, states);
+		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.DNA, states, 
+				!tokens.contains(SequenceUtils.GAP_CHAR), !tokens.contains(SequenceUtils.MISSING_DATA_CHAR));
 	}
 
 	
@@ -115,8 +114,6 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 		for (int i = 0; i < SequenceUtils.RNA_CHARS.length(); i++) {
 			remainingTokens.add(SequenceUtils.RNA_CHARS.charAt(i));
 		}
-		remainingTokens.add(SequenceUtils.GAP_CHAR);
-		remainingTokens.add(SequenceUtils.MISSING_DATA_CHAR);
 		
 		// Ambiguity codes second: (Otherwise constituent references would be invalid.)
 		for (Character state : SequenceUtils.getNucleotideCharacters()) {
@@ -131,8 +128,9 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 			states.add(Character.toString(SequenceUtils.RNA_CHARS.charAt(i)));
 		}
 
-		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.RNA, states);
-	}
+		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.RNA, states,
+				!tokens.contains(SequenceUtils.GAP_CHAR), !tokens.contains(SequenceUtils.MISSING_DATA_CHAR));
+		}
 
 
 	/**
@@ -149,8 +147,6 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 		for (Character state : SequenceUtils.getAminoAcidOneLetterCodes(false)) {
 			remainingTokens.add(state);
 		}
-		remainingTokens.add(SequenceUtils.GAP_CHAR);
-		remainingTokens.add(SequenceUtils.MISSING_DATA_CHAR);
 		remainingTokens.add(SequenceUtils.STOP_CODON_CHAR);
 		
 		// Ambiguity codes second: (Otherwise constituent references would be invalid.)
@@ -166,7 +162,8 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 			states.add(Character.toString(state));
 		}
 
-		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.AMINO_ACID, states);
+		writeTokenDefinitionEvents(receiver, remainingTokens, CharacterStateSetType.AMINO_ACID, states,
+				!tokens.contains(SequenceUtils.GAP_CHAR), !tokens.contains(SequenceUtils.MISSING_DATA_CHAR));
 	}
 
 
@@ -182,7 +179,8 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 	 * @throws XMLStreamException
 	 */
 	private void writeTokenDefinitionEvents(NeXMLTokenSetEventReceiver receiver, Set<Character> remainingTokens, 
-			CharacterStateSetType alignmentType, Collection<String> atomicStates) throws IOException, XMLStreamException {
+			CharacterStateSetType alignmentType, Collection<String> atomicStates, boolean addGap, boolean addMissing) 
+			throws IOException, XMLStreamException {
 		
 		//TODO Calling receiver.doAdd() directly instead of receiver.add() seems to be currently working in this method, but is it necessary? Would unwanted side effects occur otherwise or would on the other hand problem occur of BasicEventReceiver.add() gains additional functionality in the future, which would than not be used here?
 		
@@ -214,7 +212,24 @@ public class NeXMLMolecularDataTokenDefinitionReceiver extends NeXMLMetaDataRece
 			
 			String tokenDefinitionID = getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX);
 			getStreamDataProvider().addToDocumentIDs(tokenDefinitionID);
-			receiver.doAdd(new SingleTokenDefinitionEvent(tokenDefinitionID, null, Character.toString(token), CharacterSymbolMeaning.CHARACTER_STATE, type, constituents));
+			receiver.doAdd(new SingleTokenDefinitionEvent(tokenDefinitionID, null, Character.toString(token), 
+					CharacterSymbolMeaning.CHARACTER_STATE, type, constituents));
+			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		}
+		
+		if (addGap) {
+			String tokenDefinitionID = getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX);
+			getStreamDataProvider().addToDocumentIDs(tokenDefinitionID);
+			receiver.doAdd(new SingleTokenDefinitionEvent(tokenDefinitionID, "gap", Character.toString(SequenceUtils.GAP_CHAR), CharacterSymbolMeaning.GAP, 
+					CharacterSymbolType.UNCERTAIN, null));
+			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
+		}
+
+		if (addMissing) {
+			String tokenDefinitionID = getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX);
+			getStreamDataProvider().addToDocumentIDs(tokenDefinitionID);
+			receiver.doAdd(new SingleTokenDefinitionEvent(tokenDefinitionID, "missing data", Character.toString(SequenceUtils.MISSING_DATA_CHAR), 
+					CharacterSymbolMeaning.MISSING, CharacterSymbolType.UNCERTAIN, atomicStates));
 			receiver.doAdd(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.SINGLE_TOKEN_DEFINITION));
 		}
 	}
