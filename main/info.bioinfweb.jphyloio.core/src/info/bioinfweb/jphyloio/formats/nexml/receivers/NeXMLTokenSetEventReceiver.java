@@ -56,7 +56,7 @@ import javax.xml.stream.XMLStreamException;
  * @author Sarah Wiechers
  */
 public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
-	String tokenSetID;
+	private String tokenSetID;
 	private Map<String, String> tokenNameToIDMap = new HashMap<String, String>();
 	private int tokenDefinitionIndex = 0;
 	

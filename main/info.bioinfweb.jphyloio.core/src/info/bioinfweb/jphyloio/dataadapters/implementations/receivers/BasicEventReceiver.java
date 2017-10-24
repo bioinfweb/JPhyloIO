@@ -51,7 +51,9 @@ import javax.xml.stream.XMLStreamWriter;
  *
  * @param <W> the type of writer to write the data to (usually {@link Writer} or {@link XMLStreamWriter})
  */
-public class BasicEventReceiver<P extends WriterStreamDataProvider<? extends AbstractEventWriter<P>>> implements JPhyloIOEventReceiver {
+public class BasicEventReceiver<P extends WriterStreamDataProvider<? extends AbstractEventWriter<P>>> 
+		implements JPhyloIOEventReceiver {
+	
 	private ReadWriteParameterMap parameterMap;
 	private P streamDataProvider;
 	

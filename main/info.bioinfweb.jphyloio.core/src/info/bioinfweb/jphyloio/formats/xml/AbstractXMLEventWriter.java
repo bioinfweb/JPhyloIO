@@ -47,7 +47,8 @@ import info.bioinfweb.jphyloio.formats.xml.stax.MetaXMLStreamWriter;
  * @since 0.0.0
  */
 public abstract class AbstractXMLEventWriter<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> 
-		extends AbstractEventWriter<P> implements JPhyloIOXMLEventWriter {	
+		extends AbstractEventWriter<P> implements JPhyloIOXMLEventWriter {
+	
 	private XMLStreamWriter xmlWriter;
 	
 	private ReadWriteParameterMap parameters;

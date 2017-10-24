@@ -54,6 +54,9 @@ public class IllegalEventException extends InconsistentAdapterDataException {
 	 * @return the new instance
 	 */
 	public static IllegalEventException newInstance(JPhyloIOEventReceiver receiver, JPhyloIOEvent parentEvent, JPhyloIOEvent invalidEvent) {
+		// This method is provided instead of an additional constructor, since it would not be possible to execute code to generate 
+		// the message before calling the super constructor.
+		
 		String message;
 		if (parentEvent == null) {
 			message = "An event of the type " + invalidEvent.getType().getContentType() + " was encountered under the root event of this receiver " + 

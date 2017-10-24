@@ -39,7 +39,9 @@ import javax.xml.stream.XMLStreamException;
  * @author Sarah Wiechers
  *
  */
-public abstract class AbstractXMLDataReceiver<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> extends BasicEventReceiver<P> {
+public abstract class AbstractXMLDataReceiver<P extends XMLWriterStreamDataProvider<? extends AbstractXMLEventWriter<P>>> 
+		extends BasicEventReceiver<P> {
+	
 	public AbstractXMLDataReceiver(P streamDataProvider, ReadWriteParameterMap parameterMap) {
 		super(streamDataProvider, parameterMap);
 	}
