@@ -112,6 +112,9 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 			long alignmentLength = map.getLong(DimensionsReader.INFO_KEY_CHAR, Long.MAX_VALUE);
 			PeekReader reader = getStreamDataProvider().getDataReader();
 			try {
+				if (currentSequenceLabel == null) {
+					getStreamDataProvider().consumeWhiteSpaceAndComments();  // This must be done before c == COMMAND_END is tested.
+				}
 				char c = reader.peekChar();
 				if (c == COMMAND_END) {
 					reader.skip(1);  // Consume ';'.
@@ -121,7 +124,6 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 				else {
 					// Read name:
 					if (currentSequenceLabel == null) {
-						getStreamDataProvider().consumeWhiteSpaceAndComments();
 						if (getStreamDataProvider().eventsUpcoming()) {
 							return true;  // Immediately return comment in front of sequence name, if it was not added to the final event list.
 						}
