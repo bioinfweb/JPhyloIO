@@ -428,6 +428,44 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 		}
 	}
 	
+
+
+	/**
+	 * Tests the case that only a line break and no additional spaces are between the end of the last sequence and the ';' of the 
+	 * MATRIX command. (Such files were causing errors before r1572.)
+	 */
+	@Test
+	public void testReadingMatrix_lineBreakEnd() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix_lineBreakEnd.nex"), new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, null, null, reader);
+			
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "2", null, new Long(2), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "4", null, new Long(4), true, reader);
+
+			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", null, reader);
+			assertCharactersEvent("TCAT", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", null, reader);
+			assertCharactersEvent("TCAG", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+
 	
 	@Test
 	public void testReadingMatrix_noLineBreak() throws Exception {
