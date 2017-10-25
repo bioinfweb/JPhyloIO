@@ -117,7 +117,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWritingSimpleDocument() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_SimpleDocument.xml");
 		boolean writeMetadata = false;
 		boolean writeSets = true;
 		
@@ -259,8 +259,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
-			assertUncertainStateSet("-", "gap", false, reader);
-			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT);
+			String tokenGap = assertState("-", "gap", reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
 			
@@ -399,7 +399,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWritingSimpleDocumentWithMetadata() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_SimpleDocumentWithMetadata.xml");
 		boolean writeMetadata = true;
 		boolean writeSets = true;
 		
@@ -629,8 +629,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
-			assertUncertainStateSet("-", "gap", writeMetadata, reader);
-			assertUncertainStateSet("?", "missing data", writeMetadata, reader, tokenC, tokenG, tokenA, tokenT);
+			String tokenGap = assertState("-", "gap", reader);
+			assertUncertainStateSet("?", "missing data", writeMetadata, reader, tokenC, tokenG, tokenA, tokenT, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
 			
@@ -839,7 +839,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWritingCustomXMLDoNotManageNamespaces() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_CustomXMLDoNotManageNamespaces.xml");
 		XMLEventFactory factory = XMLEventFactory.newInstance();
 		boolean writeMetadata = false;
 		boolean writeSets = false;
@@ -961,7 +961,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWritingCustomXMLManageNamespaces() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_CustomXMLManageNamespaces.xml");
 		XMLEventFactory factory = XMLEventFactory.newInstance();
 		boolean writeMetadata = false;
 		boolean writeSets = false;
@@ -1085,7 +1085,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWriteDocumentLinkedElementMissing() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_DocumentLinkedElementMissing.xml");
 		boolean writeMetadata = false;
 		
 		// Add OTU list to document data adapter
@@ -1163,7 +1163,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			fail("Exception not thrown");
 		}
 		catch (InconsistentAdapterDataException e) {
-			assertEquals(e.getMessage(), "The token \"S\" was referenced in a token definition but not defined before.");
+			assertEquals(e.getMessage(), "The token \"S\" was referenced in a token definition but not defined before. This may error may be solved by providing tokens in the correct order (atomic states before uncertain states that reference them as constituents).");
 		}
 		finally {			
 			file.delete();
@@ -1173,7 +1173,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWriteDocumentIDNotUnique() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_DocumentIDNotUnique.xml");
 		
 		// Add OTU list to document data adapter
 		String otuListID = DEFAULT_OTU_LIST_ID_PREFIX + obtainCurrentIDIndex();		
@@ -1209,7 +1209,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWriteDocumentTokenSetsOverlap() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_DocumentTokenSetsOverlap.xml");
 		boolean writeMetadata = false;
 		
 		// Add OTU list to document data adapter
@@ -1309,7 +1309,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWriteDocumentTokenSetForContinuousData() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_DocumentTokenSetForContinuousData.xml");
 		boolean writeMetadata = false;
 		
 		// Add OTU list to document data adapter
@@ -1393,7 +1393,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWritingStandardData() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_StandardData.xml");
 		boolean writeMetadata = false;
 		boolean writeSets = false;
 		
@@ -1929,7 +1929,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	
 	@Test
 	public void testWritingMultipleCharactersElements() throws IOException, XMLStreamException, FactoryConfigurationError {
-		File file = new File("data/testOutput/NeXMLTest.xml");
+		File file = new File("data/testOutput/NeXMLTest_MultipleCharactersElements.xml");
 		boolean writeMetadata = false;
 		
 		// Add OTU list to document data adapter
@@ -2002,7 +2002,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		parameters.put(ReadWriteParameterMap.KEY_CUSTOM_XML_NAMESPACE_HANDLING, true);
 		writer.writeDocument(document, file, parameters);
 		
-		// Validate file:
+		
+		// Test output:
 		FileReader fileReader = new FileReader(file);
 		XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(fileReader);
 		try {
@@ -2104,8 +2105,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
-			assertUncertainStateSet("-", "gap", false, reader);
-			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT);
+			String tokenGap = assertState("-", "gap", reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
 			
@@ -2179,8 +2180,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenU);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenU, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenU);
-			assertUncertainStateSet("-", "gap", false, reader);
-			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenU);
+			tokenGap = assertState("-", "gap", reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenU, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
 			
@@ -2256,8 +2257,8 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenU);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenU, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenU);
-			assertUncertainStateSet("-", "gap", false, reader);
-			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenU);
+			tokenGap = assertState("-", "gap", reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenU, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
 			
@@ -2355,27 +2356,23 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			tokenIDs[12] = assertState("O", reader);
 			tokenIDs[13] = assertState("P", reader);
 			tokenIDs[14] = assertState("Q", reader);
-			tokenIDs[15] =	assertState("R", reader);
+			tokenIDs[15] = assertState("R", reader);
 			tokenIDs[16] = assertState("S", reader);
 			tokenIDs[17] = assertState("T", reader);
 			tokenIDs[18] = assertState("U", reader);
 			tokenIDs[19] = assertState("V", reader);
 			tokenIDs[20] = assertState("W", reader);
 			tokenIDs[21] = assertState("Y", reader);
+			String tokenStop = assertState("*", reader);
 			
 			assertUncertainStateSet("B", null, writeMetadata, reader, tokenIDs[2], tokenIDs[11]);
 			assertUncertainStateSet("X", null, false, reader, tokenIDs);
 			assertUncertainStateSet("Z", null, writeMetadata, reader, tokenIDs[14], tokenIDs[3]);			
-			assertUncertainStateSet("-", "gap", false, reader);
-			assertUncertainStateSet("?", "missing data", false, reader, tokenIDs);
-			
-			element = assertStartElement(TAG_STATE, reader);
-			assertAttributeCount(4, element);
-			tokenU = assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_ABOUT, element);
-			assertAttribute(ATTR_LABEL, "stop codon", element);
-			assertAttribute(ATTR_SYMBOL, "*", element);
-			assertEndElement(TAG_STATE, reader);
+			tokenGap = assertState("-", "gap", reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenIDs[0], tokenIDs[1], tokenIDs[2], tokenIDs[3], tokenIDs[4], 
+					tokenIDs[5], tokenIDs[6], tokenIDs[7], tokenIDs[8], tokenIDs[9], tokenIDs[10], tokenIDs[11], tokenIDs[12], tokenIDs[13], 
+					tokenIDs[14], tokenIDs[15], tokenIDs[16], tokenIDs[17], tokenIDs[18], tokenIDs[19], tokenIDs[20], tokenIDs[21], tokenGap, 
+					tokenStop);
 			
 			assertEndElement(TAG_STATES, reader);
 			
@@ -2435,20 +2432,16 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			tokenIDs[19] = assertState("V", reader);
 			tokenIDs[20] = assertState("W", reader);
 			tokenIDs[21] = assertState("Y", reader);
+			tokenStop = assertState("*", reader);
 			
 			assertUncertainStateSet("B", null, writeMetadata, reader, tokenIDs[2], tokenIDs[11]);
 			assertUncertainStateSet("X", null, false, reader, tokenIDs);
 			assertUncertainStateSet("Z", null, writeMetadata, reader, tokenIDs[14], tokenIDs[3]);			
-			assertUncertainStateSet("-", "gap", false, reader);
-			assertUncertainStateSet("?", "missing data", false, reader, tokenIDs);
-			
-			element = assertStartElement(TAG_STATE, reader);
-			assertAttributeCount(4, element);
-			tokenU = assertAttribute(ATTR_ID, element);
-			assertAttribute(ATTR_ABOUT, element);
-			assertAttribute(ATTR_LABEL, "stop codon", element);
-			assertAttribute(ATTR_SYMBOL, "*", element);
-			assertEndElement(TAG_STATE, reader);
+			tokenGap = assertState("-", "gap", reader);
+			assertUncertainStateSet("?", "missing data", false, reader, tokenIDs[0], tokenIDs[1], tokenIDs[2], tokenIDs[3], tokenIDs[4], 
+					tokenIDs[5], tokenIDs[6], tokenIDs[7], tokenIDs[8], tokenIDs[9], tokenIDs[10], tokenIDs[11], tokenIDs[12], tokenIDs[13], 
+					tokenIDs[14], tokenIDs[15], tokenIDs[16], tokenIDs[17], tokenIDs[18], tokenIDs[19], tokenIDs[20], tokenIDs[21], tokenGap, 
+					tokenStop);
 			
 			assertEndElement(TAG_STATES, reader);
 			
@@ -2661,12 +2654,23 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
-	private String assertState(String token, XMLEventReader reader) throws XMLStreamException {
+	private String assertState(String symbol, XMLEventReader reader) throws XMLStreamException {
+		return assertState(symbol, null, reader);
+	}
+	
+	
+	private String assertState(String symbol, String label, XMLEventReader reader) throws XMLStreamException {
 		StartElement element = assertStartElement(TAG_STATE, reader);
-		assertAttributeCount(3, element);
+		if (label != null) {
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_LABEL, label, element);
+		}
+		else {
+			assertAttributeCount(3, element);
+		}
 		String tokenID = assertAttribute(ATTR_ID, element);
 		assertAttribute(ATTR_ABOUT, "#" + tokenID, element);
-		assertAttribute(ATTR_SYMBOL, token, element);
+		assertAttribute(ATTR_SYMBOL, symbol, element);
 		assertEndElement(TAG_STATE, reader);
 		
 		return tokenID;
@@ -3226,7 +3230,9 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
-	private StoreObjectData<TokenSetDefinitionEvent> createTokenSet(String id, CharacterStateSetType type, long alignmentLength, boolean writeMetadata) {
+	private StoreObjectData<TokenSetDefinitionEvent> createTokenSet(String id, CharacterStateSetType type, long alignmentLength, 
+			boolean writeMetadata) {
+		
 		StoreObjectData<TokenSetDefinitionEvent> tokenSet = new StoreObjectData<TokenSetDefinitionEvent>(
 				new TokenSetDefinitionEvent(type, id, "tokenSet"), new ArrayList<JPhyloIOEvent>());
 
