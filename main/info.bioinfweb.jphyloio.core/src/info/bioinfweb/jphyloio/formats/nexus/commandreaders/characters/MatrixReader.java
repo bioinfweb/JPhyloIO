@@ -215,7 +215,9 @@ public class MatrixReader extends AbstractNexusCommandEventReader implements Nex
 					if (c == COMMAND_END) {
 						setAllDataProcessed(true);
 						reader.skip(1);  // Consume ';'.
-						getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+						if (currentSequenceLabel != null) {
+							getStreamDataProvider().getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, true));
+						}
 					}
 					return result;
 				}
