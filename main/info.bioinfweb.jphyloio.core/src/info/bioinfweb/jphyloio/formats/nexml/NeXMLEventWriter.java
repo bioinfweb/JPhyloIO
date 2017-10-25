@@ -514,8 +514,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 
 
 	private void writeTokenSetDefinitions(MatrixDataAdapter alignment) throws XMLStreamException, IllegalArgumentException, IOException {
-		NeXMLTokenSetEventReceiver receiver;
-		NeXMLMolecularDataTokenDefinitionReceiver molecularDataReceiver;
 		getStreamDataProvider().setIDIndex(0);
 		
 		ObjectListDataAdapter<TokenSetDefinitionEvent> tokenSetDefinitions = alignment.getTokenSets(getParameters());
@@ -527,8 +525,6 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 				String tokenSetID = tokenSetDefinitionIDs.next();
 				TokenSetDefinitionEvent startEvent = tokenSetDefinitions.getObjectStartEvent(getParameters(), tokenSetID);
 				NeXMLWriterTokenSetInformation info = alignmentInfo.getIDToTokenSetInfoMap().get(tokenSetID);
-				receiver = new NeXMLTokenSetEventReceiver(getStreamDataProvider(), getParameters(), tokenSetID);
-				molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getStreamDataProvider(), getParameters(), tokenSetID);
 
 				switch (alignmentInfo.getAlignmentType()) {
 					case CONTINUOUS:  // Can not have a states tag
@@ -537,6 +533,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 					case DNA:
 					case RNA:
 					case AMINO_ACID:  // Molecular data
+						NeXMLMolecularDataTokenDefinitionReceiver molecularDataReceiver = 
+								new NeXMLMolecularDataTokenDefinitionReceiver(getStreamDataProvider(), getParameters(), tokenSetID);
 						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						getStreamDataProvider().writeLabeledIDAttributes(startEvent);						
 						tokenSetDefinitions.writeContentData(getParameters(), molecularDataReceiver, tokenSetID);
@@ -544,6 +542,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 						getXMLWriter().writeEndElement();						
 						break;
 					default:  // Discrete data
+						NeXMLTokenSetEventReceiver receiver = new NeXMLTokenSetEventReceiver(getStreamDataProvider(), getParameters(), tokenSetID);  //TODO Are both instances needed at the same time? Could they be created outside of the loop?
 						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						getStreamDataProvider().writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(getParameters(), receiver, tokenSetID);
@@ -567,9 +566,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 					getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 					getStreamDataProvider().writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), 
 							alignmentInfo.getDefaultTokenSetID(), null));
-					molecularDataReceiver = new NeXMLMolecularDataTokenDefinitionReceiver(getStreamDataProvider(), getParameters(), 
-							alignmentInfo.getDefaultTokenSetID());
-					molecularDataReceiver.addRemainingEvents(alignmentInfo.getAlignmentType());
+					new NeXMLMolecularDataTokenDefinitionReceiver(getStreamDataProvider(), getParameters(), 
+							alignmentInfo.getDefaultTokenSetID()).addRemainingEvents(alignmentInfo.getAlignmentType());
 					getXMLWriter().writeEndElement();
 					break;
 				default:  // Discrete data
@@ -577,8 +575,8 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 					getStreamDataProvider().writeLabeledIDAttributes(new TokenSetDefinitionEvent(alignmentInfo.getAlignmentType(), 
 							alignmentInfo.getDefaultTokenSetID(), null));
 					if (!alignmentInfo.getIDToTokenSetInfoMap().get(alignmentInfo.getDefaultTokenSetID()).getOccuringTokens().isEmpty()) {
-						receiver = new NeXMLTokenSetEventReceiver(getStreamDataProvider(), getParameters(), alignmentInfo.getDefaultTokenSetID());
-						receiver.writeRemainingStandardTokenDefinitions();
+						new NeXMLTokenSetEventReceiver(getStreamDataProvider(), getParameters(), 
+								alignmentInfo.getDefaultTokenSetID()).writeRemainingStandardTokenDefinitions();
 					}
 					getXMLWriter().writeEndElement();
 			}
