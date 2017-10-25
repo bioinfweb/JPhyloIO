@@ -360,6 +360,76 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 	
 	
 	@Test
+	public void testReadingMatrix_whitespaceEnd() throws Exception {
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixWhitespaceEnd.nex"), new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			String otusID = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();
+			
+			String idA = assertLabeledIDEvent(EventContentType.OTU, null, "A", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idB = assertLabeledIDEvent(EventContentType.OTU, null, "B", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idC = assertLabeledIDEvent(EventContentType.OTU, null, "C", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idDE = assertLabeledIDEvent(EventContentType.OTU, null, "D E", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			String idF = assertLabeledIDEvent(EventContentType.OTU, null, "F", reader).getID();
+			assertEndEvent(EventContentType.OTU, reader);
+			
+			assertNotEquals(idA, idB);
+			assertNotEquals(idA, idC);
+			assertNotEquals(idA, idDE);
+			assertNotEquals(idA, idF);
+			assertNotEquals(idB, idC);
+			assertNotEquals(idB, idDE);
+			assertNotEquals(idB, idF);
+			assertNotEquals(idC, idDE);
+			assertNotEquals(idC, idF);
+			assertNotEquals(idDE, idF);			
+			assertEndEvent(EventContentType.OTU_LIST, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.ALIGNMENT, null, "someMatrix", otusID, reader);
+			
+			assertLiteralMetaEvent(new URIOrStringIdentifier("ntax", PREDICATE_SEQUENCE_COUNT), null, "4", null, new Long(4), true, reader);
+			assertLiteralMetaEvent(new URIOrStringIdentifier("nchar", PREDICATE_CHARACTER_COUNT), null, "7", null, new Long(7), true, reader);
+
+			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, "DNA", reader);
+			assertSingleTokenDefinitionEvent("?", CharacterSymbolMeaning.MISSING, true, reader);
+			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "A", idA, reader);
+			assertCommentEvent("comment 1", reader);
+			assertCharactersEvent("CGGTCAT", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "B", idB, reader);
+			assertCommentEvent("comment 2", reader);
+			assertCharactersEvent("CG-TCTT", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "C", idC, reader);
+			assertCharactersEvent("CG-T", false, reader);
+			assertCommentEvent("comment 3", reader);
+			assertCharactersEvent("C-T", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "D E", idDE, reader);
+			assertCharactersEvent("CGTCATG", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
+		}
+	}
+	
+	
+	@Test
 	public void testReadingMatrix_noLineBreak() throws Exception {
 		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix_noLineBreak.nex"), new ReadWriteParameterMap());
 		try {
