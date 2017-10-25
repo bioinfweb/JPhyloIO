@@ -361,7 +361,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 	
 	@Test
 	public void testReadingMatrix_whitespaceEnd() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/MatrixWhitespaceEnd.nex"), new ReadWriteParameterMap());
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/Matrix_whitespaceEnd.nex"), new ReadWriteParameterMap());
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			String otusID = assertLabeledIDEvent(EventContentType.OTU_LIST, null, null, reader).getID();

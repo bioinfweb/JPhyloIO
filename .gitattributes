@@ -545,9 +545,9 @@ test/data/Nexus/MatrixInterleavedMatchCharacter.nex -text
 test/data/Nexus/MatrixLongTokens.nex -text
 test/data/Nexus/MatrixLongTokensAlternatives.nex -text
 test/data/Nexus/MatrixUnaligned.nex -text
-test/data/Nexus/MatrixWhitespaceEnd.nex -text
 test/data/Nexus/Matrix_additionalLineBreaks.nex -text
 test/data/Nexus/Matrix_noLineBreak.nex -text
+test/data/Nexus/Matrix_whitespaceEnd.nex -text
 test/data/Nexus/MultipleTreesBlocks.nex -text
 test/data/Nexus/SplitComments.nex -text
 test/data/Nexus/Symbols.nex -text
