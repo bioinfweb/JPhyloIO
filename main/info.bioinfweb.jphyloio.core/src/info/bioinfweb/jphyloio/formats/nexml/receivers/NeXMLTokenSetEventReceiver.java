@@ -263,12 +263,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 						
 						switch (tokenDefinitionEvent.getTokenType()) {
 							case ATOMIC_STATE:
-								if (tokenDefinitionEvent.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
-									writeStateSet(tokenDefinitionEvent, false);
-								}
-								else {
-									writeState(tokenDefinitionEvent);
-								}
+								writeState(tokenDefinitionEvent);
 								break;
 							case POLYMORPHIC:
 								writeStateSet(tokenDefinitionEvent, true);

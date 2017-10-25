@@ -39,6 +39,7 @@ import java.util.Collection;
 import javax.xml.stream.XMLStreamException;
 
 
+
 /**
  * Receiver that is used to check the contents of a token set.
  * <p>
@@ -49,7 +50,7 @@ import javax.xml.stream.XMLStreamException;
  * @author Sarah Wiechers
  */
 public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectNamespaceReceiver {
-	String tokenSetDefinitionID;
+	private String tokenSetDefinitionID;
 
 
 	public NeXMLCollectTokenSetDefinitionDataReceiver(NeXMLWriterStreamDataProvider streamDataProvider,
@@ -64,9 +65,10 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			CharacterStateSetType newType) {
 		
 		getLogger().addWarning("Switching from the specified " + specifiedType + " token set to " + newType + 
-				" token (" + event.getLabel() + ", " + event.getTokenType() + ", " + event.getMeaning() + 
-				") set, since a token was encountered that is invalid for a " + specifiedType + 
-				" token set in NeXML or such a token set does not exist in this format.");
+				" token set, since a token with the ID " + event.getID() + "(" + event.getTokenName() + ", " + event.getTokenType() + 
+				", " + event.getMeaning() +	") was encountered that is invalid for a " + specifiedType + 
+				" token set in NeXML or such a token set does not exist in this format. "
+				+ "(Note that additional switches within the same token set may follow.)");
 	}
 	
 
