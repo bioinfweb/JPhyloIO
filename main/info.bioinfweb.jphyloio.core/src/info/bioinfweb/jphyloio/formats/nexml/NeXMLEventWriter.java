@@ -542,7 +542,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 						getXMLWriter().writeEndElement();						
 						break;
 					default:  // Discrete data
-						NeXMLTokenSetEventReceiver receiver = new NeXMLTokenSetEventReceiver(getStreamDataProvider(), getParameters(), tokenSetID);  //TODO Are both instances needed at the same time? Could they be created outside of the loop?
+						NeXMLTokenSetEventReceiver receiver = new NeXMLTokenSetEventReceiver(getStreamDataProvider(), getParameters(), tokenSetID);
 						getXMLWriter().writeStartElement(TAG_STATES.getLocalPart());
 						getStreamDataProvider().writeLabeledIDAttributes(startEvent);
 						tokenSetDefinitions.writeContentData(getParameters(), receiver, tokenSetID);
