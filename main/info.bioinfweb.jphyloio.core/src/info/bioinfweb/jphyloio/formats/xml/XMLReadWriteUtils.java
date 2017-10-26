@@ -63,7 +63,7 @@ public class XMLReadWriteUtils {
 	
 //	public static final QName ATTRIBUTE_RDF_PROPERTY = new QName(NAMESPACE_RDF, "property");
 //	public static final QName ATTRIBUTE_RDF_DATATYPE = new QName(NAMESPACE_RDF, "datatype");
-	//TODO Is an "about"-attribute needed if these attributes are used? Do PhyloXML with about attributes still validate?
+	//TODO Is an "about"-attribute needed if these attributes are used? Does PhyloXML with about attributes still validate?
 	
   public static final String DEFAULT_NAMESPACE_PREFIX = "p";
 	
