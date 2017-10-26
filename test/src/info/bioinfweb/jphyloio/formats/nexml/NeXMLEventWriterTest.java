@@ -864,7 +864,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		finally {
 			fileReader.close();
 			reader.close();
-//			file.delete();
+			file.delete();
 		}
 	}
 	
