@@ -53,7 +53,7 @@ import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NetworkDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.PhyloXMLNetworkDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.PhyloXMLEdgeAndNodeMetadataTreeAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.PhyloXMLSpecificMetadataTreeAdapter;
@@ -2032,7 +2032,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 				EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
 		
 		trees.getTreesAndNetworks().add(new NoAnnotationsTree(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
-		trees.getTreesAndNetworks().add(new NetworkDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
+		trees.getTreesAndNetworks().add(new PhyloXMLNetworkDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID"));
 		document.getTreesNetworks().add(trees);
 		
 		ReadWriteParameterMap parameters = new ReadWriteParameterMap();
@@ -2207,7 +2207,7 @@ public class PhyloXMLEventWriterTest implements PhyloXMLConstants {
 			StoreTreeNetworkGroupDataAdapter trees = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(
 					EventContentType.TREE_NETWORK_GROUP, ReadWriteConstants.DEFAULT_TREE_NETWORK_GROUP_ID_PREFIX + getIDIndex(), null, null), null);
 			
-			StoreTreeNetworkDataAdapter network = new NetworkDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
+			StoreTreeNetworkDataAdapter network = new PhyloXMLNetworkDataAdapter(ReadWriteConstants.DEFAULT_TREE_ID_PREFIX + getIDIndex(), null, "nodeEdgeID");
 			
 			// Add duplicate id_source value
 			List<JPhyloIOEvent> nestedEvents = network.getNodes(new ReadWriteParameterMap()).getObjectContent("nodeEdgeIDnA");

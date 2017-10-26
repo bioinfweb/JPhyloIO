@@ -672,9 +672,11 @@ test/src/info/bioinfweb/jphyloio/test/dataadapters/TestOTUListDataAdapter.java -
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestSingleTokenSetAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/TestTreeNetworkGroupDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/EdgeAndNodeMetaDataTreeAdapter.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/NetworkDataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/NetworkMetadataAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/NoAnnotationsNetwork.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/NoAnnotationsTree.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/PhyloXMLEdgeAndNodeMetadataTreeAdapter.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/PhyloXMLNetworkDataAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/dataadapters/testtreenetworkdataadapters/PhyloXMLSpecificMetadataTreeAdapter.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/DataTypeConverterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/test/tests/ListTest.java -text svneol=unset#text/plain

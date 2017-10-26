@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2016  Ben StÃ¶ver, Sarah Wiechers
+ * Copyright (C) 2015-2016  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -18,6 +18,10 @@
  */
 package info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters;
 
+
+import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
@@ -38,13 +42,10 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataContentEvent;
 import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
-import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
-
-import java.util.List;
 
 
 
-public class NetworkDataAdapter extends StoreTreeNetworkDataAdapter implements TreeNetworkDataAdapter {
+public class NetworkMetadataAdapter extends StoreTreeNetworkDataAdapter implements TreeNetworkDataAdapter {
 	private String id = null;
 	private String label = null;
 	private String nodeEdgeIDPrefix = "";
@@ -53,7 +54,7 @@ public class NetworkDataAdapter extends StoreTreeNetworkDataAdapter implements T
 	private String linkedOTUList = null;
 	
 	
-	public NetworkDataAdapter(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
+	public NetworkMetadataAdapter(String id, String label, String nodeEdgeIDPrefix, String[] linkedOTUs) {
 		super(new LabeledIDEvent(EventContentType.NETWORK, id, label), true, null);
 		this.id = id;
 		this.label = label;
@@ -71,7 +72,7 @@ public class NetworkDataAdapter extends StoreTreeNetworkDataAdapter implements T
 	}
 	
 
-	public NetworkDataAdapter(String id, String label, String nodeEdgeIDPrefix) {
+	public NetworkMetadataAdapter(String id, String label, String nodeEdgeIDPrefix) {
 		this(id, label, nodeEdgeIDPrefix, new String[]{null, null, null});
 	}
 	
@@ -89,30 +90,22 @@ public class NetworkDataAdapter extends StoreTreeNetworkDataAdapter implements T
 	private void addNodes(StoreObjectListDataAdapter<NodeEvent> nodes) {
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "n1", "Node '_1", null, false));
 		List<JPhyloIOEvent> nestedEvents = nodes.getObjectContent(nodeEdgeIDPrefix + "n1");
-		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "n1meta1", null,
-				new URIOrStringIdentifier("idSourceN1", PhyloXMLConstants.PREDICATE_ATTR_ID_SOURCE),
-				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), LiteralContentSequenceType.SIMPLE));
-		nestedEvents.add(new LiteralMetadataContentEvent("NodeN1", "NodeN1"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));		
+		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "n1meta1", null,   //TODO Prefix was not added here in previous implementation. => Adjust test cases.
+				new URIOrStringIdentifier("a1", new QName("http://example.org/", "somePredicate")),
+				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_INT), LiteralContentSequenceType.SIMPLE));
+		nestedEvents.add(new LiteralMetadataContentEvent(new Integer(100), "100"));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
+		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "n1meta2", null, new URIOrStringIdentifier("a2", new QName("http://example.org/", "somePredicate")),  //TODO Prefix was not added here in previous implementation. => Adjust test cases. 
+				LiteralContentSequenceType.SIMPLE));
+		nestedEvents.add(new LiteralMetadataContentEvent("ab 'c", "ab 'c"));
+		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 		
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nRoot", "Node " + nodeEdgeIDPrefix + "nRoot", null, true));
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nA", "Node " + nodeEdgeIDPrefix + "nA", linkedOTUs != null ? linkedOTUs[0] : null, false));
 		
-		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nB", "Node " + nodeEdgeIDPrefix + "nB", linkedOTUs != null ? linkedOTUs[1] : null, false));
-		nestedEvents = nodes.getObjectContent(nodeEdgeIDPrefix + "nB");
-		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "nBmeta1", null,
-				new URIOrStringIdentifier("idSourceNB", PhyloXMLConstants.PREDICATE_ATTR_ID_SOURCE),
-				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), LiteralContentSequenceType.SIMPLE));
-		nestedEvents.add(new LiteralMetadataContentEvent("NodeNB", "NodeNB"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));		
+		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nB", "Node " + nodeEdgeIDPrefix + "nB", linkedOTUs != null ? linkedOTUs[1] : null, false));		
 		
 		nodes.setObjectStartEvent(new NodeEvent(nodeEdgeIDPrefix + "nC", "Node " + nodeEdgeIDPrefix + "nC", linkedOTUs != null ? linkedOTUs[2] : null, false));
-		nestedEvents = nodes.getObjectContent(nodeEdgeIDPrefix + "nC");
-		nestedEvents.add(new LiteralMetadataEvent(nodeEdgeIDPrefix + "nCmeta1", null,
-				new URIOrStringIdentifier("idSourceNC", PhyloXMLConstants.PREDICATE_ATTR_ID_SOURCE),
-				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_TOKEN), LiteralContentSequenceType.SIMPLE));
-		nestedEvents.add(new LiteralMetadataContentEvent("NodeNC", "NodeNC"));
-		nestedEvents.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 	
 	

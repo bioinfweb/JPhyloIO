@@ -70,7 +70,9 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTreeAdapter;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NetworkDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NetworkMetadataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.PhyloXMLNetworkDataAdapter;
+import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsNetwork;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 
 import java.io.File;
@@ -259,7 +261,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
-			String tokenGap = assertState("-", "gap", reader);
+			String tokenGap = assertState("-", "gap", writeMetadata, reader);
 			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
@@ -629,7 +631,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
-			String tokenGap = assertState("-", "gap", reader);
+			String tokenGap = assertState("-", "gap", writeMetadata, reader);
 			assertUncertainStateSet("?", "missing data", writeMetadata, reader, tokenC, tokenG, tokenA, tokenT, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
@@ -782,7 +784,37 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "FloatNetwork", element);
 			assertLiteralMeta(reader);
 			
-			node1 = assertNode(false, reader);
+			element = assertStartElement(TAG_NODE, reader);
+			assertAttributeCount(3, element);			
+			node1 = assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_ABOUT, element);
+			assertAttribute(ATTR_LABEL, element);
+			
+			element = assertStartElement(TAG_META, reader);
+			assertAttributeCount(5, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
+			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ATTR_DATATYPE, "xsd:int", element);
+			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "a1", element);
+			
+			assertCharactersEvent("100", reader);
+			
+			assertEndElement(TAG_META, reader);
+			
+			element = assertStartElement(TAG_META, reader);
+			assertAttributeCount(4, element);
+			assertAttribute(ATTR_ID, element);
+			assertAttribute(ATTR_XSI_TYPE, nexPrefix + XMLUtils.QNAME_SEPARATOR + "LiteralMeta", element);
+			assertAttribute(ATTR_PROPERTY, prefix2 + XMLUtils.QNAME_SEPARATOR + "somePredicate", element);
+			assertAttribute(ReadWriteConstants.ATTRIBUTE_STRING_KEY, "a2", element);
+			
+			assertCharactersEvent("ab 'c", reader);
+			
+			assertEndElement(TAG_META, reader);
+			
+			assertEndElement(TAG_NODE, reader);			
+			
 			node2 = assertNode(true, reader);
 			node3 = assertNode(false, reader);
 			node4 = assertNode(false, reader);
@@ -832,7 +864,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		finally {
 			fileReader.close();
 			reader.close();
-			file.delete();
+//			file.delete();
 		}
 	}
 	
@@ -2105,7 +2137,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenT);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenT, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenT);
-			String tokenGap = assertState("-", "gap", reader);
+			String tokenGap = assertState("-", "gap", writeMetadata, reader);
 			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenT, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
@@ -2180,7 +2212,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenU);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenU, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenU);
-			tokenGap = assertState("-", "gap", reader);
+			tokenGap = assertState("-", "gap", writeMetadata, reader);
 			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenU, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
@@ -2257,7 +2289,7 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertUncertainStateSet("W", null, writeMetadata, reader, tokenA, tokenU);
 			assertUncertainStateSet("X", null, writeMetadata, reader, tokenA, tokenU, tokenC, tokenG);
 			assertUncertainStateSet("Y", null, writeMetadata, reader, tokenC, tokenU);
-			tokenGap = assertState("-", "gap", reader);
+			tokenGap = assertState("-", "gap", writeMetadata, reader);
 			assertUncertainStateSet("?", "missing data", false, reader, tokenC, tokenG, tokenA, tokenU, tokenGap);
 			
 			assertEndElement(TAG_STATES, reader);
@@ -2341,34 +2373,34 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttribute(ATTR_LABEL, "tokenSet", element);
 			
 			String[] tokenIDs = new String[22];
-			tokenIDs[0] = assertState("A", reader);
-			tokenIDs[1] = assertState("C", reader);
-			tokenIDs[2] = assertState("D", reader);
-			tokenIDs[3] = assertState("E", reader);
-			tokenIDs[4] = assertState("F", reader);
-			tokenIDs[5] = assertState("G", reader);
-			tokenIDs[6] = assertState("H", reader);
-			tokenIDs[7] = assertState("I", reader);
-			tokenIDs[8] = assertState("K", reader);
-			tokenIDs[9] = assertState("L", reader);
-			tokenIDs[10] = assertState("M", reader);
-			tokenIDs[11] = assertState("N", reader);
-			tokenIDs[12] = assertState("O", reader);
-			tokenIDs[13] = assertState("P", reader);
-			tokenIDs[14] = assertState("Q", reader);
-			tokenIDs[15] = assertState("R", reader);
-			tokenIDs[16] = assertState("S", reader);
-			tokenIDs[17] = assertState("T", reader);
-			tokenIDs[18] = assertState("U", reader);
-			tokenIDs[19] = assertState("V", reader);
-			tokenIDs[20] = assertState("W", reader);
-			tokenIDs[21] = assertState("Y", reader);
-			String tokenStop = assertState("*", reader);
+			tokenIDs[0] = assertState("A", writeMetadata, reader);
+			tokenIDs[1] = assertState("C", writeMetadata, reader);
+			tokenIDs[2] = assertState("D", writeMetadata, reader);
+			tokenIDs[3] = assertState("E", writeMetadata, reader);
+			tokenIDs[4] = assertState("F", writeMetadata, reader);
+			tokenIDs[5] = assertState("G", writeMetadata, reader);
+			tokenIDs[6] = assertState("H", writeMetadata, reader);
+			tokenIDs[7] = assertState("I", writeMetadata, reader);
+			tokenIDs[8] = assertState("K", writeMetadata, reader);
+			tokenIDs[9] = assertState("L", writeMetadata, reader);
+			tokenIDs[10] = assertState("M", writeMetadata, reader);
+			tokenIDs[11] = assertState("N", writeMetadata, reader);
+			tokenIDs[12] = assertState("O", writeMetadata, reader);
+			tokenIDs[13] = assertState("P", writeMetadata, reader);
+			tokenIDs[14] = assertState("Q", writeMetadata, reader);
+			tokenIDs[15] = assertState("R", writeMetadata, reader);
+			tokenIDs[16] = assertState("S", writeMetadata, reader);
+			tokenIDs[17] = assertState("T", writeMetadata, reader);
+			tokenIDs[18] = assertState("U", writeMetadata, reader);
+			tokenIDs[19] = assertState("V", writeMetadata, reader);
+			tokenIDs[20] = assertState("W", writeMetadata, reader);
+			tokenIDs[21] = assertState("Y", writeMetadata, reader);
+			String tokenStop = assertState("*", writeMetadata, reader);
 			
 			assertUncertainStateSet("B", null, writeMetadata, reader, tokenIDs[2], tokenIDs[11]);
 			assertUncertainStateSet("X", null, false, reader, tokenIDs);
 			assertUncertainStateSet("Z", null, writeMetadata, reader, tokenIDs[14], tokenIDs[3]);			
-			tokenGap = assertState("-", "gap", reader);
+			tokenGap = assertState("-", "gap", writeMetadata, reader);
 			assertUncertainStateSet("?", "missing data", false, reader, tokenIDs[0], tokenIDs[1], tokenIDs[2], tokenIDs[3], tokenIDs[4], 
 					tokenIDs[5], tokenIDs[6], tokenIDs[7], tokenIDs[8], tokenIDs[9], tokenIDs[10], tokenIDs[11], tokenIDs[12], tokenIDs[13], 
 					tokenIDs[14], tokenIDs[15], tokenIDs[16], tokenIDs[17], tokenIDs[18], tokenIDs[19], tokenIDs[20], tokenIDs[21], tokenGap, 
@@ -2410,34 +2442,34 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 			assertAttribute(ATTR_LABEL, "tokenSet", element);
 			
 			tokenIDs = new String[22];
-			tokenIDs[0] = assertState("A", reader);
-			tokenIDs[1] = assertState("C", reader);
-			tokenIDs[2] = assertState("D", reader);
-			tokenIDs[3] = assertState("E", reader);
-			tokenIDs[4] = assertState("F", reader);
-			tokenIDs[5] = assertState("G", reader);
-			tokenIDs[6] = assertState("H", reader);
-			tokenIDs[7] = assertState("I", reader);
-			tokenIDs[8] = assertState("K", reader);
-			tokenIDs[9] = assertState("L", reader);
-			tokenIDs[10] = assertState("M", reader);
-			tokenIDs[11] = assertState("N", reader);
-			tokenIDs[12] = assertState("O", reader);
-			tokenIDs[13] = assertState("P", reader);
-			tokenIDs[14] = assertState("Q", reader);
-			tokenIDs[15] =	assertState("R", reader);
-			tokenIDs[16] = assertState("S", reader);
-			tokenIDs[17] = assertState("T", reader);
-			tokenIDs[18] = assertState("U", reader);
-			tokenIDs[19] = assertState("V", reader);
-			tokenIDs[20] = assertState("W", reader);
-			tokenIDs[21] = assertState("Y", reader);
-			tokenStop = assertState("*", reader);
+			tokenIDs[0] = assertState("A", writeMetadata, reader);
+			tokenIDs[1] = assertState("C", writeMetadata, reader);
+			tokenIDs[2] = assertState("D", writeMetadata, reader);
+			tokenIDs[3] = assertState("E", writeMetadata, reader);
+			tokenIDs[4] = assertState("F", writeMetadata, reader);
+			tokenIDs[5] = assertState("G", writeMetadata, reader);
+			tokenIDs[6] = assertState("H", writeMetadata, reader);
+			tokenIDs[7] = assertState("I", writeMetadata, reader);
+			tokenIDs[8] = assertState("K", writeMetadata, reader);
+			tokenIDs[9] = assertState("L", writeMetadata, reader);
+			tokenIDs[10] = assertState("M", writeMetadata, reader);
+			tokenIDs[11] = assertState("N", writeMetadata, reader);
+			tokenIDs[12] = assertState("O", writeMetadata, reader);
+			tokenIDs[13] = assertState("P", writeMetadata, reader);
+			tokenIDs[14] = assertState("Q", writeMetadata, reader);
+			tokenIDs[15] =	assertState("R", writeMetadata, reader);
+			tokenIDs[16] = assertState("S", writeMetadata, reader);
+			tokenIDs[17] = assertState("T", writeMetadata, reader);
+			tokenIDs[18] = assertState("U", writeMetadata, reader);
+			tokenIDs[19] = assertState("V", writeMetadata, reader);
+			tokenIDs[20] = assertState("W", writeMetadata, reader);
+			tokenIDs[21] = assertState("Y", writeMetadata, reader);
+			tokenStop = assertState("*", writeMetadata, reader);
 			
 			assertUncertainStateSet("B", null, writeMetadata, reader, tokenIDs[2], tokenIDs[11]);
 			assertUncertainStateSet("X", null, false, reader, tokenIDs);
 			assertUncertainStateSet("Z", null, writeMetadata, reader, tokenIDs[14], tokenIDs[3]);			
-			tokenGap = assertState("-", "gap", reader);
+			tokenGap = assertState("-", "gap", writeMetadata, reader);
 			assertUncertainStateSet("?", "missing data", false, reader, tokenIDs[0], tokenIDs[1], tokenIDs[2], tokenIDs[3], tokenIDs[4], 
 					tokenIDs[5], tokenIDs[6], tokenIDs[7], tokenIDs[8], tokenIDs[9], tokenIDs[10], tokenIDs[11], tokenIDs[12], tokenIDs[13], 
 					tokenIDs[14], tokenIDs[15], tokenIDs[16], tokenIDs[17], tokenIDs[18], tokenIDs[19], tokenIDs[20], tokenIDs[21], tokenGap, 
@@ -2654,12 +2686,12 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 	}
 	
 	
-	private String assertState(String symbol, XMLEventReader reader) throws XMLStreamException {
-		return assertState(symbol, null, reader);
+	private String assertState(String symbol, boolean assertMetadata, XMLEventReader reader) throws XMLStreamException {
+		return assertState(symbol, null, assertMetadata, reader);
 	}
 	
 	
-	private String assertState(String symbol, String label, XMLEventReader reader) throws XMLStreamException {
+	private String assertState(String symbol, String label, boolean assertMetadata, XMLEventReader reader) throws XMLStreamException {
 		StartElement element = assertStartElement(TAG_STATE, reader);
 		if (label != null) {
 			assertAttributeCount(4, element);
@@ -2671,6 +2703,19 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		String tokenID = assertAttribute(ATTR_ID, element);
 		assertAttribute(ATTR_ABOUT, "#" + tokenID, element);
 		assertAttribute(ATTR_SYMBOL, symbol, element);
+		
+		if (symbol.equals("-") && assertMetadata) {			
+			assertTokenDefinitionMeta("gap", PREDICATE_ORIGINAL_LABEL, "p1", reader);
+			assertTokenDefinitionMeta(symbol, PREDICATE_ORIGINAL_TOKEN_NAME, "p1", reader);
+		}
+		else if (symbol.equals("?") && assertMetadata) {			
+			assertTokenDefinitionMeta("missing data", PREDICATE_ORIGINAL_LABEL, "p1", reader);
+			assertTokenDefinitionMeta(symbol, PREDICATE_ORIGINAL_TOKEN_NAME, "p1", reader);
+		}
+		else if (assertMetadata) {
+			assertTokenDefinitionMeta(symbol, PREDICATE_ORIGINAL_TOKEN_NAME, "p1", reader);
+		}
+		
 		assertEndElement(TAG_STATE, reader);
 		
 		return tokenID;
@@ -3385,12 +3430,15 @@ public class NeXMLEventWriterTest implements ReadWriteConstants, NeXMLConstants 
 		}
 		else {
 			treeOrNetworkID = DEFAULT_NETWORK_ID_PREFIX + obtainCurrentIDIndex();
-			treeOrNetwork = new NetworkDataAdapter(treeOrNetworkID, "network", otuListID + obtainCurrentIDIndex());
 			
 			if (writeMetadata) {
+				treeOrNetwork = new NetworkMetadataAdapter(treeOrNetworkID, "network", otuListID + obtainCurrentIDIndex());
+
 				addLiteralMeta(treeOrNetwork.getAnnotations(), null);
 			}
-			
+			else {
+				treeOrNetwork = new NoAnnotationsNetwork(treeOrNetworkID, "network", otuListID + obtainCurrentIDIndex());
+			}			
 		}
 		
 		return treeOrNetwork;
