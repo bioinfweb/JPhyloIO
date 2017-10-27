@@ -254,9 +254,10 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 				}
 				else {
 					getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
-							getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), new URIOrStringIdentifier(info.getOriginalKey(), 
-									new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + info.getOriginalKey().toUpperCase())),  //TODO Should the predicate really be in upper case? 
-							LiteralContentSequenceType.SIMPLE));
+							getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), 
+							new URIOrStringIdentifier(info.getOriginalKey(), new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + 
+									PREDICATE_PART_SEPERATOR + info.getOriginalKey().toUpperCase())),  //TODO Should the predicate really be in upper case? 
+									LiteralContentSequenceType.SIMPLE));
 					getCurrentEventCollection().add(new LiteralMetadataContentEvent(info.getValue(), false));
 					getCurrentEventCollection().add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 				}

@@ -80,6 +80,7 @@ public class NeXMLCollectSequenceDataReceiver extends NeXMLHandleSequenceDataRec
 
 	@Override
 	protected void handleToken(String token, String label) throws JPhyloIOWriterException {
+		//TODO Why is the label parameter never used?
 		NeXMLWriterAlignmentInformation alignmentInfo = getStreamDataProvider().getCurrentAlignmentInfo();
 		
 		if (!alignmentInfo.hasTokenDefinitionSet()) {  // No token set was contained in the data adapter

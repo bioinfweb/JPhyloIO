@@ -214,8 +214,8 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 	private void writeMetaElement(QName predicate, String content) throws XMLStreamException, IOException {
 		AbstractNeXMLDataReceiverMixin.handleLiteralMeta(getStreamDataProvider(), 
-				new LiteralMetadataEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_META_ID_PREFIX), null, new URIOrStringIdentifier(null, predicate), 
-						LiteralContentSequenceType.SIMPLE));
+				new LiteralMetadataEvent(getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_META_ID_PREFIX), null, 
+						new URIOrStringIdentifier(null, predicate), LiteralContentSequenceType.SIMPLE));
 		AbstractNeXMLDataReceiverMixin.handleLiteralContentMeta(getStreamDataProvider(), getParameterMap(), 
 				new LiteralMetadataContentEvent(content, content));
 		AbstractNeXMLDataReceiverMixin.handleMetaEndEvent(getStreamDataProvider(), ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
@@ -241,9 +241,7 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 	
 	
 	public void writeRemainingStandardTokenDefinitions() throws IOException, XMLStreamException {
-		Set<String> tokenNames = getStreamDataProvider().getCurrentAlignmentInfo().getIDToTokenSetInfoMap().get(tokenSetID).getOccuringTokens();
-		
-		for (String token : tokenNames) {
+		for (String token : getStreamDataProvider().getCurrentAlignmentInfo().getIDToTokenSetInfoMap().get(tokenSetID).getOccuringTokens()) {
 			String tokenDefinitionID = getStreamDataProvider().createNewID(ReadWriteConstants.DEFAULT_TOKEN_DEFINITION_ID_PREFIX);
 			getStreamDataProvider().addToDocumentIDs(tokenDefinitionID);
 			doAdd(new SingleTokenDefinitionEvent(tokenDefinitionID, null, token, CharacterSymbolMeaning.CHARACTER_STATE, CharacterSymbolType.ATOMIC_STATE, null));
