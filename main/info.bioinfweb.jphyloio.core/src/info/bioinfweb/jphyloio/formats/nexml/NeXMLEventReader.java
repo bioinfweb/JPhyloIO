@@ -658,9 +658,11 @@ public class NeXMLEventReader extends AbstractXMLEventReader<NeXMLReaderStreamDa
 					try {
 						streamDataProvider.getTokenSets().get(streamDataProvider.getElementTypeToCurrentIDMap().get(EventContentType.TOKEN_SET_DEFINITION))
 							.getSymbolTranslationMap().put(Integer.parseInt(symbol), translation);
+						//TODO '-' and '?' must also be accepted. getSymbolTranslationMap() should probably not use integers as keys anymore. (Would parsing numbers be necessary at all then?)
 					}
 					catch (NumberFormatException e) {
-						throw new JPhyloIOReaderException("The symbol of a standard data token definition must be of type Integer.", event.getLocation());
+						throw new JPhyloIOReaderException("The symbol (\"" + symbol + 
+								"\") of a standard data token definition must be of type Integer.", event.getLocation());
 					}	  			
 				}
 				
