@@ -65,7 +65,7 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			CharacterStateSetType newType) {
 		
 		getLogger().addWarning("Switching from the specified " + specifiedType + " token set to " + newType + 
-				" token set, since a token with the ID " + event.getID() + "(" + event.getTokenName() + ", " + event.getTokenType() + 
+				" token set, since a token with the ID " + event.getID() + " (\"" + event.getTokenName() + "\", " + event.getTokenType() + 
 				", " + event.getMeaning() +	") was encountered that is invalid for a " + specifiedType + 
 				" token set in NeXML or such a token set does not exist in this format. "
 				+ "(Note that additional switches within the same token set may follow.)");
@@ -79,39 +79,39 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 			case DNA:
 				if (!isDNAToken(event)) {
 					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isRNAToken(event) && !alignmentInfo.getDefinedTokens().contains("T")) {
-						alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
 						logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.RNA);
+						alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
 					}
 					else {
-						alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 						logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DISCRETE);
+						alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 					}
 				}
 				break;
 			case RNA:
 				if (!isRNAToken(event)) {
 					if (getStreamDataProvider().getCurrentTokenSetInfo().isNucleotideType() && isDNAToken(event) && !alignmentInfo.getDefinedTokens().contains("U")) {
-						alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
 						logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DNA);
+						alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
 					}
 					else {
-						alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 						logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DISCRETE);
+						alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 					}
 				}
 				break;
 			case NUCLEOTIDE:
 				if (isDNAToken(event)) {
-					alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
 					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DNA);
+					alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
 				}
 				else if (isRNAToken(event)) {
-					alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
 					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.RNA);
+					alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
 				}
 				else {
-					alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DISCRETE);
+					alignmentInfo.setTokenSetType(CharacterStateSetType.DISCRETE);
 				}
 				break;
 			case AMINO_ACID:
