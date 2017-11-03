@@ -102,11 +102,13 @@ public class NeXMLCollectTokenSetDefinitionDataReceiver extends NeXMLCollectName
 				break;
 			case NUCLEOTIDE:
 				if (isDNAToken(event)) {
-					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.DNA);
+					getLogger().addMessage("Switching from a NUCLEOTIDE to a DNA token set, since NeXML does not allow general nucleotide token sets. "
+							+ "(Note that additional switches within the same token set may follow.)");
 					alignmentInfo.setTokenSetType(CharacterStateSetType.DNA);
 				}
 				else if (isRNAToken(event)) {
-					logTokenSetWarning(event, alignmentInfo.getTokenSetType(), CharacterStateSetType.RNA);
+					getLogger().addMessage("Switching from a NUCLEOTIDE to a RNA token set, since NeXML does not allow general nucleotide token sets. "
+							+ "(Note that additional switches within the same token set may follow.)");
 					alignmentInfo.setTokenSetType(CharacterStateSetType.RNA);
 				}
 				else {
