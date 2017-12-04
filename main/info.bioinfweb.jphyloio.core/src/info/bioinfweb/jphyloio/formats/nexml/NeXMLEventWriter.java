@@ -190,6 +190,7 @@ public class NeXMLEventWriter extends AbstractXMLEventWriter<NeXMLWriterStreamDa
 		
 		getStreamDataProvider().setUndefinedOTUID(null);
 		getStreamDataProvider().setUndefinedOTUsID(null); 
+		getStreamDataProvider().getDocumentIDs().clear();
 	}
 
 
