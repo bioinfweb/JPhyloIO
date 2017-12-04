@@ -19,6 +19,15 @@
 package info.bioinfweb.jphyloio.formats.nexml.receivers;
 
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.bio.CharacterSymbolType;
@@ -37,16 +46,6 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterAlignmentInformation;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLWriterStreamDataProvider;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 
 
 
@@ -141,25 +140,9 @@ public class NeXMLTokenSetEventReceiver extends NeXMLMetaDataReceiver {
 		String label = event.getLabel();
 		
 		if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.DISCRETE)) {
-			if (event.getMeaning().equals(CharacterSymbolMeaning.GAP)) {
-				if (!((tokenName.length() == 1) && (tokenName.charAt(0) == SequenceUtils.GAP_CHAR))) {
-					tokenSymbol = "" + tokenDefinitionIndex;
-					tokenDefinitionIndex++;
-					label = tokenName;
-				}
-			}
-			else if (event.getMeaning().equals(CharacterSymbolMeaning.MISSING)) {
-				if (!((tokenName.length() == 1) && (tokenName.charAt(0) == SequenceUtils.MISSING_DATA_CHAR))) {
-					tokenSymbol = "" + tokenDefinitionIndex;
-					tokenDefinitionIndex++;
-					label = tokenName;
-				}
-			}
-			else {
-				tokenSymbol = "" + tokenDefinitionIndex;
-				tokenDefinitionIndex++;
-				label = tokenName;
-			}
+			tokenSymbol = "" + tokenDefinitionIndex;
+			tokenDefinitionIndex++;
+			label = tokenName;
 		}
 		else if (alignmentInfo.getAlignmentType().equals(CharacterStateSetType.AMINO_ACID)) {
 			if (tokenName.length() == 3) {
