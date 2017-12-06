@@ -80,13 +80,33 @@ public class URIOrStringIdentifier {
 		if (stringRepresentation == null) {
 			if (other.stringRepresentation != null)
 				return false;
-		} else if (!stringRepresentation.equals(other.stringRepresentation))
+		}
+		else if (!stringRepresentation.equals(other.stringRepresentation))
 			return false;
 		if (uri == null) {
 			if (other.uri != null)
 				return false;
-		} else if (!uri.equals(other.uri))
+		}
+		else if (!uri.equals(other.uri))
 			return false;
 		return true;
+	}
+	
+	
+	/**
+	 * Tests whether this and the other object have an equal string representation or an equal URI 
+	 * or both.
+	 * <p>
+	 * Note that both objects having {@code null} for their string representations or URIs
+	 * is not considered as equal by this method. (This is a different behavior as in 
+	 * {@link #equals(Object)}.)
+	 * 
+	 * @param other the instance to be compared
+	 * @return {@code true} if the condition above is fulfilled or {@code false} otherwise 
+	 */
+	public boolean equalsStringOrURI(URIOrStringIdentifier other) {
+		return (other != null) &&
+				(((stringRepresentation != null) && stringRepresentation.equals(other.stringRepresentation)) ||
+						((uri != null) && uri.equals(other.uri)));
 	}
 }
