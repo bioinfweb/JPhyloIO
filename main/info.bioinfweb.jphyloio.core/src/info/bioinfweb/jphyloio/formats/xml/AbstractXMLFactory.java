@@ -94,7 +94,7 @@ public abstract class AbstractXMLFactory extends AbstractSingleReaderWriterFacto
 	@Override
 	public boolean checkFormat(Reader reader, ReadWriteParameterMap parameters)	{
 		try {
-			XMLEventReader xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);
+			XMLEventReader xmlReader = XMLInputFactory.newInstance().createXMLEventReader(reader);  //TODO Why is the underlying stream of the BufferedInputStream set to null here on some systems?
 			
 			if (!(xmlReader.nextEvent().getEventType() == XMLStreamConstants.START_DOCUMENT)) {
 				return false;
