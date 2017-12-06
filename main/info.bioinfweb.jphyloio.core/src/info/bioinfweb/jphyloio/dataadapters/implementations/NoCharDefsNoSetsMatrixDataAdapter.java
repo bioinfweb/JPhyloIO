@@ -41,17 +41,17 @@ import info.bioinfweb.jphyloio.events.TokenSetDefinitionEvent;
  * @since 0.0.0
  */
 public abstract class NoCharDefsNoSetsMatrixDataAdapter extends EmptyAnnotatedDataAdapter<LinkedLabeledIDEvent> implements MatrixDataAdapter {
-    /**
-     * Default implementation that always returns an empty object list adapter.
-     *
-     * @return a shared instance of {@link EmptyObjectListDataAdapter}
-     * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getCharacterDefinitions(ReadWriteParameterMap)
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions(ReadWriteParameterMap parameters) {
-        return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
-    }
+	/**
+	 * Default implementation that always returns an empty object list adapter.
+	 *
+	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
+	 * @see info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter#getCharacterDefinitions(ReadWriteParameterMap)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public ObjectListDataAdapter<CharacterDefinitionEvent> getCharacterDefinitions(ReadWriteParameterMap parameters) {
+		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
+	}
 
 
 	/**
@@ -67,7 +67,7 @@ public abstract class NoCharDefsNoSetsMatrixDataAdapter extends EmptyAnnotatedDa
 	}
 
 
-    /**
+	/**
 	 * Default implementation that always returns an empty object list adapter.
 	 *
 	 * @return a shared instance of {@link EmptyObjectListDataAdapter}
