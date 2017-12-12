@@ -71,7 +71,6 @@ import info.bioinfweb.jphyloio.exception.InconsistentAdapterDataException;
 import info.bioinfweb.jphyloio.formats.xml.XMLReadWriteUtils;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.EdgeAndNodeMetaDataTreeAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NetworkMetadataAdapter;
-import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.PhyloXMLNetworkDataAdapter;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsNetwork;
 import info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters.NoAnnotationsTree;
 
