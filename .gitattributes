@@ -416,6 +416,7 @@ main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/BigIntegerTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/BooleanTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/ByteTranslator.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/ColorTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/DateTimeTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/DateTranslator.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/objecttranslation/implementations/DoubleTranslator.java -text svneol=unset#text/plain

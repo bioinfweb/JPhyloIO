@@ -92,6 +92,7 @@ public class PhyloXMLColorTranslator extends AbstractObjectTranslator<Color> imp
 	@Override
 	public Color readXMLRepresentation(XMLEventReader reader, ReaderStreamDataProvider<?> streamDataProvider) throws IOException, XMLStreamException,
 			InvalidObjectSourceDataException {
+		
 		Color color = null;
 		String red = null;
 		String green = null;
