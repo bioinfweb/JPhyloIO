@@ -102,8 +102,8 @@ main/info.bioinfweb.jphyloio.core/include/APACHE-LICENSE.txt -text svneol=unset#
 main/info.bioinfweb.jphyloio.core/include/GPL.txt -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/include/LGPL.txt -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/include/NOTICE.txt -text svneol=unset#text/plain
-main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb-commons-java-bio-2.0.0.jar -text
-main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb-commons-java-core-2.3.0.jar -text
+main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb-commons-java-bio-3.0.0.jar -text
+main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb-commons-java-core-3.0.0.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/commons-collections4-4.1.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/commons-lang3-3.5.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/owlapi-XMLUtils-4.1.4.jar -text
