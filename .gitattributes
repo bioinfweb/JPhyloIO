@@ -2,6 +2,7 @@
 demo/info.bioinfweb.jphyloio.demo.gccontent/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.gccontent/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/ReadMe.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/data/Test.fasta -text
 demo/info.bioinfweb.jphyloio.demo.gccontent/src/GPL.txt -text svneol=unset#text/plain
