@@ -115,19 +115,15 @@ public abstract class AbstractNeXMLElementReader extends AbstractXMLElementReade
 			lastToken = currentToken;
 			
 			if (!Character.isWhitespace(sequence.charAt(sequence.length() - 1))) {
-				try {
-					XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
-					if (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS) {
-						if (!Character.isWhitespace(nextEvent.asCharacters().getData().charAt(0))) {
-							streamDataProvider.setIncompleteToken(lastToken);
-						}
-					}
-					else if (!currentToken.isEmpty()) {
-						tokenList.add(currentToken);
+				//TODO Had the catch block here (deleted in r1600) another function? 
+				XMLEvent nextEvent = streamDataProvider.getXMLReader().peek();
+				if ((nextEvent != null) && (nextEvent.getEventType() == XMLStreamConstants.CHARACTERS)) {
+					if (!Character.isWhitespace(nextEvent.asCharacters().getData().charAt(0))) {
+						streamDataProvider.setIncompleteToken(lastToken);
 					}
 				}
-				catch (Exception e) {
-					e.printStackTrace();
+				else if (!currentToken.isEmpty()) {
+					tokenList.add(currentToken);
 				}
 			}			
 
