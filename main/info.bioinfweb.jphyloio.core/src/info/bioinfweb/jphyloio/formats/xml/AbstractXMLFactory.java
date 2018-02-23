@@ -117,6 +117,8 @@ public abstract class AbstractXMLFactory extends AbstractSingleReaderWriterFacto
 			}
 		}
 		catch (XMLStreamException e) {
+			System.err.println("The following exception occurred when trying to check a file. The file will be excluded by the filer.");
+			e.printStackTrace();
 			return false;
 		}
 	}

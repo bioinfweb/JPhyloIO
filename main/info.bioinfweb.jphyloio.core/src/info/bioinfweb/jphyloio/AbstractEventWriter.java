@@ -74,7 +74,6 @@ public abstract class AbstractEventWriter<P extends WriterStreamDataProvider<? e
 
 	public AbstractEventWriter() {
 		super();
-		streamDataProvider = createStreamDataProvider();
 	}
 
 
@@ -485,6 +484,7 @@ public abstract class AbstractEventWriter<P extends WriterStreamDataProvider<? e
 
 	@Override
 	public void writeDocument(DocumentDataAdapter document, Writer writer, ReadWriteParameterMap parameters) throws IOException {
+		streamDataProvider = createStreamDataProvider();  // Must be done here instead of in the constructor to make sure that no data stored in the provider is still present when writing the next document.
 		parameters.put(ReadWriteParameterNames.KEY_WRITER_INSTANCE, this);
 		doWriteDocument(document, writer, parameters);
 	}
