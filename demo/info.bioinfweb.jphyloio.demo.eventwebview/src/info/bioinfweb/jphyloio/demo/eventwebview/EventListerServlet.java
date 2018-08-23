@@ -25,7 +25,6 @@ public class EventListerServlet extends HttpServlet {
 	public static final String PARAM_FORMAT = "format";
 	
 	public static final String ATTR_EVENT = "event";
-	public static final String ATTR_INDENTION= "indention";
 	public static final String ATTR_SOURCE = "source";
 
 	public static final String START_OUTPUT_JSP = "/start.jsp";
@@ -56,24 +55,16 @@ public class EventListerServlet extends HttpServlet {
 			//TODO Output error (Redirect to special JSP)
 		}
 		else {
-			int indentionLevel = 0;
 			while (reader.hasNextEvent()) {
 				JPhyloIOEvent event = reader.next();
 				
 				if (EventTopologyType.START.equals(event.getType().getTopologyType())) {
 					getServletContext().getRequestDispatcher(SUBTREE_START_OUTPUT_JSP).include(request, response);
 				}
-				if (EventTopologyType.END.equals(event.getType().getTopologyType())) {
-					indentionLevel--;
-				}
 				
 				request.setAttribute(ATTR_EVENT, event);
-				request.setAttribute(ATTR_INDENTION, indentionLevel);
 				getServletContext().getRequestDispatcher(EVENT_OUTPUT_JSP).include(request, response);
 				
-				if (EventTopologyType.START.equals(event.getType().getTopologyType())) {
-					indentionLevel++;
-				}
 				if (EventTopologyType.END.equals(event.getType().getTopologyType())) {
 					getServletContext().getRequestDispatcher(SUBTREE_END_OUTPUT_JSP).include(request, response);
 				}

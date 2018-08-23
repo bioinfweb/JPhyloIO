@@ -7,9 +7,9 @@
 }
 
 .subtree-box .subtree-box {
-	margin-left: 2em;
-	margin-top: 2em;
-	margin-bottom: 2em;
+	margin-left: 1.5em;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
 }
 
 .event-box {
@@ -21,5 +21,5 @@
 }
 
 .event-box + .event-box  {
-	border-top-style: none;
+	margin-top: -1px;  /* Collapse borders */
 }
