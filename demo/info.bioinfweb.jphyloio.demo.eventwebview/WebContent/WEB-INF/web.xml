@@ -9,4 +9,13 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  
+  <servlet>
+    <servlet-name>EventLister</servlet-name>
+    <servlet-class>info.bioinfweb.jphyloio.demo.eventwebview.EventListerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EventLister</servlet-name>
+    <url-pattern>/index.jsp</url-pattern>
+  </servlet-mapping>
 </web-app>

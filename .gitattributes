@@ -5,10 +5,26 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/.settings/org.eclipse.jdt.core.pr
 demo/info.bioinfweb.jphyloio.demo.eventwebview/.settings/org.eclipse.wst.common.component -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/.settings/org.eclipse.wst.common.project.facet.core.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/META-INF/MANIFEST.MF -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/bioinfweb-commons-java-bio-3.0.0.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/bioinfweb-commons-java-core-3.2.0.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/bioinfweb-commons-java-servlet-1.0.0.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-collections4-4.1.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-lang3-3.5.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/jphyloio-core-0.5.2.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/jstl.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/jstl_standard.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/owlapi-XMLUtils-4.1.4.jar -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/web.xml -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/end.jsp -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/eventOutput.jsp -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/start.jsp -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/style.css -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/subtreeEnd.jsp -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/subtreeStart.jsp -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/GPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/NOTICE.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/src/info/bioinfweb/jphyloio/demo/eventwebview/EventListerServlet.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.gccontent/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
