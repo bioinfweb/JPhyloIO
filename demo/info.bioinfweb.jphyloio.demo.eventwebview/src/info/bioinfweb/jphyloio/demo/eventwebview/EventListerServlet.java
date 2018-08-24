@@ -4,8 +4,14 @@ package info.bioinfweb.jphyloio.demo.eventwebview;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,10 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import info.bioinfweb.commons.text.StringUtils;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.demo.eventwebview.exception.LoadingException;
 import info.bioinfweb.jphyloio.demo.eventwebview.exception.ProcessingException;
+import info.bioinfweb.jphyloio.events.CharacterSetIntervalEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
@@ -28,8 +37,9 @@ public class EventListerServlet extends HttpServlet {
 	public static final String PARAM_SOURCE_URL = "sourceURL";
 	public static final String PARAM_FORMAT = "format";
 	
-	public static final String ATTR_EVENT = "event";
 	public static final String ATTR_SOURCE = "source";
+	public static final String ATTR_EVENT = "event";
+	public static final String ATTR_PROPERTIES = "properties";
 
 	public static final String START_OUTPUT_JSP = "/start.jsp";
 	public static final String END_OUTPUT_JSP = "/end.jsp";
@@ -40,6 +50,59 @@ public class EventListerServlet extends HttpServlet {
 	
 	private JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
 	
+	
+	private Method getMethod(Class<?> eventClass, String prefix, Field field) {
+		try {
+			return eventClass.getMethod(prefix + StringUtils.firstCharToUpperCase(field.getName()));
+		}
+		catch (NoSuchMethodException | SecurityException e) {}  // Nothing to do. (Return null later.)
+		return null;
+	}
+	
+	
+	private List<EventProperty> createPropertyList(JPhyloIOEvent event) throws ServletException {
+		List<EventProperty> result = new ArrayList<>();
+		
+		Class<?> eventClass = event.getClass();
+		while ((eventClass != null) && !ConcreteJPhyloIOEvent.class.getName().equals(eventClass.getName())) {
+			for (Field field : eventClass.getDeclaredFields()) {
+				try {
+					boolean keyword = false;
+					Method getter = getMethod(eventClass, "get", field);
+					if (getter == null) {
+						getter = getMethod(eventClass, "is", field);
+						keyword = true;
+					}
+					
+					if (getter != null) {
+						Object value = getter.invoke(event);
+						
+						String valueRepresentation;
+						if (value != null) {
+							valueRepresentation = value.toString();
+						}
+						else {
+							valueRepresentation = "null";
+							keyword = true;
+						}
+						
+						if (keyword) {
+							valueRepresentation = "<span class='keyword-value'>" + valueRepresentation + "</span>";
+						}
+						
+						result.add(new EventProperty(field.getName(), valueRepresentation));
+					}
+				} 
+				catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+					throw new ServletException(e);  // ServletExceptions are not wrapped into ProcessingExceptions.
+				}
+			}
+			eventClass = eventClass.getSuperclass();
+		}
+		
+		Collections.reverse(result);  // Inherited fields should be displayed first.
+		return result;
+	}
 	
 	
 	private void outputEvents(HttpServletRequest request, HttpServletResponse response, InputStream stream, String formatID) throws Exception {
@@ -66,6 +129,7 @@ public class EventListerServlet extends HttpServlet {
 				}
 				
 				request.setAttribute(ATTR_EVENT, event);
+				request.setAttribute(ATTR_PROPERTIES, createPropertyList(event));
 				getServletContext().getRequestDispatcher(EVENT_OUTPUT_JSP).include(request, response);
 				
 				if (EventTopologyType.END.equals(event.getType().getTopologyType())) {
@@ -130,4 +194,18 @@ public class EventListerServlet extends HttpServlet {
 		// https://commons.apache.org/proper/commons-fileupload/streaming.html
 		throw new ServletException("Post not yet implemented.");
 	}
+	
+	
+//	public static void main(String[] args) {
+//		CharacterSetIntervalEvent event = new CharacterSetIntervalEvent(5, 18);
+//		EventListerServlet servlet = new EventListerServlet();
+//		try {
+//			for (EventProperty property : servlet.createPropertyList(event)) {
+//				System.out.println(property);
+//			}
+//		} 
+//		catch (ServletException e) {
+//			e.printStackTrace();
+//		}
+//	}
 }

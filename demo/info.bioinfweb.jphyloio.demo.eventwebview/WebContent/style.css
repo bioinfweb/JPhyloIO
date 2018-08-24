@@ -18,8 +18,14 @@
 	border-width: 1px;
 	border-color: #A0A0A0;
 	margin: 0;
+	padding-left: 1em;
+	padding-right: 1em;
 }
 
 .event-box + .event-box  {
 	margin-top: -1px;  /* Collapse borders */
+}
+
+.keyword-value {
+	font-weight: bold;
 }

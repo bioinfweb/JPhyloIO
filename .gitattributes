@@ -27,6 +27,7 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/src/GPL.txt -text svneol=unset#te
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/NOTICE.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/info/bioinfweb/jphyloio/demo/eventwebview/EventListerServlet.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/src/info/bioinfweb/jphyloio/demo/eventwebview/EventProperty.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/info/bioinfweb/jphyloio/demo/eventwebview/exception/EventWebViewException.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/info/bioinfweb/jphyloio/demo/eventwebview/exception/LoadingException.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/info/bioinfweb/jphyloio/demo/eventwebview/exception/ProcessingException.java -text svneol=unset#text/plain
