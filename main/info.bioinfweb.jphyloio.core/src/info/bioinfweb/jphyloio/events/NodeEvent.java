@@ -35,12 +35,12 @@ import info.bioinfweb.jphyloio.events.type.EventContentType;
  * @author Ben St&ouml;ver
  */
 public class NodeEvent extends LinkedLabeledIDEvent {
-	private boolean isRootNode;
+	private boolean rootNode;
 
 	
 	public NodeEvent(String id, String label, String linkedOTUID, boolean isRootNode) {
 		super(EventContentType.NODE, id, label, linkedOTUID);
-		this.isRootNode = isRootNode;
+		this.rootNode = isRootNode;
 	}
 
 	
@@ -62,6 +62,6 @@ public class NodeEvent extends LinkedLabeledIDEvent {
 	 * @return {@code true} if this node is a possible root or {@code false} otherwise
 	 */
 	public boolean isRootNode() {
-		return isRootNode;
+		return rootNode;
 	}
 }
