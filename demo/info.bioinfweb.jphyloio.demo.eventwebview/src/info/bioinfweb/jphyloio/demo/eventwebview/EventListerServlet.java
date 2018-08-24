@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -60,6 +61,39 @@ public class EventListerServlet extends HttpServlet {
 	}
 	
 	
+	private String formatValue(Object value) {
+		if (value instanceof Iterable<?>) {
+			StringBuilder result = new StringBuilder();
+			result.append("[");
+			
+			Iterator<?> iterator = ((Iterable<?>)value).iterator();
+			while (iterator.hasNext()) {
+				result.append(formatValue(iterator.next()));
+				if (iterator.hasNext()) {
+					result.append(", ");
+				}
+			}
+			
+			result.append("]");
+			return result.toString();
+		}
+		else {
+			String result = "null";
+			if (value != null) {
+				result = value.toString();
+			}
+			
+			if (value instanceof CharSequence) {
+				result = "&quot;" + result + "&quot;";
+			}
+			else {
+				result = "<code>" + result + "</code>";
+			}
+			return result;
+		}
+	}
+	
+	
 	private List<EventProperty> createPropertyList(JPhyloIOEvent event) throws ServletException {
 		List<EventProperty> result = new ArrayList<>();
 		
@@ -67,30 +101,13 @@ public class EventListerServlet extends HttpServlet {
 		while ((eventClass != null) && !ConcreteJPhyloIOEvent.class.getName().equals(eventClass.getName())) {
 			for (Field field : eventClass.getDeclaredFields()) {
 				try {
-					boolean keyword = false;
 					Method getter = getMethod(eventClass, "get", field);
 					if (getter == null) {
 						getter = getMethod(eventClass, "is", field);
-						keyword = true;
 					}
 					
 					if (getter != null) {
-						Object value = getter.invoke(event);
-						
-						String valueRepresentation;
-						if (value != null) {
-							valueRepresentation = value.toString();
-						}
-						else {
-							valueRepresentation = "null";
-							keyword = true;
-						}
-						
-						if (keyword) {
-							valueRepresentation = "<span class='keyword-value'>" + valueRepresentation + "</span>";
-						}
-						
-						result.add(new EventProperty(field.getName(), valueRepresentation));
+						result.add(new EventProperty(field.getName(), formatValue(getter.invoke(event))));
 					}
 				} 
 				catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {

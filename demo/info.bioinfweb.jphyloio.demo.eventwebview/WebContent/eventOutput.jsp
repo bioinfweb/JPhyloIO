@@ -11,7 +11,7 @@
 		<h4>Properties:</h4>
 		<ul>
 			<c:forEach items="${properties}" var="property">
-				<li>${property.name}: <code>${property.value}</code></li>
+				<li>${property.name}: ${property.value}</li>
 			</c:forEach>
 		</ul>
 	</c:if>

@@ -25,7 +25,3 @@
 .event-box + .event-box  {
 	margin-top: -1px;  /* Collapse borders */
 }
-
-.keyword-value {
-	font-weight: bold;
-}
