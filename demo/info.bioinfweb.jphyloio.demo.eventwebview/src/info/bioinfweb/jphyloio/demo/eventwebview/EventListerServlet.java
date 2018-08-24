@@ -1,8 +1,10 @@
 package info.bioinfweb.jphyloio.demo.eventwebview;
 
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
@@ -14,6 +16,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.demo.eventwebview.exception.LoadingException;
+import info.bioinfweb.jphyloio.demo.eventwebview.exception.ProcessingException;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
@@ -51,8 +55,7 @@ public class EventListerServlet extends HttpServlet {
 		}
 		
 		if (reader == null) {
-			throw new ServletException("No reader found.");
-			//TODO Output error (Redirect to special JSP)
+			throw new LoadingException("No appropriate reader could be found for the specified file.");
 		}
 		else {
 			while (reader.hasNextEvent()) {
@@ -77,27 +80,47 @@ public class EventListerServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String sourceURL = request.getParameter(PARAM_SOURCE_URL);
-		if (sourceURL == null) {
-			 //TODO Output error (or possibly handle text case)
-			throw new ServletException("No source URL was specified.");  //TODO This may or may not have to be replaced, depending on how outputting errors is implemented.
+		try {
+			String sourceURL = request.getParameter(PARAM_SOURCE_URL);
+			if (sourceURL == null) {
+				throw new LoadingException("No source URL was specified.");
+			}
+			else {
+				request.setAttribute(ATTR_SOURCE, StringEscapeUtils.escapeHtml4(sourceURL));
+				
+				InputStream stream;
+				try {
+					stream = new URL(sourceURL).openStream();
+				}
+				catch (MalformedURLException e) {
+					throw new LoadingException("The specified URL is invalid: " + e.getMessage());
+				}
+				catch (FileNotFoundException e) {
+					throw new LoadingException("The specified file could not be found.");
+				}
+				catch (Exception e) {
+					throw new LoadingException(e.toString());
+				}
+				
+				try {
+					outputEvents(request, response, stream, request.getParameter(PARAM_FORMAT));
+				}
+				catch (ServletException | LoadingException e) {
+					throw e;
+				}
+				catch (Exception e) {
+					throw new ProcessingException(e);
+				}
+				finally {
+					stream.close();
+				}
+			}
 		}
-		else {
-			request.setAttribute(ATTR_SOURCE, StringEscapeUtils.escapeHtml4(sourceURL));
-			
-			InputStream stream = new URL(sourceURL).openStream();  //TODO Catch MalformedURLException with a meaningful error message to the user here or outside of the method.
-			try {
-				outputEvents(request, response, stream, request.getParameter(PARAM_FORMAT));
-			}
-			catch (ServletException e) {
-				throw e;
-			}
-			catch (Exception e) {
-				throw new ServletException(e);  //TODO Exceptions should be presented to the user using a layouted page and it should be indicated whether it was a system error or an error when parsing the file. This could either be done by a custom output page on project level (which should be possible) or by catching JPhyloIO exceptions here.
-			}
-			finally {
-				stream.close();
-			}
+		catch (ServletException | IOException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new ServletException(e);
 		}
 	}
 

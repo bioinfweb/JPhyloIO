@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-  <display-name>info.bioinfweb.jphyloio.demo.eventwebview</display-name>
+  <display-name>JPhyloIO event lister</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
@@ -10,6 +10,7 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   
+  
   <servlet>
     <servlet-name>EventLister</servlet-name>
     <servlet-class>info.bioinfweb.jphyloio.demo.eventwebview.EventListerServlet</servlet-class>
@@ -18,4 +19,24 @@
     <servlet-name>EventLister</servlet-name>
     <url-pattern>/index.jsp</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ProcessingExceptionHandler</servlet-name>
+    <servlet-class>info.bioinfweb.jphyloio.demo.eventwebview.exception.ProcessingExceptionHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProcessingExceptionHandler</servlet-name>
+    <url-pattern>/exception/processingExceptionHandler.jsp</url-pattern>
+  </servlet-mapping>
+  
+  
+  <error-page>
+    <exception-type>info.bioinfweb.jphyloio.demo.eventwebview.exception.LoadingException</exception-type>
+    <location>/exception/loadingExceptionHandler.jsp</location>
+  </error-page>
+  
+  <error-page>
+    <exception-type>info.bioinfweb.jphyloio.demo.eventwebview.exception.ProcessingException</exception-type>
+    <location>/exception/processingExceptionHandler.jsp</location>
+  </error-page>
 </web-app>
