@@ -3,9 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <div class="event-box">
-	<p><code>${event.type.contentType}.${event.type.topologyType}</code>
+	<h3><code>${event.type.contentType}.${event.type.topologyType}</code>
 			(<a href="http://bioinfweb.info/Code/sventon/repos/JPhyloIO/show/trunk/main/info.bioinfweb.jphyloio.core/src/${fn:replace(event['class'].name, '.', '/')}.java?revision=HEAD"
-			>${event['class'].name}</a>)</p>
+			>${event['class'].name}</a>)</h3>
 			
 	<c:if test="${fn:length(properties) > 0}">
 		<h4>Properties:</h4>

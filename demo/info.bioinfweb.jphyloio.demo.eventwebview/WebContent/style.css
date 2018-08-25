@@ -25,3 +25,12 @@
 .event-box + .event-box  {
 	margin-top: -1px;  /* Collapse borders */
 }
+
+.event-box h3 {
+	font-weight: normal;
+	font-size: 1em;
+}
+
+.event-box h4 {
+	font-size: 1em;
+}
