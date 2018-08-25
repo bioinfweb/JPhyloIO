@@ -9,3 +9,4 @@
 	<body>
 		<h1><i>JPhyloIO</i> event lister</h1>
 		<p>Source: <code>${source}</code></p>
+		<p>JPhyloIO version: ${jPhyloIOVersion}</p>

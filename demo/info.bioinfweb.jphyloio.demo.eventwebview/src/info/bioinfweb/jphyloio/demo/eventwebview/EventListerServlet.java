@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import info.bioinfweb.commons.text.StringUtils;
+import info.bioinfweb.jphyloio.JPhyloIO;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.demo.eventwebview.exception.LoadingException;
@@ -39,6 +40,7 @@ public class EventListerServlet extends HttpServlet {
 	public static final String PARAM_FORMAT = "format";
 	
 	public static final String ATTR_SOURCE = "source";
+	public static final String ATTR_VERSION = "jPhyloIOVersion";
 	public static final String ATTR_EVENT = "event";
 	public static final String ATTR_PROPERTIES = "properties";
 
@@ -168,6 +170,7 @@ public class EventListerServlet extends HttpServlet {
 			}
 			else {
 				request.setAttribute(ATTR_SOURCE, StringEscapeUtils.escapeHtml4(sourceURL));
+				request.setAttribute(ATTR_VERSION, JPhyloIO.getInstance().getVersion());
 				
 				InputStream stream;
 				try {
