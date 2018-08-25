@@ -2,6 +2,7 @@
 demo/info.bioinfweb.jphyloio.demo.eventwebview/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/.settings/org.eclipse.wst.common.component -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/.settings/org.eclipse.wst.common.project.facet.core.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/META-INF/MANIFEST.MF -text svneol=unset#text/plain
