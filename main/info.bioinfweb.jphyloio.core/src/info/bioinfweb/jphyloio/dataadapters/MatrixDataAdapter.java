@@ -155,11 +155,11 @@ public interface MatrixDataAdapter extends ElementDataAdapter<LinkedLabeledIDEve
 	 * {@code SequencePartContent} in the documentation of {@link JPhyloIOEventReader}.
 	 * <p>
 	 * Note that (according to the grammar definition) metadata related to the sequence as a whole can also be
-	 * provided to the {@code receiver} in this method. In most cases it makes sense to provide the according
-	 * metaevents at the beginning of this sequences, i.e. if this method is called with {@code startColumn} = 0
+	 * passed to the {@code receiver} in this method. In most cases it makes sense to pass the respective
+	 * metaevents at the beginning of this sequence, i.e., if this method is called with {@code startColumn} = 0
 	 * the first events written should be the metaevents for the whole sequence. (Note that the grammar in principle 
 	 * allows such metaevents also between sequence token events, but not all formats (not all writers) support
-	 * metadata at such a position.) The same applies to comment events. (See the documentation if the single 
+	 * metadata at such a position.) The same applies to comment events. (See the documentation of the single 
 	 * writers for further details on supported data.)
 	 * <p>
 	 * Note that column indices in <i>JPhyloIO</i> start with 0.   
