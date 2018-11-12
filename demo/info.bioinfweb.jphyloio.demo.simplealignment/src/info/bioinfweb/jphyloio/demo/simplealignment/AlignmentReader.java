@@ -81,35 +81,35 @@ public class AlignmentReader {
 		while (reader.hasNextEvent()) {  // This loop will run until all events of the JPhyloIO reader are consumed (and the end of the 
 			                               // document is reached). 
 			JPhyloIOEvent event = reader.next();  // Read the next event from the JPhyloIO reader.	      
-      switch (event.getType().getContentType()) {  // This switch statement handles all types of elements on the top level that are 
+			switch (event.getType().getContentType()) {  // This switch statement handles all types of elements on the top level that are 
       	                                           // relevant for this application. The others are skipped in the default block. 
-      	case DOCUMENT:
-      		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
-      			model.clear();  // Remove possible previous data from the model instance.
-      		}
-      		// Document end events do not need any treatment in this application.
-      		break;
+				case DOCUMENT:
+					if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
+						model.clear();  // Remove possible previous data from the model instance.
+					}
+					// Document end events do not need any treatment in this application.
+					break;
       		
-      	case ALIGNMENT:
-      		if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
-      			if (model.isEmpty()) {
-      				readAlignment(event.asLinkedLabeledIDEvent());  // Delegate reading the alignment contents to another method 
-      				                                                // (that corresponds to a nested grammar node).
-      			}
-      			else {
-      				System.out.println("Since this application does not support multiple alignments, the alignment with the ID "
-      						+ event.asLinkedLabeledIDEvent().getID() + " was skipped.");
-      			}
-      		}
-        	break;
+				case ALIGNMENT:
+					if (event.getType().getTopologyType().equals(EventTopologyType.START)) {  // There can be a document start and a document end event.
+						if (model.isEmpty()) {
+							readAlignment(event.asLinkedLabeledIDEvent());  // Delegate reading the alignment contents to another method 
+							                                                // (that corresponds to a nested grammar node).
+						}
+						else {
+							System.out.println("Since this application does not support multiple alignments, the alignment with the ID "
+									+ event.asLinkedLabeledIDEvent().getID() + " was skipped.");
+						}
+					}
+					break;
         	
-        default:  // Here possible additional events on the top level are handled (e.g. tree group events).
-        	JPhyloIOReadingUtils.reachElementEnd(reader);  // This tool method will skip over all elements until the end event to the
-        	                                               // current event was read. This way all nested events not relevant for this
-        	                                               // application are skipped. If the current event would have the topology
-        	                                               // type SOLE, the method will skip no additional events.
-        	break;
-      }
+				default:  // Here possible additional events on the top level are handled (e.g. tree group events).
+					JPhyloIOReadingUtils.reachElementEnd(reader);  // This tool method will skip over all elements until the end event to the
+					                                               // current event was read. This way all nested events not relevant for this
+					                                               // application are skipped. If the current event would have the topology
+					                                               // type SOLE, the method will skip no additional events.
+					break;
+			}
 		}
 	}
 	
@@ -130,15 +130,15 @@ public class AlignmentReader {
 		// Process JPhyloIO events:
 		JPhyloIOEvent event = reader.next();  
 		while ((!event.getType().getTopologyType().equals(EventTopologyType.END))) {  // This loop will run until all events for the 
-			                                                                            // current alignment are consumed. 
-      if (event.getType().getContentType().equals(EventContentType.SEQUENCE)) {  // This application is only interested in sequence events 
-      	                                                                         // and will skip others on this level (e.g. character set 
-      	                                                                         // or sequence set definitions).
-      	readSequencePart(event.asLinkedLabeledIDEvent());  // Delegate reading the sequence contents to another method.
-      }
-      else {
-      	JPhyloIOReadingUtils.reachElementEnd(reader);  // Skip events not processed by this application.
-      }
+		                                                                              // current alignment are consumed. 
+			if (event.getType().getContentType().equals(EventContentType.SEQUENCE)) {  // This application is only interested in sequence events 
+			                                                                           // and will skip others on this level (e.g. character set 
+			                                                                           // or sequence set definitions).
+				readSequencePart(event.asLinkedLabeledIDEvent());  // Delegate reading the sequence contents to another method.
+			}
+			else {
+				JPhyloIOReadingUtils.reachElementEnd(reader);  // Skip events not processed by this application.
+			}
 			event = reader.next();  // Read the next event from the JPhyloIO reader.	      
 		}
 	}
