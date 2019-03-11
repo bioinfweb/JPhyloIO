@@ -22,8 +22,10 @@
 
 <div class="event-box">
 	<h3><code>${event.type.contentType}.${event.type.topologyType}</code>
-			(<a href="http://bioinfweb.info/Code/sventon/repos/JPhyloIO/show/trunk/main/info.bioinfweb.jphyloio.core/src/${fn:replace(event['class'].name, '.', '/')}.java?revision=HEAD"
-			>${event['class'].name}</a>)</h3>
+			(${event['class'].name}) 
+			[<a href="http://bioinfweb.info/JPhyloIO/Documentation/API/Latest/index.html?${fn:replace(event['class'].name, '.', '/')}.html">JavaDoc</a>]
+			[<a href="http://bioinfweb.info/Code/sventon/repos/JPhyloIO/show/trunk/main/info.bioinfweb.jphyloio.core/src/${fn:replace(event['class'].name, '.', '/')}.java?revision=HEAD"
+			>Source code</a>]</h3>
 			
 	<c:if test="${fn:length(properties) > 0}">
 		<h4>Properties:</h4>
