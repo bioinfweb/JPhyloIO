@@ -15,12 +15,7 @@
  
  You should have received a copy of the GNU Lesser General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
- --%><!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>JPhyloIO event lister</title>
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style.css" />
-	</head>
-	<body>
-		<jsp:include page="generalInfo.jsp" />
+ --%>
+<h1><i>JPhyloIO</i> event lister</h1>
+<p><b>Source:</b> <code>${source}</code></p>
+<p><b>JPhyloIO version:</b> ${jPhyloIOVersion}</p>

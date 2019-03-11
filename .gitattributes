@@ -20,6 +20,7 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/end.jsp -text svneol=u
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/eventOutput.jsp -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/exception/loadingExceptionHandler.jsp -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/exception/processingOutput.jsp -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/generalInfo.jsp -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/start.jsp -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/style.css -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/subtreeEnd.jsp -text svneol=unset#text/plain
