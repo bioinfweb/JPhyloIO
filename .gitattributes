@@ -24,6 +24,8 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/start.jsp -text svneol
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/style.css -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/subtreeEnd.jsp -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/subtreeStart.jsp -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/FASTA/Comment.fasta -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/FASTA/Simple.fasta -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/GPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/NOTICE.txt -text svneol=unset#text/plain
