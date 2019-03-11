@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" isErrorPage="true" pageEncoding="UTF-8"%>
 <%--
-  JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- Copyright (C) 2015-2018  Ben Stöver, Sarah Wiechers
+ JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
+ Copyright (C) 2015-2019  Ben Stöver, Sarah Wiechers
  <http://bioinfweb.info/JPhyloIO>
  
  This file is free software: you can redistribute it and/or modify

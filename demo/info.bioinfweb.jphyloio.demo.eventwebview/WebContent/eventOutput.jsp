@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%--
   JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- Copyright (C) 2015-2018  Ben Stöver, Sarah Wiechers
+ Copyright (C) 2015-2019  Ben Stöver, Sarah Wiechers
  <http://bioinfweb.info/JPhyloIO>
  
  This file is free software: you can redistribute it and/or modify
