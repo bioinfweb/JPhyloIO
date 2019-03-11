@@ -14,6 +14,7 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-fi
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-fileupload-1.4_LICENSE.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-fileupload-1.4_NOTICE.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-fileupload-1.4_RELEASE-NOTES.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-io-2.6.jar -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-io-2.6_LICENSE.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-io-2.6_NOTICE.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-io-2.6_RELEASE-NOTES.txt -text svneol=unset#text/plain
