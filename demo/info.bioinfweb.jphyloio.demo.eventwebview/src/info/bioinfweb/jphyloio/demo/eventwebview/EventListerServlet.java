@@ -70,6 +70,7 @@ public class EventListerServlet extends HttpServlet {
 	public static final String ATTR_VERSION = "jPhyloIOVersion";
 	public static final String ATTR_EVENT = "event";
 	public static final String ATTR_PROPERTIES = "properties";
+	public static final String ATTR_HAS_CHILD_EVENTS = "hasChildEvents";
 
 	public static final String START_OUTPUT_JSP = "/start.jsp";
 	public static final String END_OUTPUT_JSP = "/end.jsp";
@@ -170,12 +171,18 @@ public class EventListerServlet extends HttpServlet {
 			while (reader.hasNextEvent()) {
 				JPhyloIOEvent event = reader.next();
 				
+				request.setAttribute(ATTR_HAS_CHILD_EVENTS, false);
 				if (EventTopologyType.START.equals(event.getType().getTopologyType())) {
 					getServletContext().getRequestDispatcher(SUBTREE_START_OUTPUT_JSP).include(request, response);
+					
+					if (reader.hasNextEvent()) {
+						request.setAttribute(ATTR_HAS_CHILD_EVENTS, !EventTopologyType.END.equals(reader.peek().getType().getTopologyType()));
+					}
 				}
 				
 				request.setAttribute(ATTR_EVENT, event);
 				request.setAttribute(ATTR_PROPERTIES, createPropertyList(event));
+				
 				getServletContext().getRequestDispatcher(EVENT_OUTPUT_JSP).include(request, response);
 				
 				if (EventTopologyType.END.equals(event.getType().getTopologyType())) {
