@@ -1,6 +1,6 @@
 /*
  * JPhyloIO - Event based parsing and stream writing of multiple sequence alignment and tree formats. 
- * Copyright (C) 2015-2018  Ben Stöver, Sarah Wiechers
+ * Copyright (C) 2015-2019  Ben Stöver, Sarah Wiechers
  * <http://bioinfweb.info/JPhyloIO>
  * 
  * This file is free software: you can redistribute it and/or modify
@@ -44,8 +44,6 @@ import org.junit.Test;
 
 
 public class NeXMLEventReaderTest implements NeXMLConstants, ReadWriteConstants {
-	
-	
 	@Test
 	public void readSimpleDocument() {
 		readDocument(new File("data/NeXML/SimpleDocument.xml"));
