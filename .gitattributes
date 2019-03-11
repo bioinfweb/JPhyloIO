@@ -10,6 +10,13 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/bioinfweb-
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/bioinfweb-commons-java-core-3.2.0.jar -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/bioinfweb-commons-java-servlet-1.0.0.jar -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-collections4-4.1.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-fileupload-1.4.jar -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-fileupload-1.4_LICENSE.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-fileupload-1.4_NOTICE.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-fileupload-1.4_RELEASE-NOTES.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-io-2.6_LICENSE.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-io-2.6_NOTICE.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-io-2.6_RELEASE-NOTES.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/commons-lang3-3.5.jar -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/jphyloio-core-0.5.2.jar -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/WEB-INF/lib/jstl.jar -text

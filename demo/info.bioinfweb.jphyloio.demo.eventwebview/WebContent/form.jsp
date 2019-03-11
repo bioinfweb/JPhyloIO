@@ -33,19 +33,19 @@
 </form>
 
 <h3>Upload file</h3>
-<form action="EventLister/Output/index.jsp" method="GET">
+<form action="EventLister/Output/index.jsp" method="POST" enctype="multipart/form-data">
 	<p class="no-column-block">
 		<label for="sourceFile">File:</label>
-		<input type="file" name="sourceFile" id="sourceURL" />
+		<input type="file" name="sourceFile" id="sourceFile" />
 		<button type="submit" style="white-space: nowrap;">List events</button>
 	</p>
 </form>
 
 <h3>Paste or type file contents</h3>
-<form action="EventLister/Output/index.jsp" method="GET">
+<form action="EventLister/Output/index.jsp" method="POST">
 	<p class="no-column-block">
-		<label for="sourceFile">Content:</label>
-		<textarea name="sourceFile" id="sourceURL" wrap="soft" rows="25" style="width: 100%; white-space: pre; overflow-wrap: normal; overflow-x: scroll;"></textarea>
+		<label for="sourceContent">Content:</label>
+		<textarea name="sourceContent" id="sourceContent" wrap="soft" rows="25" style="width: 100%; white-space: pre; overflow-wrap: normal; overflow-x: scroll;"></textarea>
 		<button type="submit" style="white-space: nowrap;">List events</button>
 	</p>
 </form>

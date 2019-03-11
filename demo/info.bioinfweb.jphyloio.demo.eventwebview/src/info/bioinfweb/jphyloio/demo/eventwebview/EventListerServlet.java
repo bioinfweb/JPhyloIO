@@ -19,9 +19,11 @@
 package info.bioinfweb.jphyloio.demo.eventwebview;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,6 +39,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import info.bioinfweb.commons.text.StringUtils;
@@ -54,6 +62,8 @@ import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 
 public class EventListerServlet extends HttpServlet {
 	public static final String PARAM_SOURCE_URL = "sourceURL";
+	public static final String PARAM_SOURCE_FILE = "sourceFile";
+	public static final String PARAM_SOURCE_CONTENT = "sourceContent";
 	public static final String PARAM_FORMAT = "format";
 	
 	public static final String ATTR_SOURCE = "source";
@@ -178,6 +188,24 @@ public class EventListerServlet extends HttpServlet {
 	}
 	
 	
+	private void processStream(HttpServletRequest request, HttpServletResponse response, InputStream stream, String formatID) 
+				throws ServletException, LoadingException, ProcessingException, IOException {
+		
+		try {
+			outputEvents(request, response, stream, formatID);  // Note the the current input form does not allow to specify the format type. This might or might not be implemented in the future.
+		}
+		catch (ServletException | LoadingException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new ProcessingException(e);
+		}
+		finally {
+			stream.close();
+		}
+	}
+	
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
@@ -203,18 +231,7 @@ public class EventListerServlet extends HttpServlet {
 					throw new LoadingException(e.toString());
 				}
 				
-				try {
-					outputEvents(request, response, stream, request.getParameter(PARAM_FORMAT));
-				}
-				catch (ServletException | LoadingException e) {
-					throw e;
-				}
-				catch (Exception e) {
-					throw new ProcessingException(e);
-				}
-				finally {
-					stream.close();
-				}
+				processStream(request, response, stream, request.getParameter(PARAM_FORMAT));
 			}
 		}
 		catch (ServletException | IOException e) {
@@ -228,21 +245,44 @@ public class EventListerServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// https://commons.apache.org/proper/commons-fileupload/streaming.html
-		throw new ServletException("Post not yet implemented.");
+		request.setAttribute(ATTR_VERSION, JPhyloIO.getInstance().getVersion());
+		try {
+			if (ServletFileUpload.isMultipartContent(request)) {  // File upload
+				request.setAttribute(ATTR_SOURCE, "Uploaded file");
+				boolean streamProcessed = false;
+				FileItemIterator iterator = new ServletFileUpload().getItemIterator(request);
+				String formatID = null;
+				while (iterator.hasNext()) {
+			    FileItemStream item = iterator.next();
+			    if (PARAM_FORMAT.equals(item.getFieldName()) && item.isFormField()) {
+			    	formatID = IOUtils.toString(item.openStream(), request.getCharacterEncoding());
+			    }
+			    else if (PARAM_SOURCE_FILE.equals(item.getFieldName()) && !item.isFormField()) {
+						processStream(request, response, item.openStream(), formatID);
+						streamProcessed = true;
+			    }
+				}
+				
+				if (!streamProcessed) {
+					throw new LoadingException("No file could be read from the upload stream.");
+				}
+			}
+			else {  // Direct source input
+				request.setAttribute(ATTR_SOURCE, "Uploaded content");
+				String content = request.getParameter(PARAM_SOURCE_CONTENT);
+				if (content != null) {
+					processStream(request, response, IOUtils.toInputStream(content, request.getCharacterEncoding()), request.getParameter(PARAM_FORMAT));
+				}
+				else {
+					throw new LoadingException("No content could be read from the upload stream.");
+				}
+			}
+		}
+		catch (ServletException | IOException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new ServletException(e);
+		}
 	}
-	
-	
-//	public static void main(String[] args) {
-//		CharacterSetIntervalEvent event = new CharacterSetIntervalEvent(5, 18);
-//		EventListerServlet servlet = new EventListerServlet();
-//		try {
-//			for (EventProperty property : servlet.createPropertyList(event)) {
-//				System.out.println(property);
-//			}
-//		} 
-//		catch (ServletException e) {
-//			e.printStackTrace();
-//		}
-//	}
 }
