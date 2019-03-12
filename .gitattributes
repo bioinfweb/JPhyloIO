@@ -48,8 +48,10 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Newick/Metadata.nwk
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Newick/Simple.nwk -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Nexus/MatrixCharSet.nex -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Nexus/TreesTranslate.nex -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/PDE/MSACharSet.pde -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Phylip/Interleaved.phy -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Phylip/NonInterleaved.phy -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/XTG/AllElements.xtg -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/phyloXML/CladeRelation.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/phyloXML/LargeExample.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/phyloXML/SmallExample.xml -text svneol=unset#text/plain
