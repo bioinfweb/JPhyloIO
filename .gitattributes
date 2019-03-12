@@ -50,6 +50,9 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Nexus/MatrixCharSet
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Nexus/TreesTranslate.nex -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Phylip/Interleaved.phy -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Phylip/NonInterleaved.phy -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/phyloXML/CladeRelation.xml -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/phyloXML/LargeExample.xml -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/phyloXML/SmallExample.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/GPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/NOTICE.txt -text svneol=unset#text/plain

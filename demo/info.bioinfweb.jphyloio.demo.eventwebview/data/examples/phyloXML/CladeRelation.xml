@@ -1,0 +1,24 @@
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+    <phylogeny rooted="true">
+        <name>Tree 1</name>
+        <clade>	
+			<name>1</name>
+            <clade>
+                <name>A</name>
+            </clade>
+            <clade>
+				<name>2</name>
+                <clade id_source="ID1">
+					<name>B</name>
+                </clade>
+                <clade id_source="ID2">
+					<name>C</name>
+                </clade>
+            </clade>
+        </clade>
+		<clade_relation id_ref_0="ID1" id_ref_1="ID2" distance="0.5" type="extraEdge">
+			<confidence type="bootstrap">78.0</confidence>
+		</clade_relation>
+		<clade_relation id_ref_0="ID2" id_ref_1="ID1" type="extraEdge"/>
+    </phylogeny>
+</phyloxml>
