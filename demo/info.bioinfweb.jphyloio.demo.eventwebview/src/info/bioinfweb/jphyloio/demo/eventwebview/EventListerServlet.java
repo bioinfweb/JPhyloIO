@@ -19,11 +19,9 @@
 package info.bioinfweb.jphyloio.demo.eventwebview;
 
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -41,9 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -154,6 +150,7 @@ public class EventListerServlet extends HttpServlet {
 	
 	private void outputEvents(HttpServletRequest request, HttpServletResponse response, InputStream stream, String formatID) throws Exception {
 		getServletContext().getRequestDispatcher(START_OUTPUT_JSP).include(request, response);
+		getServletContext().getRequestDispatcher(SUBTREE_START_OUTPUT_JSP).include(request, response);
 		
 		ReadWriteParameterMap params = new ReadWriteParameterMap();  //TODO Add any parameters?
 		JPhyloIOEventReader reader;
@@ -171,26 +168,25 @@ public class EventListerServlet extends HttpServlet {
 			while (reader.hasNextEvent()) {
 				JPhyloIOEvent event = reader.next();
 				
-				request.setAttribute(ATTR_HAS_CHILD_EVENTS, false);
-				if (EventTopologyType.START.equals(event.getType().getTopologyType())) {
-					getServletContext().getRequestDispatcher(SUBTREE_START_OUTPUT_JSP).include(request, response);
-					
-					if (reader.hasNextEvent()) {
-						request.setAttribute(ATTR_HAS_CHILD_EVENTS, !EventTopologyType.END.equals(reader.peek().getType().getTopologyType()));
-					}
-				}
+				boolean hasChildEvents = EventTopologyType.START.equals(event.getType().getTopologyType()) && reader.hasNextEvent() && 
+						!EventTopologyType.END.equals(reader.peek().getType().getTopologyType());
+				request.setAttribute(ATTR_HAS_CHILD_EVENTS, hasChildEvents);
 				
 				request.setAttribute(ATTR_EVENT, event);
 				request.setAttribute(ATTR_PROPERTIES, createPropertyList(event));
 				
 				getServletContext().getRequestDispatcher(EVENT_OUTPUT_JSP).include(request, response);
 				
-				if (EventTopologyType.END.equals(event.getType().getTopologyType())) {
+				if (hasChildEvents) {
+					getServletContext().getRequestDispatcher(SUBTREE_START_OUTPUT_JSP).include(request, response);
+				}
+				else if (!EventTopologyType.START.equals(event.getType().getTopologyType()) && reader.hasNextEvent() && EventTopologyType.END.equals(reader.peek().getType().getTopologyType())) {
 					getServletContext().getRequestDispatcher(SUBTREE_END_OUTPUT_JSP).include(request, response);
 				}
 			}
 		}
 		
+		getServletContext().getRequestDispatcher(SUBTREE_END_OUTPUT_JSP).include(request, response);
 		getServletContext().getRequestDispatcher(END_OUTPUT_JSP).include(request, response);
 	}
 	
