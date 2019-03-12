@@ -21,6 +21,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>JPhyloIO event lister</title>
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style.css" />
+		<script type="application/javascript" src="${pageContext.request.contextPath}/skript.js"></script>
 	</head>
 	<body>
 		<jsp:include page="generalInfo.jsp" />

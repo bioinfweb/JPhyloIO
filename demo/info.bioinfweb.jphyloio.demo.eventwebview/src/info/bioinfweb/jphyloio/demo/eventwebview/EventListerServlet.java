@@ -66,13 +66,13 @@ public class EventListerServlet extends HttpServlet {
 	public static final String ATTR_VERSION = "jPhyloIOVersion";
 	public static final String ATTR_EVENT = "event";
 	public static final String ATTR_PROPERTIES = "properties";
-	public static final String ATTR_HAS_CHILD_EVENTS = "hasChildEvents";
 
 	public static final String START_OUTPUT_JSP = "/start.jsp";
 	public static final String END_OUTPUT_JSP = "/end.jsp";
 	public static final String SUBTREE_START_OUTPUT_JSP = "/subtreeStart.jsp";
 	public static final String SUBTREE_END_OUTPUT_JSP = "/subtreeEnd.jsp";
 	public static final String EVENT_OUTPUT_JSP = "/eventOutput.jsp";
+	public static final String SUBTREE_BUTTON_OUTPUT_JSP = "/subtreeButtonOutput.jsp";
 		
 	
 	private JPhyloIOReaderWriterFactory factory = new JPhyloIOReaderWriterFactory();
@@ -168,19 +168,21 @@ public class EventListerServlet extends HttpServlet {
 			while (reader.hasNextEvent()) {
 				JPhyloIOEvent event = reader.next();
 				
-				boolean hasChildEvents = EventTopologyType.START.equals(event.getType().getTopologyType()) && reader.hasNextEvent() && 
-						!EventTopologyType.END.equals(reader.peek().getType().getTopologyType());
-				request.setAttribute(ATTR_HAS_CHILD_EVENTS, hasChildEvents);
-				
 				request.setAttribute(ATTR_EVENT, event);
 				request.setAttribute(ATTR_PROPERTIES, createPropertyList(event));
 				
 				getServletContext().getRequestDispatcher(EVENT_OUTPUT_JSP).include(request, response);
 				
-				if (hasChildEvents) {
+				if (EventTopologyType.START.equals(event.getType().getTopologyType()) && reader.hasNextEvent() && 
+						!EventTopologyType.END.equals(reader.peek().getType().getTopologyType())) {
+					
+					getServletContext().getRequestDispatcher(SUBTREE_BUTTON_OUTPUT_JSP).include(request, response);
 					getServletContext().getRequestDispatcher(SUBTREE_START_OUTPUT_JSP).include(request, response);
 				}
-				else if (!EventTopologyType.START.equals(event.getType().getTopologyType()) && reader.hasNextEvent() && EventTopologyType.END.equals(reader.peek().getType().getTopologyType())) {
+				
+				else if (!EventTopologyType.START.equals(event.getType().getTopologyType()) && reader.hasNextEvent() && 
+						EventTopologyType.END.equals(reader.peek().getType().getTopologyType())) {
+					
 					getServletContext().getRequestDispatcher(SUBTREE_END_OUTPUT_JSP).include(request, response);
 				}
 			}

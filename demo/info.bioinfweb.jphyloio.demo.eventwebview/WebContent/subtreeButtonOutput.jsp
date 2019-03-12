@@ -20,19 +20,4 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 --%>
 
-<div class="event-box">
-	<h3><code>${event.type.contentType}.${event.type.topologyType}</code>
-			(${event['class'].name}) 
-			[<a href="http://bioinfweb.info/JPhyloIO/Documentation/API/Latest/index.html?${fn:replace(event['class'].name, '.', '/')}.html">JavaDoc</a>]
-			[<a href="http://bioinfweb.info/Code/sventon/repos/JPhyloIO/show/trunk/main/info.bioinfweb.jphyloio.core/src/${fn:replace(event['class'].name, '.', '/')}.java?revision=HEAD"
-			>Source code</a>]</h3>
-			
-	<c:if test="${fn:length(properties) > 0}">
-		<h4>Properties:</h4>
-		<ul>
-			<c:forEach items="${properties}" var="property">
-				<li>${property.name}: ${property.value}</li>
-			</c:forEach>
-		</ul>
-	</c:if>
-</div>
+<div class="subtree-button" onclick="toggleSubtreeVisibility(this);"></div>
