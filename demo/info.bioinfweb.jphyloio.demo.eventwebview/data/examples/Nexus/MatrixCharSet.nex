@@ -1,0 +1,20 @@
+#NEXUS
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 2;
+	TAXLABELS 
+		A
+		B; 
+END; 
+
+BEGIN Characters;
+  Title someMatrix;
+  Dimensions NTax=2 NChar=7;
+  Format DataType = DNA Missing=? Gap= -;
+  Matrix A CGGTCAT
+         B CG-TCTT;
+END;
+
+BEGIN Sets [comment 1];
+	CharSet someSet = 1 4-6;
+END;

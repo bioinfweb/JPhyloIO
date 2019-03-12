@@ -46,6 +46,8 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/NeXML/TreeMetadata.
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/NeXML/XMLMetadataComments.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Newick/Metadata.nwk -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Newick/Simple.nwk -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Nexus/MatrixCharSet.nex -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Nexus/TreesTranslate.nex -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/GPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/LGPL.txt -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/src/NOTICE.txt -text svneol=unset#text/plain
