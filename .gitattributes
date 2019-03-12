@@ -39,8 +39,10 @@ demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/subtreeEnd.jsp -text s
 demo/info.bioinfweb.jphyloio.demo.eventwebview/WebContent/subtreeStart.jsp -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/FASTA/Comment.fasta -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/FASTA/Simple.fasta -text
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/MEGA/MSALabels.meg -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/NeXML/Sets.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/NeXML/Simple.xml -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/NeXML/TreeMetadata.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/NeXML/XMLMetadataComments.xml -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Newick/Metadata.nwk -text
 demo/info.bioinfweb.jphyloio.demo.eventwebview/data/examples/Newick/Simple.nwk -text
