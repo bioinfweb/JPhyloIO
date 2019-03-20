@@ -44,14 +44,16 @@ public interface MEGAConstants {
 	public static final String FORMAT_SUBCOMMAND_NTAXA = "NTAXA";
 	public static final String FORMAT_SUBCOMMAND_NSITES = "NSITES";
 	public static final String FORMAT_SUBCOMMAND_DATA_TYPE = "DATATYPE";
-	public static final String FORMAT_SUBCOMMAND_MISING = "MISSING";
+	public static final String FORMAT_SUBCOMMAND_MISSING = "MISSING";
 	public static final String FORMAT_SUBCOMMAND_INDEL = "INDEL";
 	public static final String FORMAT_SUBCOMMAND_IDENTICAL = "IDENTICAL";
+	public static final String FORMAT_SUBCOMMAND_DATA_FORMAT = "DATAFORMAT";
 
 	public static final String FORMAT_VALUE_NUCLEOTIDE_DATA_TYPE = "NUCLEOTIDE";
 	public static final String FORMAT_VALUE_DNA_DATA_TYPE = "DNA";
 	public static final String FORMAT_VALUE_RNA_DATA_TYPE = "RNA";
 	public static final String FORMAT_VALUE_PROTEIN_DATA_TYPE = "PROTEIN";
+	public static final String FORMAT_VALUE_INTERLEAVED_DATA_FORMAT = "INTERLEAVED";
 	
 	public static final String LABEL_CHAR_SET_ID = "MEGALabelCharacterSet";
 

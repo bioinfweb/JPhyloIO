@@ -19,6 +19,19 @@
 package info.bioinfweb.jphyloio.formats.mega;
 
 
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.namespace.QName;
+
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.bio.CharacterSymbolMeaning;
 import info.bioinfweb.commons.text.StringUtils;
@@ -46,19 +59,6 @@ import info.bioinfweb.jphyloio.formats.text.AbstractTextEventReader;
 import info.bioinfweb.jphyloio.formats.text.KeyValueInformation;
 import info.bioinfweb.jphyloio.formats.text.TextReaderStreamDataProvider;
 import info.bioinfweb.jphyloio.utils.IDToNameManager;
-
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.namespace.QName;
 
 
 
@@ -92,6 +92,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 			Pattern.compile(".*" + COMMAND_NAME_DOMAIN + GENE_DONAIN_COMMAND_PATTERN_SUFFIX, Pattern.CASE_INSENSITIVE);
 
 	
+	private boolean isInterleaved = false;
 	private String currentSequenceName = null;
 	private String firstSequenceName = null;
 	private long charactersRead = 0;
@@ -244,7 +245,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 								getStreamDataProvider().getDataReader());
 					}
 				}
-				else if (FORMAT_SUBCOMMAND_MISING.equals(key)) {
+				else if (FORMAT_SUBCOMMAND_MISSING.equals(key)) {
 					singleTokenDefinitions.add(new SingleTokenDefinitionEvent(DEFAULT_TOKEN_DEFINITION_ID_PREFIX + 
 							getStreamDataProvider().getIDManager().createNewID(),	null, info.getValue(), CharacterSymbolMeaning.MISSING, null));
 				}
@@ -253,6 +254,10 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 							getStreamDataProvider().getIDManager().createNewID(),	null, info.getValue(), CharacterSymbolMeaning.GAP, null));
 				}
 				else {
+					if (FORMAT_SUBCOMMAND_DATA_FORMAT.equals(key)) {
+						isInterleaved =  FORMAT_VALUE_INTERLEAVED_DATA_FORMAT.equals(info.getValue().toUpperCase());
+					}
+					
 					getCurrentEventCollection().add(new LiteralMetadataEvent(DEFAULT_META_ID_PREFIX + 
 							getStreamDataProvider().getIDManager().createNewID(),	info.getOriginalKey(), 
 							new URIOrStringIdentifier(info.getOriginalKey(), new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_FORMAT + 
@@ -373,6 +378,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	private void readCommand() throws IOException {
 		int c = getReader().peek();
 		if ((c != -1) && ((char)c == COMMAND_START)) {
+			endSequence();
 			getReader().read();  // Consume command start
 			
 			// Read command:
@@ -439,6 +445,14 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 	}
 	
 	
+	private void endSequence() {
+		if (currentSequenceName != null) {
+			getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, !isInterleaved));
+			currentSequenceName = null;
+		}
+	}
+	
+	
 	@Override
 	protected void readNextEvent() throws IOException {
 		if (isBeforeFirstAccess()) {
@@ -475,6 +489,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 					if (getCurrentEventCollection().isEmpty()) {
 						int c = getReader().peek();
 						if (c == -1) {
+							endSequence();
 							if (currentGeneOrDomainName != null) {
 								createGeneOrDomainCharSetEvents();
 								currentGeneOrDomainName = null;  // Avoid multiple firing of this event
@@ -485,6 +500,7 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 							break;
 						}
 						else if (c == SEUQUENCE_START) {
+							endSequence();
 							readSequenceName();
 							consumeWhiteSpaceAndComments(COMMENT_START, COMMENT_END);
 						}
@@ -496,13 +512,13 @@ public class MEGAEventReader extends AbstractTextEventReader<TextReaderStreamDat
 							countCharacters(event);
 						}
 						else {
-							readNextEvent();  // Make sure to add an event to the list.
+							readNextEvent();  // Make sure to add an event to the list.  //TODO Possibly refactor to do this non-recursively
 						}
 					}
 					break;
 										
 				default:
-					throw new InternalError("Impossible case");
+					throw new InternalError("Unexpected event type " + getLastNonCommentEvent().getType());
 			}
 		}
 	}

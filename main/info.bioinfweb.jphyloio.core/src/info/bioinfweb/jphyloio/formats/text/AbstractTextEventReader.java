@@ -205,7 +205,7 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 	
 	
 	/**
-	 * Reads characters from the stream and adds an according sequence tokens event to the queue. Additionally comment events
+	 * Reads characters from the stream and adds a respective sequence tokens event to the queue. Additionally comment events
 	 * are added to the queue, if comments are found.
 	 * 
 	 * @param currentSequenceName
@@ -216,7 +216,7 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 	 */
 	protected JPhyloIOEvent readCharacters(String currentSequenceName, char commentStart, char commentEnd) throws IOException {
 		final Pattern pattern = Pattern.compile(".*(\\n|\\r|\\" + commentStart + ")");
-		PeekReader.ReadResult readResult = getReader().readRegExp(getParameters().getMaxTokensToRead() /*- content.length()*/, pattern, false);  // In greedy mode the start of a nested comment could be consumed.
+		PeekReader.ReadResult readResult = getReader().readRegExp(getParameters().getMaxTokensToRead(), pattern, false);  // In greedy mode the start of a nested comment could be consumed.
 		char lastChar = StringUtils.lastChar(readResult.getSequence());
 		
 		JPhyloIOEvent result = eventFromCharacters(currentSequenceName, StringUtils.cutEnd(readResult.getSequence(), 1));
@@ -233,7 +233,6 @@ public abstract class AbstractTextEventReader<P extends TextReaderStreamDataProv
 				getReader().skip(1);
 			}
 			lineConsumed = true;
-			getCurrentEventCollection().add(new PartEndEvent(EventContentType.SEQUENCE, false));
 		}
 		else {  // Maximum length was reached.
 			lineConsumed = false;
