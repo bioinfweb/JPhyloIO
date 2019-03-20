@@ -34,7 +34,7 @@ import java.net.URL;
  */
 public class JPhyloIO {
 	private static final String NAME = "JPhyloIO";
-	private static final ApplicationVersion VERSION = new ApplicationVersion(0, 5, 2, 1609, ApplicationType.ALPHA);  //TODO Set to beta with next increase of minor version number.
+	private static final ApplicationVersion VERSION = new ApplicationVersion(0, 5, 3, 1657, ApplicationType.ALPHA);  //TODO Set to beta with next increase of minor version number.
 
 	private static JPhyloIO firstInstance = null;
 	
