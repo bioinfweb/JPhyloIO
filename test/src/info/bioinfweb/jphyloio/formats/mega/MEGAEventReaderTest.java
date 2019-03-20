@@ -156,10 +156,9 @@ public class MEGAEventReaderTest implements MEGAConstants, ReadWriteConstants {
 			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 			assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, id3, "A-3301", null, reader);
 			assertCharactersEvent("CTGGAGAACGGGAAG", false, reader);
-			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
-
 			assertCommentEvent("Nested [comment]", reader);
 			assertCommentEvent("[Nested] comment", reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, false, reader);
 
 			assertLabeledIDEvent(EventContentType.CHARACTER_SET, COMMAND_NAME_DOMAIN + ".Alpha_2", 
 					"Domain=Alpha_2 Property=Coding", reader);
@@ -248,6 +247,64 @@ public class MEGAEventReaderTest implements MEGAConstants, ReadWriteConstants {
 		catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getLocalizedMessage());
+		}
+  }
+  
+  
+  @Test
+  public void testReadingMultiLineSequences() throws Exception {
+		MEGAEventReader reader = new MEGAEventReader(new File("data/MEGA/hsp20.meg"), new ReadWriteParameterMap());
+		try {
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.START, reader);
+			
+			assertLiteralMetaEvent(new URIOrStringIdentifier("Title", new QName(MEGA_PREDICATE_NAMESPACE, COMMAND_NAME_TITLE)), 
+					null, "HSP 20 Aligned by MEGA 4", null, null, true, reader);
+
+			assertLiteralMetaEvent(new URIOrStringIdentifier("codetable", new QName(MEGA_PREDICATE_NAMESPACE, 
+					COMMAND_NAME_FORMAT + PREDICATE_PART_SEPERATOR + "CODETABLE")), null, "Standard", null, null, true, reader);
+			
+			assertTokenSetDefinitionEvent(CharacterStateSetType.DNA, null, reader);
+			assertSingleTokenDefinitionEvent("-", CharacterSymbolMeaning.GAP, true, reader);
+			assertEndEvent(EventContentType.TOKEN_SET_DEFINITION, reader);
+			
+			String id1 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Rattus_norvegicus", null, reader);  //TODO Should underscores be converted to " "?
+			assertCharactersEvent("GCAGGATGGAGATCCGGGTGCCTGTGCAGCCTTCTTGGCTGCGCCGTGCTTCAGCTCCTT", false, reader);
+			assertCharactersEvent("TACCGGGTTTTTCCACTCCGGGACGCCTCTTTGACCAGCGTTTCGGCGAAGGGCTGCTTG", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			String id2 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Homo_sapiens", null, reader);  //TODO Should underscores be converted to " "?
+			assertCharactersEvent("ACTGCAACGCGGAGGAGCAGGATGGAGATCCCTGTGCCTGTGCAGCCGTCTTGGCTGCGC", false, reader);
+			assertCharactersEvent("CGCGCCTCGGCCCCGTTGCCCGGACTTTCGGCGCCCGGACGCCTCTTTGACCAGCGCTTC", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			String id3 = assertLinkedLabeledIDEvent(EventContentType.SEQUENCE, null, "Mus_musculus", null, reader);  //TODO Should underscores be converted to " "?
+			assertCharactersEvent("GGCAGCGTAGGAACAGGATGGAGATCCCCGTGCCTGTGCAGCCTTCTTGGCTGCGCCGTG", false, reader);
+			assertCharactersEvent("CTTCAGCTCCTTTACCAGGTTTCTCTGCTCCGGGACGCCTCTTTGACCAGCGTTTCGGCG", false, reader);
+			assertPartEndEvent(EventContentType.SEQUENCE, true, reader);
+			
+			assertNotEquals(id1, id2);
+			assertNotEquals(id1, id3);
+			assertNotEquals(id2, id3);
+
+			//TODO What character set events should be produced? (What do the different tokens mean? Currently only a set for"_" is produced. Is this correct?)
+			assertLabeledIDEvent(EventContentType.CHARACTER_SET, LABEL_CHAR_SET_ID, Character.toString(DEFAULT_LABEL_CHAR), reader);
+			while (reader.hasNextEvent() && reader.peek().getType().getContentType().equals(EventContentType.CHARACTER_SET_INTERVAL)) {
+				reader.next();
+			}
+			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
+
+			assertLabeledIDEvent(EventContentType.CHARACTER_SET, "DOMAIN.Data", "Domain=Data property=Coding CodonStart=1", reader);  //TODO Does it make sense to have this ID and label?
+			assertCharacterSetIntervalEvent(0, 120, reader);
+			assertPartEndEvent(EventContentType.CHARACTER_SET, false, reader);
+			
+			assertEventType(EventContentType.ALIGNMENT, EventTopologyType.END, reader);
+			assertEventType(EventContentType.DOCUMENT, EventTopologyType.END, reader);
+			
+			assertFalse(reader.hasNextEvent());
+		}
+		finally {
+			reader.close();
 		}
   }
 }
