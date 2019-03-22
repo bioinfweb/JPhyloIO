@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <phyloxml xmlns="http://www.phyloxml.org"
+		xmlns:p="http://bioinfweb.info/xmlns/JPhyloIO/PhyloXML/Predicates/"
 		xmlns:ont="http://example.com/someOntology"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,6 +11,9 @@
 		<id>tree1</id>
 		<clade id_source="node1">
 			<name>someNode</name>
+			<taxonomy>
+				<id provider="ncbi_taxonomy">1234</id>
+			</taxonomy>
 			<property ref="ont:hasBayesianSupport" datatype="xsd:double" applies_to="parent_branch">0.94</property>
 			<property ref="ont:hasLikelihoodBootstrapSupport" datatype="xsd:integer" applies_to="parent_branch">89</property>
 		</clade>

@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <nexml xmlns="http://www.nexml.org/2009" version="0.9" generator="JPhyloIO 0.5.3-1657 alpha"
 		xmlns:nex="http://www.nexml.org/2009"
+		xmlns:p="http://bioinfweb.info/xmlns/JPhyloIO/PhyloXML/Predicates/"
 		xmlns:ont="http://example.com/someOntology"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -10,7 +11,14 @@
 	</otus>
 	<trees id="trees1" about="#trees1" label="someTreeGroup" otus="undefinedOTUs1">
 		<tree id="tree1" about="#tree1" label="someTree" xsi:type="nex:FloatTree">
-			<node id="node1" about="#node1" label="someNode" root="true"></node>
+			<node id="node1" about="#node1" label="someNode" root="true">
+				<meta id="node1meta1" xsi:type="nex:ResourceMeta" rel="p:Taxonomy">
+					<meta id="node1meta2" xsi:type="nex:ResourceMeta" rel="p:Taxonomy.ID">
+						<meta id="node1meta3" xsi:type="nex:LiteralMeta" property="p:Taxonomy.ID.Provider" datatype="xsd:string">ncbi_taxonomy</meta>
+						<meta id="node1meta4" xsi:type="nex:LiteralMeta" property="p:Taxonomy.ID.Value" datatype="xsd:string">1234</meta>
+					</meta>
+				</meta>
+			</node>
 			<rootedge target="node1" id="branch1" about="#branch1" label="someEdge">
 				<meta id="branch1meta1" xsi:type="nex:LiteralMeta" property="ont:hasBayesianSupport" datatype="xsd:double">0.94</meta>
 				<meta id="branch1meta2" xsi:type="nex:LiteralMeta" property="ont:hasLikelihoodBootstrapSupport" datatype="xsd:integer">89</meta>

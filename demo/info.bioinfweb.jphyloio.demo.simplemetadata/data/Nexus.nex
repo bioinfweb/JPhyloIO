@@ -3,5 +3,5 @@
 
 BEGIN TREES;
 	TITLE someTreeGroup;
-	TREE someTree = [&R] someNode[&][&hasBayesianSupport=0.94, hasLikelihoodBootstrapSupport=89];
+	TREE someTree = [&R] someNode[&Taxonomy.ID.Provider=ncbi_taxonomy, Taxonomy.ID.Value=1234][&hasBayesianSupport=0.94, hasLikelihoodBootstrapSupport=89];
 END;
