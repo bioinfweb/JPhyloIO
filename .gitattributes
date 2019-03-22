@@ -114,6 +114,20 @@ demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/de
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/demo/simplealignment/ApplicationModel.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/demo/simplealignment/MatrixDataAdapterImpl.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.simplealignment/src/info/bioinfweb/jphyloio/demo/simplealignment/package-info.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/.classpath -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/.project -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/ReadMe.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/data/NeXML.xml -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/data/Nexus.nex -text
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/data/PhyloXML.xml -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/src/GPL.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/src/LGPL.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/src/NOTICE.txt -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/src/info/bioinfweb/jphyloio/demo/simplemetadata/Application.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/src/info/bioinfweb/jphyloio/demo/simplemetadata/TreeBranchesAdapter.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/src/info/bioinfweb/jphyloio/demo/simplemetadata/TreeDataAdapter.java -text svneol=unset#text/plain
+demo/info.bioinfweb.jphyloio.demo.simplemetadata/src/info/bioinfweb/jphyloio/demo/simplemetadata/TreeNodesAdapter.java -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.classpath -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.project -text svneol=unset#text/plain
 demo/info.bioinfweb.jphyloio.demo.tree/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
