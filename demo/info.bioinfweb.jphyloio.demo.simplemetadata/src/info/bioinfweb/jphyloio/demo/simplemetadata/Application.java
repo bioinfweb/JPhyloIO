@@ -73,5 +73,6 @@ public class Application {
 		application.writeTree(new File("data/NeXML.xml"), JPhyloIOFormatIDs.NEXML_FORMAT_ID);
 		application.writeTree(new File("data/PhyloXML.xml"), JPhyloIOFormatIDs.PHYLOXML_FORMAT_ID);
 		application.writeTree(new File("data/Nexus.nex"), JPhyloIOFormatIDs.NEXUS_FORMAT_ID);
+		System.out.println("Finished.");
 	}
 }
