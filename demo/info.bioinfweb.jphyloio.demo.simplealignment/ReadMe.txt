@@ -2,7 +2,7 @@ Simple alignment demo application for JPhyloIO
 ==============================================
 
 This example application demonstrates reading and writing alignment data 
-from and to a simple business model and is part of the JPhyloIO 
+from and to a simple application data model and is part of the JPhyloIO 
 documentation. An overview on this example is provided at 
 <http://r.bioinfweb.info/JPhyloIODemoSimpleAlignment>.
 
