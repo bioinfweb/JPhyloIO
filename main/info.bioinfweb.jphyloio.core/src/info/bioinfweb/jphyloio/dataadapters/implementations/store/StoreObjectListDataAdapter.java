@@ -60,7 +60,7 @@ public class StoreObjectListDataAdapter<E extends LabeledIDEvent> implements Obj
 	}
 	
 	
-	public void setObjectStartEvent(E event)	throws IllegalArgumentException {
+	public void setObjectStartEvent(E event) throws IllegalArgumentException {
 		StoreObjectData<E> data = objectMap.get(event.getID());
 		if (data != null) {
 			data.setObjectStartEvent(event);
