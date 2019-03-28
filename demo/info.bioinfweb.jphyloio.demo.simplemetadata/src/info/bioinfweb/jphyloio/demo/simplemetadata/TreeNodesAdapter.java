@@ -30,7 +30,6 @@ import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
 import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
-import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.phyloxml.PhyloXMLConstants;
 import info.bioinfweb.jphyloio.utils.JPhyloIOWritingUtils;
@@ -58,16 +57,13 @@ public class TreeNodesAdapter implements ObjectListDataAdapter<NodeEvent> {
 
 	@Override
 	public void writeContentData(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver, String id) throws IOException, IllegalArgumentException {
-    receiver.add(new ResourceMetadataEvent(id + "meta1", null, 
-    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY), null, null));
-    
-    receiver.add(new ResourceMetadataEvent(id + "meta2", null, 
-    		new URIOrStringIdentifier(null, PhyloXMLConstants.PREDICATE_TAXONOMY_ID), null, null));
+    receiver.add(new ResourceMetadataEvent(id + "meta1", null, PhyloXMLConstants.PREDICATE_TAXONOMY));
+    receiver.add(new ResourceMetadataEvent(id + "meta2", null, PhyloXMLConstants.PREDICATE_TAXONOMY_ID));
     
     JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + "meta3", null,
-        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER, W3CXSConstants.DATA_TYPE_STRING, "ncbi_taxonomy", null);
+        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_ATTR_PROVIDER, W3CXSConstants.DATA_TYPE_STRING, "ncbi_taxonomy");
     JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, id + "meta4", null,
-        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE, W3CXSConstants.DATA_TYPE_STRING, 1234, null);
+        PhyloXMLConstants.PREDICATE_TAXONOMY_ID_VALUE, W3CXSConstants.DATA_TYPE_STRING, 1234);
     
     receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
     receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
