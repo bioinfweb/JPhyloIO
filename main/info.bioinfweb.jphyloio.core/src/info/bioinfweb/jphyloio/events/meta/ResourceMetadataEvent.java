@@ -25,6 +25,8 @@ import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 
 
 /**
@@ -73,6 +75,57 @@ public class ResourceMetadataEvent extends LabeledIDEvent {
 	}
 
 
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param id the unique ID associated with the represented data element (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
+	 * @param label a label associated with the represented data element (Maybe {@code null}.)
+	 * @param rel the <i>RDF</i> rel URI of this element (The string representation will be set to the local part of the {@link QName}.)
+	 * @param hRef the <i>RDF</i> hRef URI of this element (Maybe {@code null}.)
+	 * @param about the content of a specific about attribute to be written on the according <i>XML</i> representation of this element
+	 *        (Maybe {@code null}.)
+	 * @throws NullPointerException if {@code id} or {@code rel} are {@code null}
+	 * @throws IllegalArgumentException if the specified ID is not a valid
+	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>
+	 */
+	public ResourceMetadataEvent(String id, String label, QName rel, URI hRef, String about) {
+		this(id, label, new URIOrStringIdentifier(null, rel), hRef, about);
+	}
+	
+	
+	/**
+	 * Creates a new instance of this class with no {@code hRef} and no {@code about} values.
+	 *
+	 * @param id the unique ID associated with the represented data element (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
+	 * @param label a label associated with the represented data element (Maybe {@code null}.)
+	 * @param rel the <i>RDF</i> rel URI of this element (The string representation will be set to the local part of the {@link QName}.)
+	 * @throws NullPointerException if {@code id} or {@code rel} are {@code null}
+	 * @throws IllegalArgumentException if the specified ID is not a valid
+	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>
+	 */
+	public ResourceMetadataEvent(String id, String label, QName rel) {
+		this(id, label, new URIOrStringIdentifier(null, rel), null, null);
+	}
+	
+	
+	/**
+	 * Creates a new instance of this class with no {@code hRef} and no {@code about} values.
+	 *
+	 * @param id the unique ID associated with the represented data element (Must be a valid
+	 *        <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>.)
+	 * @param label a label associated with the represented data element (Maybe {@code null}.)
+	 * @param rel the <i>RDF</i> rel URI of this element
+	 * @throws NullPointerException if {@code id} or {@code rel} are {@code null}
+	 * @throws IllegalArgumentException if the specified ID is not a valid
+	 *         <a href="https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName">NCName</a>
+	 */
+	public ResourceMetadataEvent(String id, String label, URIOrStringIdentifier rel) {
+		this(id, label, rel, null, null);
+	}
+	
+	
 	public URIOrStringIdentifier getRel() {
 		return rel;
 	}
