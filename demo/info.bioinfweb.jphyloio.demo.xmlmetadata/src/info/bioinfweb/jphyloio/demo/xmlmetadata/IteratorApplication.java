@@ -36,6 +36,8 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -129,24 +131,24 @@ public class IteratorApplication extends AbstractApplication implements IOConsta
   				JPhyloIOXMLEventWriter.class).createMetaXMLEventWriter(receiver);  
   		XMLEventFactory factory = XMLEventFactory.newInstance();
   		
-  		writer.add(factory.createStartElement(TAG_RELATED_RESOURCE, Collections.emptyIterator(), Collections.emptyIterator()));
+  		writer.add(factory.createStartElement(TAG_RELATED_RESOURCE, Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
   		if (resource.getType() != null) {
   			writer.add(factory.createAttribute(ATTR_TYPE, resource.getType().toString()));
   		}
   		
   		if (resource.getTitle() != null) {
-  			writer.add(factory.createStartElement(TAG_TITLE, Collections.emptyIterator(), Collections.emptyIterator()));
+  			writer.add(factory.createStartElement(TAG_TITLE, Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
   			writer.add(factory.createCharacters(resource.getTitle()));
-  			writer.add(factory.createEndElement(TAG_TITLE, Collections.emptyIterator()));
+  			writer.add(factory.createEndElement(TAG_TITLE, Collections.<Namespace>emptyIterator()));
   		}
   		
   		if (resource.getURL() != null) {
-  			writer.add(factory.createStartElement(TAG_URL, Collections.emptyIterator(), Collections.emptyIterator()));
+  			writer.add(factory.createStartElement(TAG_URL, Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
   			writer.add(factory.createCharacters(resource.getURL().toExternalForm()));
-  			writer.add(factory.createEndElement(TAG_URL, Collections.emptyIterator()));
+  			writer.add(factory.createEndElement(TAG_URL, Collections.<Namespace>emptyIterator()));
   		}
   		
-  		writer.add(factory.createEndElement(TAG_RELATED_RESOURCE, Collections.emptyIterator()));
+  		writer.add(factory.createEndElement(TAG_RELATED_RESOURCE, Collections.<Namespace>emptyIterator()));
 		}
 	}
 	
