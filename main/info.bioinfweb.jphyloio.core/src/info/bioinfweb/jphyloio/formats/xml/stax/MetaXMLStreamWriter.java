@@ -34,6 +34,7 @@ import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -196,8 +197,9 @@ public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStr
 	 */
 	@Override
 	public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
-		addContentEvent(factory.createStartElement(new QName(namespaceURI, localName), Collections.emptyIterator(), Collections.emptyIterator()));
-		addContentEvent(factory.createEndElement(new QName(namespaceURI, localName), Collections.emptyIterator()));
+		addContentEvent(factory.createStartElement(new QName(namespaceURI, localName), 
+				Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
+		addContentEvent(factory.createEndElement(new QName(namespaceURI, localName), Collections.<Namespace>emptyIterator()));
 	}
 
 
@@ -207,8 +209,9 @@ public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStr
 	 */
 	@Override
 	public void writeEmptyElement(String localName) throws XMLStreamException {
-		addContentEvent(factory.createStartElement(new QName(localName), Collections.emptyIterator(), Collections.emptyIterator()));
-		addContentEvent(factory.createEndElement(new QName(localName), Collections.emptyIterator()));
+		addContentEvent(factory.createStartElement(new QName(localName), Collections.<Attribute>emptyIterator(), 
+				Collections.<Namespace>emptyIterator()));
+		addContentEvent(factory.createEndElement(new QName(localName), Collections.<Namespace>emptyIterator()));
 	}
 
 
@@ -221,7 +224,7 @@ public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStr
 	@Override
 	public void writeEndElement() throws XMLStreamException {
 		if (!encounteredStartElements.isEmpty()) {
-			addContentEvent(factory.createEndElement(encounteredStartElements.pop().getName(), Collections.emptyIterator()));
+			addContentEvent(factory.createEndElement(encounteredStartElements.pop().getName(), Collections.<Namespace>emptyIterator()));
 		}
 		else {
 			throw new XMLStreamException("One more end element than start element was found.");
@@ -273,7 +276,8 @@ public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStr
 
 	@Override
 	public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
-		StartElement element = factory.createStartElement(new QName(namespaceURI, localName, prefix), Collections.emptyIterator(), Collections.emptyIterator());
+		StartElement element = factory.createStartElement(new QName(namespaceURI, localName, prefix), 
+				Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator());
 		encounteredStartElements.push(element);
 		addContentEvent(element);
 	}
@@ -281,7 +285,8 @@ public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStr
 
 	@Override
 	public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
-		StartElement element = factory.createStartElement(new QName(namespaceURI, localName), Collections.emptyIterator(), Collections.emptyIterator());
+		StartElement element = factory.createStartElement(new QName(namespaceURI, localName), 
+				Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator());
 		encounteredStartElements.push(element);
 		addContentEvent(element);
 	}
@@ -289,7 +294,8 @@ public class MetaXMLStreamWriter extends AbstractMetaXMLWriter implements XMLStr
 
 	@Override
 	public void writeStartElement(String localName) throws XMLStreamException {
-		StartElement element = factory.createStartElement(new QName(localName), Collections.emptyIterator(), Collections.emptyIterator());
+		StartElement element = factory.createStartElement(new QName(localName), 
+				Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator());
 		encounteredStartElements.push(element);
 		addContentEvent(element);
 	}

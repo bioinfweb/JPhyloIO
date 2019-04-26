@@ -185,6 +185,8 @@ main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb-commons-java-bio-3.0.0.j
 main/info.bioinfweb.jphyloio.core/include/lib/bioinfweb-commons-java-core-3.2.0.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/commons-collections4-4.1.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/commons-lang3-3.5.jar -text
+main/info.bioinfweb.jphyloio.core/include/lib/javax.activation-api-1.2.0.jar -text
+main/info.bioinfweb.jphyloio.core/include/lib/jaxb-api-2.4.0-b180830.0359.jar -text
 main/info.bioinfweb.jphyloio.core/include/lib/owlapi-XMLUtils-4.1.4.jar -text
 main/info.bioinfweb.jphyloio.core/pom.xml -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
