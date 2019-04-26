@@ -74,7 +74,9 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Comment;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -123,7 +125,8 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 					
 					try {
 						customXMLEventWriter.add(factory.createStartDocument());
-						customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "test_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+						customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "test_tag", "p"), 
+								Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 						customXMLEventWriter.add(factory.createNamespace("p", "http://example.org/"));				
 						customXMLEventWriter.add(factory.createCharacters("some content"));
 						customXMLEventWriter.add(factory.createEndElement("p", "http://example.org/", "test_tag"));
@@ -150,11 +153,13 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 				
 				try {
 					customXMLEventWriter.add(factory.createStartDocument());
-					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "p"), 
+							Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 					customXMLEventWriter.add(factory.createNamespace("p", "http://example.com/"));
 					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_one", "p"), "something"));
 					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_two", "p"), "20"));
-					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "p"), 
+							Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 					customXMLEventWriter.add(factory.createNamespace("p", "http://example.org/"));
 					customXMLEventWriter.add(factory.createCharacters(customXMLEventWriter.getPrefix("http://example.org/") + ":newQName"));
 					customXMLEventWriter.add(factory.createEndElement("p", "http://example.org/", "another_tag"));
@@ -238,7 +243,8 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 					
 					try {
 						customXMLEventWriter.add(factory.createStartDocument());
-						customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "test_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+						customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "test_tag", "p"), 
+								Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 						customXMLEventWriter.add(factory.createNamespace("p", "http://example.org/"));				
 						customXMLEventWriter.add(factory.createCharacters("some content"));
 						customXMLEventWriter.add(factory.createEndElement("p", "http://example.org/", "test_tag"));
@@ -266,11 +272,13 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 				
 				try {
 					customXMLEventWriter.add(factory.createStartDocument());
-					customXMLEventWriter2.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter2.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "p"), 
+							Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 					customXMLEventWriter2.add(factory.createNamespace("p", "http://example.com/"));
 					customXMLEventWriter2.add(factory.createAttribute(new QName("http://example.com/", "attribute_one", "p"), "something"));
 					customXMLEventWriter2.add(factory.createAttribute(new QName("http://example.com/", "attribute_two", "p"), "20"));
-					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "p"), 
+							Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 					customXMLEventWriter.add(factory.createNamespace("p", "http://example.org/"));
 					customXMLEventWriter.add(factory.createCharacters(customXMLEventWriter.getPrefix("http://example.org/") + ":newQName"));
 					customXMLEventWriter2.add(factory.createEndElement("p", "http://example.org/", "another_tag"));
@@ -334,10 +342,12 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 				
 				try {
 					customXMLEventWriter.add(factory.createStartDocument());
-					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "nex"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "nex"), 
+							Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_one", "nex"), "something"));
 					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_two", "nex"), "20"));
-					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "nex"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.org/", "another_tag", "nex"), 
+							Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 					customXMLEventWriter.add(factory.createNamespace("nex", "http://example.org/"));
 					customXMLEventWriter.add(factory.createCharacters(customXMLEventWriter.getPrefix("http://example.org/") + ":someQName"));
 					customXMLEventWriter.add(factory.createEndElement("nex", "http://example.org/", "another_tag"));
@@ -467,11 +477,13 @@ public class MetaXMLEventWriterTest implements ReadWriteConstants, NeXMLConstant
 				
 				try {
 					customXMLEventWriter.add(factory.createStartDocument());
-					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "some_tag", "p"), 
+							Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 					customXMLEventWriter.add(factory.createNamespace("p", "http://example.com/"));
 					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_one", "p"), "something"));
 					customXMLEventWriter.add(factory.createAttribute(new QName("http://example.com/", "attribute_two", "p"), "20"));
-					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "another_tag", "p"), Collections.emptyIterator(), Collections.emptyIterator()));
+					customXMLEventWriter.add(factory.createStartElement(new QName("http://example.com/", "another_tag", "p"), 
+							Collections.<Attribute>emptyIterator(), Collections.<Namespace>emptyIterator()));
 					customXMLEventWriter.add(factory.createCharacters("some content"));
 					customXMLEventWriter.add(factory.createEndElement("p", "http://example.com/", "another_tag"));
 					customXMLEventWriter.add(factory.createEndElement("p", "http://example.com/", "some_tag"));
