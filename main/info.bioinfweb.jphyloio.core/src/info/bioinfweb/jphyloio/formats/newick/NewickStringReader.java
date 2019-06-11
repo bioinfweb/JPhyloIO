@@ -99,7 +99,7 @@ import java.util.regex.Pattern;
  * <p>
  * Note that additional metadata definitions separated by additional ':' as defined in the 
  * <a href="https://wiki.rice.edu/confluence/download/attachments/5216841/RichNewick-2012-02-16.pdf?version=1&modificationDate=1330535426168&api=v2">Rich Newick format</a>
- * used by <a href="https://bioinfocs.rice.edu/phylonet">PhyloNet</a> are not supported, but <i>PhyloNet</i> allows to ommit these
+ * used by <a href="https://bioinfocs.rice.edu/phylonet">PhyloNet</a> are not supported, but <i>PhyloNet</i> allows to omit these
  * with its "-di" option.
  * 
  * @author Ben St&ouml;ver

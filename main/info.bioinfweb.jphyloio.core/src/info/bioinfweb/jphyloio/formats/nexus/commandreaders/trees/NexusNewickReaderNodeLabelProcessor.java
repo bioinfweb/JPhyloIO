@@ -41,7 +41,7 @@ public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabe
 
 	@Override
 	public String processLabel(String originalLabel) {
-		if (originalLabel == null) {  // e.g. for some internal nodes
+		if (originalLabel == null) {  // e.g., for some internal nodes
 			return null;
 		}
 		else {

@@ -21,8 +21,8 @@ package info.bioinfweb.jphyloio.formats.newick;
 
 
 /**
- * Classes implementing this interface are used to modify a node label read from a Newick string
- * (e.g. by using information from a taxon list or translation table.)
+ * Classes implementing this interface are used to modify a node label read from a <i>Newick</i> string
+ * (e.g., by using information from a taxon list or translation table.)
  * 
  * @author Ben St&ouml;ver
  */
