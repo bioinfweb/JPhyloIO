@@ -186,7 +186,7 @@ public interface ReadWriteParameterNames {
 	
 	/**
 	 * This parameter can be used to specify whether special events shall be fired if the reader encounters unknown
-	 * commands (e.g. Nexus commands).
+	 * commands (e.g. <i>NEXUS</i> commands).
 	 * <p>
 	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, no such events will be
 	 * fired. If {@code true} is specified, an event for each unknown command will be created.
@@ -205,7 +205,7 @@ public interface ReadWriteParameterNames {
 	/**
 	 * This parameter will only be used by {@link NeXMLEventWriter} and allows to define whether the token name or the label 
 	 * of a {@link SingleTokenDefinitionEvent} shall be written to the label-attribute of a state element in a 
-	 * NeXML characters block of type {@code standard} or {@code protein}.
+	 * <i>NeXML</i> characters block of type {@code standard} or {@code protein}.
 	 * <p>
 	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, the events' label will always be 
 	 * written to the label attribute. If {@code true} is specified, the token name defined in the event will be used.
@@ -227,12 +227,14 @@ public interface ReadWriteParameterNames {
 	 * This parameter will be used by some {@link JPhyloIOEventReader}s to determine whether the label of an associated OTU
 	 * should be used as a label, if none was present in an element.
 	 * <p>
+	 * (This parameter is not recognized by {@link NexusEventReader}, since the <i>NEXUS</i> format does not differentiate 
+	 * between labels and IDs and requires OTUs and linked sequences or tree nodes to have identical labels.)
+	 * <p>
 	 * The value should have the type {@link Boolean}. If {@code false} or no value is specified, the events' label will 
 	 * remain {@code null} if no label was present in the element. If {@code true} is specified, the OTU label will be used, 
 	 * if present.
 	 */
 	public static final String KEY_USE_OTU_LABEL = KEY_PREFIX + "useOTULabel";
-	// This parameter is not used in Nexus, since Nexus forces OTUs and their according sequences or nodes to have identical labels.
 	
 	/** 
 	 * Identifies the name of the application generating the output. This information, as well as the application URL and version, 
