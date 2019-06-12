@@ -12,7 +12,7 @@ BEGIN TREES;
 		beetle Scarabaeus, 
 		fly Drosophila, 
 		spider Aranaeus; 
-	TREE tree1 = ((1,2),3); 
+	TREE tree1 = ((1,2)2,3); 
 	TREE tree2=((beetle, fly), spider); 
 	TREE tree3=((Scarabaeus, Drosophila), Aranaeus); 
 END; 

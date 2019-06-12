@@ -31,6 +31,7 @@ import info.bioinfweb.commons.testing.TestTools;
 import info.bioinfweb.jphyloio.AbstractEventReader;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.meta.LiteralContentSequenceType;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -1244,7 +1245,8 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 	
 	
 	private void testReadingTreesTranslateSingleTree(NexusEventReader reader, String label,
-			String otuIDScarabaeus, String otuIDDrosophila, String otuIDAranaeus) throws Exception {
+			String otuIDScarabaeus, String otuIDDrosophila, String otuIDAranaeus, String internalID, String internalLabel) throws Exception {
+		
 		assertLabeledIDEvent(EventContentType.TREE, null, label, reader);
 		
 		String nodeIDScarabaeus = assertNodeEvent(null, "Scarabaeus", false, otuIDScarabaeus, reader);
@@ -1252,7 +1254,7 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 		String nodeIDDrosophila = assertNodeEvent(null, "Drosophila", false, otuIDDrosophila, reader);
 		assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 		
-		String nodeIDN1 = assertNodeEvent(null, null, false, null, reader);
+		String nodeIDN1 = assertNodeEvent(null, internalLabel, false, internalID, reader);
 		assertEventType(EventContentType.NODE, EventTopologyType.END, reader);
 		assertEdgeEvent(nodeIDN1, nodeIDScarabaeus, reader);
 		assertEventType(EventContentType.EDGE, EventTopologyType.END, reader);
@@ -1286,8 +1288,22 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 
 
 	@Test
-	public void testReadingTreesTranslate() throws Exception {
-		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesTranslate.nex"), new ReadWriteParameterMap());
+	public void testReadingTreesTranslateWOInternals() throws Exception {
+		testReadingTreesTranslate(false);
+	}
+	
+	
+	@Test
+	public void testReadingTreesTranslateWithInternals() throws Exception {
+		testReadingTreesTranslate(true);
+}
+	
+	
+	private void testReadingTreesTranslate(boolean translateInternals) throws Exception {
+		ReadWriteParameterMap map = new ReadWriteParameterMap();
+		map.put(ReadWriteParameterNames.KEY_TRANSLATE_INTERNAL_NODE_NAMES, translateInternals);
+		NexusEventReader reader = new NexusEventReader(new File("data/Nexus/TreesTranslate.nex"), map);
+		
 		try {
 			assertEventType(EventContentType.DOCUMENT, EventTopologyType.START, reader);
 			
@@ -1305,9 +1321,10 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertNotEquals(otuIDDrosophila, otuIDAranaeus);
 			
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, otusID, reader);
-			testReadingTreesTranslateSingleTree(reader, "tree1", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
-			testReadingTreesTranslateSingleTree(reader, "tree2", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
-			testReadingTreesTranslateSingleTree(reader, "tree3", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
+			testReadingTreesTranslateSingleTree(reader, "tree1", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus, 
+					translateInternals ? otuIDDrosophila : null, translateInternals ? "Drosophila" : "2");
+			testReadingTreesTranslateSingleTree(reader, "tree2", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus, null, null);
+			testReadingTreesTranslateSingleTree(reader, "tree3", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus, null, null);
 			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
 			
 			assertEndEvent(EventContentType.DOCUMENT, reader);
@@ -1526,9 +1543,9 @@ public class NexusEventReaderTest implements NexusConstants, ReadWriteConstants,
 			assertNotEquals(otuIDDrosophila, otuIDAranaeus);
 			
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, otusID, reader);
-			testReadingTreesTranslateSingleTree(reader, "tree1", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
-			testReadingTreesTranslateSingleTree(reader, "tree2", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
-			testReadingTreesTranslateSingleTree(reader, "tree3", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus);
+			testReadingTreesTranslateSingleTree(reader, "tree1", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus, null, null);
+			testReadingTreesTranslateSingleTree(reader, "tree2", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus, null, null);
+			testReadingTreesTranslateSingleTree(reader, "tree3", otuIDScarabaeus, otuIDDrosophila, otuIDAranaeus, null, null);
 			assertEndEvent(EventContentType.TREE_NETWORK_GROUP, reader);
 			
 			assertLinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, null, null, otusID, reader);
