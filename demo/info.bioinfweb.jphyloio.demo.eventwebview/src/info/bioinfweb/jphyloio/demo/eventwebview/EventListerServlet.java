@@ -80,7 +80,14 @@ public class EventListerServlet extends HttpServlet {
 	
 	private Method getMethod(Class<?> eventClass, String prefix, Field field) {
 		try {
-			return eventClass.getMethod(prefix + StringUtils.firstCharToUpperCase(field.getName()));
+			String name;
+			if ("id".equals(field.getName())) {
+				name = "ID";
+			}
+			else {
+				name = StringUtils.firstCharToUpperCase(field.getName());
+			}
+			return eventClass.getMethod(prefix + name);
 		}
 		catch (NoSuchMethodException | SecurityException e) {}  // Nothing to do. (Return null later.)
 		return null;
