@@ -27,7 +27,7 @@ package info.bioinfweb.jphyloio.formats.newick;
  */
 public class DefaultNewickReaderNodeLabelProcessor implements NewickReaderNodeLabelProcessor {
 	@Override
-	public String processLabel(String originalLabel) {
+	public String processLabel(String originalLabel, boolean isInternal) {
 		return originalLabel;
 	}
 

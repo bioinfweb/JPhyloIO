@@ -316,7 +316,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	 * @return the ID of the read node
 	 * @throws IOException
 	 */
-	private String readNode() throws IOException {
+	private String readNode(boolean isInternal) throws IOException {
 		NewickToken token;
 		if (scanner.hasMoreTokens()) {
 			token = scanner.peek();
@@ -352,11 +352,11 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 			
 			// Generate node information:
 			boolean fireNodeEvent = true;
-			String processedLabel = nodeLabelProcessor.processLabel(label);
+			String processedLabel = nodeLabelProcessor.processLabel(label, isInternal);
 			String nodeID = null;
 			if (expectENewick && processedLabel.contains(E_NEWICK_NETWORK_DATA_SEPARATOR)) {
 				//TODO It is currently not easy to determine, if a name was delimited or not, since NewickScanner processed delimited tokens.
-				//     Currently A#H1 is treated in the same way as "A#H1" although it would be desirable not to treat delimted names as 
+				//     Currently A#H1 is treated in the same way as "A#H1" although it would be desirable not to treat delimited names as 
 				//     eNewick names.
 				
 				ENewickNodeLabel labelParts = splitENewickNodeLabel(processedLabel);
@@ -385,7 +385,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 			}
 			else if (!nestedNodeEvents.isEmpty()) {
 				streamDataProvider.getParameters().getLogger().addWarning("Some metadata in hot comments attached to an eNewick network "
-						+ "node were ignored. Note that JPhyloIO currently only handles hot comments attached to the first (left most) appearance "
+						+ "node was ignored. Note that JPhyloIO currently only handles hot comments attached to the first (left most) appearance "
 						+ "of a network node.");
 			}
 			return nodeID;
@@ -440,7 +440,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 					case SUBTREE_START:
 						passedSubnodes.add(new ArrayDeque<NodeEdgeInfo>());
 					case ELEMENT_SEPARATOR:  // fall through
-						readNode();  // Will not add an element, if another SUBTREE_START follows.
+						readNode(false);  // Will not add an element, if another SUBTREE_START follows.
 						break;
 					case SUBTREE_END:
 						if (scanner.hasMoreTokens() && scanner.peek().getType().equals(NewickTokenType.SUBTREE_START)) {
@@ -449,7 +449,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 						}
 						else {
 							Queue<NodeEdgeInfo> levelInfo = passedSubnodes.pop();  // Must be called before readNode().
-							addEdgeEvents(readNode(), levelInfo);  // readNode() is (and needs to be) executed before addEdgeEvents().
+							addEdgeEvents(readNode(true), levelInfo);  // readNode() is (and needs to be) executed before addEdgeEvents().
 						}
 						break;
 					case TERMNINAL_SYMBOL:
@@ -515,7 +515,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 					if (scanner.hasMoreTokens()) {
 						type = scanner.peek().getType();
 						if (type.equals(NewickTokenType.NAME) || type.equals(NewickTokenType.LENGTH)) {
-							readNode();  // Read tree that only consists of one node.
+							readNode(false);  // Read tree that only consists of one node.
 							afterTree = true;
 							return true;
 						}

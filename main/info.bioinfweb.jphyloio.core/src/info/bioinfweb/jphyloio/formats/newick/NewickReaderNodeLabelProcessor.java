@@ -31,9 +31,10 @@ public interface NewickReaderNodeLabelProcessor {
 	 * Processes a label according to the format modeled by this implementation.
 	 * 
 	 * @param originalLabel the label as it was read from the Newick string
+	 * @param isInternal defines whether the node carrying this label is an internal node or not
 	 * @return the processed label
 	 */
-	public String processLabel(String originalLabel);
+	public String processLabel(String originalLabel, boolean isInternal);
 	
 	/**
 	 * Returns the OTU ID that is associated with the specified label.

@@ -22,6 +22,7 @@ package info.bioinfweb.jphyloio.formats.nexus.commandreaders.trees;
 import java.util.Collections;
 import java.util.List;
 
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.formats.newick.NewickReaderNodeLabelProcessor;
 import info.bioinfweb.jphyloio.formats.nexus.NexusConstants;
@@ -30,6 +31,9 @@ import info.bioinfweb.jphyloio.formats.nexus.NexusReaderStreamDataProvider;
 
 
 public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabelProcessor, NexusConstants {
+	public static final boolean DEFAULT_TRANSLATE_INTERNAL_NODE_NAMES = false;
+	
+	
 	private NexusReaderStreamDataProvider streamDataProvider;
 	
 	
@@ -40,9 +44,12 @@ public class NexusNewickReaderNodeLabelProcessor implements NewickReaderNodeLabe
 
 
 	@Override
-	public String processLabel(String originalLabel) {
+	public String processLabel(String originalLabel, boolean isInternal) {
 		if (originalLabel == null) {  // e.g., for some internal nodes
 			return null;
+		}
+		else if (isInternal && !streamDataProvider.getParameters().getBoolean(ReadWriteParameterNames.KEY_TRANSLATE_INTERNAL_NODE_NAMES, DEFAULT_TRANSLATE_INTERNAL_NODE_NAMES)) {
+			return originalLabel;  // Return name without applying any translation.
 		}
 		else {
 			NexusTranslationTable table = streamDataProvider.getTreesTranslationTable();
