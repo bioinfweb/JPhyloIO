@@ -177,6 +177,16 @@ public interface ReadWriteParameterNames {
 	public static final String KEY_NEXUS_BLOCK_HANDLER_MAP = KEY_PREFIX + "nexusBlockHandlerMap";
 	
 	/**
+	 * This parameter will only be used by {@link NexusEventReader} and allows to define whether internal node names
+	 * should be translated using the taxon list from a {@code TAXA} block or a translation table.
+	 * <p>
+	 * It must have the type {@link Boolean}. If {@code true} is specified, all names are translated. If {@code false}
+	 * is specified or this parameter is omitted, only terminal nodes will be translated. That latter can be useful
+	 * if internal node names are used to represent support values instead of indices in the taxon list.
+	 */
+	public static final String KEY_TRANSLATE_INTERNAL_NODE_NAMES = KEY_PREFIX + "translateInternalNodeNames";
+	
+	/**
 	 * This parameter will only be used by {@link NexusEventReader} and allows to define a custom command reader factory.
 	 * <p>
 	 * It must have the type {@link NexusCommandReaderFactory}. If it is omitted a factory providing all command readers 
