@@ -130,7 +130,8 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	private boolean isInTree = false;
 	private boolean afterTree = false;
 	
-	
+
+	//TODO Complete JavaDoc and check if reading multiple trees still depends on the value of treeLabel
 	/**
 	 * Creates a new instance of this class.
 	 * 
@@ -155,12 +156,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 		}
 		
 		this.streamDataProvider = streamDataProvider;
-		if (treeID == null) {
-			this.treeID = DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
-		}
-		else {
-			this.treeID = treeID;
-		}
+		this.treeID = treeID;
 		this.treeLabel = treeLabel;
 		this.nodeLabelProcessor = nodeLabelProcessor;
 		this.expectENewick = expectENewick;
@@ -469,6 +465,16 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 	}
 	
 	
+	private String createTreeID() {
+		if (treeID == null) {
+			return DEFAULT_TREE_ID_PREFIX + streamDataProvider.getIDManager().createNewID();
+		}
+		else {
+			return treeID;
+		}
+	}
+	
+	
 	/**
 	 * Creates the next JPhyloIO event(s) from the Newick string provided by the underlying reader.
 	 * 
@@ -505,7 +511,7 @@ public class NewickStringReader implements ReadWriteConstants, NewickConstants {
 					addCommentEvent(scanner.nextToken());
 				}
 				else {
-					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(getTreeContentType(), treeID, treeLabel));
+					streamDataProvider.getCurrentEventCollection().add(new LabeledIDEvent(getTreeContentType(), createTreeID(), treeLabel));
 					if (NewickTokenType.ROOTED_COMMAND.equals(type) || NewickTokenType.UNROOTED_COMMAND.equals(type)) {
 						currentTreeRooted = NewickTokenType.ROOTED_COMMAND.equals(type);
 						scanner.nextToken();  // Skip rooted token.
