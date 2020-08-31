@@ -716,6 +716,7 @@ test/src/LGPL.txt -text svneol=unset#text/plain
 test/src/NOTICE.txt -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/ParentEventInformationTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/BasicEventReceiverTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/factory/JPhyloIOReaderWriterFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriterLogTest.java -text svneol=unset#text/plain
