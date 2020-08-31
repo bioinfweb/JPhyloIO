@@ -20,9 +20,7 @@ package info.bioinfweb.jphyloio.test.dataadapters.testtreenetworkdataadapters;
 
 
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
-import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.store.StoreTreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
@@ -97,9 +95,8 @@ public class NoAnnotationsTree extends StoreTreeNetworkDataAdapter implements Tr
 	}
 	
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {
-		return EmptyObjectListDataAdapter.SHARED_EMPTY_OBJECT_LIST_ADAPTER;
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {
+		return new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	}
 }
