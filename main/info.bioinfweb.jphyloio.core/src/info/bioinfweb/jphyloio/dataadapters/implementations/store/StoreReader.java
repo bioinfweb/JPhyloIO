@@ -43,11 +43,11 @@ public class StoreReader {
 			
 			// Store nested events:
 			StoreObjectData<E> objectData = adapter.getObjectMap().get(objectStartEvent.getID());
-			JPhyloIOEvent event;
-			do {
-				event = reader.next();
+			JPhyloIOEvent event = reader.next();
+			while (!event.getType().equals(objectType, EventTopologyType.END)) {
 				objectData.getObjectContent().add(event);
-			} while (!event.getType().equals(objectType, EventTopologyType.END));
+				event = reader.next();
+			}
 		}
 		else {
 			throw new IOException("Cannot read information from the stream. Was expecting " + new EventType(objectType, EventTopologyType.START) + 
@@ -85,6 +85,7 @@ public class StoreReader {
 					reader.next();  // Consume and ignore possible additional events.  //TODO Log or throw exception?
 					break;
 			}
+			event = reader.peek();
 		}
 	}
 	
