@@ -233,6 +233,7 @@ main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/dataadapters/imple
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreOTUListDataAdapter.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreObjectData.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreObjectListDataAdapter.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreReader.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreTreeNetworkDataAdapter.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreTreeNetworkGroupDataAdapter.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/package-info.java -text svneol=unset#text/plain

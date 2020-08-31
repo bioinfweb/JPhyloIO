@@ -19,16 +19,15 @@
 package info.bioinfweb.jphyloio.dataadapters.implementations.store;
 
 
+import java.util.List;
+
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.dataadapters.ObjectListDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.TreeNetworkDataAdapter;
 import info.bioinfweb.jphyloio.events.EdgeEvent;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
 import info.bioinfweb.jphyloio.events.NodeEvent;
-
-import java.util.List;
 
 
 
@@ -40,22 +39,44 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter<Linke
 	private StoreObjectListDataAdapter<LinkedLabeledIDEvent> nodeEdgeSets = new StoreObjectListDataAdapter<LinkedLabeledIDEvent>();
 	
 	
-	public StoreTreeNetworkDataAdapter(LabeledIDEvent startEvent, boolean isTree, List<JPhyloIOEvent> annotations) {
-		super(annotations);
+	public StoreTreeNetworkDataAdapter() {
+		super();
+	}
+
+
+	public StoreTreeNetworkDataAdapter(LabeledIDEvent startEvent, boolean isTree) {
+		super();
 		this.startEvent = startEvent;
 		this.isTree = isTree;
 	}
 
 
+	public StoreTreeNetworkDataAdapter(LabeledIDEvent startEvent, boolean isTree, List<JPhyloIOEvent> annotations) {
+		super(annotations);
+		this.startEvent = startEvent;
+		this.isTree = isTree;
+	}
+	
+	
 	@Override
 	public LabeledIDEvent getStartEvent(ReadWriteParameterMap parameters) {
 		return startEvent;
 	}
 
 
+	public void setStartEvent(LabeledIDEvent startEvent) {
+		this.startEvent = startEvent;
+	}
+
+
 	@Override
 	public boolean isTree(ReadWriteParameterMap parameters) {
 		return isTree;
+	}
+
+
+	public void setTree(boolean isTree) {
+		this.isTree = isTree;
 	}
 
 
@@ -72,7 +93,7 @@ public class StoreTreeNetworkDataAdapter extends StoreAnnotatedDataAdapter<Linke
 
 
 	@Override
-	public ObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {
+	public StoreObjectListDataAdapter<LinkedLabeledIDEvent> getNodeEdgeSets(ReadWriteParameterMap parameters) {
 		return nodeEdgeSets;
 	}	
 }

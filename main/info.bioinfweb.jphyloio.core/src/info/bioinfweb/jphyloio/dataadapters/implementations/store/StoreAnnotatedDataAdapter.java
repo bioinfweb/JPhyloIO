@@ -34,6 +34,11 @@ public abstract class StoreAnnotatedDataAdapter<E extends JPhyloIOEvent> impleme
 	private List<JPhyloIOEvent> annotations;
 	
 	
+	public StoreAnnotatedDataAdapter() {
+		this(null);
+	}
+
+
 	public StoreAnnotatedDataAdapter(List<JPhyloIOEvent> annotations) {
 		super();
 		
