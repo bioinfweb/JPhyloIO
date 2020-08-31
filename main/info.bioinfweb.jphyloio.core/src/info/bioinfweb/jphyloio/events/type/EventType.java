@@ -86,6 +86,11 @@ public class EventType implements Comparable<EventType> {
 	}
 
 
+	public boolean equals(EventContentType contentType, EventTopologyType topologyType) {
+		return getContentType().equals(contentType) && getTopologyType().equals(topologyType);
+	}
+	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
