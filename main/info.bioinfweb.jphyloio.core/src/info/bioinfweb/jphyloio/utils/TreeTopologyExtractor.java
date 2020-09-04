@@ -86,12 +86,13 @@ public class TreeTopologyExtractor {
 		}		
 		
 		// Select paint start node
-		if (possiblePaintStarts.size() == 1) {
-			paintStartID = possiblePaintStarts.iterator().next();			
-		}
-		else {
-		//TODO what to do if more than one or no paint start is available?
-		}
+		paintStartID = possiblePaintStarts.iterator().next();			
+//		if (possiblePaintStarts.size() == 1) {
+//			paintStartID = possiblePaintStarts.iterator().next();			
+//		}
+//		else {
+//			//TODO what to do if more than one or no paint start is available?
+//		}
 	}
 
 
