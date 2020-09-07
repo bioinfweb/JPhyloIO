@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import info.bioinfweb.commons.IntegerIDManager;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -38,7 +39,7 @@ public class StoreReader {
 			return event;
 		}
 		else {
-			return (E)event.cloneWithNewID("id" + idManager.createNewID());
+			return (E)event.cloneWithNewID(ReadWriteConstants.DEFAULT_GENERAL_ID_PREFIX + idManager.createNewID());
 		}
 	}
 	
