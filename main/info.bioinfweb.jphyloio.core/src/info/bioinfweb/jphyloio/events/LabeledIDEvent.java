@@ -74,4 +74,11 @@ public class LabeledIDEvent extends LabeledEvent {
 	public String getID() {
 		return id;
 	}
+
+	
+	public LabeledIDEvent cloneWithNewID(String newID) {
+		LabeledIDEvent result = (LabeledIDEvent)clone();
+		result.id = newID;
+		return result;
+	}
 }

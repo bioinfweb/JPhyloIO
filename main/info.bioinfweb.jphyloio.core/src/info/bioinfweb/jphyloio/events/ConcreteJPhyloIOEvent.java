@@ -33,7 +33,7 @@ import info.bioinfweb.jphyloio.events.type.EventType;
  * 
  * @author Ben St&ouml;ver
  */
-public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
+public class ConcreteJPhyloIOEvent implements JPhyloIOEvent, Cloneable {
 	private EventType type;
 	
 	
@@ -66,6 +66,17 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent {
 	@Override
 	public EventType getType() {
 		return type;
+	}
+
+
+	@Override
+	public ConcreteJPhyloIOEvent clone() {
+		try {
+			return (ConcreteJPhyloIOEvent)super.clone();
+		} 
+		catch (CloneNotSupportedException e) {
+			throw new InternalError(e);
+		}
 	}
 
 
