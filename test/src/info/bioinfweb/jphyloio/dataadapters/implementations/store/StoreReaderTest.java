@@ -34,6 +34,7 @@ import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LinkedLabeledIDEvent;
+import info.bioinfweb.jphyloio.events.idediting.IntegerIDEditor;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.formats.newick.NewickEventReader;
@@ -77,7 +78,7 @@ public class StoreReaderTest {
 			while (!reader.peek().getType().equals(EventContentType.TREE, EventTopologyType.START)) {
 				reader.next();
 			}
-			StoreTreeNetworkDataAdapter tree = StoreReader.readTreeNetwork(reader, new IntegerIDManager());
+			StoreTreeNetworkDataAdapter tree = StoreReader.readTreeNetwork(reader, new IntegerIDEditor());
 			
 			IntegerIDManager idManager = new IntegerIDManager();  // For this simple example tree, all events are in order of their IDs.
 			assertEquals(ReadWriteConstants.DEFAULT_GENERAL_ID_PREFIX + idManager.createNewID(), tree.getStartEvent(null).getID());
