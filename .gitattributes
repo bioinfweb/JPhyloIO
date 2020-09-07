@@ -610,6 +610,7 @@ test/data/Newick/OneNodeNameAndLength.nwk -text
 test/data/Newick/OneNodeNone.nwk -text
 test/data/Newick/OnlyBranchLengths.nwk -text
 test/data/Newick/ProblematicComments.nwk -text
+test/data/Newick/SimpleTree.nwk -text
 test/data/Nexus/CharLabels.nex -text
 test/data/Nexus/CharSet.nex -text
 test/data/Nexus/CharSetInvalidVectorSymbol.nex -text
