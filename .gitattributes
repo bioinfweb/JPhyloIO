@@ -257,6 +257,9 @@ main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/SingleSeque
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/SingleTokenDefinitionEvent.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/TokenSetDefinitionEvent.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/UnknownCommandEvent.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/idediting/IDEditor.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/idediting/IntegerIDEditor.java -text svneol=unset#text/plain
+main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/idediting/PrefixIDEditor.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/meta/LiteralContentSequenceType.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/meta/LiteralMetadataContentEvent.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/meta/LiteralMetadataEvent.java -text svneol=unset#text/plain
