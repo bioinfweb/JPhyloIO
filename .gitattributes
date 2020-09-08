@@ -612,7 +612,6 @@ test/data/Newick/OneNodeNameAndLength.nwk -text
 test/data/Newick/OneNodeNone.nwk -text
 test/data/Newick/OnlyBranchLengths.nwk -text
 test/data/Newick/ProblematicComments.nwk -text
-test/data/Newick/SimpleTree.nwk -text
 test/data/Nexus/CharLabels.nex -text
 test/data/Nexus/CharSet.nex -text
 test/data/Nexus/CharSetInvalidVectorSymbol.nex -text
@@ -720,6 +719,7 @@ test/src/NOTICE.txt -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/ParentEventInformationTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/dataadapters/implementations/receivers/BasicEventReceiverTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/dataadapters/implementations/store/StoreReaderTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/jphyloio/events/replacing/UniqueIDEventReplacerTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/factory/JPhyloIOReaderWriterFactoryTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/jphyloio/formats/fasta/FASTAEventWriterLogTest.java -text svneol=unset#text/plain
