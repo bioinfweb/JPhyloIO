@@ -180,4 +180,10 @@ public class ConcreteJPhyloIOEvent implements JPhyloIOEvent, Cloneable {
 	public NodeEvent asNodeEvent() throws ClassCastException {
 		return (NodeEvent)this;
 	}
+
+
+	@Override
+	public LinkedIDEvent asLinkedIDEvent() throws ClassCastException {
+		return (LinkedIDEvent)this;
+	}
 }

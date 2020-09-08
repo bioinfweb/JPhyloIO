@@ -97,4 +97,12 @@ public class SetElementEvent extends ConcreteJPhyloIOEvent implements LinkedIDEv
 	public EventContentType getLinkedObjectType() {
 		return linkedObjectType;
 	}
+
+
+	@Override
+	public SetElementEvent cloneWithNewIDs(String newEventID, String newLinkedID) {
+		SetElementEvent result = (SetElementEvent)clone();
+		result.linkedID = newLinkedID;
+		return result;
+	}
 }

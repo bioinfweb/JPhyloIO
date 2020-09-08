@@ -16,21 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.jphyloio.events.idediting;
+package info.bioinfweb.jphyloio.events.replacing;
 
 
-import info.bioinfweb.commons.IntegerIDManager;
-import info.bioinfweb.jphyloio.ReadWriteConstants;
-import info.bioinfweb.jphyloio.events.LabeledIDEvent;
+import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 
 
 
-public class IntegerIDEditor implements IDEditor {
-	private IntegerIDManager idManager = new IntegerIDManager();
-	
-
-	@Override
-	public String editID(String id, LabeledIDEvent event) {
-		return ReadWriteConstants.DEFAULT_GENERAL_ID_PREFIX + idManager.createNewID();
-	}
+public interface EventReplacer {
+	public <E extends JPhyloIOEvent> E replaceEvent(E event);
 }

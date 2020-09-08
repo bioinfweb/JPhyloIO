@@ -151,5 +151,10 @@ public class EdgeEvent extends LabeledIDEvent {
 	@Override
 	public String toString() {
 		return getType() + " (" + getSourceID() + " -> " + getTargetID() + "):" + getLength();
-	}	
+	}
+	
+	
+	public EdgeEvent cloneWithNewIDs(String newEventID, String newSourceID, String newTargetID) {
+		return new EdgeEvent(newEventID, getLabel(), newSourceID, newTargetID, getLength());
+	}
 }

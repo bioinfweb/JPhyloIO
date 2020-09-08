@@ -24,7 +24,7 @@ import java.io.IOException;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.idediting.IDEditor;
+import info.bioinfweb.jphyloio.events.replacing.EventReplacer;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
@@ -32,25 +32,24 @@ import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 public class StoreReader {
-	@SuppressWarnings("unchecked")
-	private static <E extends LabeledIDEvent> E cloneEventWithNewID(E event, IDEditor idEditor) {
+	private static <E extends LabeledIDEvent> E cloneEventWithNewID(E event, EventReplacer idEditor) {
 		if (idEditor == null) {
 			return event;
 		}
 		else {
-			return (E)event.cloneWithNewID(idEditor.editID(event.getID(), event));
+			return idEditor.replaceEvent(event);
 		}
 	}
 	
 	
 	@SuppressWarnings("unchecked")
-	public static <E extends LabeledIDEvent> void readIntoObjectList(JPhyloIOEventReader reader, IDEditor idEditor, 
+	public static <E extends LabeledIDEvent> void readIntoObjectList(JPhyloIOEventReader reader, EventReplacer idEditor, 
 			StoreObjectListDataAdapter<E> adapter, EventContentType objectType) throws IllegalArgumentException, ClassCastException, IOException {
 
 		JPhyloIOEvent startEvent = reader.next();
 		if (startEvent.getType().equals(objectType, EventTopologyType.START)) {
 			// Create new entry and store start event:
-			E objectStartEvent = cloneEventWithNewID((E)startEvent, idEditor);
+			E objectStartEvent = cloneEventWithNewID((E)startEvent, idEditor);  //TODO If this event is an edge event, the referenced IDs need to be edited, as well.
 			adapter.setObjectStartEvent(objectStartEvent);
 			
 			// Store nested events:
@@ -71,7 +70,7 @@ public class StoreReader {
 	}
 	
 	
-	private static void readTreeNetworkContents(JPhyloIOEventReader reader, IDEditor idEditor, StoreTreeNetworkDataAdapter adapter, 
+	private static void readTreeNetworkContents(JPhyloIOEventReader reader, EventReplacer idEditor, StoreTreeNetworkDataAdapter adapter, 
 			EventContentType endType) throws IOException {
 		
 		JPhyloIOEvent event = reader.peek();
@@ -123,7 +122,7 @@ public class StoreReader {
 	 * @throws IOException if an error occurs when requesting new events from the reader or if the first event is not an appropriate start 
 	 *         event as described above. 
 	 */
-	public static StoreTreeNetworkDataAdapter readTreeNetwork(JPhyloIOEventReader reader, IDEditor idEditor) throws IOException {
+	public static StoreTreeNetworkDataAdapter readTreeNetwork(JPhyloIOEventReader reader, EventReplacer idEditor) throws IOException {
 		if (reader.hasNextEvent()) {
 			JPhyloIOEvent startEvent = reader.next();
 			if (EventTopologyType.START.equals(startEvent.getType().getTopologyType())) {

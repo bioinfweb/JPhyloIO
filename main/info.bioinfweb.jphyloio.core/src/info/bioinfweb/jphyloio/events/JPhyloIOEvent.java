@@ -184,4 +184,12 @@ public interface JPhyloIOEvent {
 	 * @throws ClassCastException if this event is not an instance of {@link NodeEvent}
 	 */
 	public NodeEvent asNodeEvent() throws ClassCastException;
+	
+	/**
+	 * Casts this event to an event with a linked ID.
+	 * 
+	 * @return a reference to this event as a node event
+	 * @throws ClassCastException if this event is not an instance of {@link LinkedIDEvent}
+	 */
+	public LinkedIDEvent asLinkedIDEvent() throws ClassCastException;
 }

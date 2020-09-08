@@ -77,4 +77,12 @@ public class LinkedLabeledIDEvent extends LabeledIDEvent implements LinkedIDEven
 	public boolean hasLink() {
 		return getLinkedID() != null;
 	}
+
+
+	@Override
+	public LinkedLabeledIDEvent cloneWithNewIDs(String newEventID, String newLinkedID) {
+		LinkedLabeledIDEvent result = (LinkedLabeledIDEvent)cloneWithNewID(newEventID);
+		result.linkedID = newLinkedID;
+		return result;
+	}
 }

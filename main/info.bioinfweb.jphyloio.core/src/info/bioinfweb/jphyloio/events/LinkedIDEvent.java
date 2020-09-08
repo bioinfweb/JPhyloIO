@@ -40,4 +40,14 @@ public interface LinkedIDEvent extends JPhyloIOEvent {
 	 * @return {@code true} if an ID is present, {@code false} otherwise
 	 */
 	public boolean hasLink();
+	
+	/**
+	 * Creates a copy of this instance with a new ID and new linked ID.
+	 * 
+	 * @param newEventID the new ID for the event to be returned
+	 * @param newLinkedID the new ID linked by the event to be returned
+	 * @return the new event with the specified IDs
+	 * @since 2.0.0
+	 */
+	public LinkedIDEvent cloneWithNewIDs(String newEventID, String newLinkedID);
 }
