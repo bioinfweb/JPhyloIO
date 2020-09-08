@@ -264,8 +264,6 @@ main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/meta/Resour
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/meta/URIOrStringIdentifier.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/meta/package-info.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/package-info.java -text svneol=unset#text/plain
-main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/replacing/EventReplacer.java -text svneol=unset#text/plain
-main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/replacing/UniqueIDEventReplacer.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/type/EventContentType.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/type/EventTopologyType.java -text svneol=unset#text/plain
 main/info.bioinfweb.jphyloio.core/src/info/bioinfweb/jphyloio/events/type/EventType.java -text svneol=unset#text/plain

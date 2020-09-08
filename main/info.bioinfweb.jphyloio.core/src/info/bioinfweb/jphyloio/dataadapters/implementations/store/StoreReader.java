@@ -24,7 +24,6 @@ import java.io.IOException;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.events.JPhyloIOEvent;
 import info.bioinfweb.jphyloio.events.LabeledIDEvent;
-import info.bioinfweb.jphyloio.events.replacing.EventReplacer;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.events.type.EventTopologyType;
 import info.bioinfweb.jphyloio.events.type.EventType;
@@ -32,33 +31,20 @@ import info.bioinfweb.jphyloio.events.type.EventType;
 
 
 public class StoreReader {
-	private static <E extends LabeledIDEvent> E cloneEventWithNewID(E event, EventReplacer idEditor) {
-		if (idEditor == null) {
-			return event;
-		}
-		else {
-			return idEditor.replaceEvent(event);
-		}
-	}
-	
-	
 	@SuppressWarnings("unchecked")
-	public static <E extends LabeledIDEvent> void readIntoObjectList(JPhyloIOEventReader reader, EventReplacer idEditor, 
-			StoreObjectListDataAdapter<E> adapter, EventContentType objectType) throws IllegalArgumentException, ClassCastException, IOException {
+	public static <E extends LabeledIDEvent> void readIntoObjectList(JPhyloIOEventReader reader, StoreObjectListDataAdapter<E> adapter, 
+			EventContentType objectType) throws IllegalArgumentException, ClassCastException, IOException {
 
 		JPhyloIOEvent startEvent = reader.next();
 		if (startEvent.getType().equals(objectType, EventTopologyType.START)) {
 			// Create new entry and store start event:
-			E objectStartEvent = cloneEventWithNewID((E)startEvent, idEditor);  //TODO If this event is an edge event, the referenced IDs need to be edited, as well.
+			E objectStartEvent = (E)startEvent;
 			adapter.setObjectStartEvent(objectStartEvent);
 			
 			// Store nested events:
 			StoreObjectData<E> objectData = adapter.getObjectMap().get(objectStartEvent.getID());
 			JPhyloIOEvent event = reader.next();
 			while (!event.getType().equals(objectType, EventTopologyType.END)) {
-				if (event instanceof LabeledIDEvent) {
-					event = cloneEventWithNewID((LabeledIDEvent)event, idEditor);
-				}
 				objectData.getObjectContent().add(event);
 				event = reader.next();
 			}
@@ -70,8 +56,8 @@ public class StoreReader {
 	}
 	
 	
-	private static void readTreeNetworkContents(JPhyloIOEventReader reader, EventReplacer idEditor, StoreTreeNetworkDataAdapter adapter, 
-			EventContentType endType) throws IOException {
+	private static void readTreeNetworkContents(JPhyloIOEventReader reader, StoreTreeNetworkDataAdapter adapter, EventContentType endType) 
+			throws IOException {
 		
 		JPhyloIOEvent event = reader.peek();
 		while (!event.getType().equals(endType, EventTopologyType.END)) {  //TODO It would be sufficient to check the content type. Another start event of that type should trigger an exception.
@@ -79,24 +65,20 @@ public class StoreReader {
 				case LITERAL_META:
 				case RESOURCE_META:
 				case LITERAL_META_CONTENT:
-					if (event instanceof LabeledIDEvent) {
-						event = cloneEventWithNewID((LabeledIDEvent) event, idEditor);
-					}
-					adapter.getAnnotations().add(event);
-					reader.next();  // Consume event.
+					adapter.getAnnotations().add(reader.next());
 					break;
 
 				case NODE:
-					readIntoObjectList(reader, idEditor, adapter.getNodes(null), event.getType().getContentType());  //TODO Add other getter so null does not have to be provided?
+					readIntoObjectList(reader, adapter.getNodes(null), event.getType().getContentType());  //TODO Add other getter so null does not have to be provided?
 					break;
 					
 				case EDGE:
 				case ROOT_EDGE:
-					readIntoObjectList(reader, idEditor, adapter.getEdges(null), event.getType().getContentType());
+					readIntoObjectList(reader, adapter.getEdges(null), event.getType().getContentType());
 					break;
 					
 				case NODE_EDGE_SET:
-					readIntoObjectList(reader, idEditor, adapter.getNodeEdgeSets(null), event.getType().getContentType());
+					readIntoObjectList(reader, adapter.getNodeEdgeSets(null), event.getType().getContentType());
 					break;
 					
 				default:
@@ -110,19 +92,15 @@ public class StoreReader {
 	
 	/**
 	 * Reads the contents of a tree or network definition from the specified reader into a new instance of {@link StoreTreeNetworkDataAdapter}.
-	 * <p>
-	 * If an id editor is specified, all stored events with an ID will be generated using {@link LabeledIDEvent#cloneWithNewID(String)} instead
-	 * of storing the event directly. If {@code null} is specified the original event instance from the reader are stored. 
 	 * 
 	 * @param reader the reader providing the event stream. (Note that the next element to be returned must be a start event with the type
 	 *        {@link EventContentType#TREE} or {@link EventContentType#NETWORK}.)
-	 * @param idEditor an optional ID editor that is used to create new IDs for the events to be stored (May be {@code null}.)
 	 * @return a store adapter instance that can be used to write the tree or network that was read by this method
 	 * 
 	 * @throws IOException if an error occurs when requesting new events from the reader or if the first event is not an appropriate start 
 	 *         event as described above. 
 	 */
-	public static StoreTreeNetworkDataAdapter readTreeNetwork(JPhyloIOEventReader reader, EventReplacer idEditor) throws IOException {
+	public static StoreTreeNetworkDataAdapter readTreeNetwork(JPhyloIOEventReader reader) throws IOException {
 		if (reader.hasNextEvent()) {
 			JPhyloIOEvent startEvent = reader.next();
 			if (EventTopologyType.START.equals(startEvent.getType().getTopologyType())) {
@@ -130,9 +108,9 @@ public class StoreReader {
 				if (isTree || EventContentType.NETWORK.equals(startEvent.getType().getContentType())) {
 					StoreTreeNetworkDataAdapter result = new StoreTreeNetworkDataAdapter();
 					
-					result.setStartEvent(cloneEventWithNewID(startEvent.asLabeledIDEvent(), idEditor));
+					result.setStartEvent(startEvent.asLabeledIDEvent());
 					result.setTree(isTree);
-					readTreeNetworkContents(reader, idEditor, result, startEvent.getType().getContentType());
+					readTreeNetworkContents(reader, result, startEvent.getType().getContentType());
 					
 					return result;
 				}
