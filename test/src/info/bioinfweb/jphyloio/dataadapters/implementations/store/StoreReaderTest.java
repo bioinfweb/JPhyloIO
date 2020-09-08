@@ -47,7 +47,7 @@ public class StoreReaderTest {
 			while (!reader.peek().getType().equals(EventContentType.TREE, EventTopologyType.START)) {
 				reader.next();
 			}
-			StoreTreeNetworkDataAdapter tree = StoreReader.readTreeNetwork(reader, null);
+			StoreTreeNetworkDataAdapter tree = StoreReader.readTreeNetwork(reader);
 
 			StoreDocumentDataAdapter document = new StoreDocumentDataAdapter();
 			StoreTreeNetworkGroupDataAdapter treeGroup = new StoreTreeNetworkGroupDataAdapter(new LinkedLabeledIDEvent(EventContentType.TREE_NETWORK_GROUP, "treeGroup", null, null), 
