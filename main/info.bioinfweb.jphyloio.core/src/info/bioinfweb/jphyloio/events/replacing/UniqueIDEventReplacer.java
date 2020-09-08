@@ -40,9 +40,12 @@ public class UniqueIDEventReplacer implements EventReplacer {
 			while (idReplacements.containsKey(id + suffix)) {
 				suffix++;
 			}
-			return id + suffix;  // Note that the returned ID might still be identical with an upcoming ID which would then also be edited.
+			String newID = id + suffix;  // Note that the returned ID might still be identical with an upcoming ID which would then also be edited.
+			idReplacements.put(id, newID);
+			return newID;
 		}
 		else {
+			idReplacements.put(id, id);
 			return id;
 		}
 	}
@@ -53,9 +56,8 @@ public class UniqueIDEventReplacer implements EventReplacer {
 			return null;
 		}
 		else {
-			String result = idReplacements.get(oldID);
-			if (result != null) {
-				return result;
+			if (idReplacements.containsKey(oldID)) {
+				return idReplacements.get(oldID);
 			}
 			else {
 				throw new InconsistentAdapterDataException("An event reference another event with the ID \"" + oldID + "\" which has not been encountered before.");  //TODO The exception is not ideal since this method is not necessarily called in the context of data adapters.
